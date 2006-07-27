@@ -98,6 +98,16 @@ body {
     padding: .3em;
 }
 
+/* Wiki */
+#wikiops {
+    text-decoration: underline;
+    font-size: .7em;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    float: right;
+}
+
 /* Content */
 h1 {
     font-family: Trebuchet MS, Tahoma, Arial;
