@@ -1,7 +1,7 @@
 <?php
 
 require_once("utilities.php");
-require_once("wiki.php");
+require_once("wiki/wiki.php");
 
 // Do url validation.
 // All urls that pass are valid, they can be missing wiki pages.
