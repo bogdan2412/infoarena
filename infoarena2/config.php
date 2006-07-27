@@ -9,17 +9,19 @@
  * # info-arena root directory
  * This is the subversion checkout directory; include trailing slash.
  */
-define("IA_ROOT", '--edit--me--');
-define("DB_HOST", '--edit--me--');
-define("DB_NAME", '--edit--me--');
-define("DB_USER", '--edit--me--');
-define("DB_PASS", '--edit--me--');
+define("IA_ROOT", '/home/wickedman/devel/infoarena2/');
+define("DB_HOST", '');
+define("DB_NAME", 'infoarena2');
+define("DB_USER", 'infoarena2');
+define("DB_PASS", 'infoarena2');
 
 /**
  * # absolute URLs to info-arena website and other web based tools
  * you probably want to leave these just as they are
  */
-define("IA_URL",           "http://localhost/infoarena2/");
+define("IA_URL_PREFIX", "/infoarena2/");
+define("IA_URL_REWRITE", false);
+define("IA_URL", "http://localhost" . IA_URL_PREFIX);
 define("IA_URL_NEWSLETTER", "");    // blank disables feature
 
 /**
