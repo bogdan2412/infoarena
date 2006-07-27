@@ -85,15 +85,44 @@ function wikipage_add_revision($name, $content, $user) {
  * User
  */
 function user_get_by_username($username) {
-    $query = sprintf("SELECT * FROM ia_user WHERE username = '%s'",
-            db_escape($username));
+    $query = sprintf("SELECT * FROM ia_user WHERE username = '%s'", db_escape($username));
+    return db_fetch($query);
+}
+
+function user_get_by_email($email) {
+    $query = sprintf("SELECT * FROM ia_user WHERE email = '%s'", db_escape($email));
     return db_fetch($query);
 }
 
 function user_get_by_id($id) {
-    $query = sprintf("SELECT * FROM ia_user WHERE id = '%s'",
-            db_escape($id));
+    $query = sprintf("SELECT * FROM ia_user WHERE id = '%s'", db_escape($id));
     return db_fetch($query);
+}
+
+function user_create($data) {
+    global $dbLink;
+    $query = "INSERT INTO ia_user (";
+    foreach ($data as $key => $val) {
+        $query .= '`' . $key . '`,';
+    }
+    $query = substr($query, 0, strlen($query)-1);
+    $query .= ') VALUES (';
+    foreach ($data as $jey => $val) {
+        $query .= "'" . db_escape($val) . "',";
+    }
+    $query = substr($query, 0, strlen($query)-1);
+    $query .= ')';
+
+    $ret = mysql_query($query, $dbLink);
+
+    if ($ret)
+    {
+        $last = mysql_insert_id($dbLink);
+        $q2 = sprintf("UPDATE ia_user set `password` = sha1('%s') WHERE `id` = '%s'",
+                      $data['password'], $last);
+        mysql_query($q2, $dbLink);
+    }
+    return $ret;
 }
 
 /**
