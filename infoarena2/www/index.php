@@ -1,19 +1,16 @@
 <?php
 
-require_once("../config.php");
 require_once("utilities.php");
 require_once("wiki.php");
 
-$x = array('Contest', 'Home', 'user/gigel?sort=1');
-foreach ($x as $v) {
-    echo url($v, array('sort' => '##$', 'correct' => 'da')) . "<br/>";
-}
-
+// Do url validation.
+// All urls that pass are valid, they can be missing wiki pages.
 $page = request('page');
 if (!preg_match('/^([a-z0-9_\-\/]*)$/i', $page)) {
     redirect(IA_URL);
 }
 
+// Do some monkey bussines based on the first part of $page.
 $path = split('/', $page);
 if (count($path) <= 0) {
     $path = array("");
@@ -52,7 +49,6 @@ switch (strtolower($path[0])) {
         $view['wikipage'] = $page;
 }
 
-
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -68,10 +64,10 @@ switch (strtolower($path[0])) {
 
 $wikipage = getattr($view, 'wikipage', null);
 if (is_null($wikipage)) {
-    echo '<div class="error">Controller does not dictate wiki page.</div>';
+    echo '<div class="error">Controller did not fill in page name.</div>';
 }
 else {
-    $buffer = wiki_process($view['wikipage'], $view);
+    $buffer = wiki_process_page($view['wikipage'], $view);
     echo $buffer;
 }
 
