@@ -4,6 +4,7 @@ require_once("../config.php");
 require_once("config.php");
 require_once("utilities.php");
 require_once("wiki/wiki.php");
+require_once("db.php");
 
 // Do url validation.
 // All urls that pass are valid, they can be missing wiki pages.
