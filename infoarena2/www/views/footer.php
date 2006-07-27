@@ -1,5 +1,9 @@
-<hr />
-<p color="gray">Everything is (c) 2007 infoarena kick-ass team</p>
+</div>
+
+<div id="footer">
+&copy; 2006 - <a href="<?= url('Asociatia_info-arena') ?>">asociatia info-arena</a>
+</div>
+
 </body>
 </html>
 

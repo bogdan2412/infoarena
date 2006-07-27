@@ -1,0 +1,106 @@
+body {
+    font-size: 10pt;
+    font-family: Helvetica, Arial, sans-serif;
+    margin: 1em;
+}
+
+#content {
+    margin-left: 11em;
+}
+
+#header {
+    background-color: #ddf;
+    padding: .5em .5em .5em 1em;
+    border-bottom: 2px solid navy;
+}
+
+#footer {
+    background-color: #ddf;
+    padding: .5em;
+    border-top: 2px solid navy;
+    font-size: .85em;
+    text-align: center;
+    margin-top: 2em;
+    clear: both;
+}
+
+#footer a {
+    color: black;
+}
+
+#logo {
+    font-size: 20pt;
+    font-family: Trebuchet MS, Tahoma, Arial;
+    text-decoration: none;
+    color: black;
+}
+
+#usp {
+    display: block;
+    font-style: italic;
+    margin-top: -.5em;
+    font-family: Trebuchet MS, Tahoma, Arial;
+    color: gray;
+    margin-left: 4em;
+    font-size: .9em;
+}
+
+#logo:hover {
+    color: red;
+}
+
+/* Main Navigation */
+#nav {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    font-weight: bold;
+}
+
+#nav a {
+    display: block;
+    padding: .3em .3em .3em .5em;
+    text-decoration: none;
+    color: black;
+}
+
+#nav a:hover {
+    color: #eef;
+    text-decoration: underline;
+    background-color: black;
+}
+
+/* Sidebar */
+#sidebar {
+    font-size: .9em;
+    margin: 1em 1em 1em 0;
+    float: left;
+    background-color: #eef;
+    width: 11em;
+}
+
+#sidebar a {
+    color: black;
+}
+
+.sidebox {
+    margin: 1em 0 1em 0;
+    padding: .3em;
+}
+
+.sidebox .title {
+    display: block;
+    margin: 0 0 1em 0;
+    background-color: #ddf;
+    color: navy;
+    font-weight: bold;
+    text-align: center;
+    padding: .3em;
+}
+
+/* Content */
+h1 {
+    font-family: Trebuchet MS, Tahoma, Arial;
+    font-size: 16pt;
+}
+

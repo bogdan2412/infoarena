@@ -1,10 +1,14 @@
 RewriteEngine On
-RewriteBase /dev/infoarena2/
+RewriteBase /infoarena2/
 
 RewriteCond %{REQUEST_URI}  index.php
+RewriteCond %{REQUEST_URI}  !static
 RewriteRule index.php/(.*) index.php?page=$1
+
 RewriteCond %{REQUEST_URI}  index.php
+RewriteCond %{REQUEST_URI}  !static
 RewriteRule index.php(.*) index.php?page=$1
 
 RewriteCond %{REQUEST_URI}  !index.php
+RewriteCond %{REQUEST_URI}  !static
 RewriteRule (.*) index.php?page=$1
