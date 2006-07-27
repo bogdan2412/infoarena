@@ -125,7 +125,7 @@ if ('save' == getattr($urlpath, 1, null)) {
         unset($qdata['password2']);
         if (user_create($qdata)) {
             // redirect to login
-            flash();
+            flash("Ai fost inregistrat. Acum te rugam sa te autentifici.");
             redirect(url("login"));
         }
     }
@@ -143,6 +143,6 @@ $other['register'] = true;
 $view['errors'] = $errors;
 $view['data'] = $data;
 $view['other'] = $other;
-include('views/register.php');
+include('views/profile.php');
 
 ?>
