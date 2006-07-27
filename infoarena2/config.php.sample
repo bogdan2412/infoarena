@@ -27,10 +27,11 @@ define("DB_PASS", '--write-me--');
 // so you probably don't want to change this.
 define("DB_TABLE_PREFIX", 'ia_');
 
-// Web host. This is probably localhost.
-define("IA_URL_HOST", "http://localhost/");
+// Web host. This is probably localhost. no trailing slash here
+define("IA_URL_HOST", "http://localhost");
 
 // URL prefix, without the IA_URL part (relative to the web server).
+// First character should be a slash.
 define("IA_URL_PREFIX", "--write-me--");
 
 
