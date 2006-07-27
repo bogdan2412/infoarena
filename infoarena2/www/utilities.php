@@ -1,7 +1,5 @@
 <?php
 
-require_once("../config.php");
-
 function request($paramName, $defaultValue = null) {
     return getattr($_REQUEST, $paramName, $defaultValue);
 }

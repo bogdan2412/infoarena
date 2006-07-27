@@ -23,10 +23,6 @@ define("DB_USER", '--write-me--');
 // Database password
 define("DB_PASS", '--write-me--');
 
-// Database table prefix. This is the default prefix in the database dump,
-// so you probably don't want to change this.
-define("DB_TABLE_PREFIX", 'ia_');
-
 // Web host. This is probably localhost. no trailing slash here
 define("IA_URL_HOST", "http://localhost");
 
