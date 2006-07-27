@@ -24,6 +24,9 @@ function db_fetch($query) {
     $result = mysql_query($query, $dbLink);
     if ($result) {
         $row = mysql_fetch_assoc($result);
+        if ($row === false) {
+            return null;
+        }
         return $row;
     }
     else {

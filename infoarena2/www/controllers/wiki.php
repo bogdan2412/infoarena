@@ -9,6 +9,7 @@ $errors = array();
 
 // TODO: This is wrong.
 $page_name = join($urlpath, '/');
+
 $action = request('action', 'view');
 
 $page = wikipage_get($page_name);
@@ -62,8 +63,109 @@ switch ($action) {
         $view['page_name'] = $page_name;
         $view['content'] = $page_content;
 
-        include('views/wikipage.php');
+        include('views/wikiview.php');
         break;
+
+    case 'attach-submit':
+        // user submitted a file for upload. Process it
+        $data['file_name'] = basename($_FILES['file_name']['name']);
+        $data['file_size'] = $_FILES['file_name']['size'];
+        $view['page_name'] = $page_name;
+
+        // validate data
+        if (!preg_match('/[a-z0-9.\-_]+/i', $data['file_name'])) {
+            $errors['file_name'] = 'Nume de fisier invalid (nu folositi '.
+                                   'spatii)';
+        }                
+        if ($data['file_size'] < 0 || $data['file_size'] > IA_ATTACH_MAXSIZE) {
+            $errors['file_size'] = 'Fisierul depaseste limita de '
+                                   .(IA_ATTACH_MAXSIZE / 1024).' kbytes';
+        }
+        if (!$errors) {
+            // Do the SQL dance.
+            $data['real_name'] = attachment_create($data['file_name'],
+                                                   $data['file_size'],
+                                                   $page_name, 1);
+            echo "page name = " . $page_name;
+            // Check if something went wrong.
+            if (!$data['real_name']) {
+                $errors['file_name'] = 'Fisierul nu a putut fi atasat';
+            }
+        }
+        if (!$errors) {
+            $data['real_name'] = IA_ATTACH_DIR . $data['real_name'];
+            if (!move_uploaded_file($_FILES['file_name']['tmp_name'], 
+                                $data['real_name'])) {
+                $errors['file_name'] = 'Fisierul nu a putut fi incarcat pe '.
+                                       'server'; 
+            }
+        }
+        if (!$errors) {
+            redirect(url($page_name));
+        }
+        include('views/attachment.php');
+        break;
+
+    case 'attach':
+        $data['max_file_size'] = IA_ATTACH_MAXSIZE;
+        $view['page_name'] = $page_name;
+        include('views/attachment.php');
+        break;
+
+    case 'download':
+        $file_name = request('file');
+        if (!$file_name) {
+            // missing parameter.
+            // FLASH
+            redirect(url($page_name));
+        }
+        $sql_result = attachment_get($file_name, $page_name);
+        if (!$sql_result) {
+            // FLASH
+            redirect(url($page_name));
+        }
+        $real_name = IA_ATTACH_DIR . $sql_result['id'];
+        $fp = fopen($real_name, 'rb');
+        if (!$fp) {
+            // FLASH
+            // Fisierul nu exista pe server
+            redirect(url($page_name));
+            break;
+        }
+        header("Content-type: application/x-download");
+        header("Content-disposition: attachment; filename=".$file_name.";");
+        header('Content-Length: ',$sql_result['file_size']);
+        fpassthru($fp);
+        die();
+
+        break;
+
+    case 'delattach':
+        $file_name = request('file');
+        if (!$file_name) {
+            // Nu e filename.
+            redirect(url($page_name));
+        }
+        $sql_result = attachment_get($file_name, $page);
+        if (!$sql_result) {
+            // 'Fisierul cerut nu exista in baza de date';
+            redirect(url($page_name));
+        }
+        if (!attachment_delete($file_name, $page)) {
+            // Fisierul nu s-a putut sterge din baza de date';
+            redirect(url($page_name));
+        }
+        $real_name = IA_ATTACH_DIR.$sql_result['id'];
+        if (!unlink($real_name)) {
+            // 'Fisierul nu s-a putut sterge de pe server';
+            redirect(url($page_name));
+        }
+        redirect(url($page_name));
+        break;
+
+    default:
+        // FLASH: invalid action
+        redirect(url($page_name));
 }
 
 

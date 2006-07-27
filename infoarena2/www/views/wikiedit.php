@@ -5,7 +5,7 @@
 <ul class="form">
     <li>
         <label for="form_content">Continut</label>
-        <textarea name="content" id="form_content"><?= fval('content') ?></textarea>
+        <textarea name="content" id="form_content" rows="10" cols="50"><?= fval('content') ?></textarea>
     </li>
     
 	<li>

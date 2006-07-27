@@ -48,10 +48,6 @@ switch (strtolower($urlpath[0])) {
         echo 'viewing task';
         break;
 
-    case 'wikitest':
-        include('views/wikitest.php');
-        break;
-
     default:
         // viewing generic wiki page
         if (0 >= strlen($page)) {
