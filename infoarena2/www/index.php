@@ -1,5 +1,7 @@
 <?php
 
+require_once("../config.php");
+require_once("config.php");
 require_once("utilities.php");
 require_once("wiki/wiki.php");
 
@@ -21,6 +23,10 @@ $view = array();
 switch (strtolower($urlpath[0])) {
     case 'user':
         echo 'here comes user controller';
+        break;
+        
+    case 'attachment':
+        include('controllers/attachment.php');
         break;
 
     case 'register':
