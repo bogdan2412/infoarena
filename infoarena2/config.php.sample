@@ -1,0 +1,46 @@
+<?php
+
+// Global configuration file.
+// This is just a sample file. Copy this over to config.php and edit.
+
+//
+// Here is the essential configuration. You only need to modify this
+// to get it working.
+//
+
+// This is the subversion checkout directory. include trailing slash.
+define("IA_ROOT", '--write-me--');
+
+// Database host. Probably localhost.
+define("DB_HOST", 'localhost');
+
+// Database name.
+define("DB_NAME", '--write-me--');
+
+// Database user.
+define("DB_USER", '--write-me--');
+
+// Database password
+define("DB_PASS", '--write-me--');
+
+// Web host. This is probably localhost.
+define("IA_URL_HOST", "http://localhost/");
+
+// URL prefix, without the IA_URL part (relative to the web server).
+define("IA_URL_PREFIX", "--write-me--");
+
+
+//
+// Additional configuration goes here.
+//
+
+// "The" url. You don't have to change this.
+define("IA_URL", IA_URL_HOST . IA_URL_PREFIX);
+
+// If url rewriting is enabled. Don't mess with this unless you know what you're doing.
+define("IA_URL_REWRITE", false);
+
+// Website root.
+define  ("IA_ROOT_WWW", IA_ROOT . "www/");
+
+?>
