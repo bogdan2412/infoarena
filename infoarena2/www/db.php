@@ -61,9 +61,18 @@ function task_get($id) {
  */
 function wikipage_get($name) {
     $query = sprintf("SELECT * FROM ia_page
-                      WHERE LCASE(`name`) == LCASE('%s')",
+                      WHERE LCASE(`name`) = LCASE('%s')",
                      db_escape($name));
     return db_fetch($query);
+}
+
+// Do use later.
+function wikipage_add_revision($name, $content, $user) {
+	global $dbLink;
+	$query = sprintf("INSERT INTO ia_page (name, `text`, timestamp) ".
+					 "VALUES ('%s', '%s', NOW())",
+					 db_escape($name), db_escape($content));
+	return mysql_query($query, $dbLink);
 }
 
 /**

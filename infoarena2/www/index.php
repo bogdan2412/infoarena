@@ -56,9 +56,8 @@ switch (strtolower($urlpath[0])) {
             $page = 'home';
         }
 
-        $view['title'] = "Generic page: {$page}";
-        $view['wikipage'] = $page;
-        include('views/wikipage.php');
+        include('controllers/wiki.php');
+		break;
 }
 
 ?>
