@@ -80,13 +80,42 @@ switch (getattr($urlpath, 1, null)) {
             header("Content-type: application/x-download");
             header("Content-disposition: attachment; filename=".
                    $data['file_name'].";");
-            header('Content-Length: ',$data['sql_result']['size']);
+            header('Content-Length: ',$data['sql_result']['file_size']);
             fpassthru($fp);
             die();
         }
     break;
  
     case 'delete':
+        $data['file_name'] = request('file');
+        if (!$data['file_name']) {
+            redirect(url(''));
+            // message
+        }
+        if (!preg_match('/[a-z0-9.\-_]+/i', $data['file_name'])) {
+            $errors['file_name'] = 'Nume de fisier invalid (nu folositi 
+                                   spatii)';
+        }
+        $data['sql_result'] = attachment_get($data['file_name'], $page);
+        if (!$data['sql_result']) {
+            $errors['file_name'] = 'Fisierul cerut nu exista in baza de date';
+        }
+        $data['sql_del_result'] = attachment_delete($data['file_name'], $page);
+        if (!$data['sql_del_result']) {
+            $errors['file_name'] = 'Fisierul nu s-a putut sterge din
+                                    baza de date';
+        }
+        if (!$errors) {
+            $data['real_name'] = IA_ATTACH_DIR.$data['sql_result']['id'];
+            if (!unlink($data['real_name'])) {
+                $errors['file_name'] = 'Fisierul nu s-a putut sterge de pe
+                                        server';
+                break;
+            }
+            redirect(url(''));
+            // message
+        }
+    
     break;
 }
 

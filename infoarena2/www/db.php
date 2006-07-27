@@ -115,7 +115,13 @@ function attachment_get($name, $page) {
     return db_fetch($query);
 }
 
-function attachment_delete() {
+function attachment_delete($name, $page) {
+    global $dbLink;
+    $query = sprintf("DELETE FROM ia_file WHERE
+                      LCASE(`name`) = LCASE('%s') AND LCASE(`page`) =
+                      LCASE('%s') LIMIT 1", db_escape($name),
+                     db_escape($page));
+    return mysql_query($query, $dbLink);
 }
 
 ?>
