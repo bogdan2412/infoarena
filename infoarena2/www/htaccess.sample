@@ -1,7 +1,7 @@
 RewriteEngine On
-RewriteBase /infoarena2/
+RewriteBase /--write-me--/
 
 RewriteCond %{REQUEST_URI}  !index.php
 RewriteCond %{REQUEST_URI}  !static
-RewriteRule (.*) index.php?page=$1
+RewriteRule ^(.*) index.php?page=$1 [QSA]
 

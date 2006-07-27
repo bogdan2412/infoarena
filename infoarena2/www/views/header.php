@@ -21,6 +21,7 @@
         <li><a href="<?= url('practice') ?>">Pregatire</a></li>
         <li><a href="<?= url('articles') ?>">Articole</a></li>
         <li><a href="<?= url('about') ?>">Despre info-arena</a></li>
+        <li><a href="<?= url('wikitest') ?>">Wiki markup test</a></li>
     </ul>
 
     <div class="sidebox" id="members">
