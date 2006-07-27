@@ -34,11 +34,6 @@ function redirect($absoluteUrl) {
 function url($document, $params = array()) {
     assert(false === strpos($document, '?'));
 
-    if (!IA_URL_REWRITE) {
-        $params['page'] = $document;
-        $document = 'index.php';
-    }
-
     $pairs = array();
     foreach ($params as $k => $v) {
         $pairs[] = $k . '=' . urlencode($v);
