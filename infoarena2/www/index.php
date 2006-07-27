@@ -39,6 +39,10 @@ switch (strtolower($path[0])) {
         echo 'viewing task';
         break;
 
+    case 'wikitest':
+        include('views/wikitest.php');
+        break;
+
     default:
         // viewing generic wiki page
         if (0 >= strlen($page)) {
@@ -47,32 +51,8 @@ switch (strtolower($path[0])) {
 
         $view['title'] = "Generic page: {$page}";
         $view['wikipage'] = $page;
+        include('views/wikipage.php');
 }
 
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
-<head>
-    <title><?php getattr($view, 'title') ?></title>
-</head>
-<body>
-    <h1><?php getattr($view, 'title') ?></h1>
-
-    <div id="content">
-        <?php
-
-$wikipage = getattr($view, 'wikipage', null);
-if (is_null($wikipage)) {
-    echo '<div class="error">Controller did not fill in page name.</div>';
-}
-else {
-    $buffer = wiki_process_page($view['wikipage'], $view);
-    echo $buffer;
-}
-
-        ?>
-    </div>
-</body>
-</html>
 
