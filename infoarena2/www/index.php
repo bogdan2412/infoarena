@@ -15,6 +15,11 @@ if (!preg_match('/^([a-z0-9_\-\/]*)$/i', $page)) {
     redirect(IA_URL);
 }
 
+// Redirectam la home.
+if ($page == "") {
+    $page = "home";
+}
+
 // Do some monkey bussines based on the first part of $page.
 $urlpath = split('/', $page);
 if (count($urlpath) <= 0) {
@@ -28,10 +33,6 @@ switch (strtolower($urlpath[0])) {
         echo 'here comes user controller';
         break;
         
-    case 'attachment':
-        include('controllers/attachment.php');
-        break;
-
     case 'register':
         include('controllers/register.php');
         break;
