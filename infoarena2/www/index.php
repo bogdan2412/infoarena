@@ -11,20 +11,20 @@ if (!preg_match('/^([a-z0-9_\-\/]*)$/i', $page)) {
 }
 
 // Do some monkey bussines based on the first part of $page.
-$path = split('/', $page);
-if (count($path) <= 0) {
-    $path = array("");
+$urlpath = split('/', $page);
+if (count($urlpath) <= 0) {
+    $urlpath = array("");
 }
 
 $view = array();
 
-switch (strtolower($path[0])) {
+switch (strtolower($urlpath[0])) {
     case 'user':
         echo 'here comes user controller';
         break;
 
     case 'register':
-        echo 'user registration page';
+        include('controllers/register.php');
         break;
 
     case 'login':

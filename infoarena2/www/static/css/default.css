@@ -104,3 +104,9 @@ h1 {
     font-size: 16pt;
 }
 
+/* Forms */
+.fieldError {
+    color: red;
+    font-weight: bold;
+}
+
