@@ -9,14 +9,14 @@
 // first, we need a database connection
 assert(!isset($dbLink));    // repetitive-include guard
 $dbLink = mysql_connect(DB_HOST, DB_USER, DB_PASS)
-          or die('Cannot connect to database.');
-mysql_select_db(DB_NAME, $dbLink) or die ('Cannot select database.');
+    or die('Cannot connect to database.');
+    mysql_select_db(DB_NAME, $dbLink) or die ('Cannot select database.');
 
 
-// Escapes a string to be safely included in a query.
-function db_escape($str) {
-    return mysql_escape_string($str);
-}
+    // Escapes a string to be safely included in a query.
+    function db_escape($str) {
+        return mysql_escape_string($str);
+    }
 
 // Executes query, fetches only FIRST result
 function db_fetch($query) {
@@ -59,20 +59,23 @@ function task_get($id) {
 /**
  * Wiki
  */
+
+// Gets the latest version of a page, or null if the page is missing.
 function wikipage_get($name) {
-    $query = sprintf("SELECT * FROM ia_page
-                      WHERE LCASE(`name`) = LCASE('%s')",
-                     db_escape($name));
+    $query = sprintf("SELECT * FROM ia_page ".
+                     "WHERE LCASE(`name`) = LCASE('%s') ".
+                     "ORDER BY `timestamp` DESC LIMIT 1",
+                      db_escape($name));
     return db_fetch($query);
 }
 
 // Do use later.
 function wikipage_add_revision($name, $content, $user) {
-	global $dbLink;
-	$query = sprintf("INSERT INTO ia_page (name, `text`, timestamp) ".
-					 "VALUES ('%s', '%s', NOW())",
-					 db_escape($name), db_escape($content));
-	return mysql_query($query, $dbLink);
+    global $dbLink;
+    $query = sprintf("INSERT INTO ia_page (name, `text`, timestamp) ".
+                     "VALUES ('%s', '%s', NOW())",
+                     db_escape($name), db_escape($content));
+    return mysql_query($query, $dbLink);
 }
 
 /**
@@ -80,13 +83,13 @@ function wikipage_add_revision($name, $content, $user) {
  */
 function user_get_by_username($username) {
     $query = sprintf("SELECT * FROM ia_user WHERE username = '%s'",
-                     db_escape($username));
+            db_escape($username));
     return db_fetch($query);
 }
 
 function user_get_by_id($id) {
     $query = sprintf("SELECT * FROM ia_user WHERE id = '%s'",
-                     db_escape($id));
+            db_escape($id));
     return db_fetch($query);
 }
 
