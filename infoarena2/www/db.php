@@ -9,14 +9,14 @@
 // first, we need a database connection
 assert(!isset($dbLink));    // repetitive-include guard
 $dbLink = mysql_connect(DB_HOST, DB_USER, DB_PASS)
-    or die('Cannot connect to database.');
-    mysql_select_db(DB_NAME, $dbLink) or die ('Cannot select database.');
+          or die('Cannot connect to database.');
+mysql_select_db(DB_NAME, $dbLink) or die ('Cannot select database.');
 
 
-    // Escapes a string to be safely included in a query.
-    function db_escape($str) {
-        return mysql_escape_string($str);
-    }
+// Escapes a string to be safely included in a query.
+function db_escape($str) {
+    return mysql_escape_string($str);
+}
 
 // Executes query, fetches only FIRST result
 function db_fetch($query) {

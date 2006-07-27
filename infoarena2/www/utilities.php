@@ -47,4 +47,13 @@ function url($document, $params = array()) {
     }
 }
 
+/**
+ * Use flash() to display a message right after redirecting the user.
+ * Message is displayed only once.
+ */
+function flash($message) {
+    global $_SESSION;
+    $_SESSION['_flash'] = $message;
+}
+
 ?>
