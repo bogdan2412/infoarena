@@ -19,7 +19,7 @@ define("DB_PASS", '--edit--me--');
  * # absolute URLs to info-arena website and other web based tools
  * you probably want to leave these just as they are
  */
-define("IA_URL_INFO",           "http://localhost/infoarena2/");
+define("IA_URL",           "http://localhost/infoarena2/");
 define("IA_URL_NEWSLETTER", "");    // blank disables feature
 
 /**
