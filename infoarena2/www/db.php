@@ -93,4 +93,29 @@ function user_get_by_id($id) {
     return db_fetch($query);
 }
 
+/**
+ * Attachment
+ */
+
+function attachment_create($name, $size, $page, $user) {
+    global $dbLink;
+    $query = sprintf("INSERT INTO ia_file (name, page, size, user, `timestamp`)
+                     VALUES ('%s', '%s', '%s', '%s', NOW())", 
+                     db_escape($name), db_escape($page), db_escape($size),
+                     db_escape($user));
+    mysql_query($query, $dbLink);
+    $ret = mysql_insert_id($dbLink);
+    return $ret;
+}
+
+function attachment_get($name, $page) {
+    $query = sprintf("SELECT * FROM ia_file
+                      WHERE LCASE(`name`) = LCASE('%s') AND LCASE(`page`) =
+                      LCASE('%s')", db_escape($name), db_escape($page));
+    return db_fetch($query);
+}
+
+function attachment_delete() {
+}
+
 ?>
