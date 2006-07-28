@@ -102,16 +102,16 @@ function wikipage_add_revision($name, $title, $content, $user_id) {
 /**
  * User
  */
-function user_get_by_username($username) {
-    $query = sprintf("SELECT * FROM ia_user
-                      WHERE username = '%s'", db_escape($username));
-    return db_fetch($query);
-}
-
 function user_test_password($username, $password) {
     $query = sprintf("SELECT * FROM ia_user
                       WHERE username = '%s' AND SHA1('%s') = `password`",
                       db_escape($username), db_escape($password));
+    return db_fetch($query);
+}
+
+function user_get_by_username($username) {
+    $query = sprintf("SELECT * FROM ia_user
+                      WHERE username = '%s'", db_escape($username));
     return db_fetch($query);
 }
 

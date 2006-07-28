@@ -39,7 +39,7 @@ function identity_can($action, $ontoObject = null, $identity = null) {
                           'attach-download', 'attach-delete',
                           'task-view', 'task-submit', 'task-edit',
                           'task-create', 'task-publish',
-                          'edit-profile');
+                          'edit-profile', 'user-details');
     assert(false !== array_search($action, $validActions));
 
     // first, handle anonymous users
@@ -89,7 +89,7 @@ function identity_can($action, $ontoObject = null, $identity = null) {
         case 'wiki-edit':
         case 'task-edit':
         case 'attach-delete':
-        case 'attach-overwrite':        
+        case 'attach-overwrite':
             switch ($level) {
                 case 'reviewer':
                     return true;
