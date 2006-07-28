@@ -90,7 +90,7 @@ function wikipage_get($name) {
 }
 
 // Do use later.
-function wikipage_add_revision($name, $title, $content, $user) {
+function wikipage_add_revision($name, $title, $content, $user_id) {
     global $dbLink;
     $query = sprintf("INSERT INTO ia_page (name, `text`, `title`, `timestamp`) ".
                      "VALUES ('%s', '%s', '%s', NOW())",
@@ -170,25 +170,25 @@ function attachment_get($name, $page) {
     return db_fetch($query);
 }
 
-function attachment_update($name, $size, $page, $user) {
+function attachment_update($name, $size, $page, $user_id) {
     global $dbLink;
-    $query = sprintf("UPDATE ia_file SET size = '%s', user ='%s',
+    $query = sprintf("UPDATE ia_file SET size = '%s', user_id ='%s',
                       `timestamp` = NOW() WHERE LCASE(`name`) = LCASE('%s') AND
                       LCASE(`page`) = LCASE('%s')", db_escape($size),
-                     db_escape($user), db_escape($name), db_escape($page));
+                     db_escape($user_id), db_escape($name), db_escape($page));
     return db_query($query);
 }
 
-function attachment_create($name, $size, $page, $user) {
+function attachment_create($name, $size, $page, $user_id) {
     global $dbLink;
     if (!attachment_get($name, $page)) {
-        $query = sprintf("INSERT INTO ia_file (name, page, size, user, `timestamp`)
+        $query = sprintf("INSERT INTO ia_file (name, page, size, user_id, `timestamp`)
                           VALUES ('%s', '%s', '%s', '%s', NOW())", 
                           db_escape($name), db_escape($page), db_escape($size),
-                          db_escape($user));
+                          db_escape($user_id));
     }
     else {
-        return attachment_update($name, $size, $page, $user);
+        return attachment_update($name, $size, $page, $user_id);
     }
 
     db_query($query);
@@ -205,7 +205,7 @@ function attachment_delete($name, $page) {
 
 function attachment_get_all($page) {
     $query = sprintf("SELECT * FROM ia_file LEFT JOIN ia_user ON
-                      ia_file.user = ia_user.id WHERE
+                      ia_file.user_id = ia_user.id WHERE
                       LCASE(ia_file.page) = LCASE('%s')
                       ORDER BY ia_file.`timestamp` DESC", db_escape($page));
     return db_fetch_all($query);
