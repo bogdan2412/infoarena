@@ -16,7 +16,7 @@
     </li>
 
     <li>
-        <input type="submit" value="Ataseaza" id="form_submit" />
+        <input type="submit" class="button important" value="Ataseaza" id="form_submit" />
     </li>
 </ul>
 </form>

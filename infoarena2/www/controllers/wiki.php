@@ -74,7 +74,7 @@ switch ($action) {
         $view['page_name'] = $page_name;
 
         // validate data
-        if (!preg_match('/[a-z0-9.\-_]+/i', $data['file_name'])) {
+        if (!preg_match('/^[a-z0-9\.\-_]+$/i', $data['file_name'])) {
             $errors['file_name'] = 'Nume de fisier invalid (nu folositi '.
                                    'spatii)';
         }                
@@ -166,7 +166,6 @@ switch ($action) {
     case 'listattach':
             $view['attach_list'] = attachment_get_all($page_name);
             $view['page_name'] = $page_name;
-            flash('S-au listat atasamentele');
             include('views/listattach.php');
     break;
 
