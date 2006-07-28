@@ -12,16 +12,33 @@ $dbLink = mysql_connect(DB_HOST, DB_USER, DB_PASS)
           or die('Cannot connect to database.');
 mysql_select_db(DB_NAME, $dbLink) or die ('Cannot select database.');
 
-
 // Escapes a string to be safely included in a query.
 function db_escape($str) {
     return mysql_escape_string($str);
 }
 
+// Executes query. Outputs error messages
+// Returns native PHP mysql resource handle
+function db_query($query) {
+    global $dbLink;
+    $result = mysql_query($query, $dbLink);
+    if (!$result) {
+        // An error has occured. Print helpful debug messages and die
+        echo '<br/><br/><hr/><h1>SQL ERROR!</h1>';
+
+        if (IA_SQL_TRACE) {
+            echo '<p>' . mysql_error($dbLink) . '</p>';
+            echo '<p>This has occured upon trying to execute this:</p>';
+            echo '<pre>' . $query . '</pre>';
+        }
+        die();
+    }
+}
+
 // Executes query, fetches only FIRST result
 function db_fetch($query) {
     global $dbLink;
-    $result = mysql_query($query, $dbLink);
+    $result = db_query($query);
     if ($result) {
         $row = mysql_fetch_assoc($result);
         if ($row === false) {
@@ -37,7 +54,7 @@ function db_fetch($query) {
 // Executes query, fetches the whole result
 function db_fetch_all($query) {
     global $dbLink;
-    $result = mysql_query($query, $dbLink);
+    $result = db_query($query);
     if ($result) {
         $buffer = array();
         while ($row = mysql_fetch_assoc($result)) {
@@ -49,7 +66,6 @@ function db_fetch_all($query) {
         return null;
     }
 }
-
 
 /**
  * Task
@@ -78,19 +94,21 @@ function wikipage_add_revision($name, $content, $user) {
     $query = sprintf("INSERT INTO ia_page (name, `text`, timestamp) ".
                      "VALUES ('%s', '%s', NOW())",
                      db_escape($name), db_escape($content));
-    return mysql_query($query, $dbLink);
+    return db_query($query);
 }
 
 /**
  * User
  */
 function user_get_by_username($username) {
-    $query = sprintf("SELECT * FROM ia_user WHERE username = '%s'", db_escape($username));
+    $query = sprintf("SELECT * FROM ia_user
+                      WHERE username = '%s'", db_escape($username));
     return db_fetch($query);
 }
 
 function user_get_by_email($email) {
-    $query = sprintf("SELECT * FROM ia_user WHERE email = '%s'", db_escape($email));
+    $query = sprintf("SELECT * FROM ia_user WHERE email = '%s'",
+                     db_escape($email));
     return db_fetch($query);
 }
 
@@ -113,14 +131,15 @@ function user_create($data) {
     $query = substr($query, 0, strlen($query)-1);
     $query .= ')';
 
-    $ret = mysql_query($query, $dbLink);
+    $ret = db_query($query);
 
     if ($ret)
     {
         $last = mysql_insert_id($dbLink);
-        $q2 = sprintf("UPDATE ia_user set `password` = sha1('%s') WHERE `id` = '%s'",
+        $q2 = sprintf("UPDATE ia_user set `password` = sha1('%s')
+                       WHERE `id` = '%s'",
                       $data['password'], $last);
-        mysql_query($q2, $dbLink);
+        db_query($q2);
     }
     return $ret;
 }
@@ -128,7 +147,6 @@ function user_create($data) {
 /**
  * Attachment
  */
-
 function attachment_get($name, $page) {
     $query = sprintf("SELECT * FROM ia_file
                       WHERE LCASE(`name`) = LCASE('%s') AND LCASE(`page`) =
@@ -143,7 +161,7 @@ function attachment_update($name, $size, $page, $user) {
                       `timestamp` = NOW() WHERE LCASE(`name`) = LCASE('%s') AND
                       LCASE(`page`) = LCASE('%s')", db_escape($size),
                      db_escape($user), db_escape($name), db_escape($page));
-    return mysql_query($query, $dbLink);
+    return db_query($query);
 }
 
 function attachment_create($name, $size, $page, $user) {
@@ -158,7 +176,7 @@ function attachment_create($name, $size, $page, $user) {
         return attachment_update($name, $size, $page, $user);
     }
 
-    mysql_query($query, $dbLink);
+    db_query($query);
     return mysql_insert_id($dbLink);
 }
 
@@ -167,7 +185,7 @@ function attachment_delete($name, $page) {
     $query = sprintf("DELETE FROM ia_file WHERE
                       LCASE(`name`) = LCASE('%s') AND LCASE(`page`) =
                       LCASE('%s') LIMIT 1", db_escape($name), db_escape($page));
-    return mysql_query($query, $dbLink);
+    return db_query($query);
 }
 
 function attachment_get_all($page) {

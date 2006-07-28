@@ -16,4 +16,12 @@ define("IA_ATTACH_MAXSIZE", 20*1024*1024);
 // directory where to upload files AND from where users download them
 define("IA_ATTACH_DIR", "/tmp/");
 
+// Boolean whether to display SQL queries and helpful debug messages
+// when encountering a SQL error.
+//
+// :WARNING: Disable this option when uploading the website to a production
+// environment! Telling poeple too much about your database is rarely a good
+// thing.
+define("IA_SQL_TRACE", true);
+
 ?>
