@@ -18,7 +18,7 @@ $page_name = $view['page_name'];
 <?php
 echo '<h1>'.htmlentities(getattr($view, 'title')).'</h1>';
 echo '<div class="wiki_text_block">';
-echo wiki_process_text(getattr($view, 'content'), null);
+echo wiki_process_text(getattr($view, 'content'), array('page_name' => $page_name));
 echo '</div>';
 #echo 'Last modification by ' . $view['last-editor'];
 

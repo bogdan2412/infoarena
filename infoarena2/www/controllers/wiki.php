@@ -129,9 +129,10 @@ switch ($action) {
             redirect(url($page_name));
             break;
         }
-        header("Content-type: application/x-download");
+
+        header("Content-Type: application/force-download");
         header("Content-disposition: attachment; filename=".$file_name.";");
-        header('Content-Length: ',$sql_result['file_size']);
+        header('Content-Length: ',$sql_result['size']);
         fpassthru($fp);
         die();
 

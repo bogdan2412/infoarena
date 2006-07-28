@@ -3,17 +3,40 @@
 @require_once("Textile.php");
 
 class MyTextile extends Textile {
-    function format_link($args) {
-/*        echo '<pre>format_link params <br />';
-        print_r($args);
-        echo '</pre>';*/
+    var $page_name;
 
+    function MyTextile($page_name, $options = array()) {
+        $this->page_name = $page_name;
+        Textile::Textile($options);
+    }
+
+    function format_link($args) {
         if (strlen($args['url']) > 1 && $args['url'][0] == '/') {
-            $args['url'] = IA_URL . substr($args['url'], 1);
+            $args['url'] = url(substr($args['url'], 1));
         } else {
             $args['clsty'] .= "(wiki_link_external)";
         }
         $res = parent::format_link($args);
+
+        return $res;
+    }
+
+    function format_image($args) {
+        $srcpath = $args['src'];
+        if (strlen($srcpath) > 1 && $srcpath[0] == '?') {
+            $args['src'] = url($page_name,
+                    array('action' => 'download', 'file' => $file_name)); 
+        } else if (strlen($srcpath) > 1 && $srcpath[0] == '/') {
+            //print_r($parts);
+            $parts = explode('?', substr($srcpath, 1));
+            if (count($parts) == 2) {
+                $other_page_name = $parts[0];
+                $file_name = $parts[1];
+                $args['src'] = url($other_page_name,
+                        array('action' => 'download', 'file' => $file_name)); 
+            }
+        }
+        $res = parent::format_image($args);
 
         return $res;
     }
@@ -25,15 +48,8 @@ function wiki_process_text($wiki_text, $parameters) {
     // TODO: save error_reporting level before resetting it and restore it
     // before return
     error_reporting(0);
-    $weaver = build_weaver();
+    $weaver = new MyTextile(getattr($parameters, 'page_name'));
     return $weaver->process($wiki_text);
-}
-
-// Build an instance of the textile processor.
-// Config here.
-function build_weaver()
-{
-    return new MyTextile();
 }
 
 ?>
