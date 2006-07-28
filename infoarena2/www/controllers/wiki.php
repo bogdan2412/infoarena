@@ -16,7 +16,7 @@ $page = wikipage_get($page_name);
 if (is_null($page)) {
     if ($action == 'view') {
         $action = 'edit';
-        $page_content = "Scrie ba aici despre " . $page_name;
+        $page_content = "Scrie aici despre " . $page_name;
     }
     /*	else if $action {
     // TODO: error message?
@@ -145,12 +145,12 @@ switch ($action) {
             flash('Cerere malformata');
             redirect(url($page_name));
         }
-        $sql_result = attachment_get($file_name, $page);
+        $sql_result = attachment_get($file_name, $page_name);
         if (!$sql_result) {
             flash('Fisierul nu exista.');
             redirect(url($page_name));
         }
-        if (!attachment_delete($file_name, $page)) {
+        if (!attachment_delete($file_name, $page_name)) {
             flash('Nu am reusit sa sterg din baza de date.');
             redirect(url($page_name));
         }
@@ -159,13 +159,19 @@ switch ($action) {
             flash('Nu am reusit sa sterg fisierul de pe disc.');
             redirect(url($page_name));
         }
+        flash('Fisierul '.$file_name.' a fost sters cu succes.');
         redirect(url($page_name));
         break;
+
+    case 'listattach':
+            $view['attach_list'] = attachment_get_all($page_name);
+            $view['page_name'] = $page_name;
+            flash('S-au listat atasamentele');
+            include('views/listattach.php');
+    break;
 
     default:
         flash('Actiunea nu este valida.');
         redirect(url($page_name));
 }
-
-
 ?>

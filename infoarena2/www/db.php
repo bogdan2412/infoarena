@@ -129,17 +129,6 @@ function user_create($data) {
  * Attachment
  */
 
-function attachment_create($name, $size, $page, $user) {
-    global $dbLink;
-    $query = sprintf("INSERT INTO ia_file (name, page, size, user, `timestamp`)
-                     VALUES ('%s', '%s', '%s', '%s', NOW())", 
-                     db_escape($name), db_escape($page), db_escape($size),
-                     db_escape($user));
-    mysql_query($query, $dbLink);
-    $ret = mysql_insert_id($dbLink);
-    return $ret;
-}
-
 function attachment_get($name, $page) {
     $query = sprintf("SELECT * FROM ia_file
                       WHERE LCASE(`name`) = LCASE('%s') AND LCASE(`page`) =
@@ -147,13 +136,46 @@ function attachment_get($name, $page) {
     return db_fetch($query);
 }
 
+function attachment_update($name, $size, $page, $user) {
+    global $dbLink;
+
+    $query = sprintf("UPDATE ia_file SET size = '%s', user ='%s',
+                      `timestamp` = NOW() WHERE LCASE(`name`) = LCASE('%s') AND
+                      LCASE(`page`) = LCASE('%s')", db_escape($size),
+                     db_escape($user), db_escape($name), db_escape($page));
+    return mysql_query($query, $dbLink);
+}
+
+function attachment_create($name, $size, $page, $user) {
+    global $dbLink;
+    if (!attachment_get($name, $page)) {
+        $query = sprintf("INSERT INTO ia_file (name, page, size, user, `timestamp`)
+                          VALUES ('%s', '%s', '%s', '%s', NOW())", 
+                          db_escape($name), db_escape($page), db_escape($size),
+                          db_escape($user));
+    }
+    else {
+        return attachment_update($name, $size, $page, $user);
+    }
+
+    mysql_query($query, $dbLink);
+    return mysql_insert_id($dbLink);
+}
+
 function attachment_delete($name, $page) {
     global $dbLink;
     $query = sprintf("DELETE FROM ia_file WHERE
                       LCASE(`name`) = LCASE('%s') AND LCASE(`page`) =
-                      LCASE('%s') LIMIT 1", db_escape($name),
-                     db_escape($page));
+                      LCASE('%s') LIMIT 1", db_escape($name), db_escape($page));
     return mysql_query($query, $dbLink);
+}
+
+function attachment_get_all($page) {
+    $query = sprintf("SELECT * FROM ia_file LEFT JOIN ia_user ON
+                      ia_file.user = ia_user.id WHERE
+                      LCASE(ia_file.page) = LCASE('%s')
+                      ORDER BY ia_file.`timestamp` DESC", db_escape($page));
+    return db_fetch_all($query);
 }
 
 ?>
