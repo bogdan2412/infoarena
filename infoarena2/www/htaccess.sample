@@ -1,4 +1,4 @@
-RewriteEngine On
+ewriteEngine On
 RewriteBase /--write-me--/
 
 RewriteCond %{REQUEST_URI}  !index.php

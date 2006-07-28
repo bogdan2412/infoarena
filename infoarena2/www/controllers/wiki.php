@@ -17,8 +17,8 @@ if (is_null($page)) {
 
 // Initialize view.
 $view['page_name'] = $page_name;
-$form_values = array();
-$form_errors = array();
+$view['form_values'] = $form_values = array();
+$view['form_errors'] = $form_errors = array();
 
 switch ($action) {
     case 'save':
@@ -103,12 +103,12 @@ switch ($action) {
             flash("Fisierul a fost atasat");
             redirect(url($page_name));
         }
-        $view['form_values'] = $form_values;
-        $view['form_errors'] = $form_errors;
         execute_view_die('views/attachment.php', $view);
 
     case 'attach':
         // Initial attachment page. Rather empty.
+        $view['form_values'] = array();
+        $view['form_errors'] = array();
         execute_view_die('views/attachment.php', $view);
 
     case 'download':
