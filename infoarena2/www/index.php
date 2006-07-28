@@ -32,6 +32,15 @@ switch (strtolower($urlpath[0])) {
     case 'user':
         echo 'here comes user controller';
         break;
+
+    case 'news':
+        if (count($urlpath) == 1) {
+            include('controllers/news.php');
+        }
+        else {
+            include("controllers/wiki.php");
+        }
+        break;
         
     case 'register':
         include('controllers/register.php');
@@ -47,7 +56,7 @@ switch (strtolower($urlpath[0])) {
 
     case 'profile':
         include('controllers/profile.php');
-        break;
+        break;  
 
     case 'task':
         echo 'viewing task';
@@ -65,7 +74,6 @@ switch (strtolower($urlpath[0])) {
         }
 
         include('controllers/wiki.php');
-		break;
+    	break;
 }
-
 ?>

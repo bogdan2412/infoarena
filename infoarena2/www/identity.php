@@ -34,8 +34,9 @@ function identity_can($action, $ontoObject = null, $identity = null) {
     // valid actions
     $validActions = array('logout', 'login',
                           'wiki-view', 'wiki-edit', 'wiki-create',
+                          'wiki-listattach',
                           'wiki-attach', 'attach-overwrite',
-                          'attach-download',
+                          'attach-download', 'attach-delete',
                           'task-view', 'task-submit', 'task-edit',
                           'task-create', 'task-publish',
                           'edit-profile');
@@ -47,6 +48,7 @@ function identity_can($action, $ontoObject = null, $identity = null) {
             case 'login':
             case 'wiki-view':
             case 'attach-download':
+            case 'wiki-listattach':
             case 'task-view':
                 return true;
 
@@ -69,6 +71,7 @@ function identity_can($action, $ontoObject = null, $identity = null) {
         case 'logout':
         case 'wiki-view':
         case 'attach-download':
+        case 'wiki-listattach':
         case 'task-view':
         case 'task-submit':
             return true;
@@ -85,15 +88,8 @@ function identity_can($action, $ontoObject = null, $identity = null) {
 
         case 'wiki-edit':
         case 'task-edit':
-            switch ($level) {
-                case 'reviewer':
-                    return true;
-                case 'editor':
-                    return $identity['id'] == $objOwner;
-            }
-            return false;
-
-        case 'attach-overwrite':
+        case 'attach-delete':
+        case 'attach-overwrite':        
             switch ($level) {
                 case 'reviewer':
                     return true;

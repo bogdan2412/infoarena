@@ -1,6 +1,7 @@
 <?php include('header.php'); ?>
 
 <ul class="attach">
+   <h1>Atasamente pentru <?php echo htmlentities(getattr($view, 'page_title')) ?></h1>
     <?php foreach ($view['attach_list'] as $v) { ?>
     <li>
         <a href="<?= url($view['page_name'],array ('action' => 'download', 'file'=> $v['name'])) ?>">

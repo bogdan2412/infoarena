@@ -20,7 +20,7 @@ echo '<h1>'.htmlentities(getattr($view, 'title')).'</h1>';
 echo '<div class="wiki_text_block">';
 echo wiki_process_text(getattr($view, 'content'), $page_name);
 echo '</div>';
-#echo 'Last modification by ' . $view['last-editor'];
+#echo 'Modificat ultima data la ' . $view[''];
 
 include('footer.php');
 

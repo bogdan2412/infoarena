@@ -92,7 +92,8 @@ function wikipage_get($name) {
 // Do use later.
 function wikipage_add_revision($name, $title, $content, $user_id) {
     global $dbLink;
-    $query = sprintf("INSERT INTO ia_page (name, `text`, `title`, `timestamp`) ".
+    $query = sprintf("INSERT INTO ia_page (name, `text`, `title`,
+                                           `timestamp`) ".
                      "VALUES ('%s', '%s', '%s', NOW())",
                      db_escape($name), db_escape($content), db_escape($title));
     return db_query($query);
@@ -178,7 +179,6 @@ function attachment_get($name, $page) {
 }
 
 function attachment_update($name, $size, $page, $user_id) {
-    global $dbLink;
     $query = sprintf("UPDATE ia_file SET size = '%s', user_id ='%s',
                       `timestamp` = NOW() WHERE LCASE(`name`) = LCASE('%s') AND
                       LCASE(`page`) = LCASE('%s')", db_escape($size),
@@ -186,18 +186,13 @@ function attachment_update($name, $size, $page, $user_id) {
     return db_query($query);
 }
 
-function attachment_create($name, $size, $page, $user_id) {
+function attachment_insert($name, $size, $page, $user_id) {
     global $dbLink;
-    if (!attachment_get($name, $page)) {
-        $query = sprintf("INSERT INTO ia_file (name, page, size, user_id, `timestamp`)
-                          VALUES ('%s', '%s', '%s', '%s', NOW())", 
-                          db_escape($name), db_escape($page), db_escape($size),
-                          db_escape($user_id));
-    }
-    else {
-        return attachment_update($name, $size, $page, $user_id);
-    }
-
+    $query = sprintf("INSERT INTO ia_file (name, page, size, user_id,
+                     `timestamp`)
+                     VALUES ('%s', '%s', '%s', '%s', NOW())",
+                    db_escape($name), db_escape($page), db_escape($size),
+                    db_escape($user_id));
     db_query($query);
     return mysql_insert_id($dbLink);
 }
@@ -206,7 +201,8 @@ function attachment_delete($name, $page) {
     global $dbLink;
     $query = sprintf("DELETE FROM ia_file WHERE
                       LCASE(`name`) = LCASE('%s') AND LCASE(`page`) =
-                      LCASE('%s') LIMIT 1", db_escape($name), db_escape($page));
+                      LCASE('%s') LIMIT 1", db_escape($name),
+                      db_escape($page));
     return db_query($query);
 }
 
@@ -218,4 +214,26 @@ function attachment_get_all($page) {
     return db_fetch_all($query);
 }
 
+/**
+ * News
+ */
+ function news_get_range($start, $range) {
+    $query = sprintf("SELECT * FROM ia_page
+                      WHERE
+                            `timestamp` = (SELECT MAX(`timestamp`)
+                                           FROM ia_page AS ia_page2
+                                           WHERE ia_page2.name = ia_page.name)
+                             AND `name` LIKE 'news/%%'
+                      GROUP BY name
+                      ORDER BY `timestamp` DESC
+                      LIMIT %s,%s", $start, $range);
+    return db_fetch_all($query);
+}
+
+function news_count() {
+    $query = sprintf("SELECT COUNT(DISTINCT name) AS cnt FROM ia_page WHERE
+                      `name` LIKE 'news/%%'");
+    $tmp = db_fetch($query);
+    return $tmp['cnt'];
+}
 ?>
