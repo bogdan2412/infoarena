@@ -126,27 +126,40 @@ function user_create($data) {
     }
     $query = substr($query, 0, strlen($query)-1);
     $query .= ') VALUES (';
-    foreach ($data as $jey => $val) {
-        $query .= "'" . db_escape($val) . "',";
+    foreach ($data as $key => $val) {
+        if ($key == 'password') {
+            $query .= "sha1('" . db_escape($val) . "'),";
+        }
+        else {
+            $query .= "'" . db_escape($val) . "',";
+        }
     }
-    $query = substr($query, 0, strlen($query)-1);
+    $query = substr($query, 0, strlen($query)-1); // delete last ,
     $query .= ')';
 
-    $ret = db_query($query);
-
-    if ($ret)
-    {
-        $last = mysql_insert_id($dbLink);
-        $q2 = sprintf("UPDATE ia_user set `password` = sha1('%s')
-                       WHERE `id` = '%s'",
-                      $data['password'], $last);
-        db_query($q2);
-    }
-    return $ret;
+//    print $query; // debug info
+    return db_query($query);
 }
 
-function user_update($data)
+function user_update($data, $id)
 {
+    global $dbLink;
+    $query = "UPDATE ia_user SET ";
+    foreach ($data as $key => $val) {
+        if ($key != 'id') { // to be sure
+            if ($key == 'password') {
+                $query .= "`" . $key . "`=sha1('" . db_escape($val) . "'),";
+            }
+            else {
+                $query .= "`" . $key . "`='" . db_escape($val) . "',";
+            }
+        }
+    }
+    $query = substr($query, 0, strlen($query)-1); // delete last ,
+    $query .= " WHERE `id` = '" . db_escape($id) . "'";
+
+//    print $query; // debug info
+    return db_query($query);
 }
 
 /**

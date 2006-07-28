@@ -74,14 +74,14 @@ if ('save' == getattr($urlpath, 1, null)) {
 
     $data['birthday'] = getattr($_POST, 'birthday');
     if ($data['birthday']) {
-        if (ereg ("([0-9]{1,2})-([0-9]{1,2})-([0-9]{4})",
+        if (ereg ("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})",
             $data['birthday'], $regs)) {
-            if (!checkdate($regs[2], $regs[1], $regs[3])) {
-                $errors['birthday'] = 'Format data invalid2';
+            if (!checkdate($regs[2], $regs[3], $regs[1])) {
+                $errors['birthday'] = 'Data invalida';
             }
         }
         else {
-            $errors['birthday'] = 'Format data invalid1';
+            $errors['birthday'] = 'Format data invalid';
         }
     }
 

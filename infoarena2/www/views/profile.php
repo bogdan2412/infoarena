@@ -1,6 +1,10 @@
 <?php include('header.php'); ?>
 
+<?php if ($register) { ?>
+<form action="<?= url('register/save') ?>" method="post">
+<?php } else {?>
 <form action="<?= url('profile/save') ?>" method="post">
+<?php } ?>
 <ul class="form">
     1. Date generale
     <?php if ($register) { ?>
@@ -20,7 +24,7 @@
         <?php if (getattr($errors, 'password_old')) { ?>
         <span class="fieldError"><?= getattr($errors, 'password_old') ?></span>
         <?php } ?>
-        <span class="fieldHelp">Pentru modificarea parolei sau adresei de email</span>
+        <span class="fieldHelp">Necesara pentru modificarea parolei sau adresei de email</span>
     </li>
     <?php } ?>
     
@@ -98,7 +102,7 @@
         <?php if (getattr($errors, 'birthday')) { ?>
         <span class="fieldError"><?= getattr($errors, 'birthday') ?></span>
         <?php } ?>
-        <span class="fieldHelp">Trebuie sa fie de forma ZZ-LL-AAAA</span>
+        <span class="fieldHelp">Trebuie sa fie de forma AAAA-LL-ZZ</span>
     </li>
     
     3. Date personale
@@ -141,7 +145,7 @@
     
     <li>
         <label for="form_postal_address">Adresa postala</label>
-        <textarea name="postaladdress" id="form_postal_address"><?= fval('postal_address') ?></textarea>
+        <textarea name="postal_address" id="form_postal_address"><?= fval('postal_address') ?></textarea>
         <?php if (getattr($errors, 'postal_address')) { ?>
         <span class="fieldError"><?= getattr($errors, 'postal_address') ?></span>
         <?php } ?>
