@@ -9,11 +9,9 @@ $view['title'] = 'Inregistrare';
 // data` dictionary is a dictionary with data to be displayed by form view
 // when displaying the form for the first time, this is filled with
 $data = array();
-$view['data'] =& $data;
 
 // here we store validation errors. It is a dictionary, indexed by field names
 $errors = array();
-$view['errors'] =& $errors;
 
 if ('save' == getattr($urlpath, 1, null)) {
     // user submitted registration form. Process it
@@ -143,5 +141,7 @@ else {
 
 // attach form is displayed for the first time or a validation error occured
 $view['register'] = true;
+$view['form_errors'] = $errors;
+$view['form_values'] = $data;
 execute_view('views/profile.php', $view);
 ?>
