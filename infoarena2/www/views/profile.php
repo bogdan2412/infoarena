@@ -1,8 +1,9 @@
 <?php include('header.php'); ?>
 
-<form action="<?= url('register/save') ?>" method="post">
+<form action="<?= url('profile/save') ?>" method="post">
 <ul class="form">
     1. Date generale
+    <?php if ($register) { ?>
     <li>
         <label for='form_username'>Nume utilizator</label>
         <input type="text" name="username" value="<?= fval('username') ?>" id="form_username" />
@@ -10,6 +11,7 @@
         <span class="fieldError"><?= getattr($errors, 'username') ?></span>
         <?php } ?>
     </li>
+    <?php } ?>
 
     <?php if (!$register) { ?>
     <li>
@@ -23,7 +25,7 @@
     <?php } ?>
     
     <li>
-        <label for='form_password'>Parola</label>
+        <label for='form_password'>Parola<?php if (!$register) echo ' noua';?></label>
         <input type="password" name='password' id="form_password" />
         <?php if (getattr($errors, 'password')) { ?>
         <span class="fieldError"><?= getattr($errors, 'password') ?></span>
@@ -39,14 +41,6 @@
     </li>
     
     <li>
-        <label for="form_name">Nume complet</label>
-        <input type="text" name="full_name" value="<?= fval('full_name') ?>" id="form_name" />
-        <?php if (getattr($errors, 'full_name')) { ?>
-        <span class="fieldError"><?= getattr($errors, 'full_name') ?></span>
-        <?php } ?>
-    </li>
-
-    <li>
         <label for="form_email">Adresa e-mail</label>
         <input type="text" name="email" value="<?= fval('email') ?>" id="form_email" />
         <?php if (getattr($errors, 'email')) { ?>
@@ -54,6 +48,14 @@
         <?php } ?>
     </li>
     
+    <li>
+        <label for="form_name">Nume complet</label>
+        <input type="text" name="full_name" value="<?= fval('full_name') ?>" id="form_name" />
+        <?php if (getattr($errors, 'full_name')) { ?>
+        <span class="fieldError"><?= getattr($errors, 'full_name') ?></span>
+        <?php } ?>
+    </li>
+
     <li>
         <label for="form_country">Tara</label>
         <input type="text" name="country" value="<?= fval('country') ?>" id="form_country" />
