@@ -4,12 +4,14 @@
 class MyTextile extends Textile {
     var $page_name;
 
-
     function MyTextile($page_name, $options = array()) {
         $this->page_name = $page_name;
         Textile::Textile($options);
     }
 
+    // Override format_link
+    // We hook in here to process the url part
+    // FIXME: should I do this with format_url?
     function format_link($args) {
         if (strlen($args['url']) > 1 && $args['url'][0] == '/') {
             $args['url'] = url(substr($args['url'], 1));
@@ -23,9 +25,10 @@ class MyTextile extends Textile {
 
     function format_image($args) {
         $srcpath = $args['src'];
+
         if (strlen($srcpath) > 1 && $srcpath[0] == '?') {
             $file_name = substr($srcpath, 1);
-            $args['src'] = url($page_name,
+            $args['src'] = url($this->page_name,
                     array('action' => 'download', 'file' => $file_name)); 
         } else if (strlen($srcpath) > 1 && $srcpath[0] == '/') {
             $parts = explode('?', substr($srcpath, 1));

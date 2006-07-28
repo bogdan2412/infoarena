@@ -12,9 +12,10 @@ switch ($action) {
         // Parse wiki markup and return JSON with HTML output.
         // This is used for previewing markup upon wiki editing.
         $page_content = request('content');
+        $page_name = request('page_name');
 
         // generate mark-up
-        $output = wiki_process_text($page_content, null);
+        $output = wiki_process_text($page_content, $page_name);
         $view['json'] = array('html' => $output);
         $view['debug'] = request('debug', null);
 
