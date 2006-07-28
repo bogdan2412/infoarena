@@ -6,8 +6,11 @@
     <title><?= getattr($view, 'title') ?></title>
 
     <link type="text/css" rel="stylesheet" href="<?= url('static/css/default.css') ?>"/>
-    <script type="text/javascript" src="<?= url('/static/js/MochiKit.js') ?>"></script>
+    <script type="text/javascript" src="<?= url('static/js/config.js.php') ?>"></script>
+    <script type="text/javascript" src="<?= url('static/js/MochiKit.js') ?>"></script>
     <script type="text/javascript" src="<?= url('static/js/default.js') ?>"></script>
+
+    <?= getattr($view, 'head') ?>
 </head>
 <body>
 
@@ -36,13 +39,16 @@
 
 <?php
     // display flash message
-    if (isset($_SESSION['_flash'])) {
-?>
-    <div id="flash">
-<?= $_SESSION['_flash'] ?>
-    </div>
+    if (isset($_SESSION['_flash'])) { ?>
+
+<div id="flash" class="flash <?= getattr($_SESSION, '_flash_class') ?>"><?= $_SESSION['_flash'] ?></div>
+
 <?php
+        // clear flash message 
         unset($_SESSION['_flash']);
+        if (isset($_SESSION['_flash_class'])) {
+            unset($_SESSION['_flash']);
+        }
     }
 ?>
 

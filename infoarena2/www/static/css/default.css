@@ -49,6 +49,20 @@ body {
     color: red;
 }
 
+div.loading {
+    text-align: center;
+}
+
+div.loading img {
+    margin-right: .5em;
+}
+
+#wiki_preview {
+    padding: 1em;
+    margin: 1em;
+    border: 1px dotted silver;
+}
+
 /* Main Navigation */
 #nav {
     margin: 0;
@@ -119,7 +133,7 @@ h1 {
     font-size: 16pt;
 }
 
-#flash {
+div.flash {
     text-align: center;
     background-color: #ffa;
     color: black;
@@ -129,9 +143,84 @@ h1 {
     width: 50%;
 }
 
+div.flashError {
+    background-color: red;
+    color: white;
+}
+
 /* Forms */
-.fieldError {
-    color: red;
+form {
+    margin: 1em 0 1em 0;
+    padding: 4px;
+    font-size: 1em;
+}
+
+input, select, textarea {
+    font-size: 1.2em;
+    padding: .3em;
+    font-family: Trebuchet MS, Tahoma, Arial;
+}
+
+select {
+    padding: 0;
+    cursor: pointer;
+}
+
+input.button {
+    cursor: pointer;
+    border: 1px double #999999;
+    border-top-color: #CCCCCC;
+    border-left-color: #CCCCCC;
+    background-color: #FFFFFF;
+    background-image: url('../images/background_form_element.gif');
+    background-repeat: repeat-x;
+    color: black;
+    margin: 2px;
     font-weight: bold;
+    font-size: .95em;
+    padding: .2em; 
+}
+
+input.important {
+    border-width: 3px;
+    font-size: 1em;
+}
+
+input.button:active {
+    border-color: #CCCCCC;
+    border-top-color: #999999;
+    border-left-color: #999999;
+}
+
+.fieldError, .fieldHelp {
+    display: block;
+    color: red;
+    font-size: small;
+    font-weight: bold;
+    font-family: Trebuchet MS, Tahoma, Arial;  
+}
+
+.fieldHelp {
+    color: black;
+}
+
+ul.form {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+ul.form label {
+    display: block;
+    font-weight: bold;
+    padding: 1em 0 0 0;
+    font-size: .9em;
+}
+
+textarea#form_content {
+    width: 80%;
+    height: 25em;
+    font-family: monospace;
+    font-size: 1em;
 }
 

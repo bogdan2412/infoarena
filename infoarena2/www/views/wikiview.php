@@ -16,7 +16,6 @@ $page_name = $view['page_name'];
     </ul>
 <?php
 
-error_reporting(0);
 echo wiki_process_text($view['content'], null);
 #echo 'Last modification by ' . $view['last-editor'];
 

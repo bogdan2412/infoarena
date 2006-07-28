@@ -1,7 +1,6 @@
 /**
  * (c) 2006 info-arena
- */
-
+ */ 
 function Page_Init() {
     // flash fade away
     var flash = $('flash');

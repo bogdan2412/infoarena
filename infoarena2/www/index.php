@@ -49,6 +49,12 @@ switch (strtolower($urlpath[0])) {
         echo 'viewing task';
         break;
 
+    case 'json':
+        // this controller serves as a data server for AJAX calls
+        include('controllers/json.php');
+        break;
+
+
     default:
         // viewing generic wiki page
         if (0 >= strlen($page)) {
