@@ -9,8 +9,7 @@ function ferr_span($paramName) {
     $error = ferr($paramName);
 
     if ($error) {
-        echo '<span class="fieldError">' . $error . '</span>';
-        return $error;
+        return '<span class="fieldError">' . $error . '</span>';
     }
     else {
         return null;
