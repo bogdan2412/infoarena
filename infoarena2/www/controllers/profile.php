@@ -150,6 +150,10 @@ else {
     foreach ($current_user as $key => $val) {
         $data[$key] = $val;
     }
+    if (0 == $data['birthday']) {
+        unset($data['birthday']);
+    }
+    
     unset($data['id']);
     unset($data['username']);
     unset($data['password']);
