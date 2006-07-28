@@ -6,12 +6,11 @@ function fval($paramName) {
 }
 
 function ferr_span($paramName) {
-    global $error;
-    if (isset($error[$paramName])) {
-        echo '<span class="fieldError">' . htmlentities($error[$paramName])
-             . '</span>';
+    $error = ferr($paramName);
 
-        return htmlentities($error[$paramName]);
+    if ($error) {
+        echo '<span class="fieldError">' . $error . '</span>';
+        return $error;
     }
     else {
         return null;
