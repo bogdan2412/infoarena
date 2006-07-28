@@ -6,11 +6,11 @@
         <input type="hidden" name="action" value="attach-submit" />
         <label for="form_filename">Nume fisier:</label>
         <input type="file" name="file_name" value="<?= fval('file_name') ?>" id="form_filename" />
-        <?php if (getattr($errors, 'file_name')) { ?>
-        <span class="fieldError"><?= getattr($errors, 'file_name') ?></span>
+        <?php if (ferr('file_name')) { ?>
+        <span class="fieldError"><?= ferr('file_name') ?></span>
         <?php } ?>
-        <?php if (getattr($errors, 'file_size')) { ?>
-        <span class="fieldError"><?= getattr($errors, 'file_size') ?></span>
+        <?php if (ferr('file_size')) { ?>
+        <span class="fieldError"><?= ferr('file_size') ?></span>
         <?php } ?>        
     </li>
 

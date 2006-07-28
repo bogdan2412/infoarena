@@ -90,11 +90,11 @@ function wikipage_get($name) {
 }
 
 // Do use later.
-function wikipage_add_revision($name, $content, $user) {
+function wikipage_add_revision($name, $title, $content, $user) {
     global $dbLink;
-    $query = sprintf("INSERT INTO ia_page (name, `text`, timestamp) ".
-                     "VALUES ('%s', '%s', NOW())",
-                     db_escape($name), db_escape($content));
+    $query = sprintf("INSERT INTO ia_page (name, `text`, `title`, `timestamp`) ".
+                     "VALUES ('%s', '%s', '%s', NOW())",
+                     db_escape($name), db_escape($content), db_escape($title));
     return db_query($query);
 }
 
@@ -174,7 +174,6 @@ function attachment_get($name, $page) {
 
 function attachment_update($name, $size, $page, $user) {
     global $dbLink;
-
     $query = sprintf("UPDATE ia_file SET size = '%s', user ='%s',
                       `timestamp` = NOW() WHERE LCASE(`name`) = LCASE('%s') AND
                       LCASE(`page`) = LCASE('%s')", db_escape($size),
