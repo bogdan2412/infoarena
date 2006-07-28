@@ -36,12 +36,17 @@
         <li><a href="<?= url('practice') ?>">Pregatire</a></li>
         <li><a href="<?= url('articles') ?>">Articole</a></li>
         <li><a href="<?= url('about') ?>">Despre info-arena</a></li>
+        <?php if (identity_can('edit-profile')) { ?>
+        <li><a href="<?= url('profile') ?>">Modificare profil</a></li>
+        <? } ?>
     </ul>
-
+    <?php if (identity_anonymous()) { ?>
     <div class="sidebox" id="members">
         <p class="title"><strong>Membri</strong></p>
         <a href="<?= url('register') ?>">Inregistreaza-te!</a>
     </div>
+    <?php } ?>
+    
 </div>
 
 <div id="content">

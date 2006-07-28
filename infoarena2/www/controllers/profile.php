@@ -1,12 +1,12 @@
 <?php
 
-// TODO: update this page after we finish user-login
+identity_require('edit-profile');
 
 // Initialize view parameters.
 $view = array();
 
 // page title
-$view['title'] = 'Inregistrare';
+$view['title'] = 'Modificare profil';
 
 // data` dictionary is a dictionary with data to be displayed by form view
 // when displaying the form for the first time, this is filled with
@@ -15,7 +15,8 @@ $data = array();
 // here we store validation errors. It is a dictionary, indexed by field names
 $errors = array();
 
-$current_user = user_get_by_id(1); // TODO: this should be the user logged in
+$current_user =& $identity_user;
+
 
 if ('save' == getattr($urlpath, 1, null)) {
     // user submitted profile form. Process it
@@ -28,7 +29,10 @@ if ('save' == getattr($urlpath, 1, null)) {
     
     if (0 != strlen($data['password']) ||
         $data['email'] != $current_user['email']) {
-        // TODO: Check old password
+        if (!user_test_password($current_user['username'],
+                                $data['password_old'])) {
+            $errors['password_old'] = 'Parola veche nu este buna';
+        }
         
         if (4 >= strlen(trim($data['password']))) {
             $errors['password'] = 'Parola este prea scurta';
@@ -38,14 +42,17 @@ if ('save' == getattr($urlpath, 1, null)) {
                 $errors['password2'] = 'Parolele nu coincid';
             }
         }
-        if (!preg_match('/[^@]+@.+\..+/', $data['email'])) {
-            $errors['email'] = 'Adresa de e-mail invalida';
-        }
-        else {
-            if (user_get_by_email($data['email'])) {
-                $errors['email'] = 'Email deja existent';
+        if ($data['email'] != $current_user['email']) {
+            if (!preg_match('/[^@]+@.+\..+/', $data['email'])) {
+                $errors['email'] = 'Adresa de e-mail invalida';
+            }
+            else {
+                if (user_get_by_email($data['email'])) {
+                    $errors['email'] = 'Email deja existent';
+                }
             }
         }
+
     }
     $data['full_name'] = getattr($_POST, 'full_name');
     if (3 >= strlen(trim($data['full_name']))) {
@@ -95,7 +102,6 @@ if ('save' == getattr($urlpath, 1, null)) {
         !preg_match('/^[a-z]+[a-z0-9_\-\.\ ]*$/i', $data['workplace'])) {
         $errors['workplace'] = 'Institut invalid';
     }
-    // TODO: maybe more checks for workplace
 
     $data['study_level'] = getattr($_POST, 'study_level');
 

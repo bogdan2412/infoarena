@@ -37,7 +37,8 @@ function identity_can($action, $ontoObject = null, $identity = null) {
                           'wiki-attach', 'attach-overwrite',
                           'attach-download',
                           'task-view', 'task-submit', 'task-edit',
-                          'task-create', 'task-publish');
+                          'task-create', 'task-publish',
+                          'edit-profile');
     assert(false !== array_search($action, $validActions));
 
     // first, handle anonymous users
@@ -107,6 +108,9 @@ function identity_can($action, $ontoObject = null, $identity = null) {
                     return true;
             }
             return false;
+     
+        case 'edit-profile':
+            return true;
     }
 
     return false;

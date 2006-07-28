@@ -135,7 +135,11 @@
     </li>
     
     <li>
+        <?php if ($register) { ?>
         <input type="submit" value="Inregistreaza-ma" id="form_submit" />
+        <?php } else { ?>
+        <input type="submit" value="Modifica" id="form_submit" />
+        <? } ?>
     </li>
 </ul>
 </form>

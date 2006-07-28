@@ -93,7 +93,6 @@ if ('save' == getattr($urlpath, 1, null)) {
         !preg_match('/^[a-z]+[a-z0-9_\-\.]*$/i', $data['workplace'])) {
         $errors['workplace'] = 'Institut invalid';
     }
-    // TODO: maybe more checks for workplace
 
     $data['study_level'] = getattr($_POST, 'study_level');
 
