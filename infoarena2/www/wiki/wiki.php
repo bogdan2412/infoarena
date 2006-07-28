@@ -24,10 +24,10 @@ class MyTextile extends Textile {
     function format_image($args) {
         $srcpath = $args['src'];
         if (strlen($srcpath) > 1 && $srcpath[0] == '?') {
+            $file_name = substr($srcpath, 1);
             $args['src'] = url($page_name,
                     array('action' => 'download', 'file' => $file_name)); 
         } else if (strlen($srcpath) > 1 && $srcpath[0] == '/') {
-            //print_r($parts);
             $parts = explode('?', substr($srcpath, 1));
             if (count($parts) == 2) {
                 $other_page_name = $parts[0];
@@ -36,6 +36,7 @@ class MyTextile extends Textile {
                         array('action' => 'download', 'file' => $file_name)); 
             }
         }
+        //echo "<pre>insrc $srcpath outsrc $args[src]</pre>";
         $res = parent::format_image($args);
 
         return $res;
