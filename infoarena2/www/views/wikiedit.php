@@ -6,7 +6,7 @@ $view['head'] = "<script type=\"text/javascript\" src=\"" . url("static/js/wikie
 include('header.php'); 
 ?>
 
-<div id="wiki_preview" style="display: none;"></div>
+<div class="wiki_text_block" id="wiki_preview" style="display: none;"></div>
 <div id="wiki_preview_toolbar" style="display: none;">
     <input type="button" class="button" id="preview_close" value="Ascunde Preview" />
     <input type="button" class="button" id="preview_reload" value="Re-incarca" />

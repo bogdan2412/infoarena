@@ -17,7 +17,9 @@ $page_name = $view['page_name'];
     </ul>
 <?php
 echo '<h1>'.htmlentities(getattr($view, 'title')).'</h1>';
+echo '<div class="wiki_text_block">';
 echo wiki_process_text(getattr($view, 'content'), null);
+echo '</div>';
 #echo 'Last modification by ' . $view['last-editor'];
 
 include('footer.php');
