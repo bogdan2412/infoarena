@@ -75,17 +75,13 @@
     <li>
         <label for="form_quote">Citat</label>
         <textarea name="quote" id="form_quote"><?= fval('quote') ?></textarea>
-        <?php if (getattr($errors, 'quote')) { ?>
-        <span class="fieldError"><?= getattr($errors, 'quote') ?></span>
-        <?php } ?>
+        <?= ferr_span('quote') ?>
     </li>
     
     <li>
         <label for="form_birthday">Data nasterii</label>
         <input type="text" name="birthday" value="<?= fval('birthday') ?>" id="form_birthday" />
-        <?php if (getattr($errors, 'birthday')) { ?>
-        <span class="fieldError"><?= getattr($errors, 'birthday') ?></span>
-        <?php } ?>
+        <?= ferr_span('birthday') ?>
         <span class="fieldHelp">Trebuie sa fie de forma AAAA-LL-ZZ</span>
     </li>
     
