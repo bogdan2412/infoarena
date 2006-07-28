@@ -1,11 +1,5 @@
 <?php include('header.php'); ?>
 
-<?php if (getattr($other, 'register')) { ?>
-<p class='h1'>Pagina de inregistrare</p>
-<?php } else {?>
-<p class='h1'>Modifica profilul</p>
-<?php } ?>
-
 <form action="<?= url('register/save') ?>" method="post">
 <ul class="form">
     1. Date generale
@@ -95,7 +89,7 @@
         <?php if (getattr($errors, 'birthday')) { ?>
         <span class="fieldError"><?= getattr($errors, 'birthday') ?></span>
         <?php } ?>
-        Trebuie sa fie de forma ZZ-LL-AAAA
+        <span class="fieldHelp">Trebuie sa fie de forma ZZ-LL-AAAA</span>
     </li>
     
     <br>3. Date personale
@@ -114,7 +108,7 @@
         <?php if (getattr($errors, 'workplace')) { ?>
         <span class="fieldError"><?= getattr($errors, 'workplace') ?></span>
         <?php } ?>
-        (merge un assisted-input aici)
+        <span class="fieldHelp">(merge un assisted-input aici)</span>
     </li>
     
     <li>

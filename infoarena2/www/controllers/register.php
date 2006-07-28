@@ -139,7 +139,7 @@ else {
 
 // attach form is displayed for the first time or a validation error occured
 $other['register'] = true;
-
+$view['title'] = 'Pagina de inregistrare';
 $view['errors'] = $errors;
 $view['data'] = $data;
 $view['other'] = $other;
