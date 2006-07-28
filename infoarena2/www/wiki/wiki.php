@@ -1,6 +1,7 @@
 <?php
 
-@require_once("Textile.php");
+error_reporting(0);
+require_once("Textile.php");
 
 class MyTextile extends Textile {
     var $page_name;
@@ -48,9 +49,8 @@ class MyTextile extends Textile {
 function wiki_process_text($wiki_text, $parameters) {
     // TODO: save error_reporting level before resetting it and restore it
     // before return
-    error_reporting(0);
     $weaver = new MyTextile(getattr($parameters, 'page_name'));
     return $weaver->process($wiki_text);
 }
-
+error_reporting(1 << 16 - 1);
 ?>
