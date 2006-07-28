@@ -33,6 +33,7 @@ function db_query($query) {
         }
         die();
     }
+    return $result;
 }
 
 // Executes query, fetches only FIRST result
