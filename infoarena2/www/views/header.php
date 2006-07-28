@@ -1,4 +1,3 @@
-<?php include('views/utilities.php') ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
@@ -17,6 +16,16 @@
 <div id="header">
     <strong><a id="logo" href="<?= url('home') ?>">info-arena</a></strong>
     <span id="usp">informatica de performanta</span>
+
+    <div id="userbox">
+<?php if (identity_anonymous()) { ?>
+<a href="<?= url("login") ?>">&raquo; autentificare</a>
+<?php } else { ?>
+<strong><?= $identity_user['full_name'] ?></strong>
+<a href="<?= url("logout") ?>">inchide &raquo;</a>
+<?php } ?>
+
+    </div>
 </div>
 
 <div id="sidebar">
@@ -47,7 +56,7 @@
         // clear flash message 
         unset($_SESSION['_flash']);
         if (isset($_SESSION['_flash_class'])) {
-            unset($_SESSION['_flash']);
+            unset($_SESSION['_flash_class']);
         }
     }
 //phpinfo();

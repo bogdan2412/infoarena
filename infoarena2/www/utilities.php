@@ -47,10 +47,9 @@ function url($document, $params = array()) {
     }
 }
 
-/**
- * Use flash() to display a message right after redirecting the user.
- * Message is displayed only once.
- */
+
+// Use flash() to display a message right after redirecting the user.
+// Message is displayed only once.
 function flash($message, $styleClass = null) {
     global $_SESSION;
     $_SESSION['_flash'] = $message;
@@ -59,11 +58,19 @@ function flash($message, $styleClass = null) {
     }
 }
 
+// This is a simple binding for flash() with a fixed CSS style class
+// for displaying error messages
+function flash_error($message) {
+    flash($message, 'flashError');
+}
+
 // Execute a view. Variables in $view are placed in the
 // local namespace as variables. This is the preffered
 // way of calling a template, because globals are not
 // easily accessible.
 function execute_view($view_file_name, $view) {
+    global $identity_user;
+
     foreach ($view as $view_hash_key => $view_hash_value) {
         if ($view_hash_key == 'view_hash_key') continue;
         if ($view_hash_key == 'view_hash_value') continue;
@@ -78,6 +85,7 @@ function execute_view($view_file_name, $view) {
             echo "Am sters $the_key";
         }
     }*/
+    include('views/utilities.php');
     include($view_file_name);
     //include('views/vardump.php');
 }

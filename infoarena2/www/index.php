@@ -3,10 +3,12 @@
 require_once("../config.php");
 require_once("config.php");
 require_once("utilities.php");
+require_once("identity.php");
 require_once("wiki/wiki.php");
 require_once("db.php");
 
-session_start();
+// restore identity session (if such a session exists)
+identity_restore();
 
 // Do url validation.
 // All urls that pass are valid, they can be missing wiki pages.
@@ -15,7 +17,7 @@ if (!preg_match('/^([a-z0-9_\-\/]*)$/i', $page)) {
     redirect(IA_URL);
 }
 
-// Redirectam la home.
+// Redirectam la home
 if ($page == "") {
     $page = "home";
 }
@@ -36,7 +38,11 @@ switch (strtolower($urlpath[0])) {
         break;
 
     case 'login':
-        echo 'user login';
+        include('controllers/login.php');
+        break;
+        
+    case 'logout':
+        include('controllers/logout.php');
         break;
 
     case 'profile':
@@ -52,7 +58,6 @@ switch (strtolower($urlpath[0])) {
         include('controllers/json.php');
         break;
 
-
     default:
         // viewing generic wiki page
         if (0 >= strlen($page)) {
@@ -64,4 +69,3 @@ switch (strtolower($urlpath[0])) {
 }
 
 ?>
-

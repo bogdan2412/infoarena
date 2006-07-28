@@ -63,6 +63,18 @@ div.loading img {
     border: 1px dotted silver;
 }
 
+#userbox {
+    float: right;
+    font-size: .9em;
+    position: absolute;
+    top: 2em;
+    right: 2em;
+}
+
+#userbox a {
+    display: block;
+}
+
 /* Main Navigation */
 #nav {
     margin: 0;

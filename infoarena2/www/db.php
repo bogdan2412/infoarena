@@ -107,6 +107,13 @@ function user_get_by_username($username) {
     return db_fetch($query);
 }
 
+function user_test_password($username, $password) {
+    $query = sprintf("SELECT * FROM ia_user
+                      WHERE username = '%s' AND SHA1('%s') = `password`",
+                      db_escape($username), db_escape($password));
+    return db_fetch($query);
+}
+
 function user_get_by_email($email) {
     $query = sprintf("SELECT * FROM ia_user WHERE email = '%s'",
                      db_escape($email));
