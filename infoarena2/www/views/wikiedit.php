@@ -15,7 +15,18 @@ include('header.php');
 <form action="<?= getattr($view, 'action') ?>" method="post">
 <ul class="form">
     <li>
+        <label for="form_title">Titlu</label>
+        <input type="text" name="title" value="<?= fval('title') ?>" id="form_title"/>
+        <?php if (ferr('title')) { ?>
+        <span class="fieldError"><?= ferr('title') ?></span>
+        <?php } ?>        
+    </li>
+    
+    <li>
         <label for="form_content">Continut</label>
+        <?php if (ferr('content')) { ?>
+        <span class="fieldError"><?= ferr('content') ?></span>
+        <?php } ?>        
         <textarea name="content" id="form_content" rows="10" cols="50"><?= fval('content') ?></textarea>
     </li>
     
@@ -27,4 +38,3 @@ include('header.php');
 </form>
 
 <?php include('footer.php'); ?>
-

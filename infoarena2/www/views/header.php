@@ -3,7 +3,7 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-    <title><?= getattr($view, 'title') ?></title>
+    <title><?= htmlentities(getattr($view, 'title')) ?></title>
 
     <link type="text/css" rel="stylesheet" href="<?= url('static/css/default.css') ?>"/>
     <script type="text/javascript" src="<?= url('static/js/config.js.php') ?>"></script>

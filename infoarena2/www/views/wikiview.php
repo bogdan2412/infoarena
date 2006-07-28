@@ -16,8 +16,8 @@ $page_name = $view['page_name'];
         <li><a href="<?= url($page_name, array('action' => 'delete')) ?>">Sterge</a></li>
     </ul>
 <?php
-
-echo wiki_process_text($view['content'], null);
+echo '<h1>'.htmlentities(getattr($view, 'title')).'</h1>';
+echo wiki_process_text(getattr($view, 'content'), null);
 #echo 'Last modification by ' . $view['last-editor'];
 
 include('footer.php');
