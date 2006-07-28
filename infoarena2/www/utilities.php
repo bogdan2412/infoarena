@@ -59,4 +59,34 @@ function flash($message, $styleClass = null) {
     }
 }
 
+// Execute a view. Variables in $view are placed in the
+// local namespace as variables. This is the preffered
+// way of calling a template, because globals are not
+// easily accessible.
+function execute_view($view_file_name, $view) {
+    foreach ($view as $view_hash_key => $view_hash_value) {
+        if ($view_hash_key == 'view_hash_key') continue;
+        if ($view_hash_key == 'view_hash_value') continue;
+        if ($view_hash_key == 'view_file_name') continue;
+        if ($view_hash_key == 'view') continue;
+        $$view_hash_key = $view_hash_value;
+    }
+/*    foreach ($GLOBALS as $the_key => $the_value) {
+        // Don't unset magic shit.
+        if ($the_key[0] != '_' && strpos($the_key, 'HTTP_') !== 0) {
+            unset($GLOBALS[$the_key]);
+            echo "Am sters $the_key";
+        }
+    }*/
+    include($view_file_name);
+    //include('views/vardump.php');
+}
+
+// Execute and the die.
+function execute_view_die($view_file_name, $view)
+{
+    execute_view($view_file_name, $view);
+    die();
+}
+
 ?>

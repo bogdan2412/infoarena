@@ -3,7 +3,6 @@
 <form enctype="multipart/form-data" action="<?= url($page_name) ?>" method="post">
 <ul class="form">
     <li>
-        <input type="hidden" name="MAX_FILE_SIZE" value="<?= fval('max_file_size') ?>" />
         <input type="hidden" name="action" value="attach-submit" />
         <label for="form_filename">Nume fisier:</label>
         <input type="file" name="file_name" value="<?= fval('file_name') ?>" id="form_filename" />

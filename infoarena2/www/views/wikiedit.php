@@ -2,7 +2,9 @@
 $view['head'] = "<script type=\"text/javascript\" src=\"" . url("static/js/wikiedit.js") . "\"></script>";
 ?>
 
-<?php include('header.php'); ?>
+<?php
+include('header.php'); 
+?>
 
 <div id="wiki_preview" style="display: none;"></div>
 <div id="wiki_preview_toolbar" style="display: none;">

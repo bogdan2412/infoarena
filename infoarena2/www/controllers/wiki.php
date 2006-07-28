@@ -1,12 +1,5 @@
 <?php
 
-// `data` dictionary is a dictionary with data to be displayed by form view
-// when displaying the form for the first time, this is filled with
-$data = array();
-
-// here we store validation errors. It is a dictionary, indexed by field names
-$errors = array();
-
 // TODO: This is wrong.
 $page_name = join($urlpath, '/');
 
@@ -26,6 +19,14 @@ if (is_null($page)) {
     $page_content = $page['text'];
 }
 
+// Initialize view.
+$view['page_name'] = $page_name;
+// Store form data here.
+$view['data'] = $data = array();
+// Store errors here. By convention the keys in data
+// and in error refer to certain fields.
+$view['errors'] = $erros = array();
+
 switch ($action) {
     case 'save':
         // Validate data here and place stuff in errors.
@@ -44,7 +45,7 @@ switch ($action) {
             $view['title'] = "Editare " . $page_name;
             $view['action'] = url($page_name, array('action' => 'save'));
             $data['content'] = $page_content;
-            include("views/wikiedit.php");
+            execute_view("views/wikiedit.php", $view);
 
             break;
         }
@@ -54,24 +55,22 @@ switch ($action) {
         $view['title'] = 'Creare ' . $page_name;
         $view['action'] = url($page_name, array('action' => 'save'));
         $data['content'] = $page_content;
-        include('views/wikiedit.php');
+        execute_view("views/wikiedit.php", $view);
 
         break;
 
     case 'view':
         // Viewer. Dumbest thing possible.
         $view['title'] = $page_name;
-        $view['page_name'] = $page_name;
         $view['content'] = $page_content;
-
-        include('views/wikiview.php');
-        break;
+        execute_view_die('views/wikiview.php', $view);
 
     case 'attach-submit':
         // user submitted a file for upload. Process it
         $data['file_name'] = basename($_FILES['file_name']['name']);
         $data['file_size'] = $_FILES['file_name']['size'];
-        $view['page_name'] = $page_name;
+        $view['data'] = $data;
+        $view['errors'] = $errors;
 
         // validate data
         if (!preg_match('/^[a-z0-9\.\-_]+$/i', $data['file_name'])) {
@@ -88,7 +87,7 @@ switch ($action) {
                                            $data['file_size'],
                                            $page_name, 1);
             // Check if something went wrong.
-            if (!$disk_name) {
+            if (!isset($disk_name)) {
                 $errors['file_name'] = 'Fisierul nu a putut fi atasat';
             }
         }
@@ -104,14 +103,11 @@ switch ($action) {
             flash("Fisierul a fost atasat");
             redirect(url($page_name));
         }
-        include('views/attachment.php');
-        break;
+        execute_view_die('views/attachment.php', $view);
 
     case 'attach':
-        $data['max_file_size'] = IA_ATTACH_MAXSIZE;
-        $view['page_name'] = $page_name;
-        include('views/attachment.php');
-        break;
+        // Initial attachment page. Rather empty.
+        execute_view_die('views/attachment.php', $view);
 
     case 'download':
         $file_name = request('file');
@@ -137,8 +133,6 @@ switch ($action) {
         fpassthru($fp);
         die();
 
-        break;
-
     case 'delattach':
         $file_name = request('file');
         if (!$file_name) {
@@ -161,13 +155,12 @@ switch ($action) {
         }
         flash('Fisierul '.$file_name.' a fost sters cu succes.');
         redirect(url($page_name));
-        break;
 
     case 'listattach':
-            $view['attach_list'] = attachment_get_all($page_name);
-            $view['page_name'] = $page_name;
-            include('views/listattach.php');
-    break;
+        $view['attach_list'] = attachment_get_all($page_name);
+        $view['page_name'] = $page_name;
+        execute_view_die('views/listattach.php', $view);
+        break;
 
     default:
         flash('Actiunea nu este valida.');

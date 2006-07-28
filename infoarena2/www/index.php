@@ -26,8 +26,6 @@ if (count($urlpath) <= 0) {
     $urlpath = array("");
 }
 
-$view = array();
-
 switch (strtolower($urlpath[0])) {
     case 'user':
         echo 'here comes user controller';

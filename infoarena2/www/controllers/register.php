@@ -1,17 +1,19 @@
 <?php
+
+// Initialize view parameters.
+$view = array();
+
 // page title
 $view['title'] = 'Inregistrare';
 
-// here we store validation errors. It is a dictionary, indexed by field names
-$errors = array();
-
-// `data` dictionary is a dictionary with data to be displayed by form view
+// data` dictionary is a dictionary with data to be displayed by form view
 // when displaying the form for the first time, this is filled with
 $data = array();
+$view['data'] =& $data;
 
-// `other` is a dictionary with other variables we may need to pass to the form view
-// example if creating a new user, other will contain 'register' = true
-$other = array();
+// here we store validation errors. It is a dictionary, indexed by field names
+$errors = array();
+$view['errors'] =& $errors;
 
 if ('save' == getattr($urlpath, 1, null)) {
     // user submitted registration form. Process it
@@ -136,13 +138,9 @@ else {
     $data['country'] = 'Romania';
 }
 
-
 // attach form is displayed for the first time or a validation error occured
-$other['register'] = true;
+$view['register'] = true;
 $view['title'] = 'Pagina de inregistrare';
-$view['errors'] = $errors;
-$view['data'] = $data;
-$view['other'] = $other;
-include('views/profile.php');
+execute_view('views/profile.php', $view);
 
 ?>
