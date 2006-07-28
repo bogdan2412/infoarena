@@ -50,5 +50,6 @@
             unset($_SESSION['_flash']);
         }
     }
+//phpinfo();
 ?>
 

@@ -25,7 +25,7 @@ $view['page_name'] = $page_name;
 $view['data'] = $data = array();
 // Store errors here. By convention the keys in data
 // and in error refer to certain fields.
-$view['errors'] = $erros = array();
+$view['errors'] = $errors = array();
 
 switch ($action) {
     case 'save':

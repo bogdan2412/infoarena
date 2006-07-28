@@ -5,3 +5,6 @@ RewriteCond %{REQUEST_URI}  !index.php
 RewriteCond %{REQUEST_URI}  !static
 RewriteRule ^(.*) index.php?page=$1 [QSA]
 
+php_value magic_quotes_gpc 0
+php_value register_globals 0
+php_value error_reporting 65535
