@@ -11,6 +11,17 @@
         <?php } ?>
     </li>
 
+    <?php if (!$register) { ?>
+    <li>
+        <label for='form_password_old'>Parola veche</label>
+        <input type="password" name='password_old' id="form_password_old" />
+        <?php if (getattr($errors, 'password_old')) { ?>
+        <span class="fieldError"><?= getattr($errors, 'password_old') ?></span>
+        <?php } ?>
+        <span class="fieldHelp">Pentru modificarea parolei sau adresei de email</span>
+    </li>
+    <?php } ?>
+    
     <li>
         <label for='form_password'>Parola</label>
         <input type="password" name='password' id="form_password" />
@@ -27,8 +38,6 @@
         <?php } ?>
     </li>
     
-    <br>
-    
     <li>
         <label for="form_name">Nume complet</label>
         <input type="text" name="full_name" value="<?= fval('full_name') ?>" id="form_name" />
@@ -44,8 +53,6 @@
         <span class="fieldError"><?= getattr($errors, 'email') ?></span>
         <?php } ?>
     </li>
-
-    <br>
     
     <li>
         <label for="form_country">Tara</label>
@@ -66,9 +73,9 @@
         <?php } ?>
     </li>
     
-    <br>2. Profil
+    2. Profil
     
-    <?php if (!getattr($other, 'register')) { ?>
+    <?php if (!$register) { ?>
     <li>
         <label for="form_avatar">Avatar</label>
         !TODO!
@@ -92,7 +99,7 @@
         <span class="fieldHelp">Trebuie sa fie de forma ZZ-LL-AAAA</span>
     </li>
     
-    <br>3. Date personale
+    3. Date personale
     
     <li>
         <label for="form_city">Oras</label>
@@ -123,8 +130,8 @@
     </li>
 
     <li>
-        <label for="form_abs_year">Anuk de absolvire</label>
-        <input type="text" size=4 maxlength=4 name="abs_year" value="<?= fval('abs_year') ?>" id="form_abs_year" />
+        <label for="form_abs_year">Anul de absolvire</label>
+        <input type="text" size='4' maxlength='4' name="abs_year" value="<?= fval('abs_year') ?>" id="form_abs_year" />
         <?php if (getattr($errors, 'abs_year')) { ?>
         <span class="fieldError"><?= getattr($errors, 'abs_year') ?></span>
         <?php } ?>

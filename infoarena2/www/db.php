@@ -145,6 +145,10 @@ function user_create($data) {
     return $ret;
 }
 
+function user_update($data)
+{
+}
+
 /**
  * Attachment
  */

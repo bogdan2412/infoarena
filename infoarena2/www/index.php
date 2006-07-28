@@ -40,7 +40,7 @@ switch (strtolower($urlpath[0])) {
         break;
 
     case 'profile':
-        echo 'edit your profile';
+        include('controllers/profile.php');
         break;
 
     case 'task':

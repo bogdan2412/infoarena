@@ -62,7 +62,8 @@ if ('save' == getattr($urlpath, 1, null)) {
     }
 
     $data['county'] = getattr($_POST, 'county');
-    if ($data['county'] && !preg_match('/^[a-z]+[a-z_\-]*$/i', $data['county'])) {
+    if ($data['county'] &&
+        !preg_match('/^[a-z]+[a-z_\-]*$/i', $data['county'])) {
         $errors['county'] = 'Judet necunoscut';
     }
 
@@ -73,7 +74,8 @@ if ('save' == getattr($urlpath, 1, null)) {
 
     $data['birthday'] = getattr($_POST, 'birthday');
     if ($data['birthday']) {
-        if (ereg ("([0-9]{1,2})-([0-9]{1,2})-([0-9]{4})", $data['birthday'], $regs)) {
+        if (ereg ("([0-9]{1,2})-([0-9]{1,2})-([0-9]{4})",
+            $data['birthday'], $regs)) {
             if (!checkdate($regs[2], $regs[1], $regs[3])) {
                 $errors['birthday'] = 'Format data invalid2';
             }
@@ -89,7 +91,8 @@ if ('save' == getattr($urlpath, 1, null)) {
     }
 
     $data['workplace'] = getattr($_POST, 'workplace');
-    if ($data['workplace'] && !preg_match('/^[a-z]+[a-z0-9_\-\.]*$/i', $data['workplace'])) {
+    if ($data['workplace'] &&
+        !preg_match('/^[a-z]+[a-z0-9_\-\.]*$/i', $data['workplace'])) {
         $errors['workplace'] = 'Institut invalid';
     }
     // TODO: maybe more checks for workplace
@@ -140,7 +143,5 @@ else {
 
 // attach form is displayed for the first time or a validation error occured
 $view['register'] = true;
-$view['title'] = 'Pagina de inregistrare';
 execute_view('views/profile.php', $view);
-
 ?>
