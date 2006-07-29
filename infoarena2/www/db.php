@@ -97,9 +97,10 @@ function task_update($task_id, $type, $author, $source) {
     global $dbLink;
     $query = sprintf("UPDATE ia_task
                       SET author = '%s', `source` = '%s', `type` = '%s'
-                      WHERE `id` = LCASE('%s') LIMIT 1",
-                     db_escape($author), db_escape($source), db_escape($type),
-                     db_escape($task_id));
+                      WHERE `id` = LCASE('%s')
+                      LIMIT 1",
+                     db_escape($author), db_escape($source),
+                     db_escape($type), db_escape($task_id));
     return db_query($query);
 }
 
@@ -147,17 +148,18 @@ function parameter_update_values($object_type, $object_id, $dict) {
     // insert given parameters
     foreach ($dict as $k => $v) {
         $query = sprintf("INSERT INTO ia_parameter_value
-                          (object_type, object_id, parameter_id, `value`)
+                            (object_type, object_id, parameter_id, `value`)
                           VALUES ('%s', '%s', '%s', '%s')",
-                          db_escape($object_type), db_escape($object_id),
-                          db_escape($k), db_escape($v));
+                         db_escape($object_type), db_escape($object_id),
+                         db_escape($k), db_escape($v));
         db_query($query);
     }
 }
 
 // Returns hash with task parameter values
 function parameter_get_values($object_type, $object_id) {
-    $query = sprintf("SELECT * FROM ia_parameter_value
+    $query = sprintf("SELECT *
+                      FROM ia_parameter_value
                       WHERE object_type = '%s' AND object_id = LCASE('%s')",
                      db_escape($object_type), db_escape($object_id));
     $dict = array();
@@ -180,8 +182,10 @@ function textblock_add_revision($name, $title, $content, $user_id) {
     global $dbLink;
 
     // do a query first
-    $query = sprintf("SELECT title, text, user_id FROM ia_textblock
-                      WHERE LCASE(`name`) = '%s'", db_escape($name));
+    $query = sprintf("SELECT title, text, user_id
+                      FROM ia_textblock
+                      WHERE LCASE(`name`) = '%s'",
+                     db_escape($name));
     $tmp = db_fetch($query);
     if ($tmp['title'] == $title && $tmp['text'] == $content &&
         $tmp['user_id'] = $user_id) return $tmp;
@@ -190,13 +194,13 @@ function textblock_add_revision($name, $title, $content, $user_id) {
                         SELECT *
                         FROM ia_textblock
                       WHERE LCASE(`name`) = '%s'",
-                    db_escape($name));
+                     db_escape($name));
     db_query($query);
     // replace current version
     $query = sprintf("DELETE FROM ia_textblock
                       WHERE LCASE(`name`) = '%s'
                       LIMIT 1",
-                    db_escape($name));
+                     db_escape($name));
     db_query($query);
     $query = sprintf("INSERT INTO ia_textblock
                         (name, `text`, `title`, `timestamp`, user_id)
@@ -212,7 +216,7 @@ function textblock_get_revision($name, $rev_num = null) {
         $query = sprintf("SELECT *
                           FROM ia_textblock
                           WHERE LCASE(`name`) = '%s'",
-                        db_escape($name));
+                         db_escape($name));
         $textblock = db_fetch($query);
         return $textblock;
     }
@@ -230,18 +234,22 @@ function textblock_get_revision($name, $rev_num = null) {
 
 // returns an textblock
 function textblock_get_revisions($name) {
-    $query = sprintf("SELECT * FROM ia_textblock_revision WHERE
-                      LCASE(`name`) = '%s' ORDER BY `timestamp`",
+    $query = sprintf("SELECT *
+                      FROM ia_textblock_revision WHERE
+                      LCASE(`name`) = '%s'
+                      ORDER BY `timestamp`",
                      db_escape($name));
     return db_fetch_all($query);
 }
 
 // this obviously returns textblocoks without the actual content 
 function textblock_get_revisions_without_content($name) {
-    $query = sprintf("SELECT `name`, title, user_id, `timestamp`, username FROM
-                      ia_textblock_revision LEFT JOIN ia_user ON
-                      ia_textblock_revision.user_id = ia_user.id
-                      WHERE LCASE(`name`) = '%s' ORDER BY `timestamp`",
+    $query = sprintf("SELECT `name`, title, user_id, `timestamp`, username
+                      FROM ia_textblock_revision
+                        LEFT JOIN ia_user ON
+                            ia_textblock_revision.user_id = ia_user.id
+                      WHERE LCASE(`name`) = '%s'
+                      ORDER BY `timestamp`",
                      db_escape($name));
     return db_fetch_all($query);
 }
@@ -258,9 +266,11 @@ function textblock_get_revision_count($name) {
 
 // Attention: these functions return textblocks without content.. is this ok?
 function textblock_get_names($prefix) {
-   $query = sprintf("SELECT `name`, title, user_id, `timestamp`  FROM
-                     ia_textblock WHERE LCASE(`name`) LIKE '%s%%'
-                     ORDER BY `name`", db_escape($prefix));
+   $query = sprintf("SELECT `name`, title, user_id, `timestamp`
+                     FROM ia_textblock
+                     WHERE LCASE(`name`) LIKE '%s%%'
+                     ORDER BY `name`",
+                    db_escape($prefix));
     return db_fetch_all($query);
 }
 
@@ -270,7 +280,7 @@ function textblock_get_names_with_user($prefix) {
                         LEFT JOIN ia_user ON ia_textblock.user_id = ia_user.id
                       WHERE LCASE(`name`) LIKE '%s%%'
                       ORDER BY `name`",
-                    db_escape($prefix));
+                     db_escape($prefix));
     return db_fetch_all($query);
 }
 
@@ -281,7 +291,7 @@ function user_test_password($username, $password) {
     $query = sprintf("SELECT *
                       FROM ia_user
                       WHERE LCASE(username) = '%s' AND SHA1('%s') = `password`",
-                    db_escape($username), db_escape($password));
+                     db_escape($username), db_escape($password));
     return db_fetch($query);
 }
 
@@ -289,7 +299,7 @@ function user_get_by_username($username) {
     $query = sprintf("SELECT *
                       FROM ia_user
                       WHERE LCASE(username) = '%s'",
-                    db_escape($username));
+                     db_escape($username));
     return db_fetch($query);
 }
 
@@ -297,14 +307,15 @@ function user_get_by_email($email) {
     $query = sprintf("SELECT *
                       FROM ia_user
                       WHERE LCASE(email) = '%s'",
-                    db_escape($email));
+                     db_escape($email));
     return db_fetch($query);
 }
 
 function user_get_by_id($id) {
     $query = sprintf("SELECT *
                       FROM ia_user
-                      WHERE id = '%s'", db_escape($id));
+                      WHERE id = '%s'",
+                     db_escape($id));
     return db_fetch($query);
 }
 
@@ -358,7 +369,7 @@ function attachment_get($name, $page) {
                       FROM ia_file
                       WHERE LCASE(`name`) = LCASE('%s') AND
                             LCASE(`page`) = LCASE('%s')",
-                    db_escape($name), db_escape($page));
+                     db_escape($name), db_escape($page));
     return db_fetch($query);
 }
 
@@ -366,7 +377,7 @@ function attachment_get_by_id($id) {
     $query = sprintf("SELECT *
                       FROM ia_file
                       WHERE `id` = '%s'",
-                    db_escape($id));
+                     db_escape($id));
     return db_fetch($query);
 }
 
@@ -375,14 +386,14 @@ function attachment_update($name, $size, $page, $user_id) {
                       SET size = '%s', user_id ='%s', `timestamp` = NOW()
                       WHERE LCASE(`name`) = LCASE('%s') AND
                             LCASE(`page`) = LCASE('%s')",
-                    db_escape($size), db_escape($user_id),
-                    db_escape($name), db_escape($page));
+                     db_escape($size), db_escape($user_id),
+                     db_escape($name), db_escape($page));
     db_query($query);
     $query = sprintf("SELECT *
                       FROM ia_file
                       WHERE LCASE(`name`) = LCASE('%s') AND
                             LCASE(`page`) = LCASE('%s')",
-                    db_escape($name), db_escape($page));
+                     db_escape($name), db_escape($page));
     $tmp = db_fetch($query);
     return $tmp['id'];
 }
@@ -392,8 +403,8 @@ function attachment_insert($name, $size, $page, $user_id) {
     $query = sprintf("INSERT INTO ia_file
                         (n 100x100ame, page, size, user_id, `timestamp`)
                       VALUES ('%s', '%s', '%s', '%s', NOW())",
-                    db_escape($name), db_escape($page),
-                    db_escape($size), db_escape($user_id));
+                     db_escape($name), db_escape($page),
+                     db_escape($size), db_escape($user_id));
     db_query($query);
     return mysql_insert_id($dbLink);
 }
@@ -404,7 +415,7 @@ function attachment_delete($name, $page) {
                       WHERE LCASE(`name`) = LCASE('%s') AND
                             LCASE(`page`) = LCASE('%s')
                       LIMIT 1",
-                    db_escape($name), db_escape($page));
+                     db_escape($name), db_escape($page));
     return db_query($query);
 }
 
@@ -414,7 +425,7 @@ function attachment_get_all($page) {
                         LEFT JOIN ia_user ON ia_file.user_id = ia_user.id
                       WHERE LCASE(ia_file.page) = LCASE('%s')
                       ORDER BY ia_file.`timestamp` DESC",
-                    db_escape($page));
+                     db_escape($page));
     return db_fetch_all($query);
 }
 
@@ -427,7 +438,7 @@ function news_get_range($start, $range) {
                       WHERE LCASE(`name`) LIKE 'news/%%'
                       ORDER BY `timestamp` DESC
                       LIMIT %s,%s",
-                    $start, $range);
+                     $start, $range);
     return db_fetch_all($query);
 }
 
