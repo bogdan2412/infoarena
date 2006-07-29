@@ -39,7 +39,8 @@ function identity_can($action, $ontoObject = null, $identity = null) {
                           'attach-download', 'attach-delete',
                           'task-view', 'task-submit', 'task-edit',
                           'task-create', 'task-publish',
-                          'edit-profile', 'user-details');
+                          'edit-profile', 'user-details',
+                          'news-view', 'news-edit', 'news-create');
     assert(false !== array_search($action, $validActions));
 
     // first, handle anonymous users
@@ -50,6 +51,7 @@ function identity_can($action, $ontoObject = null, $identity = null) {
             case 'attach-download':
             case 'wiki-listattach':
             case 'task-view':
+            case 'news-view':
                 return true;
 
             default:
@@ -73,6 +75,7 @@ function identity_can($action, $ontoObject = null, $identity = null) {
         case 'attach-download':
         case 'wiki-listattach':
         case 'task-view':
+        case 'news-view':
         case 'task-submit':
             return true;
 
@@ -99,14 +102,17 @@ function identity_can($action, $ontoObject = null, $identity = null) {
             return false;
 
         case 'task-publish':
+        case 'news-create':
+        case 'news-edit':
             switch ($level) {
                 case 'reviewer':
                     return true;
             }
             return false;
-     
+            
         case 'edit-profile':
             return true;
+     
     }
 
     return false;

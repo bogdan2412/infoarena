@@ -1,10 +1,23 @@
 <?php
 
+// Try to get the sql row for a certain page.
+// If it fails it will flash and redirec.t
+function try_wikipage_get($page_name) {
+    $page = wikipage_get($page_name);
+    if (!$page) {
+        flash_error('Nu exista pagina');
+        redirect(url(''));
+    }
+
+    return $page;
+}
+
+
 // View a wiki page.
 function controller_wiki_view($page_name) {
     // Tee hee.
     // If the page is missing jump to the edit/create controller.
-    $page = wikipage_get($page_name);
+    $page = textblock_get_revision($page_name);
     if ($page) {
         identity_require('wiki-view', $page);
     }
@@ -22,7 +35,7 @@ function controller_wiki_view($page_name) {
 
 // Edit a wiki page.
 function controller_wiki_edit($page_name) {
-    $page = wikipage_get($page_name);
+    $page = textblock_get_revision($page_name);
     if ($page) {
         identity_require('wiki-edit', $page);
     }
@@ -53,8 +66,9 @@ function controller_wiki_edit($page_name) {
 
 // Save controller. Create submits this. This submits itself.
 function controller_wiki_save($page_name) {
-    $page = wikipage_get($page_name);
+    $page = textblock_get_revision($page_name);
     global $identity_user;
+
     if ($page) {
         identity_require('wiki-edit', $page);
     }
@@ -75,8 +89,8 @@ function controller_wiki_save($page_name) {
         $form_errors['title'] = "Titlul este prea scurt.";
     }
     if (!$form_errors) {
-        wikipage_add_revision($page_name, $page_title, $page_content,
-                              getattr($identity_user, 'id'));
+        textblock_add_revision($page_name, $page_title, $page_content,
+                               getattr($identity_user, 'id'));
         flash('Am actualizat continutul');
         redirect(url($page_name));
     }

@@ -53,7 +53,7 @@ echo "</pre>";*/
 
 // Trivial direct mappings.
 if (isset($directmaps[$urlstart])) {
-    include("controllers/{$urlstart}.php");
+    require("controllers/{$urlstart}.php");
     $fname = "controller_{$urlstart}";
     if (count($urlpath) < 2) {
         $suburl = "";
@@ -65,13 +65,13 @@ if (isset($directmaps[$urlstart])) {
 
 // Special shit for task view edit create
 } else if ($urlstart == 'task' && $action == 'view') {
-    include('controllers/task.php');
+    require('controllers/task.php');
     controller_task_view($urlpath[0]);
 } else if ($urlstart == 'task' && $action == 'edit') {
-    include('controllers/task.php');
+    require('controllers/task.php');
     controller_task_edit($urlpath[0]);
 } else if ($urlstart == 'task' && $action == 'create') {
-    include('controllers/task.php');
+    require('controllers/task.php');
     controller_task_create($urlpath[0]);
 
 // Insert pset stuff here.
@@ -79,44 +79,44 @@ if (isset($directmaps[$urlstart])) {
 //  ---
 //
 } else if ($urlstart == 'news' && count($urlpath) == 1) {
-    include('controllers/news.php');
-    controller_news();
+    require('controllers/news.php');
+    controller_news_view_all();
 } else if ($urlstart == 'news' && $action == 'view') {
-    include('controllers/wiki.php');
-    controller_wiki_view($page);
+    require('controllers/news.php');
+    controller_news_view($page);
 } else if ($urlstart == 'news' && $action == 'edit') {
-    include('controllers/wiki.php');
-    controller_wiki_edit($page);
+    require('controllers/news.php');
+    controller_news_edit($page);
 } else if ($urlstart == 'news' && $action == 'save') {
-    include('controllers/wiki.php');
-    controller_wiki_save($page);
+    require('controllers/news.php');
+    controller_news_save($page);
     
 // If it was not a special task or pset page do the wiki monkey.
 } else if ($action == 'view') {
-    include('controllers/wiki.php');
+    require('controllers/wiki.php');
     controller_wiki_view($page);
 } else if ($action == 'edit') {
-    include('controllers/wiki.php');
+    require('controllers/wiki.php');
     controller_wiki_edit($page);
 } else if ($action == 'save') {
-    include('controllers/wiki.php');
+    require('controllers/wiki.php');
     controller_wiki_save($page);
 
 // Attachment shit. This is common to all wiki-based urls.
 } else if ($action == 'attach') {
-    include('controllers/attachment.php');
+    require('controllers/attachment.php');
     controller_attachment_create($page);
 } else if ($action == 'attach-submit') {
-    include('controllers/attachment.php');
+    require('controllers/attachment.php');
     controller_attachment_submit($page);
 } else if ($action == 'attach-list') {
-    include('controllers/attachment.php');
+    require('controllers/attachment.php');
     controller_attachment_list($page);
 } else if ($action == 'attach-del') {
-    include('controllers/attachment.php');
+    require('controllers/attachment.php');
     controller_attachment_delete($page);
 } else if ($action == 'download') {
-    include('controllers/attachment.php');
+    require('controllers/attachment.php');
     controller_attachment_download($page);
 } else {
     flash_error('Url invalid');

@@ -77,39 +77,54 @@ function task_get($id) {
 }
 
 /**
- * Wiki
+ * Textblocks and textblock revisions
  */
-
-// Gets the latest version of a page, or null if the page is missing.
-function wikipage_get($name) {
-    $query = sprintf("SELECT * FROM ia_page ".
-                     "WHERE LCASE(`name`) = LCASE('%s') ".
-                     "ORDER BY `timestamp` DESC LIMIT 1",
-                      db_escape($name));
-    return db_fetch($query);
-}
-
-// Try to get the sql row for a certain page.
-// If it fails it will flash and redirec.t
-function try_wikipage_get($page_name) {
-    $page = wikipage_get($page_name);
-    if (!$page) {
-        flash_error('Nu exista pagina');
-        redirect(url(''));
-    }
-
-    return $page;
-}
-
 // Call this function to add a new revision.
-function wikipage_add_revision($name, $title, $content, $user_id) {
+function textblock_add_revision($name, $title, $content, $user_id) {
     global $dbLink;
-    $query = sprintf("INSERT INTO ia_page (name, `text`, `title`,
-                                           `timestamp`) ".
-                     "VALUES ('%s', '%s', '%s', NOW())",
-                     db_escape($name), db_escape($content), db_escape($title));
+
+    // copy current version to revision table
+    $query = sprintf("INSERT INTO ia_textblock_revision
+                      SELECT * FROM ia_textblock
+                      WHERE LCASE(`name`) = '%s'", db_escape($name));
+    db_query($query);
+    // replace current version
+    $query = sprintf("DELETE FROM ia_textblock
+                      WHERE LCASE(`name`) = '%s' LIMIT 1", db_escape($name));
+    db_query($query);
+    $query = sprintf("INSERT INTO ia_textblock
+                        (name, `text`, `title`, `timestamp`, user_id)
+                      VALUES ('%s', '%s', '%s', NOW(), '%s')",
+                     db_escape($name), db_escape($content), db_escape($title),
+                     db_escape($user_id));
     return db_query($query);
 }
+
+function textblock_get_revision($name, $revNumber = null) {
+    global $dbLink;
+    if (is_null($revNumber)) {
+        $query = sprintf("SELECT * FROM ia_textblock
+                          WHERE LCASE(`name`) = '%s'", db_escape($name));
+        $textblock = db_fetch($query);
+        return $textblock;
+    }
+    else {
+        $query = sprintf("SELECT * FROM ia_textblock_revision
+                          WHERE LCASE(`name`) = '%s'
+                          ORDER BY `timestamp` LIMIT %s, 1",
+                         db_escape($name), db_escape($revNumber));
+        $textblock = db_fetch($query);
+        return $textblock;
+    }
+}
+
+function textblock_get_revision_count($name) {
+    global $dbLink;
+    $query = sprintf("SELECT COUNT(*) AS `cnt` FROM ia_textblock_revision
+                      WHERE LCASE(`name`) = '%s'", db_escape($name));
+    $row = db_fetch($query);
+    return $row['cnt'];
+} 
 
 /**
  * User
@@ -229,21 +244,16 @@ function attachment_get_all($page) {
 /**
  * News
  */
- function news_get_range($start, $range) {
-    $query = sprintf("SELECT * FROM ia_page
-                      WHERE
-                            `timestamp` = (SELECT MAX(`timestamp`)
-                                           FROM ia_page AS ia_page2
-                                           WHERE ia_page2.name = ia_page.name)
-                             AND `name` LIKE 'news/%%'
-                      GROUP BY name
+function news_get_range($start, $range) {
+    $query = sprintf("SELECT * FROM ia_textblock
+                      WHERE `name` LIKE 'news/%%'
                       ORDER BY `timestamp` DESC
                       LIMIT %s,%s", $start, $range);
     return db_fetch_all($query);
 }
 
 function news_count() {
-    $query = sprintf("SELECT COUNT(DISTINCT name) AS cnt FROM ia_page WHERE
+    $query = sprintf("SELECT COUNT(*) AS `cnt` FROM ia_textblock WHERE
                       `name` LIKE 'news/%%'");
     $tmp = db_fetch($query);
     return $tmp['cnt'];
