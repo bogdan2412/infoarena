@@ -4,11 +4,13 @@
     <h1>Atasamente pentru pagina <a href="<?= url($view['page_name']) ?>">
         <?= $view['page_name'] ?></a></h1>
 
-    <ul class="attachmentList">
+    <ul class="list">
     <?php foreach ($view['attach_list'] as $v) { ?>
     <li>
         <a href="<?= url($view['page_name'],array ('action' => 'download', 'file'=> $v['name'])) ?>">
-        <?= $v['name'] ?></a><span class="details"><?= ", atasat de ".$v['username']." la ".$v['timestamp'].", " ?></span>
+        <?= $v['name'] ?></a><span class="details"><?= ", atasat de " ?>
+        <a href="<?= url('user/'.$v['username']) ?>"><?= htmlentities($v['username']) ?></a>
+        <?= " la ".$v['timestamp'].", " ?></span>
         <a href="<?= url($view['page_name'],array ('action' => 'attach-del', 'file'=> $v['name'])) ?>">
         Sterge </a>
     </li>

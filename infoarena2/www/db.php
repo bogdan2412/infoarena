@@ -124,26 +124,42 @@ function textblock_get_revision_count($name) {
                       WHERE LCASE(`name`) = '%s'", db_escape($name));
     $row = db_fetch($query);
     return $row['cnt'];
-} 
+}
+
+function textblock_get_names($prefix) {
+   $query = sprintf("SELECT `name`, title, user_id, `timestamp`  FROM
+                     ia_textblock WHERE LCASE(`name`) LIKE '%s%%' ORDER BY `name`",
+                   db_escape($prefix));
+    return db_fetch_all($query);
+}
+
+function textblock_get_names_with_user($prefix) {
+    $query = sprintf("SELECT `name`, title, user_id, `timestamp`, username FROM
+                     ia_textblock LEFT JOIN ia_user ON
+                     ia_textblock.user_id = ia_user.id WHERE
+                     LCASE(`name`) LIKE '%s%%' ORDER BY `name`",
+                   db_escape($prefix));
+    return db_fetch_all($query);
+}
 
 /**
  * User
  */
 function user_test_password($username, $password) {
     $query = sprintf("SELECT * FROM ia_user
-                      WHERE username = '%s' AND SHA1('%s') = `password`",
+                      WHERE LCASE(username) = '%s' AND SHA1('%s') = `password`",
                       db_escape($username), db_escape($password));
     return db_fetch($query);
 }
 
 function user_get_by_username($username) {
     $query = sprintf("SELECT * FROM ia_user
-                      WHERE username = '%s'", db_escape($username));
+                      WHERE LCASE(username) = '%s'", db_escape($username));
     return db_fetch($query);
 }
 
 function user_get_by_email($email) {
-    $query = sprintf("SELECT * FROM ia_user WHERE email = '%s'",
+    $query = sprintf("SELECT * FROM ia_user WHERE LCASE(email) = '%s'",
                      db_escape($email));
     return db_fetch($query);
 }
@@ -246,7 +262,7 @@ function attachment_get_all($page) {
  */
 function news_get_range($start, $range) {
     $query = sprintf("SELECT * FROM ia_textblock
-                      WHERE `name` LIKE 'news/%%'
+                      WHERE LCASE(`name`) LIKE 'news/%%'
                       ORDER BY `timestamp` DESC
                       LIMIT %s,%s", $start, $range);
     return db_fetch_all($query);
@@ -254,7 +270,7 @@ function news_get_range($start, $range) {
 
 function news_count() {
     $query = sprintf("SELECT COUNT(*) AS `cnt` FROM ia_textblock WHERE
-                      `name` LIKE 'news/%%'");
+                      LCASE(`name`) LIKE 'news/%%'");
     $tmp = db_fetch($query);
     return $tmp['cnt'];
 }

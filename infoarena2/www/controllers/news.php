@@ -2,7 +2,7 @@
 require_once("controllers/wiki.php");
 
 //this should not be here
-define('IA_MAX_NEWS', 2);
+define('IA_MAX_NEWS', 3);
 
 function controller_news_view_all() {
     // start view

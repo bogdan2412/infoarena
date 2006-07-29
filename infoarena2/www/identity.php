@@ -32,7 +32,7 @@ function identity_can($action, $ontoObject = null, $identity = null) {
     }
 
     // valid actions
-    $validActions = array('logout', 'login',
+    $validActions = array('logout', 'login', 'page_index',
                           'wiki-view', 'wiki-edit', 'wiki-create',
                           'textblock-listattach',
                           'textblock-attach', 'attach-overwrite',
