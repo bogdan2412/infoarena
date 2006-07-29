@@ -70,19 +70,20 @@ function controller_register($suburl)
             $errors['quote'] = 'Citatul este prea mare';
         }
 
+        date_default_timezone_set('Europe/Bucharest');
         $data['birthday'] = getattr($_POST, 'birthday');
         if ($data['birthday']) {
-            if (ereg ("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})",
-                $data['birthday'], $regs)) {
-                if (!checkdate($regs[2], $regs[3], $regs[1])) {
-                    $errors['birthday'] = 'Data invalida';
-                }
-            }
-            else {
+            if (!ereg("([0-9]{4})-([0-9]{2})-([0-9]{2})", $data['birthday'], $regs)) {
                 $errors['birthday'] = 'Format data invalid';
             }
+            elseif (!checkdate($regs[2], $regs[3], $regs[1])) {
+                $errors['birthday'] = 'Data invalida';
+            }
+            elseif ($regs[1] > date('Y') ||
+                    ($regs[1] == date('Y') && $regs[2] > date('m'))) {
+                $errors['birthday'] = 'Ziua de nastere este in viitor';
+            }
         }
-
         $data['city'] = getattr($_POST, 'city');
         if ($data['city'] && !preg_match('/^[a-z]+[a-z_\-]*$/i', $data['city'])) {
             $errors['city'] = 'Oras necunoscut';
@@ -101,7 +102,7 @@ function controller_register($suburl)
             if (!preg_match('/^[0-9]+$/', $data['abs_year'])) {
                 $errors['abs_year'] = 'An de absolvire invalid';
             }
-            if (!(2000 < (int)$data['abs_year'] && (int)$data['abs_year'] < 3000)) {
+            elseif (!((int)$data['abs_year'] < 3000)) {
                 $errors['abs_year'] = 'Anul de absolvire este introdus gresit';
             }
         }
@@ -114,7 +115,7 @@ function controller_register($suburl)
                 $errors['phone'] = 'Numarul de telefon este prea mic..';
             }
             else {
-                if (!preg_match('/^[0-9\-\+]+$/', $data['phone'])) {
+                if (!preg_match('/^[0-9\-\+\ ]+$/', $data['phone'])) {
                     $errors['phone'] = 'Numarul de telefon este invalid';
                 }
             }
@@ -130,6 +131,9 @@ function controller_register($suburl)
                 flash("Ai fost inregistrat. Acum te rugam sa te autentifici.");
                 redirect(url("login"));
             }
+        }
+        else {
+            flash_error('Am intalnit probleme, va rugam verificati datele cu rosu');
         }
     }
     else {
