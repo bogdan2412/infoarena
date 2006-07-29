@@ -173,7 +173,7 @@ function controller_attachment_download($page_name) {
     $real_name = IA_ATTACH_DIR . $sql_result['id'];
     $fp = fopen($real_name, 'rb');
     if (!$fp) {
-        flash_error("Nu am gasit fisierul pe server");
+        flash_error("Nu am gasit fisierul ".$real_name." pe server");
         redirect(url($page_name));
         break;
     }
