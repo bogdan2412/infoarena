@@ -226,7 +226,12 @@ function attachment_update($name, $size, $page, $user_id) {
                       `timestamp` = NOW() WHERE LCASE(`name`) = LCASE('%s') AND
                       LCASE(`page`) = LCASE('%s')", db_escape($size),
                      db_escape($user_id), db_escape($name), db_escape($page));
-    return db_query($query);
+    db_query($query);
+    $query = sprintf("SELECT * FROM ia_file WHERE LCASE(`name`) = LCASE('%s')
+                      AND LCASE(`page`) = LCASE('%s')",
+                     db_escape($name), db_escape($page));
+    $tmp = db_fetch($query);
+    return $tmp['id'];
 }
 
 function attachment_insert($name, $size, $page, $user_id) {
