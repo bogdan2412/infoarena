@@ -4,6 +4,10 @@
 class MyTextile extends Textile {
     var $page_name;
 
+    // url for external urls.
+    // mailto: and <proto>:// and mail adresses of sorts.
+    var $external_url_exp = '/^([a-z]+:\/\/|mailto:[^@]+@[^@]+|[^@]+@[^@])/i';
+
     function MyTextile($page_name, $options = array()) {
         $this->page_name = $page_name;
         Textile::Textile($options);
@@ -52,12 +56,22 @@ class MyTextile extends Textile {
         return make_error_div('Bad macro "'.$str.'"');
     }
 
+    function is_wiki_link($link)
+    {
+        if (preg_match($this->external_url_exp, $link) ||
+                (isset($this->links) && isset($this->links[$link]))) {
+            return false;
+        }
+        return true;
+    }
+
     // Override format_link
     // We hook in here to process the url part
     // FIXME: should I do this with format_url?
     function format_link($args) {
-        if (strlen($args['url']) > 1 && $args['url'][0] == '/') {
-            $args['url'] = url(substr($args['url'], 1));
+        $url = getattr($args, 'url', '');
+        if ($this->is_wiki_link($url)) {
+            $args['url'] = url($url);
         } else {
             $args['clsty'] .= "(wiki_link_external)";
         }
@@ -68,21 +82,18 @@ class MyTextile extends Textile {
 
     // Image magic.
     function format_image($args) {
-        $srcpath = $args['src'];
+        $srcpath = getattr($args, 'src', '');
 
-        if (strlen($srcpath) > 1 && $srcpath[0] == '?') {
-            $file_name = substr($srcpath, 1);
-            $args['src'] = url($this->page_name,
-                    array('action' => 'download', 'file' => $file_name)); 
-            //$args['pre'] = "<div><h1>imagine</h1>";
-            //$args['post'] = "</div>";
-        } else if (strlen($srcpath) > 1 && $srcpath[0] == '/') {
-            $parts = explode('?', substr($srcpath, 1));
-            if (count($parts) == 2) {
-                $other_page_name = $parts[0];
-                $file_name = $parts[1];
-                $args['src'] = url($other_page_name,
-                        array('action' => 'download', 'file' => $file_name)); 
+        if (!preg_match($this->external_url_exp, $srcpath)) {
+            echo 'non-external img';
+            if (preg_match('/^[a-z0-9\.\-_]+$/i', $srcpath)) {
+                echo 'local attachment';
+                $args['src'] = url($this->page_name,
+                        array('action' => 'download', 'file' => $srcpath)); 
+            } else if (preg_match('/^ ([a-z0-9_\-\/]+) \? ([a-z0-9\.\-_]+)   $/ix', $srcpath, $matches)) {
+                echo 'remote attachment';
+                $args['src'] = url($matches[1],
+                        array('action' => 'download', 'file' => $matches[2])); 
             }
         }
         //echo "<pre>insrc $srcpath outsrc $args[src]</pre>";
