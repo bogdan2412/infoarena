@@ -1,9 +1,9 @@
 <?php include('header.php'); ?>
 
 <?php if ($register) { ?>
-<form action="<?= url('register/save') ?>" method="post">
+<form enctype="multipart/form-data" action="<?= url('register/save') ?>" method="post">
 <?php } else {?>
-<form action="<?= url('profile/save') ?>" method="post">
+<form enctype="multipart/form-data" action="<?= url('profile/save') ?>" method="post">
 <?php } ?>
 <ul class="form">
     1. Date generale
@@ -67,8 +67,14 @@
     
     <?php if (!$register) { ?>
     <li>
+        <?php // display avatar
+            $dic['action'] = 'download';
+            $dic['file'] = $avatar;
+            echo '<img width="100" height="100" src="' . url('user/'.$username, $dic) . '"/>';
+        ?>
+        
         <label for="form_avatar">Avatar</label>
-        !TODO!
+        <input type="file" name="avatar" value="" id="form_avatar" />
     </li>
     <?php } ?>
     

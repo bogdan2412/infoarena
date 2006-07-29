@@ -38,7 +38,7 @@ $action = request('action', 'view');
 // Direct mapping list
 // Note: array_flip() flips keys with values in a dictionary.
 $directmaps = array_flip(array('register', 'profile', 'page_index',
-                               'login', 'logout', 'json', 'user'));
+                               'login', 'logout', 'json'));
 
 //
 // Here comes the big url mapper.
@@ -63,6 +63,19 @@ if (isset($directmaps[$urlstart])) {
     }
     $fname($suburl);
 
+// User special shit
+} else if ($urlstart == 'user' && $action == 'download') {
+    require('controllers/attachment.php');
+    controller_attachment_download($page);
+} else if ($urlstart == 'user') {
+    require('controllers/user.php');
+    if (count($urlpath) < 2) {
+        $suburl = "";
+    } else {
+        array_shift($urlpath);
+        $suburl = join('/', $urlpath);
+    }
+    controller_user($suburl);
 // Special shit for task view edit create
 } else if ($urlstart == 'task' && $action == 'view') {
     require('controllers/task.php');

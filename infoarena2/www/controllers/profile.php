@@ -4,7 +4,7 @@
 function controller_profile($suburl)
 {
     identity_require('edit-profile');
-
+    define('IA_AVATAR_MAXSIZE', 2000000);
     global $identity_user;
 
     // Initialize view parameters.
@@ -18,8 +18,10 @@ function controller_profile($suburl)
     // page title
     $view['title'] = 'Modificare profil';
 
-    // WTF is this?
-    $current_user =& $identity_user;
+    // get user avatar
+    $qres = attachment_get_by_id($identity_user['avatar']);
+    $view['avatar'] = $qres['name'];
+    $view['username'] = $identity_user['username'];
 
     if ($suburl == 'save') {
         // user submitted profile form. Process it
@@ -31,8 +33,8 @@ function controller_profile($suburl)
         $data['email'] = getattr($_POST, 'email');
         
         if (0 != strlen($data['password']) ||
-            $data['email'] != $current_user['email']) {
-            if (!user_test_password($current_user['username'],
+            $data['email'] != $identity_user['email']) {
+            if (!user_test_password($identity_user['username'],
                                     $data['password_old'])) {
                 $errors['password_old'] = 'Parola veche nu este buna';
             }
@@ -45,7 +47,7 @@ function controller_profile($suburl)
                     $errors['password2'] = 'Parolele nu coincid';
                 }
             }
-            if ($data['email'] != $current_user['email']) {
+            if ($data['email'] != $identity_user['email']) {
                 if (!preg_match('/[^@]+@.+\..+/', $data['email'])) {
                     $errors['email'] = 'Adresa de e-mail invalida';
                 }
@@ -73,8 +75,20 @@ function controller_profile($suburl)
             $errors['county'] = 'Judet necunoscut';
         }
 
-        $data['avatar'] = getattr($_POST, 'avatar');
-        // TODO: validate avatar
+        // -- avatar validation code --
+        // TODO: Limit avatar dimensions
+        $avatar = basename($_FILES['avatar']['name']);
+        $avatar_size = $_FILES['avatar']['size'];
+        // Validate filename. This limits attachment names, and it sucks
+        if (!preg_match('/^[a-z0-9\.\-_]+$/i', $avatar)) {
+            $errors['avatar'] = 'Nume de fisier invalid (nu folositi spatii)';
+        }
+        // Check file size
+        if ($avatar_size < 0 ||
+            $avatar_size > IA_AVATAR_MAXSIZE) {
+            $errors['avatar_size'] = 'Fisierul depaseste limita de ' .
+                (IA_AVATAR_MAXSIZE / 1024).' kbytes';
+        }
 
         $data['quote'] = getattr($_POST, 'quote');
         if (255 < strlen($data['quote'])) {
@@ -83,7 +97,8 @@ function controller_profile($suburl)
 
         $data['birthday'] = getattr($_POST, 'birthday');
         if ($data['birthday']) {
-            if (!ereg("([0-9]{4})-([0-9]{2})-([0-9]{2})", $data['birthday'], $regs)) {
+            if (!ereg("([0-9]{4})-([0-9]{2})-([0-9]{2})",
+                      $data['birthday'], $regs)) {
                 $errors['birthday'] = 'Format data invalid';
             }
             elseif (!checkdate($regs[2], $regs[3], $regs[1])) {
@@ -134,14 +149,63 @@ function controller_profile($suburl)
 
         // 2. process
         if (!$errors) {
-            // modify user in database
             $qdata = $data;
+            unset($qdata['avatar']);
+            // -- avatar upload --
+            // similar to attachments
+            if ($avatar)
+            {
+                // Add the file to the database.
+                $user_page = 'user/' . $identity_user['username'];
+                $attach = attachment_get($avatar, $user_page);
+                if ($attach) {
+                    // Attachment already exists, overwrite.
+                    $disk_name = attachment_update($avatar,
+                                                $avatar_size,
+                                                $user_page,
+                                                $identity_user['id']);
+                }
+                else {
+                    // New attachment. Insert.
+                    $disk_name = attachment_insert($avatar,
+                                                $avatar_size,
+                                                $user_page,
+                                                $identity_user['id']);
+                }
+                // Check if something went wrong.
+                if (!isset($disk_name)) {
+                    $errors['avatar'] = 'Avatarulul nu a putut fi atasat';
+                }
+
+                // Write the file on disk.
+                if (!$errors) {
+                    $qdata['avatar'] = $disk_name; // $disk_name is the attach id
+                    $disk_name = IA_ATTACH_DIR . $disk_name;
+                    //print_r($_FILES['avatar']);
+                    if (!move_uploaded_file($_FILES['avatar']['tmp_name'],
+                                            $disk_name)) {
+                        $errors['avatar'] = 'Fisierul nu a putut fi '.
+                                                    'incarcat pe server'; 
+                    }
+                }
+                
+                if ($errors) {
+                    flash_error("Eroare la uploadul avatarului");
+                    redirect(url(""));
+                }
+            }
+            
+            // modify user in database
             if (0 == strlen($qdata['password'])) {
                 unset($qdata['password']);
             }
             unset($qdata['password2']);
             unset($qdata['password_old']);
-            if (user_update($qdata, $current_user['id'])) {
+            unset($qdata['avatar_size']);
+            if (user_update($qdata, $identity_user['id'])) {
+                // force reload of user info
+                $identity_user = user_get_by_id($identity_user['id']);
+                identity_start_session($identity_user);
                 // redirect to home
                 flash("Modificarile de profil au fost efectuate cu succes.");
                 redirect(url(""));
@@ -150,7 +214,7 @@ function controller_profile($suburl)
     }
     else {
         // form is displayed for the first time. Fill in default values
-        foreach ($current_user as $key => $val) {
+        foreach ($identity_user as $key => $val) {
             $data[$key] = $val;
         }
         if (0 == $data['birthday']) {
