@@ -34,7 +34,7 @@ function identity_can($action, $ontoObject = null, $identity = null) {
     // valid actions
     $validActions = array('logout', 'login', 'page_index',
                           'wiki-view', 'wiki-edit', 'wiki-create',
-                          'textblock-listattach',
+                          'history', 'textblock-listattach',
                           'textblock-attach', 'attach-overwrite',
                           'attach-download', 'attach-delete',
                           'task-view', 'task-submit', 'task-edit',
@@ -72,6 +72,7 @@ function identity_can($action, $ontoObject = null, $identity = null) {
         case 'login':
         case 'logout':
         case 'wiki-view':
+        case 'wiki-history':
         case 'attach-download':
         case 'wiki-listattach':
         case 'task-view':

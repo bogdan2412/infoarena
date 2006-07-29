@@ -1,20 +1,26 @@
 <?php
 
 // View a wiki page.
-function controller_wiki_view($page_name) {
+function controller_wiki_view($page_name, $rev_num = null) {
     // Tee hee.
     // If the page is missing jump to the edit/create controller.
-    $page = textblock_get_revision($page_name);
+    $page = textblock_get_revision($page_name, $rev_num);
     if ($page) {
         identity_require('wiki-view', $page);
+        if ($rev_num) identity_require('history', $page);
+    }
+    else
+    if ($rev_num) {
+        flash_error("Pagina nu exista");
+        redirect(url(''));
     }
     else {
         controller_wiki_edit($page_name);
     }
 
     $view = array();
-    
     // Viewer. Nicest thing in the world.
+    $view['revision'] = $rev_num;
     $view['wikipage'] = $page;
     $view['title'] = $page['title'];
     execute_view_die('views/wikiview.php', $view);

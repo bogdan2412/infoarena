@@ -96,7 +96,7 @@ if (isset($directmaps[$urlstart])) {
     controller_news_view_all();
 } else if ($urlstart == 'news' && $action == 'view') {
     require('controllers/news.php');
-    controller_news_view($page);
+    controller_news_view($page, request('revision'));
 } else if ($urlstart == 'news' && $action == 'edit') {
     require('controllers/news.php');
     controller_news_edit($page);
@@ -107,13 +107,16 @@ if (isset($directmaps[$urlstart])) {
 // If it was not a special task or pset page do the wiki monkey.
 } else if ($action == 'view') {
     require('controllers/wiki.php');
-    controller_wiki_view($page);
+    controller_wiki_view($page, request('revision'));
 } else if ($action == 'edit') {
     require('controllers/wiki.php');
     controller_wiki_edit($page);
 } else if ($action == 'save') {
     require('controllers/wiki.php');
     controller_wiki_save($page);
+} else if ($action == 'history') {
+    require('controllers/textblock.php');
+    controller_textblock_history($page);
 
 // Attachment shit. This is common to all wiki-based urls.
 } else if ($action == 'attach') {

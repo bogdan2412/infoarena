@@ -12,7 +12,6 @@
     <ul class="list">
         <?php foreach ($view['page_list'] as $v) { ?>
         <li>
-            <?= $v['name'] ?>,
             <a href="<?= url($v['name']) ?>"><?= $v['title'] ? htmlentities($v['title']) : '<strong>FARA TITLU</strong>' ?></a>,
             <span class="details">modificat ultima data la <?= htmlentities($v['timestamp']) ?></span>
             <?php if (getattr($v, 'username')) { ?>

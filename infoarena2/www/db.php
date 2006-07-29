@@ -107,9 +107,9 @@ function textblock_add_revision($name, $title, $content, $user_id) {
     return db_query($query);
 }
 
-function textblock_get_revision($name, $revNumber = null) {
+function textblock_get_revision($name, $rev_num = null) {
     global $dbLink;
-    if (is_null($revNumber)) {
+    if (is_null($rev_num)) {
         $query = sprintf("SELECT *
                           FROM ia_textblock
                           WHERE LCASE(`name`) = '%s'",
@@ -123,10 +123,28 @@ function textblock_get_revision($name, $revNumber = null) {
                           WHERE LCASE(`name`) = '%s'
                           ORDER BY `timestamp`
                           LIMIT %s, 1",
-                         db_escape($name), db_escape($revNumber));
+                         db_escape($name), db_escape($rev_num));
         $textblock = db_fetch($query);
         return $textblock;
     }
+}
+
+// returns an textblock
+function textblock_get_revisions($name) {
+    $query = sprintf("SELECT * FROM ia_textblock_revision WHERE
+                      LCASE(`name`) = '%s' ORDER BY `timestamp`",
+                     db_escape($name));
+    return db_fetch_all($query);
+}
+
+// this obviously returns textblocoks without the actual content 
+function textblock_get_revisions_without_content($name) {
+    $query = sprintf("SELECT `name`, title, user_id, `timestamp`, username FROM
+                      ia_textblock_revision LEFT JOIN ia_user ON
+                      ia_textblock_revision.user_id = ia_user.id
+                      WHERE LCASE(`name`) = '%s' ORDER BY `timestamp`",
+                     db_escape($name));
+    return db_fetch_all($query);
 }
 
 function textblock_get_revision_count($name) {
@@ -139,12 +157,11 @@ function textblock_get_revision_count($name) {
     return $row['cnt'];
 }
 
+// Attention: these functions return textblocks without content.. is this ok?
 function textblock_get_names($prefix) {
-   $query = sprintf("SELECT `name`, title, user_id, `timestamp`
-                     FROM ia_textblock
-                     WHERE LCASE(`name`) LIKE '%s%%'
-                     ORDER BY `name`",
-                   db_escape($prefix));
+   $query = sprintf("SELECT `name`, title, user_id, `timestamp`  FROM
+                     ia_textblock WHERE LCASE(`name`) LIKE '%s%%'
+                     ORDER BY `name`", db_escape($prefix));
     return db_fetch_all($query);
 }
 
@@ -199,7 +216,7 @@ function user_create($data) {
         $query .= '`' . $key . '`,';
     }
     $query = substr($query, 0, strlen($query)-1);
-    $query .= ') VALUES (';
+    $query .= ') VALUESe (';
     foreach ($data as $key => $val) {
         if ($key == 'password') {
             $query .= "sha1('" . db_escape($val) . "'),";
@@ -274,7 +291,7 @@ function attachment_update($name, $size, $page, $user_id) {
 function attachment_insert($name, $size, $page, $user_id) {
     global $dbLink;
     $query = sprintf("INSERT INTO ia_file
-                        (name, page, size, user_id, `timestamp`)
+                        (n 100x100ame, page, size, user_id, `timestamp`)
                       VALUES ('%s', '%s', '%s', '%s', NOW())",
                     db_escape($name), db_escape($page),
                     db_escape($size), db_escape($user_id));

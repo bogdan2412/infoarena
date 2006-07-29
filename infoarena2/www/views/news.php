@@ -4,8 +4,8 @@
     <?php foreach ($view['news'] as $v) { ?>
         <div class="item">
         <?php
-            if (identity_can('wiki-edit', $v)) {
-                echo '<a href="'.url($v['name']).'?action=edit'.'"><h3>'.htmlentities(getattr($v, 'title')).'</h3></a>';
+            if (identity_can('wiki-view', $v)) {
+                echo '<a href="'.url($v['name']).'?action=view'.'"><h3>'.htmlentities(getattr($v, 'title')).'</h3></a>';
             }
             else {
                 echo '<h3>'.htmlentities(getattr($v, 'title')).'</h3>';
