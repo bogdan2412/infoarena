@@ -72,7 +72,10 @@ function db_fetch_all($query) {
  * Task
  */
 function task_get($id) {
-    $query = sprintf("SELECT * FROM ia_task WHERE id = '%s'", db_escape($id));
+    $query = sprintf("SELECT *
+                      FROM ia_task
+                      WHERE id = '%s'",
+                    db_escape($id));
     return db_fetch($query);
 }
 
@@ -85,33 +88,41 @@ function textblock_add_revision($name, $title, $content, $user_id) {
 
     // copy current version to revision table
     $query = sprintf("INSERT INTO ia_textblock_revision
-                      SELECT * FROM ia_textblock
-                      WHERE LCASE(`name`) = '%s'", db_escape($name));
+                        SELECT *
+                        FROM ia_textblock
+                      WHERE LCASE(`name`) = '%s'",
+                    db_escape($name));
     db_query($query);
     // replace current version
     $query = sprintf("DELETE FROM ia_textblock
-                      WHERE LCASE(`name`) = '%s' LIMIT 1", db_escape($name));
+                      WHERE LCASE(`name`) = '%s'
+                      LIMIT 1",
+                    db_escape($name));
     db_query($query);
     $query = sprintf("INSERT INTO ia_textblock
                         (name, `text`, `title`, `timestamp`, user_id)
                       VALUES ('%s', '%s', '%s', NOW(), '%s')",
-                     db_escape($name), db_escape($content), db_escape($title),
-                     db_escape($user_id));
+                     db_escape($name), db_escape($content),
+                     db_escape($title), db_escape($user_id));
     return db_query($query);
 }
 
 function textblock_get_revision($name, $revNumber = null) {
     global $dbLink;
     if (is_null($revNumber)) {
-        $query = sprintf("SELECT * FROM ia_textblock
-                          WHERE LCASE(`name`) = '%s'", db_escape($name));
+        $query = sprintf("SELECT *
+                          FROM ia_textblock
+                          WHERE LCASE(`name`) = '%s'",
+                        db_escape($name));
         $textblock = db_fetch($query);
         return $textblock;
     }
     else {
-        $query = sprintf("SELECT * FROM ia_textblock_revision
+        $query = sprintf("SELECT *
+                          FROM ia_textblock_revision
                           WHERE LCASE(`name`) = '%s'
-                          ORDER BY `timestamp` LIMIT %s, 1",
+                          ORDER BY `timestamp`
+                          LIMIT %s, 1",
                          db_escape($name), db_escape($revNumber));
         $textblock = db_fetch($query);
         return $textblock;
@@ -120,15 +131,19 @@ function textblock_get_revision($name, $revNumber = null) {
 
 function textblock_get_revision_count($name) {
     global $dbLink;
-    $query = sprintf("SELECT COUNT(*) AS `cnt` FROM ia_textblock_revision
-                      WHERE LCASE(`name`) = '%s'", db_escape($name));
+    $query = sprintf("SELECT COUNT(*) AS `cnt`
+                      FROM ia_textblock_revision
+                      WHERE LCASE(`name`) = '%s'",
+                    db_escape($name));
     $row = db_fetch($query);
     return $row['cnt'];
 }
 
 function textblock_get_names($prefix) {
-   $query = sprintf("SELECT `name`, title, user_id, `timestamp`  FROM
-                     ia_textblock WHERE LCASE(`name`) LIKE '%s%%' ORDER BY `name`",
+   $query = sprintf("SELECT `name`, title, user_id, `timestamp`
+                     FROM ia_textblock
+                     WHERE LCASE(`name`) LIKE '%s%%'
+                     ORDER BY `name`",
                    db_escape($prefix));
     return db_fetch_all($query);
 }
@@ -137,7 +152,8 @@ function textblock_get_names_with_user($prefix) {
     $query = sprintf("SELECT `name`, title, user_id, `timestamp`, username
                       FROM ia_textblock
                         LEFT JOIN ia_user ON ia_textblock.user_id = ia_user.id
-                      WHERE LCASE(`name`) LIKE '%s%%' ORDER BY `name`",
+                      WHERE LCASE(`name`) LIKE '%s%%'
+                      ORDER BY `name`",
                     db_escape($prefix));
     return db_fetch_all($query);
 }
@@ -146,26 +162,33 @@ function textblock_get_names_with_user($prefix) {
  * User
  */
 function user_test_password($username, $password) {
-    $query = sprintf("SELECT * FROM ia_user
+    $query = sprintf("SELECT *
+                      FROM ia_user
                       WHERE LCASE(username) = '%s' AND SHA1('%s') = `password`",
                     db_escape($username), db_escape($password));
     return db_fetch($query);
 }
 
 function user_get_by_username($username) {
-    $query = sprintf("SELECT * FROM ia_user
-                      WHERE LCASE(username) = '%s'", db_escape($username));
+    $query = sprintf("SELECT *
+                      FROM ia_user
+                      WHERE LCASE(username) = '%s'",
+                    db_escape($username));
     return db_fetch($query);
 }
 
 function user_get_by_email($email) {
-    $query = sprintf("SELECT * FROM ia_user WHERE LCASE(email) = '%s'",
+    $query = sprintf("SELECT *
+                      FROM ia_user
+                      WHERE LCASE(email) = '%s'",
                     db_escape($email));
     return db_fetch($query);
 }
 
 function user_get_by_id($id) {
-    $query = sprintf("SELECT * FROM ia_user WHERE id = '%s'", db_escape($id));
+    $query = sprintf("SELECT *
+                      FROM ia_user
+                      WHERE id = '%s'", db_escape($id));
     return db_fetch($query);
 }
 
@@ -215,7 +238,8 @@ function user_update($data, $id)
  * Attachment
  */
 function attachment_get($name, $page) {
-    $query = sprintf("SELECT * FROM ia_file
+    $query = sprintf("SELECT *
+                      FROM ia_file
                       WHERE LCASE(`name`) = LCASE('%s') AND
                             LCASE(`page`) = LCASE('%s')",
                     db_escape($name), db_escape($page));
@@ -223,7 +247,8 @@ function attachment_get($name, $page) {
 }
 
 function attachment_get_by_id($id) {
-    $query = sprintf("SELECT * FROM ia_file
+    $query = sprintf("SELECT *
+                      FROM ia_file
                       WHERE `id` = '%s'",
                     db_escape($id));
     return db_fetch($query);
@@ -237,7 +262,8 @@ function attachment_update($name, $size, $page, $user_id) {
                     db_escape($size), db_escape($user_id),
                     db_escape($name), db_escape($page));
     db_query($query);
-    $query = sprintf("SELECT * FROM ia_file
+    $query = sprintf("SELECT *
+                      FROM ia_file
                       WHERE LCASE(`name`) = LCASE('%s') AND
                             LCASE(`page`) = LCASE('%s')",
                     db_escape($name), db_escape($page));
@@ -258,10 +284,11 @@ function attachment_insert($name, $size, $page, $user_id) {
 
 function attachment_delete($name, $page) {
     global $dbLink;
-    $query = sprintf("DELETE FROM ia_file WHERE
-                      LCASE(`name`) = LCASE('%s') AND LCASE(`page`) =
-                      LCASE('%s') LIMIT 1", db_escape($name),
-                    db_escape($page));
+    $query = sprintf("DELETE FROM ia_file
+                      WHERE LCASE(`name`) = LCASE('%s') AND
+                            LCASE(`page`) = LCASE('%s')
+                      LIMIT 1",
+                    db_escape($name), db_escape($page));
     return db_query($query);
 }
 
@@ -279,16 +306,19 @@ function attachment_get_all($page) {
  * News
  */
 function news_get_range($start, $range) {
-    $query = sprintf("SELECT * FROM ia_textblock
+    $query = sprintf("SELECT *
+                      FROM ia_textblock
                       WHERE LCASE(`name`) LIKE 'news/%%'
                       ORDER BY `timestamp` DESC
-                      LIMIT %s,%s", $start, $range);
+                      LIMIT %s,%s",
+                    $start, $range);
     return db_fetch_all($query);
 }
 
 function news_count() {
-    $query = sprintf("SELECT COUNT(*) AS `cnt` FROM ia_textblock WHERE
-                      LCASE(`name`) LIKE 'news/%%'");
+    $query = sprintf("SELECT COUNT(*) AS `cnt`
+                      FROM ia_textblock
+                      WHERE LCASE(`name`) LIKE 'news/%%'");
     $tmp = db_fetch($query);
     return $tmp['cnt'];
 }
