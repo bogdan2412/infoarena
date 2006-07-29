@@ -55,13 +55,13 @@ function controller_register($suburl)
         }
         
         $data['country'] = getattr($_POST, 'country');
-        if (!preg_match('/^[a-z]+[a-z_\-]*$/i', $data['country'])) {
+        if (!preg_match('/^[a-z]+[a-z_\-\ ]*$/i', $data['country'])) {
             $errors['country'] = 'Tara necunoscuta';
         }
 
         $data['county'] = getattr($_POST, 'county');
         if ($data['county'] &&
-            !preg_match('/^[a-z]+[a-z_\-]*$/i', $data['county'])) {
+            !preg_match('/^[a-z]+[a-z_\-\ ]*$/i', $data['county'])) {
             $errors['county'] = 'Judet necunoscut';
         }
 
@@ -70,7 +70,6 @@ function controller_register($suburl)
             $errors['quote'] = 'Citatul este prea mare';
         }
 
-        date_default_timezone_set('Europe/Bucharest');
         $data['birthday'] = getattr($_POST, 'birthday');
         if ($data['birthday']) {
             if (!ereg("([0-9]{4})-([0-9]{2})-([0-9]{2})", $data['birthday'], $regs)) {
@@ -79,19 +78,20 @@ function controller_register($suburl)
             elseif (!checkdate($regs[2], $regs[3], $regs[1])) {
                 $errors['birthday'] = 'Data invalida';
             }
-            elseif ($regs[1] > date('Y') ||
-                    ($regs[1] == date('Y') && $regs[2] > date('m'))) {
+            elseif ($regs[1] > gmdate('Y') ||
+                    ($regs[1] == gmdate('Y') && $regs[2] > gmdate('m'))) {
                 $errors['birthday'] = 'Ziua de nastere este in viitor';
             }
         }
+        
         $data['city'] = getattr($_POST, 'city');
-        if ($data['city'] && !preg_match('/^[a-z]+[a-z_\-]*$/i', $data['city'])) {
+        if ($data['city'] && !preg_match('/^[a-z]+[a-z_\-\ ]*$/i', $data['city'])) {
             $errors['city'] = 'Oras necunoscut';
         }
 
         $data['workplace'] = getattr($_POST, 'workplace');
         if ($data['workplace'] &&
-            !preg_match('/^[a-z]+[a-z0-9_\-\.]*$/i', $data['workplace'])) {
+            !preg_match('/^[a-z]+[a-z0-9_\-\.\ ]*$/i', $data['workplace'])) {
             $errors['workplace'] = 'Institut invalid';
         }
 

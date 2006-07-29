@@ -83,15 +83,15 @@ function controller_profile($suburl)
 
         $data['birthday'] = getattr($_POST, 'birthday');
         if ($data['birthday']) {
-            if (ereg ("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})",
-                $data['birthday'], $regs)) {
-                if (0 != $data['birthday'] && // accept dummy date 0000-00-00
-                    !checkdate($regs[2], $regs[3], $regs[1])) {
-                    $errors['birthday'] = 'Data invalida';
-                }
-            }
-            else {
+            if (!ereg("([0-9]{4})-([0-9]{2})-([0-9]{2})", $data['birthday'], $regs)) {
                 $errors['birthday'] = 'Format data invalid';
+            }
+            elseif (!checkdate($regs[2], $regs[3], $regs[1])) {
+                $errors['birthday'] = 'Data invalida';
+            }
+            elseif ($regs[1] > gmdate('Y') ||
+                    ($regs[1] == gmdate('Y') && $regs[2] > gmdate('m'))) {
+                $errors['birthday'] = 'Ziua de nastere este in viitor';
             }
         }
 
@@ -113,7 +113,7 @@ function controller_profile($suburl)
             if (!preg_match('/^[0-9]+$/', $data['abs_year'])) {
                 $errors['abs_year'] = 'An de absolvire invalid';
             }
-            if (!(2000 < (int)$data['abs_year'] && (int)$data['abs_year'] < 3000)) {
+            if (!((int)$data['abs_year'] < 3000)) {
                 $errors['abs_year'] = 'Anul de absolvire este introdus gresit';
             }
         }
