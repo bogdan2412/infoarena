@@ -92,7 +92,7 @@ function execute_view($view_file_name, $view) {
             echo "Am sters $the_key";
         }
     }*/
-    include('views/utilities.php');
+    require_once('views/utilities.php');
     include($view_file_name);
     //include('views/vardump.php');
 }

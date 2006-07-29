@@ -48,7 +48,7 @@ function controller_wiki_edit($page_name) {
     $view['form_values'] = array('content'=> $page_content,
                                  'title' => $page_title);
     $view['form_errors'] = $form_errors;
-    execute_view("views/wikiedit.php", $view);
+    execute_view_die("views/wikiedit.php", $view);
 }
 
 // Save controller. Create submits this. This submits itself.
@@ -87,8 +87,7 @@ function controller_wiki_save($page_name) {
         $view['form_values'] = array('content'=> $page_content,
                                      'title' => $page_title);
         $view['form_errors'] = $form_errors;
-        execute_view("views/wikiedit.php", $view);
+        execute_view_die("views/wikiedit.php", $view);
     }
 }
-
 ?>

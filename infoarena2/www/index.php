@@ -18,12 +18,10 @@ if (!preg_match('/^([a-z0-9_\-\/]*)$/i', $page)) {
     redirect(url(''));
 }
 
-// Redirectam la home daca suntem in origine.
+// Redirect to home if in /
 if ($page == "") {
     $page = "home";
 }
-
-
 
 // Split the page url.
 $urlpath = split('/', $page);
@@ -38,7 +36,7 @@ $urlstart = strtolower($urlpath[0]);
 $action = request('action', 'view');
 
 // Direct mapping list.
-$directmaps = array_flip(array('news', 'register', 'profile',
+$directmaps = array_flip(array('register', 'profile',
             'login', 'logout', 'json', 'user'));
 
 //
@@ -79,7 +77,19 @@ if (isset($directmaps[$urlstart])) {
 //
 //  ---
 //
-
+} else if ($urlstart == 'news' && count($urlpath) == 1) {
+    include('controllers/news.php');
+    controller_news();
+} else if ($urlstart == 'news' && $action == 'view') {
+    include('controllers/wiki.php');
+    controller_wiki_view($page);
+} else if ($urlstart == 'news' && $action == 'edit') {
+    include('controllers/wiki.php');
+    controller_wiki_edit($page);
+} else if ($urlstart == 'news' && $action == 'save') {
+    include('controllers/wiki.php');
+    controller_wiki_save($page);
+    
 // If it was not a special task or pset page do the wiki monkey.
 } else if ($action == 'view') {
     include('controllers/wiki.php');
