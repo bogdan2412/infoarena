@@ -17,6 +17,9 @@ function getattr($dict, $attribute, $defaultValue = null) {
 
 // Call this function for a http-level redirect.
 // NOTE: this function DOES NOT RETURN.
+// FIXME: Detect if output started and still do a redirect?
+// FIXME: Is that even remotely possible?
+// FIXME: Would be usefull for debugging though.
 function redirect($absoluteUrl) {
     header("Location: {$absoluteUrl}\n\n");
     die();
@@ -71,11 +74,15 @@ function flash_error($message) {
 function execute_view($view_file_name, $view) {
     global $identity_user;
 
+    $GLOBALS['view'] = $view;
+
     foreach ($view as $view_hash_key => $view_hash_value) {
         if ($view_hash_key == 'view_hash_key') continue;
         if ($view_hash_key == 'view_hash_value') continue;
         if ($view_hash_key == 'view_file_name') continue;
         if ($view_hash_key == 'view') continue;
+        //echo "added $view_hash_key = $view_hash_value into globals";
+        $GLOBALS[$view_hash_key] = $view_hash_value;
         $$view_hash_key = $view_hash_value;
     }
 /*    foreach ($GLOBALS as $the_key => $the_value) {

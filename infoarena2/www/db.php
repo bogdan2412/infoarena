@@ -89,7 +89,19 @@ function wikipage_get($name) {
     return db_fetch($query);
 }
 
-// Do use later.
+// Try to get the sql row for a certain page.
+// If it fails it will flash and redirec.t
+function try_wikipage_get($page_name) {
+    $page = wikipage_get($page_name);
+    if (!$page) {
+        flash_error('Nu exista pagina');
+        redirect(url(''));
+    }
+
+    return $page;
+}
+
+// Call this function to add a new revision.
 function wikipage_add_revision($name, $title, $content, $user_id) {
     global $dbLink;
     $query = sprintf("INSERT INTO ia_page (name, `text`, `title`,

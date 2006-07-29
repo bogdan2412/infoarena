@@ -14,66 +14,101 @@ identity_restore();
 // All urls that pass are valid, they can be missing wiki pages.
 $page = request('page');
 if (!preg_match('/^([a-z0-9_\-\/]*)$/i', $page)) {
-    redirect(IA_URL);
+    flash_error('Url invalid');
+    redirect(url(''));
 }
 
-// Redirectam la home
+// Redirectam la home daca suntem in origine.
 if ($page == "") {
     $page = "home";
 }
 
-// Do some monkey bussines based on the first part of $page.
+
+
+// Split the page url.
 $urlpath = split('/', $page);
 if (count($urlpath) <= 0) {
     $urlpath = array("");
 }
 
-switch (strtolower($urlpath[0])) {
-    case 'user':
-        include('controllers/user.php');
-        break;
+// This is the first part of the url path
+$urlstart = strtolower($urlpath[0]);
 
-    case 'news':
-        if (count($urlpath) == 1) {
-            include('controllers/news.php');
-        }
-        else {
-            include("controllers/wiki.php");
-        }
-        break;
-    
-    case 'register':
-        include('controllers/register.php');
-        break;
+// A lot of logic depends on this, so we try to keep the code nicer.
+$action = request('action', 'view');
 
-    case 'login':
-        include('controllers/login.php');
-        break;
+// Direct mapping list.
+$directmaps = array_flip(array('news', 'register', 'profile',
+            'login', 'logout', 'json', 'user'));
 
-    case 'logout':
-        include('controllers/logout.php');
-        break;
+//
+// Here comes the big url mapper.
+// We include in the if statement to avoid an extra parsing load.
+//
 
-    case 'profile':
-        include('controllers/profile.php');
-        break;  
+/*echo "<pre>urlstart = $urlstart</pre>";
+echo "<pre>action = $action</pre>";
+echo "<pre>directmaps = ";
+print_r($directmaps);
+echo "</pre>";*/
 
-    case 'task':
-        echo 'viewing task';
-        break;
+// Trivial direct mappings.
+if (isset($directmaps[$urlstart])) {
+    include("controllers/{$urlstart}.php");
+    $fname = "controller_{$urlstart}";
+    if (count($urlpath) < 2) {
+        $suburl = "";
+    } else {
+        array_shift($urlpath);
+        $suburl = join('/', $urlpath);
+    }
+    $fname($suburl);
 
-    case 'json':
-        // this controller serves as a data server for AJAX calls
-        include('controllers/json.php');
-        break;
+// Special shit for task view edit create
+} else if ($urlstart == 'task' && $action == 'view') {
+    include('controllers/task.php');
+    controller_task_view($urlpath[0]);
+} else if ($urlstart == 'task' && $action == 'edit') {
+    include('controllers/task.php');
+    controller_task_edit($urlpath[0]);
+} else if ($urlstart == 'task' && $action == 'create') {
+    include('controllers/task.php');
+    controller_task_create($urlpath[0]);
 
-    default:
-        // viewing generic wiki page
-        if (0 >= strlen($page)) {
-            $page = 'home';
-        }
+// Insert pset stuff here.
+//
+//  ---
+//
 
-        include('controllers/wiki.php');
-        break;
+// If it was not a special task or pset page do the wiki monkey.
+} else if ($action == 'view') {
+    include('controllers/wiki.php');
+    controller_wiki_view($page);
+} else if ($action == 'edit') {
+    include('controllers/wiki.php');
+    controller_wiki_edit($page);
+} else if ($action == 'save') {
+    include('controllers/wiki.php');
+    controller_wiki_save($page);
+
+// Attachment shit. This is common to all wiki-based urls.
+} else if ($action == 'attach') {
+    include('controllers/attachment.php');
+    controller_attachment_create($page);
+} else if ($action == 'attach-submit') {
+    include('controllers/attachment.php');
+    controller_attachment_submit($page);
+} else if ($action == 'attach-list') {
+    include('controllers/attachment.php');
+    controller_attachment_list($page);
+} else if ($action == 'attach-del') {
+    include('controllers/attachment.php');
+    controller_attachment_delete($page);
+} else if ($action == 'download') {
+    include('controllers/attachment.php');
+    controller_attachment_download($page);
+} else {
+    flash_error('Url invalid');
+    redirect(url(''));
 }
 ?>

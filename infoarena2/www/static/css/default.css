@@ -125,7 +125,7 @@ div.loading img {
 }
 
 /* Wiki */
-#wikiops {
+#wikiOps {
     font-size: .8em;
     list-style-type: none;
     padding: 0;
@@ -135,7 +135,7 @@ div.loading img {
     white-space: nowrap;
 }
 
-#wikiops li {
+#wikiOps li {
     display: inline;
 }
 

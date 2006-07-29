@@ -2,6 +2,7 @@
 
 function fval($paramName) {
     global $view;
+
     return htmlentities(getattr($view['form_values'], $paramName));
 }
 
