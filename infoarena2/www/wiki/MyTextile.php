@@ -85,13 +85,13 @@ class MyTextile extends Textile {
         $srcpath = getattr($args, 'src', '');
 
         if (!preg_match($this->external_url_exp, $srcpath)) {
-            echo 'non-external img';
+            //echo 'non-external img';
             if (preg_match('/^[a-z0-9\.\-_]+$/i', $srcpath)) {
-                echo 'local attachment';
+                //echo 'local attachment';
                 $args['src'] = url($this->page_name,
                         array('action' => 'download', 'file' => $srcpath)); 
             } else if (preg_match('/^ ([a-z0-9_\-\/]+) \? ([a-z0-9\.\-_]+)   $/ix', $srcpath, $matches)) {
-                echo 'remote attachment';
+                //echo 'remote attachment';
                 $args['src'] = url($matches[1],
                         array('action' => 'download', 'file' => $matches[2])); 
             }
