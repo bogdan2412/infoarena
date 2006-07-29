@@ -216,7 +216,7 @@ function user_create($data) {
         $query .= '`' . $key . '`,';
     }
     $query = substr($query, 0, strlen($query)-1);
-    $query .= ') VALUESe (';
+    $query .= ') VALUES (';
     foreach ($data as $key => $val) {
         if ($key == 'password') {
             $query .= "sha1('" . db_escape($val) . "'),";
