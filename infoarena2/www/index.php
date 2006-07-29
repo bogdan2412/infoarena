@@ -28,6 +28,13 @@ $urlpath = split('/', $page);
 if (count($urlpath) <= 0) {
     $urlpath = array("");
 }
+if (count($urlpath) < 2) {
+    $suburl = "";
+} else {
+    $dummy = $urlpath;
+    array_shift($dummy);
+    $suburl = join('/', $dummy);
+}
 
 // This is the first part of the url path
 $urlstart = strtolower($urlpath[0]);
@@ -55,12 +62,6 @@ echo "</pre>";*/
 if (isset($directmaps[$urlstart])) {
     require("controllers/{$urlstart}.php");
     $fname = "controller_{$urlstart}";
-    if (count($urlpath) < 2) {
-        $suburl = "";
-    } else {
-        array_shift($urlpath);
-        $suburl = join('/', $urlpath);
-    }
     $fname($suburl);
 
 // User special shit
@@ -79,13 +80,16 @@ if (isset($directmaps[$urlstart])) {
 // Special shit for task view edit create
 } else if ($urlstart == 'task' && $action == 'view') {
     require('controllers/task.php');
-    controller_task_view($urlpath[0]);
+    controller_task_view($suburl);
 } else if ($urlstart == 'task' && $action == 'edit') {
     require('controllers/task.php');
-    controller_task_edit($urlpath[0]);
+    controller_task_edit($suburl);
+} else if ($urlstart == 'task' && $action == 'save') {
+    require('controllers/task.php');
+    controller_task_save($suburl);
 } else if ($urlstart == 'task' && $action == 'create') {
     require('controllers/task.php');
-    controller_task_create($urlpath[0]);
+    controller_task_create($suburl);
 
 // Insert pset stuff here.
 //

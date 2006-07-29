@@ -150,7 +150,14 @@ div.loading img {
 /* Content */
 h1 {
     font-family: Trebuchet MS, Tahoma, Arial;
-    font-size: 16pt;
+    font-size: 1.6em;
+}
+
+h2 {
+    font-size: 1.2em;
+    font-family: Trebuchet MS, Tahoma, Arial;
+    margin: 1em 0 0 0;
+    padding: 0;
 }
 
 div.flash {
@@ -242,5 +249,19 @@ textarea#form_content {
     height: 25em;
     font-family: monospace;
     font-size: 1em;
+}
+
+form.task #form_title {
+    width: 15em;
+}
+
+form.task li#field_title, form.task li#field_author, form.task
+li#field_source {
+    float: left;
+    margin-right: 1em;
+}
+
+form.task li#field_content {
+    clear: both;
 }
 
