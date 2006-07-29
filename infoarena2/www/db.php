@@ -86,6 +86,12 @@ function task_get($id) {
 function textblock_add_revision($name, $title, $content, $user_id) {
     global $dbLink;
 
+    // do a query first
+    $query = sprintf("SELECT title, text, user_id FROM ia_textblock
+                      WHERE LCASE(`name`) = '%s'", db_escape($name));
+    $tmp = db_fetch($query);
+    if ($tmp['title'] == $title && $tmp['text'] == $content &&
+        $tmp['user_id'] = $user_id) return $tmp;
     // copy current version to revision table
     $query = sprintf("INSERT INTO ia_textblock_revision
                         SELECT *
