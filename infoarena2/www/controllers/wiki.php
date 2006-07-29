@@ -1,18 +1,5 @@
 <?php
 
-// Try to get the sql row for a certain page.
-// If it fails it will flash and redirec.t
-function try_wikipage_get($page_name) {
-    $page = wikipage_get($page_name);
-    if (!$page) {
-        flash_error('Nu exista pagina');
-        redirect(url(''));
-    }
-
-    return $page;
-}
-
-
 // View a wiki page.
 function controller_wiki_view($page_name) {
     // Tee hee.

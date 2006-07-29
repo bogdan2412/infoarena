@@ -1,9 +1,8 @@
 <?php include('header.php'); ?>
 
 <ul class="attach">
-    <h1>Atasamente pentru pagina <a href="<?php
-        echo htmlentities(getattr($view, 'page_name'))
-        ?>"><?php echo htmlentities(getattr($view, 'page_name')) ?></a></h1>
+    <h1>Atasamente pentru pagina <a href="<?= url($view['page_name']) ?>">
+        <?= $view['page_name'] ?></a></h1>
 
     <ul class="attachmentList">
     <?php foreach ($view['attach_list'] as $v) { ?>

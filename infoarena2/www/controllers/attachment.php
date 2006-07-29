@@ -1,10 +1,23 @@
 <?php
 
-// List attachments to a wiki page.
+// Try to get the sql row for a certain page.
+// If it fails it will flash and redirec.t
+function try_textblock_get($page_name) {
+    $page = textblock_get_revision($page_name);
+    if (!$page) {
+        flash_error('Cerere invalida');
+        redirect(url(''));
+    }
+
+    return $page;
+}
+
+
+// List attachments to a textblock.
 function controller_attachment_list($page_name) {
-    $page = try_wikipage_get($page_name);
-    identity_require('wiki-listattach', $page);
-    
+    $page = try_textblock_get($page_name);
+    identity_require('textblock-listattach', $page);
+
     $view = array();
     $view['attach_list'] = attachment_get_all($page_name);
     $view['page_name'] = $page['name'];
@@ -13,10 +26,10 @@ function controller_attachment_list($page_name) {
     execute_view_die('views/listattach.php', $view);
 }
 
-// Create a new attachment to a wiki page.
+// Create a new attachment to a textblock.
 function controller_attachment_create($page_name) {
-    $page = try_wikipage_get($page_name);
-    identity_require('wiki-attach', $page);
+    $page = try_textblock_get($page_name);
+    identity_require('textblock-attach', $page);
 
     // Initial attachment page. Rather empty.
     $view['page_name'] = $page_name;
@@ -25,10 +38,10 @@ function controller_attachment_create($page_name) {
     execute_view_die('views/attachment.php', $view);
 }
 
-// Submit an attachment to a wiki page.
+// Submit an attachment to a textblock.
 function controller_attachment_submit($page_name) {
-    $page = try_wikipage_get($page_name);
-    identity_require('wiki-attach', $page);
+    $page = try_textblock_get($page_name);
+    identity_require('textblock-attach', $page);
 
     global $identity_user;
 
