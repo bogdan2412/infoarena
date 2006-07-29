@@ -74,8 +74,8 @@ class MyTextile extends Textile {
             $file_name = substr($srcpath, 1);
             $args['src'] = url($this->page_name,
                     array('action' => 'download', 'file' => $file_name)); 
-            $args['pre'] = "<div><h1>imagine</h1>";
-            $args['post'] = "</div>";
+            //$args['pre'] = "<div><h1>imagine</h1>";
+            //$args['post'] = "</div>";
         } else if (strlen($srcpath) > 1 && $srcpath[0] == '/') {
             $parts = explode('?', substr($srcpath, 1));
             if (count($parts) == 2) {
