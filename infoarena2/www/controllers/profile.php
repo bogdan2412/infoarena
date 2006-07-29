@@ -19,8 +19,7 @@ function controller_profile($suburl)
     $view['title'] = 'Modificare profil';
 
     // get user avatar
-    $qres = attachment_get_by_id($identity_user['avatar']);
-    $view['avatar'] = $qres['name'];
+    $view['avatar'] = $identity_user['avatar_filename'];
     $view['username'] = $identity_user['username'];
 
     if ($suburl == 'save') {
@@ -180,8 +179,12 @@ function controller_profile($suburl)
                 // Write the file on disk.
                 if (!$errors) {
                     $qdata['avatar'] = $disk_name; // $disk_name is the attach id
+
+                    // to cache avatar filename in ia_user db
+                    $resf = attachment_get_by_id($disk_name);
+                    $qdata['avatar_filename'] = $resf['name'];
+                    
                     $disk_name = IA_ATTACH_DIR . $disk_name;
-                    //print_r($_FILES['avatar']);
                     if (!move_uploaded_file($_FILES['avatar']['tmp_name'],
                                             $disk_name)) {
                         $errors['avatar'] = 'Fisierul nu a putut fi '.
