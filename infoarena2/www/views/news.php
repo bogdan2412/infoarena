@@ -18,15 +18,15 @@
         </div>
     <?php } ?>
     
-    <span class="pagination">
+    <span class="paginator">
     <?php
     $cnt = news_count();
     for ($page = 0; $page*IA_MAX_NEWS < $cnt; $page++)
         if ($page != $view['page']) {
-            echo '<a href="news?pagenum='.$page.'">['.$page.']</a> ';
+            echo '<a href="news?pagenum='.$page.'">' . ($page + 1) . '</a> ';
         }
         else {
-            echo '['.$page.'] ';
+            echo '<strong>'.($page + 1).'</strong> ';
         }
     ?>
     </span>

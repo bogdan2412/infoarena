@@ -5,6 +5,10 @@
 function Page_Init() {
     // flash fade away
     var flash = $('flash');
+    if (!flash) {
+        return;
+    }
+    
     var callback = function() {
         flash.style.display = 'none';
     }

@@ -11,8 +11,13 @@ function controller_news() {
 
     // feed the troll
     $pagenum = request('pagenum', 0);
+
+    if (0 > $pagenum) {
+        $pagenum = 0;
+    }
+    
     $view['page'] = $pagenum;
-    $view['news'] = news_get_range($pagenum*IA_MAX_NEWS, IA_MAX_NEWS);
+    $view['news'] = news_get_range($pagenum * IA_MAX_NEWS, IA_MAX_NEWS);
     if (!$view['news']) {
         flash_error('Pagina de stiri nu exista');
         redirect(url('news'));

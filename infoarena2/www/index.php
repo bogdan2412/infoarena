@@ -35,9 +35,10 @@ $urlstart = strtolower($urlpath[0]);
 // A lot of logic depends on this, so we try to keep the code nicer.
 $action = request('action', 'view');
 
-// Direct mapping list.
+// Direct mapping list
+// Note: array_flip() flips keys with values in a dictionary.
 $directmaps = array_flip(array('register', 'profile',
-            'login', 'logout', 'json', 'user'));
+                               'login', 'logout', 'json', 'user'));
 
 //
 // Here comes the big url mapper.
