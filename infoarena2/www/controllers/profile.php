@@ -4,7 +4,6 @@
 function controller_profile($suburl)
 {
     identity_require('edit-profile');
-    define('IA_AVATAR_MAXSIZE', 2000000);
     global $identity_user;
 
     // Initialize view parameters.
@@ -88,10 +87,45 @@ function controller_profile($suburl)
                 $errors['avatar'] = 'Nume de fisier invalid (nu folositi spatii)';
             }
             // Check file size
-            if ($avatar_size < 0 ||
+            elseif ($avatar_size < 0 ||
                 $avatar_size > IA_AVATAR_MAXSIZE) {
                 $errors['avatar_size'] = 'Fisierul depaseste limita de ' .
                     (IA_AVATAR_MAXSIZE / 1024).' kbytes';
+            }
+            else {
+/*
+                // resize avatar if it's too big
+                $filename = $_FILES['avatar']['tmp_name'];
+                $imgd = getimagesize($filename);
+                if ($imgd[0] > IA_AVATAR_WIDTH || $imgd[1] > IA_AVATAR_HEIGHT)
+                {
+                    // read the data from file
+                    $fhandle = fopen($filename, "rb");
+                    $fcontents = fread($fhandle, filesize($filename));
+                    fclose($fhandle);
+                    $image = imagecreatefromstring($fcontents);
+
+                    // calculate resultant image size
+                    $width = IA_AVATAR_WIDTH;
+                    $height = IA_AVATAR_HEIGHT;
+                    if ($imgd[0] < $imgd[1]) {
+                        $width = ($height / $imgd[1]) * $imgd[0];
+                    } else {
+                        $height = ($width / $imgd[0]) * $imgd[1];
+                    }
+
+                    // resample image to new sizes
+                    $image_p = imagecreatetruecolor($width, $height);
+                    // !imagecopyresampled needs gd.so library
+                    imagecopyresampled($image_p, $image, 0, 0, 0, 0,
+                        $width, $height, $imgd[0], $imgd[1]);
+
+                    // write new data to file
+                    $fhandle = $fopen($filename, "wb");
+                    echo fwrite($fhandle, $image_p);
+                    fclose($fhandle);
+                }
+*/
             }
         }
 
