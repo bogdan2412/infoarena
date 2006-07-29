@@ -149,6 +149,8 @@ function controller_profile($suburl)
             }
         }
 
+        $data['newsletter'] = (getattr($_POST, 'newsletter') == 'on' ?1:0);
+
         $data['city'] = getattr($_POST, 'city');
         if ($data['city'] &&
             !preg_match('/^[a-z]+[a-z_\-\ ]*$/i', $data['city'])) {

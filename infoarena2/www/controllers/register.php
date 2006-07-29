@@ -86,7 +86,9 @@ function controller_register($suburl)
                 $errors['birthday'] = 'Ziua de nastere este in viitor';
             }
         }
-        
+
+        $data['newsletter'] = (getattr($_POST, 'newsletter') == 'on' ?1:0);
+
         $data['city'] = getattr($_POST, 'city');
         if ($data['city'] && !preg_match('/^[a-z]+[a-z_\-\ ]*$/i', $data['city'])) {
             $errors['city'] = 'Oras necunoscut';
@@ -141,6 +143,7 @@ function controller_register($suburl)
     }
     else {
         // form is displayed for the first time. Fill in default values.
+        $data['newsletter'] = 1;
         $data['email'] = '@';
         $data['country'] = 'Romania';
     }

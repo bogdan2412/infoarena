@@ -94,6 +94,12 @@
                 <?= ferr_span('birthday') ?>
                 <span class="fieldHelp">Trebuie sa fie de forma AAAA-LL-ZZ</span>
             </li>
+
+            <li>
+                <label for="form_newsletter">Abonat la newsletter</label>
+                <input type="checkbox" <?php if (fval('newsletter'))
+                    echo 'checked="checked"'; ?> name="newsletter" id="form_newsletter"/>
+            </li>
         </div>
         
         <div class="tab personalData">
