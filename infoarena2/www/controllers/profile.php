@@ -188,7 +188,7 @@ function controller_profile($suburl)
                 }
             }
         }
-        
+
         // 2. process
         if (!$errors) {
             $qdata = $data;
@@ -256,6 +256,10 @@ function controller_profile($suburl)
                 redirect(url(""));
             }
         }
+        else {
+            flash_error('Am intalnit probleme, va rugam verificati datele cu rosu');
+        }
+
     }
     else {
         // form is displayed for the first time. Fill in default values
