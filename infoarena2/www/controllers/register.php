@@ -55,7 +55,10 @@ function controller_register($suburl)
         }
         
         $data['country'] = getattr($_POST, 'country');
-        if (!preg_match('/^[a-z]+[a-z_\-\ ]*$/i', $data['country'])) {
+        if (!$data['country']) {
+            $errors['country'] = 'Va rugam completati tara';
+        }
+        elseif (!preg_match('/^[a-z]+[a-z_\-\ ]*$/i', $data['country'])) {
             $errors['country'] = 'Tara necunoscuta';
         }
 

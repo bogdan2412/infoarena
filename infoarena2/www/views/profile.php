@@ -75,6 +75,7 @@
         
         <label for="form_avatar">Avatar</label>
         <input type="file" name="avatar" value="" id="form_avatar" />
+        <?= ferr_span('avatar') ?>
     </li>
     <?php } ?>
     

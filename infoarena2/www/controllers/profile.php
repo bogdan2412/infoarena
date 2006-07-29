@@ -64,7 +64,10 @@ function controller_profile($suburl)
         }
         
         $data['country'] = getattr($_POST, 'country');
-        if (!preg_match('/^[a-z]+[a-z_\-\ ]*$/i', $data['country'])) {
+        if (!$data['country']) {
+            $errors['country'] = 'Va rugam completati tara';
+        }
+        elseif (!preg_match('/^[a-z]+[a-z_\-\ ]*$/i', $data['country'])) {
             $errors['country'] = 'Tara necunoscuta';
         }
 
@@ -77,16 +80,19 @@ function controller_profile($suburl)
         // -- avatar validation code --
         // TODO: Limit avatar dimensions
         $avatar = basename($_FILES['avatar']['name']);
-        $avatar_size = $_FILES['avatar']['size'];
-        // Validate filename. This limits attachment names, and it sucks
-        if (!preg_match('/^[a-z0-9\.\-_]+$/i', $avatar)) {
-            $errors['avatar'] = 'Nume de fisier invalid (nu folositi spatii)';
-        }
-        // Check file size
-        if ($avatar_size < 0 ||
-            $avatar_size > IA_AVATAR_MAXSIZE) {
-            $errors['avatar_size'] = 'Fisierul depaseste limita de ' .
-                (IA_AVATAR_MAXSIZE / 1024).' kbytes';
+        if ($avatar)
+        {
+            $avatar_size = $_FILES['avatar']['size'];
+            // Validate filename. This limits attachment names, and it sucks
+            if (!preg_match('/^[a-z0-9\.\-_]+$/i', $avatar)) {
+                $errors['avatar'] = 'Nume de fisier invalid (nu folositi spatii)';
+            }
+            // Check file size
+            if ($avatar_size < 0 ||
+                $avatar_size > IA_AVATAR_MAXSIZE) {
+                $errors['avatar_size'] = 'Fisierul depaseste limita de ' .
+                    (IA_AVATAR_MAXSIZE / 1024).' kbytes';
+            }
         }
 
         $data['quote'] = getattr($_POST, 'quote');
@@ -110,7 +116,8 @@ function controller_profile($suburl)
         }
 
         $data['city'] = getattr($_POST, 'city');
-        if ($data['city'] && !preg_match('/^[a-z]+[a-z_\-\ ]*$/i', $data['city'])) {
+        if ($data['city'] &&
+            !preg_match('/^[a-z]+[a-z_\-\ ]*$/i', $data['city'])) {
             $errors['city'] = 'Oras necunoscut';
         }
 
@@ -145,15 +152,14 @@ function controller_profile($suburl)
                 }
             }
         }
-
+        
         // 2. process
         if (!$errors) {
             $qdata = $data;
             unset($qdata['avatar']);
             // -- avatar upload --
             // similar to attachments
-            if ($avatar)
-            {
+            if ($avatar) {
                 // Add the file to the database.
                 $user_page = 'user/' . $identity_user['username'];
                 $attach = attachment_get($avatar, $user_page);
