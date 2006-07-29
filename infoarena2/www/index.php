@@ -121,6 +121,12 @@ if (isset($directmaps[$urlstart])) {
 } else if ($action == 'history') {
     require('controllers/textblock.php');
     controller_textblock_history($page);
+} else if ($action == 'restore') {
+    require('controllers/textblock.php');
+    controller_textblock_restore_revision($page, request('revision'));
+} else if ($action == 'diff') {
+    require('controllers/textblock.php');
+    controller_textblock_diff_revision($page, request('revision'));
 
 // Attachment shit. This is common to all wiki-based urls.
 } else if ($action == 'attach') {

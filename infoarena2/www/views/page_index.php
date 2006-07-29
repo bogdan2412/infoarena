@@ -1,6 +1,5 @@
 <?php include('header.php'); ?>
 
-<ul class="page_index">
     <?php if ($view['page']) { ?>
         <h1>Pagini din <a href="<?= url($view['page_name']) ?>"><?= $view['page_name'] ?></a></h1>
     <?php } else if ($view['page_name']) { ?>
@@ -9,7 +8,7 @@
         <h1>Pagini</h1>
     <?php } ?>
 
-    <ul class="list">
+    <ul class="page_index">
         <?php foreach ($view['page_list'] as $v) { ?>
         <li>
             <a href="<?= url($v['name']) ?>"><?= $v['title'] ? htmlentities($v['title']) : '<strong>FARA TITLU</strong>' ?></a>,
@@ -20,6 +19,5 @@
         </li>
         <?php } ?>
     </ul>
-</ul>
 
 <?php include('footer.php'); ?>
