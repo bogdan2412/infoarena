@@ -1,6 +1,7 @@
 <?php
 
-@require_once("Textile.php");
+require_once("Textile.php");
+
 class MyTextile extends Textile {
     var $page_name;
 
@@ -22,7 +23,6 @@ class MyTextile extends Textile {
         $str = (isset($args['text']) ? $args['text'] : '');
         $str = trim($str);
 
-//        return '<b style="color:red">Bad macro</b>';
         $argvalexp = '"(([^"]*("")*)*)"';
         if (preg_match('/^([a-z][a-z0-9_]*)\s*\((\s*
                         (   [a-z][a-z0-9_]* \s*  = \s* '.$argvalexp.' \s* )*
@@ -45,13 +45,22 @@ class MyTextile extends Textile {
                 $args[$matches[$i][1]] = str_replace('""', '"', $matches[$i][2]);
             }
 
-/*            $res = "$macro_name(";
+            /*$res = "$macro_name(";
             foreach ($args as $k => $v) {
                 $res .= " ".$k." = \"".$v."\" ";
             }
-            $res .= ")";*/
+            $res .= ")";
+            echo $res;*/
 
-            return execute_macro($macro_name, $args);
+            // Black magic here.
+            // this function is called from a callback that uses a static variable.
+            // Callbacks use static variables because php is retarded.
+            // Anyway, execute_macro can use textile for itself, therefore I 
+            // have to restore that static variable after execute_macro.
+            // This very scary, but it works.
+            $res = execute_macro($macro_name, $args);
+            Textile::_current_store($this);
+            return $res;
         }
         return make_error_div('Bad macro "'.$str.'"');
     }
