@@ -14,6 +14,10 @@
 function controller_round_edit($round_id, $form_data = null,
                                $form_errors = null) {
     global $identity_user;
+    if (!$round_id) {
+        flash_error('id-ul rundei este invalid');
+        redirect(url(''));
+    }
     $round = round_get($round_id);
     if ($round) {
         identity_require('round-edit', $round);
@@ -111,6 +115,10 @@ function controller_round_edit($round_id, $form_data = null,
 //        as error handler
 function controller_round_save($round_id) {
     global $identity_user;
+    if (!$round_id) {
+        flash_error('id-ul rundei este invalid');
+        redirect(url(''));
+    }
     $round = round_get($round_id);
     if ($round) {
         identity_require('round-edit', $round);

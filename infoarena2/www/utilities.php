@@ -130,7 +130,6 @@ function string_diff($string1, $string2) {
     system("diff -au ".$name1." ".$name2);
     $ret = ob_get_contents();
     ob_end_clean();
-    return $ret;
     if (!unlink($name1)) {
         flash_error("Eroare la comparare!");
         request(url(''));
