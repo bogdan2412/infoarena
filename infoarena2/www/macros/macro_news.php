@@ -13,7 +13,7 @@ function macro_news($args) {
         $res .= '<span class="date">'.htmlentities($subpages[$i]['timestamp']).'</span>';
         $res .='<div class="wiki_text_block">';
         $minicontext = array('page_name' => $subpages[$i]['name'], 'title' => $title);
-        $res .= wiki_process_text(getattr($subpages[$i], 'text'), $minicontext);
+        $res .= wiki_process_text_recursive(getattr($subpages[$i], 'text'), $minicontext);
         $res .= '</div></div>';
     }
     $res .= "</div>";
