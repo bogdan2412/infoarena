@@ -14,7 +14,7 @@
 
     <?= getattr($view, 'head') ?>
 </head>
-<body>
+<body<?= getattr($view, 'body_onload') ? ' onload="' . htmlentities(getattr($view, 'body_onload')) . '"' : '' ?>>
 
 <div id="header">
     <strong><a id="logo" href="<?= url('home') ?>">info-arena</a></strong>

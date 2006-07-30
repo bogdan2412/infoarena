@@ -265,6 +265,10 @@ form.task li#field_content {
     clear: both;
 }
 
+form.round li#field_tasks select {
+    width: 20em;
+}
+
 /* Diff */
 .diff {
     font-family: monospace;

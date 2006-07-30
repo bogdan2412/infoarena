@@ -1,5 +1,8 @@
 <?php
-$view['head'] = "<script type=\"text/javascript\" src=\"" . url("static/js/wikiedit.js") . "\"></script>";
+$view['head'] = "<script type=\"text/javascript\" src=\"" . url("static/js/wikiedit.js") . "\"></script>\n";
+$view['head'] .= "<script type=\"text/javascript\" src=\"" . url("static/js/dual.js") . "\"></script>";
+$view['head'] .= "<script type=\"text/javascript\" src=\"" . url("static/js/roundedit.js") . "\"></script>";
+
 ?>
 
 <?php
@@ -14,27 +17,15 @@ include('header.php');
     <input type="button" class="button" id="preview_reload" value="Re-incarca" />
 </div>
 
-<form action="<?= getattr($view, 'action') ?>" method="post" class="task">
+<form action="<?= getattr($view, 'action') ?>" method="post" class="round">
 <div class="tabber">
     <div class="tabbertab<?= 'statement' == $active_tab ? ' tabbertabdefault' : '' ?> statement">
-        <h3>Enunt</h3>
+        <h3>Pagina runda</h3>
         <ul class="form">
             <li id="field_title">
                 <label for="form_title">Titlu</label>
                 <input type="text" name="title" value="<?= fval('title') ?>" id="form_title"/>
                 <?= ferr_span('title') ?>
-            </li>
-            
-            <li id="field_author">
-                <label for="form_author">Autor(i)</label>
-                <input type="text" name="author" value="<?= fval('author') ?>" id="form_author"/>
-                <?= ferr_span('author') ?>
-            </li>
-            
-            <li id="field_source">
-                <label for="form_source">Sursa</label>
-                <input type="text" name="source" value="<?= fval('source') ?>" id="form_source"/>
-                <?= ferr_span('source') ?>
             </li>
             
             <li id="field_content">
@@ -46,20 +37,35 @@ include('header.php');
         </ul>
     </div>
 
+    <div class="tabbertab<?= 'tasks' == $active_tab ? ' tabbertabdefault' : '' ?> parameters">
+        <h2>Task-uri</h2>
+
+<ul class="form">
+    <li id="field_tasks">
+        <label for="form_tasks">Alege task-urile acestei runde</label>
+            <select name="tasks[]" id="form_tasks" multiple="multiple" size="10">
+<?php foreach ($all_tasks as $task) { ?>
+    <option value="<?= $task['id'] ?>"<?= false !== array_search($task['id'], $form_values['tasks']) ? ' selected="selected"' : ''  ?>><?= $task['title'] ?> [<?= $task['id'] ?>]</option>
+<?php } ?>
+            </select>
+            <?= ferr_span('tasks')?>
+    </li>
+</ul>
+    </div>
+
     <div class="tabbertab<?= 'parameters' == $active_tab ? ' tabbertabdefault' : '' ?> parameters">
         <h2>Parametri</h2>
 
 <ul class="form">
     <li id="field_type">
-        <label for="form_type">Tip task</label>
-            <select name="type" id="form_type">
-                <option value=""<?= '' == fval('type') ? ' selected="selected"' : '' ?>>[ Alege ]</option>
-                <option value="classic"<?= 'classic' == fval('type') ? ' selected="selected"' : '' ?>>Clasic</option>
-                <option value="debug"<?= 'debug' == fval('type') ? ' selected="selected"' : '' ?>>Debug</option>
-                <option value="speed"<?= 'speed' == fval('type') ? ' selected="selected"' : '' ?>>Speed</option>
-                <option value="output-only"<?= 'output-only' == fval('type') ? ' selected="selected"' : '' ?>>Output Only</option>
-            </select>
-            <?= ferr_span('type')?>
+        <label for="form_type">Tip runda</label>
+        <select name="type" id="form_type">
+            <option value=""<?= '' == fval('type') ? ' selected="selected"' : '' ?>>[ Alege ]</option>
+            <option value="classic"<?= 'classic' == fval('type') ? ' selected="selected"' : '' ?>>Clasic</option>
+            <option value="debug"<?= 'debug' == fval('type') ? ' selected="selected"' : '' ?>>Debug</option>
+            <option value="speed"<?= 'speed' == fval('type') ? ' selected="selected"' : '' ?>>Speed</option>
+        </select>
+        <?= ferr_span('type') ?>
     </li>
 </ul>
 
