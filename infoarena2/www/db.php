@@ -569,4 +569,23 @@ function news_count() {
     return $tmp['cnt'];
 }
 
+/**
+ * Job
+ */
+
+// Creates new eval job
+function job_create($round_id, $task_id, $user_id, $file_extension,
+                    $file_contents) {
+    $query = "
+        INSERT INTO ia_job
+            (round_id, task_id, user_id, file_extension, file_contents,
+             `timestamp`)
+        VALUES ('%s', '%s', '%s', '%s', '%s', NOW())
+    ";
+    $query = sprintf($query, db_escape($round_id), db_escape($task_id),
+                     db_escape($user_id), db_escape($file_extension),
+                     db_escape($file_contents));
+    return db_query($query);      
+}
+
 ?>
