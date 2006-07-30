@@ -44,10 +44,32 @@
         <? } ?>
     </ul>
     <?php if (identity_anonymous()) { ?>
-    <div class="sidebox" id="members">
-        <p class="title"><strong>Membri</strong></p>
-        <a href="<?= url('register') ?>">Inregistreaza-te!</a>
-    </div>
+    <form action="<?= url('login', 'action=login') ?>" method="post" class="login">
+        <div class="sidebox" id="members">
+            <p class="title"><strong>Membri</strong></p>
+            <ul class="form">
+                <li>
+                    <label for="form_username">Utilizator</label>
+                    <input type="text" name="username" id="form_username" value="<?= fval('username') ?>" />
+            
+                    <?= ferr_span('username') ?>
+                </li>
+                
+                <li>
+                    <label for="form_password">Parola</label>
+                    <input type="password" name="password" id="form_password" value="<?= fval('password') ?>" />
+            
+                    <?= ferr_span('password') ?>
+                </li>
+                
+                <li>
+                    <input type="submit" value="Autentificare" id="form_submit" class="button important" />
+                    <a href="<?= url("reset_pass") ?>">Am uitat parola</a>
+                </li>
+            </ul>            
+            <a href="<?= url('register') ?>">Inregistreaza-te!</a>
+        </div>
+    </form>
     <?php } ?>
     
 </div>
