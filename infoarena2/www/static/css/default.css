@@ -265,3 +265,16 @@ form.task li#field_content {
     clear: both;
 }
 
+/* Diff */
+.diff {
+    font-family: monospace;
+}
+
+.diff .deleted {
+    background-color: red;
+}
+
+.diff .new {
+    background-color: green;
+}
+
