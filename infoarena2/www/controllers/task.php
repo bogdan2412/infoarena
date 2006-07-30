@@ -20,6 +20,7 @@ function controller_task_view($task_id) {
     $view['page_name'] = 'task/' . $task;
     $view['textblock'] = $textblock;
     $view['task'] = $task;
+    $view['task_parameters'] = task_get_parameters($task_id);
     execute_view_die('views/task_view.php', $view);
 }
 
@@ -116,6 +117,7 @@ function controller_task_edit($task_id, $form_data = null,
     $view['action'] = url('task/' . $task_id, array('action' => 'save'));
     $view['form_values'] = $form_data;
     $view['form_errors'] = $form_errors;
+    $view['page_name'] = 'task/'.$task_id;
     $view['param_list'] = $param_list;
     $view['param_values'] = $param_values;
     execute_view_die("views/task_edit.php", $view);

@@ -23,7 +23,7 @@ function check_view($view)
     }
     if (isset($view['task'])) {
         assert(is_array($view['task']));
-        assert(is_array($view['task']['parameters']));
+        assert(is_array($view['task_parameters']));
         //.. more here.
     }
 

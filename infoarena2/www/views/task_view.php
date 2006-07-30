@@ -18,7 +18,7 @@ include('header.php');
 <?php
 echo '<h1>' . htmlentities($textblock['title']) . '</h1>';
 echo '<div class="wiki_text_block">';
-echo wiki_process_text($textblock['text'], $textblock['name']);
+echo wiki_process_text($textblock['text'], $view);
 echo '</div>';
 
 include('footer.php');

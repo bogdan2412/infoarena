@@ -40,7 +40,7 @@ function macro_include($args)
         return make_error_div("Pagina de inclus e inexistenta");
     }
     //echo "calling wiki <br />";
-    $res = wiki_process_text($textblock['text'], $textblock['name']);
+    $res = wiki_process_text($textblock['text'], $args['context']);
     //echo "done calling wiki <br />";
 
     //echo "going out level " .$include_count . "<br />";

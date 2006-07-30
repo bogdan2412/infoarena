@@ -12,7 +12,9 @@
             }
             echo '<span class="date">'.htmlentities($v['timestamp']).'</span>';
             echo '<div class="wiki_text_block">';
-            echo wiki_process_text(getattr($v, 'text'), getattr($v, 'name'));
+            $minicontext = array('page_name' => $v['name'],
+                                 'title' => $v['title']);
+            echo wiki_process_text(getattr($v, 'text'), $minicontext);
             echo '</div>';
         ?>
         </div>
