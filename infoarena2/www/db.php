@@ -254,6 +254,18 @@ function textblock_get_revisions_without_content($name) {
     return db_fetch_all($query);
 }
 
+function textblock_get_revision_without_content($name) {
+    $query = sprintf("SELECT `name`, title, user_id, `timestamp`, username
+                      FROM ia_textblock
+                        LEFT JOIN ia_user ON
+                            ia_textblock.user_id = ia_user.id
+                      WHERE LCASE(`name`) = '%s'
+                      ORDER BY `timestamp`",
+                     db_escape($name));
+    return db_fetch($query);
+}
+
+
 function textblock_get_revision_count($name) {
     global $dbLink;
     $query = sprintf("SELECT COUNT(*) AS `cnt`
@@ -432,13 +444,13 @@ function attachment_get_all($page) {
 /**
  * News
  */
-function news_get_range($start, $range) {
+function news_get_range($start, $range, $prefix = null) {
     $query = sprintf("SELECT *
                       FROM ia_textblock
-                      WHERE LCASE(`name`) LIKE 'news/%%'
+                      WHERE LCASE(`name`) LIKE 'news/%s%%'
                       ORDER BY `timestamp` DESC
                       LIMIT %s,%s",
-                     $start, $range);
+                     db_escape($prefix), db_escape($start), db_escape($range));
     return db_fetch_all($query);
 }
 

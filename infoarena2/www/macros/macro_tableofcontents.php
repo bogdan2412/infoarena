@@ -2,7 +2,7 @@
 
 function macro_tableofcontents($args)
 {
-    $prefix = getattr($args, 'prefix', $args['page_name']);
+    $prefix = getattr($args, 'prefix', $args['context']['page_name']);
 
     $subpages = textblock_get_names_with_user($prefix);
 

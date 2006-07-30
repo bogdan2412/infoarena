@@ -20,7 +20,7 @@ function macro_image($args) {
     if (!is_null($link)) {
         $ret .= '<a href="'.url($link).'">';
     }
-    $ret .= '<img src="'.url($args['page_name'].'?action=download&file='.$image).'" alt="'.htmlentities($caption).'"/>';
+    $ret .= '<img src="'.url($args['context']['page_name'].'?action=download&file='.$image).'" alt="'.htmlentities($caption).'"/>';
     if (!is_null($link)) {
         $ret .= '</a>';
     }

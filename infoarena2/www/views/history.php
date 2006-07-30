@@ -7,6 +7,14 @@
     <?php } ?>
 
     <ul class="history">
+        <li>
+             <?php $v = $view['current']; ?>
+            <em>Revizia curenta (<?= htmlentities($v['timestamp']) ?>) </em>
+            <a href="<?= url($v['name']) ?>"><?= $v['title'] ? htmlentities($v['title']) : '<strong>FARA TITLU</strong>' ?></a>
+            <?php if (getattr($v, 'username')) { ?>
+                 , editat de <a href="<?= url('user/'.$v['username']) ?>"><?= htmlentities($v['username']) ?></a>
+            <?php } ?>
+        </li>
         <?php for ($idx = $view['count']-1; $idx >= 0; $idx--) { ?>
         <li>
             <?php $v = $view['page_list'][$idx]; ?>
