@@ -5,9 +5,11 @@
     <title><?= htmlentities(getattr($view, 'title')) ?></title>
 
     <link type="text/css" rel="stylesheet" href="<?= url('static/css/default.css') ?>"/>
+    <link type="text/css" rel="stylesheet" href="<?= url('static/css/tabber.css') ?>"/>
     <script type="text/javascript" src="<?= url('static/js/config.js.php') ?>"></script>
     <script type="text/javascript" src="<?= url('static/js/MochiKit.js') ?>"></script>
     <script type="text/javascript" src="<?= url('static/js/default.js') ?>"></script>
+    <script type="text/javascript" src="<?= url('static/js/tabber-minimized.js') ?>"></script>
 
     <?= getattr($view, 'head') ?>
 </head>

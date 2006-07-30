@@ -278,7 +278,8 @@ function controller_profile($suburl)
         unset($data['password']);
     }
 
-    // attach form is displayed for the first time or a validation error occured
+    // attach form is displayed for the first time or a validation error
+    // occured
     $view['register'] = false;
     $view['form_errors'] = $errors;
     $view['form_values'] = $data;

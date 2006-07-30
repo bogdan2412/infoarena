@@ -5,10 +5,10 @@
 <?php } else {?>
 <form enctype="multipart/form-data" action="<?= url('profile/save') ?>" method="post">
 <?php } ?>
-<ul class="form">
-    <div class="tabber userProfile">
-        <div class="tab generalData">
-            <h2>Date generale</h2>
+<div class="tabber userProfile">
+    <div class="tabbertab<?= 'generalData' == $active_tab ? ' tabbertabdefault' : '' ?> generalData">
+        <h2>Date generale</h2>
+        <ul class="form">
             <?php if ($register) { ?>
             <li>
                 <label for='form_username'>Nume utilizator</label>
@@ -64,10 +64,12 @@
                 </select>
                 <?= ferr_span('county') ?>
             </li>
-        </div>
-        
-        <div class="tab profileData">
-            <h2>Profil</h2>
+        </ul>
+    </div>
+    
+    <div class="tabbertab<?= 'profileData' == $active_tab ? ' tabbertabdefault' : '' ?> profileData">
+        <h2>Profil</h2>
+        <ul class="form">
             <?php if (!$register) { ?>
             <li>
                 <?php // display avatar
@@ -100,10 +102,12 @@
                 <input type="checkbox" <?php if (fval('newsletter'))
                     echo 'checked="checked"'; ?> name="newsletter" id="form_newsletter"/>
             </li>
-        </div>
-        
-        <div class="tab personalData">
-            <h2>Date personale</h2>
+        </ul>
+    </div>
+    
+    <div class="tabbertab<?= 'personalData' == $active_tab ? ' tabbertabdefault' : '' ?> personalData">
+        <h2>Date personale</h2>
+        <ul class="form">
             <li>
                 <label for="form_city">Oras</label>
                 <input type="text" name="city" value="<?= fval('city') ?>" id="form_city" />
@@ -111,7 +115,7 @@
             </li>
             
             <li>
-                <label for="form_workplace">Institurie de invatamant</label>
+                <label for="form_workplace">Institutie de invatamant</label>
                 <input type="text" name="workplace" value="<?= fval('workplace') ?>" id="form_workplace" />
                 <?= ferr_span('workplace') ?>
                 <span class="fieldHelp">(merge un assisted-input aici)</span>
@@ -150,17 +154,26 @@
                 <input type="text" name="phone" value="<?= fval('phone') ?>" id="form_phone" />
                 <?= ferr_span('phone') ?>
             </li>
-            
-            <li>
-                <?php if ($register) { ?>
-                <input type="submit" value="Inregistreaza-ma" id="form_submit" />
-                <?php } else { ?>
-                <input type="submit" value="Modifica" id="form_submit" />
-                <? } ?>
-            </li>
-        </div>
+        </ul>
     </div>
-</ul>
+</div>
+
+<div class="submit">
+    <ul class="form">
+        <li>
+            <?php if ($register) { ?>
+            <input type="submit" value="Inregistreaza-ma" id="form_submit" />
+            <?php } else { ?>
+            <input type="submit" value="Salveaza modificarile" id="form_submit" />
+            <? } ?>
+        </li>
+    </ul>
+</div>
+
+
+</div>
+
+
 </form>
 
 <?php include('footer.php'); ?>
