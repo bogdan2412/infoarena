@@ -106,7 +106,9 @@ function execute_view_die($view_file_name, $view)
 
 // smart ass diff
 function string_diff($string1, $string2) {
-    $fp1 = fopen(IA_ATTACH_DIR."ia_diff_temp1", "w");
+    $name1 = tempnam(IA_ATTACH_DIR, "ia");
+    $name2 = tempnam(IA_ATTACH_DIR, "ia");
+    $fp1 = fopen($name1, "w");
     if (!$fp1) {
         flash_error("Eroare la comparare!");
         request(url(''));
@@ -115,7 +117,7 @@ function string_diff($string1, $string2) {
     fputs($fp1, $string1);
     fclose($fp1);
 
-    $fp2 = fopen(IA_ATTACH_DIR."ia_diff_temp2", "w");
+    $fp2 = fopen($name2, "w");
     if (!$fp2) {
         flash_error("Eroare la comparare!");
         request(url(''));
@@ -125,16 +127,15 @@ function string_diff($string1, $string2) {
     fclose($fp2);
 
     ob_start();
-    system("diff -au ".IA_ATTACH_DIR."ia_diff_temp1 ".
-           IA_ATTACH_DIR."ia_diff_temp2");
+    system("diff -au ".$name1." ".$name2);
     $ret = ob_get_contents();
     ob_end_clean();
     return $ret;
-    if (!unlink(IA_ATTACH_DIR."ia_diff_temp1")) {
+    if (!unlink($name1)) {
         flash_error("Eroare la comparare!");
         request(url(''));
     }
-    if (!unlink(IA_ATTACH_DIR."ia_diff_temp2")) {
+    if (!unlink($name2)) {
         flash_error("Eroare la comparare!");
         request(url(''));
     }
@@ -142,8 +143,7 @@ function string_diff($string1, $string2) {
 }
 
 // mail function
-function send_mail()
-{
+function send_mail() {
 }
 
 ?>
