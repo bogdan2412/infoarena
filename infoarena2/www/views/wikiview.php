@@ -15,7 +15,7 @@ include('header.php');
     </ul>
 <?php
 echo '<h1>'.htmlentities($textblock['title']).'</h1>';
-if (!is_null($view['revision'])) {
+if (getattr($view, 'revision')) {
     echo "<em>Atentie, aceasta pagina nu este actuala (este varianta de la ".$wikipage['timestamp'].")</em>";
 }
 echo '<div class="wiki_text_block">';

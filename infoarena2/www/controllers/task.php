@@ -94,7 +94,9 @@ function controller_task_edit($task_id, $form_data = null,
         }
     }
     else {
-        // extract parameter values from form_data
+        // extract parameter values from form_data.
+        // the `save` controller does a nice thing and extracts these values
+        // for convenience
         $param_values = $form_data['_param_values'];
     }
 
@@ -178,6 +180,7 @@ function controller_task_save($task_id) {
     }
     if (strlen($data['type']) < 1) {
         $errors['type'] = "Alegeti tipul task-ului.";
+        $errors['_param_list'] = true;
     }
     // validate parameter values
     foreach ($param_values as $k => $v) {

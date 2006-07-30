@@ -40,7 +40,8 @@ function identity_can($action, $ontoObject = null, $identity = null) {
                           'task-view', 'task-submit', 'task-edit',
                           'task-create', 'task-publish',
                           'edit-profile', 'user-details',
-                          'news-view', 'news-edit', 'news-create');
+                          'news-view', 'news-edit', 'news-create',
+                          'round-view', 'round-create', 'round-edit');
     assert(false !== array_search($action, $validActions));
 
     // first, handle anonymous users
@@ -52,6 +53,7 @@ function identity_can($action, $ontoObject = null, $identity = null) {
             case 'wiki-listattach':
             case 'task-view':
             case 'news-view':
+            case 'round-view':
                 return true;
 
             default:
@@ -78,6 +80,7 @@ function identity_can($action, $ontoObject = null, $identity = null) {
         case 'task-view':
         case 'news-view':
         case 'task-submit':
+        case 'round-view':
             return true;
 
         case 'wiki-create':
@@ -105,6 +108,8 @@ function identity_can($action, $ontoObject = null, $identity = null) {
         case 'task-publish':
         case 'news-create':
         case 'news-edit':
+        case 'round-create':
+        case 'round-edit':
             switch ($level) {
                 case 'reviewer':
                     return true;

@@ -28,6 +28,7 @@ include('header.php');
         <span class="fieldError"><?= ferr('content') ?></span>
         <?php } ?>        
         <textarea name="content" id="form_content" rows="10" cols="50"><?= fval('content') ?></textarea>
+        <span class="fieldHelp"><a href="<?= url('textile') ?>">Cum formatez text?</a></span>
     </li>
     
 	<li>

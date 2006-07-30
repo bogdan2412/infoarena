@@ -114,13 +114,56 @@ function task_update_parameters($task_id, $param_values) {
     return parameter_update_values('task', $task_id, $param_values);
 }
 
+/**
+ * Round
+ */
+function round_get($round_id) {
+    $query = sprintf("SELECT * FROM ia_round WHERE `id` = LCASE('%s')",
+                     db_escape($round_id));
+    return db_fetch($query);
+}
+
+function round_get_textblock($round_id) {
+    return textblock_get_revision('round/' . $round_id);
+}
+
+function round_create($round_id, $type, $user_id) {
+    global $dbLink;
+    $query = sprintf("INSERT INTO ia_round
+                        (`id`, `type`, user_id)
+                      VALUES (LCASE('%s'), '%s', '%s')",
+                     db_escape($round_id), db_escape($type),
+                     db_escape($user_id));
+    db_query($query);
+    return mysql_insert_id($dbLink);
+}
+
+function round_update($round_id, $type) {
+    global $dbLink;
+    $query = sprintf("UPDATE ia_round
+                      SET `type` = '%s'
+                      WHERE `id` = LCASE('%s')
+                      LIMIT 1",
+                     db_escape($type), db_escape($task_id));
+    return db_query($query);
+}
+
+// binding for parameter_get_values
+function round_get_parameters($round_id) {
+    return parameter_get_values('round', $round_id);
+}
+
+// binding for parameter_update_values
+function round_update_parameters($round_id, $param_values) {
+    return parameter_update_values('round', $round_id, $param_values);
+}
 
 /**
  * Parameter
  */
 
 // Lists all parameters of $type `type`.
-// $type is "task" or "contest"
+// $type is "task" or "round"
 function parameter_list($type) {
     $query = sprintf("SELECT * FROM ia_parameter WHERE `type` = '%s'",
                      db_escape($type));
@@ -135,9 +178,9 @@ function parameter_list($type) {
 // :WARNING: This function does not check for parameter validity!
 // It only stores them to database.
 //
-// $object_type is "task" or "contest"
+// $object_type is "task" or "round"
 function parameter_update_values($object_type, $object_id, $dict) {
-    assert($object_type == 'task' or $object_type == 'contest');
+    assert($object_type == 'task' or $object_type == 'round');
 
     // delete all parameters connected to this task
     $query = sprintf("DELETE FROM ia_parameter_value

@@ -91,6 +91,20 @@ if (isset($directmaps[$urlstart])) {
     require('controllers/task.php');
     controller_task_create($suburl);
 
+// Special shit for round view edit create
+} else if ($urlstart == 'round' && $action == 'view') {
+    require('controllers/round.php');
+    controller_round_view($suburl);
+} else if ($urlstart == 'round' && $action == 'edit') {
+    require('controllers/round.php');
+    controller_round_edit($suburl);
+} else if ($urlstart == 'round' && $action == 'save') {
+    require('controllers/round.php');
+    controller_round_save($suburl);
+} else if ($urlstart == 'round' && $action == 'create') {
+    require('controllers/round.php');
+    controller_round_create($suburl);
+
 // Insert pset stuff here.
 //
 //  ---

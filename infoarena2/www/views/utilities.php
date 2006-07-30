@@ -5,13 +5,9 @@ function check_view($view)
 {
     assert(is_array($view));
     assert(is_string($view['title']));
-    assert(is_string($view['page_name']));
-    if (isset($view['form_erorrs']) || isset($view['form_values'])) {
+    if (isset($view['form_errors']) || isset($view['form_values'])) {
         assert(is_array($view['form_errors']));
         assert(is_array($view['form_values']));
-        foreach ($view['form_errors'] as $k => $v) {
-            assert(isset($view['form_values'][$k]));
-        }
     }
     assert(!isset($view['wikipage']));
     if (isset($view['textblock'])) {
