@@ -1,8 +1,7 @@
 <?php
 
 require_once("macros/macros.php");
-@require_once("Textile.php");
-@require_once("MyTextile.php");
+require_once("MyTextile.php");
 
 function check_context($context)
 {

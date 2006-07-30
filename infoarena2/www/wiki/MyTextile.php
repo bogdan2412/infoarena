@@ -1,17 +1,17 @@
 <?php
 
-require_once("Textile.php");
+@require_once("Textile.php");
 
 class MyTextile extends Textile {
     // Context variables, set on construction.
-    var $context;
+    public $context;
 
     // Page name.
-    var $page_name;
+    public $page_name;
 
     // url for external urls.
     // mailto: and <proto>:// and mail adresses of sorts.
-    var $external_url_exp = '/^([a-z]+:\/\/|mailto:[^@]+@[^@]+|[^@]+@[^@])/i';
+    public $external_url_exp = '/^([a-z]+:\/\/|mailto:[^@]+@[^@]+|[^@]+@[^@])/i';
 
     function MyTextile($context, $options = array()) {
         if ((!isset($context)) || (!isset($context['page_name']))) {

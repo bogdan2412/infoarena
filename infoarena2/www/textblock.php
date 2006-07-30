@@ -34,7 +34,7 @@ function textblock_split_name($name, &$module, &$objid)
 
 function textblock_get_owner($textblock)
 {
-    textblock_split_name($textblock['name'], &$module, &$objid);
+    textblock_split_name($textblock['name'], $module, $objid);
 
     if ($module == 'news') {
         //return get_news($objid);
@@ -50,18 +50,18 @@ function textblock_get_owner($textblock)
 // Get the context for a certain textblock.
 function textblock_get_context($textblock)
 {
-    textblock_split_name($textblock['name'], &$module, &$objid);
+    textblock_split_name($textblock['name'], $module, $objid);
 
     $context = array();
     $context['page_name'] = $textblock['name'];
 
     //echo "module = $module, obj = $objid";
     if ($module == 'news') {
-        news_fill_context($objid, &$context);
+        news_fill_context($objid, $context);
     } if ($module == 'task') {
-        task_fill_context($objid, &$context);
+        task_fill_context($objid, $context);
     } if ($module == 'round') {
-        round_fill_context($objid, &$context);
+        round_fill_context($objid, $context);
     }
 
     return $context;
@@ -83,7 +83,7 @@ function textblock_get_permission($textblock, $permission)
             'view', 'history', 'attach-download');
     assert(false !== array_search($permission, $textblock_permissions));
 
-    textblock_split_name($textblock['name'], &$module, &$objid);
+    textblock_split_name($textblock['name'], $module, $objid);
 
     if ($module == 'news' || $module == 'task' || $module == 'round') {
         $action = $module . "-" . $permission;
