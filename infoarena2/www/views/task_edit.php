@@ -16,7 +16,7 @@ include('header.php');
 
 <form action="<?= getattr($view, 'action') ?>" method="post" class="task">
 <div class="tabber">
-    <div class="tab">
+    <div class="tabbertab<?= 'statement' == $active_tab ? ' tabbertabdefault' : '' ?> statement">
         <h3>Enunt</h3>
         <ul class="form">
             <li id="field_title">
@@ -41,16 +41,11 @@ include('header.php');
                 <label for="form_content">Enunt</label>
                 <textarea name="text" id="form_content" rows="10" cols="50"><?= fval('text') ?></textarea>
                 <?= ferr_span('text') ?>
-            </li>
-            
-            <li id="field_buttons">
-                <input type="submit" value="Salveaza" id="form_submit" class="button important" />
-                <input type="button" value="Preview" id="form_preview" class="button" />
-            </li>
+            </li>    
         </ul>
     </div>
 
-    <div class="tab">
+    <div class="tabbertab<?= 'parameters' == $active_tab ? ' tabbertabdefault' : '' ?> parameters">
         <h2>Parametri</h2>
 
 <ul class="form">
@@ -86,6 +81,17 @@ include('header.php');
     </tbody>
 </table>
     </div>
+
 </div>
+
+<div class="submit">
+    <ul class="form">
+        <li id="field_buttons">
+            <input type="submit" value="Salveaza" id="form_submit" class="button important" />
+            <input type="button" value="Preview" id="form_preview" class="button" />
+        </li>
+    </ul>
+</div>
+
 </form>
 <?php include('footer.php'); ?>

@@ -97,8 +97,16 @@ function controller_task_edit($task_id, $form_data = null,
         $param_values = $form_data['_param_values'];
     }
 
-    // view form
+    // chose form tab
     $view = array();
+    if (getattr($form_errors, '_param_list')) {
+        $view['active_tab'] = 'parameters';
+    }
+    else {
+        $view['active_tab'] = 'statement';
+    }
+
+    // view form
     if (!$task) {
         $view['title'] = "Task nou: " . $task_id;
     }

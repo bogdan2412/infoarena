@@ -134,6 +134,9 @@ function identity_require($action, $ontoObject = null, $errorMessage = null,
             $errorMessage = "Nu aveti acces la aceasta resursa!";
         }
 
+        // save current URL. We redirect to here right after logging in
+        $_SESSION['_redirect'] = $_SERVER['REQUEST_URI'];
+
         flash_error($errorMessage);
         redirect(url('login'));
     }

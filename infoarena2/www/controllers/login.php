@@ -27,7 +27,18 @@ function controller_login() {
             identity_start_session($user);
 
             flash('Bine ati venit!');
-            redirect(url(''));
+
+            // redirect
+            if (isset($_SESSION['_redirect'])) {
+                $url = $_SESSION['_redirect'];
+                unset($_SESSION['_redirect']);
+                session_write_close();
+
+                redirect(IA_URL_HOST . $url);
+            }
+            else {
+                redirect(url(''));
+            }
         }
         else {
             flash_error('Numele de utilizator inexistent sau parola ' .

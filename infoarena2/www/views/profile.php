@@ -1,5 +1,7 @@
 <?php include('header.php'); ?>
 
+<h1><?= htmlentities($view['title']) ?></h1>
+
 <?php if ($register) { ?>
 <form enctype="multipart/form-data" action="<?= url('register/save') ?>" method="post">
 <?php } else {?>
@@ -8,7 +10,7 @@
 <div class="tabber userProfile">
     <?php if (!$register) { ?>
     <div class="tabbertab<?= 'generalData' == $active_tab ? ' tabbertabdefault' : '' ?> generalData">
-        <h2>Date generale</h2>
+        <h3>Date generale</h3>
     <?php } ?>
         <ul class="form">
             <?php if ($register) { ?>
@@ -76,7 +78,7 @@
     <?php if (!$register) { ?>
     </div>
     <div class="tabbertab<?= 'profileData' == $active_tab ? ' tabbertabdefault' : '' ?> profileData">
-        <h2>Profil</h2>
+        <h3>Profil</h3>
         <ul class="form">
             <?php if (!$register) { ?>
             <li>
@@ -108,7 +110,7 @@
     </div>
     
     <div class="tabbertab<?= 'personalData' == $active_tab ? ' tabbertabdefault' : '' ?> personalData">
-        <h2>Date personale</h2>
+        <h3>Date personale</h3>
         <ul class="form">
             <li>
                 <label for="form_city">Oras</label>
@@ -173,8 +175,6 @@
     </ul>
 </div>
 
-
-</div>
 
 
 </form>

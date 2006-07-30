@@ -401,7 +401,7 @@ function attachment_update($name, $size, $page, $user_id) {
 function attachment_insert($name, $size, $page, $user_id) {
     global $dbLink;
     $query = sprintf("INSERT INTO ia_file
-                        (name, page, size, user_id, `timestamp`)
+                        (`name`, page, size, user_id, `timestamp`)
                       VALUES ('%s', '%s', '%s', '%s', NOW())",
                      db_escape($name), db_escape($page),
                      db_escape($size), db_escape($user_id));
@@ -449,4 +449,5 @@ function news_count() {
     $tmp = db_fetch($query);
     return $tmp['cnt'];
 }
+
 ?>
