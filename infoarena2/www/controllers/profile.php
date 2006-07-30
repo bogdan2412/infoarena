@@ -36,13 +36,16 @@ function controller_profile($suburl)
                                     $data['password_old'])) {
                 $errors['password_old'] = 'Parola veche nu este buna';
             }
-            
-            if (4 >= strlen(trim($data['password']))) {
-                $errors['password'] = 'Parola este prea scurta';
-            }   
-            else {
-                if ($data['password'] != $data['password2']) {
-                    $errors['password2'] = 'Parolele nu coincid';
+
+            if (0 != strlen($data['password']))
+            {
+                if (4 >= strlen(trim($data['password']))) {
+                    $errors['password'] = 'Parola este prea scurta';
+                }
+                else {
+                    if ($data['password'] != $data['password2']) {
+                        $errors['password2'] = 'Parolele nu coincid';
+                    }
                 }
             }
             if ($data['email'] != $identity_user['email']) {
