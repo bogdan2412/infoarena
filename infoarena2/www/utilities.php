@@ -111,7 +111,8 @@ function string_diff($string1, $string2) {
         flash_error("Eroare la comparare!");
         request(url(''));
     }
-    fputs($fp1, $string1); fprintf($fp1, "\n");
+    $string1 .= "\n";
+    fputs($fp1, $string1);
     fclose($fp1);
 
     $fp2 = fopen(IA_ATTACH_DIR."ia_diff_temp2", "w");
@@ -119,11 +120,12 @@ function string_diff($string1, $string2) {
         flash_error("Eroare la comparare!");
         request(url(''));
     }
-    fputs($fp2, $string2); fprintf($fp2, "\n");
+    $string2 .= "\n";
+    fputs($fp2, $string2);
     fclose($fp2);
 
     ob_start();
-    system("diff -ad ".IA_ATTACH_DIR."ia_diff_temp1 ".
+    system("diff -au ".IA_ATTACH_DIR."ia_diff_temp1 ".
            IA_ATTACH_DIR."ia_diff_temp2");
     $ret = ob_get_contents();
     ob_end_clean();

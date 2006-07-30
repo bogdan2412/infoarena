@@ -271,10 +271,17 @@ form.task li#field_content {
 }
 
 .diff .deleted {
-    background-color: red;
+    display: block;
+    background-color: #F66;
 }
 
-.diff .new {
-    background-color: green;
+.diff .added {
+    display: block;
+    background-color: #6F6;
+}
+
+.diff span {
+    margin: .5em 0 .5em 0;
+    display: block;
 }
 

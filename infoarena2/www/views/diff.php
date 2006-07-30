@@ -27,12 +27,26 @@ if (count($view['diff_content']) <= 1) {
 }
 else {
     echo "<h3>Diferente intre continut:</h3>";
-    echo "<pre class=\"diff\">";
+    echo "<div class=\"diff\">";
     for ($i = 0; $i+1 < count($view['diff_content']); $i++) {
         $s = $view['diff_content'][$i];
-        echo htmlentities($s)."\n";
+        if (preg_match("/^(---|\+\+\+)/", $s)) {
+            continue;
+        }
+        if (preg_match("/^(@@)/", $s)) {
+            echo "<hr />";
+            continue;
+        }
+        if (strlen($s) > 0 && $s[0] == '+') {
+            $class = "added";
+        } else if (strlen($s) > 0 && $s[0] == '-') {
+            $class = "deleted";
+        } else {
+            $class = "normal";
+        }
+        echo "<span class=\"$class\">".htmlentities(substr($s, 1))."</span>";
     }
-    echo "</pre>";
+    echo "</div>";
 }
 ?>
 
