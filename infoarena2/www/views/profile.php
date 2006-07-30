@@ -6,8 +6,10 @@
 <form enctype="multipart/form-data" action="<?= url('profile/save') ?>" method="post">
 <?php } ?>
 <div class="tabber userProfile">
+    <?php if (!$register) { ?>
     <div class="tabbertab<?= 'generalData' == $active_tab ? ' tabbertabdefault' : '' ?> generalData">
         <h2>Date generale</h2>
+    <?php } ?>
         <ul class="form">
             <?php if ($register) { ?>
             <li>
@@ -64,9 +66,15 @@
                 </select>
                 <?= ferr_span('county') ?>
             </li>
+            
+            <li>
+                <label for="form_newsletter">Abonat la newsletter</label>
+                <input type="checkbox" <?php if (fval('newsletter'))
+                    echo 'checked="checked"'; ?> name="newsletter" id="form_newsletter"/>
+            </li>
         </ul>
+    <?php if (!$register) { ?>
     </div>
-    
     <div class="tabbertab<?= 'profileData' == $active_tab ? ' tabbertabdefault' : '' ?> profileData">
         <h2>Profil</h2>
         <ul class="form">
@@ -95,12 +103,6 @@
                 <input type="text" name="birthday" value="<?= fval('birthday') ?>" id="form_birthday" />
                 <?= ferr_span('birthday') ?>
                 <span class="fieldHelp">Trebuie sa fie de forma AAAA-LL-ZZ</span>
-            </li>
-
-            <li>
-                <label for="form_newsletter">Abonat la newsletter</label>
-                <input type="checkbox" <?php if (fval('newsletter'))
-                    echo 'checked="checked"'; ?> name="newsletter" id="form_newsletter"/>
             </li>
         </ul>
     </div>
@@ -156,6 +158,7 @@
             </li>
         </ul>
     </div>
+    <?php } ?>
 </div>
 
 <div class="submit">

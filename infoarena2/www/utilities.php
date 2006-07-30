@@ -141,4 +141,9 @@ function string_diff($string1, $string2) {
     return $ret;
 }
 
+// mail function
+function send_mail()
+{
+}
+
 ?>

@@ -2,6 +2,8 @@
 
 function controller_register($suburl)
 {
+    require_once("register_profile_common.php");
+    
     // Initialize view parameters.
     // form data goes in data.
     // form errors go in errors.
@@ -19,111 +21,40 @@ function controller_register($suburl)
 
         // 1. validate data
         $data['username'] = getattr($_POST, 'username');
-        if (3 >= strlen(trim($data['username'])) ||
-            !preg_match('/^[a-z]+[a-z0-9_\-\.]*$/i', $data['username'])) {
-            $errors['username'] = 'Nume utilizator invalid';
-        }
-        else {
-            if (user_get_by_username($data['username'])) {
-                $errors['username'] = 'Nume utilizator deja existent';
-            }
-        }
-        
         $data['password'] = getattr($_POST, 'password');
         $data['password2'] = getattr($_POST, 'password2');
-        if (4 >= strlen(trim($data['password']))) {
-            $errors['password'] = 'Parola este prea scurta';
-        }
-        else {
-            if ($data['password'] != $data['password2']) {
-                $errors['password2'] = 'Parolele nu coincid';
-            }
-        }
-        
         $data['full_name'] = getattr($_POST, 'full_name');
-        if (3 >= strlen(trim($data['full_name']))) {
-            $errors['full_name'] = 'Nu ati completat numele';
-        }
-        
         $data['email'] = getattr($_POST, 'email');
-        if (!preg_match('/[^@]+@.+\..+/', $data['email'])) {
-            $errors['email'] = 'Adresa de e-mail invalida';
-        }
-        else {
-            if (user_get_by_email($data['email'])) {
-                $errors['email'] = 'Email deja existent';
-            }
-        }
-        
         $data['country'] = getattr($_POST, 'country');
-        if (!$data['country']) {
-            $errors['country'] = 'Va rugam completati tara';
-        }
-        elseif (!preg_match('/^[a-z]+[a-z_\-\ ]*$/i', $data['country'])) {
-            $errors['country'] = 'Tara necunoscuta';
-        }
-
         $data['county'] = getattr($_POST, 'county');
-        if ($data['county'] &&
-            !preg_match('/^[a-z]+[a-z_\-\ ]*$/i', $data['county'])) {
-            $errors['county'] = 'Judet necunoscut';
-        }
-
         $data['quote'] = getattr($_POST, 'quote');
-        if (255 < strlen($data['quote'])) {
-            $errors['quote'] = 'Citatul este prea mare';
-        }
-
         $data['birthday'] = getattr($_POST, 'birthday');
-        if ($data['birthday']) {
-            if (!ereg("([0-9]{4})-([0-9]{2})-([0-9]{2})", $data['birthday'], $regs)) {
-                $errors['birthday'] = 'Format data invalid';
-            }
-            elseif (!checkdate($regs[2], $regs[3], $regs[1])) {
-                $errors['birthday'] = 'Data invalida';
-            }
-            elseif ($regs[1] > gmdate('Y') ||
-                    ($regs[1] == gmdate('Y') && $regs[2] > gmdate('m'))) {
-                $errors['birthday'] = 'Ziua de nastere este in viitor';
-            }
-        }
-
         $data['newsletter'] = (getattr($_POST, 'newsletter') == 'on' ?1:0);
-
         $data['city'] = getattr($_POST, 'city');
-        if ($data['city'] && !preg_match('/^[a-z]+[a-z_\-\ ]*$/i', $data['city'])) {
-            $errors['city'] = 'Oras necunoscut';
-        }
-
         $data['workplace'] = getattr($_POST, 'workplace');
-        if ($data['workplace'] &&
-            !preg_match('/^[a-z]+[a-z0-9_\-\.\ ]*$/i', $data['workplace'])) {
-            $errors['workplace'] = 'Institut invalid';
-        }
-
         $data['study_level'] = getattr($_POST, 'study_level');
-
         $data['abs_year'] = getattr($_POST, 'abs_year');
-        if ($data['abs_year']) {
-            if (!preg_match('/^[0-9]+$/', $data['abs_year'])) {
-                $errors['abs_year'] = 'An de absolvire invalid';
-            }
-            elseif (!((int)$data['abs_year'] < 3000)) {
-                $errors['abs_year'] = 'Anul de absolvire este introdus gresit';
-            }
+        $data['postal_address'] = getattr($_POST, 'postal_address');
+        $data['phone'] = getattr($_POST, 'phone');
+
+        $errors = validate_data($data);
+
+        // ==register specific validation==
+        
+        if (0 == strlen($data['username'])) {
+            $errors['username'] = 'Nu ati introdus un nume utilizator';
         }
 
-        $data['postal_address'] = getattr($_POST, 'postal_address');
+        if (0 == strlen($data['password'])) {
+            $errors['password'] = 'Nu ati introdus o parola';
+        }
 
-        $data['phone'] = getattr($_POST, 'phone');
-        if ($data['phone']) {
-            if (2 >= strlen(trim($data['phone']))) {
-                $errors['phone'] = 'Numarul de telefon este prea mic..';
+        if ($data['email']) {
+            if (!preg_match('/[^@]+@.+\..+/', $data['email'])) {
+                $errors['email'] = 'Adresa de e-mail invalida';
             }
-            else {
-                if (!preg_match('/^[0-9\-\+\ ]+$/', $data['phone'])) {
-                    $errors['phone'] = 'Numarul de telefon este invalid';
-                }
+            elseif (user_get_by_email($data['email'])) {
+                $errors['email'] = 'Email deja existent';
             }
         }
 
@@ -131,7 +62,7 @@ function controller_register($suburl)
         if (!$errors) {
             // add user to database
             $qdata = $data;
-            unset($qdata['password2']);
+            unset($qdata['password2']); // don't want to add this to db
             if (user_create($qdata)) {
                 // redirect to login
                 flash("Ai fost inregistrat. Acum te rugam sa te autentifici.");
@@ -153,7 +84,7 @@ function controller_register($suburl)
     $view['register'] = true;
     $view['form_errors'] = $errors;
     $view['form_values'] = $data;
-    $view['active_tab'] = 'generalData';
+//    $view['active_tab'] = 'generalData'; // TODO: no tabs in register form
     execute_view('views/profile.php', $view);
 }
 ?>
