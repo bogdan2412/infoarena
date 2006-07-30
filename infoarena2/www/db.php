@@ -164,7 +164,7 @@ function round_update($round_id, $type) {
                       SET `type` = '%s'
                       WHERE `id` = LCASE('%s')
                       LIMIT 1",
-                     db_escape($type), db_escape($task_id));
+                     db_escape($type), db_escape($round_id));
     return db_query($query);
 }
 

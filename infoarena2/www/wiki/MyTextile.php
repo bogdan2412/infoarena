@@ -15,7 +15,8 @@ class MyTextile extends Textile {
 
     function MyTextile($context, $options = array()) {
         if ((!isset($context)) || (!isset($context['page_name']))) {
-            flash_error("Ai belit textila");
+            print('Bad arguments to mytextile');
+            die();
         }
         $this->context = $context;
         $this->page_name = $context['page_name'];

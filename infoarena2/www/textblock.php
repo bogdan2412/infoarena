@@ -15,7 +15,8 @@ function task_fill_context($task_id, &$context)
 // Fill round-specific contedt.
 function round_fill_context($round_id, &$context)
 {
-    // FIXME: write me.
+    $context['round'] = round_get($round_id);
+    $context['round_tasks'] = round_get_task_info($round_id);
 }
 
 // Split a textblock name into a module and an object.

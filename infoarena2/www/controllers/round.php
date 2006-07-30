@@ -1,28 +1,5 @@
 <?php
 
-// View a contest round
-function controller_round_view($round_id) {
-    // If the round is missing jump to the edit/create controller.
-    $round = round_get($round_id);
-    if ($round) {
-        identity_require('round-view', $round);
-    }
-    else {
-        controller_round_edit($round_id);
-    }
-
-    // get textblock
-    $textblock = round_get_textblock($round_id);
-
-    // call view
-    $view = array();
-    $view['title'] = $textblock['title'];
-    $view['page_name'] = 'round/' . $round;
-    $view['textblock'] = $textblock;
-    $view['round'] = $round;
-    execute_view_die('views/wikiview.php', $view);
-}
-
 // Displays a form to either create a new round or edit an existing one.
 //
 // Initially, the form is filled in with either:
@@ -60,6 +37,7 @@ function controller_round_edit($round_id, $form_data = null,
             $template = textblock_get_revision('template/new_round');
             $form_data['text'] = $template['text'];
             $form_data['type'] = '';
+            $form_data['tasks'] = array();
 
             // default parameter values
             foreach ($param_list as $k => $v) {

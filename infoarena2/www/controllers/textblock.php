@@ -18,8 +18,8 @@ function controller_textblock_view($page_name, $rev_num = null) {
         }
     } else {
         // Missing page template here.
-        flash_error("Nu am gasit pagina");
-        redirect(url(''));
+        flash_error("Nu am gasit pagina, te trimit sa editezi");
+        redirect(url($page_name, array('action' => 'edit')));
     }
 
     // Build view.

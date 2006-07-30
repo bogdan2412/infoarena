@@ -90,10 +90,7 @@ if (isset($directmaps[$urlstart])) {
     require('controllers/task.php');
     controller_task_create($suburl);
 
-// Special shit for round view edit create
-} else if ($urlstart == 'round' && $action == 'view') {
-    require('controllers/round.php');
-    controller_round_view($suburl);
+// Special shit for round edit create
 } else if ($urlstart == 'round' && $action == 'edit') {
     require('controllers/round.php');
     controller_round_edit($suburl);
