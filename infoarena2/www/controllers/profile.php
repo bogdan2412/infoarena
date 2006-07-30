@@ -73,7 +73,7 @@ function controller_profile($suburl)
                 }
             }
         }
-        
+
         // -- avatar validation code --
         $avatar = basename($_FILES['avatar']['name']);
         if ($avatar)
@@ -140,16 +140,16 @@ function controller_profile($suburl)
                 if ($attach) {
                     // Attachment already exists, overwrite.
                     $disk_name = attachment_update($avatar,
-                                                $avatar_size,
-                                                $user_page,
-                                                $identity_user['id']);
+                                                   $avatar_size,
+                                                   $user_page,
+                                                   $identity_user['id']);
                 }
                 else {
                     // New attachment. Insert.
                     $disk_name = attachment_insert($avatar,
-                                                $avatar_size,
-                                                $user_page,
-                                                $identity_user['id']);
+                                                   $avatar_size,
+                                                   $user_page,
+                                                   $identity_user['id']);
                 }
                 // Check if something went wrong.
                 if (!isset($disk_name)) {
@@ -168,7 +168,7 @@ function controller_profile($suburl)
                     if (!move_uploaded_file($_FILES['avatar']['tmp_name'],
                                             $disk_name)) {
                         $errors['avatar'] = 'Fisierul nu a putut fi '.
-                                                    'incarcat pe server'; 
+                                            'incarcat pe server'; 
                     }
                 }
                 
@@ -213,8 +213,7 @@ function controller_profile($suburl)
         unset($data['password']);
     }
 
-    // attach form is displayed for the first time or a validation error
-    // occured
+    // attach form is displayed for the first time or a validation error occured
     $view['register'] = false;
     $view['form_errors'] = $errors;
     $view['form_values'] = $data;

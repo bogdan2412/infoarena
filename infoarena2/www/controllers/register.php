@@ -84,7 +84,6 @@ function controller_register($suburl)
     $view['register'] = true;
     $view['form_errors'] = $errors;
     $view['form_values'] = $data;
-//    $view['active_tab'] = 'generalData'; // TODO: no tabs in register form
     execute_view('views/profile.php', $view);
 }
 ?>

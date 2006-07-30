@@ -23,6 +23,8 @@ define("IA_AVATAR_MAXSIZE", 20*1024);
 define("IA_AVATAR_WIDTH", 100);
 define("IA_AVATAR_HEIGHT", 100);
 
+// mail sender
+define("IA_MAIL_SENDER_NO_REPLY", 'info-arena <no-reply@infoarena.ro>');
 
 // Boolean whether to display SQL queries and helpful debug messages
 // when encountering a SQL error.

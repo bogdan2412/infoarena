@@ -142,8 +142,18 @@ function string_diff($string1, $string2) {
     return $ret;
 }
 
-// mail function
-function send_mail() {
+// send mail function, does it need a description?
+function send_email($to, $subject, $message,
+                    $from = IA_MAIL_SENDER_NO_REPLY, $reply = 0)
+{
+    // if we don't specify reply-to, should be the same as the from
+    if ($reply === 0) {
+        $reply = $from;
+    }
+    $headers = 'From: ' . $from . "\r\n" .
+               'Reply-To: ' . $reply . "\r\n" .
+               'X-Mailer: PHP/' . phpversion();
+    mail($to, $subject, $message, $headers);
+    echo $to . '<br>' . $subject . '<br>' . $message; // debug info
 }
-
 ?>
