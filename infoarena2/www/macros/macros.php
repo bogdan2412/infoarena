@@ -10,13 +10,12 @@ $macro_file_map = array(
 
 function macro_debug($args)
 {
-    $res = '';
     $res = "<p>Debug macro listing args</p>";
-    $res .= '<ul>';
-    foreach ($args as $k => $v) {
-        $res .= '<li>' .$k. ' = "' .$v. '" </li>';
-    }
-    $res .= '</ul>';
+    $res .= '<pre>';
+    $ncargs = $args;
+    unset($ncargs['context']);
+    $res .= htmlentities(print_r($ncargs, true));
+    $res .= '</pre>';
 
     return $res;
 }

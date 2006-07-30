@@ -38,6 +38,8 @@ function controller_login() {
     // always reset password before displaying web form
     $data['password'] = '';
 
+    $view['page_name'] = "login";
+    $view['title'] = "Login";
     $view['form_values'] = $data;
     $view['form_errors'] = $errors;
     $view['action'] = url('login', array('action' => 'login'));

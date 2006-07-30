@@ -21,7 +21,7 @@ function controller_attachment_list($page_name) {
     $view = array();
     $view['attach_list'] = attachment_get_all($page_name);
     $view['page_name'] = $page['name'];
-    $view['page_title'] = $page['title'];
+    $view['title'] = 'List de atasamente a paginii '.$page['title'];
 
     execute_view_die('views/listattach.php', $view);
 }
@@ -32,6 +32,7 @@ function controller_attachment_create($page_name) {
     identity_require('textblock-attach', $page);
 
     // Initial attachment page. Rather empty.
+    $view['title'] = 'Ataseaza la pagina '.$page_name;
     $view['page_name'] = $page_name;
     $view['form_values'] = array();
     $view['form_errors'] = array();
@@ -48,6 +49,7 @@ function controller_attachment_submit($page_name) {
     // Create view objects.
     $view = array();
     $view['page_name'] = $page_name;
+    $view['title'] = 'Ataseaza la pagina '.$page_name;
     $form_values = array();
     $form_errors = array();
 
@@ -61,9 +63,13 @@ function controller_attachment_submit($page_name) {
                                     '(nu folositi spatii)';
     }                
 
-    // Check file size.
-    if ($form_values['file_size'] < 0 ||
-        $form_values['file_size'] > IA_ATTACH_MAXSIZE) {
+    // Check min file size. An invalid file results in a size of 0.
+    if ($form_values['file_size'] <= 0) {
+        $form_errors['file_size'] = 'Fisier invalid';
+    }
+
+    // Check max file size.
+    if ($form_values['file_size'] > IA_ATTACH_MAXSIZE) {
         $form_errors['file_size'] = 'Fisierul depaseste limita de ' .
             (IA_ATTACH_MAXSIZE / 1024).' kbytes';
     }

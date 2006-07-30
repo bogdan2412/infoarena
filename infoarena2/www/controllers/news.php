@@ -51,6 +51,7 @@ function controller_news_edit($page_name) {
 
     // This is the creation action.
     $view['title'] = "Creare " . $page_name;
+    $view['page_name'] = "Creare " . $page_name;
     $view['action'] = url($page_name, array('action' => 'save'));
     $view['form_values'] = array('content'=> $page_content,
                                  'title' => $page_title);
@@ -105,23 +106,21 @@ function controller_news_view($page_name, $rev_num = null) {
     $page = textblock_get_revision($page_name, $rev_num);
     if ($page) {
         identity_require('news-view', $page);
-        if ($rev_num) identity_require('history', $page);
-    }
-    else
-    if ($rev_num) {
+        if ($rev_num) {
+            identity_require('history', $page);
+        }
+    } else if ($rev_num) {
         flash_error("Pagina nu exista");
         redirect(url(''));
-    }
-    else {
+    } else {
         controller_news_edit($page_name);
     }
 
     $view = array();
-    
-    // Viewer. Nicest thing in the world.
-    $view['revision'] = $rev_num;
-    $view['wikipage'] = $page;
     $view['title'] = $page['title'];
+    $view['page_name'] = $page_name;
+    $view['textblock'] = $page;
+    $view['revision'] = $rev_num;
     execute_view_die('views/wikiview.php', $view);
 }
 

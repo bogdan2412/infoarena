@@ -16,9 +16,10 @@ function controller_task_view($task_id) {
 
     // call view
     $view = array();
-    $view['task'] = $task;
-    $view['textblock'] = $textblock;
     $view['title'] = $textblock['title'];
+    $view['page_name'] = 'task/' . $task;
+    $view['textblock'] = $textblock;
+    $view['task'] = $task;
     execute_view_die('views/task_view.php', $view);
 }
 

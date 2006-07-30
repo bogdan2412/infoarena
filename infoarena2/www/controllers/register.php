@@ -12,6 +12,7 @@ function controller_register($suburl)
 
     // page title
     $view['title'] = 'Inregistrare';
+    $view['page_name'] = 'register';
 
     if ('save' == $suburl) {
         // user submitted registration form. Process it

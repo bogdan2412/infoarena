@@ -16,6 +16,7 @@ function controller_profile($suburl)
 
     // page title
     $view['title'] = 'Modificare profil';
+    $view['page_name'] = "profile";
 
     // get user avatar
     $view['avatar'] = $identity_user['avatar_filename'];

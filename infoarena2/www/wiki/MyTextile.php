@@ -3,14 +3,22 @@
 require_once("Textile.php");
 
 class MyTextile extends Textile {
+    // Context variables, set on construction.
+    var $context;
+
+    // Page name.
     var $page_name;
 
     // url for external urls.
     // mailto: and <proto>:// and mail adresses of sorts.
     var $external_url_exp = '/^([a-z]+:\/\/|mailto:[^@]+@[^@]+|[^@]+@[^@])/i';
 
-    function MyTextile($page_name, $options = array()) {
-        $this->page_name = $page_name;
+    function MyTextile($context, $options = array()) {
+        if ((!isset($context)) || (!isset($context['page_name']))) {
+            flash_error("Ai belit textila");
+        }
+        $this->context = $context;
+        $this->page_name = $context['page_name'];
         Textile::Textile($options);
     }
 
@@ -36,8 +44,11 @@ class MyTextile extends Textile {
             /*echo '<pre>';
             print_r($matches);
             echo '</pre>';*/
-            $args = array('page_name' => $this->page_name);
+            $args = array('context' => $this->context);
             for ($i = 0; $i < count($matches); ++$i) {
+                if ($matches[$i][1] == "context") {
+                    return make_error_div("Invalid argument name 'context'");
+                }
                 if (isset($args[$matches[$i][1]])) {
                     return make_error_div('Duplicate argument '.
                             $matches[$i][1]." for macro $macro_name.");
