@@ -6,15 +6,11 @@
     <li>
         <label for="form_username">Utilizator (nume cont)</label>
         <input type="text" name="username" id="form_username" value="<?= fval('username') ?>" />
-
-        <?= ferr_span('username') ?>
     </li>
     
     <li>
         <label for="form_password">Parola</label>
         <input type="password" name="password" id="form_password" value="<?= fval('password') ?>" />
-
-        <?= ferr_span('password') ?>
     </li>
     
     <li>

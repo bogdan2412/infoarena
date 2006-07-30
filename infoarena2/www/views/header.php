@@ -44,22 +44,18 @@
         <? } ?>
     </ul>
     <?php if (identity_anonymous()) { ?>
-    <form action="<?= url('login', 'action=login') ?>" method="post" class="login">
+    <form action="<?= url('login', array('action' => 'login')) ?>" method="post" class="login">
         <div class="sidebox" id="members">
             <p class="title"><strong>Membri</strong></p>
             <ul class="form">
                 <li>
                     <label for="form_username">Utilizator</label>
-                    <input type="text" name="username" id="form_username" value="<?= fval('username') ?>" />
-            
-                    <?= ferr_span('username') ?>
+                    <input type="text" name="username" id="form_username" value="" />
                 </li>
                 
                 <li>
                     <label for="form_password">Parola</label>
-                    <input type="password" name="password" id="form_password" value="<?= fval('password') ?>" />
-            
-                    <?= ferr_span('password') ?>
+                    <input type="password" name="password" id="form_password" value="" />
                 </li>
                 
                 <li>

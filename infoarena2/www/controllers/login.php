@@ -52,7 +52,7 @@ function controller_login() {
     $view['page_name'] = "login";
     $view['title'] = "Login";
     $view['form_values'] = $data;
-    $view['form_errors'] = $errors;
+    $view['form_errors'] = array();
     $view['action'] = url('login', array('action' => 'login'));
 
     execute_view_die('views/login.php', $view);
