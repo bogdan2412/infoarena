@@ -150,6 +150,10 @@ function send_email($to, $subject, $message,
     if ($reply === 0) {
         $reply = $from;
     }
+
+    // put [info-arena] tag in mail subject
+    $subject = '[info-arena] ' . $subject;
+
     $headers = 'From: ' . $from . "\r\n" .
                'Reply-To: ' . $reply . "\r\n" .
                'X-Mailer: PHP/' . phpversion();
