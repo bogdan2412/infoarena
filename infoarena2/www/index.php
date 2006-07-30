@@ -5,6 +5,7 @@ require_once("config.php");
 require_once("utilities.php");
 require_once("identity.php");
 require_once("wiki/wiki.php");
+require_once("textblock.php");
 require_once("db.php");
 
 // restore identity session (if such a session exists)
@@ -77,10 +78,8 @@ if (isset($directmaps[$urlstart])) {
         $suburl = join('/', $urlpath);
     }
     controller_user($suburl);
-// Special shit for task view edit create
-} else if ($urlstart == 'task' && $action == 'view') {
-    require('controllers/task.php');
-    controller_task_view($suburl);
+
+// Special shit for task edit/create
 } else if ($urlstart == 'task' && $action == 'edit') {
     require('controllers/task.php');
     controller_task_edit($suburl);
@@ -109,12 +108,10 @@ if (isset($directmaps[$urlstart])) {
 //
 //  ---
 //
+
 } else if ($urlstart == 'news' && count($urlpath) == 1) {
     require('controllers/news.php');
     controller_news_view_all();
-} else if ($urlstart == 'news' && $action == 'view') {
-    require('controllers/news.php');
-    controller_news_view($page, request('revision'));
 } else if ($urlstart == 'news' && $action == 'edit') {
     require('controllers/news.php');
     controller_news_edit($page);
@@ -124,8 +121,8 @@ if (isset($directmaps[$urlstart])) {
     
 // If it was not a special task or pset page do the wiki monkey.
 } else if ($action == 'view') {
-    require('controllers/wiki.php');
-    controller_wiki_view($page, request('revision'));
+    require('controllers/textblock.php');
+    controller_textblock_view($page, request('revision'));
 } else if ($action == 'edit') {
     require('controllers/wiki.php');
     controller_wiki_edit($page);

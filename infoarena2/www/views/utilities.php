@@ -12,6 +12,8 @@ function check_view($view)
     assert(!isset($view['wikipage']));
     if (isset($view['textblock'])) {
         assert(is_array($view['textblock']));
+        assert(is_array($view['textblock_context']));
+        check_context($view['textblock_context']);
         assert(isset($view['textblock']['name']));
         assert(isset($view['textblock']['title']));
         assert(isset($view['textblock']['text']));

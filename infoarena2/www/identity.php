@@ -33,13 +33,13 @@ function identity_can($action, $ontoObject = null, $identity = null) {
 
     // valid actions
     $validActions = array('logout', 'login', 'page_index',
+                          'edit-profile', 'user-details',
                           'wiki-view', 'wiki-edit', 'wiki-create',
                           'history', 'textblock-listattach',
                           'textblock-attach', 'attach-overwrite',
                           'attach-download', 'attach-delete',
                           'task-view', 'task-submit', 'task-edit',
                           'task-create', 'task-publish',
-                          'edit-profile', 'user-details',
                           'news-view', 'news-edit', 'news-create',
                           'round-view', 'round-create', 'round-edit');
     assert(false !== array_search($action, $validActions));

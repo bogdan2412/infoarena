@@ -23,8 +23,14 @@ define("IA_AVATAR_MAXSIZE", 20*1024);
 define("IA_AVATAR_WIDTH", 100);
 define("IA_AVATAR_HEIGHT", 100);
 
+// Number of news items to place on one page.
+define('IA_MAX_NEWS', 3);
+
 // mail sender
 define("IA_MAIL_SENDER_NO_REPLY", 'info-arena <no-reply@infoarena.ro>');
+
+// Maximum number of recursive includes in the wiki.
+define('IA_MAX_RECURSIVE_INCLUDES', 5);
 
 // Boolean whether to display SQL queries and helpful debug messages
 // when encountering a SQL error.

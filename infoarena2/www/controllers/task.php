@@ -1,29 +1,5 @@
 <?php
 
-// View a task
-function controller_task_view($task_id) {
-    // If the task is missing jump to the edit/create controller.
-    $task = task_get($task_id);
-    if ($task) {
-        identity_require('task-view', $task);
-    }
-    else {
-        controller_task_edit($task_id);
-    }
-
-    // get textblock
-    $textblock = task_get_textblock($task_id);
-
-    // call view
-    $view = array();
-    $view['title'] = $textblock['title'];
-    $view['page_name'] = 'task/' . $task;
-    $view['textblock'] = $textblock;
-    $view['task'] = $task;
-    $view['task_parameters'] = task_get_parameters($task_id);
-    execute_view_die('views/task_view.php', $view);
-}
-
 // Displays a form to either create a new task or edit an existing one.
 //
 // Initially, the form is filled in with either:

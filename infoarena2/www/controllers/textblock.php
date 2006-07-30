@@ -1,4 +1,38 @@
 <?php
+
+// View a plain old textblock.
+// That textblock can be owned by something else.
+function controller_textblock_view($page_name, $rev_num = null) {
+    // Tee hee.
+    // If the page is missing jump to the edit/create controller.
+    $page = textblock_get_revision($page_name, $rev_num);
+    if ($page) {
+        if ($rev_num) {
+            $perm = textblock_get_permission($page, 'history');
+        } else {
+            $perm = textblock_get_permission($page, 'view');
+        }
+        if (!$perm) {
+            flash_error("Nu ai voie sa vezi aceasta pagina");
+            redirect(url(''));
+        }
+    } else {
+        // Missing page template here.
+        flash_error("Nu am gasit pagina");
+        redirect(url(''));
+    }
+
+    // Build view.
+    $view = array();
+    $view['title'] = $page['title'];
+    $view['revision'] = $rev_num;
+    $view['page_name'] = $page_name;
+    $view['textblock'] = $page;
+    $view['textblock_context'] = textblock_get_context($page);
+    execute_view_die('views/wikiview.php', $view);
+}
+
+// Show a textblock diff.
 function controller_textblock_diff_revision($page_name, $rev_num) {
     global $identity_user;
     $page = textblock_get_revision($page_name);
@@ -30,7 +64,7 @@ function controller_textblock_diff_revision($page_name, $rev_num) {
     execute_view_die('views/diff.php', $view);
 }
 
-// restore a revision
+// Restore a certain revision
 function controller_textblock_restore_revision($page_name, $rev_num) {
     global $identity_user;
     $page = textblock_get_revision($page_name);

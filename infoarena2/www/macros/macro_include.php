@@ -18,7 +18,7 @@ function macro_include($args)
     static $include_stop = false;
     ++$include_count;
 
-    if ($include_count > 5) {
+    if ($include_count > IA_MAX_RECURSIVE_INCLUDES) {
         // Start unwinding.
         $include_stop = true;
         --$include_count;

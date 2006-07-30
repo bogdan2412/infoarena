@@ -1,9 +1,6 @@
 <?php
 require_once("controllers/wiki.php");
 
-//this should not be here
-define('IA_MAX_NEWS', 3);
-
 function controller_news_view_all() {
     // start view
     $view = array();
@@ -97,31 +94,6 @@ function controller_news_save($page_name) {
         $view['form_errors'] = $form_errors;
         execute_view_die("views/wikiedit.php", $view);
     }
-}
-
-// View a news page (a single news article).
-function controller_news_view($page_name, $rev_num = null) {
-    // Tee hee.
-    // If the page is missing jump to the edit/create controller.
-    $page = textblock_get_revision($page_name, $rev_num);
-    if ($page) {
-        identity_require('news-view', $page);
-        if ($rev_num) {
-            identity_require('history', $page);
-        }
-    } else if ($rev_num) {
-        flash_error("Pagina nu exista");
-        redirect(url(''));
-    } else {
-        controller_news_edit($page_name);
-    }
-
-    $view = array();
-    $view['title'] = $page['title'];
-    $view['page_name'] = $page_name;
-    $view['textblock'] = $page;
-    $view['revision'] = $rev_num;
-    execute_view_die('views/wikiview.php', $view);
 }
 
 ?>

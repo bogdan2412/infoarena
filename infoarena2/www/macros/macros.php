@@ -13,7 +13,7 @@ function macro_debug($args)
     $res = "<p>Debug macro listing args</p>";
     $res .= '<pre>';
     $ncargs = $args;
-    unset($ncargs['context']);
+    //unset($ncargs['context']);
     $res .= htmlentities(print_r($ncargs, true));
     $res .= '</pre>';
 
