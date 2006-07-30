@@ -9,15 +9,14 @@
     <ul class="history">
         <?php for ($idx = $view['count']-1; $idx >= 0; $idx--) { ?>
         <li>
-            <em>Revizia #<?= htmlentities($idx)+1 ?>.</em>
             <?php $v = $view['page_list'][$idx]; ?>
+            <em>Revizia #<?= htmlentities($idx)+1 ?> (<?= htmlentities($v['timestamp']) ?>) </em>
             <a href="<?= url($v['name']).'?revision='.$idx ?>"><?= $v['title'] ? htmlentities($v['title']) : '<strong>FARA TITLU</strong>' ?></a>,
-            <span class="details">ultima modificare la <?= htmlentities($v['timestamp']) ?></span>
             <?php if (getattr($v, 'username')) { ?>
-                de <a href="<?= url('user/'.$v['username']) ?>"><?= htmlentities($v['username']) ?></a>
+                editat de <a href="<?= url('user/'.$v['username']) ?>"><?= htmlentities($v['username']) ?></a>
             <?php } ?>
-            (<a href="<?= url($v['name']).'?action=diff&revision='.$idx ?>">Compara</a>)
-            (<a href="<?= url($v['name']).'?action=restore&revision='.$idx ?>">Incarca</a>)
+            [<a href="<?= url($v['name']).'?action=diff&revision='.$idx ?>">Compara</a>]
+            [<a href="<?= url($v['name']).'?action=restore&revision='.$idx ?>">Incarca</a>]
         </li>
         <?php } ?>
     </ul>
