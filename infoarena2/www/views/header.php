@@ -43,6 +43,10 @@
         <li><a href="<?= url('profile') ?>">Modificare profil</a></li>
         <? } ?>
     </ul>
+
+    <?php if (!identity_anonymous()) {
+    }?>
+    
     <?php if (identity_anonymous()) { ?>
     <form action="<?= url('login', array('action' => 'login')) ?>" method="post" class="login">
         <div class="sidebox" id="members">

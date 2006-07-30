@@ -44,9 +44,9 @@ function controller_reset_pass($suburl) {
             $subject = 'Recupereaza nume utilizator si parola de pe infoarena';
             $message = 'Buna ziua!' . '\r\n' .
                        'Parola contului dumneavoastra de pe infoarena.ro a ' .
-                            'fost resetata.'
+                            'fost resetata.' . '\n\r' . 
                        'nume utilizator:\t' . $user['username'] . '\r\n' .
-                       'parola noua:\t' . $new_password . '\r\n');
+                       'parola noua:\t' . $new_password . '\r\n';
             // TODO FXME: we could add more content in mail!
             send_email($to, $subject, $message);
 
