@@ -94,6 +94,21 @@ function validate_data($data)
         }
     }
 
+    // Determine actvie tab. Should be one with an error.
+    // Write active tab in $errors['active_tab']
+    //  will be checked in profile.php
+    if (isset($errors['username']) || isset($errors['password']) ||
+        isset($errors['full_name']) || isset($errors['country']) ||
+        isset($errors['county'])) {
+        $errors['active_tab'] = 'generalData';
+    }
+    else if (isset($errors['quote']) || isset($errors['birthday'])) {
+        $errors['active_tab'] = 'profileData';
+    }
+    else if (0 != count($errors)) {
+        $errors['active_tab'] = 'personalData';
+    }
+
     return $errors;
 }
 ?>

@@ -51,6 +51,7 @@ function controller_profile($suburl)
         
         if (0 != strlen($data['password']) ||
             $data['email'] != $identity_user['email']) {
+            $errors_count = count($errors);
             if (!user_test_password($identity_user['username'],
                                     $data['password_old'])) {
                 $errors['password_old'] = 'Parola veche nu este buna';
@@ -71,6 +72,9 @@ function controller_profile($suburl)
                 elseif (user_get_by_email($data['email'])) {
                     $errors['email'] = 'Email deja existent';
                 }
+            }
+            if ($errors_count < count($errors)) {
+                $errors['active_tab'] = 'generalData';
             }
         }
 
@@ -173,6 +177,7 @@ function controller_profile($suburl)
                 }
                 
                 if ($errors) {
+                    $view['active_tab'] = 'profileData';
                     flash_error("Eroare la uploadul avatarului");
                     redirect(url(""));
                 }
@@ -211,6 +216,15 @@ function controller_profile($suburl)
         unset($data['id']);
         unset($data['username']);
         unset($data['password']);
+    }
+
+    // focus tab with errors
+    if (isset($errors['active_tab'])) {
+        $view['active_tab'] = $errors['active_tab'];
+        unset($errors['active_tab']);
+    }
+    else {
+        $view['active_tab'] = 'generalData';
     }
 
     // attach form is displayed for the first time or a validation error occured
