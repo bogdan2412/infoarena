@@ -5,15 +5,15 @@ function controller_textblock_diff_revision($page_name, $rev_num) {
     $rev = textblock_get_revision($page_name, $rev_num);
     if ($page) {
         identity_require('history', $page);
-}
+    }
     else {
         flash_error("Pagina nu exista");
         redirect(url(''));
-}
+    }
     if (is_null($rev_num)) {
         flash_error("Nu ati specificat revizia");
         redirect(url($page_name));
-}
+    }
     if (!$rev) {
         flash_error("Revizia nu exista!");
         redirect(url($page_name));
