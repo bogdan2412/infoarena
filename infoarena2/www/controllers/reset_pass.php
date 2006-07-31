@@ -38,19 +38,18 @@ function controller_reset_pass($suburl) {
             $cpass = md5($user['password']);
             
             // email user
-            /// TODO FIXME: check if new-line is '\r\n' or '\n'
             $to = $user['email'];
             $subject = 'Recupereaza nume utilizator si parola de pe infoarena';
-            $message = 'Buna ziua!' . '\r\n' .
+            $message = 'Buna ziua!' . '\n' .
                        'Daca doriti ca parola contului dumneavoastra de pe ' .
                             'info-arena sa se reseteze, dati click pe linkul ' .
-                            'din acest mail\n\r' .
-                       'Numele contului: ' . $user['username'] . '\r\n' . 
+                            'din acest mail\n' .
+                       'Numele contului: ' . $user['username'] . '\n' .
                        'Link: ' . url('reset_pass/doit',
                                       array('username' => $user['username'],
                                             'cpass' => $cpass),
                                       true);
-            /// TODO FXME: we could add more content in mail!
+            /// TODO FIXME: more content in mail?!
             send_email($to, $subject, $message);
 
             // notify user
@@ -73,7 +72,7 @@ function controller_reset_pass($suburl) {
                 // send email with new password
                 $to = $user['email'];
                 $subject = 'Parola noua';
-                $message = 'Numele contului: ' . $username . '\r\n' .
+                $message = 'Numele contului: ' . $username . '\n' .
                            'Parola noua: ' . $new_password;
                 send_email($to, $subject, $message);
 
@@ -85,7 +84,7 @@ function controller_reset_pass($suburl) {
         }
 
         // daca am ajuns aici, inseamna ca am intampinat o problema
-        /// TODO FIXME: we could make a more rigurous error checking
+        /// TODO FIXME: we could make a more detailed error message
         flash_error('Am intampinat probleme in procesul resetare a parolei!');
         redirect(url('home'));
     }
