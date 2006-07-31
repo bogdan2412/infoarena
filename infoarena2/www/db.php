@@ -588,4 +588,18 @@ function job_create($round_id, $task_id, $user_id, $file_extension,
     return db_query($query);      
 }
 
+function monitor_jobs_get_range($start, $range) {
+    $query = "SELECT job.`task_id`, job.`file_extension`,
+                     job.`status`, job.`timestamp`,
+                     job.`score`, job.`eval_message`,
+                     user.`username`, textblock.`title`
+              FROM ia_job AS job
+                LEFT JOIN ia_user AS user ON job.`user_id` = user.`id`
+                LEFT JOIN ia_textblock AS textblock
+                    ON CONCAT(\"round/\", job.`round_id`) = textblock.`name`
+              LIMIT %s, %s";
+    $query = sprintf($query, db_escape($start), db_escape($range));
+    return db_fetch_all($query);
+}
+
 ?>

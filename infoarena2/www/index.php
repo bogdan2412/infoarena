@@ -46,8 +46,8 @@ $action = request('action', 'view');
 // Direct mapping list
 // Note: array_flip() flips keys with values in a dictionary.
 $directmaps = array_flip(array('register', 'profile', 'page_index',
-                               'login', 'logout', 'reset_pass', 'json'));
-
+                               'login', 'logout', 'reset_pass', 'json',
+                               'monitor'));
 //
 // Here comes the big url mapper.
 // We include in the if statement to avoid an extra parsing load.

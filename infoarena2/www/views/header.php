@@ -44,8 +44,7 @@
         <? } ?>
     </ul>
 
-    <?php if (!identity_anonymous()) {
-    }?>
+    <a href="<?= url('monitor') ?>">Monitorul de evaluare</a>
     
     <?php if (identity_anonymous()) { ?>
     <form action="<?= url('login', array('action' => 'login')) ?>" method="post" class="login">
