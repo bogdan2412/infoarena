@@ -96,12 +96,6 @@ function textblock_get_permission($textblock, $permission)
         $object = $textblock;
     }
 
-    // no object-specific history permissions yet
-    // just ask for `history` rather than `news-history`
-    if ('history' == $permission) {
-        $action = 'history';
-    }
-
     return identity_can($action, $object);
 }
 

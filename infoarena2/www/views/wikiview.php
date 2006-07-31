@@ -1,8 +1,7 @@
 <?php
 
-//
-// Wiki page displayer.
-//
+// RSS discovery
+$view['head'] = '<link rel="alternate" href="' . url($page_name, array('action' => 'feed')) . '" title="RSS Revizii ' . $textblock['title'] . '" type="application/rss+xml" />';
 
 include('header.php');
 

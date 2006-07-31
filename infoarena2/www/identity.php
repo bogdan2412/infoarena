@@ -59,6 +59,9 @@ function identity_can($action, $ontoObject = null, $identity = null) {
             case 'task-view':
             case 'news-view':
             case 'round-view':
+            case 'wiki-history':
+            case 'news-history':
+            case 'round-history':
                 return true;
 
             default:

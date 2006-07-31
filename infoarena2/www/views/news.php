@@ -1,4 +1,11 @@
-<?php include('header.php'); ?>
+<?php
+
+// RSS discovery
+$view['head'] = '<link rel="alternate" href="' . url($page_name, array('action' => 'feed')) . '" title="RSS Stiri info-arena" type="application/rss+xml" />';
+
+include('header.php');
+
+?>
 
 <div class="news">
     <h1>Stiri</h1>
