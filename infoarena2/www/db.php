@@ -616,7 +616,8 @@ function monitor_jobs_get_range($start, $range) {
                      job.`task_id`, textblock.`title`,
                      job.`file_extension`,
                      job.`status`, job.`timestamp`,
-                     job.`score`, job.`eval_message`
+                     job.`score`, job.`eval_message`,
+                     job.`round_id`
               FROM ia_job AS job
                 LEFT JOIN ia_user AS user ON job.`user_id` = user.`id`
                 LEFT JOIN ia_textblock AS textblock
