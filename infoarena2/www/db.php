@@ -609,7 +609,7 @@ function job_create($round_id, $task_id, $user_id, $file_extension,
     return db_query($query);      
 }
 
-function monitor_jobs_get_range($start, $range) {
+function monitor_jobs_get_range($start, $range, $filter = null) {
     if ($start < 0) return;
     
     $query = "SELECT job.`id`, user.`username`,
@@ -621,10 +621,13 @@ function monitor_jobs_get_range($start, $range) {
               FROM ia_job AS job
                 LEFT JOIN ia_user AS user ON job.`user_id` = user.`id`
                 LEFT JOIN ia_textblock AS textblock
-                    ON CONCAT(\"round/\", job.`round_id`) = textblock.`name`
-              ORDER BY job.`timestamp` DESC
-              LIMIT %s, %s";
-    $query = sprintf($query, db_escape($start), db_escape($range));
+                    ON CONCAT(\"round/\", job.`round_id`) = textblock.`name`";
+    if ($filter) {
+        $query .= "WHERE " . $filter . " ";
+    }
+    $query .= "ORDER BY job.`timestamp` DESC
+               LIMIT " . $start . ", " . $range;
+//    echo $query; // debug info
     return db_fetch_all($query);
 }
 

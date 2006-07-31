@@ -10,8 +10,18 @@ function controller_monitor($suburl) {
         $page = 1;
     }
 
-    $view['jobs'] = monitor_jobs_get_range(($page-1)*$user_rows_per_page,
-                                           $user_rows_per_page);
+    if ($suburl) {
+        $filter = "`round_id` LIKE '" . db_escape($suburl) . "%'";
+        $view['jobs'] = monitor_jobs_get_range(($page-1)*$user_rows_per_page,
+                                               $user_rows_per_page, $filter);
+    }
+    else {
+        $view['jobs'] = monitor_jobs_get_range(($page-1)*$user_rows_per_page,
+                                               $user_rows_per_page);
+    }
+
+    $view['suburl'] = $suburl;
+
     $view['page'] = $page;
     $view['row_max'] = monitor_jobs_count();
     $view['page_max'] = $view['row_max'] / $user_rows_per_page;
