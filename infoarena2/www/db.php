@@ -597,9 +597,15 @@ function monitor_jobs_get_range($start, $range) {
                 LEFT JOIN ia_user AS user ON job.`user_id` = user.`id`
                 LEFT JOIN ia_textblock AS textblock
                     ON CONCAT(\"round/\", job.`round_id`) = textblock.`name`
+              ORDER BY job.`timestamp` DESC
               LIMIT %s, %s";
     $query = sprintf($query, db_escape($start), db_escape($range));
     return db_fetch_all($query);
 }
 
+function monitor_jobs_count() {
+    $query = "SELECT COUNT(*) FROM ia_job";
+    $res = db_fetch($query);
+    return $res['COUNT(*)'];
+}
 ?>
