@@ -42,8 +42,9 @@ function identity_can($action, $ontoObject = null, $identity = null) {
                           'task-create', 'task-publish',
                           'news-view', 'news-edit', 'news-create',
                           'round-view', 'round-create', 'round-edit',
-                          'round-submit' );
-    assert(false !== array_search($action, $validActions));
+                          'round-submit');
+    ia_assert(false !== array_search($action, $validActions),
+              'Invalid permission: "' . $action . '"');
 
     // first, handle anonymous users
     if (is_null($identity)) {

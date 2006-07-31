@@ -163,4 +163,15 @@ function send_email($to, $subject, $message,
     mail($to, $subject, $message, $headers);
     echo $to . '<br>' . $subject . '<br>' . $message; // debug info
 }
+
+// a more 'violent' assert that halts application and displays error message
+function ia_assert($condition, $message) {
+    if ($condition) {
+        return;
+    }
+    echo '<br/><br/><hr/><h1 style="clear:both">ASSERTION FAILED!</h1>';
+    echo '<pre>' . $message . '</pre>';
+    die();
+}
+
 ?>

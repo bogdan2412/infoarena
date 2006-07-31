@@ -82,16 +82,24 @@ function textblock_get_permission($textblock, $permission)
 {
     $textblock_permissions = array(
             'view', 'history', 'attach-download');
-    assert(false !== array_search($permission, $textblock_permissions));
+    ia_assert(false !== array_search($permission, $textblock_permissions),
+              'Invalid textblock permission: ' . $permission);
 
     textblock_split_name($textblock['name'], $module, $objid);
 
     if ($module == 'news' || $module == 'task' || $module == 'round') {
         $action = $module . "-" . $permission;
         $object = textblock_get_owner($textblock);
-    } else {
+    }
+    else {
         $action = "wiki-" . $permission;
         $object = $textblock;
+    }
+
+    // no object-specific history permissions yet
+    // just ask for `history` rather than `news-history`
+    if ('history' == $permission) {
+        $action = 'history';
     }
 
     return identity_can($action, $object);

@@ -58,6 +58,9 @@ function controller_submit_save($round_id) {
         controller_submit_form($round_id);
     }
 
+    // permissions
+    identity_require('round-submit', $round);
+
     // incoming data
     $data = array(
         'task_id' => getattr($_POST, 'task_id'),
