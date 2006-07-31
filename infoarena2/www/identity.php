@@ -69,7 +69,7 @@ function identity_can($action, $ontoObject = null, $identity = null) {
     }
 
     // we (temporarily) implement a very basic security model
-    // this is an O(M*N) decision matrix so it is ugly
+    // this is an O(M*N) decision matrix; it's bound to be ugly
     $level = $identity['security_level'];
     $objOwner = getattr($ontoObject, 'user_id', null);
     switch ($action) {
@@ -79,12 +79,31 @@ function identity_can($action, $ontoObject = null, $identity = null) {
         case 'wiki-history':
         case 'attach-download':
         case 'wiki-listattach':
-        case 'task-view':
         case 'news-view':
-        case 'task-submit':
         case 'round-view':
-        case 'round-submit':
             return true;
+
+        case 'task-view':
+        case 'task-submit':
+            // hidden tasks are only visible to reviewers, admin
+            // or their owners
+            switch ($level) {
+                case 'reviewer':
+                    return true;
+                default:
+                    return $ontoObject && (!$ontoObject['hidden']
+                           || $identity['id'] == $objOwner);
+            }
+
+        case 'round-submit':
+            // users can submit solutions to problem inside a round, only
+            // if that round is active or if they are editors/admins
+            switch ($level) {
+                case 'reviewer':
+                    return true;
+                default:
+                    return $ontoObject && ('1' == $ontoObject['active']);
+            }
 
         case 'wiki-create':
         case 'wiki-attach':
@@ -118,7 +137,7 @@ function identity_can($action, $ontoObject = null, $identity = null) {
                     return true;
             }
             return false;
-            
+
         case 'edit-profile':
             return true;
      
