@@ -124,6 +124,21 @@ div.loading img {
     padding: .3em;
 }
 
+#sidebar form.login input {
+    font-size: 1em;
+    padding: 0;
+    width: 8.5em;
+}
+
+#sidebar form.login input.button {
+    width: auto;
+}
+
+#sidebar form.login a {
+    display: block;
+    text-align: center;
+}
+
 /* Wiki */
 #wikiOps {
     font-size: .8em;
