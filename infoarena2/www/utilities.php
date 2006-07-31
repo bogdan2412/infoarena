@@ -149,6 +149,13 @@ function string_diff($string1, $string2) {
 function send_email($to, $subject, $message,
                     $from = IA_MAIL_SENDER_NO_REPLY, $reply = 0)
 {
+    /** TODO FIXME: when server can send emails, fix this function
+                    by removing all echo calls **/
+    echo "<strong>Currently the server can't send emails, " . 
+         "so the contents of the email is printed on screen instead. " .
+         "Please ignore errors and when fixed remove this! " .
+         "(utilities.php -> function send_mail)</strong><br><br>";
+
     // if we don't specify reply-to, should be the same as the from
     if ($reply === 0) {
         $reply = $from;
@@ -157,6 +164,9 @@ function send_email($to, $subject, $message,
     // put [info-arena] tag in mail subject
     $subject = '[info-arena] ' . $subject;
 
+    // word-wrap message, some mail-clients are stupid
+    $message = wordwrap($message, 70);
+    
     $headers = 'From: ' . $from . "\r\n" .
                'Reply-To: ' . $reply . "\r\n" .
                'X-Mailer: PHP/' . phpversion();
