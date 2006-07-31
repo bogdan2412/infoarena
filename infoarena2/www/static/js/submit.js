@@ -16,10 +16,14 @@ function Submit_Init() {
 
 function Submit_HasCompiler(taskId) {
     var o = $('output_only');
-    return !o || (0 > o.value.indexOf(':' + taskId + ':'));
+    return taskId && (!o ||  (0 > o.value.indexOf(':' + taskId + ':')));
 }
 
 function Submit_UpdateSolution() {
+    if (!Submit_HasCompiler($('form_task').value)) {
+        return;
+    }
+
     var f = $('form_solution');
     var compiler = $('form_compiler');
 
@@ -38,7 +42,7 @@ function Submit_UpdateSolution() {
     else {
         alert('Atentie! Pentru fisierul selectat nu am putut alege automat ' 
               + 'un compilator.');
-        compiler.value = '';
+        compiler.value = '-';
     }
 }
 
@@ -49,6 +53,10 @@ function Submit_UpdateTask() {
     }
     else {
         $('field_compiler').style.display = 'none';
+    }
+
+    if ($('field_solution').value) {
+        Submit_UpdateSolution();
     }
 }
 
