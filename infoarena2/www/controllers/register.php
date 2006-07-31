@@ -84,6 +84,6 @@ function controller_register($suburl)
     $view['register'] = true;
     $view['form_errors'] = $errors;
     $view['form_values'] = $data;
-    execute_view('views/profile.php', $view);
+    execute_view_die('views/profile.php', $view);
 }
 ?>

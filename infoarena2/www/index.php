@@ -106,6 +106,15 @@ if (isset($directmaps[$urlstart])) {
 //  ---
 //
 
+// task submission
+} else if ($urlstart == 'submit' && $action == 'save') {
+    require('controllers/submit.php');
+    controller_submit_save($suburl);
+} else if ($urlstart == 'submit') {
+    require('controllers/submit.php');
+    controller_submit_form($suburl);
+
+// news
 } else if ($urlstart == 'news' && count($urlpath) == 1) {
     require('controllers/news.php');
     controller_news_view_all();

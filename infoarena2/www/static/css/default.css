@@ -75,6 +75,13 @@ div.loading img {
     display: block;
 }
 
+div.sidehelp {
+    float: right;
+    width: 12em;
+    padding: 1em;
+    background-color: #ccf;
+}
+
 /* Main Navigation */
 #nav {
     margin: 0;

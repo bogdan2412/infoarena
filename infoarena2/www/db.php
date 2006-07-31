@@ -143,6 +143,27 @@ function round_get($round_id) {
     return db_fetch($query);
 }
 
+// Returns array with all open rounds
+//
+// :WARNING: This does not select all fields related to each round,
+// but rather chooses a few.
+// Make sure that calls such as identity_require() have all necessary
+// information to yield a correct answer.
+function round_get_info() {
+    global $dbLink;
+    $query = sprintf("SELECT ia_round.id AS id, ia_round.`type` AS `type`,
+                             tblock.title AS title
+                      FROM ia_round
+                      LEFT JOIN ia_textblock AS tblock
+                        ON tblock.`name` = CONCAT('round/', ia_round.id)
+                      ORDER BY tblock.`title`");
+    $list = array();
+    foreach (db_fetch_all($query) as $row) {
+        $list[$row['id']] = $row;
+    }
+    return $list;
+}
+
 function round_get_textblock($round_id) {
     return textblock_get_revision('round/' . $round_id);
 }

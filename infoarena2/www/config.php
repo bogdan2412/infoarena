@@ -16,6 +16,9 @@ define("IA_ATTACH_MAXSIZE", 20*1024*1024);
 // directory where to upload files AND from where users download them
 define("IA_ATTACH_DIR", "/tmp/");
 
+// maximum file size for user-submitted files - solutions to tasks
+define("IA_SUBMISSION_MAXSIZE", 256*1024);
+
 // maximum avatar file-size
 define("IA_AVATAR_MAXSIZE", 20*1024);
 

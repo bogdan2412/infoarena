@@ -41,7 +41,8 @@ function identity_can($action, $ontoObject = null, $identity = null) {
                           'task-view', 'task-submit', 'task-edit',
                           'task-create', 'task-publish',
                           'news-view', 'news-edit', 'news-create',
-                          'round-view', 'round-create', 'round-edit');
+                          'round-view', 'round-create', 'round-edit',
+                          'round-submit' );
     assert(false !== array_search($action, $validActions));
 
     // first, handle anonymous users
@@ -81,6 +82,7 @@ function identity_can($action, $ontoObject = null, $identity = null) {
         case 'news-view':
         case 'task-submit':
         case 'round-view':
+        case 'round-submit':
             return true;
 
         case 'wiki-create':

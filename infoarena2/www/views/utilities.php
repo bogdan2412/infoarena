@@ -28,14 +28,19 @@ function check_view($view)
     //var_dump($view);
 }
 
-function fval($paramName) {
+function fval($paramName, $escapeHtml = true) {
     global $view;
 
-    return htmlentities(getattr($view['form_values'], $paramName));
+    if ($escapeHtml) {
+        return htmlentities(getattr($view['form_values'], $paramName));
+    }
+    else {
+        return getattr($view['form_values'], $paramName);
+    }
 }
 
-function ferr_span($paramName) {
-    $error = ferr($paramName);
+function ferr_span($paramName, $escapeHtml = true) {
+    $error = ferr($paramName, $escapeHtml);
 
     if ($error) {
         return '<span class="fieldError">' . $error . '</span>';
@@ -45,9 +50,15 @@ function ferr_span($paramName) {
     }
 }
 
-function ferr($paramName) {
+function ferr($paramName, $escapeHtml = true) {
     global $view;
-    return htmlentities(getattr($view['form_errors'], $paramName));
+
+    if ($escapeHtml) {
+        return htmlentities(getattr($view['form_errors'], $paramName));
+    }
+    else {
+        return getattr($view['form_errors'], $paramName);
+    }
 }
 
 ?>
