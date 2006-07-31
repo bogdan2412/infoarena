@@ -33,7 +33,7 @@ function redirect($absoluteUrl) {
 //
 // NOTE: Only use this function for urls.
 // NOTE: don't add ?x=y stuff in document.
-function url($document, $params = array()) {
+function url($document, $params = array(), $absolute = false) {
     assert(false === strpos($document, '?'));
 
     $pairs = array();
@@ -41,7 +41,12 @@ function url($document, $params = array()) {
         $pairs[] = $k . '=' . urlencode($v);
     }
 
-    $prefix = IA_URL_PREFIX;
+    if ($absolute) {
+        $prefix = IA_URL;
+    }
+    else {
+        $prefix = IA_URL_PREFIX;
+    }
 
     if (0 < count($pairs)) {
         return $prefix . $document . '?' . join('&amp;', $pairs);

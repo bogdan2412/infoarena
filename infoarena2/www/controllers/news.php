@@ -1,7 +1,31 @@
 <?php
 require_once("controllers/wiki.php");
 
-function controller_news_view_all() {
+function controller_news_feed_all() {
+    $view = array();
+    $view['channel']['titile'] = 'Stiri info-arena';
+    $view['channel']['link'] = url('news');
+    $view['channel']['description'] = 'Ultimele stiri de pe site-ul http://infoarena.ro';
+    $view['channel']['language'] = 'ro-ro';
+    $view['channel']['copyright'] = '&copy; 2006 -asociatia info-arena';
+
+    $news = news_get_range(0, IA_MAX_FEED_ITEMS);
+    for ($i = 0; $i < count($news); $i++) {
+        $view['item'][$i]['title'] = $news[$i]['title'];
+        $view['item'][$i]['link'] = url($news[$i]['name'], array(), true);
+        $context = array('page_name' => $news[$i]['name'],
+                         'title' => $news[$i]['title']);
+        $view['item'][$i]['description'] = wiki_process_text_recursive($news[$i]['text'], $context);
+    }
+
+    execute_view_die('views/rss.php', $view);
+}
+
+function controller_news_view_all($action = null) {
+    if ($action == 'feed') {
+        controller_news_feed_all();
+        return;
+    }
     // start view
     $view = array();
     $view['title'] = 'Arhiva stiri';

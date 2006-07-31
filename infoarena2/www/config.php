@@ -29,6 +29,9 @@ define("IA_AVATAR_HEIGHT", 100);
 // Number of news items to place on one page.
 define('IA_MAX_NEWS', 3);
 
+// Number of items in a RSS feed
+define('IA_MAX_FEED_ITEMS', 15);
+
 // mail sender
 define("IA_MAIL_SENDER_NO_REPLY", 'info-arena <no-reply@infoarena.ro>');
 

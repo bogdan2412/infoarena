@@ -117,7 +117,7 @@ if (isset($directmaps[$urlstart])) {
 // news
 } else if ($urlstart == 'news' && count($urlpath) == 1) {
     require('controllers/news.php');
-    controller_news_view_all();
+    controller_news_view_all($action);
 } else if ($urlstart == 'news' && $action == 'edit') {
     require('controllers/news.php');
     controller_news_edit($page);
