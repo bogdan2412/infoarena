@@ -5,7 +5,7 @@ function controller_news_feed_all() {
     $view = array();
     $view['channel']['titile'] = 'Stiri info-arena';
     $view['channel']['link'] = url('news');
-    $view['channel']['description'] = 'Ultimele stiri de pe site-ul http://infoarena.ro';
+    $view['channel']['description'] = 'Ultimele stiri de pe http://infoarena.ro';
     $view['channel']['language'] = 'ro-ro';
     $view['channel']['copyright'] = '&copy; 2006 -asociatia info-arena';
 
@@ -15,7 +15,9 @@ function controller_news_feed_all() {
         $view['item'][$i]['link'] = url($news[$i]['name'], array(), true);
         $context = array('page_name' => $news[$i]['name'],
                          'title' => $news[$i]['title']);
-        $view['item'][$i]['description'] = wiki_process_text_recursive($news[$i]['text'], $context);
+        $view['item'][$i]['description'] = wiki_process_text_recursive(
+                                           $news[$i]['text'], $context);
+        $view['item'][$i]['pubDate'] = date(DATE_RFC822,strtotime($news[$i]['timestamp']));
     }
 
     execute_view_die('views/rss.php', $view);
