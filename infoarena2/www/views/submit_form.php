@@ -1,4 +1,18 @@
-<?php include('header.php'); ?>
+<?php
+
+$view['head'] = '<script type="text/javascript" src="' . url('static/js/submit.js') . '"></script>';
+
+include('header.php');
+
+$output_only_ids = array();
+foreach ($tasks as $t) {
+    if ('output-only' != $t['type']) {
+        continue;
+    }
+    $output_only_ids[] = $t['id'];
+}
+
+?>
 
 <h1><?= htmlentities($title)  ?></h1>
 
@@ -8,6 +22,9 @@
 </div>
 
 <form enctype="multipart/form-data" action="<?= url('submit/' . $round_id, array('action' => 'save')) ?>" method="post" class="submit">
+
+<input type="hidden" id="output_only" value="<?= ':' . join(':', $output_only_ids) . ':' ?>" />
+
 <ul class="form">
     <li id="field_task">
         <label for="form_task">Problema</label>

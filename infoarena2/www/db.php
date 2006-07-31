@@ -128,7 +128,8 @@ function task_update_parameters($task_id, $param_values) {
 // information to yield a correct answer.
 function task_list_info() {
     global $dbLink;
-    $query = sprintf("SELECT ia_task.id AS id, tblock.title AS title
+    $query = sprintf("SELECT ia_task.id AS id, tblock.title AS title,
+                        ia_task.`hidden` AS `hidden`, ia_task.`type` AS `type`
                       FROM ia_task
                       LEFT JOIN ia_textblock AS tblock
                         ON tblock.`name` = CONCAT('task/', ia_task.id)
@@ -209,7 +210,7 @@ function round_get_task_info($round_id) {
     $query = sprintf("SELECT
                         task_id AS id, tblock.title AS title,
                         ia_task.`hidden` AS `hidden`,
-                        ia_task.user_id AS user_id
+                        ia_task.user_id AS user_id, ia_task.`type` AS `type`
                       FROM ia_round_task
                       LEFT JOIN ia_task ON ia_task.id = task_id
                       LEFT JOIN ia_textblock AS tblock

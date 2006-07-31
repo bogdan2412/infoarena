@@ -92,7 +92,8 @@ function controller_submit_save($round_id) {
         $errors['task_id'] = 'Va rugam sa alegeti problema la care doriti sa '
                              . 'trimiteti solutie.';
     }
-    if (false===array_search($data['compiler_id'], array('c', 'cpp', 'fpc'))) {
+    if ('output-only' != $task['type'] && false === 
+        array_search($data['compiler_id'], array('c', 'cpp', 'fpc'))) {
         $errors['compiler_id'] = 'Compilator invalid.';
     }
 

@@ -1,5 +1,5 @@
 /**
- * DHTML for round editing page.
+ * DHTML for round editing page
  * (c) 2006 info-arena
  */ 
 function RoundEdit_Init() {
