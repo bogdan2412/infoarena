@@ -17,7 +17,9 @@ function controller_news_feed_all() {
                          'title' => $news[$i]['title']);
         $view['item'][$i]['description'] = wiki_process_text_recursive(
                                            $news[$i]['text'], $context);
-        $view['item'][$i]['pubDate'] = date(DATE_RFC822,strtotime($news[$i]['timestamp']));
+        $view['item'][$i]['pubDate'] = date(DATE_RFC822,
+                                            strtotime($news[$i]['timestamp']));
+        $view['item'][$i]['guid'] = sha1($news[$i]['name'].$news[$i]['timestamp']);
     }
 
     execute_view_die('views/rss.php', $view);

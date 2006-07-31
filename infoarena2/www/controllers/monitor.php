@@ -1,6 +1,6 @@
 <?
 function controller_monitor($suburl) {
-    $user_rows_per_page = 25; /// TODO FIXME: make this user-selectable
+    $user_rows_per_page = 10; /// TODO FIXME: make this user-selectable
 
     $view = array();
     $view['title'] = 'Monitorul de evaluare';

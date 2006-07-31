@@ -1,5 +1,5 @@
 <?php
-header("content-type: application/xml\n\n");
+header("content-type: application/rss+xml\n\n");
 $optional = array();
 // textInput, image, category and cloud don't work properly.. do not use them in your feed
 $optional['channel'] = array('language', 'copyright', 'managingEditor', 'webMaster', 'pubDate',
