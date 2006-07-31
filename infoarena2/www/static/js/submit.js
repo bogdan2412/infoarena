@@ -29,13 +29,12 @@ function Submit_UpdateSolution() {
 
     var k = -1;
     for (var i = f.value.length - 1; 0 <= i; i--) {
-        if ('.' == f.value[i]) {
+        if ('.' == f.value.charAt(i)) {
             k = i;
             break;
         }
     }
     var ext = f.value.substring(k + 1).toLowerCase();
-
     if ('c' == ext || 'cpp' == ext || 'pas' == ext) {
         compiler.value = ext;
     }
@@ -55,7 +54,7 @@ function Submit_UpdateTask() {
         $('field_compiler').style.display = 'none';
     }
 
-    if ($('field_solution').value) {
+    if (0 < $('form_solution').value.length) {
         Submit_UpdateSolution();
     }
 }
