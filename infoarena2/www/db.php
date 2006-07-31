@@ -610,10 +610,13 @@ function job_create($round_id, $task_id, $user_id, $file_extension,
 }
 
 function monitor_jobs_get_range($start, $range) {
-    $query = "SELECT job.`task_id`, job.`file_extension`,
+    if ($start < 0) return;
+    
+    $query = "SELECT job.`id`, user.`username`,
+                     job.`task_id`, textblock.`title`,
+                     job.`file_extension`,
                      job.`status`, job.`timestamp`,
-                     job.`score`, job.`eval_message`,
-                     user.`username`, textblock.`title`
+                     job.`score`, job.`eval_message`
               FROM ia_job AS job
                 LEFT JOIN ia_user AS user ON job.`user_id` = user.`id`
                 LEFT JOIN ia_textblock AS textblock

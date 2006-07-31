@@ -35,17 +35,47 @@
 ?>
     </tbody>
 </table>
-<table>
-    <tr class='navigation'>
+<div class='paginator'>
+    <div class='prev_next'>
 <?php   if ($page > 1) { ?>
-            <td><a href="<?= url("monitor", array('page_num' => $page-1)) ?>">Inapoi</a></td>
+            <a href="<?= url("monitor", array('page_num' => $page-1)) ?>">Inapoi</a>
+<?php   }
+        if ($page < $page_max) { ?>
+            <a href="<?= url("monitor", array('page_num' => $page+1 )) ?>">Inainte</a>
 <?php   } ?>
-<?php   for ($i=max(1, $page-5); $i<=min($page_max, $page+5); ++$i) {?>
-            <td><a href="<?= url("monitor", array('page_num' => $i)) ?>"><?= $i==$page?"<strong>".$i."</strong>":$i; ?></a></td>
-<?php   } ?>
-<?php   if ($page < $page_max) { ?>
-            <td><a href="<?= url("monitor", array('page_num' => $page+1 )) ?>">Inainte</a></td>
-<?php   }?>
-    </tr>
-</table>
+    </div>
+    <div class='jump'>
+<?php
+        // show exponential page numbers increasing from 1 to current page
+        for ($i=8, $ac=0; $page-$i>0; $i*=2) {
+            $pn = $page-$i;
+            $a[$ac++] = '<a href="'. url("monitor", array('page_num' => ($page-$i))) . '">' . ($page-$i) . '</a> ';
+        }
+        for ($i=$ac-1; $i>=0; --$i) {
+            echo $a[$i];
+        }
+        if ($ac) {
+            echo "\n".'<span class="separator_left"> &laquo; </span>'."\n";
+        }
+        unset($a); unset($ac); // remove unused variables
+        for ($i=max(1, $page-3); $i<=min($page_max, $page+3); ++$i) {
+            if ($i==$page) {
+                echo "<strong>".$i."</strong>\n";
+            }
+            else {
+?>
+            <a href="<?= url("monitor", array('page_num' => $i)) ?>"><?= $i ?></a>
+<?php
+            }
+        }
+        if ($page+8 <= $page_max) {
+            echo '<span class="separator_right"> &raquo; </span>'."\n";
+        }
+        // show exponential page numbers increasing from current page to max
+        for ($i=8; $page+$i<=$page_max; $i*=2) {
+            echo '<a href="'. url("monitor", array('page_num' => ($page+$i))) . '">' . ($page+$i) . '</a> ';
+        }
+?>
+    </div>
+</div>
 <?php include('footer.php'); ?>
