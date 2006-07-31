@@ -68,7 +68,7 @@
                         '">' . ($page-$i) . '</a> ';
         }
         // show link to first page if not already showed
-        if (1 < $page-3 && 1 != ($page-$i/2)) {
+        if (1 < $page-3 && ($i==8 || 1 != ($page-$i/2))) {
             echo '<a href="'.
                     url("monitor", array('page_num' => 1)) .
                  '">' . 1 . '</a> ';
@@ -77,7 +77,7 @@
         for ($i=$ac-1; $i>=0; --$i) {
             echo $a[$i];
         }
-        // show << 
+        // show <<
         if (1 < $page-3) {
             echo "\n".'<span class="separator_left"> &laquo; </span>'."\n";
         }
@@ -104,7 +104,7 @@
                  '">' . ($page+$i) . '</a> ';
         }
         // show link to last page if not already showed
-        if ($page_max > $page+3 && $page_max != ($page+$i/2)) {
+        if ($page_max > $page+3 && ($i==8 || $page_max != ($page+$i/2))) {
             echo '<a href="'.
                     url("monitor", array('page_num' => $page_max)) .
                  '">' . $page_max . '</a> ';
