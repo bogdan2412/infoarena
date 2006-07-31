@@ -1,6 +1,11 @@
 <?php include('header.php'); ?>
 
 <h1><?= htmlentities($view['title']) ?></h1>
+<?php if (!$jobs) {
+    echo "<h3>Nu s-a gasit nici un element dupa criteriul cautat</h3>";
+}
+else
+{ ?>
 <h3>Elementele de la pagina <?=$page?></h3>
 <table class='monitor'>
     <thead>
@@ -51,7 +56,7 @@
 
 <div class='paginator'>
     <div class='prev_next'>
-<?php   if ($page > 1) { 
+<?php   if ($page > 1) {
             $turl['page_num'] = $page-1; ?>
             <a href="<?= url("monitor/".$suburl, $turl) ?>">Inapoi</a>
 <?php   }
@@ -119,4 +124,5 @@
 ?>
     </div>
 </div>
+<?php } // if (!$jobs) ?>
 <?php include('footer.php'); ?>
