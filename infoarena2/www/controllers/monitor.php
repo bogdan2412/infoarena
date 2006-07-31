@@ -1,18 +1,21 @@
 <?
 function controller_monitor($suburl) {
-    $user_rows_per_page = 25; // TODO FIXME: make this user-selectable
+    $user_rows_per_page = 25; /// TODO FIXME: make this user-selectable
 
     $view = array();
     $view['title'] = 'Monitorul de evaluare';
 
-    $start = getattr($_GET, 'start');
-    if (!$start) {
-        $start = 0;
+    $page = getattr($_GET, 'page_num');
+    if (!$page) {
+        $page = 1;
     }
 
-    $view['jobs'] = monitor_jobs_get_range($start, $user_rows_per_page);
-    $view['start'] = $start;
+    $view['jobs'] = monitor_jobs_get_range(($page-1)*$user_rows_per_page,
+                                           $user_rows_per_page);
+    $view['page'] = $page;
     $view['row_max'] = monitor_jobs_count();
+    $view['page_max'] = $view['row_max'] / $user_rows_per_page;
+    $view['page_max'] = ceil($view['page_max']);
     $view['rows'] = $user_rows_per_page;
     execute_view('views/monitor.php', $view);
 }
