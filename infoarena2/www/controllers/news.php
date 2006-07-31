@@ -40,6 +40,7 @@ function controller_news_view_all($action = null) {
     $view = array();
     $view['title'] = 'Arhiva stiri';
     $view['page_name'] = 'news';
+    $view['feed_link'] = url('news', array('action' => 'feed'));
 
     // feed the troll
     $pagenum = request('pagenum', 0);

@@ -82,6 +82,21 @@ div.sidehelp {
     background-color: #ccf;
 }
 
+/* RSS */
+a.rss {
+    float: right;
+    text-indent: -100em;
+    overflow: hidden;
+
+    width: 20px;
+    height: 20px;
+    margin-top: -3em;
+
+    background-image: url('../images/rss.gif');
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+}
+
 /* Main Navigation */
 #nav {
     margin: 0;

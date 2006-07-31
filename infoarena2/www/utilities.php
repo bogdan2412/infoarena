@@ -34,7 +34,7 @@ function redirect($absoluteUrl) {
 // NOTE: Only use this function for urls.
 // NOTE: don't add ?x=y stuff in document.
 function url($document, $params = array(), $absolute = false) {
-    assert(false === strpos($document, '?'));
+    ia_assert(false === strpos($document, '?'), 'Fara ? in link!');
 
     $pairs = array();
     foreach ($params as $k => $v) {

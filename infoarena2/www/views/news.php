@@ -2,11 +2,18 @@
 
 <div class="news">
     <h1>Stiri</h1>
+
+    <?php if (getattr($view, 'feed_link')) { ?>
+    <a class="rss" href="<?= htmlentities($view['feed_link']) ?>" title="RSS Stiri info-arena">
+        RSS Stiri info-arena
+    </a>
+    <?php } ?>
+    
     <?php foreach ($view['news'] as $v) { ?>
         <div class="item">
         <?php
             if (identity_can('wiki-view', $v)) {
-                echo '<a href="'.url($v['name']).'?action=view'.'"><h3>'.htmlentities(getattr($v, 'title')).'</h3></a>';
+                echo '<h3><a href="'.url($v['name']).'?action=view'.'">'.htmlentities(getattr($v, 'title')).'</a></h3>';
             }
             else {
                 echo '<h3>'.htmlentities(getattr($v, 'title')).'</h3>';
