@@ -1,9 +1,10 @@
 <?
 function controller_monitor($suburl) {
-    $user_rows_per_page = 3; /// TODO FIXME: make this user-selectable
+    global $identity_user;
+    $user_rows_per_page = $identity_user['lines_per_page'];
 
     $view = array();
-    $view['title'] = 'Monitorul de evaluare';
+    $view['title'] = 'Monitor de evaluare';
 
     $page = getattr($_GET, 'page_num');
     if (!$page) {

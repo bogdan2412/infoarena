@@ -106,6 +106,12 @@
                 <?= ferr_span('birthday') ?>
                 <span class="fieldHelp">Trebuie sa fie de forma AAAA-LL-ZZ</span>
             </li>
+            <li>
+                <label for="form_lines_per_page">Numarul de linii pe pagina</label>
+                <input type="text" size='2' maxlength='2' name="lines_per_page" value="<?= fval('lines_per_page') ?>" id="form_lines_per_page" />
+                <?= ferr_span('lines_per_page') ?>
+                <span class="fieldHelp">Folosit in tablele ca monitorul de evaluare</span>
+            </li>
         </ul>
     </div>
     

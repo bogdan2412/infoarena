@@ -44,10 +44,20 @@ function controller_profile($suburl)
         $data['abs_year'] = getattr($_POST, 'abs_year');
         $data['postal_address'] = getattr($_POST, 'postal_address');
         $data['phone'] = getattr($_POST, 'phone');
+        $data['lines_per_page'] = getattr($_POST, 'lines_per_page');
 
         $errors = validate_data($data);
 
         // ==profile specific validation==
+
+        if (!preg_match('/[0-9]{1,2}/', $data['lines_per_page'])) {
+            $errors['lines_per_page'] = 'Trebuie introdus un numar pana in 100';
+            $errors['active_tab'] = 'profileData';
+        }
+        elseif (5 > $data['lines_per_page']) {
+            $errors['lines_per_page'] = 'Minim 5 linii per pagina';
+            $errors['active_tab'] = 'profileData';
+        }
         
         if (0 != strlen($data['password']) ||
             $data['email'] != $identity_user['email']) {
