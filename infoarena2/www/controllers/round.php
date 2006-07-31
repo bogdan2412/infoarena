@@ -167,7 +167,7 @@ function controller_round_save($round_id) {
 
     // validate attached task list
     $all_tasks = task_list_info();
-    $tasks = getattr($_POST, 'tasks');
+    $tasks = getattr($_POST, 'tasks', array());
     $data['tasks'] = $tasks;
     foreach ($tasks as $task_id) {
         if (!isset($all_tasks[$task_id])) {

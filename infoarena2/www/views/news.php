@@ -1,6 +1,7 @@
 <?php include('header.php'); ?>
 
 <div class="news">
+    <h1>Stiri</h1>
     <?php foreach ($view['news'] as $v) { ?>
         <div class="item">
         <?php

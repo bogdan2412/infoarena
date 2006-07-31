@@ -22,6 +22,7 @@ function getattr($dict, $attribute, $defaultValue = null) {
 // FIXME: Would be usefull for debugging though.
 function redirect($absoluteUrl) {
     header("Location: {$absoluteUrl}\n\n");
+    session_write_close();
     die();
 }
 
@@ -56,9 +57,7 @@ function url($document, $params = array()) {
 function flash($message, $styleClass = null) {
     global $_SESSION;
     $_SESSION['_flash'] = $message;
-    if (!is_null($styleClass)) {
-        $_SESSION['_flash_class'] = $styleClass;
-    }
+    $_SESSION['_flash_class'] = $styleClass;
 }
 
 // This is a simple binding for flash() with a fixed CSS style class
@@ -98,9 +97,9 @@ function execute_view($view_file_name, $view) {
 }
 
 // Execute and the die.
-function execute_view_die($view_file_name, $view)
-{
+function execute_view_die($view_file_name, $view) {
     execute_view($view_file_name, $view);
+    session_write_close();
     die();
 }
 

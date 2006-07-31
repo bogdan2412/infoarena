@@ -32,7 +32,6 @@ function controller_login() {
             if (isset($_SESSION['_redirect'])) {
                 $url = $_SESSION['_redirect'];
                 unset($_SESSION['_redirect']);
-                session_write_close();
 
                 redirect(IA_URL_HOST . $url);
             }
