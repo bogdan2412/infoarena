@@ -38,7 +38,11 @@ function controller_textblock_diff_revision($page_name, $rev_num) {
     $page = textblock_get_revision($page_name);
     $rev = textblock_get_revision($page_name, $rev_num);
     if ($page) {
-        identity_require('history', $page);
+        $perm = textblock_get_permission($page, 'history');
+        if (!$perm) {
+            flash_error('Nu aveti permisiunea sa accesati aceasta pagina.');
+            redirect(url(''));
+        }
     }
     else {
         flash_error("Pagina nu exista");
@@ -70,8 +74,12 @@ function controller_textblock_restore_revision($page_name, $rev_num) {
     $page = textblock_get_revision($page_name);
     $rev = textblock_get_revision($page_name, $rev_num);
     if ($page) {
-        identity_require('history', $page);
-    }   
+        $perm = textblock_get_permission($page, 'restore');
+        if (!$perm) {
+            flash_error('Nu aveti permisiunea sa executati aceasta actiune.');
+            redirect(url(''));
+        }
+       
     else {
         flash_error("Pagina nu exista");
         redirect(url(''));
@@ -94,7 +102,11 @@ function controller_textblock_restore_revision($page_name, $rev_num) {
 function controller_textblock_history($page_name) {
     $page = textblock_get_revision_without_content($page_name);
     if ($page) {
-        identity_require('history', $page);
+        $perm = textblock_get_permission($page, 'history');
+        if (!$perm) {
+            flash_error('Nu aveti permisiunea sa accesati aceasta pagina.');
+            redirect(url(''));
+        }
     }
     else {
         flash_error("Pagina nu exista");
