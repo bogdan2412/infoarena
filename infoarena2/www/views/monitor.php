@@ -26,7 +26,7 @@
         echo '</tr>';
     }
 ?>
-    <tr>
+    <tr class='navigation'>
 <?php   if ($start > 0) { ?>
             <td><a href="<?= url("monitor", array('start' => $start-$rows<0 ? 0 : $start-$rows)) ?>">Inapoi</a></td>
 <?php   }
