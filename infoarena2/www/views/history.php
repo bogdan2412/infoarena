@@ -3,7 +3,7 @@
     <?php if ($view['page_name']) { ?>
         <h1>Istoria paginii <a href="<?= url($view['page_name']) ?>"><?= $view['page_name'] ?></a></h1>
     <?php } else { ?>
-            <h1>Istoria paginii <?= $view['page_name'] ?></h1>
+            <h1>Istoria paginii <?= htmlentities($view['page_name']) ?></h1>
     <?php } ?>
 
     <ul class="history">

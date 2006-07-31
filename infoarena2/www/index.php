@@ -122,11 +122,6 @@ if (isset($directmaps[$urlstart])) {
     require('controllers/round.php');
     controller_round_create($suburl);
 
-// Insert pset stuff here.
-//
-//  ---
-//
-
 // task submission
 } else if ($urlstart == 'submit' && $action == 'save') {
     require('controllers/submit.php');
@@ -136,9 +131,12 @@ if (isset($directmaps[$urlstart])) {
     controller_submit_form($suburl);
 
 // news
+} else if ($urlstart == 'news' && count($urlpath) == 1 && $action == 'feed') {
+    require('controllers/news.php');
+    controller_news_view_feed();
 } else if ($urlstart == 'news' && count($urlpath) == 1) {
     require('controllers/news.php');
-    controller_news_view_all($action);
+    controller_news_view_all();
 } else if ($urlstart == 'news' && $action == 'edit') {
     require('controllers/news.php');
     controller_news_edit($page);
@@ -165,6 +163,9 @@ if (isset($directmaps[$urlstart])) {
 } else if ($action == 'diff') {
     require('controllers/textblock.php');
     controller_textblock_diff_revision($page, request('revision'));
+} else if ($action == 'feed') {
+    require('controllers/textblock.php');
+    controller_textblock_feed($page);
 
 // Attachment shit. This is common to all wiki-based urls.
 } else if ($action == 'attach') {

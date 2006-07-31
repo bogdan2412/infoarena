@@ -1,5 +1,5 @@
 <?php
-header("content-type: application/rss+xml\n\n");
+header("Content-Type: application/xml\n\n");
 $optional = array();
 // textInput, image, category and cloud don't work properly.. do not use them in your feed
 $optional['channel'] = array('language', 'copyright', 'managingEditor',
@@ -15,7 +15,7 @@ $optional['item'] = array('author', 'pubDate', 'category', 'comments',
 echo '<?xml version="1.0"?>'."\n";
 echo '<rss version="2.0">'."\n";
 echo '<channel>'."\n";
-echo '<title>'.htmlentities(getattr($view['channel'], 'titile')).'</title>'."\n";
+echo '<title>'.htmlentities(getattr($view['channel'], 'title')).'</title>'."\n";
 echo '<link>'.htmlentities(getattr($view['channel'], 'link')).'</link>'."\n";
 echo '<description>'.htmlentities(getattr($view['channel'], 'description')).'</description>'."\n";
 foreach ($optional['channel'] as $hash_key => $hash_value) {
@@ -26,7 +26,7 @@ foreach ($optional['channel'] as $hash_key => $hash_value) {
     }
 }
 
-foreach ( $view['item'] as $v) {
+foreach ($view['item'] as $v) {
     echo '<item>'."\n";
     echo '<title>'.htmlentities(getattr($v, 'title')).'</title>'."\n";
     echo '<link>'.htmlentities(getattr($v, 'link')).'</link>'."\n";

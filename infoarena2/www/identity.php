@@ -35,14 +35,17 @@ function identity_can($action, $ontoObject = null, $identity = null) {
     $validActions = array('logout', 'login', 'page_index',
                           'edit-profile', 'user-details',
                           'wiki-view', 'wiki-edit', 'wiki-create',
+                          'wiki-history', 'wiki-restore',
                           'history', 'textblock-listattach',
                           'textblock-attach', 'attach-overwrite',
                           'attach-download', 'attach-delete',
                           'task-view', 'task-submit', 'task-edit',
+                          'task-history', 'task-restore',
                           'task-create', 'task-publish',
                           'news-view', 'news-edit', 'news-create',
+                          'news-history', 'news-restore', 
                           'round-view', 'round-create', 'round-edit',
-                          'round-submit');
+                          'round-submit', 'round-history', 'round-restore');
     ia_assert(false !== array_search($action, $validActions),
               'Invalid permission: "' . $action . '"');
 
@@ -50,9 +53,9 @@ function identity_can($action, $ontoObject = null, $identity = null) {
     if (is_null($identity)) {
         switch($action) {
             case 'login':
-            case 'wiki-view':
             case 'attach-download':
             case 'wiki-listattach':
+            case 'wiki-view':
             case 'task-view':
             case 'news-view':
             case 'round-view':
@@ -81,10 +84,14 @@ function identity_can($action, $ontoObject = null, $identity = null) {
         case 'wiki-listattach':
         case 'news-view':
         case 'round-view':
+        case 'wiki-history':
+        case 'news-history':
+        case 'round-history':
             return true;
 
         case 'task-view':
         case 'task-submit':
+        case 'task-history':
             // hidden tasks are only visible to reviewers, admin
             // or their owners
             switch ($level) {
@@ -117,8 +124,11 @@ function identity_can($action, $ontoObject = null, $identity = null) {
 
         case 'wiki-edit':
         case 'task-edit':
+        case 'wiki-restore':
+        case 'task-restore':
         case 'attach-delete':
         case 'attach-overwrite':
+        case 'wiki-restore':
             switch ($level) {
                 case 'reviewer':
                     return true;
@@ -130,8 +140,10 @@ function identity_can($action, $ontoObject = null, $identity = null) {
         case 'task-publish':
         case 'news-create':
         case 'news-edit':
+        case 'news-restore':
         case 'round-create':
         case 'round-edit':
+        case 'round-restore':
             switch ($level) {
                 case 'reviewer':
                     return true;
@@ -140,7 +152,6 @@ function identity_can($action, $ontoObject = null, $identity = null) {
 
         case 'edit-profile':
             return true;
-     
     }
 
     return false;

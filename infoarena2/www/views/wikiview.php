@@ -12,7 +12,11 @@ include('header.php');
         <li><a href="<?= url($textblock['name'], array('action' => 'history')) ?>">Vezi istoria</a></li>
         <li><a href="<?= url($textblock['name'], array('action' => 'attach')) ?>">Ataseaza</a></li>
         <li><a href="<?= url($textblock['name'], array('action' => 'attach-list')) ?>">Listeaza atasamente</a></li>
-    </ul>
+     </ul>
+     <a class="rss" href="<?= htmlentities(url($view['page_name'], array('action' => 'feed'))) ?>" title="RSS Istoria paginii">
+         RSS Istoria paginii <?= htmlentities($view['page_name']) ?>
+     </a>
+     
 <?php
 echo '<h1>'.htmlentities($textblock['title']).'</h1>';
 if (getattr($view, 'revision')) {

@@ -4,6 +4,7 @@ function controller_page_index($page_name) {
     $show_user = request('show_user', 1);
     $view = array();
     $view['page_name'] = $page_name;
+    $view['feed_link'] = url($page_name, array('action' => 'feed'));
     $view['page'] = textblock_get_revision($page_name);
     $view['title'] = 'Pagini'.($page_name ? ' din '.$page_name : '');
     $view['page_list'] = !$show_user ? textblock_get_names($page_name) :

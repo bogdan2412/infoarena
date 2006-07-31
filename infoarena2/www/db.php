@@ -387,15 +387,62 @@ function textblock_get_revisions_without_content($name) {
     return db_fetch_all($query);
 }
 
-function textblock_get_revision_without_content($name) {
-    $query = sprintf("SELECT `name`, title, user_id, `timestamp`, username
-                      FROM ia_textblock
-                        LEFT JOIN ia_user ON
+function textblock_get_revision_without_content($name, $rev_num = null) {
+    global $dbLink;
+    if (is_null($rev_num)) {
+        $query = sprintf("SELECT `name`, title, user_id, `timestamp`, username
+                          FROM ia_textblock
+                          LEFT JOIN ia_user ON
                             ia_textblock.user_id = ia_user.id
-                      WHERE LCASE(`name`) = '%s'
-                      ORDER BY `timestamp`",
-                     db_escape($name));
-    return db_fetch($query);
+                          WHERE LCASE(`name`) = '%s'
+                          ORDER BY `timestamp`", db_escape($name));
+        $textblock = db_fetch($query);
+        return $textblock;
+}
+    else {
+        $query = sprintf("SELECT `name`, title, user_id, `timestamp`, username
+                          FROM ia_textblock_revision LEFT JOIN ia_user ON
+                          ia_textblock_revision.user_id = ia_user.id
+                          WHERE LCASE(`name`) = '%s'
+                          ORDER BY `timestamp`
+                          LIMIT %s, 1",
+                         db_escape($name), db_escape($rev_num));
+        $textblock = db_fetch($query);
+        return $textblock;
+    }
+}
+
+function textblock_get_revisions_with_username($name) {
+    $query = sprintf("SELECT * FROM ia_textblock_revision LEFT JOIN ia_user
+                      ON ia_textblock_revision.user_id = ia_user.id
+                      WHERE LCASE(`name`)= '%s' ORDER BY `timestamp`",
+                    db_escape($name));
+    return db_fetch_all($query);
+}
+
+function textblock_get_revision_with_username($name, $rev_num = null) {
+    global $dbLink;
+    if (is_null($rev_num)) {
+        $query = sprintf("SELECT *
+                          FROM ia_textblock
+                          LEFT JOIN ia_user ON
+                            ia_textblock.user_id = ia_user.id
+                          WHERE LCASE(`name`) = '%s'
+                          ORDER BY `timestamp`", db_escape($name));
+        $textblock = db_fetch($query);
+        return $textblock;
+    }
+    else {
+        $query = sprintf("SELECT *
+                          FROM ia_textblock_revision LEFT JOIN ia_user ON
+                          ia_textblock_revision.user_id = ia_user.id
+                          WHERE LCASE(`name`) = '%s'
+                          ORDER BY `timestamp`
+                          LIMIT %s, 1",
+                         db_escape($name), db_escape($rev_num));
+        $textblock = db_fetch($query);
+        return $textblock;
+    }
 }
 
 function textblock_get_revision_count($name) {
