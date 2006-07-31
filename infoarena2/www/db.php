@@ -17,6 +17,10 @@ function db_escape($str) {
     return mysql_escape_string($str);
 }
 
+function db_num_rows($res) {
+    return mysql_num_rows($res);
+}
+
 // Executes query. Outputs error messages
 // Returns native PHP mysql resource handle
 function db_query($query) {
@@ -617,7 +621,7 @@ function monitor_jobs_get_range($start, $range, $filter = null) {
                      job.`file_extension`,
                      job.`status`, job.`timestamp`,
                      job.`score`, job.`eval_message`,
-                     job.`round_id`
+                     job.`round_id`, job.`mark_eval`
               FROM ia_job AS job
                 LEFT JOIN ia_user AS user ON job.`user_id` = user.`id`
                 LEFT JOIN ia_textblock AS textblock
@@ -625,10 +629,23 @@ function monitor_jobs_get_range($start, $range, $filter = null) {
     if ($filter) {
         $query .= "WHERE " . $filter . " ";
     }
-    $query .= "ORDER BY job.`timestamp` DESC
+    $query .= "ORDER BY job.`mark_eval` ASC, job.`timestamp` DESC
                LIMIT " . $start . ", " . $range;
 //    echo $query; // debug info
     return db_fetch_all($query);
+}
+
+function monitor_jobs_count_range($filter = null) {
+    $query = "SELECT COUNT(*)
+              FROM ia_job AS job
+                LEFT JOIN ia_user AS user ON job.`user_id` = user.`id`
+                LEFT JOIN ia_textblock AS textblock
+                    ON CONCAT(\"round/\", job.`round_id`) = textblock.`name`";
+    if ($filter) {
+        $query .= "WHERE " . $filter . " ";
+    }
+    $res = db_fetch($query);
+    return $res['COUNT(*)'];
 }
 
 function monitor_jobs_count() {

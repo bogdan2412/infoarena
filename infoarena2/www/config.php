@@ -32,6 +32,9 @@ define('IA_MAX_NEWS', 3);
 // Number of items in a RSS feed
 define('IA_MAX_FEED_ITEMS', 15);
 
+// Default number of rows to display in diferent tables
+define('IA_DEFAULT_ROWS_PER_PAGE', 20);
+
 // mail sender
 define("IA_MAIL_SENDER_NO_REPLY", 'info-arena <no-reply@infoarena.ro>');
 

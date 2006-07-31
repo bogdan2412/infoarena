@@ -46,8 +46,7 @@ $action = request('action', 'view');
 // Direct mapping list
 // Note: array_flip() flips keys with values in a dictionary.
 $directmaps = array_flip(array('register', 'profile', 'page_index',
-                               'login', 'logout', 'reset_pass', 'json',
-                               'monitor'));
+                               'login', 'logout', 'reset_pass', 'json'));
 //
 // Here comes the big url mapper.
 // We include in the if statement to avoid an extra parsing load.
@@ -78,6 +77,28 @@ if (isset($directmaps[$urlstart])) {
         $suburl = join('/', $urlpath);
     }
     controller_user($suburl);
+
+// Eval monitor special <read all about it>
+} else if ($urlstart == 'monitor') {
+    require('controllers/monitor.php');
+    $filter = array();
+    if ($suburl) {
+        $filter['round_id'] = $suburl;
+    }
+    if ($username = getattr($_GET, 'username')) {
+        $filter['username'] = $username;
+    }
+    if ($task_id = getattr($_GET, 'task_id')) {
+        $filter['task_id'] = $task_id;
+    }
+    if ($file_extension = getattr($_GET, 'file_extension')) {
+        $filter['file_extension'] = $file_extension;
+    }
+    if ($status = getattr($_GET, 'status')) {
+        $filter['status'] = $status;
+    }
+    
+    controller_monitor($filter, $suburl);
 
 // Special shit for task edit/create
 } else if ($urlstart == 'task' && $action == 'edit') {
@@ -124,7 +145,7 @@ if (isset($directmaps[$urlstart])) {
 } else if ($urlstart == 'news' && $action == 'save') {
     require('controllers/news.php');
     controller_news_save($page);
-    
+
 // If it was not a special task or pset page do the wiki monkey.
 } else if ($action == 'view') {
     require('controllers/textblock.php');

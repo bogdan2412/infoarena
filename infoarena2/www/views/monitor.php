@@ -51,11 +51,13 @@
 
 <div class='paginator'>
     <div class='prev_next'>
-<?php   if ($page > 1) { ?>
-            <a href="<?= url("monitor/".$suburl, array('page_num' => $page-1)) ?>">Inapoi</a>
+<?php   if ($page > 1) { 
+            $turl['page_num'] = $page-1; ?>
+            <a href="<?= url("monitor/".$suburl, $turl) ?>">Inapoi</a>
 <?php   }
-        if ($page < $page_max) { ?>
-            <a href="<?= url("monitor/".$suburl, array('page_num' => $page+1 )) ?>">Inainte</a>
+        if ($page < $page_max) {
+            $turl['page_num'] = $page+1?>
+            <a href="<?= url("monitor/".$suburl, $turl) ?>">Inainte</a>
 <?php   } ?>
     </div>
     <div class='jump'>
@@ -63,14 +65,16 @@
         // calculate exponential page numbers decreasing from current page to 1
         for ($i=8, $ac=0; $page-$i>0; $i*=2) {
             $pn = $page-$i;
+            $turl['page_num'] = ($page-$i);
             $a[$ac++] = '<a href="' .
-                            url("monitor/".$suburl, array('page_num' => ($page-$i))) .
+                            url("monitor/".$suburl, $turl) .
                         '">' . ($page-$i) . '</a> ';
         }
         // show link to first page if not already showed
         if (1 < $page-3 && ($i==8 || 1 != ($page-$i/2))) {
+            $turl['page_num'] = 1;
             echo '<a href="'.
-                    url("monitor/".$suburl, array('page_num' => 1)) .
+                    url("monitor/".$suburl, $turl) .
                  '">' . 1 . '</a> ';
         }
         // show links to exponential page numbers increasing
@@ -88,8 +92,9 @@
                 echo "<strong>".$i."</strong> ";
             }
             else {
+                $turl['page_num'] = $i;
                 echo '<a href="' .
-                        url("monitor/".$suburl, array('page_num' => $i)) .
+                        url("monitor/".$suburl, $turl) .
                      '">' . $i . '</a> ';
             }
         }
@@ -99,14 +104,16 @@
         }
         // show links to exponential page numbers increasing from current page
         for ($i=8; $page+$i<=$page_max; $i*=2) {
+            $turl['page_num'] = $page+$i;
             echo '<a href="'.
-                    url("monitor/".$suburl, array('page_num' => ($page+$i))) .
+                    url("monitor/".$suburl, $turl) .
                  '">' . ($page+$i) . '</a> ';
         }
         // show link to last page if not already showed
         if ($page_max > $page+3 && ($i==8 || $page_max != ($page+$i/2))) {
+            $turl['page_num'] = $page_max;
             echo '<a href="'.
-                    url("monitor/".$suburl, array('page_num' => $page_max)) .
+                    url("monitor/".$suburl, $turl) .
                  '">' . $page_max . '</a> ';
         }
 ?>
