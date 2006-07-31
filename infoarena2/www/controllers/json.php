@@ -13,9 +13,10 @@ function controller_json($suburl) {
             // This is used for previewing markup when editing the wiki.
             $page_content = request('content');
             $page_name = request('page_name');
+            $context= textblock_get_context($page_name);
 
             // generate mark-up
-            $output = wiki_process_text($page_content, $page_name);
+            $output = wiki_process_text($page_content, $context);
             $view['json'] = array('html' => $output);
             $view['debug'] = request('debug', null);
 

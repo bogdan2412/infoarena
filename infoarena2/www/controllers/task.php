@@ -42,7 +42,7 @@ function controller_task_edit($task_id, $form_data = null,
             $form_data['title'] = $task_id;
             $form_data['author'] = getattr($identity_user, 'full_name');
             $template = textblock_get_revision('template/new_task');
-            $form_data['text'] = $template['text'];
+            $form_data['content'] = $template['text'];
             $form_data['source'] = '';
             $form_data['type'] = '';
 
@@ -58,7 +58,7 @@ function controller_task_edit($task_id, $form_data = null,
 
             $form_data['title'] = $textblock['title'];
             $form_data['author'] = $task['author'];
-            $form_data['text'] = $textblock['text'];
+            $form_data['content'] = $textblock['text'];
             $form_data['source'] = $task['source'];
             $form_data['type'] = $task['type'];
 
@@ -131,7 +131,7 @@ function controller_task_save($task_id) {
     $errors = array();
     $data['title'] = getattr($_POST, 'title');
     $data['author'] = getattr($_POST, 'author');
-    $data['text'] = getattr($_POST, 'text');
+    $data['content'] = getattr($_POST, 'content');
     $data['source'] = getattr($_POST, 'source');
     $data['type'] = getattr($_POST, 'type');
     // get parameter values (all incoming POST variables that start with 'p_')
@@ -145,8 +145,8 @@ function controller_task_save($task_id) {
     }
     $data['_param_values'] = $param_values;
     // validate task values
-    if (strlen($data['text']) < 1) {
-        $errors['text'] = "Va rugam sa completati enuntul.";
+    if (strlen($data['content']) < 1) {
+        $errors['content'] = "Va rugam sa completati enuntul.";
     }
     if (strlen($data['title']) < 1) {
         $errors['title'] = "Va rugam sa completati titlul.";
@@ -182,7 +182,7 @@ function controller_task_save($task_id) {
         }
         // - corresponding textblock
         textblock_add_revision('task/' . $task_id, $data['title'],
-                               $data['text'], getattr($identity_user,'id'));
+                               $data['content'], getattr($identity_user,'id'));
         // - update parameter values
         task_update_parameters($task_id, $param_values);
         // - done

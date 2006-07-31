@@ -39,7 +39,7 @@ function controller_round_edit($round_id, $form_data = null,
             // default values (when creating a new round)
             $form_data['title'] = $round_id;
             $template = textblock_get_revision('template/new_round');
-            $form_data['text'] = $template['text'];
+            $form_data['content'] = $template['text'];
             $form_data['type'] = '';
             $form_data['tasks'] = array();
 
@@ -54,7 +54,7 @@ function controller_round_edit($round_id, $form_data = null,
             $textblock = round_get_textblock($round_id);
 
             $form_data['title'] = $textblock['title'];
-            $form_data['text'] = $textblock['text'];
+            $form_data['content'] = $textblock['text'];
             $form_data['type'] = $round['type'];
 
             // get round parameter values
@@ -104,6 +104,7 @@ function controller_round_edit($round_id, $form_data = null,
     $view['param_list'] = $param_list;
     $view['param_values'] = $param_values;
     $view['all_tasks'] = $all_tasks;
+    $view['page_name'] = 'round/'.$round_id;
     execute_view_die("views/round_edit.php", $view);
 }
 
@@ -134,7 +135,7 @@ function controller_round_save($round_id) {
     $data = array();
     $errors = array();
     $data['title'] = getattr($_POST, 'title');
-    $data['text'] = getattr($_POST, 'text');
+    $data['content'] = getattr($_POST, 'content');
     $data['type'] = getattr($_POST, 'type');
     // get parameter values (all incoming POST variables that start with 'p_')
     $param_values = array();
@@ -147,8 +148,8 @@ function controller_round_save($round_id) {
     }
     $data['_param_values'] = $param_values;
     // validate round values
-    if (strlen($data['text']) < 1) {
-        $errors['text'] = "Va rugam sa completati enuntul.";
+    if (strlen($data['content']) < 1) {
+        $errors['content'] = "Va rugam sa completati enuntul.";
     }
     if (strlen($data['title']) < 1) {
         $errors['title'] = "Va rugam sa completati titlul.";
@@ -191,7 +192,7 @@ function controller_round_save($round_id) {
         }
         // - corresponding textblock
         textblock_add_revision('round/' . $round_id, $data['title'],
-                               $data['text'], getattr($identity_user,'id'));
+                               $data['content'], getattr($identity_user,'id'));
         // - update parameter values
         round_update_parameters($round_id, $param_values);
         // - update attached task list
