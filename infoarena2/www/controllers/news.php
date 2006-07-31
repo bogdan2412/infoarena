@@ -4,7 +4,7 @@ require_once("controllers/wiki.php");
 function controller_news_feed_all() {
     $view = array();
     $view['channel']['titile'] = 'Stiri info-arena';
-    $view['channel']['link'] = url('news');
+    $view['channel']['link'] = url('news', array(), true);
     $view['channel']['description'] = 'Ultimele stiri de pe http://infoarena.ro';
     $view['channel']['language'] = 'ro-ro';
     $view['channel']['copyright'] = '&copy; 2006 -asociatia info-arena';
@@ -12,14 +12,20 @@ function controller_news_feed_all() {
     $news = news_get_range(0, IA_MAX_FEED_ITEMS);
     for ($i = 0; $i < count($news); $i++) {
         $view['item'][$i]['title'] = $news[$i]['title'];
-        $view['item'][$i]['link'] = url($news[$i]['name'], array(), true);
         $context = array('page_name' => $news[$i]['name'],
                          'title' => $news[$i]['title']);
         $view['item'][$i]['description'] = wiki_process_text_recursive(
                                            $news[$i]['text'], $context);
-        $view['item'][$i]['pubDate'] = date(DATE_RFC822,
+        $view['item'][$i]['pubDate'] = date('r',
                                             strtotime($news[$i]['timestamp']));
-        $view['item'][$i]['guid'] = sha1($news[$i]['name'].$news[$i]['timestamp']);
+        $view['item'][$i]['guid'] = sha1($news[$i]['name'] . 
+                                         $news[$i]['timestamp']);
+
+        // since *some* RSS readers mark items read according to LINK
+        // rather than GUID, make sure every change to a news article yields
+        // a unique link
+        $view['item'][$i]['link'] = url($news[$i]['name'], array(), true) .
+                                    '#' . $view['item'][$i]['guid'];
     }
 
     execute_view_die('views/rss.php', $view);
