@@ -85,26 +85,28 @@ function task_get_textblock($task_id) {
     return textblock_get_revision('task/' . $task_id);
 }
 
-function task_create($task_id, $type, $author, $source, $user_id) {
+function task_create($task_id, $type, $hidden, $author, $source, $user_id) {
     global $dbLink;
     $query = sprintf("INSERT INTO ia_task
-                        (`id`, `type`, author, `source`, user_id)
+                        (`id`, `type`, `hidden`, author, `source`, user_id)
                       VALUES (LCASE('%s'), '%s', '%s', '%s', '%s')",
-                     db_escape($task_id), db_escape($type),
-                     db_escape($author), db_escape($source),
-                     db_escape($user_id));
+                      db_escape($task_id), db_escape($type),
+                      db_escape($hidden), db_escape($author),
+                      db_escape($source), db_escape($user_id));
     db_query($query);
     return mysql_insert_id($dbLink);
 }
 
-function task_update($task_id, $type, $author, $source) {
+function task_update($task_id, $type, $hidden, $author, $source) {
     global $dbLink;
     $query = sprintf("UPDATE ia_task
-                      SET author = '%s', `source` = '%s', `type` = '%s'
+                      SET author = '%s', `source` = '%s', `type` = '%s',
+                          `hidden` = '%s'
                       WHERE `id` = LCASE('%s')
                       LIMIT 1",
                      db_escape($author), db_escape($source),
-                     db_escape($type), db_escape($task_id));
+                     db_escape($type), db_escape($hidden),
+                     db_escape($task_id));
     return db_query($query);
 }
 
@@ -156,7 +158,9 @@ function round_get($round_id) {
 function round_get_info() {
     global $dbLink;
     $query = sprintf("SELECT ia_round.id AS id, ia_round.`type` AS `type`,
-                             tblock.title AS title
+                             tblock.title AS title,
+                             ia_round.`active` AS `active`,
+                             ia_round.user_id AS user_id
                       FROM ia_round
                       LEFT JOIN ia_textblock AS tblock
                         ON tblock.`name` = CONCAT('round/', ia_round.id)
@@ -172,24 +176,25 @@ function round_get_textblock($round_id) {
     return textblock_get_revision('round/' . $round_id);
 }
 
-function round_create($round_id, $type, $user_id) {
+function round_create($round_id, $type, $user_id, $active) {
     global $dbLink;
     $query = sprintf("INSERT INTO ia_round
-                        (`id`, `type`, user_id)
-                      VALUES (LCASE('%s'), '%s', '%s')",
+                        (`id`, `type`, user_id, `active`)
+                      VALUES (LCASE('%s'), '%s', '%s', '%s')",
                      db_escape($round_id), db_escape($type),
-                     db_escape($user_id));
+                     db_escape($user_id), db_escape($active));
     db_query($query);
     return mysql_insert_id($dbLink);
 }
 
-function round_update($round_id, $type) {
+function round_update($round_id, $type, $active) {
     global $dbLink;
     $query = sprintf("UPDATE ia_round
-                      SET `type` = '%s'
+                      SET `type` = '%s', `active` = '%s'
                       WHERE `id` = LCASE('%s')
                       LIMIT 1",
-                     db_escape($type), db_escape($round_id));
+                     db_escape($type), db_escape($active),
+                     db_escape($round_id));
     return db_query($query);
 }
 
@@ -201,7 +206,10 @@ function round_update($round_id, $type) {
 // information to yield a correct answer.
 function round_get_task_info($round_id) {
     global $dbLink;
-    $query = sprintf("SELECT task_id AS id, tblock.title AS title
+    $query = sprintf("SELECT
+                        task_id AS id, tblock.title AS title,
+                        ia_task.`hidden` AS `hidden`,
+                        ia_task.user_id AS user_id
                       FROM ia_round_task
                       LEFT JOIN ia_task ON ia_task.id = task_id
                       LEFT JOIN ia_textblock AS tblock

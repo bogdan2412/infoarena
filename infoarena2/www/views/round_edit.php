@@ -45,6 +45,15 @@ include('views/header.php');
         <h2>Parametri</h2>
 
 <ul class="form">
+    <li id="field_active">
+        <label for="form_active">Vizibilitate</label>
+        <select name="hidden" id="form_active">
+            <option value="0"<?= '0' == fval('active') ? ' selected="selected"' : '' ?>>Runda ascunsa</option>
+            <option value="1"<?= '1' == fval('active') ? ' selected="selected"' : '' ?>>Runda vizibila (publica)</option>
+        </select>
+        <?= ferr_span('active')?>
+    </li>
+
     <li id="field_type">
         <label for="form_type">Tip runda</label>
         <select name="type" id="form_type">

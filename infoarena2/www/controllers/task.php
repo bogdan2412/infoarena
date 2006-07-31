@@ -45,6 +45,7 @@ function controller_task_edit($task_id, $form_data = null,
             $form_data['content'] = $template['text'];
             $form_data['source'] = '';
             $form_data['type'] = '';
+            $form_data['hidden'] = '1';
 
             // default parameter values
             foreach ($param_list as $k => $v) {
@@ -61,6 +62,7 @@ function controller_task_edit($task_id, $form_data = null,
             $form_data['content'] = $textblock['text'];
             $form_data['source'] = $task['source'];
             $form_data['type'] = $task['type'];
+            $form_data['hidden'] = $task['hidden'];
 
             // get task parameter values
             $param_values = task_get_parameters($task_id);
@@ -134,6 +136,7 @@ function controller_task_save($task_id) {
     $data['content'] = getattr($_POST, 'content');
     $data['source'] = getattr($_POST, 'source');
     $data['type'] = getattr($_POST, 'type');
+    $data['hidden'] = getattr($_POST, 'hidden');
     // get parameter values (all incoming POST variables that start with 'p_')
     $param_values = array();
     foreach ($_POST as $k => $v) {
@@ -158,6 +161,14 @@ function controller_task_save($task_id) {
         $errors['type'] = "Alegeti tipul task-ului.";
         $errors['_param_list'] = true;
     }
+    if ('0' != $data['hidden'] && '1' != $data['hidden']) {
+        $errors['hidden'] = "Valoare invalida";
+        $errors['_param_list'] = true;
+    }
+    if ('0' == $data['hidden'] && !identity_can('task-publish', $task)) {
+        $errors['hidden'] = "Nu aveti permisiunea sa publicati task-uri.";
+        $errors['_param_list'] = true;
+    }
     // validate parameter values
     foreach ($param_values as $k => $v) {
         if (!parameter_validate($param_list[$k], $v)) {
@@ -172,13 +183,14 @@ function controller_task_save($task_id) {
         
         // - create/update task
         if ($task) {
-            task_update($task_id, $data['type'], $data['author'],
-                        $data['source']);
+            task_update($task_id, $data['type'], $data['hidden'],
+                        $data['author'], $data['source']);
             // note: updating a task does not change its owner (user_id)
         }
         else {
-            task_create($task_id, $data['type'], $data['author'],
-                        $data['source'], getattr($identity_user, 'id'));
+            task_create($task_id, $data['type'], $data['hidden'],
+                        $data['author'], $data['source'],
+                        getattr($identity_user, 'id'));
         }
         // - corresponding textblock
         textblock_add_revision('task/' . $task_id, $data['title'],

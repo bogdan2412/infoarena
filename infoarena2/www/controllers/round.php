@@ -41,6 +41,7 @@ function controller_round_edit($round_id, $form_data = null,
             $template = textblock_get_revision('template/new_round');
             $form_data['content'] = $template['text'];
             $form_data['type'] = '';
+            $form_data['active'] = '0';
             $form_data['tasks'] = array();
 
             // default parameter values
@@ -56,6 +57,7 @@ function controller_round_edit($round_id, $form_data = null,
             $form_data['title'] = $textblock['title'];
             $form_data['content'] = $textblock['text'];
             $form_data['type'] = $round['type'];
+            $form_data['active'] = $round['active'];
 
             // get round parameter values
             $param_values = round_get_parameters($round_id);
@@ -88,6 +90,7 @@ function controller_round_edit($round_id, $form_data = null,
         $view['title'] = "Modificare runda";
     }
     //  - choose active tab
+    $view['active_tab'] = 'statement';
     if (getattr($form_errors, '_param_list')) {
         $view['active_tab'] = 'parameters';
     }
@@ -137,6 +140,7 @@ function controller_round_save($round_id) {
     $data['title'] = getattr($_POST, 'title');
     $data['content'] = getattr($_POST, 'content');
     $data['type'] = getattr($_POST, 'type');
+    $data['active'] = getattr($_POST, 'active');
     // get parameter values (all incoming POST variables that start with 'p_')
     $param_values = array();
     foreach ($_POST as $k => $v) {
@@ -156,6 +160,11 @@ function controller_round_save($round_id) {
     }
     if (strlen($data['type']) < 1) {
         $errors['type'] = "Alegeti tipul rundei.";
+        $errors['_param_list'] = true;
+    }
+    // validate visibility
+    if ('1' == $data['active'] && !identity_can('round-publish', $round)) {
+        $errors['active'] = "Nu aveti permisiunea sa publicati runde.";
         $errors['_param_list'] = true;
     }
     // validate parameter values
@@ -183,11 +192,11 @@ function controller_round_save($round_id) {
 
         // - create/update round
         if ($round) {
-            round_update($round_id, $data['type']);
+            round_update($round_id, $data['type'], $data['active']);
             // note: updating a round does not change its owner (user_id)
         }
         else {
-            round_create($round_id, $data['type'],
+            round_create($round_id, $data['type'], $data['active'],
                          getattr($identity_user, 'id'));
         }
         // - corresponding textblock

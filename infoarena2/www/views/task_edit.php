@@ -34,6 +34,14 @@ include('views/header.php');
         <h2>Parametri</h2>
 
 <ul class="form">
+    <li id="field_hidden">
+        <label for="form_hidden">Vizibilitate</label>
+            <select name="hidden" id="form_hidden">
+                <option value="1"<?= '1' == fval('hidden') ? ' selected="selected"' : '' ?>>Task ascuns</option>
+                <option value="0"<?= '0' == fval('hidden') ? ' selected="selected"' : '' ?>>Task public (vizibil)</option>
+            </select>
+            <?= ferr_span('hidden')?>
+    </li>
     <li id="field_type">
         <label for="form_type">Tip task</label>
             <select name="type" id="form_type">

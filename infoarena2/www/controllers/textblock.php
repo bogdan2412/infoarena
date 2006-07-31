@@ -16,7 +16,8 @@ function controller_textblock_view($page_name, $rev_num = null) {
             flash_error("Nu ai voie sa vezi aceasta pagina");
             redirect(url(''));
         }
-    } else {
+    }
+    else {
         // Missing page template here.
         flash_error("Nu am gasit pagina, te trimit sa editezi");
         redirect(url($page_name, array('action' => 'edit')));

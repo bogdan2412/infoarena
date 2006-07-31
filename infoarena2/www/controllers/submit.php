@@ -11,7 +11,16 @@ function controller_submit_form($round_id, $form_data = null,
         // round
 
         // get round list
-        $rounds = round_get_info();
+        $rounds_unfiltered = round_get_info();
+
+        // filter rounds by user permissions
+        $rounds = array();
+        foreach ($rounds_unfiltered as $k => $r) {
+            if (!identity_can('round-submit', $r)) {
+                continue;
+            }
+            $rounds[$k] = $r;
+        }
 
         // view
         $view = array(
@@ -32,7 +41,16 @@ function controller_submit_form($round_id, $form_data = null,
     identity_require('round-submit', $round);
 
     // get task list
-    $tasks = round_get_task_info($round_id);
+    $tasks_unfiltered = round_get_task_info($round_id);
+
+    // filter tasks by user permissions
+    $tasks = array();
+    foreach ($tasks_unfiltered as $k => $t) {
+        if (!identity_can('task-submit', $t)) {
+            continue;
+        }
+        $tasks[$k] = $t;
+    }
 
     // view
     $textblock = round_get_textblock($round_id);
