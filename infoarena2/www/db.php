@@ -699,6 +699,12 @@ function job_mark_done($job_id, $eval_log, $eval_message, $score) {
     return db_query($query);
 }
 
+function job_get_by_id($job_id) {
+    $query = sprintf("SELECT * FROM ia_job WHERE `id`='%s'",
+                     db_escape($job_id));
+    return db_fetch($query);
+}
+
 function monitor_jobs_get_range($start, $range, $filter = null) {
     if ($start < 0) return;
     

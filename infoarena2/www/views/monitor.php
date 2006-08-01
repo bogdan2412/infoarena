@@ -18,6 +18,7 @@ else
             echo '</th>';
         }
 ?>
+    <th>Details</th>
     </tr>
     </thead>
     <tbody>
@@ -48,6 +49,7 @@ else
             }
             echo "</td>";
         }
+        echo '<td><a href="' . url("job_detail", array('id' => $line['id'])) . '">details</a></td>';
         echo "</tr>\n";
     }
 ?>
