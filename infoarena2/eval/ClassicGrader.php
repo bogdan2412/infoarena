@@ -120,7 +120,7 @@ class ClassicGrader {
          
             // Run user program.
             $jrunres = jail_run('user', $this->time_limit, $this->memory_limit);
-            tprint("JRUN: ".$jrunres['result'].": ".$jrunres['message']);
+            tprint("JRUN user: ".$jrunres['result'].": ".$jrunres['message']);
             if ($jrunres['result'] == 'ERROR') {
                 return JobResult::SystemError();
             } else if ($jrunres['result'] == 'FAIL') {
@@ -155,10 +155,32 @@ class ClassicGrader {
                     return JobResult::SystemError();
                 }
 
+                $jrunres = jail_run('eval', 1000, 64000, true);
+                tprint("JRUN grader: ".$jrunres['result'].": ".$jrunres['message']);
+                if ($jrunres['result'] != 'OK') {
+                    return JobResult::SystemError();
+                }
+
+                $jrunres['stdout'] = trim($jrunres['stdout']);
+                $score = (int)$jrunres['stdout'];
+                if ((string)$score !== $jrunres['stdout']) {
+                    tprint("Grader didn't return a score in stdout");
+                    return JobResult::SystemError();
+                }
+
+                $message = $jrunres['stderr'];
+                $message = preg_replace("/\s*\.?\n?^/i", "", $message);
+                if (strpos("\n", $message) || strlen($message) > 100) {
+                    tprint("Grader returned a malformed message");
+                    return JobResult::SystemError();
+                }
+
+                tprint("Grader gave $score points and said $message");
+
                 // FIXME: Run grader here.
                 $score = 100 / $this->test_count;
                 $result->score += $score;
-                $result->log .= "bonus de la fluffy: $score puncte";
+                $result->log .= "$message: $score puncte";
             }
         }
 

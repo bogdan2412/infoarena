@@ -94,6 +94,13 @@ function jrun_parse_message($message)
     return $res;
 }
 
+// Returns a jrun message array for an error.
+// Sort of a hack.
+function jrun_make_error($message)
+{
+    return array('result' => "ERROR", 'message' => $message);
+}
+
 // Run a program in a special jail environment.
 // It calls an external jailer and parses output.
 //
@@ -113,10 +120,6 @@ function jrun_parse_message($message)
 // If result is ERROR time, memory, stdin and stdout are never set.
 function jail_run($program, $time, $memory, $capture_std = false)
 {
-    if ($capture_std) {
-        tprint("I don't know how to capture stdio/stdout");
-    }
-
     $cmdline = IA_JRUN_PATH;
     $cmdline .= " --prog=./" . $program;
     $cmdline .= " --dir=" . IA_EVAL_JAIL_DIR;
@@ -126,6 +129,10 @@ function jail_run($program, $time, $memory, $capture_std = false)
     if (defined(IA_EVAL_JAIL_GID)) {
         $cmdline .= " --gid=" . IA_EVAL_JAIL_GID;
     }
+    if ($capture_std) {
+        $cmdline .= " --capture-stdout=jailed_stdout";
+        $cmdline .= " --capture-stderr=jailed_stderr";
+    }
     if (isset($time)) {
         $cmdline .= " --time-limit=" . $time;
     }
@@ -133,16 +140,27 @@ function jail_run($program, $time, $memory, $capture_std = false)
         $cmdline .= " --memory-limit=" . $memory;
     }
 
+    tprint("Running $cmdline");
     ob_start();
     @system($cmdline, $res);
     $message = ob_get_contents();
     ob_end_clean();
 
     if ($res) {
-        return array('result' => 'ERROR', 'message' => 'Failed executing jail');
+        return jrun_make_error('Failed executing jail');
     }
 
     $result = jrun_parse_message($message);
+    if ($capture_std) {
+        $result['stdout'] = file_get_contents(IA_EVAL_JAIL_DIR . 'jailed_stdout');
+        if ($result['stdout'] == false) {
+            return jrun_make_error('Failed reading captured stdout');
+        }
+        $result['stderr'] = file_get_contents(IA_EVAL_JAIL_DIR . 'jailed_stderr');
+        if ($result['stderr'] == false) {
+            return jrun_make_error('Failed reading captured stderr');
+        }
+    }
 
     return $result;
 }

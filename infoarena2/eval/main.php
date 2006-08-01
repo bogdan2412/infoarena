@@ -79,7 +79,8 @@ function handle_job($job) {
     }
 
     job_send_result($job['id'], $job_result);
-    tprint("I'm done. Resting for 5 seconds");
+    tprint("I'm done with this job");
+    tprint("");
 //    milisleep(5000);
 }
 
