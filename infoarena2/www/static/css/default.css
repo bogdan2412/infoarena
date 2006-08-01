@@ -325,3 +325,37 @@ form.round li#field_tasks select {
     display: block;
 }
 
+/* job details */
+.jobDetail ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.jobDetail li {
+    display: block;
+    float: none;
+    width: 30%;
+}
+
+.jobDetail li .desc {
+    width: 7em;
+    display: block;
+    float: left;
+}
+
+.jobDetail li.evalLog {
+    clear: left;
+    float: none;
+    width: 100%;
+}
+
+.jobDetail div.evalLog span {
+    display: block;
+    float: none;
+    width: auto;
+}
+
+.jobDetail div.evalLog pre {
+    display: block;
+}
