@@ -2,12 +2,12 @@
 
 <h1><?= htmlentities($view['title']) ?></h1>
 
-<div class="job_details" ?>
+<div class="job_detail" ?>
 <ul>
 <?php   foreach ($job as $key => $val) { ?>
     <li>
-        <div class="desc"><?=$key?></div>
-        <div class="val"><?=$val?></div>
+        <strong><div class="desc"><?=$key?></div></strong>
+        <div class="val"><pre><?=$val?></pre></div>
     </li>
 <?php    } ?>
 </ul>

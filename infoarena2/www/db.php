@@ -700,7 +700,10 @@ function job_mark_done($job_id, $eval_log, $eval_message, $score) {
 }
 
 function job_get_by_id($job_id) {
-    $query = sprintf("SELECT * FROM ia_job WHERE `id`='%s'",
+    $query = sprintf("SELECT id, round_id, task_id, user_id, file_extension,
+                             status, timestamp, eval_log, score, eval_message,
+                             mark_eval
+                      FROM ia_job WHERE `id`='%s'",
                      db_escape($job_id));
     return db_fetch($query);
 }
