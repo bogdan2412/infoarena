@@ -42,10 +42,9 @@
         <?php if (identity_can('edit-profile')) { ?>
         <li><a href="<?= url('profile') ?>">Modificare profil</a></li>
         <? } ?>
+        <li><a href="<?= url('monitor') ?>">Monitorul de evaluare</a></li>
     </ul>
-
-    <a href="<?= url('monitor') ?>">Monitorul de evaluare</a>
-    
+        
     <?php if (identity_anonymous()) { ?>
     <form action="<?= url('login', array('action' => 'login')) ?>" method="post" class="login">
         <div class="sidebox" id="members">
