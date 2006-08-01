@@ -18,6 +18,9 @@ function getattr($dict, $attribute, $defaultValue = null) {
 // Call this function for a http-level redirect.
 // NOTE: this function DOES NOT RETURN.
 // FIXME: Detect if output started and still do a redirect?
+// FIXMENOT: If output started before issuing a redirect means you're either
+// printing stuff to early or you're trying to redirect too late (view?).
+// Either way, it is a bug and it must be solved rather than handled gracefully
 // FIXME: Is that even remotely possible?
 // FIXME: Would be usefull for debugging though.
 function redirect($absoluteUrl) {

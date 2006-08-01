@@ -10,6 +10,10 @@ $macro_file_map = array(
 
 function macro_debug($args)
 {
+    if (!identity_can('macro-debug')) {
+        return make_error_div('Debug macro expands for administrators only.');
+    }
+
     $res = "<p>Debug macro listing args</p>";
     $res .= '<pre>';
     $ncargs = $args;
@@ -36,7 +40,7 @@ function get_macro_include_file($macro_name)
 // Can be returned from macros.
 function make_error_div($text)
 {
-    return '<div class="error">' . htmlentities($text) . '</div';
+    return '<div class="macroError">' . htmlentities($text) . '</div';
 }
 
 function execute_macro($macro_name, $macro_args)

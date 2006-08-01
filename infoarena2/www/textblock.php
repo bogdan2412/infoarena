@@ -1,8 +1,7 @@
 <?php
 
 // Fill news-specific context.
-function news_fill_context($news_id, &$context)
-{
+function news_fill_context($news_id, &$context) {
 }
 
 // Fill task-specific context.
@@ -12,11 +11,12 @@ function task_fill_context($task_id, &$context)
     $context['task_parameters'] = task_get_parameters($task_id);
 }
 
-// Fill round-specific contedt.
-function round_fill_context($round_id, &$context)
-{
+// Fill round-specific content.
+function round_fill_context($round_id, &$context) {
     $context['round'] = round_get($round_id);
-    $context['round_tasks'] = round_get_task_info($round_id);
+
+    // get list of tasks which user can see
+    $context['round_tasks'] = round_get_permitted_tasks($round_id, 'view');
 }
 
 // Split a textblock name into a module and an object.
@@ -48,9 +48,8 @@ function textblock_get_owner($textblock)
     return null;
 }
 
-// Get the context for a certain textblock.
-function textblock_get_context($textblock)
-{
+// Get the context for a given textblock.
+function textblock_get_context($textblock) {
     textblock_split_name($textblock['name'], $module, $objid);
 
     $context = array();

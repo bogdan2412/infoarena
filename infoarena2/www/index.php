@@ -3,10 +3,11 @@
 require_once("../config.php");
 require_once("config.php");
 require_once("utilities.php");
+require_once("db.php");
 require_once("identity.php");
 require_once("wiki/wiki.php");
 require_once("textblock.php");
-require_once("db.php");
+require_once("rounds.php");
 
 // restore identity session (if such a session exists)
 identity_restore();
@@ -14,6 +15,7 @@ identity_restore();
 // Do url validation.
 // All urls that pass are valid, they can be missing wiki pages.
 $page = request('page');
+
 if (!preg_match('/^([a-z0-9_\-\/]*)$/i', $page)) {
     flash_error('Url invalid');
     redirect(url(''));

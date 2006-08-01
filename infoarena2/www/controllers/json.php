@@ -13,16 +13,24 @@ function controller_json($suburl) {
             // This is used for previewing markup when editing the wiki.
             $page_content = request('content');
             $page_name = request('page_name');
-            $context= textblock_get_context($page_name);
+
+            // get text block
+            $textblock = textblock_get_revision($page_name);
+            ia_assert($textblock, 'Invalid textblock identifier');
+            $context = textblock_get_context($textblock);
 
             // generate mark-up
             $output = wiki_process_text($page_content, $context);
-            $view['json'] = array('html' => $output);
-            $view['debug'] = request('debug', null);
+            $json = array('html' => $output);
+
+            // view
+            $view = array(
+                'json' => $json,
+                'debug' => request('debug', null)
+            );
 
             // output JSON
-            include('views/json.php');
-            break;
+            execute_view_die('views/json.php', $view);
 
         default:
             flash('Actiunea nu este valida.');

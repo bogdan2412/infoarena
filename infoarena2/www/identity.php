@@ -45,7 +45,8 @@ function identity_can($action, $ontoObject = null, $identity = null) {
                           'news-view', 'news-edit', 'news-create',
                           'news-history', 'news-restore', 
                           'round-view', 'round-create', 'round-edit',
-                          'round-submit', 'round-history', 'round-restore');
+                          'round-submit', 'round-history', 'round-restore',
+                          'macro-debug');
     ia_assert(false !== array_search($action, $validActions),
               'Invalid permission: "' . $action . '"');
 
@@ -56,13 +57,15 @@ function identity_can($action, $ontoObject = null, $identity = null) {
             case 'attach-download':
             case 'wiki-listattach':
             case 'wiki-view':
-            case 'task-view':
             case 'news-view':
             case 'round-view':
             case 'wiki-history':
             case 'news-history':
             case 'round-history':
                 return true;
+
+            case 'task-view':
+                return $ontoObject && !$ontoObject['hidden'];
 
             default:
                 return false;

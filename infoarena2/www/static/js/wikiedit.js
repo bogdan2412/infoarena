@@ -34,6 +34,7 @@ function WikiEdit_Preview() {
 
     var error = function(error) {
         window.alert('Eroare! Nu pot face preview. Incearcati din nou.');
+        WikiEdit_ClosePreview();
     }
 
     d.addCallbacks(ready, error);
