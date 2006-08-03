@@ -42,27 +42,19 @@ class MyTextile extends Textile {
                         $macro_arg_str, $matches, PREG_SET_ORDER)) {
                 $matches = array();
             }
-            /*echo '<pre>';
-            print_r($matches);
-            echo '</pre>';*/
-            $args = array('context' => $this->context);
+            $macro_args = array('context' => $this->context);
             for ($i = 0; $i < count($matches); ++$i) {
-                if ($matches[$i][1] == "context") {
+                $argname = strtolower($matches[$i][1]);
+                $argval = $matches[$i][2];
+                if ($argname == "context") {
                     return make_error_div("Invalid argument name 'context'");
                 }
-                if (isset($args[$matches[$i][1]])) {
-                    return make_error_div('Duplicate argument '.
-                            $matches[$i][1]." for macro $macro_name.");
+                if (isset($macro_args[$argname])) {
+                    return make_error_div("Duplicate argument '$argname' ".
+                            "for macro $macro_name.");
                 }
-                $args[$matches[$i][1]] = str_replace('""', '"', $matches[$i][2]);
+                $macro_args[$argname] = str_replace('""', '"', $argval);
             }
-
-            /*$res = "$macro_name(";
-            foreach ($args as $k => $v) {
-                $res .= " ".$k." = \"".$v."\" ";
-            }
-            $res .= ")";
-            echo $res;*/
 
             // Black magic here.
             // this function is called from a callback that uses a static variable.
@@ -70,7 +62,7 @@ class MyTextile extends Textile {
             // Anyway, execute_macro can use textile for itself, therefore I 
             // have to restore that static variable after execute_macro.
             // This very scary, but it works.
-            $res = execute_macro($macro_name, $args);
+            $res = execute_macro($macro_name, $macro_args);
             Textile::_current_store($this);
             return $res;
         }
