@@ -26,10 +26,10 @@ define("DB_PASS", '--write-me--');
 // Web host. This is probably localhost. no trailing slash here
 define("IA_URL_HOST", "http://localhost");
 
-// URL prefix, without the IA_URL part (relative to the web server).
-// First character should be a slash.
+// URL prefix, without the IA_URL_HOST part
+// (only the part relative to the web server).
+// Slashes at both ends.
 define("IA_URL_PREFIX", "--write-me--");
-
 
 //
 // Additional configuration goes here.

@@ -1,4 +1,7 @@
 RewriteEngine On
+
+# Same as IA_URL_PREFIX
+# Slashes at both ends
 RewriteBase /--write-me--/
 
 RewriteCond %{REQUEST_URI}  !index.php
