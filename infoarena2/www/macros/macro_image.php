@@ -1,4 +1,5 @@
 <?php
+
 // src = file name, link = [optional] address, 
 function macro_image($args) {
     $image = getattr($args, 'src');
@@ -20,7 +21,8 @@ function macro_image($args) {
     if (!is_null($link)) {
         $ret .= '<a href="'.url($link).'">';
     }
-    $ret .= '<img src="'.url($args['context']['page_name'].'?action=download&file='.$image).'" alt="'.htmlentities($caption).'"/>';
+    $imgsrc = attachment_url($args['context']['page_name'], $image);
+    $ret .= '<img src="'.$imgsrc.'" alt="'.htmlentities($caption).'"/>';
     if (!is_null($link)) {
         $ret .= '</a>';
     }

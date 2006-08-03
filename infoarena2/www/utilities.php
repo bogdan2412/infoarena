@@ -59,6 +59,12 @@ function url($document, $params = array(), $absolute = false) {
     }
 }
 
+// Get an url for an attachement
+function attachment_url($page, $file)
+{
+    return url($page, array('action' => 'download', 'file' => $file));
+}
+
 
 // Use flash() to display a message right after redirecting the user.
 // Message is displayed only once.
