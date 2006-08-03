@@ -3,7 +3,7 @@
 require_once("../config.php");
 require_once("config.php");
 require_once("utilities.php");
-require_once("db.php");
+require_once("../common/db.php");
 require_once("identity.php");
 require_once("wiki/wiki.php");
 require_once("textblock.php");

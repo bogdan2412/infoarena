@@ -3,7 +3,7 @@
 
 require_once('utilities.php');
 require_once('config.php');
-require_once('../www/db.php');
+require_once('../common/db.php');
 require_once('ClassicGrader.php');
 
 class JobResult {
