@@ -6,6 +6,8 @@
  *
  * If someone changes the databse, they should review this script to
  * ensure it's still working. If they can't review it at least make a ticket!
+ *
+ * It is recommended to empty the ia_user table before running this script
 **/
 
     // include infoa-arena 2 defines and connect to database (dbLink)
@@ -13,9 +15,9 @@
     require_once("../common/db.php");
 
     // defines for info-arena 1 database
-    define("DB1_HOST", 'localhost');
-    define("DB1_USER", 'root');
-    define("DB1_PASS", 'ilav4');
+    define("DB1_HOST", 'localhost');    // change me!
+    define("DB1_USER", 'root');         // change me!
+    define("DB1_PASS", '');             // change me!
     define("DB1_NAME", 'infoarena1_dev');
 
     // if we make more utils, this should be in a utils-common config file
@@ -54,25 +56,22 @@
         $result = mysql_query($select_query, $dbLink1);
         if ($result) {
             while ($row = mysql_fetch_assoc($result)) {
-                // Insert query follows
-                $insert_query = "
-                    INSERT INTO ia_user
-                        (`username`, `password`, `email`, `full_name`,
-                         `security_level`, `newsletter`, `country`)
-                    VALUES
-                        ('" . db_escape($row['id']) . 
-                          "', SHA1('".$row['password'] . "'), '" .
-                          db_escape($row['email']) . "', '" .
-                          db_escape($row['name']) . "', '";
+                // fill the user data
+                $data = array();
+                $data['username'] = $row['id'];
+                $data['password'] = $row['password'];
+                $data['email'] = $row['email'];
+                $data['full_name'] = $row['name'];
+                $data['newsletter'] = $row['receiveNewsletter'];
                 if ($row['admin']) {
-                    $insert_query .= "admin";
+                    $data['security_level'] = "admin";
                 }
                 else {
-                    $insert_query .= "normal";
+                    $data['security_level'] = "normal";
                 }
-                $insert_query .= "', '" . $row['receiveNewsletter'] . "', '" .
-                                 db_escape($row['country']) . "')";
-                $res = mysql_query($insert_query, $dbLink);
+                
+                // run query
+                $res = user_create($data);
 
                 if (!$res) {
                     $ok = false;
@@ -82,7 +81,9 @@
                 }
 
                 if ($verbose) {
-                    echo $insert_query . "<br>\n";
+                    echo "<pre>";
+                    print_r($data);
+                    echo "</pre>\n";
                     echo "<strong>" . (($res)?"OK":"FAILED") . "</strong>";
                     echo "<br><br>\n";
                 }
@@ -91,6 +92,8 @@
                         echo "Problems at user " . $row['name'] . "<br>\n";
                     }
                 }
+
+                unset($data); // make sure nothing remains to the next user
             }
         }
         else {
