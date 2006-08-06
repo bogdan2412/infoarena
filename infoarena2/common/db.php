@@ -487,10 +487,22 @@ function textblock_get_names_with_user($prefix) {
 /**
  * User
  */
+
+function user_test_ia1_password($username, $password) {
+    $query = sprintf("SELECT *
+                      FROM ia_user
+                      WHERE LCASE(username) = '%s' AND
+                        SHA1(PASSWORD('%s')) = `password`",
+                     db_escape($username), db_escape($password));
+    return db_fetch($query);
+}
+
+
 function user_test_password($username, $password) {
     $query = sprintf("SELECT *
                       FROM ia_user
-                      WHERE LCASE(username) = '%s' AND SHA1('%s') = `password`",
+                      WHERE LCASE(username) = '%s' AND
+                        SHA1('%s') = `password`",
                      db_escape($username), db_escape($password));
     return db_fetch($query);
 }
@@ -529,7 +541,7 @@ function user_create($data) {
     $query .= ') VALUES (';
     foreach ($data as $key => $val) {
         if ($key == 'password') {
-            $query .= "sha1('" . db_escape($val) . "'),";
+            $query .= "SHA1('" . db_escape($val) . "'),";
         }
         else {
             $query .= "'" . db_escape($val) . "',";
@@ -548,7 +560,7 @@ function user_update($data, $id)
     $query = "UPDATE ia_user SET ";
     foreach ($data as $key => $val) {
         if ($key == 'password') {
-            $query .= "`" . $key . "`=sha1('" . db_escape($val) . "'),";
+            $query .= "`" . $key . "`=SHA1('" . db_escape($val) . "'),";
         }
         else {
             $query .= "`" . $key . "`='" . db_escape($val) . "',";

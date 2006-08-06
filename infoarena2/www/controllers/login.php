@@ -18,7 +18,15 @@ function controller_login() {
         $data['password'] = getattr($_POST, 'password');
         $user = user_test_password($data['username'], $data['password']);
         if (!$user) {
-            $errors = true;
+            $user = user_test_ia1_password($data['username'], $data['password']);
+            if (!$user) {
+                $errors = true;
+            }
+            else {
+                // update password to the SHA1 algorithm
+                user_update(array('password' => $data['password']),
+                            $user['id']);
+            }
         }
 
         // process
