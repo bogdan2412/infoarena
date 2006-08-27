@@ -3,18 +3,35 @@
 // RSS discovery
 $view['head'] = '<link rel="alternate" href="' . url($page_name, array('action' => 'feed')) . '" title="RSS Revizii ' . $textblock['title'] . '" type="application/rss+xml" />';
 
+// compute default permission prefix
+//
+// When displaying wiki page actions, we have to check for permissions.
+// The same view code is used to display static wiki pages, news, tasks.
+// task-view, wiki-view, round-view etc. 
+$perm_prefix = getattr($view, 'perm_prefix', 'wiki');
+
 include('header.php');
 
 ?>
-    <ul id="wikiOps">
-        <li><a href="<?= url($textblock['name'], array('action' => 'edit')) ?>">Editeaza</a></li>
-        <li><a href="<?= url($textblock['name'], array('action' => 'history')) ?>">Vezi istoria</a></li>
-        <li><a href="<?= url($textblock['name'], array('action' => 'attach')) ?>">Ataseaza</a></li>
-        <li><a href="<?= url($textblock['name'], array('action' => 'attach-list')) ?>">Listeaza atasamente</a></li>
-     </ul>
-     <a class="rss" href="<?= htmlentities(url($view['page_name'], array('action' => 'feed'))) ?>" title="RSS Istoria paginii">
-         RSS Istoria paginii <?= htmlentities($view['page_name']) ?>
-     </a>
+    <div id="wikiOps">
+        <ul>
+            <?php if (identity_can($perm_prefix . '-edit', $textblock)) { ?>
+            <li><a href="<?= url($textblock['name'], array('action' => 'edit')) ?>">Editeaza</a></li>
+            <?php } ?>
+            <?php if (identity_can($perm_prefix . '-history', $textblock)) { ?>
+            <li><a href="<?= url($textblock['name'], array('action' => 'history')) ?>">Vezi istoria</a></li>
+            <?php } ?>
+            <?php if (identity_can('textblock-attach', $textblock)) { ?>
+            <li><a href="<?= url($textblock['name'], array('action' => 'attach')) ?>">Ataseaza</a></li>
+            <?php } ?>
+            <?php if (identity_can('textblock-listattach', $textblock)) { ?>
+            <li><a href="<?= url($textblock['name'], array('action' => 'attach-list')) ?>">Listeaza atasamente</a></li>
+            <?php } ?>
+         </ul>
+         <a class="feed" href="<?= htmlentities(url($view['page_name'], array('action' => 'feed'))) ?>" title="RSS Istoria paginii">
+             RSS Istoria paginii <?= htmlentities($view['page_name']) ?>
+         </a>
+    </div>
      
 <?php
 echo '<h1>'.htmlentities($textblock['title']).'</h1>';

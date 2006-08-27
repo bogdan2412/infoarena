@@ -104,4 +104,5 @@ function controller_wiki_save($page_name) {
         execute_view_die("views/wikiedit.php", $view);
     }
 }
+
 ?>

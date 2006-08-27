@@ -21,7 +21,7 @@ function controller_news_view_feed() {
         $view['item'][$i]['guid'] = sha1($news[$i]['name'] . 
                                          $news[$i]['timestamp']);
 
-        // since *some* RSS readers mark items read according to LINK
+        // since *some* RSS readers mark items as read according to LINK
         // rather than GUID, make sure every change to a news article yields
         // a unique link
         $view['item'][$i]['link'] = url($news[$i]['name'], array(), true) .

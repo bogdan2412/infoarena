@@ -87,6 +87,23 @@ function flash_error($message) {
 function execute_view($view_file_name, $view) {
     global $identity_user;
 
+    // retrieve recent page history
+    // some pages display it as navigation breadcrumbs
+    $recent_pages = getattr($_SESSION, 'recent_pages', null);
+
+    // update recent page history
+    $page = request('page', 'home');
+    $recent_pages[$page] = getattr($view, 'title', $page);
+    if (6 < count($recent_pages)) {
+        array_shift($recent_pages);
+    }
+    $_SESSION['recent_pages'] = $recent_pages;
+
+    // let view access recent_pages
+    $view['current_url'] = $page;
+    $view['recent_pages'] = $recent_pages;
+
+    // expand $view members into global scope
     $GLOBALS['view'] = $view;
 
     foreach ($view as $view_hash_key => $view_hash_value) {

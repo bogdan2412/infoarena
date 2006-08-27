@@ -645,7 +645,8 @@ function attachment_get_all($page) {
  * News
  */
 function news_get_range($start, $range, $prefix = null) {
-    $query = sprintf("SELECT *
+    $query = sprintf("SELECT
+                        *, DATE_FORMAT(`timestamp`, '%%d %%b') AS `timestamp`
                       FROM ia_textblock
                       WHERE LCASE(`name`) LIKE 'news/%s%%'
                       ORDER BY `timestamp` DESC
