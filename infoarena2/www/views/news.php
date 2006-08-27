@@ -7,20 +7,20 @@ include('header.php');
 
 ?>
 
-<div class="newsbox">
-    <h2>
-        <?php if (getattr($view, 'feed_link')) { ?>
-        <a class="feed" href="<?= htmlentities($view['feed_link']) ?>" title="RSS Stiri info-arena">
-            RSS Stiri info-arena
-        </a>
-        <?php } ?>
-        Stiri
-    </h2>
+<h1>
+    <?php if (getattr($view, 'feed_link')) { ?>
+    <a class="feed" href="<?= htmlentities($view['feed_link']) ?>" title="RSS Stiri info-arena">
+        RSS Stiri info-arena
+    </a>
+    <?php } ?>
+    Arhiva stiri
+</h1>
     
+<div class="news">
     <?php foreach ($view['news'] as $v) { ?>
-        <div class="newspiece">
+        <div class="item">
         <?php
-            echo '<span class="newsdate">'.htmlentities($v['timestamp']).'</span>';
+            echo '<span class="date">'.htmlentities($v['timestamp']).'</span>';
             if (identity_can('wiki-view', $v)) {
                 echo '<h3><a href="'.url($v['name']).'?action=view'.'">'.htmlentities(getattr($v, 'title')).'</a></h3>';
             }

@@ -1,5 +1,4 @@
-/* THE BASICS
-=========================*/
+/* Basic styles */
 * {
 	margin:0;
 	padding:0;
@@ -25,12 +24,7 @@ body {
 * html .clear {
 	height: 1%;
 }
-/* END OF BASICS */
 
-
-
-/* BASIC STYLING 
-=========================*/
 a {
 	color:#006699;
 	text-decoration:none;
@@ -45,13 +39,42 @@ p {
 	margin-bottom:15px;
 }
 
-/* END OF BASIC STYLING */
+/* Misc */
+a.feed {
+	float:right;
+	display:block;
+	margin:0;
+	padding:0;
+    width: 20px;
+    height: 20px;
+    background: url(../images/feed-icon.gif) no-repeat center center;
+    text-indent: -100em;
+    overflow: hidden;
+}
 
+div.loading {
+    text-align: center;
+}
 
+div.loading img {
+    margin-right: .5em;
+}
 
-/* LAYOUT ELEMENTS 
-=========================
+#wiki_preview {
+    padding: 1em;
+    margin: 1em;
+    border: 1px dotted silver;
+}
 
+div.sidehelp {
+    float: right;
+    width: 12em;
+    padding: 1em;
+    background-color: #ccf;
+}
+
+/* Layout */ 
+/*
 The basic layout of the homepage is as follows:
 
 - #page
@@ -59,12 +82,18 @@ The basic layout of the homepage is as follows:
 	- #content
 		- #sidebar
 		- #main
-			- .newsbox
-			- #miscbox
+            - h1
+			- .wiki_text_block
+                - h[2|3|4]
+                - ul
+                - ol
+                - ...
+            - .news
+                .item
+                    .date
+                    h3
+                    .wiki_text_block
 	- #footer
-
-
-Now let's see if we can make that happen:
 */
 
 #page {
@@ -97,22 +126,6 @@ Now let's see if we can make that happen:
 	padding:15px;
 	margin-left:191px;
 	border-left:1px solid #d0d0d0;
-}
-
-.newsbox {
-	/*width:340px;
-	float:left;*/
-	margin-right:15px;
-	display:table;
-	white-space:normal;
-
-}
-
-* html .newsbox {
-	margin-right:200px;
-	height:1%;
-	width:auto;
-
 }
 
 #miscbox {
@@ -153,18 +166,6 @@ Now let's see if we can make that happen:
 	color:#840;
 }
 
-a.feed {
-	float:right;
-	display:block;
-	margin:0;
-	padding:0;
-    width: 20px;
-    height: 20px;
-    background: url(../images/feed-icon.gif) no-repeat center center;
-    text-indent: -100em;
-    overflow: hidden;
-}
-
 #upcoming li, #newprobs li {
 	border-bottom:1px solid #cecece;
 	display:block;
@@ -192,8 +193,7 @@ display:block;
 }
 
 
-/* HEADER STYLES 
-======================*/
+/* Page header */
 #header h1 a {
 	background:url(../images/shield_new.jpg) no-repeat left top;
 	height:60px;
@@ -216,35 +216,7 @@ display:block;
 	width:120px;
 }
 
-#header #contacts {
-	position:absolute;
-	right:230px;
-	top:15px;
-	font-size:11px;
-	list-style-type:none;
-}
-
-#header #contacts li {
-	display:block;
-	float:left;
-}
-
-#header #contacts li a {
-	color:#fff;
-	display:block;
-	line-height:1.2;
-	padding:3px 6px;
-}
-
-#header #contacts li a:hover {
-	text-decoration:underline;
-	background:transparent;
-}
-
-#header #contacts li.current a {
-	font-weight:bold;
-}
-
+/* Wikipage options (actions) */
 #wikiOps {
 	font-size:10px;
 }
@@ -276,12 +248,8 @@ display:block;
 	background:#fff;
 	font-weight:bold;
 }
-/* END OF HEADER STYLES */
 
-
-
-/* SIDEBAR STYLES
-======================*/
+/* Sidebar :: Main menu */
 #nav {
 	margin-right:10px;
 }
@@ -326,6 +294,7 @@ display:block;
 	background:#FFEFB1 url(../images/bullet_current.gif) no-repeat 2px center ;
 }
 
+/* Sidebar :: login box */
 #login {
 	border:1px solid #fc0;
 	border-right:none;
@@ -372,6 +341,7 @@ display:block;
 	margin-bottom:6px;
 }
 
+/* Sidebar :: avatar */
 #avatar {
     width: 165px;
     height: 80px;
@@ -391,10 +361,8 @@ display:block;
 	margin:0;
 	padding:6px 0 8px;
 }
-/* END OF SIDEBAR STYLES */
 
-
-/* MAIN (CONTENT) */
+/* Main (content) */
 #main h1 {
 	font-family: Georgia, "Times New Roman", Times, serif;
 	font-size: 17pt;
@@ -410,77 +378,54 @@ display:block;
     margin: .2em 0 0 0;
 }
 
-.newsbox h3 {
-	font-family:Georgia, "Times New Roman", Times, serif;
-	font-size:20px;
-	font-weight:normal;
+/* News */
+.news {
+	/*width:340px;
+	float:left;*/
+    width: 95%;
+    margin-top: 1em;
 }
 
-.newsbox h3 {
-	line-height:1.1;
-	padding-bottom:4px;
-	margin-left:50px;
+* html .news {
+	height: 1%;
 }
 
-
-.newsbox h4 {
-	font-size:11px;
-	color:#999;
-	font-weight:normal;
-	margin-bottom:10px;
-	line-height:1;
+#main .news h3 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+    color: green;
+	font-size: 13pt;
+	font-weight: normal;
+    border: 0;
+    margin: 0;
 }
 
-.newsbox h4 {
-	margin-left:50px;
+.news .item {
+	border-bottom: 1px solid #EBE9DC;
+	margin-bottom: 1em;
+    width: 100%;
+    padding: 0 .5em 0 .5em;
 }
 
-.newspiece, .artpiece {
-	border-bottom:1px solid #EBE9DC;
-	margin-bottom:15px;
+.news .item .wiki_text_block {
+    line-height: 1.5em;
+    margin-left: 47px;
 }
 
-h3 a {
-	text-decoration:none;	
+.news .item .date {
+	float: left;
+	width: 25px;
+	padding: 5px;
+	font-family: Arial, Helvetica, sans-serif;
+	text-align: center;
+	font-size: 10pt;
+	margin: 5px 8px 5px 0;
+	padding-top: 10px;
+	color: #060;
+	background: #D9E7BE url(../images/calendar.jpg) no-repeat top right;
+	line-height: 1.2;
 }
 
-h3 a:hover {
-	text-decoration:underline;
-	background:#F8F8EF;
-}
-
-#sidebar ul, #upcoming ul, #newprobs ul {
-	list-style-type:none;
-}
-
-.more {
-	font-weight:bold;
-}
-
-.newsdate {
-	float:left;
-	width:25px;
-	padding:5px;
-	font-family:Arial, Helvetica, sans-serif;
-	text-align:center;
-	text-transform:uppercase;
-	font-size:11px;
-	margin-bottom:10px;
-	margin-top:4px;
-	padding-top:10px;
-	color:#060;
-	background:#D9E7BE url(../images/calendar.jpg) no-repeat top right;
-	line-height:1.2;
-}
-
-.newspiece p {
-	margin-left:50px;
-}
-
-* html .newspiece p {
-	margin-top:-10px;
-}
-
+/* Breadcrumbs */
 #breadcrumbs {
 	font-size:11px;
 	line-height:2;
@@ -497,7 +442,8 @@ h3 a:hover {
     color: silver;
 }
 
-.archive {
+/* Horizontal strap (i.e. "Vezi arhiva stiri") */
+.strap {
 	padding:5px 26px;
 	background: #f6f6f6 url(../images/documents_16.gif) no-repeat 5px center ;
 	margin-top:-14px;
@@ -506,11 +452,12 @@ h3 a:hover {
 	color:#555;
 }
 
-.archive a {
+.strap a {
 	font-weight:bold;
 	text-transform:uppercase;
 }
 
+/* Footer */
 #footer ul {
 }
 
@@ -531,27 +478,6 @@ h3 a:hover {
 #footer p {
 	font-size:10px;
 	margin-top:6px;
-}
-
-div.loading {
-    text-align: center;
-}
-
-div.loading img {
-    margin-right: .5em;
-}
-
-#wiki_preview {
-    padding: 1em;
-    margin: 1em;
-    border: 1px dotted silver;
-}
-
-div.sidehelp {
-    float: right;
-    width: 12em;
-    padding: 1em;
-    background-color: #ccf;
 }
 
 /* Macros */

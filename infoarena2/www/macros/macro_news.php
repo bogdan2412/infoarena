@@ -9,8 +9,8 @@ function macro_news($args) {
         $res .= '<div class="item">';
         $title = $subpages[$i]['title'];
         $link = url($subpages[$i]['name']);
-        $res .= "<h3><a href=\"$link\">$title</a></h3>";
         $res .= '<span class="date">'.htmlentities($subpages[$i]['timestamp']).'</span>';
+        $res .= "<h3><a href=\"$link\">$title</a></h3>";
         $res .='<div class="wiki_text_block">';
         $minicontext = array('page_name' => $subpages[$i]['name'], 'title' => $title);
         $res .= wiki_process_text_recursive(getattr($subpages[$i], 'text'), $minicontext);
