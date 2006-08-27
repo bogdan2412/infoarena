@@ -45,16 +45,6 @@ p {
 	margin-bottom:15px;
 }
 
-h1, h2 {
-	font-family:Arial, Helvetica, sans-serif;
-	font-size:16pt;
-	font-weight:normal;
-}
-
-h2 {
-	font-size:14pt;
-}
-
 /* END OF BASIC STYLING */
 
 
@@ -71,7 +61,6 @@ The basic layout of the homepage is as follows:
 		- #main
 			- .newsbox
 			- #miscbox
-			- #articlebox
 	- #footer
 
 
@@ -124,10 +113,6 @@ Now let's see if we can make that happen:
 	height:1%;
 	width:auto;
 
-}
-
-#articlebox {
-	clear:right;
 }
 
 #miscbox {
@@ -297,7 +282,6 @@ display:block;
 
 /* SIDEBAR STYLES
 ======================*/
-
 #nav {
 	margin-right:10px;
 }
@@ -407,15 +391,26 @@ display:block;
 	margin:0;
 	padding:6px 0 8px;
 }
-
 /* END OF SIDEBAR STYLES */
 
 
-#main h2 {
-	margin-bottom:10px;
+/* MAIN (CONTENT) */
+#main h1 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 17pt;
+	font-weight: normal;
+    margin: .2em 0 .7em 0;
+    border-bottom: 1px solid #eee;
 }
 
-.newsbox h3, #articlebox h3 {
+#main h2 {
+	font-family: Arial, Tahoma, sans-serif;
+	font-size: 14pt;
+	font-weight: normal;
+    margin: .2em 0 0 0;
+}
+
+.newsbox h3 {
 	font-family:Georgia, "Times New Roman", Times, serif;
 	font-size:20px;
 	font-weight:normal;
@@ -428,7 +423,7 @@ display:block;
 }
 
 
-.newsbox h4, #articlebox h4 {
+.newsbox h4 {
 	font-size:11px;
 	color:#999;
 	font-weight:normal;
@@ -699,6 +694,10 @@ form.round li#field_tasks select {
 }
 
 /* Wiki text block */
+.wiki_text_block {
+    line-height: 2em;
+}
+
 .wiki_text_block a.wiki_link_external {
     color: green;
 }
@@ -707,17 +706,37 @@ form.round li#field_tasks select {
     color: red;
 }
 
-.wiki_text_block ul.tasks {
-    list-style-type: square;
+.wiki_text_block ul, .wiki_text_block ol {
     line-height: 1.5em;
+    margin: 0 .5em 1em 3em;
 }
 
-.wiki_text_block ul.tasks li a {
+.wiki_text_block ul {
+    list-style-type: square;
 }
 
-.wiki_text_block ul.tasks li.hidden a {
+.wiki_text_block ul li, .wiki_text_block ol li {
+    margin: 0;
+}
+
+#main .wiki_text_block h2, .wiki_text_block h3, .wiki_text_block h4 {
+	font-family: Arial, Tahoma, sans-serif;
+	font-size: 1.5em;
+	font-weight: normal;
+    margin: .5em 0 0 0;
+}
+
+.wiki_text_block h2 {
+    border-bottom: 1px solid #eee;
+}
+
+.wiki_text_block h3 {
+    font-size: 1.4em;
+}
+
+.wiki_text_block h4 {
+    font-size: 1.2em;
     font-style: italic;
-    color: gray;
 }
 
 /* Job details */

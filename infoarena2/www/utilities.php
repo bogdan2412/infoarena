@@ -89,12 +89,12 @@ function execute_view($view_file_name, $view) {
 
     // retrieve recent page history
     // some pages display it as navigation breadcrumbs
-    $recent_pages = getattr($_SESSION, 'recent_pages', null);
+    $recent_pages = getattr($_SESSION, 'recent_pages', array());
 
     // update recent page history
     $page = request('page', 'home');
     $recent_pages[$page] = getattr($view, 'title', $page);
-    if (6 < count($recent_pages)) {
+    if (5 < count($recent_pages)) {
         array_shift($recent_pages);
     }
     $_SESSION['recent_pages'] = $recent_pages;

@@ -47,14 +47,15 @@ function controller_wiki_edit($page_name) {
     if (!$page) {
         $page_title = $page_name;
         $page_content = "Scrie aici despre " . $page_name;
+        $view['title'] = "Creare " . $page_name;
     }
     else {
         $page_title = $page['title'];
         $page_content = $page['text'];
+        $view['title'] = "Editare " . $page_name;
     }
 
     // This is the creation action.
-    $view['title'] = "Creare " . $page_name;
     $view['page_name'] = $page_name;
     $view['action'] = url($page_name, array('action' => 'save'));
 
