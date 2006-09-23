@@ -10,4 +10,9 @@ RewriteRule ^(.*) index.php?page=$1 [QSA]
 
 php_value magic_quotes_gpc 0
 php_value register_globals 0
+
+# Error reporting. Everything is logged, but only in the web server log.
 php_value error_reporting 65535
+php_value display_errors false
+php_value log_errors true
+php_value html_errors false

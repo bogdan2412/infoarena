@@ -1,4 +1,6 @@
 <?php
+
+require_once("log.php");
 /**
  * This module contains various database-related functions and routines.
  *
@@ -9,7 +11,7 @@
 // first, we need a database connection
 assert(!isset($dbLink));    // repetitive-include guard
 $dbLink = mysql_connect(DB_HOST, DB_USER, DB_PASS)
-          or die('Cannot connect to database.');
+          or log_die('Cannot connect to database.');
 mysql_select_db(DB_NAME, $dbLink) or die ('Cannot select database.');
 
 // Escapes a string to be safely included in a query.
@@ -27,15 +29,9 @@ function db_query($query) {
     global $dbLink;
     $result = mysql_query($query, $dbLink);
     if (!$result) {
-        // An error has occured. Print helpful debug messages and die
-        echo '<br/><br/><hr/><h1>SQL ERROR!</h1>';
-
-        if (IA_SQL_TRACE) {
-            echo '<p>' . mysql_error($dbLink) . '</p>';
-            echo '<p>This has occured upon trying to execute this:</p>';
-            echo '<pre>' . $query . '</pre>';
-        }
-        die();
+        log_error('MYSQL error: '.mysql_error($dbLink).'\n');
+        log_error('Query: \''.$query.'\'\n');
+        log_die();
     }
     return $result;
 }

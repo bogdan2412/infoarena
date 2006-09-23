@@ -31,6 +31,13 @@ function identity_can($action, $ontoObject = null, $identity = null) {
         $identity = $identity_user;
     }
 
+    // Log permission checking.
+    // Don't remove this, it's important.
+    log_print("Checking permissions".
+            " identity=" . ($identity ? (string)$identity : 'null') .
+            " action=" . ($action ? (string)$action : 'null') .
+            " object=" . ($ontoObject ? (string)$ontoObject : 'null'));
+
     // valid actions
     $validActions = array('logout', 'login', 'page_index',
                           'edit-profile', 'user-details',
