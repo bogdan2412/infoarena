@@ -11,7 +11,10 @@ function build_default_column_infos($data)
     }
     $infos = array();
     foreach ($data[1] as $key => $value)  {
-        $infos[] = array('name' => $key, 'key' => $key,);
+        $infos[] = array(
+                'title' => $key,
+                'key' => $key,
+        );
     }
     return $infos;
 }
@@ -25,13 +28,15 @@ function build_default_column_infos($data)
 //      title: The pretty name to be displayed in the table header.
 //      key: The key from the data table to display. Cell $i, $j will contain
 //          $data[$i][column_infos[$j]['key']].
-//      row_formatter: An optional callable(is_callable) which can be used to
+//      rowform: An optional callback(is_callable) which can be used to
 //          format the data before being placed in the table.
 //          The data row and key are sent as parameters to this function.
-//      val_formatter: An optional callable(is_callable) which can be used to
+//          If this is present they key is optional.
+//      valform: An optional callback(is_callable) which can be used to
 //          format the data before being placed in the table.
 //          The data value is sent as a parameter.
-// val_formater and row_formatter are mutually exclusive.
+//      dateform: Optional format for timestamps. date() function format.
+// The various *form fields are mutually exclusive.
 //
 // $options is an array of options (you can skip any of them):
 //      skip_header: Will skip the header.
@@ -54,11 +59,16 @@ function format_table($data, $column_infos = null, $options = null)
         $result = "<table>";
     }
 
+    // Handle missing column infos.
+    if ($column_infos == null) {
+        $column_infos = build_default_column_infos($data);
+    }
+
     // Table header: Column names.
     if (!getattr($options, 'skip_header', false)) {
         $result .= "<thead><tr>";
         foreach ($column_infos as $column) {
-            assert(isset($column['title']));
+            log_assert(isset($column['title']));
             $result .= "<th>" . $column['title'] . "</th>";
         }
         $result .= "</tr></thead>";
@@ -78,23 +88,34 @@ function format_table($data, $column_infos = null, $options = null)
 
         // Dump the actual data.
         foreach ($column_infos as $column) {
-            assert(isset($column['key']));
-            $key = $column['key'];
-            assert(isset($row[$key]));
-            $val = $row[$key];
-
             // Handle row formatter.
-            if (isset($column['row_formatter'])) {
-                assert(!isset($column['val_formatter']));
-                assert(is_callable($column['row_formatter']));
-                $val = $column['row_formatter']($row, $key);
-            }
+            if (isset($column['rowform'])) {
+                log_assert(!isset($column['valform']));
+                log_assert(!isset($column['dateform']));
+                log_assert(is_callable($column['rowform']));
+                if (key_exists('key', $column)) {
+                    $val = $column['rowform']($row, $column['key']);
+                } else {
+                    $val = $column['rowform']($row);
+                }
+            } else {
+                log_assert(key_exists('key', $column));
+                $key = $column['key'];
+                log_assert(key_exists($key, $row), "Key $key missing from $row.");
+                $val = $row[$key];
 
-            // Handle val formatter
-            if (isset($column['val_formatter'])) {
-                assert(!isset($column['row_formatter']));
-                assert(is_callable($column['val_formatter']));
-                $val = $column['val_formatter']($val);
+                // Handle val formatter
+                if (isset($column['valform'])) {
+                    log_assert(!isset($column['rowform']));
+                    log_assert(!isset($column['dateform']));
+                    log_assert(is_callable($column['valform']));
+                    $val = $column['valform']($val);
+                } else if (isset($column['dateform'])) {
+                    log_assert(!isset($column['valform']));
+                    log_assert(!isset($column['rowform']));
+//                    log_assert(is_timestamp($val));
+                    $val = date($column['dateform'], $val);
+                }
             }
 
             $result .= "<td>$val</td>";

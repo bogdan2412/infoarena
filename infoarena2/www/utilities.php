@@ -29,6 +29,18 @@ function redirect($absoluteUrl) {
     die();
 }
 
+// Build a simple href
+function href($url, $content) {
+    return "<a href=\"$url\">$content</a>";
+}
+
+// Link to an username.
+// FIXME: colored by rating and stuff.
+function format_user_link($username)
+{
+    return href(url("user/$username"), $username);
+}
+
 // Get an url.
 // The params array contains http get parameter,
 // it's formatted in the end result as a series

@@ -721,21 +721,21 @@ function monitor_jobs_get_range($start, $range, $filter = null) {
     if ($start < 0) return;
     
     $query = "SELECT job.`id`, user.`username`,
-                     job.`task_id`, textblock.`title`,
-                     job.`file_extension`,
-                     job.`status`, job.`timestamp`,
-                     job.`score`, job.`eval_message`,
-                     job.`round_id`, job.`mark_eval`
+                     job.`task_id`, task.`title` as task_title,
+                     job.`round_id`, round.`title` as round_title,
+                     job.`status`, job.`timestamp`, job.`mark_eval`,
+                     job.`score`, job.`eval_message`
               FROM ia_job AS job
                 LEFT JOIN ia_user AS user ON job.`user_id` = user.`id`
-                LEFT JOIN ia_textblock AS textblock
-                    ON CONCAT(\"round/\", job.`round_id`) = textblock.`name`";
+                LEFT JOIN ia_textblock AS round
+                    ON CONCAT(\"round/\", job.`round_id`) = round.`name`
+                LEFT JOIN ia_textblock AS task
+                    ON CONCAT(\"task/\", job.`task_id`) = task.`name`";
     if ($filter) {
         $query .= "WHERE " . $filter . " ";
     }
     $query .= "ORDER BY job.`mark_eval` ASC, job.`timestamp` DESC
                LIMIT " . $start . ", " . $range;
-//    echo $query; // debug info
     return db_fetch_all($query);
 }
 
