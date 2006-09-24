@@ -3,9 +3,17 @@
 // View a plain old textblock.
 // That textblock can be owned by something else.
 function controller_textblock_view($page_name, $rev_num = null) {
-    // Tee hee.
-    // If the page is missing jump to the edit/create controller.
+    // Templates can't be seen
+    if (preg_match("/^template\//i", $page_name)) {
+        flash("Template-urile pot fi vizualizate doar ".
+                "prin incluziune, te trimit sa editezi.");
+        redirect(url($page_name, array('action' => 'edit')));
+    }
+
+    // Get actual page.
     $page = textblock_get_revision($page_name, $rev_num);
+
+    // If the page is missing jump to the edit/create controller.
     if ($page) {
         if ($rev_num) {
             $perm = textblock_get_permission($page, 'history');
@@ -16,9 +24,8 @@ function controller_textblock_view($page_name, $rev_num = null) {
             flash_error("Nu ai voie sa vezi aceasta pagina");
             redirect(url(''));
         }
-    }
-    else {
-        // Missing page template here.
+    } else {
+        // Missing page.
         flash_error("Nu am gasit pagina, te trimit sa editezi");
         redirect(url($page_name, array('action' => 'edit')));
     }
