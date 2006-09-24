@@ -48,11 +48,11 @@ function format_user_link($username)
 //
 // NOTE: Only use this function for urls.
 // NOTE: don't add ?x=y stuff in document.
-function url($document, $params = array(), $absolute = false) {
-    ia_assert(false === strpos($document, '?'), 'Fara ? in link!');
+function url($document, $args = array(), $absolute = false) {
+    log_assert(false === strpos($document, '?'), 'Page name contains ?');
 
     $pairs = array();
-    foreach ($params as $k => $v) {
+    foreach ($args as $k => $v) {
         $pairs[] = $k . '=' . urlencode($v);
     }
 
@@ -210,12 +210,6 @@ function send_email($to, $subject, $message,
                'X-Mailer: PHP/' . phpversion();
     mail($to, $subject, $message, $headers);
     echo $to . '<br>' . $subject . '<br>' . $message; // debug info
-}
-
-// a more 'violent' assert that halts application and displays error message
-// FIXME: remove
-function ia_assert($condition, $message) {
-    log_assert($condition, $message);
 }
 
 ?>

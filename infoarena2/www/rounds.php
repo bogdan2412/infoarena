@@ -14,7 +14,7 @@
 // $action is view/submit/edit
 // Optionally pass $all_tasks array with a list of tasks you wish to filter.
 function round_get_permitted_tasks($round_id, $action, $all_tasks = null) {
-    ia_assert('view' == $action || 'submit' == $action || 'edit' == $action,
+    log_assert('view' == $action || 'submit' == $action || 'edit' == $action,
               'Invalid contest round action.');
 
     if (is_null($all_tasks)) {

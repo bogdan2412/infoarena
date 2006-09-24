@@ -16,7 +16,7 @@ function controller_json($suburl) {
 
             // get text block
             $textblock = textblock_get_revision($page_name);
-            ia_assert($textblock, 'Invalid textblock identifier');
+            log_assert($textblock, 'Invalid textblock identifier');
             $context = textblock_get_context($textblock);
 
             // generate mark-up

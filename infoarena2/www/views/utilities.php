@@ -3,25 +3,28 @@
 // Check the big view variable for consistency.
 function check_view($view)
 {
-    assert(is_array($view));
-    assert(is_string($view['title']));
+    log_assert_is_array($view);
+    log_assert(is_string($view['title']));
+/*    log_assert(is_string($view['url_page']), "url_page missing");
+    log_assert(isset($view['url_page']) == false ||
+            is_array($view['url_page']), "url_args must be an array");*/
     if (isset($view['form_errors']) || isset($view['form_values'])) {
-        assert(is_array($view['form_errors']));
-        assert(is_array($view['form_values']));
+        log_assert_is_array($view['form_errors']);
+        log_assert_is_array($view['form_values']);
     }
-    assert(!isset($view['wikipage']));
+    log_assert(!isset($view['wikipage']));
     if (isset($view['textblock'])) {
-        assert(is_array($view['textblock']));
-        assert(is_array($view['textblock_context']));
+        log_assert_is_array($view['textblock']);
+        log_assert_is_array($view['textblock_context']);
         check_context($view['textblock_context']);
-        assert(isset($view['textblock']['name']));
-        assert(isset($view['textblock']['title']));
-        assert(isset($view['textblock']['text']));
-        assert(isset($view['textblock']['timestamp']));
+        log_assert_getattr($view['textblock'], 'name');
+        log_assert_getattr($view['textblock'], 'title');
+        log_assert_getattr($view['textblock'], 'text');
+        log_assert_getattr($view['textblock'], 'timestamp');
     }
     if (isset($view['task'])) {
-        assert(is_array($view['task']));
-        assert(is_array($view['task_parameters']));
+        log_assert_is_array($view['task']);
+        log_assert_is_array($view['task_parameters']);
         //.. more here.
     }
 

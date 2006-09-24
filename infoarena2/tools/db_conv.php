@@ -4,7 +4,7 @@
  * the new info-arena 2 database.
  * This script should be run when there will be no more database changes.
  *
- * If someone changes the databse, they should review this script to
+ * If someone changes the database, they should review this script to
  * ensure it's still working. If they can't review it at least make a ticket!
  *
  * It is recommended to empty the ia_user table before running this script
@@ -38,8 +38,7 @@
     else {
         // now the party starts!
 
-        // connect to info-arena 1 db
-        assert(!isset($dbLink1));    // repetitive-include guard
+        // Connect to info-arena 1 db
         $dbLink1 = mysql_connect(DB1_HOST, DB1_USER, DB1_PASS, TRUE) // new link
             or die('Cannot connect to database from info-arena1.');
         mysql_select_db(DB1_NAME, $dbLink1) or die ('Cannot select database.');

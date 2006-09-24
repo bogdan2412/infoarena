@@ -8,8 +8,10 @@ require_once("log.php");
  * simple dictionaries. 
  */
 
-// first, we need a database connection
-assert(!isset($dbLink));    // repetitive-include guard
+// Make need a database connection
+
+// Repetitive include guard. Is this really needed?
+log_assert(!isset($dbLink));
 $dbLink = mysql_connect(DB_HOST, DB_USER, DB_PASS)
           or log_die('Cannot connect to database.');
 mysql_select_db(DB_NAME, $dbLink) or die ('Cannot select database.');
@@ -275,7 +277,7 @@ function parameter_list($type) {
 //
 // $object_type is "task" or "round"
 function parameter_update_values($object_type, $object_id, $dict) {
-    assert($object_type == 'task' or $object_type == 'round');
+    log_assert($object_type == 'task' || $object_type == 'round');
 
     // delete all parameters connected to this task
     $query = sprintf("DELETE FROM ia_parameter_value

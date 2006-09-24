@@ -54,8 +54,8 @@ function identity_can($action, $ontoObject = null, $identity = null) {
                           'round-view', 'round-create', 'round-edit',
                           'round-submit', 'round-history', 'round-restore',
                           'macro-debug');
-    ia_assert(false !== array_search($action, $validActions),
-              'Invalid permission: "' . $action . '"');
+    log_assert(false !== array_search($action, $validActions),
+            'Invalid permission: "' . $action . '"');
 
     // first, handle anonymous users
     if (is_null($identity)) {

@@ -79,9 +79,8 @@ function textblock_get_html($textblock)
 // $permission must be one of the simple permissions.
 function textblock_get_permission($textblock, $permission)
 {
-    $textblock_permissions = array(
-            'view', 'history', 'attach-download');
-    ia_assert(false !== array_search($permission, $textblock_permissions),
+    $textblock_permissions = array('view', 'history', 'attach-download');
+    log_assert(array_search($permission, $textblock_permissions) !== false,
               'Invalid textblock permission: ' . $permission);
 
     textblock_split_name($textblock['name'], $module, $objid);
