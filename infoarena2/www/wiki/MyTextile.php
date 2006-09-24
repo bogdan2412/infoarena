@@ -1,7 +1,6 @@
 <?php
 
 @require_once("Textile.php");
-
 require_once("macros/macros.php");
 
 class MyTextile extends Textile {

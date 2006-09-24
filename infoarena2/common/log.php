@@ -16,44 +16,74 @@
 // insufficient permissions or other usual errors.
 
 // Private function.
-// Formats a backtrace entry as a string.
-// FIXME: include function/method?
-function format_backtrace($backtrace) {
-    // The backtrace may be missing.
-    if (!(isset($backtrace) &&
-          isset($backtrace['file']) &&
-          isset($backtrace['line']))) {
+// Formats a backtrace level as a string.
+// $backtrace is the backtrace as received from a call to debug_backtrace.
+// If ommited debug_backtrace will be called
+//
+// false is returned on error (like level out of range).
+function format_backtrace($level, $backtrace = false) {
+    // Generate backtrace if missing.
+    if ($backtrace === false) {
+        $backtrace = debug_backtrace();
+    }
+
+    // Level out of range.
+    if (!isset($backtrace[$level])) {
         return false;
     }
-    $file = $backtrace['file'];
-    // Strip IA_ROOT.
 
-    $file = preg_replace("/^".preg_quote(IA_ROOT, '/')."/", "", $file);
-    $line = $backtrace['line'];
-    return "file $file line $line";
+    // Filename. Strips IA_ROOT.
+    $file = false;
+    if (isset($backtrace[$level]['file'])) {
+        $file = $backtrace[$level]['file'];
+        $file = preg_replace("/^".preg_quote(IA_ROOT, '/')."/", "", $file);
+    }
+
+    // Source line.
+    $line = false;
+    if (isset($backtrace[$level]['line'])) {
+        $line = $backtrace[$level]['line'];
+    }
+
+    // Function name. Includes class name for methods.
+    $func = false;
+    if (isset($backtrace[$level + 1]) && isset($backtrace[$level + 1]['function'])) {
+        $btl = $backtrace[$level + 1];
+        if (isset($btl['class']) && isset($btl['type'])) {
+            $func = $btl['class'].$btl['type'].$btl['function'];
+        } else {
+            $func = $btl['function'];
+        }
+    }
+    // Don't print these functions.
+    if ($func == 'require_once' || $func == 'require' ||
+        $func == 'include_once' || $func == 'include') {
+        $func = false;
+    }
+
+    $msg = "";
+    if ($func !== false) {
+        $msg .= "function $func ";
+    }
+    if ($file !== false) {
+        $msg .= "file $file ";
+        if ($line !== false) {
+            $msg .= "line $line ";
+        }
+    }
+    return substr($msg, 0, strlen($msg) - 1);
 }
 
 // Private function.
 // Add backtrace info to a message.
 function format_message_backtrace($message, $backtrace_level = 0) {
-    $bt = debug_backtrace();
-    $btl = $backtrace_level;
-    if ($btl < count($bt)) {
-        $btstring = format_backtrace($bt[$btl]);
-        if ($btstring === false) {
-            return $message;
-        } else {
-            return $message . " in " . format_backtrace($bt[$btl]);
-        }
-    } else {
-        return $message;
-    }
+    return $message . " in " . format_backtrace($backtrace_level + 2);
 }
 
 // Print a simple message to the log. Use for informative messages.
 function log_print($message, $include_origin = false) {
     if ($include_origin) {
-        $message = format_message_backtrace($message, 1);
+        $message = format_message_backtrace($message);
     }
     trigger_error($message, E_USER_NOTICE);
 }
@@ -61,7 +91,7 @@ function log_print($message, $include_origin = false) {
 // Use this for warning messages.
 function log_warn($message, $include_origin = false) {
     if ($include_origin) {
-        $message = format_message_backtrace($message, 1);
+        $message = format_message_backtrace($message);
     }
     trigger_error($message, E_USER_WARNING);
 }
@@ -70,7 +100,7 @@ function log_warn($message, $include_origin = false) {
 // You might want to use log_die instead.
 function log_error($message, $include_origin = false) {
     if ($include_origin) {
-        $message = format_message_backtrace($message, 1);
+        $message = format_message_backtrace($message);
     }
     trigger_error($message, E_USER_ERROR);
 }
@@ -82,11 +112,25 @@ function log_die($message, $include_origin = true) {
     die();
 }
 
+// Print a complete backtrace, using log_print.
+function log_backtrace($start_level = 0, $backtrace = false)
+{
+    // Generate backtrace if missing.
+    if ($backtrace === false) {
+        $backtrace = debug_backtrace();
+    }
+
+    // Do the dew.
+    for ($i = $start_level; $i < count($backtrace); ++$i) {
+        log_print(" - Backtrace Level $i: ".format_backtrace($i, $backtrace), false);
+    }
+}
+
 // Check if $value is true, and if it isn't it prints and error and dies.
 function log_assert($value, $message = "Assertion failed", $include_origin = true) {
     if (!$value) {
         if ($include_origin) {
-            $message = format_message_backtrace($message, 1);
+            $message = format_message_backtrace($message);
         }
         log_die($message, false);
     }
@@ -213,6 +257,7 @@ function logging_error_handler($errno, $errstr, $errfile, $errline) {
 
     // Die on certain fatal errors:
     if (LOG_FATAL_ERRORS & $errno) {
+        // FIXME: Print a full backtrace on fatal errors.
         die();
     }
 }

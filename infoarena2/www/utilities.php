@@ -24,6 +24,7 @@ function getattr($dict, $attribute, $defaultValue = null) {
 // FIXME: Is that even remotely possible?
 // FIXME: Would be usefull for debugging though.
 function redirect($absoluteUrl) {
+    log_print("Sending a HTTP redirect to $absoluteUrl");
     header("Location: {$absoluteUrl}\n\n");
     session_write_close();
     die();
