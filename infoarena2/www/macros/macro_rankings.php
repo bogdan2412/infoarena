@@ -1,5 +1,7 @@
 <?php
 
+require_once("format_table.php");
+
 // Displays *interactive* rankings table summing up score points from a
 // pre-defined set of contest rounds.
 //
@@ -36,36 +38,18 @@ function macro_rankings($args) {
     // query database
     $rankings = db_fetch_all($query);
 
-    // generate HTML
-    ob_start();
-?>
+    function format_full_name($row) {
+        return "<a href='".url('user/' . $row['username'])."'>{$row['full_name']}</a></td>";
+    }
 
-<table class="rankings">
-    <thead>
-        <tr>
-            <th>Loc</th>
-            <th>User</th>
-            <th>Utilizator</th>
-            <th>Scor</th>
-        </tr>
-    </thead>
-    <tbody>
-    <?php foreach ($rankings as $row) { ?>
-        <tr>
-            <td><?= $row['user_id'] ?></td>
-            <td><?= $row['username'] ?></td>
-            <td><a href="<?= url('user/' . $row['username']) ?>"><?= $row['full_name'] ?></a></td>
-            <td><?= $row['totalScore'] ?></td>
-        </tr>
-    <?php } ?>
-    </tbody>
-</table>
+    $column_infos = array(
+            array('title' => 'ID', 'key' => 'user_id'),
+            array('title' => 'User', 'key' => 'username'),
+            array('title' => 'Nume', 'key' => 'full_name', 'row_formatter' => 'format_full_name'),
+            array('title' => 'Scor', 'key' => 'totalScore'),
+    );
 
-<?php
-
-    $res = ob_get_contents();
-    ob_end_clean();
-    return $res;
+    return format_table($rankings, $column_infos);
 }
 
 ?>
