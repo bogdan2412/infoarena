@@ -68,10 +68,18 @@ function format_table($data, $column_infos = null, $options = null)
     if (!getattr($options, 'skip_header', false)) {
         $result .= "<thead><tr>";
         foreach ($column_infos as $column) {
-            log_assert(isset($column['title']));
-            $result .= "<th>" . $column['title'] . "</th>";
+            $title = log_assert_get_key($column, 'title');
+            $result .= "<th>" . $title . "</th>";
         }
         $result .= "</tr></thead>";
+    }
+
+    // Check for multipler formers.
+    foreach ($column_infos as $column) {
+        log_assert(isset($column['valform']) + 
+               isset($column['rowform']) + 
+               isset($column['dateform']) <= 1,
+               "Column info can't have multiple format functions");
     }
 
     // Table body: data
@@ -90,37 +98,29 @@ function format_table($data, $column_infos = null, $options = null)
         foreach ($column_infos as $column) {
             // Handle row formatter.
             if (isset($column['rowform'])) {
-                log_assert(!isset($column['valform']));
-                log_assert(!isset($column['dateform']));
-                log_assert(is_callable($column['rowform']));
+                log_assert_is_callable($column['rowform']);
                 if (key_exists('key', $column)) {
                     $val = $column['rowform']($row, $column['key']);
                 } else {
                     $val = $column['rowform']($row);
                 }
             } else {
-                log_assert(key_exists('key', $column));
-                $key = $column['key'];
-                log_assert(key_exists($key, $row), "Key $key missing from $row.");
-                $val = $row[$key];
+                $key = log_assert_get_key($column, 'key');
+                $val = log_assert_get_key($row, $key);
 
-                // Handle val formatter
+                // Handle val formatter.
                 if (isset($column['valform'])) {
-                    log_assert(!isset($column['rowform']));
-                    log_assert(!isset($column['dateform']));
                     log_assert(is_callable($column['valform']));
                     $val = $column['valform']($val);
+                // Handle date formatter.
                 } else if (isset($column['dateform'])) {
-                    log_assert(!isset($column['valform']));
-                    log_assert(!isset($column['rowform']));
-//                    log_assert(is_timestamp($val));
+                    // log_assert(is_timestamp($val));
                     $val = date($column['dateform'], $val);
                 }
             }
 
             $result .= "<td>$val</td>";
         }
-
         $result .= '</tr>';
     }
     $result .= "</tbody>";
