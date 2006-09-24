@@ -1,37 +1,27 @@
 <?
-function controller_monitor($filter, $suburl) {
+
+// Job monitor controller.
+function controller_monitor() {
     if (isset($identity_user) && $identity_user) {
         global $identity_user;
-        $user_rows_per_page = $identity_user['lines_per_page'];
+        $display_rows = $identity_user['lines_per_page'];
+    } else {
+        $display_rows = IA_DEFAULT_ROWS_PER_PAGE;
     }
-    else {
-        $user_rows_per_page = IA_DEFAULT_ROWS_PER_PAGE;
-    }
+    $display_rows = 100;
 
     $view = array();
+
+    $first_row = getattr($_GET, 'start', 0);
+    $view['jobs'] = monitor_jobs_get_range($first_row, $display_rows); 
+
     $view['title'] = 'Monitor de evaluare';
-
-    $page = getattr($_GET, 'page_num');
-    if (!$page) {
-        $page = 1;
-    }
-
-    $que = "";
-    $view['turl'] = $filter;
-    foreach ($filter as $key => $val) {
-        $que .= "`" . $key . "` LIKE '" . db_escape($val) . "%' AND ";
-    }
-    $que = substr($que, 0, strlen($que)-4);
-
-    $view['jobs'] = monitor_jobs_get_range(($page-1)*$user_rows_per_page,
-                                           $user_rows_per_page, $que); 
-    
-    $view['suburl'] = $suburl;
-
-    $view['page'] = $page;
-    $view['row_max'] = monitor_jobs_count_range($que);
-    $view['page_max'] = ceil($view['row_max'] / $user_rows_per_page);
-    $view['rows'] = $user_rows_per_page;
+    $view['url_page'] = 'monitor';
+    $view['url_args'] = $_GET;
+    $view['first_row'] = $first_row;
+    $view['total_rows'] = monitor_jobs_get_count();
+    $view['display_rows'] = $display_rows;
     execute_view('views/monitor.php', $view);
 }
+
 ?>

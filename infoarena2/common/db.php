@@ -739,21 +739,19 @@ function monitor_jobs_get_range($start, $range, $filter = null) {
     return db_fetch_all($query);
 }
 
-function monitor_jobs_count_range($filter = null) {
-    $query = "SELECT COUNT(*)
-              FROM ia_job AS job
-                LEFT JOIN ia_user AS user ON job.`user_id` = user.`id`
-                LEFT JOIN ia_textblock AS textblock
-                    ON CONCAT(\"round/\", job.`round_id`) = textblock.`name`";
-    if ($filter) {
-        $query .= "WHERE " . $filter . " ";
+function monitor_jobs_get_count($filter = null) {
+    if ($filter == null) {
+        $query = "SELECT COUNT(*) FROM ia_job";
+    } else {
+        $query = "SELECT COUNT(*)
+                  FROM ia_job AS job
+                    LEFT JOIN ia_user AS user ON job.`user_id` = user.`id`
+                    LEFT JOIN ia_textblock AS textblock
+                        ON CONCAT(\"round/\", job.`round_id`) = textblock.`name`";
+        if ($filter) {
+            $query .= "WHERE " . $filter . " ";
+        }
     }
-    $res = db_fetch($query);
-    return $res['COUNT(*)'];
-}
-
-function monitor_jobs_count() {
-    $query = "SELECT COUNT(*) FROM ia_job";
     $res = db_fetch($query);
     return $res['COUNT(*)'];
 }

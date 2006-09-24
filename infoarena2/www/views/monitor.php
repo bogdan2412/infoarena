@@ -8,8 +8,6 @@ print('<h1>'.htmlentities($view['title']).'</h1>');
 if (!$jobs) {
     print "<h3>Nu s-a gasit nici o submisie</h3>";
 } else {
-    print("<h3>Elementele de pe pagina $page></h3>");
-
     // For the score column.
     function format_state($row) {
         $url = url("job_detail", array('id' => $row['id']));
@@ -82,6 +80,13 @@ if (!$jobs) {
     );
     $options = array(
             'css_class' => 'monitor',
+            'url_page' => $view['url_page'],
+            'url_args' => $view['url_args'],
+            'display_rows' => $view['display_rows'],
+            'total_rows' => $view['total_rows'],
+            'first_row' => $view['first_row'],
+            'pager_style' => 'standard',
+            'surround_pages' => 3,
     );
 
     print format_table($jobs, $column_infos, $options);

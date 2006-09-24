@@ -53,7 +53,7 @@ log_print("Request page=$page action=$action");
 // Note: array_flip() flips keys with values in a dictionary.
 $directmaps = array_flip(array('register', 'profile', 'page_index',
                                'login', 'logout', 'reset_pass', 'json',
-                               'job_detail'));
+                               'job_detail', 'monitor'));
 //
 // Here comes the big url mapper.
 // We include in the if statement to avoid an extra parsing load.
@@ -85,29 +85,7 @@ if (isset($directmaps[$urlstart])) {
     }
     controller_user($suburl);
 
-// Eval monitor special <read all about it>
-} else if ($urlstart == 'monitor') {
-    require('controllers/monitor.php');
-    $filter = array();
-    if ($suburl) {
-        $filter['round_id'] = $suburl;
-    }
-    if ($username = getattr($_GET, 'username')) {
-        $filter['username'] = $username;
-    }
-    if ($task_id = getattr($_GET, 'task_id')) {
-        $filter['task_id'] = $task_id;
-    }
-    if ($file_extension = getattr($_GET, 'file_extension')) {
-        $filter['file_extension'] = $file_extension;
-    }
-    if ($status = getattr($_GET, 'status')) {
-        $filter['status'] = $status;
-    }
-    
-    controller_monitor($filter, $suburl);
-
-// Special shit for task edit/create
+// Special stuff for task edit/create
 } else if ($urlstart == 'task' && $action == 'edit') {
     require('controllers/task.php');
     controller_task_edit($suburl);

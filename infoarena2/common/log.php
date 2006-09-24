@@ -118,7 +118,7 @@ function log_assert_is_array($obj, $msg = false, $inc_origin = true) {
 // Check if an array has a certain key.
 // Also checks if the obj is actually an array.
 // Returns $obj[$key] if the assertion holds.
-function log_assert_get_key($obj, $key, $msg = false, $inc_origin = true) {
+function log_assert_getattr($obj, $key, $msg = false, $inc_origin = true) {
     if (!is_array($obj)) {
         if ($msg === false) {
             $msg = "$obj is not an array";
@@ -130,10 +130,10 @@ function log_assert_get_key($obj, $key, $msg = false, $inc_origin = true) {
     } else {
         return $obj[$key];
     }
-    if ($include_origin) {
-        $message = format_message_backtrace($message, 1);
+    if ($inc_origin) {
+        $msg = format_message_backtrace($msg, 1);
     }
-    log_die($message, false);
+    log_die($msg, false);
 }
 
 // Custom error_handler.
