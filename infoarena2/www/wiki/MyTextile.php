@@ -2,6 +2,8 @@
 
 @require_once("Textile.php");
 
+require_once("macros/macros.php");
+
 class MyTextile extends Textile {
     // Context variables, set on construction.
     public $context;
@@ -19,14 +21,14 @@ class MyTextile extends Textile {
         }
         $this->context = $context;
         $this->page_name = $context['page_name'];
-        Textile::Textile($options);
+        @Textile::Textile($options);
     }
 
     // This is called for ==text here== blocks.
     // By default textile passes the text to html unchanged (it has
     // some filter features we don't use. This is sort of bad because
     // you can inject arbritary html.
-    function format_block($args)
+    function do_format_block($args)
     {
         $str = (isset($args['text']) ? $args['text'] : '');
         $str = trim($str);
@@ -62,7 +64,7 @@ class MyTextile extends Textile {
             // have to restore that static variable after execute_macro.
             // This very scary, but it works.
             $res = execute_macro($macro_name, $macro_args);
-            Textile::_current_store($this);
+            @Textile::_current_store($this);
             return $res;
         }
         return make_error_div('Bad macro "'.$str.'"');
@@ -80,20 +82,20 @@ class MyTextile extends Textile {
     // Override format_link
     // We hook in here to process the url part
     // FIXME: should I do this with format_url?
-    function format_link($args) {
+    function do_format_link($args) {
         $url = getattr($args, 'url', '');
         if ($this->is_wiki_link($url)) {
             $args['url'] = url($url);
         } else {
             $args['clsty'] .= "(wiki_link_external)";
         }
-        $res = parent::format_link($args);
+        $res = @parent::format_link($args);
 
         return $res;
     }
 
     // Image magic.
-    function format_image($args) {
+    function do_format_image($args) {
         $srcpath = getattr($args, 'src', '');
 
         if (!preg_match($this->external_url_exp, $srcpath)) {
@@ -107,8 +109,51 @@ class MyTextile extends Textile {
             }
         }
         //echo "<pre>insrc $srcpath outsrc $args[src]</pre>";
-        $res = parent::format_image($args);
+        $res = @parent::format_image($args);
 
+        return $res;
+    }
+
+    // The current error reporting level is saved here.
+    private $error_reporting_level = false;
+
+    // Save error_reporting_level.
+    function process($content) {
+        $this->error_reporting_level = error_reporting(0);
+        return parent::process($content);
+        error_reporting($this->error_reporting_level);
+    }
+
+    // Wrap around do_format_block, restore errors.
+    function format_block($args) {
+        if ($this->error_reporting_level === false) {
+            return do_format_block($args);
+        }
+        error_reporting($this->error_reporting_level);
+        $res = $this->do_format_block($args);
+        error_reporting(0);
+        return $res;
+    }
+
+    // Wrap around do_format_link, restore errors.
+    function format_link($args) {
+        if ($this->error_reporting_level === false) {
+            return do_format_link($args);
+        }
+        error_reporting($this->error_reporting_level);
+        $res = $this->do_format_link($args);
+        error_reporting(0);
+        return $res;
+    }
+
+    // Wrap around do_format_image, restore errors.
+    function format_image($args) {
+        if ($this->error_reporting_level === false) {
+            return do_format_image($args);
+        }
+        error_reporting($this->error_reporting_level);
+        $res = $this->do_format_image($args);
+        error_reporting(0);
         return $res;
     }
 }

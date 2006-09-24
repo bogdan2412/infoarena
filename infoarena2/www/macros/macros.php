@@ -5,8 +5,8 @@
 // If you place the macro in macro_$name.php you can skip
 // adding it here.
 $macro_file_map = array(
-        "Debug" => '',
-        "TableOfContents" => "macro_toc.php");
+        "debug" => '',
+);
 
 function macro_debug($args)
 {
@@ -29,7 +29,7 @@ function get_macro_include_file($macro_name)
 {
     global $macro_file_map;
     $macro_name = strtolower($macro_name);
-    if (isset($macro_file_map[$macro_name])) {
+    if (array_key_exists($macro_name, $macro_file_map)) {
         return $macro_file_map[$macro_name];
     } else {
         return "macro_" . $macro_name . '.php';
@@ -47,7 +47,7 @@ function execute_macro($macro_name, $macro_args)
 {
     $macro_file = get_macro_include_file($macro_name);
     if ($macro_file !== '') {
-        @include_once($macro_file);
+        require_once($macro_file);
     }
     $macro_func = 'macro_'.$macro_name;
     if (!function_exists($macro_func)) {

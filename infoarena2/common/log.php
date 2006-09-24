@@ -20,6 +20,12 @@
 // FIXME: include function/method?
 function format_backtrace($backtrace)
 {
+    // The backtrace may be missing.
+    if (!(isset($backtrace) &&
+          isset($backtrace['file']) &&
+          isset($backtrace['line']))) {
+        return false;
+    }
     $file = $backtrace['file'];
     // Strip IA_ROOT.
 
@@ -35,8 +41,13 @@ function format_message_backtrace($message, $backtrace_level = 0)
     $bt = debug_backtrace();
     $btl = $backtrace_level;
     if ($btl < count($bt)) {
-        return $message . " in " . format_backtrace($bt[$btl]);
-    }  else {
+        $btstring = format_backtrace($bt[$btl]);
+        if ($btstring === false) {
+            return $message;
+        } else {
+            return $message . " in " . format_backtrace($bt[$btl]);
+        }
+    } else {
         return $message;
     }
 }
@@ -146,7 +157,8 @@ function logging_error_handler($errno, $errstr, $errfile, $errline)
     }
 
     if ($include_backtrace) {
-        $errstr = format_message_backtrace($errstr, 1);
+        //$errstr = format_message_backtrace($errstr, 1);
+        $errstr = "$errstr in $errfile line $errline";
     }
 
     // Include message prefix.
@@ -158,6 +170,9 @@ function logging_error_handler($errno, $errstr, $errfile, $errline)
     }
 
     // The behaviour of this function is defined with error_log in php.ini
+    if (LOG_FATAL_ERRORS & $errno) {
+        $errstr = "Fatal: " . $errstr;
+    }
     error_log($errstr);
 
     // Die on certain fatal errors:
