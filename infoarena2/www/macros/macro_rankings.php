@@ -45,7 +45,7 @@ function macro_rankings($args) {
     $column_infos = array(
             array('title' => 'ID', 'key' => 'user_id'),
             array('title' => 'User', 'key' => 'username'),
-            array('title' => 'Nume', 'key' => 'full_name', 'row_formatter' => 'format_full_name'),
+            array('title' => 'Nume', 'key' => 'full_name', 'rowform' => 'format_full_name'),
             array('title' => 'Scor', 'key' => 'totalScore'),
     );
 
