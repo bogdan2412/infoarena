@@ -1,9 +1,8 @@
 <?php
 
-require_once("../config.php");
 require_once("config.php");
-require_once("../common/log.php");
 
+require_once("../common/log.php");
 require_once("utilities.php");
 require_once("../common/db.php");
 require_once("identity.php");
@@ -46,6 +45,9 @@ $urlstart = strtolower($urlpath[0]);
 
 // A lot of logic depends on this, so we try to keep the code nicer.
 $action = request('action', 'view');
+
+log_print("- -- --- ---- ----- NEW REQUEST MARKER ----- ---- --- -- -");
+log_print("Request page=$page action=$action");
 
 // Direct mapping list
 // Note: array_flip() flips keys with values in a dictionary.

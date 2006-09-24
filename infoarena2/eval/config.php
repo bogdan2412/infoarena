@@ -26,4 +26,7 @@ define("IA_EVAL_JAIL_GID", 65534);
 // Niceness to run the unsafe code. 0 disables.
 define("IA_EVAL_JAIL_NICE", 0);
 
+// Add log timestamps.
+define("LOG_TIMESTAMP_FORMAT", "D-M-Y H:i:s");
+
 ?>

@@ -1,10 +1,15 @@
 #! /usr/bin/env php
 <?php
 
-require_once('utilities.php');
 require_once('config.php');
+require_once('../common/log.php');
 require_once('../common/db.php');
+require_once('utilities.php');
 require_once('ClassicGrader.php');
+
+log_print("");
+log_print("Judge started");
+log_print("");
 
 class JobResult {
     public $score;
@@ -37,24 +42,28 @@ class JobResult {
 
 function job_send_result($jobid, JobResult $result)
 {
-    tprint('Sending job result');
+    if ($result->message == "Eroare de sistem") {
+        log_warn("System error on job $jobid");
+    } else {
+        log_print("Sending job $jobid result (score {$result->score})");
+    }
     job_mark_done($jobid, $result->log, $result->message, $result->score);
 }
 
 function get_job_result($job)
 {
     if (!chdir(IA_EVAL_DIR)) {
-        tprint("Can't chdir to eval dir");
+        log_print("Can't chdir to eval dir");
         return JobResult::SystemError();
     }
     $task = task_get($job['task_id']);
     if (!$task) {
-        tprint("Nu am putut lua task-ul " . $job['task_id']);
+        log_print("Nu am putut lua task-ul " . $job['task_id']);
         return JobResult::SystemError();
     }
     $task_parameters = task_get_parameters($job['task_id']);
     if (!$task_parameters) {
-        tprint("Nu am putut lua parametrii task-ului " . $job['task_id']);
+        log_print("Nu am putut lua parametrii task-ului " . $job['task_id']);
         return JobResult::SystemError();
     }
 
@@ -62,25 +71,25 @@ function get_job_result($job)
         $grader = new ClassicGrader($job['task_id'], $task_parameters);
         return $grader->Grade($job['file_contents'], $job['file_extension']);
     } else {
-        tprint("Nu stiu sa evaluez task-uri de tip ".$task['type']);
+        log_print("Nu stiu sa evaluez task-uri de tip ".$task['type']);
         return JobResult::SystemError();
     }
 }
 
 // This function handles a certain job. Returns a JobResult
 function handle_job($job) {
-    tprint("Handling job " . $job['id']);
+    log_print("- -- --- ---- ----- Handling job " . $job['id']);
     job_mark_processing($job['id']);
 
     $job_result = get_job_result($job);
     if ($job_result == null) {
-        tprint("S-a belit get_job_result");
+        log_print("S-a belit get_job_result");
         $job_result = JobResult::SystemError();
     }
 
     job_send_result($job['id'], $job_result);
-    tprint("I'm done with this job");
-    tprint("");
+    log_print("- -- --- ---- ----- I'm done with this job");
+    log_print("");
 //    milisleep(5000);
 }
 

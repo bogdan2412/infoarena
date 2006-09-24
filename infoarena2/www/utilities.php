@@ -201,13 +201,9 @@ function send_email($to, $subject, $message,
 }
 
 // a more 'violent' assert that halts application and displays error message
+// FIXME: remove
 function ia_assert($condition, $message) {
-    if ($condition) {
-        return;
-    }
-    echo '<br/><br/><hr/><h1 style="clear:both">ASSERTION FAILED!</h1>';
-    echo '<pre>' . $message . '</pre>';
-    die();
+    log_assert($condition, $message);
 }
 
 ?>

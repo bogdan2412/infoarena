@@ -10,6 +10,9 @@
  * This file has some decent defaults.
  */
 
+// Include main config.
+require_once("../config.php");
+
 // maximum attachment size for wiki pages
 define("IA_ATTACH_MAXSIZE", 20*1024*1024);
 

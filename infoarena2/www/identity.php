@@ -34,7 +34,7 @@ function identity_can($action, $ontoObject = null, $identity = null) {
     // Log permission checking.
     // Don't remove this, it's important.
     log_print("Checking permissions".
-            " identity=" . ($identity ? (string)$identity : 'null') .
+            " identity=" . ($identity ? $identity['security_level'] : 'anonymous') .
             " action=" . ($action ? (string)$action : 'null') .
             " object=" . ($ontoObject ? (string)$ontoObject : 'null'));
 

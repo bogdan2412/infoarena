@@ -5,21 +5,16 @@ function milisleep($ms) {
     usleep($ms * 1000);
 }
 
-// print with a timestamp
-function tprint($msg) {
-    print(date("d-m-y H:i:s") . ": $msg\n");
-}
-
 // Delete and remake a directory.
 function clean_dir($dir)
 {
     system("rm -rf " . $dir, $res);
     system("mkdir -m 0777 -p " . $dir, $res);
     if ($res) {
-        tprint("Failed cleaning up directory $dir");
+        log_print("Failed cleaning up directory $dir");
         return false;
     }
-    tprint("Cleaned up directory $dir");
+    log_print("Cleaned up directory $dir");
     return true;
 }
 
@@ -27,19 +22,20 @@ function clean_dir($dir)
 // Returns success value.
 function compile_file($file_name, &$compiler_message)
 {
+    $compiler_message = false;
     $compiler_lines = array(
             'c' => 'gcc -Wall -O2 -static -lm %file_name% -o %exe_name%',
             'cpp' => 'g++ -Wall -O2 -static -lm %file_name% -o %exe_name%',
             'pas' => 'fpc -O2 -Xs %file_name%');
     if (!preg_match("/^(.*)\.(c|cpp|pas)$/i", $file_name, $matches)) {
-        tprint("Can't figure out compiler for file $file_name");
+        log_print("Can't figure out compiler for file $file_name");
         return false;
     }
     $exe_name = $matches[1];
     $extension = $matches[2];
-    tprint("Compiling file '$file_name' extension '$extension'");
+    log_print("Compiling file '$file_name' extension '$extension'");
     if (!isset($compiler_lines[$extension])) {
-        tprint("Can't find compiler line for extension $extension");
+        log_warn("Can't find compiler line for extension $extension");
         return false;
     }
 
@@ -47,19 +43,19 @@ function compile_file($file_name, &$compiler_message)
     $cmdline = preg_replace('/%file_name%/', $file_name, $cmdline);
     $cmdline = preg_replace('/%exe_name%/', $exe_name, $cmdline);
 
-    tprint("Running $cmdline");
+    log_print("Running $cmdline");
     @system("$cmdline &> compiler.log");
     if ($res) {
-        tprint("Compilation failed");
+        log_print("Compilation failed");
         return false;
     }
     $compiler_message = file_get_contents('compiler.log');
     if ($compiler_message === false) {
-        tprint("Failed getting compiler messages");
+        log_print("Failed getting compiler messages");
         $compiler_message = false;
         return false;
     }
-    tprint($compiler_messages);
+    log_print($compiler_messages);
     return true;
 }
 
@@ -140,7 +136,7 @@ function jail_run($program, $time, $memory, $capture_std = false)
         $cmdline .= " --memory-limit=" . $memory;
     }
 
-    tprint("Running $cmdline");
+    //log_print("Running $cmdline");
     ob_start();
     @system($cmdline, $res);
     $message = ob_get_contents();
@@ -153,11 +149,11 @@ function jail_run($program, $time, $memory, $capture_std = false)
     $result = jrun_parse_message($message);
     if ($capture_std) {
         $result['stdout'] = file_get_contents(IA_EVAL_JAIL_DIR . 'jailed_stdout');
-        if ($result['stdout'] == false) {
+        if ($result['stdout'] === false) {
             return jrun_make_error('Failed reading captured stdout');
         }
         $result['stderr'] = file_get_contents(IA_EVAL_JAIL_DIR . 'jailed_stderr');
-        if ($result['stderr'] == false) {
+        if ($result['stderr'] === false) {
             return jrun_make_error('Failed reading captured stderr');
         }
     }
