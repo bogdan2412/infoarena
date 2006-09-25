@@ -53,15 +53,15 @@ function valid_pager_style($style)
 //      first_row: First displayed entry, usefull in pagination
 //      total_rows: Total number of entries.
 //      display_rows: Number of entries displayed at once.
-//      url_page: string: The page this table is displayed on.
-//      url_args: array: Optional HTTP GET parameters for the current page.
+//      url_args: url arguments (page is an argument too).
 //      param_prefix: optional parameter prefix for browsing links.
 //      pager_style: none(default) or standard.
 //
-// url_page and url_args are only required if you want browsing links:
-// thing like paging and sorting. They are the parameters for the url()
-// functions. When browsing links are used then some parameters (with an
-// optional param_prefix) are added to the url_args.
+// url_args is only required if you want browsing links, thing like paging
+// and sorting. Same restrictions as for the url_from_args function.
+// When browsing links are used then some parameters (with an optional
+// param_prefix) are added to the url_args.
+// If absert, url_args defaults to $_GET.
 //
 // Paging is done with the 'start' and 'count' parameters.
 //
@@ -165,11 +165,10 @@ function format_table($data, $column_infos = null, $options = null)
 // formats a standard pager. Used by format_table.
 function format_standard_pager($options)
 {
-    $first_row = log_assert_getattr($options, 'first_row');
+    $first_row = log_assert_getattr($options, 'first_row', 0);
     $total_rows = log_assert_getattr($options, 'total_rows');
-    $display_rows = log_assert_getattr($options, 'display_rows');
-    $url_page = log_assert_getattr($options, 'url_page');
-    $url_args = getattr($options, 'url_args', array());
+    $display_rows = log_assert_getattr($options, 'display_rows', IA_DEFAULT_ROW_PER_PAGE);
+    $url_args = getattr($options, 'url_args', $_GET);
     $param_prefix = getattr($options, 'param_prefix', '');
     $surround_pages = getattr($options, 'surround_pages', 2);
 
@@ -185,34 +184,34 @@ function format_standard_pager($options)
     if ($curpage < 8) {
         for ($i = 0; $i < $curpage; ++$i) {
             $url_args[$param_prefix.'start'] = $i * $display_rows;
-            $result .= href(url($url_page, $url_args), $i + 1)." ";
+            $result .= href(url_from_args($url_args), $i + 1)." ";
         }
     } else {
         for ($i = 0; $i < $surround_pages; ++$i) {
             $url_args[$param_prefix.'start'] = $i * $display_rows;
-            $result .= href(url($url_page, $url_args), $i + 1)." ";
+            $result .= href(url_from_args($url_args), $i + 1)." ";
         }
         $result .= "... ";
         for ($i = $curpage - $surround_pages; $i < $curpage; ++$i) {
             $url_args[$param_prefix.'start'] = $i * $display_rows;
-            $result .= href(url($url_page, $url_args), $i + 1)." ";
+            $result .= href(url_from_args($url_args), $i + 1)." ";
         }
     }
     $result .= ($curpage + 1)." ";
     if ($totpages - $curpage < 3 + 2 * $surround_pages) {
         for ($i = $curpage + 1; $i < $totpages; ++$i) {
             $url_args[$param_prefix.'start'] = $i * $display_rows;
-            $result .= href(url($url_page, $url_args), $i + 1)." ";
+            $result .= href(url_from_args($url_args), $i + 1)." ";
         }
     } else {
         for ($i = $curpage + 1; $i <= $curpage + $surround_pages; ++$i) {
             $url_args[$param_prefix.'start'] = $i * $display_rows;
-            $result .= href(url($url_page, $url_args), $i + 1)." ";
+            $result .= href(url_from_args($url_args), $i + 1)." ";
         }
         $result .= "... ";
         for ($i = $totpages - $surround_pages; $i < $totpages; ++$i) {
             $url_args[$param_prefix.'start'] = $i * $display_rows;
-            $result .= href(url($url_page, $url_args), $i + 1)." ";
+            $result .= href(url_from_args($url_args), $i + 1)." ";
         }
     }
 

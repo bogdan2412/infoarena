@@ -49,27 +49,41 @@ function format_user_link($username)
 //
 // NOTE: Only use this function for urls.
 // NOTE: don't add ?x=y stuff in document.
+//
+// If $absolute is true(default false) then the server will be
+// included in the url.
 function url($document, $args = array(), $absolute = false) {
     log_assert(false === strpos($document, '?'), 'Page name contains ?');
+    log_assert_is_array($args, "Argument list must be an array");
+    log_assert(!array_key_exists("page", $args), "Argument list contains page");
 
-    $pairs = array();
-    foreach ($args as $k => $v) {
-        $pairs[] = $k . '=' . urlencode($v);
-    }
+    $args['page'] = $document;
+    return url_from_args($args, $absolute);
+}
 
+// Construct an URL from an argument list.
+// These are the exact $args you will receive in $_GET
+function url_from_args($args, $absolute = false)
+{
+    // First part.
     if ($absolute) {
-        $prefix = IA_URL;
+        $url = IA_URL;
+    } else {
+        $url = IA_URL_PREFIX;
     }
-    else {
-        $prefix = IA_URL_PREFIX;
+    $url .= log_assert_getattr($args, "page");
+    
+    // Actual args.
+    $first = true;
+    foreach ($args as $k => $v) {
+        if ($k != 'page') {
+            $url .= ($first ? "?" : "&amp;");
+            $first = false;
+            $url .= $k . '=' . urlencode($v);
+        }
     }
 
-    if (0 < count($pairs)) {
-        return $prefix . $document . '?' . join('&amp;', $pairs);
-    }
-    else {
-        return $prefix . $document;
-    }
+    return $url;
 }
 
 // Get an url for an attachement

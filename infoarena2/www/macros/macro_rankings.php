@@ -7,18 +7,13 @@ require_once("format_table.php");
 //
 // Parameters:
 //     rounds: a | separated list of round names.
-//     count: How many to display at once, defaults to IA_DEFAULT_ROWS_PER_PAGE.
+//     count: How many to display at once, defaults to infinity.
 function macro_rankings($args) {
     // How many rows to display at a time.
-    $display_rows = getattr($args, 'count', IA_DEFAULT_ROWS_PER_PAGE);
+    $display_rows = getattr($args, 'count', "0");
     if (!preg_match('/^[0-9]{1,4}$/', $display_rows)) {
         return make_error_div("Invalid count parameter.");
     }
-    // Pager style.
-/*    $pager_style = getattr($args, 'pager_style', 'none');
-    if (!valid_pager_style($pager_style)) {
-        return make_error_div("Invalid pager style '$pager_style'");
-    }*/
 
     // Make a list of round ids
     $roundStr = getattr($args, 'rounds', '');
@@ -45,9 +40,11 @@ function macro_rankings($args) {
         WHERE round_id IN (%s)
         GROUP BY user_id
         ORDER BY totalScore DESC
-        LIMIT 0, %s
     ";
-    $query = sprintf($query, $whereRound, $display_rows);
+    if ($display_rows != 0) {
+        $query .= " LIMIT 0, $display_rows";
+    }
+    $query = sprintf($query, $whereRound);
 
     // query database
     $rankings = db_fetch_all($query);
@@ -60,7 +57,6 @@ function macro_rankings($args) {
             array('title' => 'Scor', 'key' => 'totalScore'),
     );
     $options = array(
-//            'pager_style' => $pager_style,
             'display_rows' => $display_rows,
     );
 
