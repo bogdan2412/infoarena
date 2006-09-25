@@ -8,7 +8,6 @@ function controller_monitor() {
     } else {
         $display_rows = IA_DEFAULT_ROWS_PER_PAGE;
     }
-    $display_rows = 100;
 
     $view = array();
 

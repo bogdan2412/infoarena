@@ -19,6 +19,13 @@ function build_default_column_infos($data)
     return $infos;
 }
 
+// Checks if the string is a valid page style.
+// standard and none right now.
+function valid_pager_style($style)
+{
+    return $style == 'none' || $style == 'standard';
+}
+
 // This function formats data into a table.
 //
 // $data contains the actual data as an array of arrays.
@@ -141,7 +148,7 @@ function format_table($data, $column_infos = null, $options = null)
 
     // Handle pager.
     $pager_style = getattr($options, 'pager_style', 'none');
-    if ($pager_style != 'standard' && $pager_style != 'none') {
+    if (!valid_pager_style($pager_style)) {
         log_die("Unknown pager style $pager_style.");
     }
     //log_print("pager style $pager_style");
