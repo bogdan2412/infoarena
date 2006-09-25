@@ -110,7 +110,7 @@ function format_table($data, $column_infos = null, $options = null)
 
         // Odd/even rows.
         if (getattr($options, 'css_row_parity', true)) {
-            $result .= "<tr class='" . ($i % 2 ? 'odd' : 'even') . "'>";
+            $result .= "<tr class='" . ($i % 2 ? 'even' : 'odd') . "'>";
         } else {
             $result .= "<tr>";
         }

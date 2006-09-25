@@ -699,3 +699,27 @@ form.round li#field_tasks select {
 .jobDetail div.evalLog pre {
     display: block;
 }
+
+/* Basic table css */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table td, table th {
+    border: 1px solid #aaa;
+    padding-left: 0.5ex;
+    padding-right: 0.5ex;
+}
+
+tr.odd {
+    background: #fff;
+}
+
+tr.even {
+    background: #eee;
+}
+
+th {
+    background: #ddd;
+}
