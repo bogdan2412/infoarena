@@ -5,9 +5,10 @@ function check_view($view)
 {
     log_assert_is_array($view);
     log_assert(is_string($view['title']));
-/*    log_assert(is_string($view['url_page']), "url_page missing");
-    log_assert(isset($view['url_page']) == false ||
-            is_array($view['url_page']), "url_args must be an array");*/
+    log_assert_getattr($view, 'url_page');
+    //log_assert(is_string($view['url_page']), "url_page missing");
+    //log_assert(isset($view['url_args']) == false ||
+    //        is_array($view['url_args']), "url_args must be an array");
     if (isset($view['form_errors']) || isset($view['form_values'])) {
         log_assert_is_array($view['form_errors']);
         log_assert_is_array($view['form_values']);

@@ -97,7 +97,7 @@ function log_warn($message, $include_origin = false) {
 }
 
 // Use this when you hit a serious problem, and can't recover.
-// You might want to use log_die instead.
+// You might want to use log_error instead.
 function log_error($message, $include_origin = false) {
     if ($include_origin) {
         $message = format_message_backtrace($message);
@@ -105,15 +105,8 @@ function log_error($message, $include_origin = false) {
     trigger_error($message, E_USER_ERROR);
 }
 
-// Calls log_error and the die(). Does not return.
-// Use this for things like failing a database connection.
-function log_die($message, $include_origin = true) {
-    log_error($message, $include_origin);
-    die();
-}
-
 // Print a complete backtrace, using log_print.
-function log_backtrace($start_level = 0, $backtrace = false)
+function log_backtrace($start_level = 0, $backtrace = false, $straight_to_log = false)
 {
     // Generate backtrace if missing.
     if ($backtrace === false) {
@@ -122,7 +115,12 @@ function log_backtrace($start_level = 0, $backtrace = false)
 
     // Do the dew.
     for ($i = $start_level; $i < count($backtrace); ++$i) {
-        log_print(" - Backtrace Level $i: ".format_backtrace($i, $backtrace), false);
+        $msg = " - Backtrace Level $i: ".format_backtrace($i, $backtrace);
+        if ($straight_to_log) {
+            error_log($msg);
+        } else {
+            log_print($msg, false);
+        }
     }
 }
 
@@ -132,7 +130,7 @@ function log_assert($value, $message = "Assertion failed", $include_origin = tru
         if ($include_origin) {
             $message = format_message_backtrace($message);
         }
-        log_die($message, false);
+        log_error($message, false);
     }
 }
 
@@ -145,7 +143,7 @@ function _log_assert_type($obj, $msg, $inc_origin, $checker, $typename) {
         if ($inc_origin) {
             $msg = format_message_backtrace($msg, 2);
         }
-        log_die($msg, false);
+        log_error($msg, false);
     }
 }
 
@@ -177,7 +175,7 @@ function log_assert_getattr($obj, $key, $msg = false, $inc_origin = true) {
     if ($inc_origin) {
         $msg = format_message_backtrace($msg, 1);
     }
-    log_die($msg, false);
+    log_error($msg, false);
 }
 
 // Custom error_handler.
@@ -257,7 +255,9 @@ function logging_error_handler($errno, $errstr, $errfile, $errline) {
 
     // Die on certain fatal errors:
     if (LOG_FATAL_ERRORS & $errno) {
-        // FIXME: Print a full backtrace on fatal errors.
+        // Print a full backtrace on fatal errors.
+        error_log("Caught a fatal error, printing a full backtrace");
+        log_backtrace(2, false, true);
         die();
     }
 }

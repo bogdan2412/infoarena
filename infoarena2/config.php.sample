@@ -43,8 +43,8 @@ define("IA_ROOT_WWW", IA_ROOT . "www/");
 
 // Fatal error mask.
 // These are the errors the scripts halts on.
-// 0x1055 = E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_RECOVERABLE_ERROR
+// 0x1155 = E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR
 // FIXME: Why isn't this configurable in php.ini?
-define("LOG_FATAL_ERRORS", 0x1055);
+define("LOG_FATAL_ERRORS", 0x1155);
 
 ?>
