@@ -36,19 +36,19 @@
     <?php } ?>
 
     <ul id="nav" class="clear">
-        <li><a href="<?= url('home') ?>">Prima pagina</a></li>
+        <li><a href="<?= url('Home') ?>">Prima pagina</a></li>
         <li><a href="<?= url('Pregatire') ?>">Pregatire</a></li>
-        <li><a href="<?= url('contests') ?>">Concursuri</a></li>
-        <li><a href="<?= url('forum') ?>">Forum</a></li>
-        <li><a href="<?= url('Articole') ?>">Articole</a></li>
-        <li><a href="<?= url('news') ?>">Arhiva stiri</a></li>
-        <li><a href="<?= url('Despre') ?>">Despre info-arena</a></li>
-        <li class="separator"><hr/></li>
+        <li><a href="<?= url('Contests') ?>">Concursuri</a></li>
+        <li><a href="<?= url('Forum') ?>">Forum</a></li>
+        <li><a href="<?= url('Articles') ?>">Articole</a></li>
+        <li><a href="<?= url('News') ?>">Arhiva stiri</a></li>
         <?php if (identity_can('edit-profile')) { ?>
+        <li class="separator"><hr/></li>
         <li><a href="<?= url('profile') ?>">Profilul meu</a></li>
         <li><a href="<?= url('logout') ?>">Inchide sesiunea</a></li>
-        <li class="separator"><hr/></li>
         <? } ?>
+        <li class="separator"><hr/></li>
+        <li><a href="<?= url('submit') ?>">Trimite solutii</a></li>
         <li><a href="<?= url('monitor') ?>">Monitorul de evaluare</a></li>
     </ul>
 
