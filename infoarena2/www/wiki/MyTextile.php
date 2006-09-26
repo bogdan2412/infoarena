@@ -23,15 +23,9 @@ class MyTextile extends Textile {
         @Textile::Textile($options);
     }
 
-    // This is called for ==text here== blocks.
-    // By default textile passes the text to html unchanged (it has
-    // some filter features we don't use. This is sort of bad because
-    // you can inject arbritary html.
-    function do_format_block($args)
-    {
-        $str = (isset($args['text']) ? $args['text'] : '');
+    // Parse and execute a macro (or return an error div).
+    function process_macro($str) {
         $str = trim($str);
-
         $argvalexp = '"(([^"]*("")*)*)"';
         if (preg_match('/^([a-z][a-z0-9_]*)\s*\((\s*
                         (   [a-z][a-z0-9_]* \s*  = \s* '.$argvalexp.' \s* )*
@@ -69,8 +63,32 @@ class MyTextile extends Textile {
         return make_error_div('Bad macro "'.$str.'"');
     }
 
-    function is_wiki_link($link)
-    {
+    // Processes ==$type|$text== blocks.
+    function process_pipe_block($type, $text) {
+        log_warn("$type");
+        $type = strtolower($type);
+        // Raw html
+        if ($type == 'html') {
+            return $text;
+        } else {
+            return make_error_div("Can't handle ==$type| block.");
+        }
+    }
+
+    // This is called for ==text here== blocks.
+    // By default textile passes the text to html unchanged (it has
+    // some filter features we don't use. This is sort of bad because
+    // you can inject arbritary html.
+    function do_format_block($args) {
+        $str = getattr($args, 'text', '');
+        if (preg_match('/^([a-z][a-z0-9\+\#\-]*)\|(.*)/si', $str, $matches)) {
+            return $this->process_pipe_block($matches[1], $matches[2]);
+        } else {
+            return $this->process_macro($str);
+        }
+    }
+
+    function is_wiki_link($link) {
         if (preg_match($this->external_url_exp, $link) ||
                 (isset($this->links) && isset($this->links[$link]))) {
             return false;
