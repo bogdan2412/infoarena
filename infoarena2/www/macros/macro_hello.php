@@ -6,7 +6,7 @@
 function macro_hello($args)
 {
     $target = getattr($args, 'target', 'anonim');
-    return '<b>Hello '.$target.' from '.$args['page_name'].'</b>';
+    return '<b>Hello '.$target.' from '.$args['context']['page_name'].'</b>';
 }
 
 ?>

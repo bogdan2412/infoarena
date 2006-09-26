@@ -40,14 +40,15 @@ function get_macro_include_file($macro_name)
 // Can be returned from macros.
 function make_error_div($text)
 {
-    return '<div class="macroError">' . htmlentities($text) . '</div';
+    return '<div class="macroError">' . htmlentities($text) . '</div>';
 }
 
 function execute_macro($macro_name, $macro_args)
 {
     $macro_file = get_macro_include_file($macro_name);
     if ($macro_file !== '') {
-        require_once($macro_file);
+        // FIXME: this kills log messages.
+        @include_once($macro_file);
     }
     $macro_func = 'macro_'.$macro_name;
     if (!function_exists($macro_func)) {
