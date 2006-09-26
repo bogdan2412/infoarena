@@ -17,7 +17,10 @@ function check_context($context)
 // The paramaters is an array of usefull information. macros can use them.
 function wiki_process_text($content, $context) {
     check_context($context);
-    $options = array('disable_html' => true);
+    $options = array(
+            'disable_html' => true,
+            'disable_filters' => true,
+    );
     $weaver = new MyTextile($context, $options);
     return $weaver->process($content);
 }

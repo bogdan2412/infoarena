@@ -185,6 +185,7 @@ class Textile {
    */
   function Textile($options = array()) {
     $this->options = $options;
+    $this->options['disable_filters'] = ($this->options['disable_filters'] ? $this->options['disable_filters'] : true);
     $this->options['filters'] = ($this->options['filters'] ? $this->options['filters'] : array());
     $this->options['charset'] = ($this->options['charset'] ? $this->options['charset'] : 'iso-8859-1');
     $this->options['char_encoding'] = (isset($this->options['char_encoding']) ? $this->options['char_encoding'] : 1);
@@ -843,8 +844,9 @@ class Textile {
       }
 
       unset($id, $cite, $align, $padleft, $padright, $lines, $buffer);
+      $paramre = $this->options['disable_filters'] ? $this->clstyre : $this->clstyfilre;
       if (preg_match('{^(h[1-6]|p|bq|bc|fn\d+)
-                        ((?:' . $this->clstyfiltre . '*|' . $this->halignre . ')*)
+                        ((?:' . $paramre . '*|' . $this->halignre . ')*)
                         (\.\.?)
                         (?::(\d+|' . $this->urlre . '))?\ (.*)$}sx', $para, $matches)) {
         if ($sticky) {
@@ -893,7 +895,7 @@ class Textile {
           $params = preg_replace('{' . $this->halignre . '+}', '', $params, 1);
         }
         if ($params) {
-          if (preg_match('/\|(.+)\|/', $params, $matches2)) {
+          if ((!$this->options['disable_filters']) && preg_match('/\|(.+)\|/', $params, $matches2)) {
             $filter = $matches2[1];
             $params = preg_replace('/\|.+?\|/', '', $params, 1);
           }
@@ -1144,7 +1146,9 @@ class Textile {
         $buffer = preg_replace('/^\n\n/s', '', $buffer, 1);
         $out .= $buffer;
       } else {
-        if ($filter) { $buffer = $this->format_block(array('text' => "|$filter|" . $buffer, 'inline' => 1)); }
+        if ($filter && (!$this->options['disable_filters'])) {
+          $buffer = $this->format_block(array('text' => "|$filter|" . $buffer, 'inline' => 1));
+        }
         $out .= $pre . $buffer . $post;
       }
     }
@@ -2006,18 +2010,20 @@ class Textile {
     $pre = (isset($args['pre']) ? $args['pre'] : '');
     $post = (isset($args['post']) ? $args['post'] : '');
     $this->_strip_borders($pre, $post);
-    $filters = (preg_match('/^(\|(?:(?:[a-z0-9_\-]+)\|)+)/', $str, $matches) ? $matches[1] : '');
-    if ($filters) {
-      $filtreg = preg_replace('/[^A-Za-z0-9]/', '\\\\$1', $filters);
-      $str = preg_replace('/^' . $filtreg . '/', '', $str, 1);
-      $filters = preg_replace('/^\|/', '', $filters, 1);
-      $filters = preg_replace('/\|$/', '', $filter, 1);
-      $filters = preg_split('/\|/', $filters);
-      $str = $this->apply_filters(array('text' => $str, 'filters' => $filters));
-      $count = count($filters);
-      if ($str = preg_replace('!(<p>){' . $count . '}!se', '(++$i ? "$1" : "$1")', $str) && $i) {
-        $str = preg_replace('!(</p>){' . $count . '}!s', '$1', $str);
-        $str = preg_replace('!(<br( /)?>){' . $count . '}!s', '$1', $str);
+    if (!$this->options['disable_filters']) {
+      $filters = (preg_match('/^(\|(?:(?:[a-z0-9_\-]+)\|)+)/', $str, $matches) ? $matches[1] : '');
+      if ($filters) {
+        $filtreg = preg_replace('/[^A-Za-z0-9]/', '\\\\$1', $filters);
+        $str = preg_replace('/^' . $filtreg . '/', '', $str, 1);
+        $filters = preg_replace('/^\|/', '', $filters, 1);
+        $filters = preg_replace('/\|$/', '', $filter, 1);
+        $filters = preg_split('/\|/', $filters);
+        $str = $this->apply_filters(array('text' => $str, 'filters' => $filters));
+        $count = count($filters);
+        if ($str = preg_replace('!(<p>){' . $count . '}!se', '(++$i ? "$1" : "$1")', $str) && $i) {
+          $str = preg_replace('!(</p>){' . $count . '}!s', '$1', $str);
+          $str = preg_replace('!(<br( /)?>){' . $count . '}!s', '$1', $str);
+        }
       }
     }
     if ($inline) {

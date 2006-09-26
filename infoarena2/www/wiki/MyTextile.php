@@ -130,6 +130,7 @@ class MyTextile extends Textile {
         }
         error_reporting($this->error_reporting_level);
         $res = $this->do_format_block($args);
+        $res = getattr($args, 'pre', '').$res.getattr($args, 'post', '');
         error_reporting(0);
         return $res;
     }
