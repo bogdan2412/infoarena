@@ -1,6 +1,6 @@
 <?php
 
-require_once("log.php");
+require_once("../common/log.php");
 /**
  * This module contains various database-related functions and routines.
  *

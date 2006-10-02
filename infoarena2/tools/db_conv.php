@@ -12,7 +12,7 @@
 
     // include infoa-arena 2 defines and connect to database (dbLink)
     require_once("../config.php");
-    require_once("../common/db.php");
+    require_once("../common/db/db.php");
 
     // defines for info-arena 1 database
     define("DB1_HOST", 'localhost');    // change me!
