@@ -1,7 +1,16 @@
 <?php
 
-// Try to get the sql row for a certain page.
-// If it fails it will flash and redirec.t
+// Returns "real file name" (as stored on the file system) for a given
+// attachment model instance.
+//
+// NOTE: You can't just put this into db.php or any other module shared
+// with the judge since it`s dependent on the www server setup.
+function attachment_get_filepath($attach) {
+    return IA_ATTACH_DIR . $attach['id'];
+}
+
+// Try to get the textblock model for a certain page.
+// If it fails it will flash and redirect
 function try_textblock_get($page_name) {
     $page = textblock_get_revision($page_name);
     if (!$page) {
@@ -12,8 +21,36 @@ function try_textblock_get($page_name) {
     return $page;
 }
 
+// Check for attachment validity and proper permissions.
+// Issue error messages accordingly.
+//
+// Returns attachment model
+function try_attachment_get($page_name, $file_name) {
+    if (!$file_name) {
+        flash_error('Cerere malformata');
+        redirect(url($page_name));
+    }
 
-// List attachments to a textblock.
+    // get attachment info
+    $attach = attachment_get($file_name, $page_name);
+    identity_require('attach-download', $attach);
+    if (!$attach) {
+        flash_error('Atasamentul cerut nu exista.');
+        redirect(url($page_name));
+    }
+
+    $real_name = attachment_get_filepath($attach);
+    if (!file_exists($real_name)) {
+        log_warn("Sursa atasamentului {$attach['id']} nu a fost gasita. Ma asteptam sa fie in {$real_name}");
+        flash_error("Nu am gasit fisierul cerut pe server.");
+        redirect(url($page_name));
+        break;
+    }
+
+    return $attach;
+}
+
+// List attachments to a textblock
 function controller_attachment_list($page_name) {
     $page = try_textblock_get($page_name);
     identity_require('textblock-listattach', $page);
@@ -56,11 +93,18 @@ function controller_attachment_submit($page_name) {
     // Process upload data.
     $form_values['file_name'] = basename($_FILES['file_name']['name']);
     $form_values['file_size'] = $_FILES['file_name']['size'];
+    // FIXME: we shouldn't rely on the mime-type computed by the user agent
+    $form_values['file_type'] = strtolower($_FILES['file_name']['type']);
 
-    // Validate filename. This limits attachment names, and it sucks.
+    // Validate filename.
+    // NOTE: We hereby limit file names. No spaces, please. Not that we have
+    // a problem with spaces inside URLs. Everything should be (and hopefully is)
+    // urlencode()-ed. However, practical experience shows it is hard to work with
+    // such file names, mostly due to URLs word-wrapping when inserted in texts,
+    // unless, of course, one knows how to properly escape spaces with %20 or +
     if (!preg_match('/^[a-z0-9\.\-_]+$/i', $form_values['file_name'])) {
         $form_errors['file_name'] = 'Nume de fisier invalid'.
-                                    '(nu folositi spatii)';
+                                    '(va rugam sa nu folositi spatii)';
     }                
 
     // Check min file size. An invalid file results in a size of 0.
@@ -75,15 +119,17 @@ function controller_attachment_submit($page_name) {
     }
 
     // Validation done, start the SQL monkey.
-    
+
     // Add the file to the database.
     if (!$form_errors) {
         $attach = attachment_get($form_values['file_name'], $page_name);
         if ($attach) {
             // Attachment already exists, overwrite.
             identity_require('attach-overwrite', $attach);
-            $disk_name = attachment_update($form_values['file_name'],
+            $disk_name = attachment_update($attach['id'],
+                                           $form_values['file_name'],
                                            $form_values['file_size'],
+                                           $form_values['file_type'],
                                            $page_name,
                                            $identity_user['id']);
         }
@@ -91,6 +137,7 @@ function controller_attachment_submit($page_name) {
             // New attachment. Insert.
             $disk_name = attachment_insert($form_values['file_name'],
                                            $form_values['file_size'],
+                                           $form_values['file_type'],
                                            $page_name,
                                            $identity_user['id']);
         }
@@ -134,21 +181,21 @@ function controller_attachment_delete($page_name) {
         redirect(url($page_name));
     }
 
-    $sql_result = attachment_get($file_name, $page_name);
-    identity_require('attach-delete', $sql_result);
-    if (!$sql_result) {
+    $attach = attachment_get($file_name, $page_name);
+    identity_require('attach-delete', $attach);
+    if (!$attach) {
         flash_error('Fisierul nu exista.');
         redirect(url($page_name));
     }
 
     // Delete from data base.
-    if (!attachment_delete($file_name, $page_name)) {
+    if (!attachment_delete($attach['id'])) {
         flash_error('Nu am reusit sa sterg din baza de date.');
         redirect(url($page_name));
     }
 
     // Delete from disc.
-    $real_name = IA_ATTACH_DIR.$sql_result['id'];
+    $real_name = IA_ATTACH_DIR . $attach['id'];
     if (!unlink($real_name)) {
         flash_error('Nu am reusit sa sterg fisierul de pe disc.');
         redirect(url($page_name));
@@ -159,37 +206,31 @@ function controller_attachment_delete($page_name) {
     redirect(url($page_name));
 }
 
-// Download an attachment.
-// FIXME: we get the file from _GET. Add it as a parameter.
-function controller_attachment_download($page_name) {
-    // FIXME: parameter.
-    $file_name = request('file');
-    if (!$file_name) {
-        flash_error('Cerere malformata');
-        redirect(url($page_name));
-    }
+// serve file through HTTP
+// WARNING: this function does not return
+function serve_attachment($filename, $attachment_name, $mimetype) {
+    // open file
+    $fp = fopen($filename, "rb");
+    log_assert($fp);
+    $stat = fstat($fp);
 
-    // Get the actual file.
-    $sql_result = attachment_get($file_name, $page_name);
-    identity_require('attach-download', $sql_result);
-    if (!$sql_result) {
-        flash_error('Fisierul nu exista.');
-        redirect(url($page_name));
-    }
-    $real_name = IA_ATTACH_DIR . $sql_result['id'];
-    $fp = fopen($real_name, 'rb');
-    if (!$fp) {
-        flash_error("Nu am gasit fisierul ".$real_name." pe server");
-        redirect(url($page_name));
-        break;
-    }
+    // HTTP headers
+    header("Content-Type: {$mimetype}");
+    header("Content-Disposition: inline; filename=".urlencode($attachment_name).";");
+    header('Content-Length: ', $stat['size']);
 
-    // HTTP magic goes here..
-    header("Content-Type: application/force-download");
-    header("Content-disposition: attachment; filename=".$file_name.";");
-    header('Content-Length: ',$sql_result['size']);
+    // service file
     fpassthru($fp);
+    fclose($fp);
     die();
+}
+
+// download an attachment
+function controller_attachment_download($page_name, $file_name) {
+    $attach = try_attachment_get($page_name, $file_name);
+
+    // serve attachment with proper mime types
+    serve_attachment(attachment_get_filepath($attach), $file_name, $attach['mime_type']);
 }
 
 ?>

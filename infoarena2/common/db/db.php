@@ -591,41 +591,31 @@ function attachment_get_by_id($id) {
     return db_fetch($query);
 }
 
-function attachment_update($name, $size, $page, $user_id) {
+function attachment_update($id, $name, $size, $mime_type, $page, $user_id) {
     $query = sprintf("UPDATE ia_file
-                      SET size = '%s', user_id ='%s', `timestamp` = NOW()
-                      WHERE LCASE(`name`) = LCASE('%s') AND
-                            LCASE(`page`) = LCASE('%s')",
+                      SET size = '%s', user_id ='%s', `timestamp` = NOW(),
+                          mime_type = '%s'
+                      WHERE id = %s",
                      db_escape($size), db_escape($user_id),
-                     db_escape($name), db_escape($page));
-    db_query($query);
-    $query = sprintf("SELECT *
-                      FROM ia_file
-                      WHERE LCASE(`name`) = LCASE('%s') AND
-                            LCASE(`page`) = LCASE('%s')",
-                     db_escape($name), db_escape($page));
-    $tmp = db_fetch($query);
-    return $tmp['id'];
+                     db_escape($mime_type), db_escape($id));
+    return db_query($query);
 }
 
-function attachment_insert($name, $size, $page, $user_id) {
+function attachment_insert($name, $size, $mime_type, $page, $user_id) {
     global $dbLink;
     $query = sprintf("INSERT INTO ia_file
-                        (`name`, page, size, user_id, `timestamp`)
-                      VALUES ('%s', '%s', '%s', '%s', NOW())",
+                        (`name`, page, `size`, mime_type, user_id, `timestamp`)
+                      VALUES ('%s', '%s', '%s', '%s', '%s', NOW())",
                      db_escape($name), db_escape($page),
-                     db_escape($size), db_escape($user_id));
+                     db_escape($size), db_escape($mime_type),
+                     db_escape($user_id));
     db_query($query);
     return mysql_insert_id($dbLink);
 }
 
-function attachment_delete($name, $page) {
+function attachment_delete($id) {
     global $dbLink;
-    $query = sprintf("DELETE FROM ia_file
-                      WHERE LCASE(`name`) = LCASE('%s') AND
-                            LCASE(`page`) = LCASE('%s')
-                      LIMIT 1",
-                     db_escape($name), db_escape($page));
+    $query = sprintf("DELETE FROM ia_file WHERE `id` = %s", db_escape($id));
     return db_query($query);
 }
 

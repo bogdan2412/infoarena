@@ -67,16 +67,13 @@ echo "</pre>";*/
 
 // Trivial direct mappings.
 if (isset($directmaps[$urlstart])) {
-    require("controllers/{$urlstart}.php");
+    require_once("controllers/{$urlstart}.php");
     $fname = "controller_{$urlstart}";
     $fname($suburl);
 
 // User special shit
-} else if ($urlstart == 'user' && $action == 'download') {
-    require('controllers/attachment.php');
-    controller_attachment_download($page);
 } else if ($urlstart == 'user') {
-    require('controllers/user.php');
+    require_once('controllers/user.php');
     if (count($urlpath) < 2) {
         $suburl = "";
     } else {
@@ -87,87 +84,95 @@ if (isset($directmaps[$urlstart])) {
 
 // Special stuff for task edit/create
 } else if ($urlstart == 'task' && $action == 'edit') {
-    require('controllers/task.php');
+    require_once('controllers/task.php');
     controller_task_edit($suburl);
 } else if ($urlstart == 'task' && $action == 'save') {
-    require('controllers/task.php');
+    require_once('controllers/task.php');
     controller_task_save($suburl);
 } else if ($urlstart == 'task' && $action == 'create') {
-    require('controllers/task.php');
+    require_once('controllers/task.php');
     controller_task_create($suburl);
 
 // Special shit for round edit create
 } else if ($urlstart == 'round' && $action == 'edit') {
-    require('controllers/round.php');
+    require_once('controllers/round.php');
     controller_round_edit($suburl);
 } else if ($urlstart == 'round' && $action == 'save') {
-    require('controllers/round.php');
+    require_once('controllers/round.php');
     controller_round_save($suburl);
 } else if ($urlstart == 'round' && $action == 'create') {
-    require('controllers/round.php');
+    require_once('controllers/round.php');
     controller_round_create($suburl);
 
 // task submission
 } else if ($urlstart == 'submit' && $action == 'save') {
-    require('controllers/submit.php');
+    require_once('controllers/submit.php');
     controller_submit_save($suburl);
 } else if ($urlstart == 'submit') {
-    require('controllers/submit.php');
+    require_once('controllers/submit.php');
     controller_submit_form($suburl);
 
 // news
 } else if ($urlstart == 'news' && count($urlpath) == 1 && $action == 'feed') {
-    require('controllers/news.php');
+    require_once('controllers/news.php');
     controller_news_view_feed();
 } else if ($urlstart == 'news' && count($urlpath) == 1) {
-    require('controllers/news.php');
+    require_once('controllers/news.php');
     controller_news_view_all();
 } else if ($urlstart == 'news' && $action == 'edit') {
-    require('controllers/news.php');
+    require_once('controllers/news.php');
     controller_news_edit($page);
 } else if ($urlstart == 'news' && $action == 'save') {
-    require('controllers/news.php');
+    require_once('controllers/news.php');
     controller_news_save($page);
 
 // If it was not a special task or pset page do the wiki monkey.
 } else if ($action == 'view') {
-    require('controllers/textblock.php');
+    require_once('controllers/textblock.php');
     controller_textblock_view($page, request('revision'));
 } else if ($action == 'edit') {
-    require('controllers/wiki.php');
+    require_once('controllers/wiki.php');
     controller_wiki_edit($page);
 } else if ($action == 'save') {
-    require('controllers/wiki.php');
+    require_once('controllers/wiki.php');
     controller_wiki_save($page);
 } else if ($action == 'history') {
-    require('controllers/textblock.php');
+    require_once('controllers/textblock.php');
     controller_textblock_history($page);
 } else if ($action == 'restore') {
-    require('controllers/textblock.php');
+    require_once('controllers/textblock.php');
     controller_textblock_restore_revision($page, request('revision'));
 } else if ($action == 'diff') {
-    require('controllers/textblock.php');
+    require_once('controllers/textblock.php');
     controller_textblock_diff_revision($page, request('revision'));
 } else if ($action == 'feed') {
-    require('controllers/textblock.php');
+    require_once('controllers/textblock.php');
     controller_textblock_feed($page);
 
 // Attachment shit. This is common to all wiki-based urls.
 } else if ($action == 'attach') {
-    require('controllers/attachment.php');
+    require_once('controllers/attachment.php');
     controller_attachment_create($page);
 } else if ($action == 'attach-submit') {
-    require('controllers/attachment.php');
+    require_once('controllers/attachment.php');
     controller_attachment_submit($page);
 } else if ($action == 'attach-list') {
-    require('controllers/attachment.php');
+    require_once('controllers/attachment.php');
     controller_attachment_list($page);
 } else if ($action == 'attach-del') {
-    require('controllers/attachment.php');
+    require_once('controllers/attachment.php');
     controller_attachment_delete($page);
 } else if ($action == 'download') {
-    require('controllers/attachment.php');
-    controller_attachment_download($page);
+    if (request('resize')) {
+        require_once('controllers/image_attachment.php');
+        // download resized image
+        controller_attachment_resized_img($page, request('file'), request('resize'));
+    }
+    else {
+        require_once('controllers/attachment.php');
+        // regular file download
+        controller_attachment_download($page, request('file'));
+    }
 } else {
     flash_error('Url invalid');
     redirect(url(''));
