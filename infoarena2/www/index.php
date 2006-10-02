@@ -72,7 +72,7 @@ if (isset($directmaps[$urlstart])) {
     $fname($suburl);
 
 // User special shit
-} else if ($urlstart == 'user') {
+} else if ($urlstart == 'user' && $action != 'download') {
     require_once('controllers/user.php');
     if (count($urlpath) < 2) {
         $suburl = "";
@@ -81,7 +81,6 @@ if (isset($directmaps[$urlstart])) {
         $suburl = join('/', $urlpath);
     }
     controller_user($suburl);
-
 // Special stuff for task edit/create
 } else if ($urlstart == 'task' && $action == 'edit') {
     require_once('controllers/task.php');

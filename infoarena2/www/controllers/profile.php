@@ -90,54 +90,12 @@ function controller_profile($suburl)
 
         // -- avatar validation code --
         $avatar = basename($_FILES['avatar']['name']);
-        if ($avatar)
-        {
+        $mime_type = $_FILES['avatar']['type'];
+        if ($avatar) {
             $avatar_size = $_FILES['avatar']['size'];
-            // Validate filename. This limits attachment names, and it sucks
-            if (!preg_match('/^[a-z0-9\.\-_]+$/i', $avatar)) {
-                $errors['avatar'] = 'Nume de fisier invalid (nu folositi spatii)';
-            }
             // Check file size
-            elseif ($avatar_size < 0 ||
-                $avatar_size > IA_AVATAR_MAXSIZE) {
-                $errors['avatar_size'] = 'Fisierul depaseste limita de ' .
-                    (IA_AVATAR_MAXSIZE / 1024).' kbytes';
-            }
-            else {
-                // TODO: Limit avatar dimensions
-/*
-                // resize avatar if it's too big
-                $filename = $_FILES['avatar']['tmp_name'];
-                $imgd = getimagesize($filename);
-                if ($imgd[0] > IA_AVATAR_WIDTH || $imgd[1] > IA_AVATAR_HEIGHT)
-                {
-                    // read the data from file
-                    $fhandle = fopen($filename, "rb");
-                    $fcontents = fread($fhandle, filesize($filename));
-                    fclose($fhandle);
-                    $image = imagecreatefromstring($fcontents);
-
-                    // calculate resultant image size
-                    $width = IA_AVATAR_WIDTH;
-                    $height = IA_AVATAR_HEIGHT;
-                    if ($imgd[0] < $imgd[1]) {
-                        $width = ($height / $imgd[1]) * $imgd[0];
-                    } else {
-                        $height = ($width / $imgd[0]) * $imgd[1];
-                    }
-
-                    // resample image to new sizes
-                    $image_p = imagecreatetruecolor($width, $height);
-                    // !imagecopyresampled needs gd.so library
-                    imagecopyresampled($image_p, $image, 0, 0, 0, 0,
-                        $width, $height, $imgd[0], $imgd[1]);
-
-                    // write new data to file
-                    $fhandle = $fopen($filename, "wb");
-                    echo fwrite($fhandle, $image_p);
-                    fclose($fhandle);
-                }
-*/
+            if ($avatar_size < 0 || $avatar_size > IA_AVATAR_MAXSIZE) {
+                $errors['avatar'] = 'Fisierul depaseste limita de ' . (IA_AVATAR_MAXSIZE / 1024).' KB';
             }
         }
 
@@ -150,39 +108,31 @@ function controller_profile($suburl)
             if ($avatar) {
                 // Add the file to the database.
                 $user_page = 'user/' . $identity_user['username'];
-                $attach = attachment_get($avatar, $user_page);
+                $file_name = 'avatar';
+                $attach = attachment_get($file_name, $user_page);
                 if ($attach) {
                     // Attachment already exists, overwrite.
-                    $disk_name = attachment_update($avatar,
-                                                   $avatar_size,
-                                                   $user_page,
-                                                   $identity_user['id']);
+                    attachment_update($attach['id'], $file_name, $avatar_size, $mime_type,
+                                      $user_page, $identity_user['id']);
                 }
                 else {
                     // New attachment. Insert.
-                    $disk_name = attachment_insert($avatar,
-                                                   $avatar_size,
-                                                   $user_page,
-                                                   $identity_user['id']);
-                }
-                // Check if something went wrong.
-                if (!isset($disk_name)) {
-                    $errors['avatar'] = 'Avatarulul nu a putut fi atasat';
+                    attachment_insert($file_name, $avatar_size,
+                                      $mime_type, $user_page, $identity_user['id']);
+                    $attach = attachment_get($file_name, $user_page);
+                    if (!$attach) {
+                        $errors['avatar'] = 'Avatarul nu a putut fi salvat in baza de date.';
+                    }
                 }
 
                 // Write the file on disk.
                 if (!$errors) {
-                    $qdata['avatar'] = $disk_name; // $disk_name is the attach id
-
-                    // to cache avatar filename in ia_user db
-                    $resf = attachment_get_by_id($disk_name);
-                    $qdata['avatar_filename'] = $resf['name'];
-                    
-                    $disk_name = IA_ATTACH_DIR . $disk_name;
-                    if (!move_uploaded_file($_FILES['avatar']['tmp_name'],
-                                            $disk_name)) {
-                        $errors['avatar'] = 'Fisierul nu a putut fi '.
-                                            'incarcat pe server'; 
+                    $qdata['avatar'] = $attach['id'];
+                    // FIXME: There should be a unified name of computing file paths for attachments
+                    // FIXME: See controllers/attachment.php
+                    $disk_name = IA_ATTACH_DIR . $attach['id'];
+                    if (!move_uploaded_file($_FILES['avatar']['tmp_name'], $disk_name)) {
+                        $errors['avatar'] = 'Fisierul nu a putut fi incarcat pe server.'; 
                     }
                 }
                 
