@@ -2,19 +2,21 @@
 
 require_once("db.php");
 
-/**
- * Task
- */
+// Task-related db functions.
+
+// Get task by id. No params.
 function task_get($task_id) {
     $query = sprintf("SELECT * FROM ia_task WHERE `id` = LCASE('%s')",
                      db_escape($task_id));
     return db_fetch($query);
 }
 
+// Get the textblock associated to a task.
 function task_get_textblock($task_id) {
     return textblock_get_revision('task/' . $task_id);
 }
 
+//
 function task_create($task_id, $type, $hidden, $author, $source, $user_id) {
     global $dbLink;
     $query = sprintf("INSERT INTO ia_task

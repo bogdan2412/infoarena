@@ -4,7 +4,7 @@ function macro_tableofcontents($args)
 {
     $prefix = getattr($args, 'prefix', $args['context']['page_name']);
 
-    $subpages = textblock_get_names_with_user($prefix);
+    $subpages = textblock_get_list_by_prefix($prefix, false, false);
 
     $res = '<div class="macro-toc" style="float:right">';
     $res .= "<p>Table of contents for $prefix</p><ul>";

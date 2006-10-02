@@ -106,9 +106,9 @@ function controller_textblock_restore_revision($page_name, $rev_num) {
     redirect(url($page_name));
 }
 
-// display revisions
+// Display revisions
 function controller_textblock_history($page_name) {
-    $page = textblock_get_revision_without_content($page_name);
+    $page = textblock_get_revision($page_name, null, false, false);
     if ($page) {
         $perm = textblock_get_permission($page, 'history');
         if (!$perm) {
@@ -125,7 +125,7 @@ function controller_textblock_history($page_name) {
     $view['page_name'] = $page_name;
     $view['title'] = 'Istoria paginii '.$page_name;
     //$view['count'] = textblock_get_revision_count($page_name);
-    $view['page_list'] = textblock_get_revisions_without_content($page_name);
+    $view['page_list'] = textblock_get_revisions($page_name);
     $view['count'] = count($view['page_list']);
     $view['current'] = $page;
     $view['feed_link'] = url($view['page_name'], array('action' => 'feed'));
@@ -134,13 +134,13 @@ function controller_textblock_history($page_name) {
 
 // give a RSS feed with the history of a textblock
 function controller_textblock_feed($page_name) {
-    $page = textblock_get_revision_with_username($page_name);
+    $page = textblock_get_revision($page_name);
     if (!$page) {
         flash_error("Pagina nu exista");
         redirect(url(''));
     }
 
-    $page_list = textblock_get_revisions_with_username($page_name);
+    $page_list = textblock_get_revisions($page_name, true, true);
     $count = count($page_list);
     $history = textblock_get_permission($page, 'view');
 
@@ -193,4 +193,5 @@ function controller_textblock_feed($page_name) {
 
     execute_view_die('views/rss.php', $view);
 }
+
 ?>

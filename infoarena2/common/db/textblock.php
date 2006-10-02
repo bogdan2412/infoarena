@@ -3,7 +3,8 @@ require_once("db.php");
 
 // Textblock-related db functions.
 
-// Call this function to add a new revision.
+// Add a new revision
+// FIXME: hash parameter?
 function textblock_add_revision($name, $title, $content, $user_id) {
     global $dbLink;
 
@@ -36,112 +37,88 @@ function textblock_add_revision($name, $title, $content, $user_id) {
     return db_query($query);
 }
 
-// Get a certain revision of a textblock.
-function textblock_get_revision($name, $rev_num = null) {
-    global $dbLink;
+// Get a certain revision of a textblock. Paramters:
+//  $name:      Textblock name.
+//  $rev_num:   Revision number. Latest if null(default).
+//  $content:   If true also get content. Default true.
+//  $username:  If true also get username (not only user_id). Default true
+function textblock_get_revision($name, $rev_num = null, $content = true, $username = true)
+{
+    // Calculate field list.
+    $field_list = "`name`, `title`, `timestamp`, `user_id`";
+    if ($content) {
+        $field_list .= ", `text`";
+    }
+    if ($username) {
+        $field_list .= ", `username`";
+    }
+
     if (is_null($rev_num)) {
-        $query = sprintf("SELECT *
-                          FROM ia_textblock
-                          WHERE LCASE(`name`) = '%s'",
+        $query_table = "ia_textblock";
+    } else {
+        $query_table = "ia_textblock_revision";
+    }
+
+    // Add a join for username.
+    if ($username) {
+        $join = "LEFT JOIN ia_user ON $query_table.user_id = ia_user.id";
+    } else {
+        $join = "";
+    }
+
+    // Build the actual query.
+    if (is_null($rev_num)) {
+        // Get the latest revision.
+        $query = sprintf("SELECT $field_list
+                         FROM $query_table
+                         $join
+                         WHERE LCASE(`name`) = '%s'",
                          db_escape($name));
-        $textblock = db_fetch($query);
-        return $textblock;
-    }
-    else {
-        $query = sprintf("SELECT *
-                          FROM ia_textblock_revision
-                          WHERE LCASE(`name`) = '%s'
-                          ORDER BY `timestamp`
-                          LIMIT %s, 1",
+    } else {
+        // Get an older revision.
+        $query = sprintf("SELECT $field_list
+                         FROM $query_table
+                         $join
+                         WHERE LCASE(`name`) = '%s'
+                         ORDER BY `timestamp`
+                         LIMIT %s, 1",
                          db_escape($name), db_escape($rev_num));
-        $textblock = db_fetch($query);
-        return $textblock;
     }
+    return db_fetch($query);
 }
 
-// Returns all all revisions of a textblock.
-function textblock_get_revisions($name) {
-    $query = sprintf("SELECT *
-                      FROM ia_textblock_revision WHERE
-                      LCASE(`name`) = '%s'
-                      ORDER BY `timestamp`",
-                     db_escape($name));
-    return db_fetch_all($query);
-}
+// Get all revisions of a text_block.
+// $name:       The textblock name.
+// $content:    If true also get content. Defaults to false.
+// $username:   If true join for username. Defaults to true.
+function textblock_get_revisions($name, $content, $username) {
+    // Calculate field list.
+    $field_list = "`name`, `title`, `timestamp`, `user_id`";
+    if ($content) {
+        $field_list .= ", `text`";
+    }
+    if ($username) {
+        $field_list .= ", `username`";
+    }
 
-// returns textblocks without the actual content 
-function textblock_get_revisions_without_content($name) {
-    $query = sprintf("SELECT `name`, title, user_id, `timestamp`, username
+    // Add a join for username.
+    if ($username) {
+        $join = "LEFT JOIN ia_user ON ia_textblock_revision.user_id = ia_user.id";
+    } else {
+        $join = "";
+    }
+
+    // Build query.
+    $query = sprintf("SELECT $field_list
                       FROM ia_textblock_revision
-                        LEFT JOIN ia_user ON
-                            ia_textblock_revision.user_id = ia_user.id
+                      $join
                       WHERE LCASE(`name`) = '%s'
                       ORDER BY `timestamp`",
-                     db_escape($name));
+                      db_escape($name));
     return db_fetch_all($query);
 }
 
-// Get a certain revision without the actual content.
-function textblock_get_revision_without_content($name, $rev_num = null) {
-    global $dbLink;
-    if (is_null($rev_num)) {
-        $query = sprintf("SELECT `name`, title, user_id, `timestamp`, username
-                          FROM ia_textblock
-                          LEFT JOIN ia_user ON
-                            ia_textblock.user_id = ia_user.id
-                          WHERE LCASE(`name`) = '%s'
-                          ORDER BY `timestamp`", db_escape($name));
-        $textblock = db_fetch($query);
-        return $textblock;
-}
-    else {
-        $query = sprintf("SELECT `name`, title, user_id, `timestamp`, username
-                          FROM ia_textblock_revision LEFT JOIN ia_user ON
-                          ia_textblock_revision.user_id = ia_user.id
-                          WHERE LCASE(`name`) = '%s'
-                          ORDER BY `timestamp`
-                          LIMIT %s, 1",
-                         db_escape($name), db_escape($rev_num));
-        $textblock = db_fetch($query);
-        return $textblock;
-    }
-}
-
-// Get all revisions and join with user infos.
-function textblock_get_revisions_with_username($name) {
-    $query = sprintf("SELECT * FROM ia_textblock_revision LEFT JOIN ia_user
-                      ON ia_textblock_revision.user_id = ia_user.id
-                      WHERE LCASE(`name`)= '%s' ORDER BY `timestamp`",
-                    db_escape($name));
-    return db_fetch_all($query);
-}
-
-function textblock_get_revision_with_username($name, $rev_num = null) {
-    global $dbLink;
-    if (is_null($rev_num)) {
-        $query = sprintf("SELECT *
-                          FROM ia_textblock
-                          LEFT JOIN ia_user ON
-                            ia_textblock.user_id = ia_user.id
-                          WHERE LCASE(`name`) = '%s'
-                          ORDER BY `timestamp`", db_escape($name));
-        $textblock = db_fetch($query);
-        return $textblock;
-    }
-    else {
-        $query = sprintf("SELECT *
-                          FROM ia_textblock_revision LEFT JOIN ia_user ON
-                          ia_textblock_revision.user_id = ia_user.id
-                          WHERE LCASE(`name`) = '%s'
-                          ORDER BY `timestamp`
-                          LIMIT %s, 1",
-                         db_escape($name), db_escape($rev_num));
-        $textblock = db_fetch($query);
-        return $textblock;
-    }
-}
-
-// Count revisions.
+// Count revisions for a certain textblock.
 function textblock_get_revision_count($name) {
     global $dbLink;
     $query = sprintf("SELECT COUNT(*) AS `cnt`
@@ -153,23 +130,30 @@ function textblock_get_revision_count($name) {
 }
 
 // Get all textblocks(without content) with a certain prefix).
-function textblock_get_names($prefix) {
-   $query = sprintf("SELECT `name`, title, user_id, `timestamp`
-                     FROM ia_textblock
-                     WHERE LCASE(`name`) LIKE '%s%%'
-                     ORDER BY `name`",
-                    db_escape($prefix));
-    return db_fetch_all($query);
-}
+// Ordered by name.
+function textblock_get_list_by_prefix($prefix, $content, $username) {
+    // Calculate field list.
+    $field_list = "`name`, `title`, `timestamp`, `user_id`";
+    if ($content) {
+        $field_list .= ", `text`";
+    }
+    if ($username) {
+        $field_list .= ", `username`";
+    }
 
-// No fucking idea.
-function textblock_get_names_with_user($prefix) {
-    $query = sprintf("SELECT `name`, title, user_id, `timestamp`, username
+    // Add a join for username.
+    if ($username) {
+        $join = "LEFT JOIN ia_user ON ia_textblock.user_id = ia_user.id";
+    } else {
+        $join = "";
+    }
+
+    $query = sprintf("SELECT $field_list
                       FROM ia_textblock
-                        LEFT JOIN ia_user ON ia_textblock.user_id = ia_user.id
+                      $join
                       WHERE LCASE(`name`) LIKE '%s%%'
                       ORDER BY `name`",
-                     db_escape($prefix));
+                      db_escape($prefix));
     return db_fetch_all($query);
 }
 
