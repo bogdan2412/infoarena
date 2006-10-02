@@ -53,4 +53,17 @@ define('IA_MAX_RECURSIVE_INCLUDES', 5);
 // thing.
 define("IA_SQL_TRACE", true);
 
+// Image resampling
+//  - constraints for image resampling
+define("IMAGE_MAX_WIDTH", 800);
+define("IMAGE_MAX_HEIGHT", 800);
+//  - whether to enable the image cache (avoid resizing the same image twice)
+define("IMAGE_CACHE_ENABLE", true);
+//  - where to store image cache (resampled versions of the normal image attachments)
+//    Feel free to empty the cache directory at any time
+define("IMAGE_CACHE_DIR", "/tmp/");
+//  - maximum directory size for image cache (bytes). When directory exceeds quota,
+//    image resamples are not cached any more but computed & served on-the-fly
+define("IMAGE_CACHE_QUOTA", 32 * 1024 * 1024); // (bytes please)
+
 ?>

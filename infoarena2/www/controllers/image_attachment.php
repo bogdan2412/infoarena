@@ -2,61 +2,9 @@
 
 require('controllers/attachment.php');
 
-// Resize 2D coordinates according to 'textual' instructions
-// Given a (width, height) pair, resize it (compute new pair) according to
-// resize instructions.
-//
-// Resize instructions format may be one of the following:
-// # example    # description
-// 100x100      keep aspect ratio, resize as to fit a 100x100 box
-//              Coordinates are not enlarged if they already fit the given box.
-// @100x100     keep aspect ratio, resize as to exactly fit a 100x100 box
-//              Enlarge coordinates if necessary
-// !50x86       ignore aspect ratio, resize to exactly 50x86
-// 50%          scale dimensions. only integer percentages allowed
-//
-// Returns 2-element array: (width, height) or null if invalid format
-function resize_coordinates($width, $height, $resize) {
-    // remove @
-    if (0 < strlen($resize) && $resize[0] == '@') {
-        $enlarge = true;
-        $resize = substr($resize, 1);
-    }
-    else {
-        $enlarge = false;
-    }
-
-    $ratio = 1.0;
-
-    // 100x100 or @100x100
-    if (preg_match('/^([0-9]+)x([0-9]+)$/', $resize, $matches)) {
-        $boxw = (float)$matches[1];
-        $boxh = (float)$matches[2];
-
-        if ($width > $boxw || $enlarge) {
-            $ratio =  $boxw / $width;
-        }
-        if ($height * $ratio > $boxh) {
-            $ratio *= $boxh / ($height * $ratio);
-        }
-    }
-    // 50%
-    elseif (preg_match('/^([0-9]+)%$/', $resize, $matches)) {
-        $ratio = (float)$matches[1] / 100;
-    }
-    // !50x86
-    elseif (preg_match('/^!([0-9]+)x([0-9]+)$/', $resize, $matches)) {
-        $width = (float)$matches[1];
-        $height = (float)$matches[2];
-    }
-    else {
-        return null;
-    }
-
-    return array(floor($ratio * $width), floor($ratio * $height));
-}
-
 // download attachment as resized image
+// see resize_coordinates() from utilities.php for detailed informations about
+// valid $resize instructions
 function controller_attachment_resized_img($page_name, $file_name, $resize) {
     if (!$resize) {
         // no resize information: issue a regular file download
@@ -64,7 +12,7 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
     }
 
     $attach = try_attachment_get($page_name, $file_name);
-    $real_name = attachment_get_filepath($attach);
+    $real_name = attachment_get_filepath($attach['id']);
 
     $ret = getimagesize($real_name);
     if (false === $ret) {
@@ -85,6 +33,21 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
     $new_height = $newcoords[1];
 
     // put some constraints here for security
+    if ($new_width > IMAGE_MAX_WIDTH || $new_height > IMAGE_MAX_HEIGHT) {
+        flash_error('Dimensiunile cerute sunt prea mari.');
+        redirect(url($page_name));
+    }
+
+    // query image cache for existing resampled image
+    if (IMAGE_CACHE_ENABLE) {
+        $cache_fn = imagecache_query($attach['id'], $resize);
+
+        if (null !== $cache_fn) {
+            // cache has it
+            serve_attachment($cache_fn, $file_name, image_type_to_mime_type($img_type));
+            // function doesn't return
+        }
+    }
 
     // actual image resizing
     // FIXME: optimize code not to use output buffering. Image should be
@@ -124,6 +87,11 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
     $buffer = ob_get_contents();
     ob_end_clean();
 
+    // cache resample
+    if (IMAGE_CACHE_ENABLE) {
+        imagecache_save($attach['id'], $resize, $buffer);
+    }
+
     // HTTP headers
     header("Content-Type: " . image_type_to_mime_type($img_type));
     header("Content-Disposition: inline; filename=" . urlencode($file_name) . ";");
@@ -134,6 +102,97 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
     // serve content
     echo $buffer;
     die();
+}
+
+// Tells whether there is a resampled (resized according to $resize instructions) and
+// up-to-date version of image attachment $attach_id.
+//
+// Returns
+//  - disk file name of the resampled image so it can be served via serve_attachment()
+//  - null if no such cached version exists
+function imagecache_query($attach_id, $resize) {
+    // get disk file paths
+    $fn_cache = imagecache_filename($attach_id, $resize);
+    $fn_source = attachment_get_filepath($attach_id);
+
+    // open files
+    $fp_cache = fopen($fn_cache, 'rb');
+    if (!$fp_cache) {
+        return null;
+    }
+    $fp_source = fopen($fn_source, 'rb');
+    if (!$fp_source) {
+        return null;
+    }
+
+    // stat
+    $stat_source = fstat($fp_source);
+    $stat_cache = fstat($fp_cache);
+
+    // close files
+    fclose($fp_cache);
+    fclose($fp_source);
+
+    // decide
+    if ($stat_source['mtime'] > $stat_cache['mtime']) {
+        // cache is older than source
+        return null;
+    }
+    else {
+        // cache is up-to-date
+        return $fn_cache;
+    }
+}
+
+// Inserts resampled version of attachment $attach_id into image cache.
+// $buffer is the actual binary file contents of the resampled image.
+//
+// Returns boolean whether caching succeeded. File will not be cached if
+// image cache exceeds allowed quota.
+function imagecache_save($attach_id, $resize, $buffer) {
+    if (imagecache_usage() > IMAGE_CACHE_QUOTA) {
+        // cache is full
+        log_print('Image cache is full.');
+        return false;
+    }
+
+    $filename = imagecache_filename($attach_id, $resize);
+    $ret = file_put_contents($filename, $buffer, LOCK_EX);
+    if (false === $ret) {
+        log_error('IMAGE_CACHE: Could not create file ' . $filename);
+        return false;
+    }
+
+    return true;
+}
+
+// Returns current disk size of image cache.
+function imagecache_usage() {
+    // scan all files in image cache directory
+    $nodes = scandir(IMAGE_CACHE_DIR);
+    $files = array();
+    foreach ($nodes as $node) {
+        if (!is_dir($node)) {
+            $files[] = $node;
+        }
+    }
+
+    // sum up file size
+    $total = 0;
+    foreach ($files as $file) {
+        $fsize = filesize(IMAGE_CACHE_DIR . $file);
+        if (false === $fsize) {
+            log_warn('IMAGE_CACHE: Could not determine file size of resampled image ' . IMAGE_CACHE_DIR . $file);
+        }
+        $total += $fsize;
+    }
+
+    return $total;
+}
+
+// Returns absolute file path for a (possibly inexistent) cached resampled image.
+function imagecache_filename($attach_id, $resize) {
+    return IMAGE_CACHE_DIR . $attach_id . '_' . $resize;
 }
 
 ?>

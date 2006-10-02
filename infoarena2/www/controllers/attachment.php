@@ -1,12 +1,12 @@
 <?php
 
 // Returns "real file name" (as stored on the file system) for a given
-// attachment model instance.
+// attachment id.
 //
 // NOTE: You can't just put this into db.php or any other module shared
 // with the judge since it`s dependent on the www server setup.
-function attachment_get_filepath($attach) {
-    return IA_ATTACH_DIR . $attach['id'];
+function attachment_get_filepath($attach_id) {
+    return IA_ATTACH_DIR . $attach_id;
 }
 
 // Try to get the textblock model for a certain page.
@@ -39,7 +39,7 @@ function try_attachment_get($page_name, $file_name) {
         redirect(url($page_name));
     }
 
-    $real_name = attachment_get_filepath($attach);
+    $real_name = attachment_get_filepath($attach['id']);
     if (!file_exists($real_name)) {
         log_warn("Sursa atasamentului {$attach['id']} nu a fost gasita. Ma asteptam sa fie in {$real_name}");
         flash_error("Nu am gasit fisierul cerut pe server.");
@@ -121,47 +121,45 @@ function controller_attachment_submit($page_name) {
     // Validation done, start the SQL monkey.
 
     // Add the file to the database.
+    $rewritten = false;
     if (!$form_errors) {
         $attach = attachment_get($form_values['file_name'], $page_name);
         if ($attach) {
             // Attachment already exists, overwrite.
             identity_require('attach-overwrite', $attach);
-            $disk_name = attachment_update($attach['id'],
-                                           $form_values['file_name'],
-                                           $form_values['file_size'],
-                                           $form_values['file_type'],
-                                           $page_name,
-                                           $identity_user['id']);
+            attachment_update($attach['id'], $form_values['file_name'], $form_values['file_size'],
+                              $form_values['file_type'], $page_name, $identity_user['id']);
+            $rewritten = true;
         }
         else {
             // New attachment. Insert.
-            $disk_name = attachment_insert($form_values['file_name'],
-                                           $form_values['file_size'],
-                                           $form_values['file_type'],
-                                           $page_name,
-                                           $identity_user['id']);
+            attachment_insert($form_values['file_name'], $form_values['file_size'], $form_values['file_type'],
+                              $page_name, $identity_user['id']);
         }
-                                       
-        // Check if something went wrong.
-        if (!isset($disk_name)) {
-            // FIXME: do flash here?
+
+        // check if update/insert went ok
+        $attach = attachment_get($form_values['file_name'], $page_name);
+        if (!$attach) {
             $form_errors['file_name'] = 'Fisierul nu a putut fi atasat';
         }
     }
 
     // Write the file on disk.
     if (!$form_errors) {
-        $disk_name = IA_ATTACH_DIR . $disk_name;
-        if (!move_uploaded_file($_FILES['file_name']['tmp_name'],
-                    $disk_name)) {
-            $form_errors['file_name'] = 'Fisierul nu a putut fi '.
-                                        'incarcat pe server'; 
+        $disk_name = IA_ATTACH_DIR . $attach['id'];
+        if (!move_uploaded_file($_FILES['file_name']['tmp_name'], $disk_name)) {
+            $form_errors['file_name'] = 'Fisierul nu a putut fi incarcat pe server'; 
         }
     }
 
     // Hooray, no error, flash ok
     if (!$form_errors) {
-        flash("Fisierul a fost atasat");
+        if ($rewritten) {
+            flash("Fisierul a fost rescris");
+        }
+        else {
+            flash("Fisierul a fost atasat");
+        }
         redirect(url($page_name));
     }
 
@@ -230,7 +228,7 @@ function controller_attachment_download($page_name, $file_name) {
     $attach = try_attachment_get($page_name, $file_name);
 
     // serve attachment with proper mime types
-    serve_attachment(attachment_get_filepath($attach), $file_name, $attach['mime_type']);
+    serve_attachment(attachment_get_filepath($attach['id']), $file_name, $attach['mime_type']);
 }
 
 ?>

@@ -119,10 +119,12 @@ function controller_profile($suburl)
                     // New attachment. Insert.
                     attachment_insert($file_name, $avatar_size,
                                       $mime_type, $user_page, $identity_user['id']);
-                    $attach = attachment_get($file_name, $user_page);
-                    if (!$attach) {
-                        $errors['avatar'] = 'Avatarul nu a putut fi salvat in baza de date.';
-                    }
+                }
+
+                // check if update/insert went ok
+                $attach = attachment_get($file_name, $user_page);
+                if (!$attach) {
+                    $errors['avatar'] = 'Avatarul nu a putut fi salvat in baza de date.';
                 }
 
                 // Write the file on disk.

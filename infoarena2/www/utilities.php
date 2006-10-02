@@ -227,4 +227,58 @@ function send_email($to, $subject, $message,
     echo $to . '<br>' . $subject . '<br>' . $message; // debug info
 }
 
+// Resize 2D coordinates according to 'textual' instructions
+// Given a (width, height) pair, resize it (compute new pair) according to
+// resize instructions.
+//
+// Resize instructions format may be one of the following:
+// # example    # description
+// 100x100      keep aspect ratio, resize as to fit a 100x100 box
+//              Coordinates are not enlarged if they already fit the given box.
+// @100x100     keep aspect ratio, resize as to exactly fit a 100x100 box
+//              Enlarge coordinates if necessary
+// !50x86       ignore aspect ratio, resize to exactly 50x86
+// 50%          scale dimensions. only integer percentages allowed
+//
+// Returns 2-element array: (width, height) or null if invalid format
+function resize_coordinates($width, $height, $resize) {
+    // remove @
+    if (0 < strlen($resize) && $resize[0] == '@') {
+        $enlarge = true;
+        $resize = substr($resize, 1);
+    }
+    else {
+        $enlarge = false;
+    }
+
+    $ratio = 1.0;
+
+    // 100x100 or @100x100
+    if (preg_match('/^([0-9]+)x([0-9]+)$/', $resize, $matches)) {
+        $boxw = (float)$matches[1];
+        $boxh = (float)$matches[2];
+
+        if ($width > $boxw || $enlarge) {
+            $ratio =  $boxw / $width;
+        }
+        if ($height * $ratio > $boxh) {
+            $ratio *= $boxh / ($height * $ratio);
+        }
+    }
+    // 50%
+    elseif (preg_match('/^([0-9]+)%$/', $resize, $matches)) {
+        $ratio = (float)$matches[1] / 100;
+    }
+    // !50x86
+    elseif (preg_match('/^!([0-9]+)x([0-9]+)$/', $resize, $matches)) {
+        $width = (float)$matches[1];
+        $height = (float)$matches[2];
+    }
+    else {
+        return null;
+    }
+
+    return array(floor($ratio * $width), floor($ratio * $height));
+}
+
 ?>
