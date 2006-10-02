@@ -1,10 +1,10 @@
 <?php
 
 require_once("config.php");
+require_once(IA_ROOT . "common/log.php");
+require_once(IA_ROOT . "common/db/db.php");
 
-require_once("../common/log.php");
 require_once("utilities.php");
-require_once("../common/db/db.php");
 require_once("identity.php");
 require_once("wiki/wiki.php");
 require_once("textblock.php");

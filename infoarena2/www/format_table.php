@@ -167,7 +167,7 @@ function format_standard_pager($options)
 {
     $first_row = log_assert_getattr($options, 'first_row', 0);
     $total_rows = log_assert_getattr($options, 'total_rows');
-    $display_rows = log_assert_getattr($options, 'display_rows', IA_DEFAULT_ROW_PER_PAGE);
+    $display_rows = log_assert_getattr($options, 'display_rows', IA_DEFAULT_ROWS_PER_PAGE);
     $url_args = getattr($options, 'url_args', $_GET);
     $param_prefix = getattr($options, 'param_prefix', '');
     $surround_pages = getattr($options, 'surround_pages', 2);
