@@ -53,6 +53,7 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
     // FIXME: optimize code not to use output buffering. Image should be
     // streamed directly to user agent.
     ob_start();
+    log_print("Resizing image {$page_name} to {$resize}");
     switch ($img_type) {
         case IMAGETYPE_GIF:
             // NOTE: animated GIFs become static. Only the first frame is saved
@@ -152,7 +153,7 @@ function imagecache_query($attach_id, $resize) {
 function imagecache_save($attach_id, $resize, $buffer) {
     if (imagecache_usage() > IMAGE_CACHE_QUOTA) {
         // cache is full
-        log_print('Image cache is full.');
+        log_warn('Image cache is full.');
         return false;
     }
 
@@ -162,6 +163,8 @@ function imagecache_save($attach_id, $resize, $buffer) {
         log_error('IMAGE_CACHE: Could not create file ' . $filename);
         return false;
     }
+
+    log_print("Saved resampled image {$page_name} {$resize} in image cache");
 
     return true;
 }

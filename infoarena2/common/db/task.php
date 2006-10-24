@@ -21,7 +21,7 @@ function task_create($task_id, $type, $hidden, $author, $source, $user_id) {
     global $dbLink;
     $query = sprintf("INSERT INTO ia_task
                         (`id`, `type`, `hidden`, author, `source`, user_id)
-                      VALUES (LCASE('%s'), '%s', '%s', '%s', '%s')",
+                      VALUES (LCASE('%s'), '%s', '%s', '%s', '%s', '%s')",
                       db_escape($task_id), db_escape($type),
                       db_escape($hidden), db_escape($author),
                       db_escape($source), db_escape($user_id));

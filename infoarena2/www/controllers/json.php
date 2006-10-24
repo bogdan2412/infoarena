@@ -17,10 +17,9 @@ function controller_json($suburl) {
             // get text block
             $textblock = textblock_get_revision($page_name);
             log_assert($textblock, 'Invalid textblock identifier');
-            $context = textblock_get_context($textblock);
 
             // generate mark-up
-            $output = wiki_process_text($page_content, $context);
+            $output = wiki_process_text($page_content);
             $json = array('html' => $output);
 
             // view

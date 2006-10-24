@@ -1,32 +1,27 @@
 <?php
 
 // Lists all tasks attached to a given round
-// Takes into consideration user permissions
+// Takes into consideration user permissions.
 //
-// Synopsis:
-// == Tasks() ==            
-// == Tasks(round="preONI2006/1/9-10") ==
+// Arguments;
+//      round_id (required)     Round identifier
+//
+// Examples:
+//      Tasks(round_id="archive")
 function macro_tasks($args) {
-    if (!getattr($args['context'], 'round')) {
-        return make_error_div('This macro needs a contest round context.');
+    $round_id = getattr($args, 'round_id');
+    if (!$round_id) {
+        return make_error_div('Expecting argument `round_id`');
     }
 
-    // get round object and associated tasks
-    $round_id = getattr($args, 'round', $args['context']['round']['id']);
-    if ($round_id != $args['context']['page_name']) {
-        $round = round_get($round_id);
-    }
-    else {
-        $round = $args['context']['round'];
+    // fetch round info
+    $round = round_get($round_id);
+    if (!$round) {
+        return make_error_div('Invalid round identifier');
     }
 
     // get round tasks
-    if ($round_id != $args['context']['page_name']) {
-        $tasks = round_get_permitted_tasks($round_id, 'view');
-    }
-    else {
-        $tasks = $args['context']['round_tasks'];
-    }
+    $tasks = round_get_permitted_tasks($round_id, 'view');
 
     // generate HTML
     ob_start();

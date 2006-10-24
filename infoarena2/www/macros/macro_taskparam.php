@@ -16,22 +16,28 @@ function macro_taskparam($args) {
     static $last_task_id = null;
     static $task;
     static $params;
+    static $textblock;
 
     $task_id = getattr($args, 'task_id');
     $param = getattr($args, 'param');
 
     // validate arguments
-    if ($task_id) {
+    if (!$task_id) {
         return make_error_div("Expecting parameter `task_id`");
     }
-    if ($param) {
+    if (!$param) {
         return make_error_div("Expecting parameter `param`");
     }
 
-    // fetch task & parameters
+    // fetch task, parameters & textblock
     if ($last_task_id != $task_id) {
         $task = task_get($task_id);
-        $params = task_get_parameters($task_id);
+        if ($task) {
+            $params = task_get_parameters($task_id);
+            $textblock = task_get_textblock($task_id);
+        }
+
+        // remember
         $last_task_id = $task_id;
     }
 
@@ -42,6 +48,9 @@ function macro_taskparam($args) {
 
     // serve desired value
     switch ($param) {
+        case 'title':
+            return $textblock['title'];
+
         case 'author':
             return $task['author'];
 
@@ -56,7 +65,12 @@ function macro_taskparam($args) {
 
         default:
             if (!isset($params[$param])) {
-                return make_error_div("Task doesn't have parameter '$param'");
+                if ($isset($args['default_value'])) {
+                    return $args['default_value'];
+                }
+                else {
+                    return make_error_div("Task doesn't have parameter '$param'");
+                }
             }
     }
 }

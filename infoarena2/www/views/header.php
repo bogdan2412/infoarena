@@ -30,7 +30,7 @@
 <div id="sidebar">
     <?php if (!identity_anonymous()) { ?>
     <div id="avatar">
-        <img src="static/images/icon-user-64.gif"/>
+        <a href="<?= url("profile") ?>"><img width="50" height="50" src="<?= url('user/'.$identity_user['username'], array('action' => 'download', 'file' => 'avatar', 'resize'=>'@50x50')) ?>" /></a>
         <p><strong><?= $identity_user['username'] ?></strong></p>
     </div>
     <?php } ?>

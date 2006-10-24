@@ -4,22 +4,11 @@
 require_once("macros/macros.php");
 
 class MyTextile extends Textile {
-    // Context variables, set on construction.
-    public $context;
-
-    // Page name.
-    public $page_name;
-
     // url for external urls.
     // mailto: and <proto>:// and mail adresses of sorts.
     public $external_url_exp = '/^([a-z]+:\/\/|mailto:[^@]+@[^@]+|[^@]+@[^@])/i';
 
-    function MyTextile($context, $options = array()) {
-        if ((!isset($context)) || (!isset($context['page_name']))) {
-            log_die('Bad arguments to mytextile');
-        }
-        $this->context = $context;
-        $this->page_name = $context['page_name'];
+    function MyTextile($options = array()) {
         @Textile::Textile($options);
     }
 
@@ -36,13 +25,10 @@ class MyTextile extends Textile {
                         $macro_arg_str, $matches, PREG_SET_ORDER)) {
                 $matches = array();
             }
-            $macro_args = array('context' => $this->context);
+            $macro_args = array();
             for ($i = 0; $i < count($matches); ++$i) {
                 $argname = strtolower($matches[$i][1]);
                 $argval = $matches[$i][2];
-                if ($argname == "context") {
-                    return make_error_div("Invalid argument name 'context'");
-                }
                 if (isset($macro_args[$argname])) {
                     return make_error_div("Duplicate argument '$argname' ".
                             "for macro $macro_name.");

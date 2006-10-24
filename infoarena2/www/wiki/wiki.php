@@ -3,25 +3,13 @@
 require_once("macros/macros.php");
 require_once("MyTextile.php");
 
-function check_context($context)
-{
-    log_assert(is_array($context));
-    log_assert(is_string($context['page_name']));
-    if (isset($context['task']) || isset($context['task_parameters'])) {
-        log_assert(is_array($context['task']));
-        log_assert(is_array($context['task_parameters']));
-    }
-}
-
 // This processes a big chunk of wiki-formatted text and returns html.
-// The paramaters is an array of usefull information. macros can use them.
-function wiki_process_text($content, $context) {
-    check_context($context);
+function wiki_process_text($content) {
     $options = array(
             'disable_html' => true,
             'disable_filters' => true,
     );
-    $weaver = new MyTextile($context, $options);
+    $weaver = new MyTextile($options);
     return $weaver->process($content);
 }
 
@@ -29,7 +17,7 @@ function wiki_process_text($content, $context) {
 // You should use this from macros that include other text blocks.
 //
 // This returns a html block. That html block can be an error div.
-function wiki_process_text_recursive($content, $context) {
+function wiki_process_text_recursive($content) {
     // This uses some black static magic.
     // include_count is the number of recursions in this function.
     // When include_count reaches the maximum level then we set
@@ -50,7 +38,7 @@ function wiki_process_text_recursive($content, $context) {
     //echo "going in level $include_count $args[page]<br />";
 
     //echo "calling wiki <br />";
-    $res = wiki_process_text($content, $context);
+    $res = wiki_process_text($content);
     //echo "done calling wiki <br />";
 
     --$include_count;

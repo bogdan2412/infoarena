@@ -36,7 +36,6 @@ function controller_textblock_view($page_name, $rev_num = null) {
     $view['revision'] = $rev_num;
     $view['page_name'] = $page_name;
     $view['textblock'] = $page;
-    $view['textblock_context'] = textblock_get_context($page);
     execute_view_die('views/wikiview.php', $view);
 }
 
@@ -158,9 +157,7 @@ function controller_textblock_feed($page_name) {
     $view['item'][$i]['title'] = 'Revizia curenta: '.
                                  (getattr($page, 'title') ? $page['title'] :
                                   'FARA TITLU');
-    $context = array('page_name' => $page['name'], 'title' => $page['title']);
-    $view['item'][$i]['description'] = wiki_process_text_recursive(
-                                       $page['text'], $context);
+    $view['item'][$i]['description'] = wiki_process_text($page['text']);
     $view['item'][$i]['pubDate'] = date('r', strtotime($page['timestamp']));
     $view['item'][$i]['guid'] = sha1($page['name'].$page['timestamp']);
     $view['item'][$i]['link'] = url($page['name'], array(), true).
@@ -177,9 +174,7 @@ function controller_textblock_feed($page_name) {
         $view['item'][$i]['title'] = 'Revizia #'.($rev_num+1).': '.
                                      (getattr($v, 'title') ? $v['title'] :
                                      'FARA TITLU');
-        $context = array('page_name' => $v['name'], 'title' => $v['title']);
-        $view['item'][$i]['description'] = wiki_process_text_recursive(
-                                           $v['text'], $context);
+        $view['item'][$i]['description'] = wiki_process_text($v['text']);
         $view['item'][$i]['pubDate'] = date('r', strtotime($v['timestamp']));
         $view['item'][$i]['guid'] = sha1($v['name'].$v['timestamp']);
         $view['item'][$i]['link'] = url($v['name'],
