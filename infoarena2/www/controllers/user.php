@@ -17,7 +17,7 @@ function controller_user($vuser) {
     $view['title'] = $vuser . "'s profile";
 
     // check permisions
-    $detail_view = identity_can('user-details');
+    $detail_view = identity_can('user-viewprofile', $user_info);
     $view['detail_view'] = $detail_view;
     $view['user_info'] = $user_info;
 

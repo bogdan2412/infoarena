@@ -11,13 +11,16 @@
 function macro_tasks($args) {
     $round_id = getattr($args, 'round_id');
     if (!$round_id) {
-        return make_error_div('Expecting argument `round_id`');
+        return macro_error('Expecting argument `round_id`');
     }
 
     // fetch round info
     $round = round_get($round_id);
     if (!$round) {
-        return make_error_div('Invalid round identifier');
+        return macro_error('Invalid round identifier');
+    }
+    if (!identity_can('round-view', $round)) {
+        return macro_permission_error();
     }
 
     // get round tasks

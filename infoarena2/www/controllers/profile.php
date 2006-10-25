@@ -1,12 +1,13 @@
 <?php
 
 // Profile controller.
-function controller_profile($suburl)
-{
+function controller_profile($suburl) {
     require_once("register_profile_common.php");
     
-    identity_require('edit-profile');
     global $identity_user;
+    // FIXME: Actually, we should allow changing ANY user profile as long
+    // as we have the proper permissions.
+    identity_require('user-editprofile', $identity_user);
 
     // Initialize view parameters.
     // form data goes in data.

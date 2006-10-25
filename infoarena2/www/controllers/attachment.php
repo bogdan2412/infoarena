@@ -53,12 +53,12 @@ function try_attachment_get($page_name, $file_name) {
 // List attachments to a textblock
 function controller_attachment_list($page_name) {
     $page = try_textblock_get($page_name);
-    identity_require('textblock-listattach', $page);
+    identity_require('attach-list', $page);
 
     $view = array();
     $view['attach_list'] = attachment_get_all($page_name);
     $view['page_name'] = $page['name'];
-    $view['title'] = 'List de atasamente a paginii '.$page['title'];
+    $view['title'] = 'Atasamentele paginii '.$page['title'];
 
     execute_view_die('views/listattach.php', $view);
 }
@@ -66,7 +66,7 @@ function controller_attachment_list($page_name) {
 // Create a new attachment to a textblock.
 function controller_attachment_create($page_name) {
     $page = try_textblock_get($page_name);
-    identity_require('textblock-attach', $page);
+    identity_require('attach-create', $page);
 
     // Initial attachment page. Rather empty.
     $view['title'] = 'Ataseaza la pagina '.$page_name;
@@ -79,7 +79,7 @@ function controller_attachment_create($page_name) {
 // Submit an attachment to a textblock.
 function controller_attachment_submit($page_name) {
     $page = try_textblock_get($page_name);
-    identity_require('textblock-attach', $page);
+    identity_require('attach-create', $page);
 
     global $identity_user;
 
@@ -217,7 +217,7 @@ function serve_attachment($filename, $attachment_name, $mimetype) {
     header("Content-Disposition: inline; filename=".urlencode($attachment_name).";");
     header('Content-Length: ', $stat['size']);
 
-    // service file
+    // serve file
     fpassthru($fp);
     fclose($fp);
     die();
@@ -226,6 +226,7 @@ function serve_attachment($filename, $attachment_name, $mimetype) {
 // download an attachment
 function controller_attachment_download($page_name, $file_name) {
     $attach = try_attachment_get($page_name, $file_name);
+    identity_require('attach-download', $attach);
 
     // serve attachment with proper mime types
     serve_attachment(attachment_get_filepath($attach['id']), $file_name, $attach['mime_type']);

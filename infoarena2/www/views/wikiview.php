@@ -21,10 +21,10 @@ include('header.php');
             <?php if (identity_can($perm_prefix . '-history', $textblock)) { ?>
             <li><a href="<?= url($textblock['name'], array('action' => 'history')) ?>">Vezi istoria</a></li>
             <?php } ?>
-            <?php if (identity_can('textblock-attach', $textblock)) { ?>
+            <?php if (identity_can('attach-create', $textblock)) { ?>
             <li><a href="<?= url($textblock['name'], array('action' => 'attach')) ?>">Ataseaza</a></li>
             <?php } ?>
-            <?php if (identity_can('textblock-listattach', $textblock)) { ?>
+            <?php if (identity_can('attach-list', $textblock)) { ?>
             <li><a href="<?= url($textblock['name'], array('action' => 'attach-list')) ?>">Listeaza atasamente</a></li>
             <?php } ?>
          </ul>

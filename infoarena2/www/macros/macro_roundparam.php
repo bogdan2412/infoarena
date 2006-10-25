@@ -23,10 +23,10 @@ function macro_roundparam($args) {
 
     // validate arguments
     if (!$round_id) {
-        return make_error_div("Expecting parameter `round_id`");
+        return macro_error("Expecting parameter `round_id`");
     }
     if (!$param) {
-        return make_error_div("Expecting parameter `param`");
+        return macro_error("Expecting parameter `param`");
     }
 
     // fetch round, parameters & textblock
@@ -43,7 +43,10 @@ function macro_roundparam($args) {
 
     // validate round id
     if (!$round) {
-        return make_error_div("Invalid round identifier");
+        return macro_error("Invalid round identifier");
+    }
+    if (!identity_can('round-view', $round)) {
+        return macro_permission_error();
     }
 
     // serve desired value
@@ -60,7 +63,7 @@ function macro_roundparam($args) {
                     return $args['default_value'];
                 }
                 else {
-                    return make_error_div("Round doesn't have parameter '$param'");
+                    return macro_error("Round doesn't have parameter '$param'");
                 }
             }
     }

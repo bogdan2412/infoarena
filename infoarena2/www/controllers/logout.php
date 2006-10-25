@@ -2,7 +2,7 @@
 
 function controller_logout() {
     // check permissions
-    identity_require('logout');
+    identity_require('user-logout');
 
     identity_end_session();
 

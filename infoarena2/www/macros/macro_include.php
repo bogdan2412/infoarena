@@ -10,13 +10,13 @@
 // FIXME: Should we escape argument values before inserting them inside templates at the expense of flexibility?
 function macro_include($args) {
     if (!isset($args['page'])) {
-        return make_error_div("Expecting argument `page`");
+        return macro_error("Expecting argument `page`");
     }
 
     $incname = $args['page'];
     $textblock = textblock_get_revision($incname);
     if ($textblock == null) {
-        return make_error_div("No such page: $incname");
+        return macro_error("No such page: $incname");
     }
 
     // FIXME: OPTIMIZE: This may prove to be a bottleneck when dealing with huge content and a lot of parameters.

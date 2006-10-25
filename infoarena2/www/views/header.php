@@ -42,7 +42,7 @@
         <li><a href="<?= url('Forum') ?>">Forum</a></li>
         <li><a href="<?= url('Articles') ?>">Articole</a></li>
         <li><a href="<?= url('News') ?>">Arhiva stiri</a></li>
-        <?php if (identity_can('edit-profile')) { ?>
+        <?php if (identity_can('user-editprofile', $identity_user)) { ?>
         <li class="separator"><hr/></li>
         <li><a href="<?= url('profile') ?>">Profilul meu</a></li>
         <li><a href="<?= url('logout') ?>">Inchide sesiunea</a></li>
@@ -52,7 +52,7 @@
         <li><a href="<?= url('monitor') ?>">Monitorul de evaluare</a></li>
     </ul>
 
-    <?php if (identity_anonymous()) { ?>
+    <?php if (identity_can('user-login')) { ?>
     <div id="login">
         <h2>Autentificare</h2>
         <form action="<?= url('login', array('action' => 'login')) ?>" method="post">

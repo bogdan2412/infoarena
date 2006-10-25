@@ -1,6 +1,6 @@
 <?php
 function controller_page_index($page_name) {
-    identity_require('page_index');
+    identity_require('specialpage-index');
     $show_user = request('show_user', 1);
     $view = array();
     $view['page_name'] = $page_name;

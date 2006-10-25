@@ -1,19 +1,15 @@
 <?php
+// This module contains various database-related functions and routines.
+//
+// Note: We keep database-persisted "models" very simple. Most of them are
+// simple dictionaries. 
 
 require_once("../common/log.php");
-/**
- * This module contains various database-related functions and routines.
- *
- * Note: We keep database-persisted "models" very simple. Most of them are
- * simple dictionaries. 
- */
 
-// Make need a database connection
-
+// Establish database connection
 // Repetitive include guard. Is this really needed?
 log_assert(!isset($dbLink));
-$dbLink = mysql_connect(DB_HOST, DB_USER, DB_PASS)
-          or log_die('Cannot connect to database.');
+$dbLink = mysql_connect(DB_HOST, DB_USER, DB_PASS) or log_die('Cannot connect to database.');
 mysql_select_db(DB_NAME, $dbLink) or die ('Cannot select database.');
 
 // Escapes a string to be safely included in a query.

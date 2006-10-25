@@ -5,14 +5,18 @@ require_once("format_table.php");
 // Displays *interactive* rankings table summing up score points from a
 // pre-defined set of contest rounds.
 //
-// Parameters:
-//     rounds: a | separated list of round names.
-//     count: How many to display at once, defaults to infinity.
+// Arguments:
+//     rounds   (required) a | (pipe) separated list of round names.
+//     count    (optional) how many to display at once, defaults to infinity
+//
+// Examples:
+//      Rankings(rounds="preONI2007/1/a | preONI2007/2/a")
+//      Rankings(rounds="preONI2007/1/a | preONI2007/2/a" count="10")
 function macro_rankings($args) {
     // How many rows to display at a time.
     $display_rows = getattr($args, 'count', "0");
     if (!preg_match('/^[0-9]{1,4}$/', $display_rows)) {
-        return make_error_div("Invalid count parameter.");
+        return macro_error("Invalid count parameter.");
     }
 
     // Make a list of round ids

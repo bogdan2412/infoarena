@@ -23,10 +23,10 @@ function macro_taskparam($args) {
 
     // validate arguments
     if (!$task_id) {
-        return make_error_div("Expecting parameter `task_id`");
+        return macro_error("Expecting parameter `task_id`");
     }
     if (!$param) {
-        return make_error_div("Expecting parameter `param`");
+        return macro_error("Expecting parameter `param`");
     }
 
     // fetch task, parameters & textblock
@@ -43,7 +43,10 @@ function macro_taskparam($args) {
 
     // validate task id
     if (!$task) {
-        return make_error_div("Invalid task identifier");
+        return macro_error("Invalid task identifier");
+    }
+    if (!identity_can('task-view', $task)) {
+        return macro_permission_error();
     }
 
     // serve desired value
@@ -69,7 +72,7 @@ function macro_taskparam($args) {
                     return $args['default_value'];
                 }
                 else {
-                    return make_error_div("Task doesn't have parameter '$param'");
+                    return macro_error("Task doesn't have parameter '$param'");
                 }
             }
     }

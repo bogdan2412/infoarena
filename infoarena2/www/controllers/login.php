@@ -1,6 +1,8 @@
 <?php
 
 function controller_login() {
+    identity_require('user-login');
+
     // `data` dictionary is a dictionary with data to be displayed by form view
     // when displaying the form for the first time, this is filled with
     $data = array();
