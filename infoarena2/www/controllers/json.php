@@ -18,11 +18,16 @@ function controller_json($suburl) {
             $textblock = textblock_get_revision($page_name);
             log_assert($textblock, 'Invalid textblock identifier');
 
-            // generate mark-up
-            $output = wiki_process_text($page_content);
-            $json = array('html' => $output);
+            // check permissions & generate mark-up
+            if (!textblock_get_permission('view', $textblock)) {
+                $output = 'Not enough privileges to preview this page';
+            }
+            else {
+                $output = wiki_process_text($page_content);
+            }
 
             // view
+            $json = array('html' => $output);
             $view = array(
                 'json' => $json,
                 'debug' => request('debug', null)

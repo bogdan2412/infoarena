@@ -40,7 +40,7 @@ if (getattr($view, 'revision')) {
     echo "<em>Atentie, aceasta pagina nu este actuala (este varianta de la ".$textblock['timestamp'].")</em>";
 }
 echo '<div class="wiki_text_block">';
-echo textblock_get_html($textblock);
+echo wiki_process_text(getattr($textblock, 'text'));
 echo '</div>';
 #echo 'Modificat ultima data la ' . $view[''];
 

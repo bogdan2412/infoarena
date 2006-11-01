@@ -1,58 +1,83 @@
 <?php
 
-// Split a textblock name into a module and an object.
-function textblock_split_name($name, &$module, &$objid)
-{
-    // Split the page url.
+// WARNING: This module is rather hacky. It will probably undergo major changes.
+
+define("TEXTBLOCK_WIKI",    1);
+define("TEXTBLOCK_NEWS",    2);
+define("TEXTBLOCK_TASK",    3);
+define("TEXTBLOCK_ROUND",   4);
+define("TEXTBLOCK_USER",    5);
+
+// map textblock prefixes to textblock classes
+$TEXTBLOCK_PREFIXES = array(
+    'news' => TEXTBLOCK_NEWS,
+    'user' => TEXTBLOCK_USER,
+    'round' => TEXTBLOCK_ROUND,
+    'task' => TEXTBLOCK_TASK
+);
+
+// Split a textblock name. Returns 2-element array: (textblock class, object id)
+// Example: a textblock of name `task/adunare` is split into (TEXTBLOCK_TASK, 'adunare')
+function textblock_split_name($name) {
+    global $TEXTBLOCK_PREFIXES;
+
+    // Split the page url
     $path = split('/', $name);
     if (count($path) <= 0) {
         $path = array("");
     }
-
-    $module = $path[0];
+    $prefix = $path[0];
     array_shift($path);
     $objid = join('/', $path);
+
+    // convert $model string into fixed constant
+    $class = getattr($TEXTBLOCK_PREFIXES, $prefix, TEXTBLOCK_WIKI);
+    return array($class, $objid);
 }
 
-function textblock_get_owner($textblock) {
-    textblock_split_name($textblock['name'], $module, $objid);
+// Returns instance of model associated with given textblock or null if no such model exists.
+// Note: Not all textblock classes have associated models.
+// Example: a textblock named `task/adunare` is associated a `task` model instance with id `adunare`
+// Example: a textblock named `homepage` is associated with textblock itself.
+function textblock_get_model($textblock) {
+    list($class, $obj_id) = textblock_split_name(getattr($textblock, 'name'));
 
-    if ($module == 'news') {
-        //return get_news($objid);
-        return null;
-    } if ($module == 'task') {
-        return task_get($objid);
-    } if ($module == 'round') {
-        return round_get($objid);
+    switch ($class) {
+        case TEXTBLOCK_TASK:
+            return task_get($obj_id);
+
+        case TEXTBLOCK_ROUND:
+            return round_get($obj_id);
+
+        case TEXTBLOCK_USER:
+            return user_get_by_username($obj_id);
+
+        case TEXTBLOCK_NEWS:
+        case TEXTBLOCK_WIKI:
+            return $textblock;
+
+        default:
+            return null;
     }
-    return null;
 }
 
-function textblock_get_html($textblock) {
-    $content = $textblock['text'];
-    return wiki_process_text($content);
-}
+// Checks if user can view textblock.
+// This is a hacky wrapper around identity_can()
+function textblock_get_permission($permission, $textblock, $user = null) {
+    global $TEXTBLOCK_PREFIXES;
 
-// Checks if you have the permission to view a certain page.
-// $permission must be one of the simple permissions.
-function textblock_get_permission($textblock, $permission)
-{
-    $textblock_permissions = array('view', 'history', 'attach-download');
-    log_assert(array_search($permission, $textblock_permissions) !== false,
-              'Invalid textblock permission: ' . $permission);
+    list($class, $obj_id) = textblock_split_name(getattr($textblock, 'name'));
 
-    textblock_split_name($textblock['name'], $module, $objid);
-
-    if ($module == 'news' || $module == 'task' || $module == 'round') {
-        $action = $module . "-" . $permission;
-        $object = textblock_get_owner($textblock);
+    if (TEXTBLOCK_WIKI == $class) {
+        $action = 'wiki-'.$permission;
     }
     else {
-        $action = "wiki-" . $permission;
-        $object = $textblock;
+        $prefixes = array_flip($TEXTBLOCK_PREFIXES);
+        $action = $prefixes[$class].'-'.$permission;
     }
 
-    return identity_can($action, $object);
+    $object = textblock_get_model($textblock);
+    return identity_can($action, $object, $user);
 }
 
 ?>

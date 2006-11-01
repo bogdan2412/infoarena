@@ -15,8 +15,13 @@ function macro_include($args) {
 
     $incname = $args['page'];
     $textblock = textblock_get_revision($incname);
-    if ($textblock == null) {
+    if (is_null($textblock)) {
         return macro_error("No such page: $incname");
+    }
+
+    // check permissions
+    if (!textblock_get_permission('view', $textblock)) {
+        return macro_permission_error();
     }
 
     // FIXME: OPTIMIZE: This may prove to be a bottleneck when dealing with huge content and a lot of parameters.

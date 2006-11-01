@@ -27,7 +27,7 @@ function macro_error($text) {
 
 // Preset error message for insufficient privileges.
 function macro_permission_error() {
-    return macro_error('Not enough privileges');
+    return macro_error('Not enough privileges to expand this macro');
 }
 
 function execute_macro($macro_name, $macro_args) {

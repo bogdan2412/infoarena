@@ -16,9 +16,9 @@ function controller_textblock_view($page_name, $rev_num = null) {
     // If the page is missing jump to the edit/create controller.
     if ($page) {
         if ($rev_num) {
-            $perm = textblock_get_permission($page, 'history');
+            $perm = textblock_get_permission('history', $page);
         } else {
-            $perm = textblock_get_permission($page, 'view');
+            $perm = textblock_get_permission('view', $page);
         }
         if (!$perm) {
             flash_error("Nu ai voie sa vezi aceasta pagina");
@@ -45,7 +45,7 @@ function controller_textblock_diff_revision($page_name, $rev_num) {
     $page = textblock_get_revision($page_name);
     $rev = textblock_get_revision($page_name, $rev_num);
     if ($page) {
-        $perm = textblock_get_permission($page, 'history');
+        $perm = textblock_get_permission('history', $page);
         if (!$perm) {
             flash_error('Nu aveti permisiunea sa accesati aceasta pagina.');
             redirect(url(''));
@@ -81,7 +81,7 @@ function controller_textblock_restore_revision($page_name, $rev_num) {
     $page = textblock_get_revision($page_name);
     $rev = textblock_get_revision($page_name, $rev_num);
     if ($page) {
-        $perm = textblock_get_permission($page, 'restore');
+        $perm = textblock_get_permission('restore', $page);
         if (!$perm) {
             flash_error('Nu aveti permisiunea sa executati aceasta actiune.');
             redirect(url(''));
@@ -109,7 +109,7 @@ function controller_textblock_restore_revision($page_name, $rev_num) {
 function controller_textblock_history($page_name) {
     $page = textblock_get_revision($page_name, null, false, false);
     if ($page) {
-        $perm = textblock_get_permission($page, 'history');
+        $perm = textblock_get_permission('history', $page);
         if (!$perm) {
             flash_error('Nu aveti permisiunea sa accesati aceasta pagina.');
             redirect(url(''));
@@ -141,7 +141,7 @@ function controller_textblock_feed($page_name) {
 
     $page_list = textblock_get_revisions($page_name, true, true);
     $count = count($page_list);
-    $history = textblock_get_permission($page, 'view');
+    $history = textblock_get_permission('view', $page);
 
     $view = array();
     $view['channel']['title'] = 'info-arena: '.$page['title'];
@@ -151,7 +151,7 @@ function controller_textblock_feed($page_name) {
         $view['channel']['description'] .= ' ('.$count.' revizii)';
     }
     $view['channel']['language'] = 'ro-ro';
-    $view['channel']['copyright'] = '&copy; 2006 -asociatia info-arena';
+    $view['channel']['copyright'] = '&copy; 2006 - info-arena';
 
     $i = 0;
     $view['item'][$i]['title'] = 'Revizia curenta: '.
