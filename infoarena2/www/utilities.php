@@ -4,17 +4,6 @@ function request($paramName, $defaultValue = null) {
     return getattr($_REQUEST, $paramName, $defaultValue);
 }
 
-// Nicer way to get an element from an array. It returns a default value
-// (defaulting to null) instead of throwing an error.
-function getattr($dict, $attribute, $defaultValue = null) {
-    if (isset($dict[$attribute])) {
-        return $dict[$attribute];
-    }
-    else {
-        return $defaultValue;
-    }
-}
-
 // Call this function for a http-level redirect.
 // NOTE: this function DOES NOT RETURN.
 // FIXME: Detect if output started and still do a redirect?

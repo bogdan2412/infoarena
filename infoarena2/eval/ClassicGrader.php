@@ -197,6 +197,8 @@ class ClassicGrader {
                 $result->score += $score;
                 $result->log .= "$message: $score puncte";
             }
+
+            log_print("");
         }
 
         $result->log .= "\n\nPunctaj total: {$result->score}\n";

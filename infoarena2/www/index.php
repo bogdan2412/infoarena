@@ -2,6 +2,7 @@
 
 require_once("config.php");
 require_once(IA_ROOT . "common/log.php");
+require_once(IA_ROOT . "common/common.php");
 require_once(IA_ROOT . "common/db/db.php");
 require_once(IA_ROOT . "common/permissions.php");
 

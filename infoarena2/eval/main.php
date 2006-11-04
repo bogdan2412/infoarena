@@ -3,6 +3,8 @@
 
 require_once('config.php');
 require_once('../common/log.php');
+require_once('../common/common.php');
+require_once('../common/permissions.php');
 require_once('../common/db/db.php');
 require_once('utilities.php');
 require_once('download.php');
@@ -41,6 +43,7 @@ class JobResult {
     }
 }
 
+// Send job result.
 function job_send_result($jobid, JobResult $result)
 {
     if ($result->message == "Eroare de sistem") {
@@ -49,25 +52,35 @@ function job_send_result($jobid, JobResult $result)
         log_print("Sending job $jobid result (score {$result->score})");
     }
     job_mark_done($jobid, $result->log, $result->message, $result->score);
+
+    log_print("");
+    log_print("");
+//    milisleep(5000);
 }
 
-function get_job_result($job)
+// Evaluates job. Returns job result.
+function job_eval($job)
 {
     if (!chdir(IA_EVAL_DIR)) {
         log_print("Can't chdir to eval dir");
         return JobResult::SystemError();
     }
+    
+    // Get task
     $task = task_get($job['task_id']);
     if (!$task) {
         log_print("Nu am putut lua task-ul " . $job['task_id']);
         return JobResult::SystemError();
     }
+
+    // Get task parameters.
     $task_parameters = task_get_parameters($job['task_id']);
     if (!$task_parameters) {
         log_print("Nu am putut lua parametrii task-ului " . $job['task_id']);
         return JobResult::SystemError();
     }
 
+    // Make the grader and execute it.
     if ($task['type'] == 'classic') {
         $grader = new ClassicGrader($job['task_id'], $task_parameters);
         return $grader->Grade($job['file_contents'], $job['compiler_id']);
@@ -79,27 +92,44 @@ function get_job_result($job)
 
 // This function handles a certain job.
 // This is the main job function.
-function handle_job($job) {
+function job_handle($job) {
     log_print("- -- --- ---- ----- Handling job " . $job['id']);
-    job_mark_processing($job['id']);
+    // FIXME: do this in query.
+    job_mark_delay($job['id'], 'waiting');
 
-    $job_result = get_job_result($job);
+    $user = user_get_by_id($job['user_id']);
+    if (!$user) {
+        log_print("Nu am gasit utilizatorul " . $job['user_id']);
+        job_send_result($job, JobResult::SystemError());
+        return;
+    }
+
+    // Check permissions. If I can't eval, do it later.
+    if (!permission_query($user, "job-eval", $job)) {
+        // FIXME: optimize?
+        log_print("Can't eval job $job[id], retry later");
+        // No result, leave it in waiting, will try again in 5 minutes.
+        log_print("");
+        log_print("");
+        return;
+    }
+
+    // Evaluating, mark as processing.
+    job_mark_delay($job['id'], 'processing');
+    $job_result = job_eval($job);
     if ($job_result == null) {
-        log_print("S-a belit get_job_result");
+        log_print("Bug in get_job_result");
         $job_result = JobResult::SystemError();
     }
 
     job_send_result($job['id'], $job_result);
-    log_print("- -- --- ---- ----- I'm done with job " . $job['id']);
-    log_print("");
-//    milisleep(5000);
 }
 
 // main function. C rules.
 function main() {
     while (1) {
         while ($job = job_get_next_job()) {
-            handle_job($job);
+            job_handle($job);
         }
         milisleep(10);
     }

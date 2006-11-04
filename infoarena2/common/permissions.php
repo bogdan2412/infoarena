@@ -46,6 +46,9 @@ function permission_query($user, $action, $ontoObject) {
         case 'macro':
             return permission_macro($user, $action, $ontoObject);
 
+        case 'job':
+            return permission_job($user, $action, $ontoObject);
+
         case 'specialpage':
             return permission_specialpage($user, $action, $ontoObject);
 
@@ -219,6 +222,24 @@ function permission_macro($user, $action, $args) {
             // only administrators & reviewers can execute a debugging macro
             return $user && ('admin'==$level || 'reviewer'==$level);
         
+        default:
+            log_error('Invalid macro action: '.$action);
+            return false;
+    }
+}
+
+function permission_job($user, $action, $job) {
+    $level = getattr($user, 'security_level');
+
+    switch ($action) {
+        case 'eval':
+            if ('admin' == $level || 'reviewer' == $level) {
+                return true;
+            }
+            // FIXME FIXME FIXME: retarded hack here.
+            // FIXME: proper implementation.
+            log_warn("job-eval is RANDOM!!!");
+            return rand(0, 100) < 50;
         default:
             log_error('Invalid macro action: '.$action);
             return false;

@@ -29,13 +29,16 @@ function job_get_next_job() {
     return db_fetch($query);      
 }
 
-// Mark a certain job as 'processing'
-function job_mark_processing($job_id) {
+// Mark job status and next_eval.
+// Delay is the delay in seconds, defaults to 300(5 minutes)
+function job_mark_delay($job_id, $status, $delay = 300) {
+    log_assert($status == 'processing' || $status == 'waiting');
+    log_assert($delay >= 0);
     $query = sprintf(
             "UPDATE `ia_job`
-            SET `status` = 'processing', `next_eval` = DATE_ADD(`next_eval`, INTERVAL 10 MINUTE)
-            WHERE `id` = '%s'",
-            db_escape($job_id));
+            SET `status` = '%s', `next_eval` = DATE_ADD(NOW(), INTERVAL %s SECOND)
+            WHERE `id` = %s",
+            db_escape($status), db_escape($delay), db_escape($job_id));
     return db_query($query);
 }
 
