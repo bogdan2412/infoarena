@@ -8,7 +8,7 @@ require_once("db.php");
 
 // Get attachment by name
 function attachment_get($name, $page) {
-    $query = sprintf("SELECT *
+    $query = sprintf("SELECT *, DATE_FORMAT(`timestamp`, '%%Y-%%M-%%D %%h:%%i:%%s')
                       FROM ia_file
                       WHERE LCASE(`name`) = LCASE('%s') AND
                             LCASE(`page`) = LCASE('%s')",

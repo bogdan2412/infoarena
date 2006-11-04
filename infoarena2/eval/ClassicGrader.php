@@ -61,21 +61,25 @@ class ClassicGrader {
 
         // Compile custom evaluator.
         if (!$this->unique_output) {
+            if (!require_grader_file($this->task_id, $this->evaluator)) {
+                log_warn("Can't get evaluator source.");
+                return JobResult::SystemError();
+            }
             if (!copy(IA_GRADER_DIR . $this->task_id . '/' . $this->evaluator,
                         IA_EVAL_TEMP_DIR . $this->evaluator)) {
-                log_warn("Can't move evaluator source to temp dir");
+                log_warn("Can't move evaluator source to temp dir.");
                 return JobResult::SystemError();
             }
 
             if (!compile_file($this->evaluator , $compiler_messages)) {
-                log_warn("Can't compile evaluator");
+                log_warn("Can't compile evaluator.");
                 return JobResult::SystemError();
             }
         }
 
         // Compile user source.
         if (!file_put_contents("user." . $file_extension, $file_contents)) {
-            log_warn("Can't write user file on disk");
+            log_warn("Can't write user file on disk.");
             return JobResult::SystemError();
         }
         if (!compile_file("user." . $file_extension, $compiler_messages)) {
@@ -104,6 +108,10 @@ class ClassicGrader {
                 return JobResult::SystemError();
             }
 
+            if (!require_grader_file($this->task_id, 'test' . $testno . '.in')) {
+                log_warn("Can't get test $testno input.");
+                return JobResult::SystemError();
+            }
             if (!copy(IA_GRADER_DIR . $this->task_id . '/test' . $testno . '.in',
                         IA_EVAL_JAIL_DIR . $this->task_id . '.in')) {
                 log_warn("Failed copying test $testno");
@@ -135,6 +143,10 @@ class ClassicGrader {
 
             // Copy ok file, if used.
             if ($this->has_ok_files) {
+                if (!require_grader_file($this->task_id, 'test' . $testno . '.ok')) {
+                    log_warn("Can't get test $testno ok file.");
+                    return JobResult::SystemError();
+                }
                 if (!copy(IA_GRADER_DIR . $this->task_id . '/test' . $testno . '.ok',
                             IA_EVAL_JAIL_DIR . $this->task_id . '.ok')) {
                     log_warn("Failed copying test $testno of file");

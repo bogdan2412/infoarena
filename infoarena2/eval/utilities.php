@@ -26,8 +26,10 @@ function compile_file($file_name, &$compiler_message)
     $compiler_lines = array(
             'c' => 'gcc -Wall -O2 -static -lm %file_name% -o %exe_name%',
             'cpp' => 'g++ -Wall -O2 -static -lm %file_name% -o %exe_name%',
-            'pas' => 'fpc -O2 -Xs %file_name%');
-    if (!preg_match("/^(.*)\.(c|cpp|pas)$/i", $file_name, $matches)) {
+            'pas' => 'fpc -O2 -Xs %file_name%',
+            'fpc' => 'fpc -O2 -Xs %file_name%',
+    );
+    if (!preg_match("/^(.*)\.(c|cpp|pas|fpc)$/i", $file_name, $matches)) {
         log_print("Can't figure out compiler for file $file_name");
         return false;
     }

@@ -27,6 +27,10 @@ define("IA_EVAL_JAIL_GID", 65534);
 define("IA_EVAL_JAIL_NICE", 0);
 
 // Add log timestamps.
-define("LOG_TIMESTAMP_FORMAT", "D-M-Y H:i:s");
+define("LOG_TIMESTAMP_FORMAT", "Y-m-d H:i:s");
+
+// Judge username/password, used with http access. Judge has admin access.
+define("IA_JUDGE_USERNAME", '!judge');
+define("IA_JUDGE_PASSWORD", 'dsJ@3$$dd$!');
 
 ?>
