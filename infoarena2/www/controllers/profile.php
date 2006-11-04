@@ -22,7 +22,6 @@ function controller_profile($suburl) {
     $view['page_name'] = "profile";
 
     // get user avatar and username
-    $view['avatar'] = $identity_user['avatar_filename'];
     $view['username'] = $identity_user['username'];
 
     if ($suburl == 'save') {

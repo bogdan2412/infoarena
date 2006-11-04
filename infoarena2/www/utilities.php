@@ -37,8 +37,7 @@ function href($url, $content) {
 
 // Link to an username.
 // FIXME: colored by rating and stuff.
-function format_user_link($username)
-{
+function format_user_link($username) {
     return href(url("user/$username"), $username);
 }
 

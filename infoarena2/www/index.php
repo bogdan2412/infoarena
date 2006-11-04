@@ -11,7 +11,9 @@ require_once("wiki/wiki.php");
 require_once("textblock.php");
 require_once("rounds.php");
 
-// restore identity session (if such a session exists)
+log_print("- -- --- ---- ----- NEW REQUEST MARKER ----- ---- --- -- -");
+
+// restore identity (if such a session exists)
 identity_restore();
 
 // Do url validation.
@@ -37,7 +39,6 @@ $urlstart = getattr(split('/', $page), 0, '');
 // A lot of logic depends on this, so we try to keep the code nicer.
 $action = request('action', 'view');
 
-log_print("- -- --- ---- ----- NEW REQUEST MARKER ----- ---- --- -- -");
 log_print("Request page=$page action=$action");
 
 // Direct mapping list

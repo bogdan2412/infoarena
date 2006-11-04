@@ -84,7 +84,7 @@
             <li>
                 <?php // display avatar
                     $dic['action'] = 'download';
-                    $dic['file'] = $avatar;
+                    $dic['file'] = 'avatar';
                     echo '<img src="' . url('user/'.$username, $dic) . '"/>';
                 ?>
                 
