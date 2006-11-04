@@ -6,10 +6,20 @@
 var Submit_CompilerDisplay;
 
 function Submit_Init() {
+    if (!$('task_submit')) {
+        // no such form on this page
+        return;
+    }
+
+    var fSolution = $('form_solution');
+    var fTask = $('form_task');
+
     Submit_CompilerDisplay = $('field_compiler').style.display;
-    
-    connect($('form_solution'), 'onchange', Submit_UpdateSolution);
-    connect($('form_task'), 'onchange', Submit_UpdateTask);
+
+    connect(fSolution, 'onchange', Submit_UpdateSolution);
+    if ('hidden' != fTask.type) {
+        connect(fTask, 'onchange', Submit_UpdateTask);
+    }
 
     Submit_UpdateTask();
 }

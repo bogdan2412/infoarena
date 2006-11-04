@@ -1,7 +1,5 @@
 <?php
 
-$view['head'] = '<script type="text/javascript" src="' . url('static/js/submit.js') . '"></script>';
-
 include('header.php');
 
 // list of task ids that require output-only submissions
@@ -47,7 +45,7 @@ foreach ($tasks as $t) {
     <li id="field_compiler">
         <label for="form_compiler">Compilator</label>
         <select name="compiler_id" id="form_compiler">
-            <option value="-">[ Altceva ]</option>
+            <option value="-">[ Alegeti compilator ]</option>
             <option value="c"<?= 'c' == fval('compiler_id') ? ' selected="selected"' : '' ?>>GNU C</option>
             <option value="cpp"<?= 'cpp' == fval('compiler_id') ? ' selected="selected"' : '' ?>>GNU C++</option>
             <option value="fpc"<?= 'fpc' == fval('compiler_id') ? ' selected="selected"' : '' ?>>FreePascal</option>
