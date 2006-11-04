@@ -2,6 +2,8 @@
 
 // Big bad submit controller.
 function controller_submit() {
+    global $identity_user;
+
     $action = request("action");
     if ('save' == $action) {
         $form_values = array(
@@ -13,17 +15,16 @@ function controller_submit() {
         // Check task
         $task = task_get($form_values['task_id']);
         if (!$task) {
-            $errors['task_id'] = 'Va rugam sa alegeti problema la care doriti sa '
-                                 . 'trimiteti solutie.';
+            $form_errors['task_id'] = 'Va rugam sa alegeti problema la care doriti sa '
+                                      . 'trimiteti solutie.';
         }
         else {
             // require permissions
             identity_require('task-submit', $task);
 
             // Check compiler.
-            if ('output-only' != $task['type'] && false === 
-                array_search($data['compiler_id'], array('c', 'cpp', 'fpc'))) {
-                $errors['compiler_id'] = 'Compilator invalid!';
+            if ('output-only'!=$task['type'] && (false===array_search($form_values['compiler_id'], array('c', 'cpp', 'fpc')))) {
+                $form_errors['compiler_id'] = 'Compilator invalid!';
             }
 
             // Check uploaded solution
@@ -60,6 +61,7 @@ function controller_submit() {
                        $form_values['compiler_id'], $file_buffer);
             // no errors => save submission
             flash('Solutia a fost salvata.');
+            redirect(url('submit'));
         }
         // Fall through to submit form.
     }
@@ -85,6 +87,7 @@ function controller_submit() {
             'form_errors' => $form_errors,
             'form_values' => $form_values,
     );
+
     execute_view_die('views/submit.php', $view);
 }
 

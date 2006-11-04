@@ -52,7 +52,7 @@
         <li><a href="<?= url('monitor') ?>">Monitorul de evaluare</a></li>
     </ul>
 
-    <?php if (identity_can('user-login')) { ?>
+    <?php if (identity_anonymous()) { ?>
     <div id="login">
         <h2>Autentificare</h2>
         <form action="<?= url('login', array('action' => 'login')) ?>" method="post">
@@ -80,15 +80,15 @@ if (isset($recent_pages) && (1 < count($recent_pages))) {
     }
 
     $bstring = '';
-    foreach ($recent_pages as $url => $title) {
+    foreach ($recent_pages as $url => $rec_title) {
         if ($bstring) {
             $bstring .= ' <span class="separator">|</span> ';
         }
         if ($current_url == $url) {
-            $bstring .= "<strong>{$title}</strong>";
+            $bstring .= "<strong>{$rec_title}</strong>";
         }
         else {
-            $bstring .= "<a href=\"" . url($url) . "\">{$title}</a>";
+            $bstring .= "<a href=\"" . url($url) . "\">{$rec_title}</a>";
         }
     }
     echo '<p id="breadcrumbs">Pagini recente &raquo; ' . $bstring . '</p>';

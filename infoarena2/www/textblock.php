@@ -33,7 +33,7 @@ function textblock_split_name($name) {
     $objid = join('/', $path);
 
     // convert $model string into fixed constant
-    $class = getattr($TEXTBLOCK_PREFIX, $prefix, TEXTBLOCK_WIKI);
+    $class = getattr($TEXTBLOCK_PREFIX, strtolower($prefix), TEXTBLOCK_WIKI);
     return array($class, $objid);
 }
 

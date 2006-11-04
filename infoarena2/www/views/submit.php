@@ -49,8 +49,8 @@ foreach ($tasks as $t) {
         <select name="compiler_id" id="form_compiler">
             <option value="-">[ Altceva ]</option>
             <option value="c"<?= 'c' == fval('compiler_id') ? ' selected="selected"' : '' ?>>GNU C</option>
-            <option value="cpp"<?= 'c' == fval('compiler_id') ? ' selected="selected"' : '' ?>>GNU C++</option>
-            <option value="fpc"<?= 'c' == fval('compiler_id') ? ' selected="selected"' : '' ?>>FreePascal</option>
+            <option value="cpp"<?= 'cpp' == fval('compiler_id') ? ' selected="selected"' : '' ?>>GNU C++</option>
+            <option value="fpc"<?= 'fpc' == fval('compiler_id') ? ' selected="selected"' : '' ?>>FreePascal</option>
         </select>
         <?= ferr_span('compiler_id') ?>
         <span class="fieldHelp"><a href="<?= url('Compilatoare') ?>">Detalii despre compilatoare</a></span>

@@ -35,13 +35,6 @@ if (!$jobs) {
         return '<a href="' . $url . '">' . $row['task_title'] . '</a>';
     }
 
-    // For the round column.
-    function format_round_link($row)
-    {
-        $url = url("round/" . $row['round_id']);
-        return '<a href="' . $url . '">' . $row['round_title'] . '</a>';
-    }
-
     // For the detail column.
     function format_jobdetail_link($val)
     {
@@ -63,10 +56,6 @@ if (!$jobs) {
             array(
                     'title' => 'Problema',
                     'rowform' => 'format_task_link',
-            ),
-            array(
-                    'title' => 'Runda',
-                    'rowform' => 'format_round_link',
             ),
             array(
                     'title' => 'Data',
