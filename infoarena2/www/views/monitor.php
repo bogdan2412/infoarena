@@ -59,7 +59,7 @@ if (!$jobs) {
             ),
             array(
                     'title' => 'Data',
-                    'key' => 'timestamp',
+                    'key' => 'submit_time',
 //                    'dateform' => 'H:i:s',
             ),
             array(

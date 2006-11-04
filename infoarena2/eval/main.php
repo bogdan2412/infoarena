@@ -70,14 +70,15 @@ function get_job_result($job)
 
     if ($task['type'] == 'classic') {
         $grader = new ClassicGrader($job['task_id'], $task_parameters);
-        return $grader->Grade($job['file_contents'], $job['file_extension']);
+        return $grader->Grade($job['file_contents'], $job['compiler_id']);
     } else {
         log_print("Nu stiu sa evaluez task-uri de tip ".$task['type']);
         return JobResult::SystemError();
     }
 }
 
-// This function handles a certain job. Returns a JobResult
+// This function handles a certain job.
+// This is the main job function.
 function handle_job($job) {
     log_print("- -- --- ---- ----- Handling job " . $job['id']);
     job_mark_processing($job['id']);
@@ -89,7 +90,7 @@ function handle_job($job) {
     }
 
     job_send_result($job['id'], $job_result);
-    log_print("- -- --- ---- ----- I'm done with this job");
+    log_print("- -- --- ---- ----- I'm done with job " . $job['id']);
     log_print("");
 //    milisleep(5000);
 }

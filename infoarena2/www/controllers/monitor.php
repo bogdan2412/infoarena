@@ -12,13 +12,17 @@ function controller_monitor() {
     $view = array();
 
     $first_row = request('start', 0);
-    $view['jobs'] = monitor_jobs_get_range($first_row, $display_rows); 
+    if ($first_row < 0) {
+        flash_error("Numar de pagina invalid.");
+        $first_row = 0;
+    }
 
+    $view['jobs'] = job_get_range($first_row, $display_rows); 
     $view['title'] = 'Monitor de evaluare';
     $view['url_page'] = 'monitor';
     $view['url_args'] = $_GET;
     $view['first_row'] = $first_row;
-    $view['total_rows'] = monitor_jobs_get_count();
+    $view['total_rows'] = job_get_count();
     $view['display_rows'] = $display_rows;
     execute_view('views/monitor.php', $view);
 }
