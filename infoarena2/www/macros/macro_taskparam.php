@@ -74,6 +74,8 @@ function macro_taskparam($args) {
                 else {
                     return macro_error("Task doesn't have parameter '$param'");
                 }
+            } else {
+                return htmlentities($params[$param]);
             }
     }
 }

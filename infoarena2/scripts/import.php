@@ -24,7 +24,7 @@ if (!$result) {
 }
 
 while ($contest = mysql_fetch_assoc($result)) {
-    printf("\nImporting \"".$contest['ID']."\" task list, please wait...\n");
+    printf("Adding round \"".$task['ID']."\" ...\n");
 
     $round_id = $contest['ID'];
     $round_type = "classic";
@@ -37,9 +37,12 @@ while ($contest = mysql_fetch_assoc($result)) {
         insert round parameters into database
     */
 
+    $textblock_content = "";
+    $textblock_content .= "==Include(page=\"template/roundheader\" round_id=\"$round_id\")==\n\n";
+    $textblock_content .= "p. %{color:red}Reverse% %{color:blue}textile% %{color:green}here.%\n\n";
+    $textblock_content .= "==Include(page=\"template/roundfooter\" round_id=\"$round_id\")==\n\n";
     $template = textblock_get_revision('template/new_round');
-    textblock_add_revision("round/".$round_id, $contest['name'],
-            $template['text'], 0);
+    textblock_add_revision("round/".$round_id, $contest['name'], $textblock_content, 0);
 
     $task_list = mysql_query("SELECT * FROM tasktable_".$contest['ID']);
     $tasks = array();
@@ -54,7 +57,7 @@ printf("###\n");
 
 $task_list = mysql_query("SELECT * FROM tasktable_arhiva");
 while ($task = mysql_fetch_assoc($task_list)) {
-    printf("Adding task \"".$task['ID']."\" from archive, please wait...\n");
+    printf("Adding task \"".$task['ID']."\" ...\n");
     
     $task_id = $task['ID'];
     $task_type = "classic" ;
@@ -64,7 +67,7 @@ while ($task = mysql_fetch_assoc($task_list)) {
     $task_user_id = 0;
     task_create($task_id, $task_type, $task_hidden, $task_author, $task_source, $task_user_id);
 
-    $parameters['evaluator'] = ""; // autodetect here
+    $parameters['evaluator'] = "eval.c"; // autodetect here
     $parameters['tests'] = $task['evalsteps'];
     $parameters['timelimit'] = $task['timelimit'];
     $parameters['memlimit'] = 65536;
@@ -72,9 +75,11 @@ while ($task = mysql_fetch_assoc($task_list)) {
     $parameters['okfiles'] = true;
     task_update_parameters($task_id, $parameters);  
 
-    $template = textblock_get_revision('template/new_task');
-    textblock_add_revision("task/".$task_id, $task['name'],
-                           $template['text'], 0);
-
+    $textblock_content = "";
+    $textblock_content .= "==Include(page=\"template/taskheader\" task_id=\"$task_id\")==\n\n";
+    $textblock_content .= "p. %{color:red}Reverse% %{color:blue}textile% %{color:green}here.%\n\n";
+    $textblock_content .= "==Include(page=\"template/taskfooter\" task_id=\"$task_id\")==\n\n";
+    textblock_add_revision("task/".$task_id, $task['name'], $textblock_content, 0);
 }
+
 ?>

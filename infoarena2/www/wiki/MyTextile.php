@@ -88,7 +88,7 @@ class MyTextile extends Textile {
     function do_format_link($args) {
         $url = getattr($args, 'url', '');
         if ($this->is_wiki_link($url)) {
-            $args['url'] = url($url);
+            $args['url'] = IA_URL . $url;
         } else {
             $args['clsty'] .= "(wiki_link_external)";
         }
