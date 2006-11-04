@@ -49,7 +49,9 @@
         <li><a href="<?= url('logout') ?>">Inchide sesiunea</a></li>
         <? } ?>
         <li class="separator"><hr/></li>
+        <?php if (!identity_anonymous()) { ?>
         <li><a href="<?= url('submit') ?>">Trimite solutii</a></li>
+        <?php } ?>
         <li><a href="<?= url('monitor') ?>">Monitorul de evaluare</a></li>
     </ul>
 

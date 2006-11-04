@@ -4,6 +4,11 @@
 function controller_submit() {
     global $identity_user;
 
+    if (identity_anonymous()) {
+        flash_error('Va rugam sa va autentificati mai intai');
+        redirect(url('login'));
+    }
+
     $action = request("action");
     if ('save' == $action) {
         $form_values = array(
