@@ -197,6 +197,8 @@ function permission_round($user, $action, $round) {
 }
 
 function permission_specialpage($user, $action, $textblock) {
+    $level = getattr($user, 'security_level');
+
     switch ($action) {
         case 'index':
             // only admins & reviewers can view page index
@@ -210,6 +212,8 @@ function permission_specialpage($user, $action, $textblock) {
 }
 
 function permission_macro($user, $action, $args) {
+    $level = getattr($user, 'security_level');
+
     switch ($action) {
         case 'debug':
             // only administrators & reviewers can execute a debugging macro

@@ -91,7 +91,7 @@ function textblock_get_revision($name, $rev_num = null, $content = true, $userna
 // $name:       The textblock name.
 // $content:    If true also get content. Defaults to false.
 // $username:   If true join for username. Defaults to true.
-function textblock_get_revisions($name, $content, $username) {
+function textblock_get_revisions($name, $content = false, $username = true) {
     // Calculate field list.
     $field_list = "`name`, `title`, `timestamp`, `user_id`";
     if ($content) {
@@ -131,7 +131,7 @@ function textblock_get_revision_count($name) {
 
 // Get all textblocks(without content) with a certain prefix).
 // Ordered by name.
-function textblock_get_list_by_prefix($prefix, $content, $username) {
+function textblock_get_list_by_prefix($prefix, $content = false, $username = false) {
     // Calculate field list.
     $field_list = "`name`, `title`, `timestamp`, `user_id`";
     if ($content) {

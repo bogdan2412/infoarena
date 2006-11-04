@@ -1,12 +1,5 @@
 <?php include('header.php'); ?>
-
-    <?php if ($view['page']) { ?>
-        <h1>Pagini din <a href="<?= url($view['page_name']) ?>"><?= $view['page_name'] ?></a></h1>
-    <?php } else if ($view['page_name']) { ?>
-            <h1>Pagini din <?= $view['page_name'] ?></h1>
-    <?php } else { ?>
-        <h1>Pagini</h1>
-    <?php } ?>
+    <h1><?= htmlentities($view['title']) ?></h1>
 
     <ul class="page_index">
         <?php foreach ($view['page_list'] as $v) { ?>
