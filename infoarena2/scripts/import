@@ -1,0 +1,1 @@
+php -q import_all_tasks.php
