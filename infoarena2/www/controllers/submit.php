@@ -66,7 +66,11 @@ function controller_submit() {
                        $form_values['compiler_id'], $file_buffer);
             // no errors => save submission
             flash('Solutia a fost salvata.');
-            redirect(url('submit'));
+            $url = getattr($_SERVER, 'HTTP_REFERER');
+            if (!$url) {
+                $url = url('submit');
+            }
+            redirect($url);
         }
         // Fall through to submit form.
     }

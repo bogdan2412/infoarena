@@ -45,12 +45,11 @@ function macro_tasksubmit($args) {
     <li id="field_compiler">
         <label for="form_compiler">Compilator</label>
         <select name="compiler_id" id="form_compiler">
-            <option value="-">[ Alegeti compilator ]</option>
+            <option value="-">[ Alege ]</option>
             <option value="c">GNU C</option>
             <option value="cpp">GNU C++</option>
             <option value="fpc">FreePascal</option>
         </select>
-        <span class="fieldHelp"><a href="<?= url('Compilatoare') ?>">Detalii despre compilatoare</a></span>
     </li>
 
     <li id="field_submit">

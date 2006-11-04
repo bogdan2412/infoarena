@@ -10,7 +10,6 @@ body {
 	line-height:1.5;
 	text-align:center;
 	color:#222;
-	background: /*#C3CBC5  url(../images/page_tile.gif) repeat-y center center */ ;
 }
 
 .clear:after {
@@ -723,3 +722,22 @@ tr.even {
 th {
     background: #ddd;
 }
+
+/* inline task submit form */
+.inlineSubmit ul.form {
+	background-color: #f6f6f6;
+    padding: 5px;
+    margin: 0;
+}
+
+.inlineSubmit .form li {
+    display: inline;
+    list-style-type: none;
+    margin: 5px;
+    padding: 0;
+}
+
+.inlineSubmit .form input, .inlineSubmit .form label {
+    display: inline;
+}
+
