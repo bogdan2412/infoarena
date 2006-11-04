@@ -72,7 +72,22 @@ function permission_user($user, $action, $ontoUser) {
         case 'editprofile':
             // anyone can edit their own profile. admins can edit any profile
             return $user && $ontoUser && ($user['id'] == $ontoUser['id'] || 'admin' == $user['security_level']);
-        
+
+        case 'view':
+        case 'history':
+            // anyone can view user profile pages
+            return true;
+
+        case 'edit':
+        case 'restore':
+            // users can edit their own profile pages. admins can edit any user profile page
+            return $user && $ontoUser && ($user['id'] == $ontoUser['id'] || 'admin' == $user['security_level']);
+
+        case 'create':
+            // there should be no need to create user pages since a user profile page is automatically created
+            // upon registration
+            return false;
+
         default:
             log_error('Invalid user action: '.$action);
             return false;

@@ -19,7 +19,7 @@ identity_restore();
 $page = request('page');
 
 if (!preg_match('/^([a-z0-9_\-\/]*)$/i', $page)) {
-    flash_error('Url invalid');
+    flash_error('invalid URL');
     redirect(url(''));
 }
 
@@ -28,21 +28,11 @@ if ($page == "") {
     $page = "home";
 }
 
-// Split the page url.
-$urlpath = split('/', $page);
-if (count($urlpath) <= 0) {
-    $urlpath = array("");
-}
-if (count($urlpath) < 2) {
-    $suburl = "";
-} else {
-    $dummy = $urlpath;
-    array_shift($dummy);
-    $suburl = join('/', $dummy);
-}
+// split the page url
+list($page_class, $page_id) = textblock_split_name($page);
 
 // This is the first part of the url path
-$urlstart = strtolower($urlpath[0]);
+$urlstart = getattr(split('/', $page), 0, '');
 
 // A lot of logic depends on this, so we try to keep the code nicer.
 $action = request('action', 'view');
@@ -60,50 +50,69 @@ $directmaps = array_flip(array('register', 'profile', 'page_index',
 // We include in the if statement to avoid an extra parsing load.
 //
 
-/*echo "<pre>urlstart = $urlstart</pre>";
-echo "<pre>action = $action</pre>";
-echo "<pre>directmaps = ";
-print_r($directmaps);
-echo "</pre>";*/
-
 // Trivial direct mappings.
 if (isset($directmaps[$urlstart])) {
     require_once("controllers/{$urlstart}.php");
     $fname = "controller_{$urlstart}";
-    $fname($suburl);
+    $fname($page_id);
+}
 
-// User special shit
-} else if ($urlstart == 'user' && $action != 'download') {
-    require_once('controllers/user.php');
-    if (count($urlpath) < 2) {
-        $suburl = "";
-    } else {
-        array_shift($urlpath);
-        $suburl = join('/', $urlpath);
-    }
-    controller_user($suburl);
-// Special stuff for task edit/create
-} else if ($urlstart == 'task' && $action == 'edit') {
-    require_once('controllers/task.php');
-    controller_task_edit($suburl);
-} else if ($urlstart == 'task' && $action == 'save') {
-    require_once('controllers/task.php');
-    controller_task_save($suburl);
-} else if ($urlstart == 'task' && $action == 'create') {
-    require_once('controllers/task.php');
-    controller_task_create($suburl);
+// textblock controllers
+//  - edit textblock
+else if ($action == 'edit') {
+    require_once('controllers/textblock.php');
+    controller_textblock_edit($page);
+}
+//  - save textblock
+else if ($action == 'save') {
+    require_once('controllers/textblock.php');
+    controller_textblock_save($page);
+}
+//  - view textblock history
+else if ($action == 'history') {
+    require_once('controllers/textblock.php');
+    controller_textblock_history($page);
+}
+//  - restore textblock
+else if ($action == 'restore') {
+    require_once('controllers/textblock.php');
+    controller_textblock_restore_revision($page, request('revision'));
+}
+//  - view textblock differences between revisions
+else if ($action == 'diff') {
+    require_once('controllers/textblock.php');
+    controller_textblock_diff_revision($page, request('revision'));
+}
+//  - view textblock feed
+else if ($action == 'feed') {
+    require_once('controllers/textblock.php');
+    controller_textblock_feed($page);
+}
 
-// Special shit for round edit create
-} else if ($urlstart == 'round' && $action == 'edit') {
-    require_once('controllers/round.php');
-    controller_round_edit($suburl);
-} else if ($urlstart == 'round' && $action == 'save') {
-    require_once('controllers/round.php');
-    controller_round_save($suburl);
-} else if ($urlstart == 'round' && $action == 'create') {
-    require_once('controllers/round.php');
-    controller_round_create($suburl);
+// task-specific controllers
+//  - show details edit form
+else if (TEXTBLOCK_TASK==$page_class && 'details'==$action) {
+    require_once('controllers/task.php');
+    controller_task_edit_details($page_id);
+}
+//  - save details
+else if (TEXTBLOCK_TASK==$page_class && 'details-save'==$action) {
+    require_once('controllers/task.php');
+    controller_task_save_details($page_id);
+}
 
+// round-specific controllers
+//  - edit round details
+else if (TEXTBLOCK_ROUND==$page_class && $action == 'details') {
+    require_once('controllers/round.php');
+    controller_round_edit_details($page_id);
+}
+//  - save round details
+else if ($urlstart == 'round' && $action == 'save') {
+    require_once('controllers/round.php');
+    controller_round_save_details($page_id);
+}
+/*
 // task submission
 } else if ($urlstart == 'submit' && $action == 'save') {
     require_once('controllers/submit.php');
@@ -111,58 +120,43 @@ if (isset($directmaps[$urlstart])) {
 } else if ($urlstart == 'submit') {
     require_once('controllers/submit.php');
     controller_submit_form($suburl);
+*/
 
-// news
-} else if ($urlstart == 'news' && count($urlpath) == 1 && $action == 'feed') {
+// global news-speific controllers
+//  - global news feed
+else if (TEXTBLOCK_NEWS==$page_class && !$page_id && $action=='feed') {
     require_once('controllers/news.php');
     controller_news_view_feed();
-} else if ($urlstart == 'news' && count($urlpath) == 1) {
+}
+//  - view news list
+else if (TEXTBLOCK_NEWS==$page_class && !$page_id) {
     require_once('controllers/news.php');
     controller_news_view_all();
-} else if ($urlstart == 'news' && $action == 'edit') {
-    require_once('controllers/news.php');
-    controller_news_edit($page);
-} else if ($urlstart == 'news' && $action == 'save') {
-    require_once('controllers/news.php');
-    controller_news_save($page);
+}
 
-// If it was not a special task or pset page do the wiki monkey.
-} else if ($action == 'view') {
-    require_once('controllers/textblock.php');
-    controller_textblock_view($page, request('revision'));
-} else if ($action == 'edit') {
-    require_once('controllers/wiki.php');
-    controller_wiki_edit($page);
-} else if ($action == 'save') {
-    require_once('controllers/wiki.php');
-    controller_wiki_save($page);
-} else if ($action == 'history') {
-    require_once('controllers/textblock.php');
-    controller_textblock_history($page);
-} else if ($action == 'restore') {
-    require_once('controllers/textblock.php');
-    controller_textblock_restore_revision($page, request('revision'));
-} else if ($action == 'diff') {
-    require_once('controllers/textblock.php');
-    controller_textblock_diff_revision($page, request('revision'));
-} else if ($action == 'feed') {
-    require_once('controllers/textblock.php');
-    controller_textblock_feed($page);
-
-// Attachment shit. This is common to all wiki-based urls.
-} else if ($action == 'attach') {
+// attachment controllers
+//  - create attachment
+else if ($action == 'attach') {
     require_once('controllers/attachment.php');
     controller_attachment_create($page);
-} else if ($action == 'attach-submit') {
+}
+//  - save attachment
+else if ($action == 'attach-submit') {
     require_once('controllers/attachment.php');
     controller_attachment_submit($page);
-} else if ($action == 'attach-list') {
+}
+//  - print attachment list
+else if ($action == 'attach-list') {
     require_once('controllers/attachment.php');
     controller_attachment_list($page);
-} else if ($action == 'attach-del') {
+}
+//  - attachment delete
+else if ($action == 'attach-del') {
     require_once('controllers/attachment.php');
     controller_attachment_delete($page);
-} else if ($action == 'download') {
+}
+//  - attachment download
+else if ($action == 'download') {
     if (request('resize')) {
         require_once('controllers/image_attachment.php');
         // download resized image
@@ -173,8 +167,18 @@ if (isset($directmaps[$urlstart])) {
         // regular file download
         controller_attachment_download($page, request('file'));
     }
-} else {
-    flash_error('Url invalid');
+}
+
+// textblock view
+else if ($action == 'view') {
+    require_once('controllers/textblock.php');
+    controller_textblock_view($page, request('revision'));
+}
+
+// invalid URL
+else {
+    flash_error('URL invalid');
     redirect(url(''));
 }
+
 ?>

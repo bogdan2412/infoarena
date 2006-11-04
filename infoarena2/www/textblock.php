@@ -9,17 +9,19 @@ define("TEXTBLOCK_ROUND",   4);
 define("TEXTBLOCK_USER",    5);
 
 // map textblock prefixes to textblock classes
-$TEXTBLOCK_PREFIXES = array(
+$TEXTBLOCK_PREFIX = array(
     'news' => TEXTBLOCK_NEWS,
     'user' => TEXTBLOCK_USER,
     'round' => TEXTBLOCK_ROUND,
     'task' => TEXTBLOCK_TASK
 );
+// inverse hash
+$TEXTBLOCK_PREFIX_OF = array_flip($TEXTBLOCK_PREFIX);
 
 // Split a textblock name. Returns 2-element array: (textblock class, object id)
 // Example: a textblock of name `task/adunare` is split into (TEXTBLOCK_TASK, 'adunare')
 function textblock_split_name($name) {
-    global $TEXTBLOCK_PREFIXES;
+    global $TEXTBLOCK_PREFIX;
 
     // Split the page url
     $path = split('/', $name);
@@ -31,7 +33,7 @@ function textblock_split_name($name) {
     $objid = join('/', $path);
 
     // convert $model string into fixed constant
-    $class = getattr($TEXTBLOCK_PREFIXES, $prefix, TEXTBLOCK_WIKI);
+    $class = getattr($TEXTBLOCK_PREFIX, $prefix, TEXTBLOCK_WIKI);
     return array($class, $objid);
 }
 
@@ -64,7 +66,7 @@ function textblock_get_model($textblock) {
 // Checks if user can view textblock.
 // This is a hacky wrapper around identity_can()
 function textblock_get_permission($permission, $textblock, $user = null) {
-    global $TEXTBLOCK_PREFIXES;
+    global $TEXTBLOCK_PREFIX_OF;
 
     list($class, $obj_id) = textblock_split_name(getattr($textblock, 'name'));
 
@@ -72,12 +74,13 @@ function textblock_get_permission($permission, $textblock, $user = null) {
         $action = 'wiki-'.$permission;
     }
     else {
-        $prefixes = array_flip($TEXTBLOCK_PREFIXES);
-        $action = $prefixes[$class].'-'.$permission;
+        $action = $TEXTBLOCK_PREFIX_OF[$class].'-'.$permission;
     }
 
     $object = textblock_get_model($textblock);
-    return identity_can($action, $object, $user);
+    $result = identity_can($action, $object, $user);
+
+    return $result;
 }
 
 ?>

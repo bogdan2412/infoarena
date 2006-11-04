@@ -30,7 +30,7 @@ class MyTextile extends Textile {
                 $argname = strtolower($matches[$i][1]);
                 $argval = $matches[$i][2];
                 if (isset($macro_args[$argname])) {
-                    return make_error_div("Duplicate argument '$argname' ".
+                    return macro_error("Duplicate argument '$argname' ".
                             "for macro $macro_name.");
                 }
                 $macro_args[$argname] = str_replace('""', '"', $argval);
@@ -46,7 +46,7 @@ class MyTextile extends Textile {
             @Textile::_current_store($this);
             return $res;
         }
-        return make_error_div('Bad macro "'.$str.'"');
+        return macro_error('Bad macro "'.$str.'"');
     }
 
     // Processes ==$type|$text== blocks.
@@ -57,7 +57,7 @@ class MyTextile extends Textile {
         if ($type == 'html') {
             return $text;
         } else {
-            return make_error_div("Can't handle ==$type| block.");
+            return macro_error("Can't handle ==$type| block.");
         }
     }
 

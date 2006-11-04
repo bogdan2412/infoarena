@@ -41,7 +41,7 @@ include('header.php');
     $cnt = news_count();
     for ($page = 0; $page*IA_MAX_NEWS < $cnt; $page++)
         if ($page != $view['page']) {
-            echo '<a href="news?pagenum='.$page.'">' . ($page + 1) . '</a> ';
+            echo '<a href="'.url('news', array('pagenum'=>$page)).'">' . ($page + 1) . '</a> ';
         }
         else {
             echo '<strong>'.($page + 1).'</strong> ';

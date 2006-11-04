@@ -11,7 +11,7 @@
 // this controller (controller_task_edit) as an error handler in order
 // to display the form with the user-submitted data and their corresponding
 // errors.
-function controller_task_edit($task_id, $form_data = null,
+function controller_task_edit_details($task_id, $form_data = null,
                               $form_errors = null) {
     global $identity_user;
     $task = task_get($task_id);
@@ -109,7 +109,7 @@ function controller_task_edit($task_id, $form_data = null,
 //      * form submits to controller_task_save()
 //      * controller_task_save() validates and uses controller_task_edit()
 //        as error handler
-function controller_task_save($task_id) {
+function controller_task_save_details($task_id) {
     global $identity_user;
     $task = task_get($task_id);
     if ($task) {

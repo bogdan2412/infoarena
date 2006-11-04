@@ -11,7 +11,7 @@
 // this controller (controller_round_edit) as an error handler in order
 // to display the form with the user-submitted data and their corresponding
 // errors.
-function controller_round_edit($round_id, $form_data = null,
+function controller_round_edit_details($round_id, $form_data = null,
                                $form_errors = null) {
     global $identity_user;
     if (!$round_id) {
@@ -117,7 +117,7 @@ function controller_round_edit($round_id, $form_data = null,
 //      * form submits to controller_round_save()
 //      * controller_round_save() validates and uses controller_round_edit()
 //        as error handler
-function controller_round_save($round_id) {
+function controller_round_save_details($round_id) {
     global $identity_user;
     if (!$round_id) {
         flash_error('id-ul rundei este invalid');

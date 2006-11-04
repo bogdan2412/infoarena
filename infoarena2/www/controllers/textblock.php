@@ -189,4 +189,100 @@ function controller_textblock_feed($page_name) {
     execute_view_die('views/rss.php', $view);
 }
 
+// Edit a textblock
+function controller_textblock_edit($page_name) {
+    $page = textblock_get_revision($page_name);
+
+    // permission check
+    if ($page) {
+        // request permission to edit textblock
+        $perm = textblock_get_permission('edit', $page);
+        if (!$perm) {
+            flash_error('Nu aveti permisiunea sa modificati aceasta pagina');
+            redirect(url(''));
+        }
+    }
+    else {
+        $perm = textblock_get_permission('create', $page_name);
+        if (!$perm) {
+            flash_error('Nu aveti permisiunea sa creati aceasta pagina');
+            redirect(url(''));
+        }
+    }
+
+    $view = array();
+    $form_errors = array();
+
+    if (!$page) {
+        $page_title = $page_name;
+        $page_content = "Scrie aici despre " . $page_name;
+        $view['title'] = "Creare " . $page_name;
+    }
+    else {
+        $page_title = $page['title'];
+        $page_content = $page['text'];
+        $view['title'] = "Editare " . $page_name;
+    }
+
+    // This is the creation action.
+    $view['page_name'] = $page_name;
+    $view['action'] = url($page_name, array('action' => 'save'));
+    $view['form_values'] = array('content'=> $page_content,
+                                 'title' => $page_title);
+    $view['form_errors'] = $form_errors;
+    list($view['page_class'], $view['page_id']) = textblock_split_name($page_name);
+    execute_view_die("views/textblock_edit.php", $view);
+}
+
+// Save changes controller
+function controller_textblock_save($page_name) {
+    $page = textblock_get_revision($page_name);
+    global $identity_user;
+
+    // permission check
+    if ($page) {
+        // request permission to edit textblock
+        $perm = textblock_get_permission('edit', $page);
+        if (!$perm) {
+            flash_error('Nu aveti permisiunea sa modificati aceasta pagina');
+            redirect(url(''));
+        }
+    }
+    else {
+        $perm = textblock_get_permission('create', $page_name);
+        if (!$perm) {
+            flash_error('Nu aveti permisiunea sa creati aceasta pagina');
+            redirect(url(''));
+        }
+    }
+
+    // Validate data here and place stuff in errors.
+    $form_errors = array();
+    $view = array();
+
+    $page_content = getattr($_POST, 'content', "");
+    $page_title = getattr($_POST, 'title', "");
+    if (strlen($page_content) < 1) {
+        $form_errors['content'] = "Continutul paginii este prea scurt.";
+    }
+    if (strlen($page_title) < 1) {
+        $form_errors['title'] = "Titlul este prea scurt.";
+    }
+    if (!$form_errors) {
+        textblock_add_revision($page_name, $page_title, $page_content,
+                               getattr($identity_user, 'id'));
+        flash('Am actualizat continutul');
+        redirect(url($page_name));
+    }
+    else {
+        $view['title'] = "Editare " . $page_name;
+        $view['action'] = url($page_name, array('action' => 'save'));
+        $form_values['content'] = $page_content;
+        $view['form_values'] = array('content'=> $page_content,
+                                     'title' => $page_title);
+        $view['form_errors'] = $form_errors;
+        execute_view_die("views/textblock_edit.php", $view);
+    }
+}
+
 ?>

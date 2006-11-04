@@ -23,7 +23,7 @@ define("IA_ATTACH_DIR", "/tmp/");
 define("IA_SUBMISSION_MAXSIZE", 256*1024);
 
 // maximum avatar file-size
-define("IA_AVATAR_MAXSIZE", 20*1024);
+define("IA_AVATAR_MAXSIZE", 200*1024);
 
 // maximum avatar dimensions
 define("IA_AVATAR_WIDTH", 100);

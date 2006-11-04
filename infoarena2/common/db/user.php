@@ -71,8 +71,9 @@ function user_create($data) {
     $query = substr($query, 0, strlen($query)-1); // delete last ,
     $query .= ')';
 
-//    print $query; // debug info
-    return db_query($query);
+    // create user
+    log_print('Creating database entry for user: '.$data['id']);
+    db_query($query);
 }
 
 // Update user infos.

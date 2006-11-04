@@ -11,7 +11,7 @@ function controller_monitor() {
 
     $view = array();
 
-    $first_row = getattr($_GET, 'start', 0);
+    $first_row = request('start', 0);
     $view['jobs'] = monitor_jobs_get_range($first_row, $display_rows); 
 
     $view['title'] = 'Monitor de evaluare';
