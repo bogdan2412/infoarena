@@ -52,13 +52,18 @@ function attachment_delete($id) {
     return db_query($query);
 }
 
-function attachment_get_all($page) {
+// Obtain list with all attachments matching name $name and belonging
+// to page $page.
+//
+// You may use % as a wildcard
+function attachment_get_all($page, $name='%') {
     $query = sprintf("SELECT *
                       FROM ia_file
-                        LEFT JOIN ia_user ON ia_file.user_id = ia_user.id
-                      WHERE LCASE(ia_file.page) = LCASE('%s')
+                      LEFT JOIN ia_user ON ia_file.user_id = ia_user.id
+                      WHERE ia_file.page LIKE '%s'
+                            AND ia_file.`name` LIKE '%s'
                       ORDER BY ia_file.`timestamp` DESC",
-                     db_escape($page));
+                     db_escape($page), db_escape($name));
     return db_fetch_all($query);
 }
 
