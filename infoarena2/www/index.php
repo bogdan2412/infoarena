@@ -44,7 +44,7 @@ log_print("Request page=$page action=$action");
 // Note: array_flip() flips keys with values in a dictionary.
 $directmaps = array_flip(array('register', 'profile', 'page_index',
                                'login', 'logout', 'reset_pass', 'json',
-                               'job_detail', 'monitor'));
+                               'job_detail', 'monitor', 'submit'));
 //
 // Here comes the big url mapper.
 // We include in the if statement to avoid an extra parsing load.
@@ -112,15 +112,6 @@ else if ($urlstart == 'round' && $action == 'save') {
     require_once('controllers/round.php');
     controller_round_save_details($page_id);
 }
-/*
-// task submission
-} else if ($urlstart == 'submit' && $action == 'save') {
-    require_once('controllers/submit.php');
-    controller_submit_save($suburl);
-} else if ($urlstart == 'submit') {
-    require_once('controllers/submit.php');
-    controller_submit_form($suburl);
-*/
 
 // global news-speific controllers
 //  - global news feed
