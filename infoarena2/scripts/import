@@ -1,1 +1,1 @@
-php -q import.php
+php -q import.php $1

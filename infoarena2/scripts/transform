@@ -1,1 +1,0 @@
-php -q transform.php $1
