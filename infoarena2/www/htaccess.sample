@@ -16,3 +16,4 @@ php_value error_reporting 65535
 php_value display_errors false
 php_value log_errors true
 php_value html_errors false
+php_value upload_max_filesize "16M"

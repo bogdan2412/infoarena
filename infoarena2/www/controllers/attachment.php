@@ -9,6 +9,16 @@ function attachment_get_filepath($attach_id) {
     return IA_ATTACH_DIR . $attach_id;
 }
 
+// returns boolean whether specified attach name is valid
+// NOTE: We hereby limit file names. No spaces, please. Not that we have
+// a problem with spaces inside URLs. Everything should be (and hopefully is)
+// urlencode()-ed. However, practical experience shows it is hard to work with
+// such file names, mostly due to URLs word-wrapping when inserted in texts,
+// unless, of course, one knows how to properly escape spaces with %20 or +
+function attachment_is_valid_name($attach_name) {
+    return preg_match('/^[a-z0-9\.\-_]+$/i', $attach_name);
+}
+
 // Try to get the textblock model for a certain page.
 // If it fails it will flash and redirect
 function try_textblock_get($page_name) {
@@ -93,16 +103,9 @@ function controller_attachment_submit($page_name) {
     // Process upload data.
     $form_values['file_name'] = basename($_FILES['file_name']['name']);
     $form_values['file_size'] = $_FILES['file_name']['size'];
-    // FIXME: we shouldn't rely on the mime-type computed by the user agent
-    $form_values['file_type'] = strtolower($_FILES['file_name']['type']);
 
     // Validate filename.
-    // NOTE: We hereby limit file names. No spaces, please. Not that we have
-    // a problem with spaces inside URLs. Everything should be (and hopefully is)
-    // urlencode()-ed. However, practical experience shows it is hard to work with
-    // such file names, mostly due to URLs word-wrapping when inserted in texts,
-    // unless, of course, one knows how to properly escape spaces with %20 or +
-    if (!preg_match('/^[a-z0-9\.\-_]+$/i', $form_values['file_name'])) {
+    if (!attachment_is_valid_name($form_values['file_name'])) {
         $form_errors['file_name'] = 'Nume de fisier invalid'.
                                     '(va rugam sa nu folositi spatii)';
     }                
@@ -115,51 +118,139 @@ function controller_attachment_submit($page_name) {
     // Check max file size.
     if ($form_values['file_size'] > IA_ATTACH_MAXSIZE) {
         $form_errors['file_size'] = 'Fisierul depaseste limita de ' .
-            (IA_ATTACH_MAXSIZE / 1024).' kbytes';
+                                    (IA_ATTACH_MAXSIZE / 1024).' kbytes';
     }
 
-    // Validation done, start the SQL monkey.
+    // determine if attached file is (zip) archive and needs to be extracted
+    $autoextract = request('auto_extract') && preg_match('/^.+\.zip$/i', $form_values['file_name']);
 
-    // Add the file to the database.
-    $rewritten = false;
+    // create attachment list
+    $attachments = array();
     if (!$form_errors) {
-        $attach = attachment_get($form_values['file_name'], $page_name);
-        if ($attach) {
-            // Attachment already exists, overwrite.
-            identity_require('attach-overwrite', $attach);
-            attachment_update($attach['id'], $form_values['file_name'], $form_values['file_size'],
-                              $form_values['file_type'], $page_name, $identity_user['id']);
-            $rewritten = true;
+        if ($autoextract) {
+            require_once('controllers/zip_attachment.php');
+            $attachments = get_zipped_attachments($_FILES['file_name']['tmp_name']);
+
+            if (false === $attachments) {
+                $form_errors['file_name'] = 'Arhiva ZIP este invalida sau nu poate fi recunoscuta';
+            }
         }
         else {
-            // New attachment. Insert.
-            attachment_insert($form_values['file_name'], $form_values['file_size'], $form_values['file_type'],
-                              $page_name, $identity_user['id']);
-        }
-
-        // check if update/insert went ok
-        $attach = attachment_get($form_values['file_name'], $page_name);
-        if (!$attach) {
-            $form_errors['file_name'] = 'Fisierul nu a putut fi atasat';
+            // simple (single) file attachment
+            $attachments = array(
+                array('name' => $form_values['file_name'], 'size' => $form_values['file_size'],
+                      'disk_name' => $_FILES['file_name']['tmp_name'])
+            );
         }
     }
 
-    // Write the file on disk.
-    if (!$form_errors) {
-        $disk_name = IA_ATTACH_DIR . $attach['id'];
-        if (!move_uploaded_file($_FILES['file_name']['tmp_name'], $disk_name)) {
-            $form_errors['file_name'] = 'Fisierul nu a putut fi incarcat pe server'; 
+    // extract (zip) archive file contents to temporary disk files
+    $extract_okcount = 0;
+    if (!$form_errors && $autoextract) {
+        $ziparchive = $_FILES['file_name']['tmp_name'];
+
+        for ($i = 0; $i < count($attachments); $i++) {
+            $att =& $attachments[$i];
+            if (isset($att['disk_name']) || !isset($att['zipindex'])) {
+                continue;
+            }
+
+            // extract archived file to a tempory file on disk
+            $tmpname = tempnam(IA_ATTACH_DIR, 'iatmp');
+            log_assert($tmpname);
+            $res = extract_zipped_attachment($ziparchive, $att['zipindex'], $tmpname);
+            if ($res) {
+                $att['disk_name'] = $tmpname;
+                $extract_okcount++;
+            }
         }
     }
 
-    // Hooray, no error, flash ok
+    // compute mime type for each file on disk
     if (!$form_errors) {
-        if ($rewritten) {
-            flash("Fisierul a fost rescris");
+        $finfo = finfo_open(FILEINFO_MIME);
+        for ($i = 0; $i < count($attachments); $i++) {
+            $att =& $attachments[$i];
+            if (!isset($att['disk_name'])) {
+                continue;
+            }
+
+            $att['type'] = finfo_file($finfo, $att['disk_name']);
+        }
+        finfo_close($finfo);
+    }
+
+    // Create database entries
+    $rewrite_count = 0;
+    $attach_okcount = 0;
+    if (!$form_errors) {
+        for ($i = 0; $i < count($attachments); $i++) {
+            $file_att =& $attachments[$i];
+
+            if (!isset($file_att['disk_name'])) {
+                continue;
+            }
+
+            $attach = attachment_get($file_att['name'], $page_name);
+            if ($attach) {
+                // Attachment already exists, overwrite.
+                identity_require('attach-overwrite', $attach);
+                attachment_update($attach['id'], $file_att['name'], $file_att['size'],
+                                  $file_att['type'], $page_name, $identity_user['id']);
+                $rewrite_count++;
+            }
+            else {
+                // New attachment. Insert.
+                attachment_insert($file_att['name'], $file_att['size'], $file_att['type'],
+                                  $page_name, $identity_user['id']);
+            }
+
+            // check if update/insert went ok
+            $attach = attachment_get($file_att['name'], $page_name);
+            if ($attach) {
+                $file_att['attach_id'] = $attach['id'];
+                $attach_okcount++;
+            }
+        }
+    }
+
+    // move files from temporary locations to their final storage place
+    if (!$form_errors) {
+        for ($i = 0; $i < count($attachments); $i++) {
+            $file_att =& $attachments[$i];
+            if (!isset($file_att['attach_id'])) {
+                continue;
+            }
+            $disk_name = attachment_get_filepath($file_att['attach_id']);
+            rename($file_att['disk_name'], $disk_name);
+        }
+    }
+
+    // custom error message for simple (single) file uploads
+    if (!$form_errors && !$autoextract && 0>=$attach_okcount) {
+        $form_errors['file_name'] = 'Fisierul nu a putut fi atasat! Eroare necunoscuta ...';
+    }
+
+    // display error/confirmation message
+    if (!$form_errors) {
+        if ($autoextract) {
+            $msg = "Am extras si incarcat {$attach_okcount} fisiere.";
+            if ($rewrite_count) {
+                $msg .= " {$rewrite_count} fisiere vechi au fost rescrise.";
+            }
         }
         else {
-            flash("Fisierul a fost atasat");
+            if ($rewrite_count) {
+                $msg = "Fisierul trimis a fost atasat cu succes. Un atasamant mai vechi a fost rescris";
+            }
+            else {
+                $msg = "Fisierul trimis a fost atasat cu succes";
+            }
         }
+
+        log_print("Auto-extracted {$extract_okcount} files; {$attach_okcount} successful attachment uploads");
+
+        flash($msg);
         redirect(url($page_name));
     }
 
@@ -192,7 +283,7 @@ function controller_attachment_delete($page_name) {
         redirect(url($page_name));
     }
 
-    // Delete from disc.
+    // Delete from disk.
     $real_name = IA_ATTACH_DIR . $attach['id'];
     if (!unlink($real_name)) {
         flash_error('Nu am reusit sa sterg fisierul de pe disc.');

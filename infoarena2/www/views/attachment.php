@@ -1,6 +1,10 @@
 <?php include('header.php'); ?>
 
+<h1><?= $title ?></h1>
+
 <form enctype="multipart/form-data" action="<?= url($page_name) ?>" method="post">
+<input type="hidden" name="auto_extract" value="1" />
+
 <ul class="form">
     <li>
         <input type="hidden" name="action" value="attach-submit" />
