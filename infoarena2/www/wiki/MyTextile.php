@@ -67,7 +67,7 @@ class MyTextile extends Textile {
     // you can inject arbritary html.
     function do_format_block($args) {
         $str = getattr($args, 'text', '');
-        if (preg_match('/^ \s* ([a-z][a-z0-9\+\#\-]*) \s* \|(.*)/si', $str, $matches)) {
+        if (preg_match('/^  \s*  ([a-z][a-z0-9\+\#\-]*)  \s* \|(.*)/sxi', $str, $matches)) {
             return $this->process_pipe_block($matches[1], $matches[2]);
         } else {
             return $this->process_macro($str);
