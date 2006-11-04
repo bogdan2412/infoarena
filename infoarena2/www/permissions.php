@@ -58,8 +58,8 @@ function permission_query($user, $action, $ontoObject) {
 function permission_user($user, $action, $ontoUser) {
     switch ($action) {
         case 'login':
-            // only anonymous users can login
-            return is_null($user);
+            // any user can try to login, even if it's already authenticated
+            return true;
 
         case 'logout':
             // only authenticated users can logout
@@ -147,9 +147,11 @@ function permission_task($user, $action, $task) {
             return $task && (!$task['hidden'] || 'admin'==$level || ($user && 'reviewer'==$level && $task['user_id']==$user['id']));
 
         case 'submit':
-            // any authenticated user can submit to public tasks; reviewers can also submit to their own hidden tasks; admins submit to everything
+            // any authenticated user can submit to public tasks;
+            // reviewers can also submit to their own hidden tasks;
+            // admins submit to everything
             if (!$user) {
-                // no anonymous, please
+                // no anonymous submissions, please
                 return false;
             }
             return $task && (!$task['hidden'] || 'admin'==$level || ('reviewer'==$level && $task['user_id']==$user['id']));
@@ -181,11 +183,6 @@ function permission_round($user, $action, $round) {
         case 'history':
             // anyone can view a round (contest) page and its history
             return true;
-
-        case 'submit':
-            // any authenticated user can submit to an active round; reviewers & admins can submit to any round
-            // Please note there's an additional permission query for submitting to a given task.
-            return $user && $round && ($round['active'] || 'admin'==$level || 'reviewer'==$level);
 
         case 'edit':
         case 'create':

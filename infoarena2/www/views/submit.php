@@ -4,6 +4,7 @@ $view['head'] = '<script type="text/javascript" src="' . url('static/js/submit.j
 
 include('header.php');
 
+// list of task ids that require output-only submissions
 $output_only_ids = array();
 foreach ($tasks as $t) {
     if ('output-only' != $t['type']) {
@@ -26,17 +27,6 @@ foreach ($tasks as $t) {
 <input type="hidden" id="output_only" value="<?= ':' . join(':', $output_only_ids) . ':' ?>" />
 
 <ul class="form">
-    <li id="field_round">
-        <label for="form_round">Runda</label>
-        <select name="round_id" id="form_round">
-            <option value="">[ Alegeti runda ]</option>
-<?php foreach ($rounds as $round) {  ?>
-            <option value="<?= htmlentities($round['id']) ?>"<?= fval('round_id') == $round['id'] ? ' selected="selected"' : '' ?>><?= htmlentities($round['title']) ?></option>
-<?php } ?>
-        </select>
-        <?= ferr_span('round_id') ?>
-    </li>
-
     <li id="field_task">
         <label for="form_task">Problema</label>
         <select name="task_id" id="form_task">
