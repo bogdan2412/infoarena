@@ -15,7 +15,6 @@ include('header.php');
     <?php } ?>
     Arhiva stiri
 </h1>
-    
 <div class="news">
     <?php foreach ($view['news'] as $v) { ?>
         <div class="item">

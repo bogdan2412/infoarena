@@ -1,4 +1,4 @@
-<?php
+    <?php
 require_once("controllers/wiki.php");
 
 function controller_news_view_feed() {

@@ -86,7 +86,7 @@ else if ($action == 'diff') {
     controller_textblock_diff_revision($page, request('revision'));
 }
 //  - view textblock feed
-else if ($action == 'feed') {
+else if ($action == 'feed' && $page_class!=TEXTBLOCK_NEWS) {
     require_once('controllers/textblock.php');
     controller_textblock_feed($page);
 }

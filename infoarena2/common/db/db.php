@@ -143,7 +143,7 @@ function news_get_range($start, $range, $prefix = null) {
                         *, DATE_FORMAT(`timestamp`, '%%d %%b') AS `timestamp`
                       FROM ia_textblock
                       WHERE LCASE(`name`) LIKE 'news/%s%%'
-                      ORDER BY `timestamp` DESC
+                      ORDER BY ia_textblock.`timestamp` DESC
                       LIMIT %s,%s",
                      db_escape($prefix), db_escape($start), db_escape($range));
     return db_fetch_all($query);

@@ -299,12 +299,28 @@ if (read_question("Import tasks? ")) {
 }
 
 if (read_question('Import articles? ')) {
-    $articles = mysql_query("SELECT * FROM ia_art", $dbOldLink);
+    // hash article categories
+    $art_cat = mysql_query("SELECT * FROM info_artcat", $dbOldLink);
+    if (!$art_cat){
+        log_error('IMPORT: MYSQL error -> '.mysql_error($dbOldLink));
+    }
+    while ($cat = mysql_fetch_assoc($art_cat)) {
+        $category[$cat['id']] = $cat['caption'];
+    }
+
+    // get articles    
+    $articles = mysql_query("SELECT * FROM info_art", $dbOldLink);
     if (!$articles) {
         log_error('IMPORT: MYSQL error -> '.mysql_error($dbOldLink));
     }
-    /*while ($article = mysql_fetch_assoc($t)) {
-        log_print("Adding task \"".$task['ID']."\" ...");*/
-}
+    while ($article = mysql_fetch_assoc($articles)) {
+        log_print("Adding article \"".$article['title']."\" ...");
+
+        $textblock_content = 'h2. '.$article['title'].'\n';
+        $textblock_content..= 'Creat la data de '.$article['postdate'].', cateogoria '.$catergory[$article['catId']].'\n';
+        //$textblock_content .= '
+    }
+        
+};
     
 ?>

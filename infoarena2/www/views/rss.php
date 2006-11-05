@@ -18,6 +18,7 @@ echo '<channel>'."\n";
 echo '<title>'.htmlentities(getattr($view['channel'], 'title')).'</title>'."\n";
 echo '<link>'.htmlentities(getattr($view['channel'], 'link')).'</link>'."\n";
 echo '<description>'.htmlentities(getattr($view['channel'], 'description')).'</description>'."\n";
+
 foreach ($optional['channel'] as $hash_key => $hash_value) {
     if (getattr($view['channel'], $hash_value)) {
         echo '<'.$hash_value.'>';
