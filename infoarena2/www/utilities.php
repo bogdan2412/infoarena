@@ -119,7 +119,7 @@ function execute_view($view_file_name, $view) {
     $query = url_from_args($_GET);
     if (!preg_match('/\/json\//', $query)) {
         $hashkey = strtolower($query);
-        $recent_pages[$hashkey] = array($query, getattr($view, 'title', $page)); 
+        $recent_pages[$hashkey] = array($query, getattr($view, 'title', $query)); 
         if (5 < count($recent_pages)) {
             array_shift($recent_pages);
         }
