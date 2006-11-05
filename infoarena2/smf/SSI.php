@@ -230,8 +230,9 @@ function ssi_logout($redirect_to = '', $output_method = 'echo')
 }
 
 //////
-// edited by svalentin
-// Recent post list:   [board] Subject by Poster	Date
+// added by svalentin
+
+// Recent post list:   Subject by Poster	Date	Post preview
 function ssi_recentPostsFromTopic($topicID, $num_recent = 8, $exclude_boards = null, $output_method = 'echo')
 {
 	global $context, $settings, $scripturl, $txt, $db_prefix, $ID_MEMBER;
@@ -324,7 +325,111 @@ function ssi_recentPostsFromTopic($topicID, $num_recent = 8, $exclude_boards = n
 		</table>';
 }
 
-/////
+function ssi_recentTopicsFromBoard($boardID, $num_recent = 8, $exclude_boards = null, $output_method = 'echo')
+{
+	global $context, $settings, $scripturl, $txt, $db_prefix, $ID_MEMBER;
+	global $user_info, $modSettings, $func;
+
+	if ($exclude_boards === null && !empty($modSettings['recycle_enable']) && $modSettings['recycle_board'] > 0)
+		$exclude_boards = array($modSettings['recycle_board']);
+	else
+		$exclude_boards = empty($exclude_boards) ? array() : $exclude_boards;
+
+	$stable_icons = array('xx', 'thumbup', 'thumbdown', 'exclamation', 'question', 'lamp', 'smiley', 'angry', 'cheesy', 'grin', 'sad', 'wink', 'moved', 'recycled', 'wireless');
+	$icon_sources = array();
+	foreach ($stable_icons as $icon)
+		$icon_sources[$icon] = 'images_url';
+
+	// Find all the posts in distinct topics.  Newer ones will have higher IDs.
+	$request = db_query("
+		SELECT
+			m.posterTime, ms.subject, m.ID_TOPIC, m.ID_MEMBER, m.ID_MSG, b.ID_BOARD, b.name AS bName,
+			IFNULL(mem.realName, m.posterName) AS posterName, " . ($user_info['is_guest'] ? '1 AS isRead, 0 AS new_from' : '
+			IFNULL(lt.ID_MSG, IFNULL(lmr.ID_MSG, 0)) >= m.ID_MSG_MODIFIED AS isRead,
+			IFNULL(lt.ID_MSG, IFNULL(lmr.ID_MSG, -1)) + 1 AS new_from') . ", LEFT(m.body, 384) AS body, m.smileysEnabled, m.icon
+		FROM ({$db_prefix}messages AS m, {$db_prefix}topics AS t, {$db_prefix}boards AS b, {$db_prefix}messages AS ms)
+			LEFT JOIN {$db_prefix}members AS mem ON (mem.ID_MEMBER = m.ID_MEMBER)" . (!$user_info['is_guest'] ? "
+			LEFT JOIN {$db_prefix}log_topics AS lt ON (lt.ID_TOPIC = t.ID_TOPIC AND lt.ID_MEMBER = $ID_MEMBER)
+			LEFT JOIN {$db_prefix}log_mark_read AS lmr ON (lmr.ID_BOARD = b.ID_BOARD AND lmr.ID_MEMBER = $ID_MEMBER)" : '') . "
+		WHERE t.ID_LAST_MSG >= " . ($modSettings['maxMsgID'] - 35 * min($num_recent, 5)) . "
+			AND t.ID_BOARD = " . $boardID . "
+			AND t.ID_LAST_MSG = m.ID_MSG
+			AND b.ID_BOARD = t.ID_BOARD" . (empty($exclude_boards) ? '' : "
+			AND b.ID_BOARD NOT IN (" . implode(', ', $exclude_boards) . ")") . "
+			AND $user_info[query_see_board]
+			AND ms.ID_MSG = t.ID_FIRST_MSG
+		ORDER BY t.ID_LAST_MSG DESC
+		LIMIT $num_recent", __FILE__, __LINE__);
+	$posts = array();
+	while ($row = mysql_fetch_assoc($request))
+	{
+		$row['body'] = strip_tags(strtr(parse_bbc($row['body'], $row['smileysEnabled'], $row['ID_MSG']), array('<br />' => '&#10;')));
+		if ($func['strlen']($row['body']) > 128)
+			$row['body'] = $func['substr']($row['body'], 0, 128) . '...';
+
+		// Censor the subject.
+		censorText($row['subject']);
+		censorText($row['body']);
+
+		if (empty($modSettings['messageIconChecks_disable']) && !isset($icon_sources[$row['icon']]))
+			$icon_sources[$row['icon']] = file_exists($settings['theme_dir'] . '/images/post/' . $row['icon'] . '.gif') ? 'images_url' : 'default_images_url';
+
+		// Build the array.
+		$posts[] = array(
+			'board' => array(
+				'id' => $row['ID_BOARD'],
+				'name' => $row['bName'],
+				'href' => $scripturl . '?board=' . $row['ID_BOARD'] . '.0',
+				'link' => '<a href="' . $scripturl . '?board=' . $row['ID_BOARD'] . '.0">' . $row['bName'] . '</a>'
+			),
+			'topic' => $row['ID_TOPIC'],
+			'poster' => array(
+				'id' => $row['ID_MEMBER'],
+				'name' => $row['posterName'],
+				'href' => empty($row['ID_MEMBER']) ? '' : $scripturl . '?action=profile;u=' . $row['ID_MEMBER'],
+				'link' => empty($row['ID_MEMBER']) ? $row['posterName'] : '<a href="' . $scripturl . '?action=profile;u=' . $row['ID_MEMBER'] . '">' . $row['posterName'] . '</a>'
+			),
+			'subject' => $row['subject'],
+			'short_subject' => shorten_subject($row['subject'], 25),
+			'preview' => $row['body'],
+			'time' => timeformat($row['posterTime']),
+			'timestamp' => forum_time(true, $row['posterTime']),
+			'href' => $scripturl . '?topic=' . $row['ID_TOPIC'] . '.msg' . $row['ID_MSG'] . ';topicseen#new',
+			'link' => '<a href="' . $scripturl . '?topic=' . $row['ID_TOPIC'] . '.msg' . $row['ID_MSG'] . '#new">' . $row['subject'] . '</a>',
+			'new' => !empty($row['isRead']),
+			'new_from' => $row['new_from'],
+			'icon' => '<img src="' . $settings[$icon_sources[$row['icon']]] . '/post/' . $row['icon'] . '.gif" align="middle" alt="' . $row['icon'] . '" border="0" />',
+		);
+	}
+	mysql_free_result($request);
+
+	// Just return it.
+	if ($output_method != 'echo' || empty($posts))
+		return $posts;
+
+	echo '
+		<table border="0" class="ssi_table">';
+	foreach ($posts as $post)
+		echo '
+			<tr>
+				<td align="right" valign="top" nowrap="nowrap">
+					[', $post['board']['link'], ']
+				</td>
+				<td valign="top">
+					<a href="', $post['href'], '">', $post['subject'], '</a>
+					', $txt[525], ' ', $post['poster']['link'], '
+					', $post['new'] ? '' : '<a href="' . $scripturl . '?topic=' . $post['topic'] . '.msg' . $post['new_from'] . ';topicseen#new"><img src="' . $settings['images_url'] . '/' . $context['user']['language'] . '/new.gif" alt="' . $txt[302] . '" border="0" /></a>', '
+				</td>
+				<td align="right" nowrap="nowrap">
+					', $post['time'], '
+				</td>
+			</tr>';
+	echo '
+		</table>';
+}
+
+//
+//////
 
 
 // Recent post list:   [board] Subject by Poster	Date
