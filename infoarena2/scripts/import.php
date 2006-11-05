@@ -6,9 +6,9 @@ echo "*** IMPORT SCRIPT 2.0 (beta) ***\n";
 echo "********************************\n";
 
 require_once("../config.php");
+require_once("../common/db/db.php");
 // For IA_ATTACH_DIR
 require_once("../www/config.php");
-require_once("../common/db/db.php");
 
 function read_line($caption = "") {
     echo $caption;
@@ -59,13 +59,13 @@ function magic_convert_textile($filename) {
         $value = preg_replace('/\s\s+/', ' ', $value);
         // remove leading and trailing special characters
         $value = trim($value, " \t\n\r\0\x0B\x00..\x1F\x7F..\xFF");
+        // 
     }
     return implode("\n", $lines);
 }
 
 // magic_convert_textile for tasks,
-function magic_convert_task($task_id)
-{
+function magic_convert_task($task_id) {
     global $ia1_path;
     $fname = $ia1_path . "www/infoarena/docs/arhiva/$task_id/enunt.html";
     $ret = magic_convert_textile($fname);
@@ -76,9 +76,13 @@ function magic_convert_task($task_id)
     $ret = preg_replace("/^\s*exemplu/mi", "\nh2. Exemplu", $ret);
     $lines = explode("\n", $ret);
     foreach ($lines as &$line) {
-        $line = preg_replace('/(\+||)-+(\+||)/', '', $line);
+        $line = preg_replace('/(\+|\x7C|)-+(\+|\x7C|)/', '', $line);
+        $line = str_replace("=<", "<=", $line);
     }
     return implode("\n", $lines);
+}
+
+function magic_convert_article($article_id) {
 }
 
 // Ask infoarena 1.0 path.
@@ -97,7 +101,9 @@ mysql_select_db("infoarena1", $dbOldLink) or log_die('IMPORT: Cannot select data
 
 db_query("TRUNCATE TABLE ia_file");
 db_query("TRUNCATE TABLE ia_textblock_revision");
-db_query("DELETE FROM ia_textblock WHERE NOT (`name` LIKE 'template/%') AND `name` != 'Home'");
+db_query("DELETE FROM ia_textblock
+            WHERE NOT (`name` LIKE 'template/%') AND
+                  NOT (`name` LIKE 'sandbox/%') AND `name` != 'Home'");
 
 //
 // Import users.
@@ -292,4 +298,13 @@ if (read_question("Import tasks? ")) {
     }
 }
 
+if (read_question('Import articles? ')) {
+    $articles = mysql_query("SELECT * FROM ia_art", $dbOldLink);
+    if (!$articles) {
+        log_error('IMPORT: MYSQL error -> '.mysql_error($dbOldLink));
+    }
+    /*while ($article = mysql_fetch_assoc($t)) {
+        log_print("Adding task \"".$task['ID']."\" ...");*/
+}
+    
 ?>
