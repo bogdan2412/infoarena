@@ -1,5 +1,7 @@
 <?php
 
+require_once(IA_ROOT . "common/task.php");
+
 // tells whether $task_id is a valid task identifier
 function task_is_valid_id($task_id) {
     return preg_match('/^[a-z0-9][a-z0-9_]*$/i', $task_id);
@@ -35,7 +37,7 @@ function controller_task_edit_details($task_id, $form_data = null, $form_errors 
     }
 
     // get parameter list for tasks (in general, not for this specific task)
-    $param_list = parameter_list('task');
+    $param_list = task_get_parameter_infos_hack();
     // here we store parameter values
     $param_values = array();
 
@@ -121,7 +123,7 @@ function controller_task_save_details($task_id) {
     }
 
     // get parameter list for tasks (in general, not for this specific task)
-    $param_list = parameter_list('task');
+    $param_list = task_get_parameter_infos_hack();
 
     // Validate data. Put incoming data in `data` and errors in `errors`
     $data = array();
@@ -136,7 +138,7 @@ function controller_task_save_details($task_id) {
         if ('p_' != substr($k, 0, 2)) continue;
         $id = substr($k, 2);
         if (!isset($param_list[$id])) continue;
-        $param_values[substr($k, 2)] = $v;
+        $param_values[$id] = $v;
         $data[$k] = $v;
     }
     $data['_param_values'] = $param_values;
@@ -144,7 +146,8 @@ function controller_task_save_details($task_id) {
     if (strlen($data['author']) < 1) {
         $errors['author'] = "Va rugam sa completati autorul/autorii.";
     }
-    if (strlen($data['type']) < 1) {
+    log_print("Task type is {$data['type']}");
+    if (!in_array($data['type'], task_get_types())) {
         $errors['type'] = "Alegeti tipul task-ului.";
         $errors['_param_list'] = true;
     }
@@ -156,10 +159,14 @@ function controller_task_save_details($task_id) {
         $errors['hidden'] = "Nu aveti permisiunea sa publicati task-uri. Luati legatura cu un administrator.";
         $errors['_param_list'] = true;
     }
+
     // validate parameter values
-    foreach ($param_values as $k => $v) {
-        if (!parameter_validate($param_list[$k], $v)) {
-            $errors['p_' . $k] = 'Valoare invalida';
+    if (in_array($data['type'], task_get_types())) {
+        $p_errors = task_validate_parameters($data['type'], $param_values);
+        if ($p_errors) {
+            foreach ($p_errors as $k => $v) {
+                $errors['p_' . $k] = $v;
+            }
             $errors['_param_list'] = true;
         }
     }

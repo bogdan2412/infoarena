@@ -79,18 +79,6 @@ require_once(IA_ROOT . "common/db/attachment.php");
  * FIXME: This is sort of shared between rounds and tasks.
  */
 
-// Lists all parameters of $type `type`.
-// $type is "task" or "round"
-function parameter_list($type) {
-    $query = sprintf("SELECT * FROM ia_parameter WHERE `type` = '%s'",
-                     db_escape($type));
-    $dict = array();
-    foreach (db_fetch_all($query) as $row) {
-        $dict[$row['id']] = $row;
-    }
-    return $dict;
-}
-
 // Replaces all parameter values according to the given dictionary
 // :WARNING: This function does not check for parameter validity!
 // It only stores them to database.
@@ -127,11 +115,6 @@ function parameter_get_values($object_type, $object_id) {
         $dict[$row['parameter_id']] = $row['value'];
     }
     return $dict;
-}
-
-// Returns bool whether $value is a valid parameter value
-function parameter_validate($parameter, $value) {
-    return !$parameter['validator'] || preg_match($parameter['validator'], $value);
 }
 
 /**
