@@ -333,10 +333,12 @@ if (read_question('Import articles? ')) {
     }
 
     // get articles    
-    $articles = mysql_query("SELECT * FROM info_art", $dbOldLink);
+    $articles = mysql_query("SELECT *, DATE_FORMAT(postDate, '%Y-%m-%d') AS postDate FROM info_art", $dbOldLink);
     if (!$articles) {
         log_error('IMPORT: MYSQL error -> '.mysql_error($dbOldLink));
     }
+
+    $article_index = "h1. Articole\n\n";
     while ($article = mysql_fetch_assoc($articles)) {
         $article['title'] = strip_tags($article['title']);
         log_print("Adding article \"".$article['title']."\" ...");
@@ -347,13 +349,23 @@ if (read_question('Import articles? ')) {
 
         $textblock_content = 'h1. '.$article['title']."\n\n";
         $textblock_content.= "(Creat de _".$article['userId']."_ la data de _".
-                              $article['postDate']."_ categoria _".
-                              $category[$article['catId']]."_, autor(i) _".$article['author']."_)\n\n";
+                             $article['postDate']."_ categoria _".
+                             $category[$article['catId']]."_, autor(i) _".$article['author']."_)\n\n";
         $textblock_content .= "*Continut scurt:*\n ".magic_convert_textile("NOFILE", $article['shortContent'])."\n\n";
         $textblock_content .= "*Continut lung:*\n".magic_convert_textile("NOFILE", $article['content'])."\n";
 
-        textblock_add_revision(magic_title($article['title']), $article['title'], $textblock_content, 0);
+        if ($category[$article['catId']] != 'Arhiva stiri') {
+            textblock_add_revision(magic_title($article['title']), $article['title'], $textblock_content, 0);
+            $article_index .= "* '".htmlentities($article['title'], ENT_QUOTES)."':".magic_title($article['title'])."\n";
+        }
+        else {
+            textblock_add_revision("news/".magic_title($article['title']),
+                                   $article['title'], $textblock_content, 0,
+                                   $article['postDate']);
+        }
     }
+
+    textblock_add_revision("articles", "Articole", $article_index, 0);
 };
     
 ?>

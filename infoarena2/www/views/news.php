@@ -19,7 +19,7 @@ include('header.php');
     <?php foreach ($view['news'] as $v) { ?>
         <div class="item">
         <?php
-            echo '<span class="date">'.htmlentities(date('d M', strtotime($v['timestamp']))).'</span>';
+            echo '<span class="date">'.htmlentities(date('d M Y', strtotime($v['timestamp']))).'</span>';
             if (identity_can('wiki-view', $v)) {
                 echo '<h3><a href="'.url($v['name']).'?action=view'.'">'.htmlentities(getattr($v, 'title')).'</a></h3>';
             }

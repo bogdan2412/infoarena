@@ -420,11 +420,11 @@ display:block;
 	padding: 5px;
 	font-family: Arial, Helvetica, sans-serif;
 	text-align: center;
-	font-size: 10pt;
+	font-size: 8.5pt;
 	margin: 5px 8px 5px 0;
 	padding-top: 10px;
 	color: #060;
-	background: #D9E7BE url(../images/calendar.jpg) no-repeat top right;
+	background: #D9E7BE url(../images/calendar.jpg) no-repeat top center;
 	line-height: 1.2;
 }
 

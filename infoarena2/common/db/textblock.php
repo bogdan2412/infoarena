@@ -5,7 +5,7 @@ require_once("db.php");
 
 // Add a new revision
 // FIXME: hash parameter?
-function textblock_add_revision($name, $title, $content, $user_id) {
+function textblock_add_revision($name, $title, $content, $user_id, $timestamp = null) {
     global $dbLink;
 
     // do a query first
@@ -29,11 +29,13 @@ function textblock_add_revision($name, $title, $content, $user_id) {
                       LIMIT 1",
                      db_escape($name));
     db_query($query);
+    $timestampVal = is_null($timestamp) ? "NOW()" : "'".db_escape($timestamp)."'";
     $query = sprintf("INSERT INTO ia_textblock
                         (name, `text`, `title`, `timestamp`, user_id)
-                      VALUES ('%s', '%s', '%s', NOW(), '%s')",
+                      VALUES ('%s', '%s', '%s', %s, '%s')",
                      db_escape($name), db_escape($content),
-                     db_escape($title), db_escape($user_id));
+                     db_escape($title), $timestampVal,
+                     db_escape($user_id));
     return db_query($query);
 }
 
