@@ -38,13 +38,6 @@ function identity_can($action, $ontoObject = null, $identity = null) {
         $identity = $identity_user;
     }
 
-    // Log permission checking.
-    // Don't remove this, it's important.
-    log_print("Checking permissions".
-              " identity=" . ($identity ? $identity['security_level'] : 'anonymous') .
-              " action=" . ($action ? (string)$action : 'null') .
-              " object=" . ($ontoObject ? (string)$ontoObject : 'null'));
-
     return permission_query($identity, $action, $ontoObject);
 }
 

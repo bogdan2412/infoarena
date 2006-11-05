@@ -51,7 +51,7 @@ class MyTextile extends Textile {
 
     // Processes ==$type|$text== blocks.
     function process_pipe_block($type, $text) {
-        log_warn("$type");
+        //log_warn("$type");
         $type = strtolower($type);
         // Raw html
         if ($type == 'html') {

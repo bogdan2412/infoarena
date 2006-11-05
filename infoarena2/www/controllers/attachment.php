@@ -31,35 +31,6 @@ function try_textblock_get($page_name) {
     return $page;
 }
 
-// Check for attachment validity and proper permissions.
-// Issue error messages accordingly.
-//
-// Returns attachment model
-function try_attachment_get($page_name, $file_name) {
-    if (!$file_name) {
-        flash_error('Cerere malformata');
-        redirect(url($page_name));
-    }
-
-    // get attachment info
-    $attach = attachment_get($file_name, $page_name);
-    identity_require('attach-download', $attach);
-    if (!$attach) {
-        flash_error('Atasamentul cerut nu exista.');
-        redirect(url($page_name));
-    }
-
-    $real_name = attachment_get_filepath($attach['id']);
-    if (!file_exists($real_name)) {
-        log_warn("Sursa atasamentului {$attach['id']} nu a fost gasita. Ma asteptam sa fie in {$real_name}");
-        flash_error("Nu am gasit fisierul cerut pe server.");
-        redirect(url($page_name));
-        break;
-    }
-
-    return $attach;
-}
-
 // List attachments to a textblock
 function controller_attachment_list($page_name) {
     $page = try_textblock_get($page_name);
@@ -314,10 +285,35 @@ function serve_attachment($filename, $attachment_name, $mimetype) {
     die();
 }
 
+// Check for attachment validity and proper permissions.
+// Does NOT print error message. Instead it returns HTTP 403/404.
+//
+// Returns attachment model
+function try_attachment_get($page_name, $file_name) {
+    if (!$file_name) {
+        die_http_error();
+    }
+
+    // get attachment info
+    $attach = attachment_get($file_name, $page_name);
+    if (!$attach) {
+        die_http_error();
+    }
+
+    $real_name = attachment_get_filepath($attach['id']);
+    if (!file_exists($real_name)) {
+        die_http_error();
+    }
+
+    return $attach;
+}
+
 // download an attachment
 function controller_attachment_download($page_name, $file_name) {
     $attach = try_attachment_get($page_name, $file_name);
-    identity_require('attach-download', $attach);
+    if (!identity_can('attach-download', $attach)) {
+        die_http_error();
+    }
 
     // serve attachment with proper mime types
     serve_attachment(attachment_get_filepath($attach['id']), $file_name, $attach['mime_type']);

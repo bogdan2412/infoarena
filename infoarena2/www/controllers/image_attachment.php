@@ -12,31 +12,29 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
     }
 
     $attach = try_attachment_get($page_name, $file_name);
-    identity_require('attach-download', $attach);
+    if (!identity_can('attach-download', $attach)) {
+        die_http_404();
+    }
 
     $real_name = attachment_get_filepath($attach['id']);
 
     $ret = getimagesize($real_name);
     if (false === $ret) {
-        flash_error('Fisierul specificat nu este recunoscut ca o imagine.');
-        redirect(url($page_name));
+        die_http_error(500, "Bad image format.");
     }
     list($img_width, $img_height, $img_type, $img_attr) = $ret;
 
     // validate resize instructions & compute new dimensions
     $newcoords = resize_coordinates($img_width, $img_height, $resize);
     if (is_null($newcoords)) {
-        // invalid resize information
-        flash_error('Instructiuni de redimensionare invalide. Iata niste exemple corecte: 100x100'
-                    . ' | @100x100 | !55x131 | 50%');
-        redirect(url($page_name));
+        die_http_error(500, "Bad url coords.");
     }
     $new_width = $newcoords[0];
     $new_height = $newcoords[1];
 
     // put some constraints here for security
     if ($new_width > IMAGE_MAX_WIDTH || $new_height > IMAGE_MAX_HEIGHT) {
-        flash_error('Dimensiunile cerute sunt prea mari.');
+        die_http_error(500, "Bad image size.");
         redirect(url($page_name));
     }
 
@@ -83,9 +81,7 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
         default:
             ob_end_clean();
             // unsupported image type
-            flash_error('Imaginea atasata (desi a fost recunoscuta ca fisier de tip imagine) nu poate fi redimensionata. '
-                        . 'Incercati alt format.');
-            redirect(url($page_name));
+            die_http_error(500, "Unsupported image type");
     }
     $buffer = ob_get_contents();
     ob_end_clean();

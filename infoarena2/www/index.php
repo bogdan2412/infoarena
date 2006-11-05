@@ -12,7 +12,7 @@ require_once("wiki/wiki.php");
 require_once("textblock.php");
 require_once("rounds.php");
 
-log_print("- -- --- ---- ----- NEW REQUEST MARKER ----- ---- --- -- -");
+log_print("- -- --- ---- ----- Request: ".$_SERVER['QUERY_STRING']);
 
 // restore identity (if such a session exists)
 identity_restore();
@@ -25,6 +25,7 @@ if (!preg_match('/^([a-z0-9_\-\/]*)$/i', $page)) {
     flash_error('invalid URL');
     redirect(url(''));
 }
+
 
 // Redirect to home if in /
 if ($page == "") {
@@ -39,8 +40,6 @@ $urlstart = getattr(split('/', $page), 0, '');
 
 // A lot of logic depends on this, so we try to keep the code nicer.
 $action = request('action', 'view');
-
-log_print("Request page=$page action=$action");
 
 // Direct mapping list
 // Note: array_flip() flips keys with values in a dictionary.

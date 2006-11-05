@@ -25,6 +25,15 @@ function permission_query($user, $action, $ontoObject) {
     // split actions (wiki-view) into an action group (wiki) and action (view)
     list($group, $action) = split("-", $action);
 
+    // Log permission checking.
+    // Don't remove this, it's important.
+    log_print("PERMQUERY (".
+                getattr($user, 'id', 'null') .", ".
+                getattr($user, 'security_level', 'anonymous') .", ".
+                $group . ", " . $action . ", " .
+                getattr($ontoObject, 'id', getattr($ontoObject, 'name', $ontoObject))
+                . "): id, level, group, action, objid");
+
     // group dispatcher
     switch ($group) {
         case 'user':
@@ -116,6 +125,8 @@ function permission_wiki($user, $action, $textblock) {
     }
 }
 
+// FIXME: query textblock here.
+// FIXME: magic prefix.
 function permission_attach($user, $action, $attach) {
     switch ($action) {
         case 'download':

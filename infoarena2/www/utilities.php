@@ -13,9 +13,16 @@ function request($paramName, $defaultValue = null) {
 // FIXME: Is that even remotely possible?
 // FIXME: Would be usefull for debugging though.
 function redirect($absoluteUrl) {
-    log_print("Sending a HTTP redirect to $absoluteUrl");
+    log_print("HTTP Redirect to $absoluteUrl from {$_SERVER['QUERY_STRING']}");
     header("Location: {$absoluteUrl}\n\n");
     session_write_close();
+    die();
+}
+
+// Die with a http error.
+function die_http_error($code = 404, $msg = "File not found") {
+    log_print("HTTP ERROR $code $msg");
+    header("HTTP/1.0 $code $msg");
     die();
 }
 

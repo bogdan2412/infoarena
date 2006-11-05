@@ -11,4 +11,9 @@ function getattr($dict, $attribute, $defaultValue = null) {
     }
 }
 
+function is_number($x)
+{
+    return is_number($x) && $x == intval($x);
+}
+
 ?>
