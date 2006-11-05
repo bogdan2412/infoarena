@@ -23,7 +23,7 @@ function macro_gallery($args) {
     if (!$page) {
         return macro_error('Expecting argument `page`');
     }
-    if (!file) {
+    if (!$file) {
         return macro_error('Expecting argument `file`');
     }
 

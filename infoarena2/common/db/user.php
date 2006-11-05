@@ -72,7 +72,7 @@ function user_create($data) {
     $query .= ')';
 
     // create user
-    log_print('Creating database entry for user: '.$data['id']);
+    log_print('Creating database entry for user: '.$data['username']);
     db_query($query);
 }
 

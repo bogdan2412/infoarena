@@ -577,17 +577,21 @@ ul.form label {
     font-size: .9em;
 }
 
+/* textblock editor */
 textarea#form_content {
-    width: 80%;
+    width: 100%;
     height: 25em;
     font-family: monospace;
     font-size: 1em;
 }
 
-form.task #form_title {
-    width: 15em;
+input#form_title {
+    width: 100%;
+    font-size: 1.2em;
+    padding: .2em;
 }
 
+/* task editor */
 form.task li#field_title, form.task li#field_author, form.task
 li#field_source {
     float: left;

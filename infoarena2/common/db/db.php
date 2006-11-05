@@ -9,7 +9,7 @@ require_once("../common/log.php");
 // Establish database connection
 // Repetitive include guard. Is this really needed?
 log_assert(!isset($dbLink));
-$dbLink = mysql_connect(DB_HOST, DB_USER, DB_PASS) or log_die('Cannot connect to database.');
+$dbLink = mysql_connect(DB_HOST, DB_USER, DB_PASS) or log_error('Cannot connect to database.');
 mysql_select_db(DB_NAME, $dbLink) or die ('Cannot select database.');
 
 // Escapes a string to be safely included in a query.
@@ -29,7 +29,6 @@ function db_query($query) {
     if (!$result) {
         log_error('MYSQL error: '.mysql_error($dbLink).'\n');
         log_error('Query: \''.$query.'\'\n');
-        log_die();
     }
     return $result;
 }

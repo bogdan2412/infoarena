@@ -166,7 +166,7 @@ function imagecache_save($attach_id, $resize, $buffer) {
         return false;
     }
 
-    log_print("Saved resampled image {$page_name} {$resize} in image cache");
+    log_print("Saved resampled image {$filename} {$resize} in image cache");
 
     return true;
 }
