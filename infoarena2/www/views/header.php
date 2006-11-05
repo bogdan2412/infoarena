@@ -39,11 +39,13 @@
 
     <ul id="nav" class="clear">
         <li><a href="<?= url('Home') ?>">Prima pagina</a></li>
-        <li><a href="<?= url('Pregatire') ?>">Pregatire</a></li>
-        <li><a href="<?= url('Contests') ?>">Concursuri</a></li>
-        <li><a href="<?= url('Forum') ?>">Forum</a></li>
-        <li><a href="<?= url('Articles') ?>">Articole</a></li>
         <li><a href="<?= url('News') ?>">Arhiva stiri</a></li>
+        <li><a href="<?= url('round/arhiva') ?>">Arhiva de probleme</a></li>
+        <li><a href="<?= url('Contests') ?>">Concursuri</a></li>
+        <li><a href="<?= url('Articles') ?>">Articole</a></li>
+        <li><a href="<?= url('Links') ?>">Link-uri</a></li>
+        <li><a href="<?= url('Downloads') ?>">Download-uri</a></li>
+        <li><a href="<?= url('Forum') ?>">Forum</a></li>
         <?php if (identity_can('user-editprofile', $identity_user)) { ?>
         <li class="separator"><hr/></li>
         <li><a href="<?= url('profile') ?>">Profilul meu</a></li>

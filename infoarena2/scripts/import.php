@@ -36,13 +36,18 @@ function magic_file_attach($page, $attname, $file)
     if (!file_exists($file)) {
         log_error("File to attach not found");
     }
+
+    $finfo = finfo_open(FILEINFO_MIME);
+    $mime = finfo_file($finfo, $file);
+    finfo_close($finfo);
+   
     $att = attachment_get($attname, $page);
     if ($att) {
         $id = $att['id'];
-        attachment_update($id, $attname, filesize($file), "text/plain", $page, 0);
+        attachment_update($id, $attname, filesize($file), $mime, $page, 0);
         log_print("Updating attachment $attname to $page");
     } else {
-        $id = attachment_insert($attname, filesize($file), "text/plain", $page, 0);
+        $id = attachment_insert($attname, filesize($file), $mime, $page, 0);
         log_print("New attachment $attname to $page");
     }
     if (!copy($file, IA_ATTACH_DIR . $id)) {
@@ -73,7 +78,7 @@ function magic_convert_textile($filename, $content = null) {
         // remove leading and trailing special characters
         $value = trim($value, " \t\n\r\0\x0B\x00..\x1F\x7F..\xFF");
         // more formatting
-        $value = preg_replace('/(\+|\x7C)*-+(\+|\x7C)*/', '', $value);
+        $value = preg_replace('/(\+|\x7C)*---+(\+|\x7C)*/', '', $value);
     }
     return implode("\n", $lines);
 }
@@ -90,7 +95,7 @@ function magic_convert_task($task_id) {
     $ret = preg_replace("/^\s*exemplu/mi", "\nh2. Exemplu", $ret);
     $lines = explode("\n", $ret);
     foreach ($lines as &$line) {
-        $line = preg_replace('/(\+|\x7C)*-+(\+|\x7C)*/', '', $line);
+        $line = preg_replace('/(\+|\x7C)*---+(\+|\x7C)*/', '', $line);
         $line = str_replace("=<", "<=", $line);
     }
     return implode("\n", $lines);
@@ -348,14 +353,15 @@ if (read_question('Import articles? ')) {
         }
 
         $textblock_content = 'h1. '.$article['title']."\n\n";
-        $textblock_content.= "(Creat de _".$article['userId']."_ la data de _".
+        $textblock_content.= "(Creat de '_".$article['userId']."_':user/".$article['userId']." la data de _".
                              $article['postDate']."_ categoria _".
                              $category[$article['catId']]."_, autor(i) _".$article['author']."_)\n\n";
         $textblock_content .= "*Continut scurt:*\n ".magic_convert_textile("NOFILE", $article['shortContent'])."\n\n";
         $textblock_content .= "*Continut lung:*\n".magic_convert_textile("NOFILE", $article['content'])."\n";
 
         if ($category[$article['catId']] != 'Arhiva stiri') {
-            textblock_add_revision(magic_title($article['title']), $article['title'], $textblock_content, 0);
+            textblock_add_revision(magic_title($article['title']), $article['title'],
+                                   $textblock_content, 0, $article['postDate']);
             $article_index .= "* '".htmlentities($article['title'], ENT_QUOTES)."':".magic_title($article['title'])."\n";
         }
         else {
@@ -367,5 +373,105 @@ if (read_question('Import articles? ')) {
 
     textblock_add_revision("articles", "Articole", $article_index, 0);
 };
+
+if (read_question("Import resources? ")) {
+    $resources = mysql_query("SELECT *, DATE_FORMAT(postDate, '%Y-%m-%d') AS postDate
+                             FROM info_res ORDER BY postDate DESC", $dbOldLink);
+    if (!$resources){
+        log_error('IMPORT: MYSQL error -> '.mysql_error($dbOldLink));
+    }
+    $arr = array();
+    while ($res = mysql_fetch_assoc($resources)) {
+        $arr[] = $res;
+    }
+
+    // hash resource categories
+    $res_cat = mysql_query("SELECT * FROM info_rescat", $dbOldLink);
+    if (!$res_cat){
+        log_error('IMPORT: MYSQL error -> '.mysql_error($dbOldLink));
+    }
+
+    $resource_index ="h1. Resurse\n";
+
+    $category = array();
+    $total = 0;
+    while ($cat = mysql_fetch_assoc($res_cat)) {
+        $cnt = 0;
+        foreach ($arr as $resource) {
+            if ($resource['catId'] == $cat['id'] && $resource['visible']) $cnt++;
+        }
+        log_print("Adding resources from category \"".$cat['caption']."\"...".$cnt." found");
+        $total += $cnt;
+        if (!$cnt) continue;
+        $resource_index .= "\nh2. ".$cat['caption']." (".$cnt." link-uri)\n\n";
+
+        foreach ($arr as $resource) {
+            if ($resource['catId'] != $cat['id'] || !$resource['visible']) continue;
+            $resource_index .= "* '".htmlentities($resource['title'], ENT_QUOTES)."':".
+                               $resource['href']." ('".
+                               htmlentities($resource['userId'], ENT_QUOTES)."':user/".
+                               $resource['userId']." @ ".$resource['postDate'].")\n";
+            $resource_index .= htmlentities($resource['description'], ENT_QUOTES)."\n";
+        }
+    }
+    log_print("Added ".$total." resources!\n");
+
+    textblock_add_revision("links", "Link-uri", $resource_index, 0);
+}
     
+if (read_question("Import downloads? ")) {
+    $downloads = mysql_query("SELECT *, DATE_FORMAT(postDate, '%Y-%m-%d') AS postDate
+                             FROM info_down ORDER BY postDate DESC", $dbOldLink);
+    if (!$downloads){
+        log_error('IMPORT: MYSQL error -> '.mysql_error($dbOldLink));
+    }
+    $arr = array();
+    while ($down = mysql_fetch_assoc($downloads)) {
+        $arr[] = $down;
+    }
+
+    // hash download categories
+    $res_cat = mysql_query("SELECT * FROM info_downcat", $dbOldLink);
+    if (!$res_cat){
+        log_error('IMPORT: MYSQL error -> '.mysql_error($dbOldLink));
+    }
+
+    $download_index ="h1. Download-uri\n";
+
+    $category = array();
+    $total = 0;
+    while ($cat = mysql_fetch_assoc($res_cat)) {
+        $cnt = 0;
+        foreach ($arr as $download) {
+            if ($download['catId'] == $cat['id'] && $download['visible']) $cnt++;
+        }
+        log_print("Adding downloads from category \"".$cat['caption']."\"...".$cnt." found");
+        $total += $cnt;
+        if (!$cnt) continue;
+        $download_index .= "\nh2. ".$cat['caption']." (".$cnt." link-uri)\n\n";
+
+        foreach ($arr as $download) {
+            if ($download['catId'] != $cat['id'] || !$download['visible']) continue;
+
+            // attach the file
+            $fname = $ia1_path."www/info/upload/".$download['id'];
+            if (!file_exists($fname)) {
+                log_warn("Attachment ".$download['href']."(".$fname.") is missing!");
+                continue;
+            }
+            else {
+                magic_file_attach("downloads", $download['href'], $fname);
+            }
+            
+            $download_index .= "* '".htmlentities($download['title'], ENT_QUOTES)."':".
+                               $download['href']." ( _".$download['size']."_ bytes, '".
+                               htmlentities($download['userId'], ENT_QUOTES)."':user/".
+                               $download['userId']." @ ".$download['postDate']." )\n";
+            $download_index .= htmlentities($download['description'], ENT_QUOTES)."\n";
+        }
+    }
+    log_print("Added ".$total." downloads!\n");
+
+    textblock_add_revision("downloads", "Download-uri", $download_index, 0);
+}
 ?>
