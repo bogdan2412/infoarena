@@ -74,7 +74,6 @@ function controller_task_edit_details($task_id, $form_data = null, $form_errors 
     }
     else {
         // form was submitted. there was an error with the input
-
         // - $form_data already contains input data
         // - $form_errors already contains input errors
 
@@ -108,6 +107,7 @@ function controller_task_edit_details($task_id, $form_data = null, $form_errors 
 //        controller_task_edit_details() as error handler
 function controller_task_save_details($task_id) {
     global $identity_user;
+
     $task = task_get($task_id);
     if ($task) {
         identity_require('task-edit', $task);
@@ -149,15 +149,12 @@ function controller_task_save_details($task_id) {
     log_print("Task type is {$data['type']}");
     if (!in_array($data['type'], task_get_types())) {
         $errors['type'] = "Alegeti tipul task-ului.";
-        $errors['_param_list'] = true;
     }
     if ('0' != $data['hidden'] && '1' != $data['hidden']) {
         $errors['hidden'] = "Valoare invalida";
-        $errors['_param_list'] = true;
     }
     if ('0' == $data['hidden'] && !identity_can('task-publish', $task)) {
         $errors['hidden'] = "Nu aveti permisiunea sa publicati task-uri. Luati legatura cu un administrator.";
-        $errors['_param_list'] = true;
     }
 
     // validate parameter values
@@ -167,7 +164,6 @@ function controller_task_save_details($task_id) {
             foreach ($p_errors as $k => $v) {
                 $errors['p_' . $k] = $v;
             }
-            $errors['_param_list'] = true;
         }
     }
 
@@ -191,11 +187,11 @@ function controller_task_save_details($task_id) {
         // - done
         if ($task) {
             flash('Informatiile despre task au fost actualizate.');
-            redirect(url('task/' . $task_id));
+            redirect(url('task/'.$task_id));
         }
         else {
             flash('Un nou task a fost creat. Acum trebuie sa editezi continutul ...');
-            redirect(url('task/' . $task_id, array('action'=>'edit')));
+            redirect(url('task/'.$task_id, array('action'=>'edit')));
         }
     }
     else {

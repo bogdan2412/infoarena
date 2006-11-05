@@ -204,8 +204,12 @@ function permission_round($user, $action, $round) {
             // only administrators edit/create round pages
             return $user && ('admin'==$level);
 
+        case 'publish':
+            // only admins can publish rounds
+            return $user && ('admin'==$level);
+
         default:
-            log_error('Invalid task action: '.$action);
+            log_error('Invalid rounds action: '.$action);
             return false;
     }
 }

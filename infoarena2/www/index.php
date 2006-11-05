@@ -109,7 +109,7 @@ else if (TEXTBLOCK_ROUND==$page_class && $action == 'details') {
     controller_round_edit_details($page_id);
 }
 //  - save round details
-else if ($urlstart == 'round' && $action == 'save') {
+else if ($urlstart=='round' && $action=='details-save') {
     require_once('controllers/round.php');
     controller_round_save_details($page_id);
 }

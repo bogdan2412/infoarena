@@ -30,6 +30,10 @@ include('views/header.php');
                 <?= ferr_span('hidden')?>
         </li>
 
+<?php
+// FIXME: Field should be generated from task_get_types()
+?>
+
         <li id="field_type">
             <label for="form_type">Tip task</label>
                 <select name="type" id="form_type">
@@ -39,7 +43,7 @@ include('views/header.php');
                 </select>
                 <?= ferr_span('type')?>
         </li>
-    <ul>
+    </ul>
 
     <h2>Parametri</h2>
 

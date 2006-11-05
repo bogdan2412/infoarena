@@ -46,7 +46,18 @@ function round_create($round_id, $type, $user_id, $active) {
                      db_escape($round_id), db_escape($type),
                      db_escape($user_id), db_escape($active));
     db_query($query);
-    return mysql_insert_id($dbLink);
+    $new_round = round_get($round_id);
+    log_assert($new_round, 'New round input was validated OK but no database entry was created');
+
+    // create associated textblock entry
+    // default (initial) content is taken from an existing template
+    $title = $new_round['id']; 
+    $template = textblock_get_revision('template/newround');
+    log_assert($template, 'Could not find template for new round: template/newround');
+    $content = str_replace('%round_id%', $new_round['id'], $template['text']);
+    textblock_add_revision('round/'.$new_round['id'], $title, $content, $new_user['id']);
+
+    return $new_round['id'];
 }
 
 function round_update($round_id, $type, $active) {

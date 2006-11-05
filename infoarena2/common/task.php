@@ -2,14 +2,12 @@
 // This module implements task and task-param related stuff.
 
 // Get valid task types.
-function task_get_types()
-{
+function task_get_types() {
     return array('classic', 'output-only');
 }
 
 // Get parameter infos.
-function task_get_parameter_infos()
-{
+function task_get_parameter_infos() {
     return array(
             'classic' => array(
                     'timelimit' => array(
@@ -72,16 +70,14 @@ function task_get_parameter_infos()
     );
 }
 
-function task_get_parameter_infos_hack()
-{
+function task_get_parameter_infos_hack() {
     $infos = task_get_parameter_infos();
     $ret = array_merge($infos['classic'], $infos['output-only']);
     return $ret;
 }
 
 // Valideaza parametrii. Returneaza errorile sub conventie de $form_errors.
-function task_validate_parameters($task_type, $parameters)
-{
+function task_validate_parameters($task_type, $parameters) {
     $errors = array();
     if ($task_type == 'classic') {
         if (!is_numeric($parameters['timelimit'])) {

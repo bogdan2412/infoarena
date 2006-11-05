@@ -204,6 +204,7 @@ function controller_textblock_edit($page_name) {
     }
     else {
         textblock_create_model_first($page_name);
+
         $perm = textblock_get_permission('create', $page_name);
         if (!$perm) {
             flash_error('Nu aveti permisiunea sa creati aceasta pagina');
@@ -299,17 +300,26 @@ function controller_textblock_save($page_name) {
 // Associated models are created using specific controllers.
 function textblock_create_model_first($page_name) {
     list($page_class, $object_id) = textblock_split_name($page_name);
-    if (TEXTBLOCK_TASK == $page_class) {
+
+    if (TEXTBLOCK_TASK==$page_class) {
         // You cannot create a new task via the texblock editor
-        //
-        // The edit-details controller creates a new task object and its
+        // The edit-details controller creates a new round object and its
         // associated textblock
-        flash('Acest task nu exista. Te trimit sa il creezi.<br/>'
-              .'Mai intai, introdu cateva informatii de baza.');
-        redirect(url($page_name, array('action' => 'details')));
+        $message = 'Acest task nu exista. Te trimit sa il creezi.';
+    }
+    elseif (TEXTBLOCK_ROUND==$page_class) {
+        // You cannot create a new round via the texblock editor
+        // The edit-details controller creates a new round object and its
+        // associated textblock
+        $message = 'Aceasta runda nu exista. Te trimita sa o creezi.';
+    }
+    else {
+        // you may freely create textblock
+        return true;
     }
 
-    return true;
+    redirect(url($page_name, array('action' => 'details')));
+    flash($message.'<br/>Mai intai, introdu cateva informatii de baza.');
 }
 
 ?>
