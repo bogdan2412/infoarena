@@ -57,10 +57,17 @@ function magic_convert_textile($filename) {
         log_error("File $filename to attach not found");
     }
     ob_start();
-    system("elinks -dump 1 -dump-charset windows-1250 -dump-width 2048 $filename");
+    system("elinks -dump 1 -dump-width 2048 $filename");
     $ret = ob_get_contents();
     ob_end_clean();
-    return $ret;
+    $lines = explode("\n", $ret);
+    foreach ($lines as &$value) {
+        // remove excesive whitespace
+        $value = preg_replace('/\s\s+/', ' ', $value);
+        // remove leading and trailing special characters
+        $value = trim($value, " \t\n\r\0\x0B\x00..\x1F\x7F..\xFF");
+    }
+    return implode("\n", $lines);
 }
 
 function magic_convert_task($task_id)
@@ -73,7 +80,11 @@ function magic_convert_task($task_id)
     $ret = preg_replace("/^\s*date de ie.{1,5}ire/mi", "\nh2. Date de Iesire", $ret);
     $ret = preg_replace("/^\s*restric.{1,5}ii/mi", "\nh2. Restrictii", $ret);
     $ret = preg_replace("/^\s*exemplu/mi", "\nh2. Exemplu", $ret);
-    return $ret;
+    $lines = explode("\n", $ret);
+    foreach ($lines as &$line) {
+        $line = preg_replace('/(\+||)-+(\+||)/', '', $line);
+    }
+    return implode("\n", $lines);
 }
 
 while ($contest = mysql_fetch_assoc($result)) {
