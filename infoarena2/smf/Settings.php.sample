@@ -1,4 +1,10 @@
 <?php
+
+// info-arena
+// Configure your SMF installation by editing ALL --edit-me-- fields
+
+
+
 /******************************************************************************
 * Settings.php                                                                *
 *******************************************************************************
@@ -30,23 +36,30 @@ $mmessage = 'Okay faithful users...we\'re attempting to restore an older backup 
 ########## Forum Info ##########
 $mbname = 'info-arena';		# The name of your forum.
 $language = 'english';		# The default language file set for the forum.
-$boardurl = 'http://localhost/smf_infoarena';		# URL to your forum's folder. (without the trailing /!)
+
+// example: http://localhost/smf_infoarena
+$boardurl = '--edit-me--';		# URL to your forum's folder. (without the trailing /!)
 $webmaster_email = 'strat.cristian@gmail.com';		# Email address to send emails from. (like noreply@yourdomain.com.)
 $cookiename = 'SMFCookie360';		# Name of the cookie to set for authentication.
 
 ########## Database Info ##########
-$db_server = '192.168.0.30';
-$db_name = 'infoarena2_temp';
-$db_user = 'chuck';
-$db_passwd = 'norris';
+$db_server = '--edit-me--';
+$db_name = '--edit-me--';
+$db_user = '--edit-me--';
+$db_passwd = '--edit-me--';
 $db_prefix = 'smf_';
 $db_persist = 0;
 $db_error_send = 1;
 
 ########## Directories/Files ##########
 # Note: These directories do not have to be changed unless you move things.
-$boarddir = '/home/alexandru/devel/infoarena2/smf';		# The absolute path to the forum's folder. (not just '.'!)
-$sourcedir = '/home/alexandru/devel/infoarena2/smf/Sources';		# Path to the Sources directory.
+
+// example: /home/alexandru/devel/infoarena2/smf
+// The absolute path to the forum's folder. (not just '.'!)
+$boarddir = '--edit-me--';		# The absolute path to the forum's folder. (not just '.'!)
+
+// (no need to edit)
+$sourcedir = $boarddir.'/Sources';		# Path to the Sources directory.
 
 ########## Error-Catching ##########
 # Note: You shouldn't touch these settings.
