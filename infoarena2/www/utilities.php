@@ -22,7 +22,9 @@ function redirect($absoluteUrl) {
 // Die with a http error.
 function die_http_error($code = 404, $msg = "File not found") {
     log_print("HTTP ERROR $code $msg");
-    header("HTTP/1.0 $code $msg");
+    header("HTTP/1.0 $code $http_msg");
+    echo '<h1>'.$msg.'</h1>';
+    echo '<p><a href="'.IA_URL.'">Inapoi la prima pagina</a></p>';
     die();
 }
 
@@ -114,15 +116,16 @@ function execute_view($view_file_name, $view) {
     $recent_pages = getattr($_SESSION, 'recent_pages', array());
 
     // update recent page history
-    $page = request('page', 'home');
-    $recent_pages[$page] = getattr($view, 'title', $page);
+    $query = url_from_args($_GET);
+    $hashkey = strtolower($query);
+    $recent_pages[$hashkey] = array($query, getattr($view, 'title', $page)); 
     if (5 < count($recent_pages)) {
         array_shift($recent_pages);
     }
     $_SESSION['recent_pages'] = $recent_pages;
 
     // let view access recent_pages
-    $view['current_url'] = $page;
+    $view['current_url_key'] = strtolower($query);
     $view['recent_pages'] = $recent_pages;
 
     // expand $view members into global scope
@@ -137,13 +140,7 @@ function execute_view($view_file_name, $view) {
         $GLOBALS[$view_hash_key] = $view_hash_value;
         $$view_hash_key = $view_hash_value;
     }
-/*    foreach ($GLOBALS as $the_key => $the_value) {
-        // Don't unset magic shit.
-        if ($the_key[0] != '_' && strpos($the_key, 'HTTP_') !== 0) {
-            unset($GLOBALS[$the_key]);
-            echo "Am sters $the_key";
-        }
-    }*/
+
     require_once('views/utilities.php');
     include($view_file_name);
     //include('views/vardump.php');

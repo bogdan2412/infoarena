@@ -79,20 +79,17 @@
 
 // breadcrumbs with recent pages
 if (isset($recent_pages) && (1 < count($recent_pages))) {
-    if (!isset($current_url)) {
-        $current_url = '';
-    }
-
     $bstring = '';
-    foreach ($recent_pages as $url => $rec_title) {
+    foreach ($recent_pages as $rec_key => $rec_entry) {
+        list($rec_url, $rec_title) = $rec_entry;
         if ($bstring) {
             $bstring .= ' <span class="separator">|</span> ';
         }
-        if ($current_url == $url) {
+        if ($current_url_key == $rec_key) {
             $bstring .= "<strong>{$rec_title}</strong>";
         }
         else {
-            $bstring .= "<a href=\"" . url($url) . "\">{$rec_title}</a>";
+            $bstring .= "<a href=\"" . $rec_url . "\">{$rec_title}</a>";
         }
     }
     echo '<p id="breadcrumbs">Pagini recente &raquo; ' . $bstring . '</p>';
