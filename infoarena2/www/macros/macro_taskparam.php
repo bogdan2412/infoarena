@@ -68,7 +68,7 @@ function macro_taskparam($args) {
 
         default:
             if (!isset($params[$param])) {
-                if ($isset($args['default_value'])) {
+                if (isset($args['default_value'])) {
                     return $args['default_value'];
                 }
                 else {

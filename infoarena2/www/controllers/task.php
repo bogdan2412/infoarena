@@ -1,19 +1,25 @@
 <?php
 
-// Displays a form to either create a new task or edit an existing one.
+// tells whether $task_id is a valid task identifier
+function task_is_valid_id($task_id) {
+    return preg_match('/^[a-z0-9][a-z0-9_]*$/i', $task_id);
+}
+
+// Displays form to either create a new task or edit an existing one.
+// This form does not edit task content (its associated textblock)
+// (textblock editor does that)
 //
 // Initially, the form is filled in with either:
 //      * values for the existing task we edit
 //      * default initial values when creating a new task
 //
-// Form submits to controller_task_save().
-// When a validation error occurs in controller_task_save() it calls
-// this controller (controller_task_edit) as an error handler in order
-// to display the form with the user-submitted data and their corresponding
-// errors.
-function controller_task_edit_details($task_id, $form_data = null,
-                              $form_errors = null) {
+// Form submits to controller_task_save_details().
+// When a validation error occurs in controller_task_save_details() it calls
+// this controller as an error handler in order to display the form
+// with the user-submitted data and their corresponding errors.
+function controller_task_edit_details($task_id, $form_data = null, $form_errors = null) {
     global $identity_user;
+
     $task = task_get($task_id);
     if ($task) {
         identity_require('task-edit', $task);
@@ -23,8 +29,8 @@ function controller_task_edit_details($task_id, $form_data = null,
     }
 
     // validate task_id
-    if (!preg_match('/^[a-z0-9][a-z0-9_]*$/i', $task_id)) {
-        flash_error('id-ul de task este invalid');
+    if (!task_is_valid_id($task_id)) {
+        flash_error('Identificatorul de task este invalid');
         redirect(url(''));
     }
 
@@ -34,32 +40,25 @@ function controller_task_edit_details($task_id, $form_data = null,
     $param_values = array();
 
     if (is_null($form_data)) {
-        // initial form data
+        // initial form data (when displaying the form for the first time)
         $form_data = array();
         $form_errors = array();
         if (!$task) {
-            // default values (when creating a new task)
-            $form_data['title'] = $task_id;
+            // - default values (when creating a new task)
             $form_data['author'] = getattr($identity_user, 'full_name');
-            $template = textblock_get_revision('template/new_task');
-            $form_data['content'] = $template['text'];
             $form_data['source'] = '';
             $form_data['type'] = '';
             $form_data['hidden'] = '1';
 
-            // default parameter values
+            // - default parameter values
             foreach ($param_list as $k => $v) {
                 $param_values[$k] = $v['default'];
                 $form_data['p_' . $k] = $v['default'];
             }
         }
         else {
-            // values from existing task
-            $textblock = task_get_textblock($task_id);
-
-            $form_data['title'] = $textblock['title'];
+            // - values from existing task
             $form_data['author'] = $task['author'];
-            $form_data['content'] = $textblock['text'];
             $form_data['source'] = $task['source'];
             $form_data['type'] = $task['type'];
             $form_data['hidden'] = $task['hidden'];
@@ -72,29 +71,25 @@ function controller_task_edit_details($task_id, $form_data = null,
         }
     }
     else {
-        // extract parameter values from form_data.
-        // the `save` controller does a nice thing and extracts these values
-        // for convenience
-        $param_values = $form_data['_param_values'];
-    }
+        // form was submitted. there was an error with the input
 
-    // chose form tab
-    $view = array();
-    if (getattr($form_errors, '_param_list')) {
-        $view['active_tab'] = 'parameters';
-    }
-    else {
-        $view['active_tab'] = 'statement';
+        // - $form_data already contains input data
+        // - $form_errors already contains input errors
+
+        // - extract parameter values from form_data.
+        //   the `save` controller does a nice thing and extracts these values
+        //   for convenience
+        $param_values = $form_data['_param_values'];
     }
 
     // view form
     if (!$task) {
-        $view['title'] = "Task nou: " . $task_id;
+        $view['title'] = "Creaza task: " . $task_id;
     }
     else {
-        $view['title'] = "Modificare task";
+        $view['title'] = "Modifica task: ".$task_id;
     }
-    $view['action'] = url('task/' . $task_id, array('action' => 'save'));
+    $view['action'] = url('task/' . $task_id, array('action' => 'details-save'));
     $view['form_values'] = $form_data;
     $view['form_errors'] = $form_errors;
     $view['page_name'] = 'task/'.$task_id;
@@ -103,12 +98,12 @@ function controller_task_edit_details($task_id, $form_data = null,
     execute_view_die("views/task_edit.php", $view);
 }
 
-// save controller
+// save details controller
 // Workflow is:
-//      * controller_task_edit() displays form
-//      * form submits to controller_task_save()
-//      * controller_task_save() validates and uses controller_task_edit()
-//        as error handler
+//      * controller_task_edit_details() displays form
+//      * form submits to controller_task_save_details()
+//      * controller_task_save_details() validates and uses
+//        controller_task_edit_details() as error handler
 function controller_task_save_details($task_id) {
     global $identity_user;
     $task = task_get($task_id);
@@ -120,8 +115,8 @@ function controller_task_save_details($task_id) {
     }
 
     // validate task_id
-    if (!preg_match('/^[a-z0-9][a-z0-9_]*$/i', $task_id)) {
-        flash_error('id-ul de task este invalid');
+    if (!$task && !task_is_valid_id($task_id)) {
+        flash_error('Identificatorul de task este invalid');
         redirect(url(''));
     }
 
@@ -131,9 +126,7 @@ function controller_task_save_details($task_id) {
     // Validate data. Put incoming data in `data` and errors in `errors`
     $data = array();
     $errors = array();
-    $data['title'] = getattr($_POST, 'title');
     $data['author'] = getattr($_POST, 'author');
-    $data['content'] = getattr($_POST, 'content');
     $data['source'] = getattr($_POST, 'source');
     $data['type'] = getattr($_POST, 'type');
     $data['hidden'] = getattr($_POST, 'hidden');
@@ -148,12 +141,6 @@ function controller_task_save_details($task_id) {
     }
     $data['_param_values'] = $param_values;
     // validate task values
-    if (strlen($data['content']) < 1) {
-        $errors['content'] = "Va rugam sa completati enuntul.";
-    }
-    if (strlen($data['title']) < 1) {
-        $errors['title'] = "Va rugam sa completati titlul.";
-    }
     if (strlen($data['author']) < 1) {
         $errors['author'] = "Va rugam sa completati autorul/autorii.";
     }
@@ -166,7 +153,7 @@ function controller_task_save_details($task_id) {
         $errors['_param_list'] = true;
     }
     if ('0' == $data['hidden'] && !identity_can('task-publish', $task)) {
-        $errors['hidden'] = "Nu aveti permisiunea sa publicati task-uri.";
+        $errors['hidden'] = "Nu aveti permisiunea sa publicati task-uri. Luati legatura cu un administrator.";
         $errors['_param_list'] = true;
     }
     // validate parameter values
@@ -192,19 +179,23 @@ function controller_task_save_details($task_id) {
                         $data['author'], $data['source'],
                         getattr($identity_user, 'id'));
         }
-        // - corresponding textblock
-        textblock_add_revision('task/' . $task_id, $data['title'],
-                               $data['content'], getattr($identity_user,'id'));
         // - update parameter values
         task_update_parameters($task_id, $param_values);
         // - done
-        flash('Task-ul a fost salvat');
-        redirect(url('task/' . $task_id));
+        if ($task) {
+            flash('Informatiile despre task au fost actualizate.');
+            redirect(url('task/' . $task_id));
+        }
+        else {
+            flash('Un nou task a fost creat. Acum trebuie sa editezi continutul ...');
+            redirect(url('task/' . $task_id, array('action'=>'edit')));
+        }
     }
     else {
         // errors occured => call on error handler
         flash_error('Unul sau mai multe campuri au fost completate incorect!');
-        controller_task_edit($task_id, $data, $errors);
+        controller_task_edit_details($task_id, $data, $errors);
     }
 }
+
 ?>

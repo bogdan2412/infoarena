@@ -25,8 +25,22 @@ function task_create($task_id, $type, $hidden, $author, $source, $user_id) {
                       db_escape($task_id), db_escape($type),
                       db_escape($hidden), db_escape($author),
                       db_escape($source), db_escape($user_id));
+
+    // create database entry for new task
+    log_print('Creating database entry for task: '.$task_id);
     db_query($query);
-    return mysql_insert_id($dbLink);
+    $new_task = task_get($task_id);
+    log_assert($new_task, 'New task input was validated OK but no database entry was created');
+
+    // create associated textblock entry
+    // default (initial) content is taken from an existing template
+    $title = $new_task['id']; 
+    $template = textblock_get_revision('template/newtask');
+    log_assert($template, 'Could not find template for new task: template/newtask');
+    $content = str_replace('%task_id%', $new_task['id'], $template['text']);
+    textblock_add_revision('task/'.$new_task['id'], $title, $content, $new_user['id']);
+
+    return $new_task['id'];
 }
 
 function task_update($task_id, $type, $hidden, $author, $source) {

@@ -47,13 +47,7 @@ function controller_news_view_all() {
     
     $view['page'] = $pagenum;
     $view['news'] = news_get_range($pagenum * IA_MAX_NEWS, IA_MAX_NEWS);
-    if (!$view['news']) {
-        flash_error('Pagina de stiri nu exista');
-        redirect(url('news'));
-    }
-    else {
-        execute_view_die("views/news.php", $view);
-    }
+    execute_view_die("views/news.php", $view);
 }
 
 function controller_news_edit($page_name) {

@@ -1,6 +1,6 @@
 <?php
 
-// View a plain old textblock.
+// View a plain textblock.
 // That textblock can be owned by something else.
 function controller_textblock_view($page_name, $rev_num = null) {
     // Templates can't be seen
@@ -203,6 +203,7 @@ function controller_textblock_edit($page_name) {
         }
     }
     else {
+        textblock_create_model_first($page_name);
         $perm = textblock_get_permission('create', $page_name);
         if (!$perm) {
             flash_error('Nu aveti permisiunea sa creati aceasta pagina');
@@ -249,6 +250,8 @@ function controller_textblock_save($page_name) {
         }
     }
     else {
+        textblock_create_model_first($page_name);
+
         $perm = textblock_get_permission('create', $page_name);
         if (!$perm) {
             flash_error('Nu aveti permisiunea sa creati aceasta pagina');
@@ -283,6 +286,30 @@ function controller_textblock_save($page_name) {
         $view['form_errors'] = $form_errors;
         execute_view_die("views/textblock_edit.php", $view);
     }
+}
+
+// Deny creation of some textblocks. Redirect user to task/round/user
+// details screen. See explanation.
+// NOTE: This function may not return.
+//
+// Some textblocks cannot be created from scratch:
+//  task/xxx  user/xxx  round/xxx ...
+//
+// Instead, their associated model must be created first.
+// Associated models are created using specific controllers.
+function textblock_create_model_first($page_name) {
+    list($page_class, $object_id) = textblock_split_name($page_name);
+    if (TEXTBLOCK_TASK == $page_class) {
+        // You cannot create a new task via the texblock editor
+        //
+        // The edit-details controller creates a new task object and its
+        // associated textblock
+        flash('Acest task nu exista. Te trimit sa il creezi.<br/>'
+              .'Mai intai, introdu cateva informatii de baza.');
+        redirect(url($page_name, array('action' => 'details')));
+    }
+
+    return true;
 }
 
 ?>

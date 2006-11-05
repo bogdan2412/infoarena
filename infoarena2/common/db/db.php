@@ -131,7 +131,7 @@ function parameter_get_values($object_type, $object_id) {
 
 // Returns bool whether $value is a valid parameter value
 function parameter_validate($parameter, $value) {
-    return preg_match($parameter['validator'], $value);
+    return !$parameter['validator'] || preg_match($parameter['validator'], $value);
 }
 
 /**
