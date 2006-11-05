@@ -36,11 +36,18 @@ function magic_file_attach($page, $attname, $file)
     if (!file_exists($file)) {
         log_error("File to attach not found");
     }
-    $id = attachment_insert($attname, filesize($file), "text/plain", $page, 0);
+    $att = attachment_get($attname, $page);
+    if ($att) {
+        $id = $att['id'];
+        attachment_update($id, $attname, filesize($file), "text/plain", $page, 0);
+        log_print("Updating attachment $attname to $page");
+    } else {
+        $id = attachment_insert($attname, filesize($file), "text/plain", $page, 0);
+        log_print("New attachment $attname to $page");
+    }
     if (!copy($file, IA_ATTACH_DIR . $id)) {
         log_error("Failed to copy file to attachment dir");
     }
-    log_print("Attached $attname to $page");
 }
 
 // Magic function to convert a file to a textile block.
@@ -99,11 +106,13 @@ log_assert(!isset($dbOldLink));
 $dbOldLink = mysql_connect(DB_HOST, DB_USER, DB_PASS, true) or log_die('IMPORT: Cannot connect to database.');
 mysql_select_db("infoarena1", $dbOldLink) or log_die('IMPORT: Cannot select database.');
 
-db_query("TRUNCATE TABLE ia_file");
-db_query("TRUNCATE TABLE ia_textblock_revision");
-db_query("DELETE FROM ia_textblock
-            WHERE NOT (`name` LIKE 'template/%') AND
-                  NOT (`name` LIKE 'sandbox/%') AND `name` != 'Home'");
+if (read_question("Delete wiki? ")) {
+    db_query("TRUNCATE TABLE ia_file");
+    db_query("TRUNCATE TABLE ia_textblock_revision");
+    db_query("DELETE FROM ia_textblock
+                WHERE NOT (`name` LIKE 'template/%') AND
+                      NOT (`name` LIKE 'sandbox/%') AND `name` != 'Home'");
+}
 
 //
 // Import users.
@@ -216,7 +225,8 @@ if (read_question("Import scores? ")) {
 //
 if (read_question("Import tasks? ")) {
     db_query("TRUNCATE TABLE ia_task");
-    $import_graders = read_question("Import graders? ");
+    $import_eval = read_question("Import task evaluators? ");
+    $import_tests = read_question("Import task tests? ");
 
     $task_list = mysql_query("SELECT * FROM tasktable_arhiva", $dbOldLink);
     if (!$task_list) {
@@ -245,7 +255,7 @@ if (read_question("Import tasks? ")) {
 
         // Handle evaluator.
         $parameters['evaluator'] = "B0RK";
-        if ($import_graders) {
+        if ($import_eval) {
             $task_dir = $ia1_path . "eval/arhiva/$task_id/";
             if (file_exists($task_dir . "eval.c")) {
                 $parameters['evaluator'] = "eval.c";
@@ -272,7 +282,7 @@ if (read_question("Import tasks? ")) {
 
         // Tests. Yay. HACK: Also determines unique_output.
         $parameters['okfiles'] = true;
-        if ($import_graders) {
+        if ($import_tests) {
             for ($tid = 1; $tid <= $task['evalsteps']; ++$tid) {
                 // Attach input.
                 magic_file_attach("task/$task_id", "grader_test$tid.in", $task_dir . "test$tid.in");
@@ -317,7 +327,7 @@ if (read_question('Import articles? ')) {
         log_print("Adding article \"".$article['title']."\" ...");
 
         $textblock_content = 'h2. '.$article['title'].'\n';
-        $textblock_content..= 'Creat la data de '.$article['postdate'].', cateogoria '.$catergory[$article['catId']].'\n';
+//        $textblock_content..= 'Creat la data de '.$article['postdate'].', cateogoria '.$catergory[$article['catId']].'\n';
         //$textblock_content .= '
     }
         
