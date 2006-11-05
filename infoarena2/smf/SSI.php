@@ -229,6 +229,104 @@ function ssi_logout($redirect_to = '', $output_method = 'echo')
 	echo '<a href="', $scripturl, '?action=logout;sesc=', $sc, '">', $txt[108], '</a>';
 }
 
+//////
+// edited by svalentin
+// Recent post list:   [board] Subject by Poster	Date
+function ssi_recentPostsFromTopic($topicID, $num_recent = 8, $exclude_boards = null, $output_method = 'echo')
+{
+	global $context, $settings, $scripturl, $txt, $db_prefix, $ID_MEMBER;
+	global $user_info, $modSettings, $func;
+
+	if ($exclude_boards === null && !empty($modSettings['recycle_enable']) && $modSettings['recycle_board'] > 0)
+		$exclude_boards = array($modSettings['recycle_board']);
+	else
+		$exclude_boards = empty($exclude_boards) ? array() : $exclude_boards;
+
+	// Find all the posts.  Newer ones will have higher IDs.
+	$request = db_query("
+		SELECT
+			m.posterTime, m.subject, m.ID_TOPIC, m.ID_MEMBER, m.ID_MSG, m.ID_BOARD, b.name AS bName,
+			IFNULL(mem.realName, m.posterName) AS posterName, " . ($user_info['is_guest'] ? '1 AS isRead, 0 AS new_from' : '
+			IFNULL(lt.ID_MSG, IFNULL(lmr.ID_MSG, 0)) >= m.ID_MSG_MODIFIED AS isRead,
+			IFNULL(lt.ID_MSG, IFNULL(lmr.ID_MSG, -1)) + 1 AS new_from') . ", LEFT(m.body, 384) AS body, m.smileysEnabled
+		FROM ({$db_prefix}messages AS m, {$db_prefix}boards AS b)
+			LEFT JOIN {$db_prefix}members AS mem ON (mem.ID_MEMBER = m.ID_MEMBER)" . (!$user_info['is_guest'] ? "
+			LEFT JOIN {$db_prefix}log_topics AS lt ON (lt.ID_TOPIC = m.ID_TOPIC AND lt.ID_MEMBER = $ID_MEMBER)
+			LEFT JOIN {$db_prefix}log_mark_read AS lmr ON (lmr.ID_BOARD = m.ID_BOARD AND lmr.ID_MEMBER = $ID_MEMBER)" : '') . "
+		WHERE m.ID_MSG >= " . ($modSettings['maxMsgID'] - 25 * min($num_recent, 5)) . "
+			AND m.ID_TOPIC = " . $topicID . "
+			AND b.ID_BOARD = m.ID_BOARD" . (empty($exclude_boards) ? '' : "
+			AND b.ID_BOARD NOT IN (" . implode(', ', $exclude_boards) . ")") . "
+			AND $user_info[query_see_board]
+		ORDER BY m.ID_MSG DESC
+		LIMIT $num_recent", __FILE__, __LINE__);
+	$posts = array();
+	while ($row = mysql_fetch_assoc($request))
+	{
+		$row['body'] = strip_tags(strtr(parse_bbc($row['body'], $row['smileysEnabled'], $row['ID_MSG']), array('<br />' => '&#10;')));
+		if ($func['strlen']($row['body']) > 128)
+			$row['body'] = $func['substr']($row['body'], 0, 128) . '...';
+
+		// Censor it!
+		censorText($row['subject']);
+		censorText($row['body']);
+
+		// Build the array.
+		$posts[] = array(
+			'board' => array(
+				'id' => $row['ID_BOARD'],
+				'name' => $row['bName'],
+				'href' => $scripturl . '?board=' . $row['ID_BOARD'] . '.0',
+				'link' => '<a href="' . $scripturl . '?board=' . $row['ID_BOARD'] . '.0">' . $row['bName'] . '</a>'
+			),
+			'topic' => $row['ID_TOPIC'],
+			'poster' => array(
+				'id' => $row['ID_MEMBER'],
+				'name' => $row['posterName'],
+				'href' => empty($row['ID_MEMBER']) ? '' : $scripturl . '?action=profile;u=' . $row['ID_MEMBER'],
+				'link' => empty($row['ID_MEMBER']) ? $row['posterName'] : '<a href="' . $scripturl . '?action=profile;u=' . $row['ID_MEMBER'] . '">' . $row['posterName'] . '</a>'
+			),
+			'subject' => $row['subject'],
+			'short_subject' => shorten_subject($row['subject'], 25),
+			'preview' => $row['body'],
+			'time' => timeformat($row['posterTime']),
+			'timestamp' => forum_time(true, $row['posterTime']),
+			'href' => $scripturl . '?topic=' . $row['ID_TOPIC'] . '.msg' . $row['ID_MSG'] . ';topicseen#new',
+			'link' => '<a href="' . $scripturl . '?topic=' . $row['ID_TOPIC'] . '.msg' . $row['ID_MSG'] . '#msg' . $row['ID_MSG'] . '">' . $row['subject'] . '</a>',
+			'new' => !empty($row['isRead']),
+			'new_from' => $row['new_from'],
+		);
+	}
+	mysql_free_result($request);
+
+	// Just return it.
+	if ($output_method != 'echo' || empty($posts))
+		return $posts;
+
+	echo '
+		<table border="0" class="ssi_table">';
+	foreach ($posts as $post)
+		echo '
+			<tr>
+				<td valign="top">
+					<a href="', $post['href'], '">', $post['subject'], '</a>
+					', $txt[525], ' ', $post['poster']['link'], '
+					', $post['new'] ? '' : '<a href="' . $scripturl . '?topic=' . $post['topic'] . '.msg' . $post['new_from'] . ';topicseen#new"><img src="' . $settings['images_url'] . '/' . $context['user']['language'] . '/new.gif" alt="' . $txt[302] . '" border="0" /></a>', '
+				</td>
+				<td align="right" nowrap="nowrap">
+					', $post['time'], '
+				</td>
+				<td>
+					', $post['preview'], '
+				</td>
+			</tr>';
+	echo '
+		</table>';
+}
+
+/////
+
+
 // Recent post list:   [board] Subject by Poster	Date
 function ssi_recentPosts($num_recent = 8, $exclude_boards = null, $output_method = 'echo')
 {
