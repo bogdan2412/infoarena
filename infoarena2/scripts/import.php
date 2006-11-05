@@ -51,13 +51,19 @@ function magic_file_attach($page, $attname, $file)
 }
 
 // Magic function to convert a file to a textile block.
-// Returns textile string.
-function magic_convert_textile($filename) {
+// Returns textile string. This is ugly.
+function magic_convert_textile($filename, $content = null) {
     if (!file_exists($filename)) {
-        log_error("File $filename to attach not found");
+        if ($content) {
+            $filename = tempnam(IA_ATTACH_DIR, "ia");
+            $handle = fopen($filename, "w");
+            fwrite($handle, $content);
+            fclose($handle);
+        }
+        else log_error("File $filename to convert not found");
     }
     ob_start();
-    system("elinks -dump 1 -dump-width 2048 $filename");
+    system("elinks -dump 1 -dump-width 1024 $filename");
     $ret = ob_get_contents();
     ob_end_clean();
     $lines = explode("\n", $ret);
@@ -66,12 +72,13 @@ function magic_convert_textile($filename) {
         $value = preg_replace('/\s\s+/', ' ', $value);
         // remove leading and trailing special characters
         $value = trim($value, " \t\n\r\0\x0B\x00..\x1F\x7F..\xFF");
-        // 
+        // more formatting
+        $value = preg_replace('/(\+|\x7C)*-+(\+|\x7C)*/', '', $value);
     }
     return implode("\n", $lines);
 }
 
-// magic_convert_textile for tasks,
+// magic_convert_textile for tasks
 function magic_convert_task($task_id) {
     global $ia1_path;
     $fname = $ia1_path . "www/infoarena/docs/arhiva/$task_id/enunt.html";
@@ -83,13 +90,18 @@ function magic_convert_task($task_id) {
     $ret = preg_replace("/^\s*exemplu/mi", "\nh2. Exemplu", $ret);
     $lines = explode("\n", $ret);
     foreach ($lines as &$line) {
-        $line = preg_replace('/(\+|\x7C|)-+(\+|\x7C|)/', '', $line);
+        $line = preg_replace('/(\+|\x7C)*-+(\+|\x7C)*/', '', $line);
         $line = str_replace("=<", "<=", $line);
     }
     return implode("\n", $lines);
 }
 
-function magic_convert_article($article_id) {
+function magic_title($ugly_title) {
+    $ugly_title = preg_replace("/ +/", "_", $ugly_title);
+    $ugly_title = preg_replace("/\-+/", "_", $ugly_title);
+    $ugly_title = preg_replace("/_+/", "_", $ugly_title);
+    $ugly_title = strip_tags($ugly_title);
+    return preg_replace("/([^a-z0-9_\-]*)/i", "", $ugly_title);
 }
 
 // Ask infoarena 1.0 path.
@@ -98,6 +110,7 @@ if (1 < $argc) {
 } else {
     $ia1_path = read_line("Calea catre info-arena 1.0:\n");
 }
+
 
 //
 // Connect to database.
@@ -162,6 +175,7 @@ if (read_question("Import rounds? ")) {
         log_error('IMPORT: MYSQL error -> '.mysql_error($dbOldLink));
     }
     while ($contest = mysql_fetch_assoc($result)) {
+        $contest['ID'] = strip_tags($contest['ID']);
         log_print("Adding round \"".$contest['ID']."\" ...");
 
         $round_id = $contest['ID'];
@@ -324,13 +338,22 @@ if (read_question('Import articles? ')) {
         log_error('IMPORT: MYSQL error -> '.mysql_error($dbOldLink));
     }
     while ($article = mysql_fetch_assoc($articles)) {
+        $article['title'] = strip_tags($article['title']);
         log_print("Adding article \"".$article['title']."\" ...");
+        if (!$article['visible']) {
+            log_print('Ignor articolul "'.$article['title'].'"!');
+            continue;
+        }
 
-        $textblock_content = 'h2. '.$article['title'].'\n';
-//        $textblock_content..= 'Creat la data de '.$article['postdate'].', cateogoria '.$catergory[$article['catId']].'\n';
-        //$textblock_content .= '
+        $textblock_content = 'h1. '.$article['title']."\n\n";
+        $textblock_content.= "(Creat de _".$article['userId']."_ la data de _".
+                              $article['postDate']."_ categoria _".
+                              $category[$article['catId']]."_, autor(i) _".$article['author']."_)\n\n";
+        $textblock_content .= "*Continut scurt:*\n ".magic_convert_textile("NOFILE", $article['shortContent'])."\n\n";
+        $textblock_content .= "*Continut lung:*\n".magic_convert_textile("NOFILE", $article['content'])."\n";
+
+        textblock_add_revision(magic_title($article['title']), $article['title'], $textblock_content, 0);
     }
-        
 };
     
 ?>
