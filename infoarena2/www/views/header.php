@@ -12,6 +12,7 @@
     <script type="text/javascript" src="<?= url('static/js/default.js') ?>"></script>
     <script type="text/javascript" src="<?= url('static/js/tabber-minimized.js') ?>"></script>
     <script type="text/javascript" src="<?= url('static/js/submit.js') ?>"></script>
+    <script type="text/javascript" src="<?= url('static/js/remotebox.js') ?>"></script>
 
     <?= getattr($view, 'head') ?>
 </head>
