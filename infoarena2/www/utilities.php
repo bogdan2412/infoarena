@@ -22,7 +22,7 @@ function redirect($absoluteUrl) {
 // Die with a http error.
 function die_http_error($code = 404, $msg = "File not found") {
     log_print("HTTP ERROR $code $msg");
-    header("HTTP/1.0 $code $http_msg");
+    header("HTTP/1.0 $code");
     echo '<h1>'.$msg.'</h1>';
     echo '<p><a href="'.IA_URL.'">Inapoi la prima pagina</a></p>';
     die();
@@ -117,12 +117,14 @@ function execute_view($view_file_name, $view) {
 
     // update recent page history
     $query = url_from_args($_GET);
-    $hashkey = strtolower($query);
-    $recent_pages[$hashkey] = array($query, getattr($view, 'title', $page)); 
-    if (5 < count($recent_pages)) {
-        array_shift($recent_pages);
+    if (!preg_match('/\/json\//', $query)) {
+        $hashkey = strtolower($query);
+        $recent_pages[$hashkey] = array($query, getattr($view, 'title', $page)); 
+        if (5 < count($recent_pages)) {
+            array_shift($recent_pages);
+        }
+        $_SESSION['recent_pages'] = $recent_pages;
     }
-    $_SESSION['recent_pages'] = $recent_pages;
 
     // let view access recent_pages
     $view['current_url_key'] = strtolower($query);
