@@ -17,7 +17,7 @@ function RemoteBox_Init() {
     var d = doSimpleXMLHttpRequest(RemoteBox_Url);
 
     var ready = function(data) {
-        if (data && data.responseText) {
+        if (data) {
             container.innerHTML = data.responseText;
         }
     }

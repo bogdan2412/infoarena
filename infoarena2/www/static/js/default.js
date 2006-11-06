@@ -3,16 +3,14 @@
  */
 
 function Page_Init() {
-    // flash fade away
+    // fade away flash message
     var flash = $('flash');
-    if (!flash) {
-        return;
-    }
-    
-    var callback = function() {
-        flash.style.display = 'none';
-    }
-    setTimeout(callback, 4000);
+    if (flash) {
+        var callback = function() {
+            hideElement(flash);
+        }
+        setTimeout(callback, 4000);
+    } 
 }
 
 connect(window, 'onload', Page_Init);
