@@ -117,7 +117,7 @@ function execute_view($view_file_name, $view) {
 
     // update recent page history
     $query = url_from_args($_GET);
-    if (!preg_match('/\/json\//', $query)) {
+    if (!preg_match('/\/json\//', $query) && 'get'==strtolower(getattr($_SERVER, 'REQUEST_METHOD'))) {
         $hashkey = strtolower($query);
         $recent_pages[$hashkey] = array($query, getattr($view, 'title', $query)); 
         if (5 < count($recent_pages)) {
