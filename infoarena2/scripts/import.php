@@ -273,7 +273,7 @@ if (read_question("Import tasks? ")) {
         $parameters = array();
 
         // Handle evaluator.
-        $parameters['evaluator'] = "B0RK";
+        $parameters['evaluator'] = "not_imported";
         if ($import_eval) {
             $task_dir = $ia1_path . "eval/arhiva/$task_id/";
             if (file_exists($task_dir . "eval.c")) {
@@ -300,7 +300,7 @@ if (read_question("Import tasks? ")) {
         }
 
         // Tests. Yay. HACK: Also determines unique_output.
-        $parameters['okfiles'] = true;
+        $parameters['okfiles'] = '1';
         if ($import_tests) {
             for ($tid = 1; $tid <= $task['evalsteps']; ++$tid) {
                 // Attach input.
@@ -308,7 +308,7 @@ if (read_question("Import tasks? ")) {
 
                 // Attach ok file.
                 if (!file_exists($task_dir . "test$tid.ok")) {
-                    $parameters['okfiles'] = false;
+                    $parameters['okfiles'] = '0';
                     log_warn("TASK $task_id HAS NO OK FILES");
                 } else {
                     magic_file_attach("task/$task_id", "grader_test$tid.ok", $task_dir . "test$tid.ok");
@@ -319,8 +319,7 @@ if (read_question("Import tasks? ")) {
         $parameters['tests'] = $task['evalsteps'];
         $parameters['timelimit'] = $task['timelimit'];
         $parameters['memlimit'] = 65536;
-        $parameters['unique_output'] = false;
-        $parameters['okfiles'] = false;
+        $parameters['unique_output'] = '0';
         // Update parameters.
         task_update_parameters($task_id, $parameters);  
         log_print("DONE $task_id\n");
