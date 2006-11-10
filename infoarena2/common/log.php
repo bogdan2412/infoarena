@@ -80,12 +80,21 @@ function format_message_backtrace($message, $backtrace_level = 0) {
     return $message . " in " . format_backtrace($backtrace_level + 2);
 }
 
+// trigger_error which split multi-line strings.
+function trigger_error_split($error_msg, $error_type)
+{
+    $error_msg = (string)$error_msg;
+    foreach (explode("\n", $error_msg) as $error_line) {
+        trigger_error($error_line, $error_type);
+    }
+}
+
 // Print a simple message to the log. Use for informative messages.
 function log_print($message, $include_origin = false) {
     if ($include_origin) {
         $message = format_message_backtrace($message);
     }
-    trigger_error($message, E_USER_NOTICE);
+    trigger_error_split($message, E_USER_NOTICE);
 }
 
 // Use this for warning messages.
@@ -93,7 +102,7 @@ function log_warn($message, $include_origin = false) {
     if ($include_origin) {
         $message = format_message_backtrace($message);
     }
-    trigger_error($message, E_USER_WARNING);
+    trigger_error_split($message, E_USER_WARNING);
 }
 
 // Use this when you hit a serious problem, and can't recover.
@@ -102,7 +111,7 @@ function log_error($message, $include_origin = false) {
     if ($include_origin) {
         $message = format_message_backtrace($message);
     }
-    trigger_error($message, E_USER_ERROR);
+    trigger_error_split($message, E_USER_ERROR);
 }
 
 // Print a complete backtrace, using log_print.
@@ -124,6 +133,24 @@ function log_backtrace($start_level = 0, $backtrace = false, $straight_to_log = 
     }
 }
 
+// var_dump to the log.
+function log_var_dump($var)
+{
+    ob_start();
+    var_dump($var);
+    $msg = ob_get_clean();
+    log_print($msg);
+}
+
+// print_r to the log.
+function log_print_r($var)
+{
+    ob_start();
+    print_r($var);
+    $msg = ob_get_clean();
+    log_print($msg);
+}
+
 // Check if $value is true, and if it isn't it prints and error and dies.
 function log_assert($value, $message = "Assertion failed", $include_origin = true) {
     if (!$value) {
@@ -132,50 +159,6 @@ function log_assert($value, $message = "Assertion failed", $include_origin = tru
         }
         log_error($message, false);
     }
-}
-
-// Private function used to implement log_assert_is_* functions.
-function _log_assert_type($obj, $msg, $inc_origin, $checker, $typename) {
-    if (!$checker($obj)) {
-        if ($msg === false) {
-            $msg = "$obj is not $typename";
-        }
-        if ($inc_origin) {
-            $msg = format_message_backtrace($msg, 2);
-        }
-        log_error($msg, false);
-    }
-}
-
-// Check if something is_callable.
-function log_assert_is_callable($obj, $msg = false, $inc_origin = true) {
-    _log_assert_type($obj, $msg, $inc_origin, 'is_callable', 'callable');
-}
-
-// Check if something is_array.
-function log_assert_is_array($obj, $msg = false, $inc_origin = true) {
-    _log_assert_type($obj, $msg, $inc_origin, 'is_array', 'an array');
-}
-
-// Check if an array has a certain key.
-// Also checks if the obj is actually an array.
-// Returns $obj[$key] if the assertion holds.
-function log_assert_getattr($obj, $key, $msg = false, $inc_origin = true) {
-    if (!is_array($obj)) {
-        if ($msg === false) {
-            $msg = "$obj is not an array";
-        }
-    } else if (!array_key_exists($key, $obj)) {
-        if ($msg === false) {
-            $msg = "$obj doesn't have '$key' key";
-        }
-    } else {
-        return $obj[$key];
-    }
-    if ($inc_origin) {
-        $msg = format_message_backtrace($msg, 1);
-    }
-    log_error($msg, false);
 }
 
 // Custom error_handler.
@@ -258,6 +241,18 @@ function logging_error_handler($errno, $errstr, $errfile, $errline) {
         // Print a full backtrace on fatal errors.
         error_log("Caught a fatal error, printing a full backtrace");
         log_backtrace(2, false, true);
+
+        if (IA_DEBUG_MODE && defined('IA_INSIDE_WWW')) {
+            //echo '<html><head><title>Info-arena2 made a booboo</title></head><body>';
+            echo $errstr.' <br /> Printing full backtrace:';
+            echo '<ul>';
+            $backtrace = debug_backtrace();
+            for ($i = 1; $i < count($backtrace); ++$i) {
+                echo "<li>Backtrace Level $i: ".format_backtrace($i, $backtrace) . "</li>";
+            }
+            echo '</ul>';
+            //echo '</body></html>';
+        }
         die();
     }
 }

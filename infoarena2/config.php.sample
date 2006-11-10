@@ -43,8 +43,12 @@ define("IA_ROOT_WWW", IA_ROOT . "www/");
 
 // Fatal error mask.
 // These are the errors the scripts halts on.
-// 0x1155 = E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR
+// E_ALL & ~ (E_USER_NOTICE | E_USER_WARNING)
 // FIXME: Why isn't this configurable in php.ini?
-define("LOG_FATAL_ERRORS", 0x1155);
+define("LOG_FATAL_ERRORS", 0x19FF);
+
+// If this is true then the site is in debug.
+// NOTE: set this to false when public.
+define("IA_DEBUG_MODE", true);
 
 ?>
