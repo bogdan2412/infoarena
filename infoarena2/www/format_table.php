@@ -89,7 +89,7 @@ function format_table($data, $column_infos = null, $options = null)
     if (!getattr($options, 'skip_header', false)) {
         $result .= "<thead><tr>";
         foreach ($column_infos as $column) {
-            $title = log_assert_getattr($column, 'title');
+            $title = $column['title'];
             $result .= "<th>" . $title . "</th>";
         }
         $result .= "</tr></thead>";
@@ -119,15 +119,15 @@ function format_table($data, $column_infos = null, $options = null)
         foreach ($column_infos as $column) {
             // Handle row formatter.
             if (isset($column['rowform'])) {
-                log_assert_is_callable($column['rowform']);
+                log_assert(is_callable($column['rowform']));
                 if (key_exists('key', $column)) {
                     $val = $column['rowform']($row, $column['key']);
                 } else {
                     $val = $column['rowform']($row);
                 }
             } else {
-                $key = log_assert_getattr($column, 'key');
-                $val = log_assert_getattr($row, $key);
+                $key = $column['key'];
+                $val = $row[$key];
 
                 // Handle val formatter.
                 if (isset($column['valform'])) {
@@ -165,9 +165,9 @@ function format_table($data, $column_infos = null, $options = null)
 // formats a standard pager. Used by format_table.
 function format_standard_pager($options)
 {
-    $first_row = log_assert_getattr($options, 'first_row', 0);
-    $total_rows = log_assert_getattr($options, 'total_rows');
-    $display_rows = log_assert_getattr($options, 'display_rows', IA_DEFAULT_ROWS_PER_PAGE);
+    $first_row = getattr($options, 'first_row', 0);
+    $total_rows = $options['total_rows'];
+    $display_rows = getattr($options, 'display_rows', IA_DEFAULT_ROWS_PER_PAGE);
     $url_args = getattr($options, 'url_args', $_GET);
     $param_prefix = getattr($options, 'param_prefix', '');
     $surround_pages = getattr($options, 'surround_pages', 2);

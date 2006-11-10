@@ -13,7 +13,8 @@ php_value register_globals 0
 
 # Error reporting. Everything is logged, but only in the web server log.
 php_value error_reporting 65535
-php_value display_errors false
+# FIXME: change for production environment.
+php_value display_errors true
 php_value log_errors true
 php_value html_errors false
 php_value memory_limit "16M"

@@ -51,7 +51,7 @@ function format_user_link($username) {
 // included in the url.
 function url($document, $args = array(), $absolute = false) {
     log_assert(false === strpos($document, '?'), 'Page name contains ?');
-    log_assert_is_array($args, "Argument list must be an array");
+    log_assert(is_array($args), "Argument list must be an array");
     log_assert(!array_key_exists("page", $args), "Argument list contains page");
 
     $args['page'] = $document;
@@ -68,7 +68,7 @@ function url_from_args($args, $absolute = false)
     } else {
         $url = IA_URL_PREFIX;
     }
-    $url .= log_assert_getattr($args, "page");
+    $url .= $args["page"];
     
     // Actual args.
     $first = true;

@@ -1,6 +1,9 @@
 <?php
 
 // link JS files for round editing
+if (!isset($view['head'])) {
+    $view['head'] = "";
+}
 $view['head'] .= "<script type=\"text/javascript\" src=\"" . url("static/js/dual.js") . "\"></script>";
 $view['head'] .= "<script type=\"text/javascript\" src=\"" . url("static/js/roundedit.js") . "\"></script>";
 
