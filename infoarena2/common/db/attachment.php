@@ -67,4 +67,29 @@ function attachment_get_all($page, $name='%') {
     return db_fetch_all($query);
 }
 
+// Returns "real file name" (as stored on the file system) for a given
+// attachment id.
+//
+// NOTE: You can't just put this into db.php or any other module shared
+// with the judge since it`s dependent on the www server setup.
+// FIXME: does this belong here?
+function attachment_get_filepath($attach) {
+    assert(is_array($attach));
+    return IA_ATTACH_DIR .
+            preg_replace('/[^a-z0-9\.\-_]/', '_', $attach['page']) . '_' .
+            preg_replace('/[^a-z0-9\.\-_]/', '_', $attach['name']) . '_' .
+            $attach['id'];
+}
+
+// returns boolean whether specified attach name is valid
+// NOTE: We hereby limit file names. No spaces, please. Not that we have
+// a problem with spaces inside URLs. Everything should be (and hopefully is)
+// urlencode()-ed. However, practical experience shows it is hard to work with
+// such file names, mostly due to URLs word-wrapping when inserted in texts,
+// unless, of course, one knows how to properly escape spaces with %20 or +
+// FIXME: does this belong here?
+function attachment_is_valid_name($attach_name) {
+    return preg_match('/^[a-z0-9\.\-_]+$/i', $attach_name);
+}
+
 ?>

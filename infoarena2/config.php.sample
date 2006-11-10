@@ -41,6 +41,9 @@ define("IA_URL", IA_URL_HOST . IA_URL_PREFIX);
 // Website root.
 define("IA_ROOT_WWW", IA_ROOT . "www/");
 
+// Attachment dir
+define("IA_ATTACH_DIR", IA_ROOT . "attach/");
+
 // Fatal error mask.
 // These are the errors the scripts halts on.
 // E_ALL & ~ (E_USER_NOTICE | E_USER_WARNING)

@@ -7,8 +7,6 @@ echo "********************************\n";
 
 require_once("../config.php");
 require_once("../common/db/db.php");
-// For IA_ATTACH_DIR
-require_once("../www/config.php");
 
 if (!function_exists("finfo_open")) {
     log_warn("finfo not found, mime type defaults to application/octet-stream");
@@ -57,8 +55,9 @@ function magic_file_attach($page, $attname, $file)
     } else {
         $id = attachment_insert($attname, filesize($file), $mime, $page, 0);
         log_print("New attachment $attname to $page");
+        $att = attachment_get($attname, $page);
     }
-    if (!copy($file, IA_ATTACH_DIR . $id)) {
+    if (!copy($file, attachment_get_filepath($att))) {
         log_error("Failed to copy file to attachment dir");
     }
 }
@@ -133,11 +132,15 @@ $dbOldLink = mysql_connect(DB_HOST, DB_USER, DB_PASS, true) or log_die('IMPORT: 
 mysql_select_db("infoarena1", $dbOldLink) or log_die('IMPORT: Cannot select database.');
 
 if (read_question("Delete wiki? ")) {
-    db_query("TRUNCATE TABLE ia_file");
     db_query("TRUNCATE TABLE ia_textblock_revision");
     db_query("DELETE FROM ia_textblock
                 WHERE NOT (`name` LIKE 'template/%') AND
                       NOT (`name` LIKE 'sandbox/%') AND `name` != 'Home'");
+}
+
+if (read_question("Delete attachments? ")) {
+    log_warn("Actual files are not deleted.");
+    db_query("TRUNCATE TABLE ia_file");
 }
 
 //
@@ -181,6 +184,9 @@ if (read_question("Import rounds? ")) {
     log_print("Importing rounds...");
     db_query("TRUNCATE TABLE ia_round");
     db_query("TRUNCATE TABLE ia_round_task");
+    db_query("DELETE FROM ia_textblock WHERE `name` LIKE 'round/%'");
+    db_query("DELETE FROM ia_textblock_revision WHERE `name` LIKE 'round/%'");
+    db_query("DELETE FROM ia_file WHERE `page` LIKE 'round/%'");
 
     // DB query.
     $result = mysql_query("SELECT * FROM contests", $dbOldLink);
@@ -252,6 +258,9 @@ if (read_question("Import scores? ")) {
 //
 if (read_question("Import tasks? ")) {
     db_query("TRUNCATE TABLE ia_task");
+    db_query("DELETE FROM ia_textblock WHERE `name` LIKE 'task/%'");
+    db_query("DELETE FROM ia_textblock_revision WHERE `name` LIKE 'task/%'");
+    db_query("DELETE FROM ia_file WHERE `page` LIKE 'task/%'");
     $import_eval = read_question("Import task evaluators? ");
     $import_tests = read_question("Import task tests? ");
 
