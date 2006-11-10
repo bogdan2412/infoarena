@@ -6,7 +6,7 @@ require_once('../config.php');
 define("IA_EVAL_DIR", IA_ROOT . 'eval/');
 
 // The directory with the grader files.
-define("IA_GRADER_DIR", IA_ROOT . 'graders/');
+define("IA_GRADER_CACHE_DIR", IA_EVAL_DIR . 'grader_cache/');
 
 // Path to the jrun executable
 define("IA_JRUN_PATH", IA_ROOT . 'jrun/jrun');

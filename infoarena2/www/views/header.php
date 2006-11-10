@@ -21,7 +21,7 @@
 <div id="page">
 
 <div id="header" class="clear">
-    <form id="search">
+    <form id="search" action="get">
         <input type="text" id="inputbox" />
         <input type="submit" value="Cauta &raquo;"/>
     </form>

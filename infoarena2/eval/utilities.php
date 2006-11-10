@@ -46,7 +46,7 @@ function compile_file($file_name, &$compiler_message)
     $cmdline = preg_replace('/%exe_name%/', $exe_name, $cmdline);
 
     log_print("Running $cmdline");
-    @system("$cmdline &> compiler.log");
+    @system("$cmdline &> compiler.log", $res);
     if ($res) {
         log_print("Compilation failed");
         return false;
@@ -115,6 +115,8 @@ function jrun_make_error($message)
 //      stdin, stderr: Contents of user program standard i/o.
 //               Only if $capture_std is true.
 //
+// All timings are in miliseconds and memory is in kilobytes
+//
 // If result is ERROR time, memory, stdin and stdout are never set.
 function jail_run($program, $time, $memory, $capture_std = false)
 {
@@ -138,7 +140,7 @@ function jail_run($program, $time, $memory, $capture_std = false)
         $cmdline .= " --memory-limit=" . $memory;
     }
 
-    //log_print("Running $cmdline");
+    log_print("Running $cmdline");
     ob_start();
     @system($cmdline, $res);
     $message = ob_get_contents();

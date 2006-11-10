@@ -10,6 +10,10 @@ require_once("../common/db/db.php");
 // For IA_ATTACH_DIR
 require_once("../www/config.php");
 
+if (!function_exists("finfo_open")) {
+    log_warn("finfo not found, mime type defaults to application/octet-stream");
+}
+
 function read_line($caption = "") {
     echo $caption;
     $r = trim(fgets(STDIN));
@@ -37,9 +41,13 @@ function magic_file_attach($page, $attname, $file)
         log_error("File to attach not found");
     }
 
-    $finfo = finfo_open(FILEINFO_MIME);
-    $mime = finfo_file($finfo, $file);
-    finfo_close($finfo);
+    if (!function_exists("finfo_open")) {
+        $mime = "application/octet-stream";
+    } else {
+        $finfo = finfo_open(FILEINFO_MIME);
+        $mime = finfo_file($finfo, $file);
+        finfo_close($finfo);
+    }
    
     $att = attachment_get($attname, $page);
     if ($att) {

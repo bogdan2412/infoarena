@@ -4,6 +4,7 @@
 require_once('config.php');
 require_once('../common/log.php');
 require_once('../common/common.php');
+require_once('../common/task.php');
 require_once('../common/permissions.php');
 require_once('../common/db/db.php');
 require_once('utilities.php');

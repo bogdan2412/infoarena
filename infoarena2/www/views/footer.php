@@ -1,5 +1,6 @@
 </div>
 </div>
+</div>
 
 <div id="footer">
     <ul class="clear">

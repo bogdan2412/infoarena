@@ -17,9 +17,13 @@ class ClassicGrader {
 
     function __construct($id, $parameters) {
         $this->task_id = $id;
+
+        if (!task_validate_parameters("classic", $parameters)) {
+            log_warn("Invalid task parameters");
+        }
         $this->evaluator = (string)$parameters['evaluator'];
         $this->test_count = (int)$parameters['tests'];
-        $this->time_limit = (int)$parameters['timelimit'];
+        $this->time_limit = (float)$parameters['timelimit'];
         $this->memory_limit = (int)$parameters['memlimit'];
         $this->unique_output = (bool)$parameters['unique_output'];
         $this->has_ok_files = (bool)$parameters['okfiles'];
@@ -33,16 +37,6 @@ class ClassicGrader {
         }
     }
 
-    // FIXME: move validation here.
-    static function validate($parameters)
-    {
-    }
-
-    function handle_test($testno)
-    {
-        // Copiem input. 
-    }
-
     function Grade($file_contents, $file_extension) {
         $result = new JobResult();
         $result->score = 0;
@@ -54,20 +48,15 @@ class ClassicGrader {
         }
 
         // chdir to temp dir.
-        if (!chdir(IA_EVAL_TEMP_DIR)) {
+        if (!@chdir(IA_EVAL_TEMP_DIR)) {
             log_warn("Can't chdir to temp dir.");
             return JobResult::SystemError();
         }
 
         // Compile custom evaluator.
         if (!$this->unique_output) {
-            if (!require_grader_file($this->task_id, $this->evaluator)) {
-                log_warn("Can't get evaluator source.");
-                return JobResult::SystemError();
-            }
-            if (!copy(IA_GRADER_DIR . $this->task_id . '/' . $this->evaluator,
-                        IA_EVAL_TEMP_DIR . $this->evaluator)) {
-                log_warn("Can't move evaluator source to temp dir.");
+            if (!copy_grader_file($this->task_id, $this->evaluator,
+                    IA_EVAL_TEMP_DIR . $this->evaluator)) {
                 return JobResult::SystemError();
             }
 
@@ -78,7 +67,7 @@ class ClassicGrader {
         }
 
         // Compile user source.
-        if (!file_put_contents("user." . $file_extension, $file_contents)) {
+        if (!@file_put_contents("user." . $file_extension, $file_contents)) {
             log_warn("Can't write user file on disk.");
             return JobResult::SystemError();
         }
@@ -96,29 +85,24 @@ class ClassicGrader {
         for ($testno = 1; $testno <= $this->test_count; ++$testno) {
             $result->log .= "\nRulez testul $testno: ";
 
-            if (!chdir(IA_EVAL_DIR)) {
+            if (!@chdir(IA_EVAL_DIR)) {
                 log_warn("Can't chdir to eval dir.");
                 return JobResult::SystemError();
             }
             if (!clean_dir(IA_EVAL_JAIL_DIR)) {
                 return JobResult::SystemError();
             }
-            if (!chdir(IA_EVAL_JAIL_DIR)) {
+            if (!@chdir(IA_EVAL_JAIL_DIR)) {
                 log_warn("Can't chdir to jail dir.");
                 return JobResult::SystemError();
             }
 
-            if (!require_grader_file($this->task_id, 'test' . $testno . '.in')) {
-                log_warn("Can't get test $testno input.");
-                return JobResult::SystemError();
-            }
-            if (!copy(IA_GRADER_DIR . $this->task_id . '/test' . $testno . '.in',
+            if (!copy_grader_file($this->task_id, 'test' . $testno . '.in',
                         IA_EVAL_JAIL_DIR . $this->task_id . '.in')) {
-                log_warn("Failed copying test $testno");
                 return JobResult::SystemError();
             }
 
-            if (!copy(IA_EVAL_TEMP_DIR . 'user', IA_EVAL_JAIL_DIR . 'user')) {
+            if (!@copy(IA_EVAL_TEMP_DIR . 'user', IA_EVAL_JAIL_DIR . 'user')) {
                 log_warn("Failed copying user program");
                 return JobResult::SystemError();
             }
@@ -129,12 +113,13 @@ class ClassicGrader {
             }
          
             // Run user program.
-            $jrunres = jail_run('user', $this->time_limit, $this->memory_limit);
+            $jrunres = jail_run('user', $this->time_limit * 1000, $this->memory_limit);
             log_print("JRUN user: ".$jrunres['result'].": ".$jrunres['message']);
             if ($jrunres['result'] == 'ERROR') {
                 return JobResult::SystemError();
             } else if ($jrunres['result'] == 'FAIL') {
                 $result->log .= "eroare: ".$jrunres['message'].": 0 puncte";
+                log_print("");
                 continue;
             } else {
                 $result->log .= "ok: timp ".$jrunres['time']."ms ".
@@ -143,13 +128,8 @@ class ClassicGrader {
 
             // Copy ok file, if used.
             if ($this->has_ok_files) {
-                if (!require_grader_file($this->task_id, 'test' . $testno . '.ok')) {
-                    log_warn("Can't get test $testno ok file.");
-                    return JobResult::SystemError();
-                }
-                if (!copy(IA_GRADER_DIR . $this->task_id . '/test' . $testno . '.ok',
+                if (!copy_grader_file($this->task_id , 'test' . $testno . '.ok',
                             IA_EVAL_JAIL_DIR . $this->task_id . '.ok')) {
-                    log_warn("Failed copying test $testno of file");
                     return JobResult::SystemError();
                 }
             }
@@ -159,7 +139,7 @@ class ClassicGrader {
                 return JobResult::SystemError();
             } else {
                 // Custom grader.
-                if (!copy(IA_EVAL_TEMP_DIR . 'eval', IA_EVAL_JAIL_DIR . 'eval')) {
+                if (!@copy(IA_EVAL_TEMP_DIR . 'eval', IA_EVAL_JAIL_DIR . 'eval')) {
                     log_warn("Failed copying custom grader");
                     return JobResult::SystemError();
                 }
