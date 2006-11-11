@@ -103,10 +103,7 @@ class MyTextile extends Textile {
 
         if (!preg_match($this->external_url_exp, $srcpath)) {
             //echo 'non-external img';
-            if (preg_match('/^[a-z0-9\.\-_]+$/i', $srcpath)) {
-                //echo 'local attachment';
-                $args['src'] = attachment_url($this->page_name, $srcpath);
-            } else if (preg_match('/^ ([a-z0-9_\-\/]+) \? ([a-z0-9\.\-_]+)   $/ix', $srcpath, $matches)) {
+            if (preg_match('/^ ([a-z0-9_\-\/]+) \? ([a-z0-9\.\-_]+)   $/ix', $srcpath, $matches)) {
                 //echo 'remote attachment';
                 $args['src'] = attachment_url($matches[1], $matches[2]); 
             }

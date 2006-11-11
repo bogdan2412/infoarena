@@ -16,7 +16,7 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
         die_http_404();
     }
 
-    $real_name = attachment_get_filepath($attach['id']);
+    $real_name = attachment_get_filepath($attach);
 
     $ret = getimagesize($real_name);
     if (false === $ret) {
@@ -40,7 +40,7 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
 
     // query image cache for existing resampled image
     if (IMAGE_CACHE_ENABLE) {
-        $cache_fn = imagecache_query($attach['id'], $resize);
+        $cache_fn = imagecache_query($attach, $resize);
 
         if (null !== $cache_fn) {
             // cache has it
@@ -109,24 +109,24 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
 // Returns
 //  - disk file name of the resampled image so it can be served via serve_attachment()
 //  - null if no such cached version exists
-function imagecache_query($attach_id, $resize) {
+function imagecache_query($attach, $resize) {
     // get disk file paths
-    $fn_cache = imagecache_filename($attach_id, $resize);
-    $fn_source = attachment_get_filepath($attach_id);
+    $fn_cache = imagecache_filename($attach['id'], $resize);
+    $fn_source = attachment_get_filepath($attach);
 
     // open files
-    $fp_cache = fopen($fn_cache, 'rb');
+    $fp_cache = @fopen($fn_cache, 'rb');
     if (!$fp_cache) {
         return null;
     }
-    $fp_source = fopen($fn_source, 'rb');
+    $fp_source = @fopen($fn_source, 'rb');
     if (!$fp_source) {
         return null;
     }
 
     // stat
-    $stat_source = fstat($fp_source);
-    $stat_cache = fstat($fp_cache);
+    $stat_source = @fstat($fp_source);
+    $stat_cache = @fstat($fp_cache);
 
     // close files
     fclose($fp_cache);

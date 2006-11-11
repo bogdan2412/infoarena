@@ -6,6 +6,7 @@ echo "*** IMPORT SCRIPT 2.0 (beta) ***\n";
 echo "********************************\n";
 
 require_once("../config.php");
+require_once("../common/common.php");
 require_once("../common/db/db.php");
 
 if (!function_exists("finfo_open")) {
@@ -39,26 +40,19 @@ function magic_file_attach($page, $attname, $file)
         log_error("File to attach not found");
     }
 
-    if (!function_exists("finfo_open")) {
-        $mime = "application/octet-stream";
-    } else {
-        $finfo = finfo_open(FILEINFO_MIME);
-        $mime = finfo_file($finfo, $file);
-        finfo_close($finfo);
-    }
-   
+    $mime = get_mime_type($file);
     $att = attachment_get($attname, $page);
     if ($att) {
         $id = $att['id'];
         attachment_update($id, $attname, filesize($file), $mime, $page, 0);
-        log_print("Updating attachment $attname to $page");
+        log_print("Updating attachment $attname to $page mime type $mime.");
     } else {
         $id = attachment_insert($attname, filesize($file), $mime, $page, 0);
-        log_print("New attachment $attname to $page");
+        log_print("New attachment $attname to $page mime type $mime.");
         $att = attachment_get($attname, $page);
     }
     if (!copy($file, attachment_get_filepath($att))) {
-        log_error("Failed to copy file to attachment dir");
+        log_error("Failed to copy file to attachment dir.");
     }
 }
 

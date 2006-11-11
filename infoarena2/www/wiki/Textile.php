@@ -192,7 +192,7 @@ class Textile {
     $this->options['do_quotes'] = (isset($this->options['do_quotes']) ? $this->options['do_quotes'] : 1);
     $this->options['trim_spaces'] = (isset($this->options['trim_spaces']) ? $this->options['trim_spaces'] : 0);
     $this->options['smarty_mode'] = (isset($this->options['smarty_mode']) ? $this->options['smarty_mode'] : 1);
-    $this->options['preserve_spaces'] = (isset($this->options['preserve_spaces']) ? $this->options['preserve_spaaces'] : 0);
+    $this->options['preserve_spaces'] = (isset($this->options['preserve_spaces']) ? $this->options['preserve_spaces'] : 0);
     $this->options['head_offset'] = (isset($this->options['head_offset']) ? $this->options['head_offset'] : 0);
 
     if (is_array($this->options['css'])) {

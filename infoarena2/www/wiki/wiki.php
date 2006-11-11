@@ -8,6 +8,8 @@ function wiki_process_text($content) {
     $options = array(
             'disable_html' => true,
             'disable_filters' => true,
+            'trim_spaces' => false,
+            'preserve_spaces' => true,
     );
     $weaver = new MyTextile($options);
     return $weaver->process($content);
