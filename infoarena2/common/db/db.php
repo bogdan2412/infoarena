@@ -33,6 +33,67 @@ function db_query($query) {
     return $result;
 }
 
+// Executes SQL query and returns value of the first column in the first
+// result row.
+// When query returns no results, it returns $default_value 
+//
+// WARNING: This function asserts there is at most 1 result row and 1 column.
+function db_query_value($query, $default_value = null) {
+    global $dbLink;
+
+    $rows = db_fetch_all($query);
+
+    if (is_null($rows)) {
+        return $default_value;
+    }
+
+    // failsafe
+    log_assert(1 == count($rows), 'db_query_value() expects 1 row at most');
+    $row = array_values($rows[0]);
+    log_assert(1 == count($row), 'db_query_value() expects 1 column at most');
+
+    return $row[0];
+}
+
+// Executes SQL insert statement; wrapper for db_query
+// Returns last SQL insert id
+// $table   SQL table name 
+// $values  dictionary of fields to insert
+//
+// Example:
+// $user = array(
+//      'full_name' => 'Gigi Kent',
+//      'username' => 'gigikent'
+// );
+// db_insert('user', $user);
+//
+// will execute:
+// INSERT INTO `user` (`full_name`, `username`)
+// VALUES ('Gigi Kent', 'gigikent')
+//
+// Returns last insert-ed primary key value
+function db_insert($table, $dict) {
+    global $dbLink;
+
+    foreach ($dict as $k => $v) {
+        if (is_null($v)) {
+            unset($dict[$k]);
+        }
+    }
+
+    $table = db_escape($table);
+
+    $query = "INSERT INTO `{$table}` (`";
+    $query .= join('`, `', array_keys($dict));
+    $query .= "`) VALUES ('";
+    $query .= join("', '", array_map('db_escape', array_values($dict)));
+    $query .= "')";
+ 
+    db_query($query);
+
+    return mysql_insert_id($dbLink);
+}
+
 // Executes query, fetches only FIRST result
 function db_fetch($query) {
     global $dbLink;

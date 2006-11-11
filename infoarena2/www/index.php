@@ -118,6 +118,16 @@ else if ($urlstart=='round' && $action=='details-save') {
     require_once('controllers/round.php');
     controller_round_save_details($page_id);
 }
+//  - register for contest 
+else if (TEXTBLOCK_ROUND==$page_class && 'register'==$action) {
+    require_once('controllers/round.php');
+    controller_round_register($page_id);
+}
+//  - register for contest (process input)
+else if (TEXTBLOCK_ROUND==$page_class && 'register-process'==$action) {
+    require_once('controllers/round.php');
+    controller_round_register($page_id, true);
+}
 
 // global news-speific controllers
 //  - global news feed

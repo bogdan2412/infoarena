@@ -55,7 +55,7 @@ function round_create($round_id, $type, $user_id, $active) {
     $template = textblock_get_revision('template/newround');
     log_assert($template, 'Could not find template for new round: template/newround');
     $content = str_replace('%round_id%', $new_round['id'], $template['text']);
-    textblock_add_revision('round/'.$new_round['id'], $title, $content, $new_user['id']);
+    textblock_add_revision('round/'.$new_round['id'], $title, $content, $user_id);
 
     return $new_round['id'];
 }
@@ -127,6 +127,30 @@ function round_update_task_list($round_id, $tasks) {
                          db_escape($round_id), db_escape($task_id));
         db_query($query);
     }
+}
+
+// Returns boolean whether given user is registered to round $round_id
+function round_is_registered($round_id, $user_id) {
+    $query = sprintf("SELECT COUNT(*) AS `cnt` FROM ia_user_round
+                      WHERE round_id='%s' AND user_id='%s'",
+                     db_escape($round_id), db_escape($user_id));
+
+    $count = db_query_value($query);
+    return (0 < $count);
+}
+
+// Registers user $user_id to round $round_id
+// NOTE: This does not check for proper user permissions
+//
+// NOTE: There is a unique primary key constraint in the database for
+// the pair (round_id, user_id). Registering the same user twice
+// will fail.
+function round_register_user($round_id, $user_id) {
+    $insert_fields = array(
+        "round_id" => $round_id,
+        "user_id" => $user_id
+    );
+    return db_insert('ia_user_round', $insert_fields);
 }
 
 ?>

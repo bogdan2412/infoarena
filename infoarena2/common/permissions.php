@@ -198,6 +198,10 @@ function permission_round($user, $action, $round) {
             // anyone can view a round (contest) page and its history
             return true;
 
+        case 'register':
+            // any registered user can register to a contest round
+            return $user && $round;
+
         case 'edit':
         case 'create':
         case 'restore':

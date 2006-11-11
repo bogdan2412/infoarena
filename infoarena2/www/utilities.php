@@ -49,7 +49,7 @@ function format_user_link($username) {
 //
 // If $absolute is true(default false) then the server will be
 // included in the url.
-function url($document, $args = array(), $absolute = false) {
+function url($document = '', $args = array(), $absolute = false) {
     log_assert(false === strpos($document, '?'), 'Page name contains ?');
     log_assert(is_array($args), "Argument list must be an array");
     log_assert(!array_key_exists("page", $args), "Argument list contains page");

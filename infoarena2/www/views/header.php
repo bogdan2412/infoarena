@@ -84,6 +84,9 @@ if (isset($recent_pages) && (1 < count($recent_pages))) {
     $bstring = '';
     foreach ($recent_pages as $rec_key => $rec_entry) {
         list($rec_url, $rec_title) = $rec_entry;
+        
+        $rec_title = htmlentities($rec_title);
+
         if ($bstring) {
             $bstring .= ' <span class="separator">|</span> ';
         }
@@ -91,7 +94,7 @@ if (isset($recent_pages) && (1 < count($recent_pages))) {
             $bstring .= "<strong>{$rec_title}</strong>";
         }
         else {
-            $bstring .= "<a href=\"" . $rec_url . "\">{$rec_title}</a>";
+            $bstring .= "<a href=\"" . htmlentities($rec_url) . "\">{$rec_title}</a>";
         }
     }
     echo '<p id="breadcrumbs">Pagini recente &raquo; ' . $bstring . '</p>';
