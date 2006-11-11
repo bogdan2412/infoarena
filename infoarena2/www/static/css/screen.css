@@ -1,41 +1,41 @@
 /* Basic styles */
 * {
-	margin:0;
-	padding:0;
+    margin:0;
+    padding:0;
 }
 
 body {
-	font-family:Verdana, Arial, Helvetica, sans-serif;
-	font-size:12px;
-	line-height:1.5;
-	text-align:center;
-	color:#222;
+    font-family:Verdana, Arial, Helvetica, sans-serif;
+    font-size:12px;
+    line-height:1.5;
+    text-align:center;
+    color:#222;
 }
 
 .clear:after {
-	content:".";
-	height:0;
-	display:block;
-	visibility:hidden;
-	clear:both;
+    content:".";
+    height:0;
+    display:block;
+    visibility:hidden;
+    clear:both;
 }
 
 * html .clear {
-	height: 1%;
+    height: 1%;
 }
 
 a {
-	color:#006699;
-	text-decoration:none;
+    color:#006699;
+    text-decoration:none;
 }
 
 a:hover {
-	background:#F8F8EF;
-	text-decoration:underline;
+    background:#F8F8EF;
+    text-decoration:underline;
 }
 
 p {
-	margin-bottom:15px;
+    margin-bottom:15px;
 }
 
 a img {
@@ -60,10 +60,10 @@ var {
 
 /* Misc */
 a.feed {
-	float:right;
-	display:block;
-	margin:0;
-	padding:0;
+    float:right;
+    display:block;
+    margin:0;
+    padding:0;
     width: 20px;
     height: 20px;
     background: url(../images/feed-icon.gif) no-repeat center center;
@@ -97,12 +97,12 @@ div.sidehelp {
 The basic layout of the homepage is as follows:
 
 - #page
-	- #header
-	- #content
-		- #sidebar
-		- #main
+    - #header
+    - #content
+        - #sidebar
+        - #main
             - h1
-			- .wiki_text_block
+            - .wiki_text_block
                 - h[2|3|4]
                 - ul
                 - ol
@@ -112,99 +112,99 @@ The basic layout of the homepage is as follows:
                     .date
                     h3
                     .wiki_text_block
-	- #footer
+    - #footer
 */
 
 #page {
-	min-width:750px;
-	margin:0 20px;
-	text-align:left;
-	background:#fff url(../images/top.gif) no-repeat top center;
-	/*border:1px solid #9CA29E;*/
+    min-width:750px;
+    margin:0 20px;
+    text-align:left;
+    background:#fff url(../images/top.gif) no-repeat top center;
+    /*border:1px solid #9CA29E;*/
 }
 
 #header {
-	height: 80px;
-	background:url(../images/shield_new_tile.jpg) repeat-x top left;
-	position:relative;
+    height: 80px;
+    background:url(../images/shield_new_tile.jpg) repeat-x top left;
+    position:relative;
 }
 
 #content_small {
-	background:url(../images/main_small.jpg) repeat-y ;
+    background:url(../images/main_small.jpg) repeat-y ;
 }
 
 #sidebar {
-	width:191px;
-	float:left;
+    width:191px;
+    float:left;
 }
 
 #main {
-	/*width:549px;
-	float:right;*/
-	background:#fff url(../images/main_tile.jpg) repeat-x top;
-	padding:15px;
-	margin-left:191px;
-	border-left:1px solid #d0d0d0;
+    /*width:549px;
+    float:right;*/
+    background:#fff url(../images/main_tile.jpg) repeat-x top;
+    padding:15px;
+    margin-left:191px;
+    border-left:1px solid #d0d0d0;
 }
 
 #miscbox {
-	width:188px;
-	float:right;
-	/*border:1px solid #D3D1C6;*/
+    width:188px;
+    float:right;
+    /*border:1px solid #D3D1C6;*/
 }
 
 #upcoming {
-	margin-bottom:10px;
+    margin-bottom:10px;
 }
 
 #upcoming, #newprobs {
-	padding:5px;
-	background:#fc0 url(../images/upcoming.jpg) no-repeat bottom left;
-	border:1px solid #fc0;
+    padding:5px;
+    background:#fc0 url(../images/upcoming.jpg) no-repeat bottom left;
+    border:1px solid #fc0;
 }
 
 #footer {
-	border-top:1px solid #B7D285;
-	background:url(../images/footer.jpg) repeat-x top;
-	margin-top:1px;
-	padding:10px 20px;
-	font-size:11px;
-	color:#999;
+    border-top:1px solid #B7D285;
+    background:url(../images/footer.jpg) repeat-x top;
+    margin-top:1px;
+    padding:10px 20px;
+    font-size:11px;
+    color:#999;
 }
 
 #upcoming ul, #newprobs ul {
-	border:1px solid #fc0;
-	padding:5px;
-	background:#fff;
+    border:1px solid #fc0;
+    padding:5px;
+    background:#fff;
 }
 
 #upcoming h2, #newprobs h2 {
-	text-transform:uppercase;
-	font-size:14px;
-	font-weight:bold;
-	color:#840;
+    text-transform:uppercase;
+    font-size:14px;
+    font-weight:bold;
+    color:#840;
 }
 
 #upcoming li, #newprobs li {
-	border-bottom:1px solid #cecece;
-	display:block;
-	background:#fff url(../images/misc_li.jpg) no-repeat center bottom;
+    border-bottom:1px solid #cecece;
+    display:block;
+    background:#fff url(../images/misc_li.jpg) no-repeat center bottom;
 }
 
 #upcoming a, #newprobs a {
-	text-decoration:none;
-	display:block;
-	line-height:1.1;
+    text-decoration:none;
+    display:block;
+    line-height:1.1;
 }
 
 #upcoming a, #newprobs a {
-	padding:5px;
-	font-size:11px;
+    padding:5px;
+    font-size:11px;
 }
 
 #upcoming a:hover, #newprobs a:hover {
-	text-decoration:underline;
-	background:#F8F8EF;
+    text-decoration:underline;
+    background:#F8F8EF;
 }
 
 #upcoming a span {
@@ -214,30 +214,30 @@ display:block;
 
 /* Page header */
 #header h1 a {
-	background:url(../images/shield_new.jpg) no-repeat left top;
-	height:60px;
-	width:300px;
-	text-indent:-9999px;
+    background:url(../images/shield_new.jpg) no-repeat left top;
+    height:60px;
+    width:300px;
+    text-indent:-9999px;
     display: block;
 }
 
 #header #search {
-	float:right;
-	padding: 12px 15px;
-	background:#5C880B url(../images/search.jpg) no-repeat bottom left;
+    float:right;
+    padding: 12px 15px;
+    background:#5C880B url(../images/search.jpg) no-repeat bottom left;
 }
 
 #header #search input {
-	vertical-align:middle;
+    vertical-align:middle;
 }
 
 #header #search #inputbox {
-	width:120px;
+    width:120px;
 }
 
 /* Wikipage options (actions) */
 #wikiOps {
-	font-size:10px;
+    font-size:10px;
 }
 
 #wikiOps ul {
@@ -245,53 +245,53 @@ display:block;
 }
 
 #wikiOps ul {
-	float:right;
-	border:1px solid #D3D1C5;
+    float:right;
+    border:1px solid #D3D1C5;
 }
 
 #wikiOps li {
-	display:block;
-	float:left;
+    display:block;
+    float:left;
 }
 
 #wikiOps li a {
-	display:block;
-	padding:3px 4px;
+    display:block;
+    padding:3px 4px;
 }
 
 #wikiOps li a:hover {
-	background:#fff;
+    background:#fff;
 }
 
 #wikiOps li.current a {
-	background:#fff;
-	font-weight:bold;
+    background:#fff;
+    font-weight:bold;
 }
 
 /* Sidebar :: Main menu */
 #nav {
-	margin-right:10px;
+    margin-right:10px;
 }
 
 #nav li {
-	display:block;
-	/*border-bottom:1px solid #D3D1C6;
-	border-top:1px solid #F6F4E8;
-	background:url(../images/menu_li.gif) repeat-x bottom left;*/
-	font-size:12px;
+    display:block;
+    /*border-bottom:1px solid #D3D1C6;
+    border-top:1px solid #F6F4E8;
+    background:url(../images/menu_li.gif) repeat-x bottom left;*/
+    font-size:12px;
 }
 
 #nav li a {
-	display:block;
-	padding:3px 15px; 
-	color:#6A6A6B;
-	text-decoration:none;
-	background:url(../images/bullet.gif) no-repeat 3px center ;
+    display:block;
+    padding:3px 15px; 
+    color:#6A6A6B;
+    text-decoration:none;
+    background:url(../images/bullet.gif) no-repeat 3px center ;
 }
 
 #nav li a:hover {
-	color:#333;
-	background:#FFEFB1 url(../images/bullet.gif) no-repeat 3px center ;
+    color:#333;
+    background:#FFEFB1 url(../images/bullet.gif) no-repeat 3px center ;
 }
 
 #nav li.separator hr {
@@ -301,63 +301,63 @@ display:block;
 }
 
 #nav li.current a {
-	font-weight:bold;
-	background:url(../images/bullet_current.gif) no-repeat 2px center ;
-	font-variant:small-caps;
-	color:#333;
+    font-weight:bold;
+    background:url(../images/bullet_current.gif) no-repeat 2px center ;
+    font-variant:small-caps;
+    color:#333;
 }
 
 
 #nav li.current a:hover {
-	color:#333;
-	background:#FFEFB1 url(../images/bullet_current.gif) no-repeat 2px center ;
+    color:#333;
+    background:#FFEFB1 url(../images/bullet_current.gif) no-repeat 2px center ;
 }
 
 /* Sidebar :: login box */
 #login {
-	border:1px solid #fc0;
-	border-right:none;
-	border-left:none;
-	background:#fff url(../images/login.jpg) no-repeat top left;
-	padding:10px 20px;
-	margin-top:20px;
-	margin-right:10px;
-	color:#000;
+    border:1px solid #fc0;
+    border-right:none;
+    border-left:none;
+    background:#fff url(../images/login.jpg) no-repeat top left;
+    padding:10px 20px;
+    margin-top:20px;
+    margin-right:10px;
+    color:#000;
 }
 
 #login label {
-	line-height:1.8;
-	margin-top:5px;
+    line-height:1.8;
+    margin-top:5px;
 }
 
 #login h2 {
-	text-transform:uppercase;
-	font-size:14px;
-	font-weight:bold;
-	
+    text-transform:uppercase;
+    font-size:14px;
+    font-weight:bold;
+    
 }
 
 #login input {
-	width:95%;
+    width:95%;
 }
 
 #login #loginSubmit {
-	margin-top:10px;
-	text-align:center;
+    margin-top:10px;
+    text-align:center;
 }
 
 #login #loginSubmit input {
-	display:inline;
+    display:inline;
 }
 
 #login #loginRem {
-	display:inline;
-	width:auto;
+    display:inline;
+    width:auto;
 }
 
 #login #loginSub {
-	margin-top:3px;
-	margin-bottom:6px;
+    margin-top:3px;
+    margin-bottom:6px;
 }
 
 /* Sidebar :: avatar */
@@ -367,60 +367,60 @@ display:block;
 }
 
 #avatar img {
-	border:1px solid #D8D6CB;
-	padding:5px;
-	background:#fff;
-	display:block;
-	float:left;
-	margin-right:5px;
+    border:1px solid #D8D6CB;
+    padding:5px;
+    background:#fff;
+    display:block;
+    float:left;
+    margin-right:5px;
 }
 
 #avatar p {
-	font-size:11px;
-	margin:0;
-	padding:6px 0 8px;
+    font-size:11px;
+    margin:0;
+    padding:6px 0 8px;
 }
 
 /* Main (content) */
 #main h1 {
-	font-family: Georgia, "Times New Roman", Times, serif;
-	font-size: 17pt;
-	font-weight: normal;
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-size: 17pt;
+    font-weight: normal;
     margin: .2em 0 .7em 0;
     border-bottom: 1px solid #eee;
 }
 
 #main h2 {
-	font-family: Arial, Tahoma, sans-serif;
-	font-size: 14pt;
-	font-weight: normal;
+    font-family: Arial, Tahoma, sans-serif;
+    font-size: 14pt;
+    font-weight: normal;
     margin: .2em 0 0 0;
 }
 
 /* News */
 .news {
-	/*width:340px;
-	float:left;*/
+    /*width:340px;
+    float:left;*/
     width: 95%;
     margin-top: 1em;
 }
 
 * html .news {
-	height: 1%;
+    height: 1%;
 }
 
 #main .news h3 {
-	font-family: Georgia, "Times New Roman", Times, serif;
+    font-family: Georgia, "Times New Roman", Times, serif;
     color: green;
-	font-size: 13pt;
-	font-weight: normal;
+    font-size: 13pt;
+    font-weight: normal;
     border: 0;
     margin: 0;
 }
 
 .news .item {
-	border-bottom: 1px solid #EBE9DC;
-	margin-bottom: 1em;
+    border-bottom: 1px solid #EBE9DC;
+    margin-bottom: 1em;
     width: 100%;
     padding: 0 .5em 0 .5em;
 }
@@ -431,23 +431,23 @@ display:block;
 }
 
 .news .item .date {
-	float: left;
-	width: 25px;
-	padding: 5px;
-	font-family: Arial, Helvetica, sans-serif;
-	text-align: center;
-	font-size: 8.5pt;
-	margin: 5px 8px 5px 0;
-	padding-top: 10px;
-	color: #060;
-	background: #D9E7BE url(../images/calendar.jpg) no-repeat top center;
-	line-height: 1.2;
+    float: left;
+    width: 25px;
+    padding: 5px;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    font-size: 8.5pt;
+    margin: 5px 8px 5px 0;
+    padding-top: 10px;
+    color: #060;
+    background: #D9E7BE url(../images/calendar.jpg) no-repeat top center;
+    line-height: 1.2;
 }
 
 /* Breadcrumbs */
 #breadcrumbs {
-	font-size:11px;
-	line-height:2;
+    font-size:11px;
+    line-height:2;
     margin: 0;
     margin-top: -10px;
     border-bottom: 1px solid #f0f0f0;
@@ -463,17 +463,17 @@ display:block;
 
 /* Horizontal strap (i.e. "Vezi arhiva stiri") */
 .strap {
-	padding:5px 26px;
-	background: #f6f6f6 url(../images/documents_16.gif) no-repeat 5px center ;
-	margin-top:-14px;
-	text-align:right;
-	font-size:11px;
-	color:#555;
+    padding:5px 26px;
+    background: #f6f6f6 url(../images/documents_16.gif) no-repeat 5px center ;
+    margin-top:-14px;
+    text-align:right;
+    font-size:11px;
+    color:#555;
 }
 
 .strap a {
-	font-weight:bold;
-	text-transform:uppercase;
+    font-weight:bold;
+    text-transform:uppercase;
 }
 
 /* Footer */
@@ -481,22 +481,22 @@ display:block;
 }
 
 #footer li {
-	display:block;
-	float:left;
-	margin-right:15px;
+    display:block;
+    float:left;
+    margin-right:15px;
 }
 
 #footer li.top {
-	float:right;
+    float:right;
 }
 
 #footer li a {
-	display:block;
+    display:block;
 }
 
 #footer p {
-	font-size:10px;
-	margin-top:6px;
+    font-size:10px;
+    margin-top:6px;
 }
 
 /* Macros */
@@ -510,7 +510,7 @@ div.macroError {
 }
 
 div.macroMessage {
-	background-color: #f6f6f6;
+    background-color: #f6f6f6;
     padding: 5px;
     font-weight: bold;
     margin: .5em;
@@ -676,9 +676,9 @@ form.round li#field_tasks select {
 }
 
 #main .wiki_text_block h2, .wiki_text_block h3, .wiki_text_block h4 {
-	font-family: Arial, Tahoma, sans-serif;
-	font-size: 1.5em;
-	font-weight: normal;
+    font-family: Arial, Tahoma, sans-serif;
+    font-size: 1.5em;
+    font-weight: normal;
     margin: .5em 0 0 0;
 }
 
@@ -756,7 +756,7 @@ th {
 
 /* inline task submit form */
 .inlineSubmit ul.form {
-	background-color: #f6f6f6;
+    background-color: #f6f6f6;
     padding: 5px;
     margin: 0;
 }
@@ -803,6 +803,6 @@ table.example td {
     line-height: 1.5em;
     vertical-align: top;
     padding: .5em;
-    word-wrap: nowrap;
+    white-space: nowrap;
 }
 
