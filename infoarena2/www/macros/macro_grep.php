@@ -21,6 +21,7 @@ function macro_grep($args) {
     ob_start();
 ?>
 <div class="macroToc">
+<p><strong><?= count($textblocks) ?></strong> rezultate.</p>
 <ul>
 <?php foreach ($textblocks as $textblock) { ?>
     <li><a href="<?= url($textblock['name']) ?>"><?= htmlentities($textblock['title']) ?></a></li>
