@@ -803,4 +803,6 @@ table.example td {
     line-height: 1.5em;
     vertical-align: top;
     padding: .5em;
+    word-wrap: nowrap;
 }
+
