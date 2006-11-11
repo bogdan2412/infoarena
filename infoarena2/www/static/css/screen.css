@@ -509,6 +509,13 @@ div.macroError {
     padding: .5em;
 }
 
+div.macroMessage {
+	background-color: #f6f6f6;
+    padding: 5px;
+    font-weight: bold;
+    margin: .5em;
+}
+
 /* Flash */
 div.flash {
     text-align: center;

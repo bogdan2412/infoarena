@@ -21,8 +21,14 @@ function get_macro_include_file($macro_name)
 
 // Format an error message as a html div.
 // Can be returned from macros.
-function macro_error($text) {
-    return '<div class="macroError">' . htmlentities($text) . '</div>';
+function macro_error($text, $raw_html = false) {
+    return '<div class="macroError">' . ($raw_html ? $text : htmlentities($text)) . '</div>';
+}
+
+// Format message as a html div.
+// Can be returned from macros.
+function macro_message($text, $raw_html = false) {
+    return '<div class="macroMessage">' . ($raw_html ? $text : htmlentities($text)) . '</div>';
 }
 
 // Preset error message for insufficient privileges.

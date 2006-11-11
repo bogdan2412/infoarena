@@ -8,6 +8,7 @@
 // Examples:
 //      TaskSubmit(task_id="adunare")
 function macro_tasksubmit($args) {
+    global $identity_user;
     $task_id = getattr($args, 'task_id');
 
     // validate arguments
@@ -23,7 +24,29 @@ function macro_tasksubmit($args) {
 
     // permission check
     if (!identity_can('task-submit', $task)) {
-        return macro_permission_error();
+        if (identity_anonymous()) {
+            $url = url("login");
+            return macro_message("Trebuie sa va autentificati pentru a trimite solutii. <a href=\"{$url}\">Click aici</a>", true);
+        }
+        else {
+            return macro_message("Nu se (mai) pot trimite solutii la aceasta problema.", true);
+        }
+    }
+
+    log_assert($identity_user);
+
+    // make sure user is already registered to at least one round that includes this task
+    $rounds = task_get_parent_rounds($task['id']);
+    $registered = false;
+    foreach ($rounds as $round_id) {
+        if (round_is_registered($round_id, $identity_user['id']))  {
+            $registered = true;
+            break;
+        }
+    }
+
+    if (!$registered) {
+        return macro_message('Inscrie-te intr-o runda pentru a putea trimite solutii.');
     }
 
     // display form

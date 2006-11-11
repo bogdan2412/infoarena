@@ -16,7 +16,7 @@ function task_get_textblock($task_id) {
     return textblock_get_revision('task/' . $task_id);
 }
 
-//
+// create new task
 function task_create($task_id, $type, $hidden, $author, $source, $user_id) {
     global $dbLink;
     $query = sprintf("INSERT INTO ia_task
@@ -38,7 +38,7 @@ function task_create($task_id, $type, $hidden, $author, $source, $user_id) {
     $template = textblock_get_revision('template/newtask');
     log_assert($template, 'Could not find template for new task: template/newtask');
     $content = str_replace('%task_id%', $new_task['id'], $template['text']);
-    textblock_add_revision('task/'.$new_task['id'], $title, $content, $new_user['id']);
+    textblock_add_revision('task/'.$new_task['id'], $title, $content, $user_id);
 
     return $new_task['id'];
 }
@@ -85,6 +85,26 @@ function task_list_info() {
         $list[$row['id']] = $row;
     }
     return $list;
+}
+
+// Returns list of round ids that include this task
+function task_get_parent_rounds($task_id) {
+    $query = sprintf("
+        SELECT DISTINCT round_id
+        FROM ia_round_task
+        WHERE task_id='%s'
+        ORDER BY round_id
+    ", db_escape($task_id));
+
+    $rows = db_fetch_all($query);
+
+    // transform rows into id list
+    $idlist = array();
+    foreach ($rows as $row) {
+        $idlist[] = $row['round_id'];
+    }
+
+    return $idlist;
 }
 
 ?>
