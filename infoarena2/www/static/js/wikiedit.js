@@ -2,12 +2,20 @@
  * DHTML for wiki editing page.
  * (c) 2006 info-arena
  */ 
+
+var WikiEdit_Saved = false;
+
 function WikiEdit_Init() {
     // wiki preview
     var b1 = $('form_preview');
     var b2 = $('preview_close');
+    var fc = $('form_content');
     connect(b1, 'onclick', WikiEdit_Preview);
     connect(b2, 'onclick', WikiEdit_ClosePreview);
+    connect(fc, 'onkeypress', WikiEdit_ObserveChange);
+    window.onbeforeunload = WikiEdit_Leave;
+
+    WikiEdit_Saved = true;
 }
 
 function WikiEdit_Preview() {
@@ -50,6 +58,28 @@ function WikiEdit_ClosePreview() {
 
     container.style.display = 'none';
     toolbar.style.display = 'none';
+}
+
+function WikiEdit_Leave(event) {
+    if (WikiEdit_Saved) {
+        return;
+    }
+
+    var message = "Ati facut modificari pe care nu le-ati salvat. Doriti sa parasiti pagina?";
+    if (typeof event == 'undefined') {
+        event = window.event;
+    }
+    if (event) {
+        event.returnValue = message;
+    }
+    return message;
+}
+
+function WikiEdit_ObserveChange() {
+    WikiEdit_Saved = false;
+
+    var fc = $('form_content');
+    fc.onkeypress = null;
 }
 
 connect(window, 'onload', WikiEdit_Init);
