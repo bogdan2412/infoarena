@@ -132,7 +132,7 @@ function controller_profile($suburl) {
                     $qdata['avatar'] = $attach['id'];
                     // FIXME: There should be a unified name of computing file paths for attachments
                     // FIXME: See controllers/attachment.php
-                    $disk_name = IA_ATTACH_DIR . $attach['id'];
+                    $disk_name = attachment_get_filepath($attach);
                     if (!move_uploaded_file($_FILES['avatar']['tmp_name'], $disk_name)) {
                         $errors['avatar'] = 'Fisierul nu a putut fi incarcat pe server.'; 
                     }
