@@ -42,17 +42,6 @@ a img {
     border: none;
 }
 
-p.pre {
-    white-space: pre;
-    font-family: monospace;
-    line-height: 1.5em;
-    margin: 0;
-}
-
-p.pre br {
-    display: none;
-}
-
 var {
     font-style: normal;
     font-family: monospace;
@@ -804,5 +793,21 @@ table.example td {
     vertical-align: top;
     padding: .5em;
     white-space: nowrap;
+}
+
+/* wiki style sheets */
+p.pre {
+    white-space: pre;
+    font-family: monospace;
+    line-height: 1.5em;
+    margin: 0;
+}
+
+p.pre br {
+    display: none;
+}
+
+table.numbers td, table.numbers th {
+    text-align: right;
 }
 
