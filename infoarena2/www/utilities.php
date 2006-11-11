@@ -86,7 +86,24 @@ function url_from_args($args, $absolute = false)
 // Get an url for an attachement
 function attachment_url($page, $file)
 {
-    return url($page, array('action' => 'download', 'file' => $file));
+    return url($page, array(
+            'action' => 'download',
+            'file' => $file,
+    ));
+}
+
+// Get an url for a resized image.
+function image_resize_url($page, $file, $resize)
+{
+    if ($resize) {
+        return url($page, array(
+                'action' => 'download',
+                'file' => $file,
+                'resize' => $resize,
+        ));
+    } else {
+        return attachment_url($page, $file);
+    }
 }
 
 
@@ -227,11 +244,7 @@ function send_email($to, $subject, $message,
 //
 // Resize instructions format may be one of the following:
 // # example    # description
-// 100x100      keep aspect ratio, resize as to fit a 100x100 box
-//              Coordinates are not enlarged if they already fit the given box.
-// @100x100     keep aspect ratio, resize as to exactly fit a 100x100 box
-//              Enlarge coordinates if necessary
-// !50x86       ignore aspect ratio, resize to exactly 50x86
+// 100x100      
 // 50%          scale dimensions. only integer percentages allowed
 //
 // Returns 2-element array: (width, height) or null if invalid format
@@ -247,32 +260,41 @@ function resize_coordinates($width, $height, $resize) {
 
     $ratio = 1.0;
 
+    //log_print("Parsing resize '$resize'");
     // 100x100 or @100x100
-    if (preg_match('/^([0-9]+)x([0-9]+)$/', $resize, $matches)) {
-        $boxw = (float)$matches[1];
-        $boxh = (float)$matches[2];
+    if (preg_match('/^([^0-9]*)([0-9]+\%?)x([0-9]+\%?)$/', $resize, $matches)) {
+        $flags = $matches[1];
+        $targetw = (float)$matches[2];
+        $targeth = (float)$matches[3];
 
-        if ($width > $boxw || $enlarge) {
-            $ratio =  $boxw / $width;
+        if (preg_match("/\%/", $targetw)) {
+            $targetw = $width * preg_match("/[0-9]+/", $targetw) / 100.0;
         }
-        if ($height * $ratio > $boxh) {
-            $ratio *= $boxh / ($height * $ratio);
+        if (preg_match("/\%/", $targeth)) {
+            $targeth = $height * preg_match("/[0-9]+/", $targeth) / 100.0;
+        }
+        //log_print("$targetw x $targeth with flags $flags");
+
+        if (preg_match('/f/i', $flags)) {
+            $targetw = min($targetw, $width);
+            $targeth = min($targeth, $height);
+        }
+        if (preg_match('/k/i', $flags)) {
+            $targetw = min($targeth * $width / $height, $width);
+            $targeth = min($targetw * $height / $width, $height);
+            $targetw = min($targeth * $width / $height, $width);
         }
     }
-    // 50%
-    elseif (preg_match('/^([0-9]+)%$/', $resize, $matches)) {
-        $ratio = (float)$matches[1] / 100;
-    }
-    // !50x86
-    elseif (preg_match('/^!([0-9]+)x([0-9]+)$/', $resize, $matches)) {
-        $width = (float)$matches[1];
-        $height = (float)$matches[2];
+    elseif (preg_match('/^([0-9]+)\%$/', $resize, $matches)) {
+        //log_print("Scaling at ".$matches[1]."%.");
+        $targetw = $width * $matches[1] / 100.0;
+        $targeth = $height * $matches[1] / 100.0;
     }
     else {
         return null;
     }
 
-    return array(floor($ratio * $width), floor($ratio * $height));
+    return array(floor($targetw), floor($targeth));
 }
 
 ?>

@@ -105,16 +105,24 @@ class MyTextile extends Textile {
     function do_format_image($args) {
         $srcpath = getattr($args, 'src', '');
 
+        $extra = $args['extra'];
+        $alt = (preg_match("/\([^\)]+\)/", $extra, $match) ? $match[0] : '');
+        if ($alt) {
+            $args['extra'] = $alt;
+        }
         if (!preg_match($this->external_url_exp, $srcpath)) {
-            //echo 'non-external img';
+            // Catch internal images.
             if (preg_match('/^ ([a-z0-9_\-\/]+) \? ([a-z0-9\.\-_]+)   $/ix', $srcpath, $matches)) {
-                //echo 'remote attachment';
-                $args['src'] = attachment_url($matches[1], $matches[2]); 
+                $extra = preg_replace('/\([^\)]+\)/', '', $extra, 1);
+                $extra = preg_replace('/\s/', '', $extra);
+                if (!resize_coordinates(100, 100, $extra)) {
+                    log_warn("Invalid resize instructions '$extra'");
+                    $extra = '';
+                }
+                $args['src'] = image_resize_url($matches[1], $matches[2], $extra); 
             }
         }
-        //echo "<pre>insrc $srcpath outsrc $args[src]</pre>";
         $res = @parent::format_image($args);
-
         return $res;
     }
 
@@ -153,6 +161,12 @@ class MyTextile extends Textile {
         $res = $this->do_format_link($args);
         error_reporting($this->my_error_reporting);
         return $res;
+    }
+
+    // Disabled, sorry.
+    function image_size($filename)
+    {
+        return null;
     }
 
     // Wrap around do_format_image, restore errors.
