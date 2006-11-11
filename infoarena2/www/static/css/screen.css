@@ -773,3 +773,11 @@ th {
     background-color: white;
 }
 
+/* task statement example */
+table.example td {
+    font-size: 1.1em;
+    font-family: monospace;
+    line-height: 1.5em;
+    vertical-align: top;
+    padding: .5em;
+}
