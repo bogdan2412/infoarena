@@ -76,8 +76,8 @@ function attachment_get_all($page, $name='%') {
 function attachment_get_filepath($attach) {
     assert(is_array($attach));
     return IA_ATTACH_DIR .
-            preg_replace('/[^a-z0-9\.\-_]/', '_', $attach['page']) . '_' .
-            preg_replace('/[^a-z0-9\.\-_]/', '_', $attach['name']) . '_' .
+            preg_replace('/[^a-z0-9\.\-_]/i', '_', $attach['page']) . '_' .
+            preg_replace('/[^a-z0-9\.\-_]/i', '_', $attach['name']) . '_' .
             $attach['id'];
 }
 

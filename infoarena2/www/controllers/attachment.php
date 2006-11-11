@@ -235,7 +235,7 @@ function controller_attachment_delete($page_name) {
     }
 
     // Delete from disk.
-    $real_name = IA_ATTACH_DIR . $attach['id'];
+    $real_name = attachment_get_filepath($attach);
     if (!unlink($real_name)) {
         flash_error('Nu am reusit sa sterg fisierul de pe disc.');
         redirect(url($page_name));
@@ -249,18 +249,25 @@ function controller_attachment_delete($page_name) {
 // serve file through HTTP
 // WARNING: this function does not return
 function serve_attachment($filename, $attachment_name, $mimetype) {
+
     // open file
     $fp = fopen($filename, "rb");
     log_assert($fp);
     $stat = fstat($fp);
 
+    // log_print_r($stat);
+    // log_print("Serving $attachment_name from $filename size ".$stat['size']." mime $mimetype");
+    
     // HTTP headers
     header("Content-Type: {$mimetype}");
     header("Content-Disposition: inline; filename=".urlencode($attachment_name).";");
-    header('Content-Length: ', $stat['size']);
+    header('Content-Length: ' . $stat['size']);
 
     // serve file
-    fpassthru($fp);
+    $written = fpassthru($fp);
+    if ($written != $stat['size']) {
+        log_error("fpassthru failed somehow.");
+    }
     fclose($fp);
     die();
 }
