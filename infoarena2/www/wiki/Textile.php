@@ -1213,7 +1213,7 @@ class Textile {
                                     $this->_cb('$me->_repl($me->repl[0], $me->format_block(array("text" => $m[2], "inline" => 1, "pre" => $m[1], "post" => $m[3])))'), $buffer);
 
     unset($tokens);
-    if (preg_match('/</', $buffer) && (!$this->disable_html())) {  // optimization -- no point in tokenizing if we
+    if (preg_match('/</', $buffer)) {  // optimization -- no point in tokenizing if we
                                        // have no tags to tokenize
       $tokens = $this->_tokenize($buffer);
     } else {

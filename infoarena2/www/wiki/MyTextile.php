@@ -8,12 +8,16 @@ class MyTextile extends Textile {
     // mailto: and <proto>:// and mail adresses of sorts.
     public $external_url_exp = '/^([a-z]+:\/\/|mailto:[^@]+@[^@]+|[^@]+@[^@])/i';
 
+    private $my_error_reporting = 0x700;
+
     function MyTextile($options = array()) {
         @Textile::Textile($options);
     }
 
     // Parse and execute a macro (or return an error div).
     function process_macro($str) {
+        //log_print("Processing $str macro");
+        //log_backtrace();
         $str = trim($str);
         $argvalexp = '"(([^"]*("")*)*)"';
         if (preg_match('/^([a-z][a-z0-9_]*)\s*\((\s*
@@ -119,7 +123,7 @@ class MyTextile extends Textile {
 
     // Save error_reporting_level.
     function process($content) {
-        $this->error_reporting_level = error_reporting(0);
+        $this->error_reporting_level = error_reporting($this->my_error_reporting);
         return parent::process($content);
         error_reporting($this->error_reporting_level);
     }
@@ -130,9 +134,11 @@ class MyTextile extends Textile {
             return do_format_block($args);
         }
         error_reporting($this->error_reporting_level);
+        //log_print("Textile format_block");
+        //log_print_r($args);
         $res = $this->do_format_block($args);
         $res = getattr($args, 'pre', '').$res.getattr($args, 'post', '');
-        error_reporting(0);
+        error_reporting($this->my_error_reporting);
         return $res;
     }
 
@@ -142,8 +148,10 @@ class MyTextile extends Textile {
             return do_format_link($args);
         }
         error_reporting($this->error_reporting_level);
+        //log_print("Textile format_link");
+        //log_print_r($args);
         $res = $this->do_format_link($args);
-        error_reporting(0);
+        error_reporting($this->my_error_reporting);
         return $res;
     }
 
@@ -154,7 +162,7 @@ class MyTextile extends Textile {
         }
         error_reporting($this->error_reporting_level);
         $res = $this->do_format_image($args);
-        error_reporting(0);
+        error_reporting($this->my_error_reporting);
         return $res;
     }
 }
