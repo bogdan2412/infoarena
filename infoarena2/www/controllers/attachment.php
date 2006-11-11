@@ -120,7 +120,7 @@ function controller_attachment_submit($page_name) {
 
     // compute mime type for each file on disk
     if (!$form_errors) {
-        $finfo = finfo_open(FILEINFO_MIME);
+        $finfo = finfo_open(FILEINFO_MIME, '/usr/share/misc/file/magic');
         for ($i = 0; $i < count($attachments); $i++) {
             $att =& $attachments[$i];
             if (!isset($att['disk_name'])) {
@@ -161,6 +161,7 @@ function controller_attachment_submit($page_name) {
             $attach = attachment_get($file_att['name'], $page_name);
             if ($attach) {
                 $file_att['attach_id'] = $attach['id'];
+                $file_att['attach_obj'] = $attach;
                 $attach_okcount++;
             }
         }
@@ -173,7 +174,7 @@ function controller_attachment_submit($page_name) {
             if (!isset($file_att['attach_id'])) {
                 continue;
             }
-            $disk_name = attachment_get_filepath($file_att);
+            $disk_name = attachment_get_filepath($file_att['attach_obj']);
             rename($file_att['disk_name'], $disk_name);
         }
     }

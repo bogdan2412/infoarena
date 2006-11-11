@@ -87,7 +87,9 @@ function magic_convert_textile($filename, $content = null) {
         // more formatting
         $value = preg_replace('/(\+|\x7C)*---+(\+|\x7C)*/', '', $value);
     }
-    return implode("\n", $lines);
+    $content = implode("\n", $lines);
+    $content = "==Include(page=\"template/raw\")==\n\n" . $content;
+    return $content;
 }
 
 // magic_convert_textile for tasks
@@ -258,11 +260,16 @@ if (read_question("Import scores? ")) {
 //
 if (read_question("Import tasks? ")) {
     db_query("TRUNCATE TABLE ia_task");
-    db_query("DELETE FROM ia_textblock WHERE `name` LIKE 'task/%'");
-    db_query("DELETE FROM ia_textblock_revision WHERE `name` LIKE 'task/%'");
     db_query("DELETE FROM ia_file WHERE `page` LIKE 'task/%'");
+    $import_text = read_question("Import task statements? ");
     $import_eval = read_question("Import task evaluators? ");
     $import_tests = read_question("Import task tests? ");
+
+    if ($import_text) {
+        log_print('Deleting task statements.');
+        db_query("DELETE FROM ia_textblock WHERE `name` LIKE 'task/%'");
+        db_query("DELETE FROM ia_textblock_revision WHERE `name` LIKE 'task/%'");
+    }
 
     $task_list = mysql_query("SELECT * FROM tasktable_arhiva", $dbOldLink);
     if (!$task_list) {
@@ -279,13 +286,15 @@ if (read_question("Import tasks? ")) {
         $task_source = "info-arena 1.0";
         $task_user_id = 0;
         task_create($task_id, $task_type, $task_hidden, $task_author, $task_source, $task_user_id);
-        
-        // Basic content.
-        $textblock_content = "";
-        $textblock_content .= "==Include(page=\"template/taskheader\" task_id=\"$task_id\")==\n\n";
-        $textblock_content .= magic_convert_task($task_id);
-        $textblock_content .= "==Include(page=\"template/taskfooter\" task_id=\"$task_id\")==";
-        textblock_add_revision("task/".$task_id, $task['name'], $textblock_content, 0);
+    
+        if ($import_text) {
+            // Basic content.
+            $textblock_content = "";
+            $textblock_content .= "==Include(page=\"template/taskheader\" task_id=\"$task_id\")==\n\n";
+            $textblock_content .= magic_convert_task($task_id);
+            $textblock_content .= "==Include(page=\"template/taskfooter\" task_id=\"$task_id\")==";
+            textblock_add_revision("task/".$task_id, $task['name'], $textblock_content, 0);
+        }
 
         $parameters = array();
 

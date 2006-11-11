@@ -2,7 +2,7 @@ RewriteEngine On
 
 # Same as IA_URL_PREFIX
 # Slashes at both ends
-RewriteBase /--write-me--/
+RewriteBase /live/
 
 RewriteCond %{REQUEST_URI}  !index.php
 RewriteCond %{REQUEST_URI}  !static
