@@ -14,6 +14,8 @@ function controller_json($suburl) {
             $page_content = request('content');
             $page_name = request('page_name');
 
+            $page_content = file_get_contents('php://input'); 
+
             // get text block
             $textblock = textblock_get_revision($page_name);
             log_assert($textblock, 'Invalid textblock identifier');

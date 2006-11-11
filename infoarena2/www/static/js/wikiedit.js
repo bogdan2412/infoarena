@@ -24,9 +24,11 @@ function WikiEdit_Preview() {
     // :TODO: some web servers and proxies limit GET requests to a maximum
     // size. This should really be POST-ed. Perhaps when MochiKit starts
     // supporting loadJSONDoc via POST?
-    var d = loadJSONDoc(BASE_HREF + 'json/wiki-preview?page_name=' + escape(page_name.value) + '&content=' + escape(content.value));
+    // var d = loadJSONDoc(BASE_HREF + 'json/wiki-preview?page_name=' + escape(page_name.value) + '&content=' + escape(content.value));
+    var d = doXHR(BASE_HREF + 'json/wiki-preview?page_name=' + escape(page_name.value), {method: 'POST', sendContent: content.value});
 
-    var ready = function(data) {
+    var ready = function(xhr) {
+        var data = evalJSONRequest(xhr);
         container.innerHTML = data['html'];
         container.style.display = '';
         toolbar.style.display = '';
