@@ -12,7 +12,7 @@ include('views/header.php');
 <?php } ?>
 
 
-<form action="<?= getattr($view, 'action') ?>" method="post">
+<form action="<?= getattr($view, 'action') ?>" method="post" id="form_wikiedit">
 
 <?= $wikiedit['preview'] ?>
 

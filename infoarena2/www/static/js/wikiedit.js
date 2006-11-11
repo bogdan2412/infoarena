@@ -9,9 +9,11 @@ function WikiEdit_Init() {
     // wiki preview
     var b1 = $('form_preview');
     var b2 = $('preview_close');
+    var felem = $('form_wikiedit');
     var fc = $('form_content');
     connect(b1, 'onclick', WikiEdit_Preview);
     connect(b2, 'onclick', WikiEdit_ClosePreview);
+    connect(felem, 'onsubmit', WikiEdit_ObserveSave);
     connect(fc, 'onkeypress', WikiEdit_ObserveChange);
     window.onbeforeunload = WikiEdit_Leave;
 
@@ -73,6 +75,10 @@ function WikiEdit_Leave(event) {
         event.returnValue = message;
     }
     return message;
+}
+
+function WikiEdit_ObserveSave() {
+    WikiEdit_Saved = true;
 }
 
 function WikiEdit_ObserveChange() {

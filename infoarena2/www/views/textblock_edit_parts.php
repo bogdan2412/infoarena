@@ -33,7 +33,7 @@ $wikiedit['content'] = '
 
 // buttons
 $wikiedit['submit'] = '
-	<li id="form_submit">
+	<li id="field_submit">
 		<input type="submit" value="Salveaza" id="form_submit" class="button important" />
 		<input type="button" value="Preview" id="form_preview" class="button" />
 	</li>
