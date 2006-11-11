@@ -238,7 +238,8 @@ function permission_macro($user, $action, $args) {
 
     switch ($action) {
         case 'debug':
-            // only administrators & reviewers can execute a debugging macro
+        case 'grep':
+            // only administrators & reviewers can execute these macros 
             return $user && ('admin'==$level || 'reviewer'==$level);
         
         default:

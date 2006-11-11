@@ -159,4 +159,17 @@ function textblock_get_list_by_prefix($prefix, $content = false, $username = fal
     return db_fetch_all($query);
 }
 
+// Grep through textblocks. This is mostly a hack needed for macro_grep.php
+function textblock_grep($substr, $page) {
+    // Calculate field list.
+    $field_list = "`name`, `title`, `timestamp`, `user_id`";
+
+    $query = sprintf("SELECT `name`, `title`, `timestamp`, `user_id`
+                      FROM ia_textblock
+                      WHERE `name` LIKE '%s' AND `text` LIKE '%s'
+                      ORDER BY `name`",
+                      db_escape($page), db_escape($substr));
+    return db_fetch_all($query);
+}
+
 ?>
