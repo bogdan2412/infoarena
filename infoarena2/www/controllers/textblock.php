@@ -280,6 +280,9 @@ function controller_textblock_save($page_name) {
     }
     else {
         $view['title'] = "Editare " . $page_name;
+        list($view['page_class'], $view['page_id']) = textblock_split_name($page_name);
+        $view['page_name'] = $page_name;
+        $view['page_class'] = 
         $view['action'] = url($page_name, array('action' => 'save'));
         $form_values['content'] = $page_content;
         $view['form_values'] = array('content'=> $page_content,

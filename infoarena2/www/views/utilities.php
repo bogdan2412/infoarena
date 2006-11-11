@@ -11,6 +11,7 @@ function check_view($view)
     }
     log_assert(!isset($view['wikipage']));
     if (isset($view['textblock'])) {
+        log_assert(is_string($view['page_name']));
         log_assert(is_array($view['textblock']));
         log_assert(array_key_exists('name', $view['textblock']));
         log_assert(array_key_exists('title', $view['textblock']));
