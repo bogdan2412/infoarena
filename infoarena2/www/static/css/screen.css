@@ -42,6 +42,22 @@ a img {
     border: none;
 }
 
+p.pre {
+    white-space: pre;
+    font-family: monospace;
+    line-height: 1.5em;
+    margin: 0;
+}
+
+p.pre br {
+    display: none;
+}
+
+var {
+    font-style: normal;
+    font-family: monospace;
+}
+
 /* Misc */
 a.feed {
 	float:right;

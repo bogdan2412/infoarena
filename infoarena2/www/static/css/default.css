@@ -82,11 +82,6 @@ div.sidehelp {
     background-color: #ccf;
 }
 
-var {
-    font-style: normal;
-    font-family: monospace;
-}
-
 /* Macros */
 div.macroError {
     background-color: red;
