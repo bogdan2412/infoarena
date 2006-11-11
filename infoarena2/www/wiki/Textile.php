@@ -1434,7 +1434,8 @@ class Textile {
       $text = preg_replace('/(?<!\s)\ \ (?!=\s)/', '&#8195;', $text);
     }
 
-    $redo = preg_match('/[\*_\?\-\+\^\~]/', $text);
+    // Optimization, quick check for qtags.
+    $redo = preg_match('/[\*_\?\-\+\^\$\~]/', $text);
     $last = $text;
     while ($redo) {
       // simple replacements...
