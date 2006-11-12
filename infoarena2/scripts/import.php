@@ -37,7 +37,10 @@ function read_question($caption = "") {
 function magic_file_attach($page, $attname, $file)
 {
     if (!file_exists($file)) {
-        log_error("File to attach not found");
+        log_error("File to attach not found ($file)");
+    }
+    if (!is_readable($file)) {
+        log_error("File to attach not readable ($file)");
     }
 
     $mime = get_mime_type($file);
@@ -145,6 +148,8 @@ if (read_question("Delete attachments? ")) {
 if (read_question("Import users? ")) {
     $query = "SELECT * FROM devnet_users";
 
+    $import_avatars = read_question("Attach old avatars? ");
+
     db_query("TRUNCATE TABLE ia_user");
     $result = mysql_query("SELECT * FROM devnet_users", $dbOldLink);
     if (!$result) {
@@ -169,6 +174,11 @@ if (read_question("Import users? ")) {
         $res = user_create($data);
         if (!$res) {
             log_error("Failed creating user $data[username]");
+        }
+
+        if ($import_avatars) {
+            $avatar_file = sprintf($ia1_path . 'www/infoarena/gfx/faces/%02d.gif', (int)$row['avatar']);
+            magic_file_attach("user/" . $data['username'], "avatar", $avatar_file);
         }
     }
 }

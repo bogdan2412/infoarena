@@ -73,7 +73,7 @@ function user_create($data) {
 
     // create user
     log_print('Creating database entry for user: '.$data['username']);
-    return db_query($query);
+    db_query($query);
     $new_user = user_get_by_username($data['username']);
     log_assert($new_user, 'Registration input data was validated OK but no database entry was created');
 
