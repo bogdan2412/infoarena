@@ -29,19 +29,20 @@ function db_escape_array($array)
     return $ret;
 }
 
-// Get scores.
-// $user, $task, $round can be null.
-function score_get($rank_id, $user, $task, $round, $start, $count, $groupby = "user_id")
+// Builds a where clause for a score query.
+// Returns an array of conditions; you should do something like
+// join($where, ' AND ');
+function build_where_clauses($user, $task, $round)
 {
-    // Build WHERE.
     $where = array();
-/*    if ($user != null) {
+
+    if ($user != null) {
         if (is_array($user) && count($user) > 0) {
             $where[] = "(`user_id` IN (" . db_escape_array($user) . "))";
         } else if (is_string($user)) {
             $where[] = sprintf("(`user_id` == '%s')", $user);
         }
-    }*/
+    }
     if ($task != null) {
         if (is_array($task) && count($task) > 0) {
             $where[] = "(`task_id` IN (" . db_escape_array($task) . "))";
@@ -58,18 +59,31 @@ function score_get($rank_id, $user, $task, $round, $start, $count, $groupby = "u
         }
     }
 
+    return $where;
+}
+
+// Get scores.
+// $user, $task, $round can be null, string or an array.
+// If null it's ignored, otherwise only scores for those users/tasks/rounds are counted.
+function score_get($rank_id, $user, $task, $round, $start, $count, $groupby = "user_id")
+{
     log_assert($rank_id !== null);
+    $where = build_where_clauses($user, $task, $round);
     $where[] = sprintf("ia_score.`id` = '%s'", db_escape($rank_id));
     $query = sprintf("
-            SELECT ia_score.`id` as `rank_id`, `user_id`, `task_id`, `round_id`, SUM(`score`) as score, 
+            SELECT SQL_CALC_FOUND_ROWS
+                ia_score.`id` as `rank_id`, `user_id`, `task_id`, `round_id`, SUM(`score`) as score, 
                 ia_user.username as user_name, ia_user.full_name as user_full
             FROM ia_score 
                 LEFT JOIN ia_user ON ia_user.id = ia_score.user_id
             WHERE %s GROUP BY %s 
             ORDER BY `score` DESC LIMIT %s, %s",
             join($where, " AND "), $groupby, $start, $count);
-    log_print($query);
-    return db_fetch_all($query);
+    $scores = db_fetch_all($query);
+    return array(
+            'scores' => $scores,
+            'total_rows' => db_query_value("SELECT FOUND_ROWS();"),
+    );
 }
 
 ?>

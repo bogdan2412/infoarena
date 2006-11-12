@@ -11,16 +11,16 @@ function controller_monitor() {
 
     $view = array();
 
+    $view['jobs'] = job_get_range($first_row, $display_rows); 
+    $view['title'] = 'Monitor de evaluare';
+    $view['url_page'] = 'monitor';
+    $view['url_args'] = $_GET;
+
     $first_row = request('start', 0);
     if ($first_row < 0) {
         flash_error("Numar de pagina invalid.");
         $first_row = 0;
     }
-
-    $view['jobs'] = job_get_range($first_row, $display_rows); 
-    $view['title'] = 'Monitor de evaluare';
-    $view['url_page'] = 'monitor';
-    $view['url_args'] = $_GET;
     $view['first_row'] = $first_row;
     $view['total_rows'] = job_get_count();
     $view['display_rows'] = $display_rows;

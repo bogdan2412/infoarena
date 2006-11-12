@@ -19,13 +19,26 @@ function macro_rankings($args) {
         return macro_error("Invalid count parameter.");
     }
 
-    // query database
+    // First row.
+    $first_row = request('start', 0);
+    if ($first_row < 0) {
+        flash_error("Numar de pagina invalid.");
+        $first_row = 0;
+    }
+
+    // Rounds parameters
     $roundstr = getattr($args, 'rounds', '');
     if ($roundstr == '') {
         return macro_error("Parameters 'rounds' is required.");
     }
+
+    // FIXME: user/ task parameters.
+
+
     $rounds = preg_split('/\s*\|\s*/', $roundstr);
-    $rankings = score_get("score", null, null, $rounds, 0, $display_rows);
+    $res = score_get("score", null, null, $rounds, $first_row, $display_rows);
+    $rankings = $res['scores'];
+
 
     $column_infos = array(
             array('title' => 'Nume', 'key' => 'user_full', 'rowform' => '_format_full_name'),
@@ -33,6 +46,9 @@ function macro_rankings($args) {
     );
     $options = array(
             'display_rows' => $display_rows,
+            'pager_style' => 'standard',
+            'total_rows' => $res['total_rows'],
+            'first_row' => $first_row,
     );
 
     return format_table($rankings, $column_infos, $options);
