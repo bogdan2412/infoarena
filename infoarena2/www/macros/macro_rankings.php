@@ -13,18 +13,7 @@ require_once("format_table.php");
 //      Rankings(rounds="preONI2007/1/a | preONI2007/2/a")
 //      Rankings(rounds="preONI2007/1/a | preONI2007/2/a" count="10")
 function macro_rankings($args) {
-    // How many rows to display at a time.
-    $display_rows = getattr($args, 'count', IA_DEFAULT_ROWS_PER_PAGE);
-    if (!preg_match('/^[0-9]{1,4}$/', $display_rows)) {
-        return macro_error("Invalid count parameter.");
-    }
-
-    // First row.
-    $first_row = request('start', 0);
-    if ($first_row < 0) {
-        flash_error("Numar de pagina invalid.");
-        $first_row = 0;
-    }
+    $options = pager_init_options($args);
 
     // Rounds parameters
     $roundstr = getattr($args, 'rounds', '');
@@ -35,7 +24,7 @@ function macro_rankings($args) {
 
     // FIXME: user/ task parameters.
 
-    $res = score_get("score", null, null, $rounds, $first_row, $display_rows);
+    $res = score_get("score", null, null, $rounds, $options['first_entry'], $options['display_entries']);
     $rankings = $res['scores'];
 
     $column_infos = array(
@@ -47,12 +36,8 @@ function macro_rankings($args) {
             ),
             array('title' => 'Scor', 'key' => 'score'),
     );
-    $options = array(
-            'display_rows' => $display_rows,
-            'pager_style' => 'standard',
-            'total_rows' => $res['total_rows'],
-            'first_row' => $first_row,
-    );
+    $options['pager_style'] = 'standard';
+    $options['total_entries'] = $res['total_rows'];
 
     return format_table($rankings, $column_infos, $options);
 }

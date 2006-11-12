@@ -93,7 +93,7 @@ function task_get_parent_rounds($task_id) {
         SELECT DISTINCT round_id
         FROM ia_round_task
         WHERE task_id='%s'
-        ORDER BY round_id
+       ORDER BY round_id
     ", db_escape($task_id));
 
     $rows = db_fetch_all($query);

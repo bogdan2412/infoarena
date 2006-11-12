@@ -33,8 +33,10 @@ define('IA_MAX_NEWS', 10);
 define('IA_MAX_FEED_ITEMS', 15);
 date_default_timezone_set('GMT');
 
-// Default number of rows to display in diferent tables
-define('IA_DEFAULT_ROWS_PER_PAGE', 20);
+// Constrains and default value for pager display_rows.
+define('IA_PAGER_DEFAULT_DISPLAY_ENTRIES', 20);
+define('IA_PAGER_MAX_DISPLAY_ENTRIES', 100);
+define('IA_PAGER_MIN_DISPLAY_ENTRIES', 3);
 
 // mail sender
 define("IA_MAIL_SENDER_NO_REPLY", 'info-arena <no-reply@infoarena.ro>');

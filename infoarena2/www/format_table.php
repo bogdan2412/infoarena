@@ -1,6 +1,7 @@
 <?php
 
 require_once("utilities.php");
+require_once("pager.php");
 
 // This builds a bunch of default $column_infos for format_table.
 // See format_table for an explanation.
@@ -17,13 +18,6 @@ function build_default_column_infos($data)
         );
     }
     return $infos;
-}
-
-// Checks if the string is a valid page style.
-// standard and none right now.
-function valid_pager_style($style)
-{
-    return $style == 'none' || $style == 'standard';
 }
 
 // This function formats data into a table.
@@ -50,22 +44,11 @@ function valid_pager_style($style)
 //      css_class: The css class for the table tag.
 //      css_row_parity: Adds class=even and class=odd for table rows.
 //          Defaults to true!
-//      first_row: First displayed entry, usefull in pagination
-//      total_rows: Total number of entries.
-//      display_rows: Number of entries displayed at once.
-//      url_args: url arguments (page is an argument too).
-//      param_prefix: optional parameter prefix for browsing links.
-//      pager_style: none(default) or standard.
 //
-// url_args is only required if you want browsing links, thing like paging
-// and sorting. Same restrictions as for the url_from_args function.
-// When browsing links are used then some parameters (with an optional
-// param_prefix) are added to the url_args.
-// If absert, url_args defaults to $_GET.
+// Additionally you can merge a pager_options, and it will display a
+// paging table footer.
 //
-// Paging is done with the 'start' and 'count' parameters.
-//
-// TODO: paging, sorting.
+// FIXME: sorting :)
 function format_table($data, $column_infos = null, $options = null)
 {
     // No data means nothing to print.
@@ -146,75 +129,14 @@ function format_table($data, $column_infos = null, $options = null)
     }
     $result .= "</tbody>";
 
-    // Handle pager.
-    $pager_style = getattr($options, 'pager_style', 'none');
-    if (!valid_pager_style($pager_style)) {
-        log_die("Unknown pager style $pager_style.");
-    }
-    //log_print("pager style $pager_style");
-    if ($pager_style == 'standard') {
+    // Paging.
+    if (getattr($options, 'pager_style', null) !== null) {
         $result .= '<tfoot style="standard-pager"><tr><td colspan="0">';
         $result .= format_standard_pager($options);
         $result .= '</td></tr></tfoot>';
     }
 
     $result .= "</table>";
-    return $result;
-}
-
-// formats a standard pager. Used by format_table.
-function format_standard_pager($options)
-{
-    $first_row = getattr($options, 'first_row', 0);
-    $total_rows = $options['total_rows'];
-    $display_rows = getattr($options, 'display_rows', IA_DEFAULT_ROWS_PER_PAGE);
-    $url_args = getattr($options, 'url_args', $_GET);
-    $param_prefix = getattr($options, 'param_prefix', '');
-    $surround_pages = getattr($options, 'surround_pages', 5);
-
-    $result = "";
-
-    $curpage = (int)($first_row / $display_rows);
-    $totpages = (int)(($total_rows + $display_rows - 1) / $display_rows);
-
-    if ($totpages == 1) {
-        return "Exista o singura pagina.";
-    }
-    $result .= "Vezi pagina ".($curpage + 1)." din $totpages: ";
-    if ($curpage < 8) {
-        for ($i = 0; $i < $curpage; ++$i) {
-            $url_args[$param_prefix.'start'] = $i * $display_rows;
-            $result .= href(url_from_args($url_args), $i + 1)." ";
-        }
-    } else {
-        for ($i = 0; $i < $surround_pages; ++$i) {
-            $url_args[$param_prefix.'start'] = $i * $display_rows;
-            $result .= href(url_from_args($url_args), $i + 1)." ";
-        }
-        $result .= "... ";
-        for ($i = $curpage - $surround_pages; $i < $curpage; ++$i) {
-            $url_args[$param_prefix.'start'] = $i * $display_rows;
-            $result .= href(url_from_args($url_args), $i + 1)." ";
-        }
-    }
-    $result .= ($curpage + 1)." ";
-    if ($totpages - $curpage < 3 + 2 * $surround_pages) {
-        for ($i = $curpage + 1; $i < $totpages; ++$i) {
-            $url_args[$param_prefix.'start'] = $i * $display_rows;
-            $result .= href(url_from_args($url_args), $i + 1)." ";
-        }
-    } else {
-        for ($i = $curpage + 1; $i <= $curpage + $surround_pages; ++$i) {
-            $url_args[$param_prefix.'start'] = $i * $display_rows;
-            $result .= href(url_from_args($url_args), $i + 1)." ";
-        }
-        $result .= "... ";
-        for ($i = $totpages - $surround_pages; $i < $totpages; ++$i) {
-            $url_args[$param_prefix.'start'] = $i * $display_rows;
-            $result .= href(url_from_args($url_args), $i + 1)." ";
-        }
-    }
-
     return $result;
 }
 

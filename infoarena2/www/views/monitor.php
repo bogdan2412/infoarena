@@ -61,7 +61,6 @@ if (!$jobs) {
             array(
                     'title' => 'Data',
                     'key' => 'submit_time',
-//                    'dateform' => 'H:i:s',
             ),
             array(
                     'title' => 'Stare (click pentru detalii)',
@@ -70,11 +69,9 @@ if (!$jobs) {
     );
     $options = array(
             'css_class' => 'monitor',
-            'url_page' => $view['url_page'],
-            'url_args' => $view['url_args'],
-            'display_rows' => $view['display_rows'],
-            'total_rows' => $view['total_rows'],
-            'first_row' => $view['first_row'],
+            'display_entries' => $view['display_entries'],
+            'total_entries' => $view['display_entries'],
+            'first_entry' => $view['first_entry'],
             'pager_style' => 'standard',
             'surround_pages' => 3,
     );
