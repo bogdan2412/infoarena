@@ -79,11 +79,10 @@ function user_create($data) {
 
     // create associated textblock entry
     // default (initial) content is taken from an existing template
-    $title = "Profil utilizator '{$new_user['full_name']}' ({$new_user['username']})";
     $template = textblock_get_revision('template/newuser');
     log_assert($template, 'Could not find template for new user: template/newuser');
+    $title = str_replace('%user_id%', $new_user['username'], $template['title']);
     $content = str_replace('%user_id%', $new_user['username'], $template['text']);
-    $content = str_replace('%full_name%', $new_user['full_name'], $content);
     textblock_add_revision('user/'.$new_user['username'], $title, $content, $new_user['id']);
 
     return $new_user;

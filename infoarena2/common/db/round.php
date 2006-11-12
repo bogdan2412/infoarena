@@ -51,9 +51,9 @@ function round_create($round_id, $type, $user_id, $active) {
 
     // create associated textblock entry
     // default (initial) content is taken from an existing template
-    $title = $new_round['id']; 
     $template = textblock_get_revision('template/newround');
     log_assert($template, 'Could not find template for new round: template/newround');
+    $title = str_replace('%round_id%', $new_round['id'], $template['title']);
     $content = str_replace('%round_id%', $new_round['id'], $template['text']);
     textblock_add_revision('round/'.$new_round['id'], $title, $content, $user_id);
 

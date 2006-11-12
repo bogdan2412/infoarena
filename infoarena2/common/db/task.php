@@ -34,9 +34,9 @@ function task_create($task_id, $type, $hidden, $author, $source, $user_id) {
 
     // create associated textblock entry
     // default (initial) content is taken from an existing template
-    $title = $new_task['id']; 
     $template = textblock_get_revision('template/newtask');
     log_assert($template, 'Could not find template for new task: template/newtask');
+    $title = str_replace('%task_id%', $new_task['id'], $template['title']);
     $content = str_replace('%task_id%', $new_task['id'], $template['text']);
     textblock_add_revision('task/'.$new_task['id'], $title, $content, $user_id);
 
