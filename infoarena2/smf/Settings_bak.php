@@ -1,4 +1,21 @@
 <?php
+
+// info-arena
+// Configure your SMF installation by editing ALL --edit-me-- fields
+
+
+// ATTENTION !!!
+//
+// SMF MUST also be configured from its administration panel (settings
+// are stored in database). 
+//
+// Configure the settings from this file and then login using
+//      user: SMFAdmin;  pass: faranumar
+// and finish the configuration.
+
+
+
+
 /******************************************************************************
 * Settings.php                                                                *
 *******************************************************************************
@@ -28,28 +45,43 @@ $mtitle = 'Maintenance Mode';		# Title for the Maintenance Mode message.
 $mmessage = 'Okay faithful users...we\'re attempting to restore an older backup of the database...news will be posted once we\'re back!';		# Description of why the forum is in maintenance mode.
 
 ########## Forum Info ##########
-$mbname = 'My Community';		# The name of your forum.
-$language = 'english';		# The default language file set for the forum.
-$boardurl = 'http://127.0.0.1/smf';		# URL to your forum's folder. (without the trailing /!)
-$webmaster_email = 'noreply@myserver.com';		# Email address to send emails from. (like noreply@yourdomain.com.)
-$cookiename = 'SMFCookie11';		# Name of the cookie to set for authentication.
+$mbname = 'info-arena';		# The name of your forum.
+$language = 'romanian-utf8';		# The default language file set for the forum.
+
+// example: http://localhost/smf_infoarena
+$boardurl = 'http://localhost/iasmf';		# URL to your forum's folder. (without the trailing /!)
+$webmaster_email = 'strat.cristian@gmail.com';		# Email address to send emails from. (like noreply@yourdomain.com.)
+$cookiename = 'SMFCookie360';		# Name of the cookie to set for authentication.
 
 ########## Database Info ##########
 $db_server = 'localhost';
-$db_name = 'smf';
+$db_name = 'infoarena2_dev';
 $db_user = 'root';
 $db_passwd = '';
-$db_prefix = 'smf_';
+$db_prefix = 'ia_smf_';
 $db_persist = 0;
 $db_error_send = 1;
 
 ########## Directories/Files ##########
 # Note: These directories do not have to be changed unless you move things.
-$boarddir = dirname(__FILE__);		# The absolute path to the forum's folder. (not just '.'!)
-$sourcedir = dirname(__FILE__) . '/Sources';		# Path to the Sources directory.
+
+// example: /home/alexandru/devel/infoarena2/smf
+// The absolute path to the forum's folder. (not just '.'!)
+$boarddir = '/home/wickedman/devel/infoarena/smf';		# The absolute path to the forum's folder. (not just '.'!)
+
+// (no need to edit)
+$sourcedir = '/home/wickedman/devel/infoarena/smf/Sources';		# Path to the Sources directory.
 
 ########## Error-Catching ##########
 # Note: You shouldn't touch these settings.
-$db_last_error = 0;
+$db_last_error = 1163299824;
 
+
+# Make sure the paths are correct... at least try to fix them.
+if (!file_exists($boarddir) && file_exists(dirname(__FILE__) . '/agreement.txt'))
+	$boarddir = dirname(__FILE__);
+if (!file_exists($sourcedir) && file_exists($boarddir . '/Sources'))
+	$sourcedir = $boarddir . '/Sources';
+
+$db_character_set = 'utf8';
 ?>

@@ -1,0 +1,546 @@
+/* blackTed Skin (c) PixelSlot http://www.pixelslot.com */
+
+/* Normal, standard links. */
+a:link, a:visited
+{
+	color: #636263;
+	text-decoration: none;
+}
+a:hover
+{
+	text-decoration: underline;
+	color: #B50100;
+}
+
+/* Navigation links - for the link tree. */
+.nav, .nav:link, .nav:visited
+{
+	color: #494949;
+	text-decoration: none;
+	font-size: 11px;
+	font-weight: normal;
+}
+a.nav:hover
+{
+	color: #cc3333;
+	text-decoration: none;
+}
+
+/* Tables should show empty cells. */
+table
+{
+	empty-cells: show;
+}
+
+/* By default (td, body..) use verdana in black. */
+body, td, th , tr
+{
+	color: #000000;
+	font-size: 9pt;
+	font-family: verdana, sans-serif;
+}
+
+/* header */
+#header h1 a {
+    background:url('images/infoarena.jpg') no-repeat left top;
+    height: 60px;
+    width: 300px;
+    text-indent: -9999px;
+    display: block;
+}
+
+#header {
+    height: 80px;
+    background: url('images/infoarena_bk.jpg') repeat-x top left;
+    position:relative;
+}
+
+#topmenu {
+    float: right;
+    height: 30px;
+    position: absolute;
+    top: 20px;
+    right: 0;
+}
+
+#topmenu a {
+    color: white;
+}
+
+/* The main body of the entire forum. */
+body
+{
+	background-color: White;
+}
+
+#wrapper
+{
+	width: 90%;
+	margin: auto;
+	margin: 1em auto 1em auto;
+}
+
+/* Input boxes - just a bit smaller than normal so they align well. */
+input, textarea, button, #footer a, #header a
+{
+	color: #000000;
+	font-family: verdana, sans-serif;
+	text-decoration: none;
+}
+input, button
+{
+	font-size: 90%;
+	background-color: White;
+	border: 1px solid Silver;
+}
+
+textarea
+{
+	font-size: 100%;
+	color: #000000;
+	font-family: verdana, sans-serif;
+}
+
+#footerarea
+{
+	font-size: 9px;
+	vertical-align: middle;
+	width: 100%;
+	margin-top: 10px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+#footerarea a, #footerarea a:link, #footerarea a:visited
+{
+	color: Black;
+	text-decoration: none;
+}
+
+/* All input elements that are checkboxes or radio buttons. */
+input.check
+{
+}
+
+/* Selects are a bit smaller, because it makes them look even better 8). */
+select
+{
+	font-size: 90%;
+	font-weight: normal;
+	color: #000000;
+	font-family: verdana, sans-serif;
+}
+
+/* Standard horizontal rule.. ([hr], etc.) */
+hr, .hrcolor
+{
+	height: 2px;
+	border: 0;
+	color: #F2F2F2;
+	background-color: #F2F2F2;
+	width: 95%;
+}
+
+/* No image should have a border when linked */
+a img{
+border: 0;
+}
+/* A quote, perhaps from another post. */
+.quote
+{
+	color: #000000;
+	padding: 5px;
+	font-size: 95%;
+	line-height: 1.4em;
+	margin-left: 10px;
+	border-bottom: 2px solid #C9D1DA;
+	margin-bottom: 5px;
+}
+
+/* A code block - maybe even PHP ;). */
+.code
+{
+	font-family: "courier new", "times new roman", monospace;
+	color: #000000;
+	background-color: #F5F5F5;
+	padding: 5px;
+	font-size: 95%;
+	line-height: 1.4em;
+	margin-left: 10px;
+	border-bottom: 3px solid #ECECEC;
+	/* Don't wrap its contents, and show scrollbars. */
+	white-space: nowrap;
+	overflow: auto;
+	/* Stop after about 24 lines, and just show a scrollbar. */
+	max-height: 24em;
+}
+
+/* The "Quote:" and "Code:" header parts... */
+.quoteheader
+{
+	padding: 5px;
+	margin-left: 10px;
+	color: #636263;
+	font-weight: bold;
+	background: #E8ECEF;
+	border-top: 1px solid #C9D1DA;
+	font-size: 90%;
+	text-decoration: none;
+}
+ .codeheader
+{
+	padding: 5px;
+	margin-left: 10px;
+	color: #696969;
+	font-weight: bold;
+	background: #ECECEC;
+	font-size: 90%;
+	text-decoration: none;
+}
+
+/* Generally, those [?] icons.  This makes your cursor a help icon. */
+.help
+{
+	cursor: help;
+}
+
+/* /me uses this a lot. (emote, try typing /me in a post.) */
+.meaction
+{
+	color: red;
+}
+
+/* The main post box - this makes it as wide as possible. */
+.editor
+{
+	width: 96%;
+}
+
+/* Highlighted text - such as search results. */
+.highlight
+{
+	background-color: yellow;
+	font-weight: bold;
+	color: black;
+}
+
+/* Alternating backgrounds for posts, and several other sections of the forum. */
+.windowbg
+{
+	color: #000000;
+	background-color: #FAFAFA;
+}
+.windowbg2
+{
+	color: #000000;
+	background-color: White;
+}
+.windowbg3
+{
+	color: #000000;
+	background-color: #F2F2F2;
+}
+.windowbg4
+{
+	background-image: url(images/postbg.gif);
+	background-position: bottom;
+	background-repeat: repeat-x;
+	background-color: #FBFBFB;
+}
+/* the today container in calendar */
+.calendar_today
+{
+	background-color: #FFFFFF;
+}
+
+/* These are used primarily for titles, but also for headers (the row that says what everything in the table is.) */
+.titlebg, tr.titlebg th, tr.titlebg td, .titlebg2, tr.titlebg2 th, tr.titlebg2 td
+{
+	color: black;
+	font-style: normal;
+	background-color: #E9F0F6;
+	background-image: url(images/titlebg.jpg);
+	padding-left: 10px;
+	padding-right: 10px;
+	border: 1px solid #9BAEBF;
+}
+.titlebg, .titlebg a:link, .titlebg a:visited
+{
+	font-weight: bold;
+	color: black;
+	font-style: normal;
+}
+
+.titlebg a:hover
+{
+	color: #404040;
+}
+/* same as titlebg, but used where bold text is not needed */
+.titlebg2 a:link, .titlebg2 a:visited
+{
+	color: black;
+	font-style: normal;
+	text-decoration: underline;
+}
+
+.titlebg2 a:hover
+{
+	text-decoration: underline;
+}
+
+/* This is used for categories, page indexes, and several other areas in the forum.
+.catbg and .catbg2 is for boardindex, while .catbg3 is for messageindex and display headers*/
+.catbg , tr.catbg td , .catbg3 , tr.catbg3 td
+{
+	background-image: url(images/catbg.gif);
+	background-color: #F5F5F5;
+	color: White;
+}
+.catbg_l
+{
+	background-image: url(images/catbg_l.gif);
+	width: 10px;
+}
+.catbg_r
+{
+	background-image: url(images/catbg_r.gif);
+	width: 10px;
+}
+.catbg2 , tr.catbg2 td
+{
+	background-image: url(images/catbg2.gif);
+	background-color: White;
+	color: #ffffff;
+}
+.catbg, .catbg2, .catbg3
+{
+	background-repeat: repeat-x;
+}
+.catbg, .catbg2
+{
+	font-weight: bold;
+}
+.catbg3, tr.catbg3 td, .catbg3 a:link, .catbg3 a:visited
+{
+	font-size: 95%;
+	color: White;
+	text-decoration: none;
+}
+.catbg a:link, .catbg a:visited , .catbg2 a:link, .catbg2 a:visited
+{
+	color: White;
+	text-decoration: none;
+}
+.catbg a:hover, .catbg2 a:hover, .catbg3 a:hover
+{
+	color: #F5F5F5;
+}
+/* This is used for tables that have a grid/border background color (such as the topic listing.) */
+.bordercolor
+{
+	background-color: #F5F5F5;
+	padding: 0px;
+}
+
+/* This is used on tables that should just have a border around them. */
+.tborder
+{
+	border: 1px solid #DCDCDC;
+	background-color: #F5F5F5;
+}
+
+/* Default font sizes: small (8pt), normal (10pt), and large (14pt). */
+.smalltext
+{
+	font-size: 10px;
+	font-family: verdana, sans-serif;
+}
+.middletext
+{
+	font-size: 90%;
+}
+.normaltext
+{
+	font-size: 12px;
+}
+.largetext
+{
+	font-size: 15px;
+}
+
+
+/* Posts and personal messages displayed throughout the forum. */
+.post, .personalmessage
+{
+	width: 98%;
+	overflow: auto;
+	line-height: 1.3em;
+}
+
+/* All the signatures used in the forum.  If your forum users use Mozilla, Opera, or Safari, you might add max-height here ;). */
+.signature
+{
+	width: 100%;
+	overflow: auto;
+	padding-bottom: 3px;
+	line-height: 1.3em;
+}
+
+/* Sometimes there will be an error when you post */
+.error{
+color: red;
+}
+
+
+/* definitions for the main tab, active means the tab reflects which page is displayed */
+.maintab_first, .maintab_back, .maintab_last, .maintab_active_first, .maintab_active_back, .maintab_active_last
+{
+	color: white;
+	text-transform: uppercase;
+}
+.maintab_back, .maintab_active_back
+{
+	color: white;
+	text-decoration: none;
+	font-size:  9px;
+	font-family: tahoma, sans-serif;
+	vertical-align: middle;
+	height: 30px;
+}
+.maintab_first
+{
+	background-image: url(images/nav_l.gif);
+	background-repeat: no-repeat;
+	width: 5px;
+}
+.maintab_back
+{
+	background-image: url(images/nav.gif);
+	background-repeat: repeat-x;
+}
+.maintab_back:hover
+{
+	background-image: url(images/catbg2.gif);
+	background-repeat: repeat-x;
+}
+.maintab_last
+{
+	background-image: url(images/nav_r.gif);
+	background-repeat: no-repeat;
+	width: 5px;
+}
+.maintab_active_first
+{
+	background-image: url(images/catbg2.gif);
+	background-repeat: repeat-x;
+	width: 5px;
+}
+.maintab_active_back
+{
+	background-image: url(images/catbg2.gif);
+	background-repeat: repeat-x;
+}
+.maintab_active_last
+{
+	background-image: url(images/catbg2.gif);
+	background-repeat: repeat-x;
+	width: 5px;
+}
+
+/* how links behave in main tab. */
+.maintab_back a:link , .maintab_back a:visited, .maintab_active_back a:link , .maintab_active_back a:visited
+{
+	color: White;
+	text-decoration: none;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.maintab_back a:hover, .maintab_active_back a:hover
+{
+	color: #F5F5F5;
+	text-decoration: none;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+/* definitions for the mirror tab */
+.mirrortab_first, .mirrortab_back, .mirrortab_last, .mirrortab_active_first, .mirrortab_active_back, .mirrortab_active_last
+{
+	background-position: left top;
+	color: white;
+	text-transform: uppercase;
+	vertical-align: top;
+
+}
+.mirrortab_back, .mirrortab_active_back
+{
+	color: white;
+	text-decoration: none;
+	font-size: 9px;
+	vertical-align: bottom;
+	padding: 6px 6px 2px 6px;
+	font-family: tahoma, sans-serif;
+}
+
+.mirrortab_first
+{
+	background-image: url(images/nav_l.gif);
+	background-repeat: no-repeat;
+	width: 5px;
+}
+.mirrortab_back
+{
+	background-image: url(images/nav.gif);
+	background-repeat: repeat-x;
+}
+.mirrortab_last
+{
+	background-image: url(images/nav_r.gif);
+	background-repeat: no-repeat;
+	width: 5px;
+}
+.mirrortab_active_first
+{
+	background-image: url(images/catbg2.gif);
+	background-repeat: repeat-x;
+	width: 5px;
+}
+.mirrortab_active_back
+{
+	background-image: url(images/catbg2.gif);
+	background-repeat: repeat-x;
+}
+.mirrortab_active_last
+{
+	background-image: url(images/catbg2.gif);
+	background-repeat: repeat-x;
+	width: 5px;
+}
+
+/* how links behave in mirror tab. */
+.mirrortab_back a:link , .mirrortab_back a:visited, .mirrortab_active_back a:link , .mirrortab_active_back a:visited
+{
+	color: white;
+	text-decoration: none;
+}
+
+.mirrortab_back a:hover, .mirrortab_active_back a:hover
+{
+	color: #F5F5F5;
+	text-decoration: none;
+}
+
+#infocenter
+{
+	background-image: url(images/nav.gif);
+	color: #F5F5F5;
+	font-weight: bold;
+}
+
+#profile 
+{
+	background-color: #FAFAFA;
+	padding: 10px;
+	border-bottom: 1px solid #ECECEC;
+	border-right: 1px solid #ECECEC;
+}

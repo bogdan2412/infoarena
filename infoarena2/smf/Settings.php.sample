@@ -4,6 +4,18 @@
 // Configure your SMF installation by editing ALL --edit-me-- fields
 
 
+// ATTENTION !!!
+//
+// SMF MUST also be configured from its administration panel (settings
+// are stored in database). 
+//
+// Configure the settings from this file and then login using
+//      user: SMFAdmin;  pass: faranumar
+// and finish the configuration.
+
+
+
+
 
 /******************************************************************************
 * Settings.php                                                                *
