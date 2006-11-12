@@ -65,7 +65,8 @@ function job_get_range($start, $range) {
               SELECT job.`id`, job.`user_id`, `task_id`, `compiler_id`, `status`,
                     `submit_time`, `eval_message`, `score`,
                     task.`name`, task.`title` as task_title,
-                    user.`username` as username
+                    user.`username` as username,
+                    user.`full_name` as userfullname
               FROM ia_job AS job
               LEFT JOIN ia_textblock AS task
                     ON CONCAT(\"task/\", job.`task_id`) = task.`name`

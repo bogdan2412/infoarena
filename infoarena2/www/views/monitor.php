@@ -39,7 +39,7 @@ if (!$jobs) {
     function format_jobdetail_link($val)
     {
         $url = url("job_detail", array('id' => $val));
-        return href($url, "Job #$val");
+        return href($url, "#$val");
     }
 
     $column_infos = array(
@@ -51,7 +51,8 @@ if (!$jobs) {
             array(
                     'title' => 'Utilizator',
                     'key' => 'username',
-                    'valform' => 'format_user_link',
+                    'valform' => create_function('$row',
+                            'return format_user_tiny($row["user_name"], $row["user_full"]);'),
             ),
             array(
                     'title' => 'Problema',

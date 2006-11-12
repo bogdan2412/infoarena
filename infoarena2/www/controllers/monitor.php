@@ -9,6 +9,13 @@ function controller_monitor() {
         $display_rows = IA_DEFAULT_ROWS_PER_PAGE;
     }
 
+    // First row.
+    $first_row = request('start', 0);
+    if ($first_row < 0) {
+        flash_error("Numar de pagina invalid.");
+        $first_row = 0;
+    }
+
     $view = array();
 
     $view['jobs'] = job_get_range($first_row, $display_rows); 

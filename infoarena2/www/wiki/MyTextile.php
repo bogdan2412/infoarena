@@ -107,14 +107,13 @@ class MyTextile extends Textile {
 
         $extra = $args['extra'];
         $alt = (preg_match("/\([^\)]+\)/", $extra, $match) ? $match[0] : '');
-        if ($alt) {
-            $args['extra'] = $alt;
-        }
+        $args['extra'] = $alt;
         if (!preg_match($this->external_url_exp, $srcpath)) {
             // Catch internal images.
             if (preg_match('/^ ([a-z0-9_\-\/]+) \? ([a-z0-9\.\-_]+)   $/ix', $srcpath, $matches)) {
                 $extra = preg_replace('/\([^\)]+\)/', '', $extra, 1);
                 $extra = preg_replace('/\s/', '', $extra);
+                // FIXME: sometimes we can determine width/height.
                 if (!resize_coordinates(100, 100, $extra)) {
                     log_warn("Invalid resize instructions '$extra'");
                     $extra = '';
@@ -122,6 +121,8 @@ class MyTextile extends Textile {
                 $args['src'] = image_resize_url($matches[1], $matches[2], $extra); 
             }
         }
+        log_print("passing to parent::format image");
+        log_print_r($args);
         $res = @parent::format_image($args);
         return $res;
     }

@@ -31,17 +31,20 @@ function macro_rankings($args) {
     if ($roundstr == '') {
         return macro_error("Parameters 'rounds' is required.");
     }
+    $rounds = preg_split('/\s*\|\s*/', $roundstr);
 
     // FIXME: user/ task parameters.
 
-
-    $rounds = preg_split('/\s*\|\s*/', $roundstr);
     $res = score_get("score", null, null, $rounds, $first_row, $display_rows);
     $rankings = $res['scores'];
 
-
     $column_infos = array(
-            array('title' => 'Nume', 'key' => 'user_full', 'rowform' => '_format_full_name'),
+            array(
+                'title' => 'Nume',
+                'key' => 'user_full',
+                'rowform' => create_function('$row',
+                        'return format_user_normal($row["user_name"], $row["user_full"]);'),
+            ),
             array('title' => 'Scor', 'key' => 'score'),
     );
     $options = array(
@@ -52,11 +55,6 @@ function macro_rankings($args) {
     );
 
     return format_table($rankings, $column_infos, $options);
-}
-
-// Function for printing user link.
-function _format_full_name($row) {
-    return "<a href='".url('user/' . $row['user_name'])."'>{$row['user_full']}</a></td>";
 }
 
 ?>

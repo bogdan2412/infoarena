@@ -33,12 +33,6 @@ function href($url, $content) {
     return "<a href=\"$url\">$content</a>";
 }
 
-// Link to an username.
-// FIXME: colored by rating and stuff.
-function format_user_link($username) {
-    return href(url("user/$username"), $username);
-}
-
 // Get an url.
 // The params array contains http get parameter,
 // it's formatted in the end result as a series
@@ -105,7 +99,6 @@ function image_resize_url($page, $file, $resize)
         return attachment_url($page, $file);
     }
 }
-
 
 // Use flash() to display a message right after redirecting the user.
 // Message is displayed only once.
@@ -242,27 +235,17 @@ function send_email($to, $subject, $message,
 // Given a (width, height) pair, resize it (compute new pair) according to
 // resize instructions.
 //
-// Resize instructions format may be one of the following:
-// # example    # description
-// 100x100      
-// 50%          scale dimensions. only integer percentages allowed
+// Resize instructions are in WxH format, where W and/or H can be a
+// percentage (with %). By default it keeps the original aspect ratio,
+// prefix with @ to avoid this.
+//
+// Alternatively you can just use X% to resize both dimensions.
 //
 // Returns 2-element array: (width, height) or null if invalid format
 function resize_coordinates($width, $height, $resize) {
-    // remove @
-    if (0 < strlen($resize) && $resize[0] == '@') {
-        $enlarge = true;
-        $resize = substr($resize, 1);
-    }
-    else {
-        $enlarge = false;
-    }
-
-    $ratio = 1.0;
-
-    //log_print("Parsing resize '$resize'");
-    // 100x100 or @100x100
-    if (preg_match('/^([^0-9]*)([0-9]+\%?)x([0-9]+\%?)$/', $resize, $matches)) {
+    // log_print("Parsing resize '$resize'");
+    // Both with and height.
+    if (preg_match('/^(\@?)([0-9]+\%?)x([0-9]+\%?)$/', $resize, $matches)) {
         $flags = $matches[1];
         $targetw = (float)$matches[2];
         $targeth = (float)$matches[3];
@@ -273,24 +256,19 @@ function resize_coordinates($width, $height, $resize) {
         if (preg_match("/\%/", $targeth)) {
             $targeth = $height * preg_match("/[0-9]+/", $targeth) / 100.0;
         }
-        //log_print("$targetw x $targeth with flags $flags");
 
-        if (preg_match('/f/i', $flags)) {
-            $targetw = min($targetw, $width);
-            $targeth = min($targeth, $height);
-        }
-        if (preg_match('/k/i', $flags)) {
+        // log_print("$targetw x $targeth with flags $flags");
+
+        if ($flags != '@') {
             $targetw = min($targeth * $width / $height, $width);
             $targeth = min($targetw * $height / $width, $height);
             $targetw = min($targeth * $width / $height, $width);
         }
-    }
-    elseif (preg_match('/^([0-9]+)\%$/', $resize, $matches)) {
+    } else if (preg_match('/^([0-9]+)\%$/', $resize, $matches)) {
         //log_print("Scaling at ".$matches[1]."%.");
         $targetw = $width * $matches[1] / 100.0;
         $targeth = $height * $matches[1] / 100.0;
-    }
-    else {
+    } else {
         return null;
     }
 

@@ -170,7 +170,7 @@ function format_standard_pager($options)
     $display_rows = getattr($options, 'display_rows', IA_DEFAULT_ROWS_PER_PAGE);
     $url_args = getattr($options, 'url_args', $_GET);
     $param_prefix = getattr($options, 'param_prefix', '');
-    $surround_pages = getattr($options, 'surround_pages', 2);
+    $surround_pages = getattr($options, 'surround_pages', 5);
 
     $result = "";
 

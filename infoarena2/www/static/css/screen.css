@@ -811,3 +811,40 @@ table.numbers td, table.numbers th {
     text-align: right;
 }
 
+div.tiny-user {
+    height: 24px;
+}
+
+div.tiny-user .username {
+    font-weight:bold;
+}
+
+div.tiny-user img {
+    border:1px solid #D8D6CB;
+    background:#fff;
+    display:block;
+    float:left;
+    margin:3px;
+}
+
+div.normal-user {
+    height: 48px;
+    line-height: 1.5em;
+}
+
+div.normal-user .username {
+    font-weight:bold;
+}
+
+
+div.normal-user img {
+    border:1px solid #D8D6CB;
+    background:#fff;
+    display:block;
+    float:left;
+    margin:7px;
+}
+
+
+
+
