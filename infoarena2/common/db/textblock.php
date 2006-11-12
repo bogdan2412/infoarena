@@ -172,4 +172,12 @@ function textblock_grep($substr, $page) {
     return db_fetch_all($query);
 }
 
+// Delete a certain page, including all revisions.
+// WARNING: This is irreversible.
+function textblock_delete($page) {
+    $pageesc = db_escape($page);
+    db_query("DELETE FROM `ia_textblock` WHERE `name` = '$pageesc'");
+    db_query("DELETE FROM `ia_textblock_revision` WHERE `name` = '$pageesc'");
+}
+
 ?>

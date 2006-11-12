@@ -111,7 +111,9 @@ function log_error($message, $include_origin = false) {
     if ($include_origin) {
         $message = format_message_backtrace($message);
     }
-    trigger_error_split($message, E_USER_ERROR);
+    // Splitting makes no sense for fatal errors because the first line makes
+    // make the script die().
+    trigger_error($message, E_USER_ERROR);
 }
 
 // Print a complete backtrace, using log_print.

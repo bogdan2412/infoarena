@@ -27,8 +27,8 @@ function db_query($query) {
     global $dbLink;
     $result = mysql_query($query, $dbLink);
     if (!$result) {
-        log_error('MYSQL error: '.mysql_error($dbLink).'\n');
-        log_error('Query: \''.$query.'\'\n');
+        log_print("Query: '$query'");
+        log_error("MYSQL error: ".mysql_error($dbLink));
     }
     return $result;
 }
@@ -180,7 +180,7 @@ function parameter_get_values($object_type, $object_id) {
 
 /**
  * News
- * FIXME: where does this belong?
+ * This is for the special "news" controller.
  */
 function news_get_range($start, $range, $prefix = null) {
     $query = sprintf("SELECT

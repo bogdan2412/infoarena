@@ -81,6 +81,10 @@ function permission_user($user, $action, $ontoUser) {
             // anyone can view anyone's profile
             return true;
 
+        case 'viewinfo':
+            // FIXME: public userinfo.
+            return true;
+
         case 'editprofile':
             // anyone can edit their own profile. admins can edit any profile
             return $user && $ontoUser && ($user['id'] == $ontoUser['id'] || 'admin' == $user['security_level']);
@@ -116,6 +120,7 @@ function permission_wiki($user, $action, $textblock) {
         case 'edit':
         case 'create':
         case 'restore':
+        case 'delete':
             // admins & reviewers can edit/create/restore wiki pages
             return ('admin' == $user['security_level'] || 'reviewer' == $user['security_level']);
 
@@ -170,6 +175,10 @@ function permission_task($user, $action, $task) {
             }
             return $task && (!$task['hidden'] || 'admin'==$level || ('reviewer'==$level && $task['user_id']==$user['id']));
 
+        case 'delete':
+            // Disabled.
+            return false;
+
         case 'edit':
         case 'restore':
             // reviewers edit their own tasks; admins edit everything
@@ -201,6 +210,10 @@ function permission_round($user, $action, $round) {
         case 'register':
             // any registered user can register to a contest round
             return $user && $round;
+
+        case 'delete':
+            // Disabled.
+            return false;
 
         case 'edit':
         case 'create':

@@ -10,7 +10,7 @@ require_once("db.php");
 function user_test_ia1_password($username, $password) {
     $query = sprintf("SELECT *
                       FROM ia_user
-                      WHERE LCASE(username) = '%s' AND
+                      WHERE LCASE(username) = LCASE('%s') AND
                         SHA1(PASSWORD('%s')) = `password`",
                      db_escape($username), db_escape($password));
     return db_fetch($query);
@@ -20,7 +20,7 @@ function user_test_ia1_password($username, $password) {
 function user_test_password($username, $password) {
     $query = sprintf("SELECT *
                       FROM ia_user
-                      WHERE LCASE(username) = '%s' AND
+                      WHERE LCASE(username) = LCASE('%s') AND
                         SHA1('%s') = `password`",
                      db_escape($username), db_escape($password));
     return db_fetch($query);
@@ -30,7 +30,7 @@ function user_test_password($username, $password) {
 function user_get_by_username($username) {
     $query = sprintf("SELECT *
                       FROM ia_user
-                      WHERE LCASE(username) = '%s'",
+                      WHERE LCASE(username) = LCASE('%s')",
                      db_escape($username));
     return db_fetch($query);
 }
@@ -38,7 +38,7 @@ function user_get_by_username($username) {
 function user_get_by_email($email) {
     $query = sprintf("SELECT *
                       FROM ia_user
-                      WHERE LCASE(email) = '%s'",
+                      WHERE LCASE(email) = LCASE('%s')",
                      db_escape($email));
     return db_fetch($query);
 }
