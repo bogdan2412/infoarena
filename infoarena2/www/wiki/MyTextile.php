@@ -121,8 +121,8 @@ class MyTextile extends Textile {
                 $args['src'] = image_resize_url($matches[1], $matches[2], $extra); 
             }
         }
-        log_print("passing to parent::format image");
-        log_print_r($args);
+        //log_print("passing to parent::format image");
+        //log_print_r($args);
         $res = @parent::format_image($args);
         return $res;
     }

@@ -84,7 +84,8 @@ function format_message_backtrace($message, $backtrace_level = 0) {
 function trigger_error_split($error_msg, $error_type)
 {
     $error_msg = (string)$error_msg;
-    foreach (explode("\n", $error_msg) as $error_line) {
+    $error_lines = explode("\n", $error_msg);
+    foreach ($error_lines as $error_line) {
         trigger_error($error_line, $error_type);
     }
 }

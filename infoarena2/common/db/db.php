@@ -193,10 +193,11 @@ function news_get_range($start, $range, $prefix = null) {
     return db_fetch_all($query);
 }
 
-function news_count() {
+function news_count($prefix = null) {
     $query = sprintf("SELECT COUNT(*) AS `cnt`
                       FROM ia_textblock
-                      WHERE LCASE(`name`) LIKE 'news/%%'");
+                      WHERE LCASE(`name`) LIKE 'news/%s%%'",
+                      db_escape($prefix));
     $tmp = db_fetch($query);
     return $tmp['cnt'];
 }

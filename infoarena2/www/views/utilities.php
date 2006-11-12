@@ -4,8 +4,6 @@
 function check_view($view)
 {
     // Checking $view.
-    log_print_r($view);
-
     log_assert(is_array($view));
     log_assert(is_string($view['title']));
     if (isset($view['form_errors']) || isset($view['form_values'])) {

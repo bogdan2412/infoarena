@@ -26,9 +26,6 @@ define("IA_AVATAR_MAXSIZE", 200*1024);
 define("IA_AVATAR_WIDTH", 100);
 define("IA_AVATAR_HEIGHT", 100);
 
-// Number of news items to place on one page.
-define('IA_MAX_NEWS', 10);
-
 // Number of items in a RSS feed
 define('IA_MAX_FEED_ITEMS', 15);
 date_default_timezone_set('GMT');

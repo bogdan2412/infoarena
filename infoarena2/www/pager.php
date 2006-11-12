@@ -53,9 +53,9 @@ function pager_init_options($args = null)
     }
 
     // Pager style.
-    $pager_style = request($prefix . 'pager_style', getattr($args, 'pager_style', 'none'));
+    $pager_style = request($prefix . 'pager_style', getattr($args, 'pager_style', 'standard'));
     if (!pager_valid_style($pager_style)) {
-        $pager_style = 'none';
+        $pager_style = 'standard';
         log_warn("Bad pager_style");
     }
 
@@ -69,6 +69,7 @@ function pager_init_options($args = null)
 // Format pager.
 function format_pager($options)
 {
+    log_print_r($options);
     if ($options['pager_style'] == 'standard') {
         return "<span class=\"standard-pager\">" . format_standard_pager($options) . '</span>';
     } else {

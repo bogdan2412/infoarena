@@ -183,6 +183,10 @@ if (read_question("Import users? ")) {
     }
 }
 
+if (read_question("Set password = username for all users? ")) {
+    db_query("UPDATE `ia_user` SET `password`=SHA1(LCASE(`username`))");
+}
+
 //
 //  Import rounds.
 //
