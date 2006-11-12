@@ -3,13 +3,6 @@
 // View a plain textblock.
 // That textblock can be owned by something else.
 function controller_textblock_view($page_name, $rev_num = null) {
-    // Templates can't be seen
-    if (preg_match("/^template\//i", $page_name)) {
-        flash("Template-urile pot fi vizualizate doar ".
-                "prin incluziune, te trimit sa editezi.");
-        redirect(url($page_name, array('action' => 'edit')));
-    }
-
     // Get actual page.
     $page = textblock_get_revision($page_name, $rev_num);
 
@@ -290,6 +283,28 @@ function controller_textblock_save($page_name) {
         $view['form_errors'] = $form_errors;
         execute_view_die("views/textblock_edit.php", $view);
     }
+}
+
+// Delete a certain textblock.
+function controller_textblock_delete($page_name)
+{
+    // Get actual page.
+    $page = textblock_get_revision($page_name);
+
+    // If the page is missing jump to the edit/create controller.
+    if ($page) {
+        $perm = textblock_get_permission('delete', $page);
+        if (!$perm) {
+            flash_error("Nu ai voie sa stergi aceasta pagina.");
+        } else {
+            textblock_delete($page_name);
+            flash("Pagina a fost stearsa.");
+        }
+    } else {
+        // Missing page.
+        flash_error("Pagina inexistenta.");
+    }
+    redirect(url('home'));
 }
 
 // Deny creation of some textblocks. Redirect user to task/round/user

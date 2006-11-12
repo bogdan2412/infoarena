@@ -50,7 +50,7 @@ $action = request('action', 'view');
 // Note: array_flip() flips keys with values in a dictionary.
 $directmaps = array_flip(array('register', 'profile', 'page_index',
                                'login', 'logout', 'reset_pass', 'json',
-                               'job_detail', 'monitor', 'submit'));
+                               'job_detail', 'monitor', 'submit', 'userinfo'));
 //
 // Here comes the big url mapper.
 // We include in the if statement to avoid an extra parsing load.
@@ -63,6 +63,12 @@ if (isset($directmaps[$urlstart])) {
     $fname($page_id);
 }
 
+// FIXME: convert to direct mapping.
+else if ($urlstart == 'news_feed') {
+    require_once("controllers/news.php");
+    controller_news_view_feed();
+}
+
 // textblock controllers
 //  - edit textblock
 else if ($action == 'edit') {
@@ -73,6 +79,11 @@ else if ($action == 'edit') {
 else if ($action == 'save') {
     require_once('controllers/textblock.php');
     controller_textblock_save($page);
+}
+//  - delete textblock
+else if ($action == 'delete') {
+    require_once('controllers/textblock.php');
+    controller_textblock_delete($page);
 }
 //  - view textblock history
 else if ($action == 'history') {
@@ -127,18 +138,6 @@ else if (TEXTBLOCK_ROUND==$page_class && 'register'==$action) {
 else if (TEXTBLOCK_ROUND==$page_class && 'register-process'==$action) {
     require_once('controllers/round.php');
     controller_round_register($page_id, true);
-}
-
-// global news-speific controllers
-//  - global news feed
-else if (TEXTBLOCK_NEWS==$page_class && !$page_id && $action=='feed') {
-    require_once('controllers/news.php');
-    controller_news_view_feed();
-}
-//  - view news list
-else if (TEXTBLOCK_NEWS==$page_class && !$page_id) {
-    require_once('controllers/news.php');
-    controller_news_view_all();
 }
 
 // attachment controllers
