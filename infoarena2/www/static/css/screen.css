@@ -817,6 +817,11 @@ table.numbers td, table.numbers th {
 
 div.tiny-user {
     height: 24px;
+    display:inline;
+}
+
+div.tiny-user a {
+    text-decoration: none;
 }
 
 div.tiny-user .username {
@@ -826,8 +831,8 @@ div.tiny-user .username {
 div.tiny-user img {
     border:1px solid #D8D6CB;
     background:#fff;
-    display:block;
-    float:left;
+    display:inline;
+    vertical-align:middle;
     margin:3px;
 }
 
