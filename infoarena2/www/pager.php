@@ -73,7 +73,6 @@ function pager_init_options($args = null)
 // Format pager.
 function format_pager($options)
 {
-    log_print_r($options);
     if ($options['pager_style'] == 'standard') {
         return "<span class=\"standard-pager\">" . format_standard_pager($options) . '</span>';
     } else {
@@ -84,6 +83,7 @@ function format_pager($options)
 // Formats a standard pager. Used by format_table.
 function format_standard_pager($options)
 {
+    log_assert($options['pager_style'] == "standard");
     $first_entry = getattr($options, 'first_entry', 0);
     $total_entries = $options['total_entries'];
     $display_entries = getattr($options, 'display_entries', IA_PAGER_DEFAULT_DISPLAY_ENTRIES);

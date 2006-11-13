@@ -36,7 +36,6 @@ function macro_rankings($args) {
             ),
             array('title' => 'Scor', 'key' => 'score'),
     );
-    $options['pager_style'] = 'standard';
     $options['total_entries'] = $res['total_rows'];
 
     return format_table($rankings, $column_infos, $options);

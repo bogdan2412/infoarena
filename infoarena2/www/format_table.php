@@ -130,9 +130,9 @@ function format_table($data, $column_infos = null, $options = null)
     $result .= "</tbody>";
 
     // Paging.
-    if (getattr($options, 'pager_style', null) !== null) {
+    if (getattr($options, 'pager_style', 'none') != 'none') {
         $result .= '<tfoot style="standard-pager"><tr><td colspan="0">';
-        $result .= format_standard_pager($options);
+        $result .= format_pager($options);
         $result .= '</td></tr></tfoot>';
     }
 
