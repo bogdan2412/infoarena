@@ -61,7 +61,6 @@ function round_create($round_id, $type, $user_id, $active) {
 }
 
 function round_update($round_id, $type, $active) {
-    global $dbLink;
     $query = sprintf("UPDATE ia_round
                       SET `type` = '%s', `active` = '%s'
                       WHERE `id` = LCASE('%s')
@@ -77,8 +76,13 @@ function round_update($round_id, $type, $active) {
 // but rather chooses a few.
 // Make sure that calls such as identity_require() have all necessary
 // information to yield a correct answer.
-function round_get_task_info($round_id) {
+//
+// FIXME: sensible ordering.
+function round_get_task_info($round_id, $first = 0, $count = null) {
     global $dbLink;
+    if ($count === null) {
+        $count = 490234;
+    }
     $query = sprintf("SELECT
                         task_id AS id, tblock.title AS title,
                         ia_task.`hidden` AS `hidden`,
@@ -88,13 +92,18 @@ function round_get_task_info($round_id) {
                       LEFT JOIN ia_textblock AS tblock
                         ON tblock.`name` = CONCAT('task/', task_id)
                       WHERE `round_id` = LCASE('%s')
-                      ORDER BY tblock.`title`",
-                     db_escape($round_id));
-    $list = array();
-    foreach (db_fetch_all($query) as $row) {
-        $list[$row['id']] = $row;
-    }
-    return $list;
+                      ORDER BY tblock.`title`
+                      LIMIT %d, %d",
+                     db_escape($round_id), db_escape($first), db_escape($count));
+    return db_fetch_all($query);
+}
+
+function round_get_task_count($round_id)
+{
+    $query = sprintf("SELECT COUNT(*) FROM ia_round_task
+                    WHERE `round_id` = LCASE('%s')",
+                    db_escape($round_id));
+    return db_query_value($query);
 }
 
 // binding for parameter_get_values

@@ -1,5 +1,7 @@
 <?php
 
+require_once("format_table.php");
+
 // Lists all tasks attached to a given round
 // Takes into consideration user permissions.
 //
@@ -8,7 +10,12 @@
 //
 // Examples:
 //      Tasks(round_id="archive")
+//
+// FIXME: print current user score, difficulty rating, etc.
+// FIXME: security. Only reveals task names, but still...
 function macro_tasks($args) {
+    $options = pager_init_options($args);
+
     $round_id = getattr($args, 'round_id');
     if (!$round_id) {
         return macro_error('Expecting argument `round_id`');
@@ -19,36 +26,32 @@ function macro_tasks($args) {
     if (!$round) {
         return macro_error('Invalid round identifier');
     }
-    if (!identity_can('round-view', $round)) {
+    /*
+    if (!identity_can('round-viewtasks', $round)) {
+        return "<b>Nu ai voie sa vezi problemele.</b>"
         return macro_permission_error();
     }
+    */
 
     // get round tasks
-    $tasks = round_get_permitted_tasks($round_id, 'view');
+    $tasks = round_get_task_info($round_id, $options['first_entry'], $options['display_entries']);
+    $options['total_entries'] = round_get_task_count($round_id);
 
-    // generate HTML
-    ob_start();
-
-    if (0 < count($tasks)) {
-?>
-<ul class="tasks">
-    <?php foreach ($tasks as $task) { ?>
-        <li<?= $task['hidden'] ? ' class="hidden"' : '' ?>><a href="<?= url('task/' . $task['id']) ?>"><?= $task['title'] ?></a></li>
-    <?php } ?>
-</ul>
-<?php
-    }
-    else {
-?>
-
-<em>Problemele nu sunt vizibile inca.</em>
-
-<?php
+    // For the task column.
+    function format_task_link($row)
+    {
+        $url = url("task/" . $row['id']);
+        return '<a href="' . $url . '">' . $row['title'] . '</a>';
     }
 
-    $res = ob_get_contents();
-    ob_end_clean();
-    return $res;
+    $column_infos = array(
+            array(
+                'title' => 'Titlul problemei',
+                'rowform' => 'format_task_link',
+            ),
+    );
+
+    return format_table($tasks, $column_infos, $options);
 }
 
 ?>

@@ -59,11 +59,15 @@ function pager_init_options($args = null)
         log_warn("Bad pager_style");
     }
 
-    return array(
+    $options = array(
             'display_entries' => $display_entries,
             'pager_style' => $pager_style,
             'first_entry' => $first_entry,
     );
+    if ($prefix != "") {
+        $options['param_prefix'] = $prefix;
+    }
+    return $options;
 }
 
 // Format pager.
@@ -84,8 +88,10 @@ function format_standard_pager($options)
     $total_entries = $options['total_entries'];
     $display_entries = getattr($options, 'display_entries', IA_PAGER_DEFAULT_DISPLAY_ENTRIES);
     $url_args = getattr($options, 'url_args', $_GET);
-    $param_prefix = getattr($options, 'pager_prefix', '');
+    $param_prefix = getattr($options, 'param_prefix', '');
     $surround_pages = getattr($options, 'surround_pages', 5);
+
+    log_print_r($options);
 
     $result = "";
 

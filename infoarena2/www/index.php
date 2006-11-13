@@ -15,7 +15,6 @@ require_once("utilities.php");
 require_once("identity.php");
 require_once("wiki/wiki.php");
 require_once("textblock.php");
-require_once("rounds.php");
 
 log_print("- -- --- ---- ----- Request: ".$_SERVER['QUERY_STRING']);
 
