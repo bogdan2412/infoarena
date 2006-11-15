@@ -57,12 +57,29 @@ class MyTextile extends Textile {
     function process_pipe_block($type, $text) {
         //log_warn("$type");
         $type = strtolower($type);
+        $matches = array();
         // Raw html
         if ($type == 'html') {
             return $text;
-        } else if (preg_match('/code\([a-z1-9\+\#\.\-]+\)/', $type)) {
-            return "<pre>$type:\n".htmlentities($text)."</pre>";
-        } else {
+        }
+        elseif (preg_match('/code\((c|cpp|pas|java)\)/i', $type, $matches)) {
+            // syntax highlighting
+            $lang = $matches[1];
+
+            if ('c' == $lang) {
+                // highlight C as C++
+                $lang = 'cpp';
+            }
+            elseif ('pas' == $lang) {
+                // pascal is delphi
+                $lang = 'delphi';
+            }
+
+            // put javascript dp.SyntaxHighlighter at work
+            return "\n<textarea name=\"code\" class=\"{$lang}\" cols=\"60\" rows=\"10\">"
+                   . htmlentities($text) . "</textarea>\n";
+        }
+        else {
             return macro_error("Can't handle ==$type| block.");
         }
     }

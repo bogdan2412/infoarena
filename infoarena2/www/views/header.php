@@ -7,12 +7,18 @@
 
     <link type="text/css" rel="stylesheet" href="<?= url('static/css/screen.css') ?>"/>
     <link type="text/css" rel="stylesheet" href="<?= url('static/css/tabber.css') ?>"/>
+    <link type="text/css" rel="stylesheet" href="<?= url('static/css/SyntaxHighlighter.css') ?>"/>
     <script type="text/javascript" src="<?= url('static/js/config.js.php') ?>"></script>
     <script type="text/javascript" src="<?= url('static/js/MochiKit.js') ?>"></script>
     <script type="text/javascript" src="<?= url('static/js/default.js') ?>"></script>
     <script type="text/javascript" src="<?= url('static/js/tabber-minimized.js') ?>"></script>
     <script type="text/javascript" src="<?= url('static/js/submit.js') ?>"></script>
     <script type="text/javascript" src="<?= url('static/js/remotebox.js') ?>"></script>
+    <script type="text/javascript" src="<?= url('static/js/sh/shCore.js') ?>"></script>
+    <script type="text/javascript" src="<?= url('static/js/sh/shBrushCpp.js') ?>"></script>
+    <script type="text/javascript" src="<?= url('static/js/sh/shBrushDelphi.js') ?>"></script>
+    <script type="text/javascript" src="<?= url('static/js/sh/shBrushJava.js') ?>"></script>
+    <script type="text/javascript" src="<?= url('static/js/sh/shInit.js') ?>"></script>
 
     <?= getattr($view, 'head') ?>
 </head>
