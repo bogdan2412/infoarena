@@ -90,7 +90,7 @@ function controller_task_edit_details($task_id, $form_data = null, $form_errors 
     else {
         $view['title'] = "Modifica task: ".$task_id;
     }
-    $view['action'] = url('task/' . $task_id, array('action' => 'details-save'));
+    $view['action'] = url('admin/task/' . $task_id, array('action' => 'save'));
     $view['form_values'] = $form_data;
     $view['form_errors'] = $form_errors;
     $view['page_name'] = 'task/'.$task_id;

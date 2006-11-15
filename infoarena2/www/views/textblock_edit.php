@@ -4,11 +4,11 @@ include('views/header.php');
 ?>
 
 <?php if (TEXTBLOCK_TASK==$page_class) { ?>
-<a href="<?= url('task/'.$page_id, array('action' => 'details')) ?>">Editeaza detalii / parametri pentru problema</a>
+<a href="<?= url('admin/task/'.$page_id) ?>">Editeaza detalii / parametri pentru problema</a>
 <?php } ?>
 
 <?php if (TEXTBLOCK_ROUND==$page_class) { ?>
-<a href="<?= url('round/'.$page_id, array('action' => 'details')) ?>">Editeaza detalii / parametri pentru runda</a>
+<a href="<?= url('admin/round/'.$page_id) ?>">Editeaza detalii / parametri pentru runda</a>
 <?php } ?>
 
 

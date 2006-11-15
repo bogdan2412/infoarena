@@ -101,8 +101,8 @@ function controller_round_edit_details($round_id, $form_data = null,
         $view['title'] = "Modificare runda: ".$round_id;
     }
     //  - feed view values
-    $view['action'] = url('round/' . $round_id,
-                          array('action' => 'details-save'));
+    $view['action'] = url('admin/round/' . $round_id,
+                          array('action' => 'save'));
     $view['form_values'] = $form_data;
     $view['form_errors'] = $form_errors;
     $view['param_list'] = $param_list;

@@ -36,11 +36,13 @@ if ($page == "") {
     $page = "home";
 }
 
+$pagepath = explode('/', $page);
+
 // split the page url
 list($page_class, $page_id) = textblock_split_name($page);
 
 // This is the first part of the url path
-$urlstart = getattr(split('/', $page), 0, '');
+$urlstart = getattr($pagepath, 0, '');
 
 // A lot of logic depends on this, so we try to keep the code nicer.
 $action = request('action', 'view');
@@ -60,6 +62,29 @@ if (isset($directmaps[$urlstart])) {
     require_once("controllers/{$urlstart}.php");
     $fname = "controller_{$urlstart}";
     $fname($page_id);
+}
+
+// Admin pages.
+else if ($urlstart == 'admin') {
+    // Task detail editor.
+    $obj_id = implode("/", array_slice($pagepath, 2));
+    if (getattr($pagepath, 1) == 'task') {
+        require_once('controllers/task.php');
+        if ($action == 'save') {
+            controller_task_save_details($obj_id);
+        } else {
+            controller_task_edit_details($obj_id);
+        }
+    }
+    // Round detail editor.
+    if (getattr($pagepath, 1) == 'round') {
+        require_once('controllers/round.php');
+        if ($action == 'save') {
+            controller_round_edit_details($obj_id);
+        } else {
+            controller_round_save_details($obj_id);
+        }
+    }
 }
 
 // FIXME: convert to direct mapping.
@@ -105,29 +130,6 @@ else if ($action=='feed' && ($page_class!=TEXTBLOCK_NEWS || $page_id)) {
     controller_textblock_feed($page);
 }
 
-// task-specific controllers
-//  - show details edit form
-else if (TEXTBLOCK_TASK==$page_class && 'details'==$action) {
-    require_once('controllers/task.php');
-    controller_task_edit_details($page_id);
-}
-//  - save details
-else if (TEXTBLOCK_TASK==$page_class && 'details-save'==$action) {
-    require_once('controllers/task.php');
-    controller_task_save_details($page_id);
-}
-
-// round-specific controllers
-//  - edit round details
-else if (TEXTBLOCK_ROUND==$page_class && $action == 'details') {
-    require_once('controllers/round.php');
-    controller_round_edit_details($page_id);
-}
-//  - save round details
-else if ($urlstart=='round' && $action=='details-save') {
-    require_once('controllers/round.php');
-    controller_round_save_details($page_id);
-}
 //  - register for contest 
 else if (TEXTBLOCK_ROUND==$page_class && 'register'==$action) {
     require_once('controllers/round.php');

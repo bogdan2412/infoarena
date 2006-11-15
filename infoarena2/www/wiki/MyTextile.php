@@ -16,8 +16,8 @@ class MyTextile extends Textile {
 
     // Parse and execute a macro (or return an error div).
     function process_macro($str) {
-        log_print("Processing $str macro");
-        log_backtrace();
+        //log_print("Processing $str macro");
+        //log_backtrace();
         $str = trim($str);
         $argvalexp = '"(([^"]*("")*)*)"';
         if (preg_match('/^([a-z][a-z0-9_]*)\s*\((\s*
