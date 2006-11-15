@@ -1,3 +1,5 @@
+# This script is for anti-magic conversion.
+
 ALTER TABLE `ia_task` 
     ADD `title` VARCHAR( 64 ) NOT NULL ,
     ADD `page_name` VARCHAR( 64 ) NOT NULL ;

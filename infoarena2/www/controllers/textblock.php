@@ -28,7 +28,7 @@ function controller_textblock_view($page_name, $rev_num = null) {
     $view['revision'] = $rev_num;
     $view['page_name'] = $page_name;
     $view['textblock'] = $page;
-    execute_view_die('views/wikiview.php', $view);
+    execute_view_die('views/textblock_view.php', $view);
 }
 
 // Show a textblock diff.
@@ -61,7 +61,7 @@ function controller_textblock_diff_revision($page_name, $rev_num) {
     $view['title'] = 'Diferente '.$page_name;
     $view['diff_title'] = explode("\n", $diff_title);
     $view['diff_content'] = explode("\n", $diff_content);
-    execute_view_die('views/diff.php', $view);
+    execute_view_die('views/textblock_diff.php', $view);
 }
 
 // Restore a certain revision
@@ -109,7 +109,7 @@ function controller_textblock_history($page_name) {
     $view['count'] = count($view['page_list']);
     $view['current'] = $page;
     $view['feed_link'] = url($view['page_name'], array('action' => 'feed'));
-    execute_view_die('views/history.php', $view);
+    execute_view_die('views/textblock_history.php', $view);
 }
 
 // give a RSS feed with the history of a textblock
