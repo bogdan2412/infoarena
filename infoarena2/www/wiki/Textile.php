@@ -1027,10 +1027,11 @@ class Textile {
           unset($bqlang);
           unset($clear);
         }
-        $para = preg_replace_callback('{(?:^|(?<=[\s>])|([{[]))
-                                        ==(.+?)==
-                                        (?:$|([\]}])|(?=' . $this->punct . '{1,2}|\s))}sx',
-                                      $this->_cb('$me->_repl($me->repl[0], $me->format_block(array("text" => $m[2], "inline" => 1, "pre" => $m[1], "post" => $m[3])))'), $para);
+        // Don't parse == inside bc.
+        //$para = preg_replace_callback('{(?:^|(?<=[\s>])|([{[]))
+        //                                ==(.+?)==
+        //                                (?:$|([\]}])|(?=' . $this->punct . '{1,2}|\s))}sx',
+        //                              $this->_cb('$me->_repl($me->repl[0], $me->format_block(array("text" => $m[2], "inline" => 1, "pre" => $m[1], "post" => $m[3])))'), $para);
         $buffer .= $this->encode_html_basic($para, 1);
         $buffer = preg_replace('/&lt;textile#(\d+)&gt;/', '<textile#$1>', $buffer);
         if ($sticky == 0) {

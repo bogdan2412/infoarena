@@ -16,8 +16,8 @@ class MyTextile extends Textile {
 
     // Parse and execute a macro (or return an error div).
     function process_macro($str) {
-        //log_print("Processing $str macro");
-        //log_backtrace();
+        log_print("Processing $str macro");
+        log_backtrace();
         $str = trim($str);
         $argvalexp = '"(([^"]*("")*)*)"';
         if (preg_match('/^([a-z][a-z0-9_]*)\s*\((\s*
@@ -60,6 +60,8 @@ class MyTextile extends Textile {
         // Raw html
         if ($type == 'html') {
             return $text;
+        } else if (preg_match('/code\([a-z1-9\+\#\.\-]+\)/', $type)) {
+            return "<pre>$type:\n".htmlentities($text)."</pre>";
         } else {
             return macro_error("Can't handle ==$type| block.");
         }
@@ -71,7 +73,7 @@ class MyTextile extends Textile {
     // you can inject arbritary html.
     function do_format_block($args) {
         $str = getattr($args, 'text', '');
-        if (preg_match('/^  \s*  ([a-z][a-z0-9\+\#\-]*)  \s* \|(.*)/sxi', $str, $matches)) {
+        if (preg_match('/^  \s*  ([a-z][a-z0-9\+\#\-\(\)\.]*)  \s* \|(.*)/sxi', $str, $matches)) {
             return $this->process_pipe_block($matches[1], $matches[2]);
         } else {
             return $this->process_macro($str);
