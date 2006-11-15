@@ -19,7 +19,6 @@ function score_update($rank_id, $user_id, $task_id, $round_id, $value)
 function db_escape_array($array)
 {
     $ret = '';
-    log_print($array);
     foreach ($array as $element) {
         if ($ret) {
             $ret .= ", ";
@@ -52,7 +51,6 @@ function build_where_clauses($user, $task, $round)
     }
     if ($round != null) {
         if (is_array($round) && count($round) > 0) {
-            log_print(count($round));
             $where[] = "(`round_id` IN (" . db_escape_array($round) . "))";
         } else if (is_string($round)) {
             $where[] = sprintf("(`round_id` = '%s')", $round);

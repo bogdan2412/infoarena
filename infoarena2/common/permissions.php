@@ -27,21 +27,29 @@ function permission_query($user, $action, $ontoObject) {
 
     // Log permission checking.
     // Don't remove this, it's important.
-    log_print("PERMQUERY (".
-                getattr($user, 'id', 'null') .", ".
-                getattr($user, 'security_level', 'anonymous') .", ".
-                $group . ", " . $action . ", " .
-                getattr($ontoObject, 'id', getattr($ontoObject, 'name', $ontoObject))
-                . "): id, level, group, action, objid");
+    if ($group == 'wiki') {
+        log_print("PERMQUERY (".
+                    getattr($user, 'id', 'null') .", ".
+                    getattr($user, 'security_level', 'anonymous') .", ".
+                    $group . ", " . $action . ", " . 
+                    $ontoObject['name'] . ", " . $ontoObject['security'] .
+                    "): id, level, group, action, page, sec");
+    } else {
+        log_print("PERMQUERY (".
+                    getattr($user, 'id', 'null') .", ".
+                    getattr($user, 'security_level', 'anonymous') .", ".
+                    $group . ", " . $action . ", " .
+                    getattr($ontoObject, 'id', getattr($ontoObject, 'name', $ontoObject))
+                    . "): id, level, group, action, objid");
+    }
 
     // group dispatcher
     switch ($group) {
+        case 'wiki':
+            return permission_wiki($user, $action, $ontoObject);
+
         case 'user':
             return permission_user($user, $action, $ontoObject);
-
-        case 'wiki':
-        case 'news':
-            return permission_wiki($user, $action, $ontoObject);
 
         case 'round':
             return permission_round($user, $action, $ontoObject);
@@ -111,6 +119,24 @@ function permission_user($user, $action, $ontoUser) {
 }
 
 function permission_wiki($user, $action, $textblock) {
+    if (preg_match("/task\( \s* ([a-b0-9]+) \s* \)/xi", $textblock['security'], $matches)) {
+        $task = task_get($matches[1]);
+        if ($task === null) {
+            log_warn("Bad security descriptor, no access.");
+            return false;
+        }
+        return permission_task($user, $action, $task);
+    }
+
+    if (preg_match("/round\( \s* ([a-b0-9]+) \s* \)/xi", $textblock['security'], $matches)) {
+        $round = round_get($matches[1]);
+        if ($round === null) {
+            log_warn("Bad security descriptor, no access.");
+            return false;
+        }
+        return permission_round($user, $action, $round);
+    }
+
     switch ($action) {
         case 'view':
         case 'history':

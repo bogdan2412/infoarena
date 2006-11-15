@@ -24,16 +24,22 @@ include('views/header.php');
 
     <li id="field_content">
         <label for="form_content">Continut</label>
-        <textarea name="content" id="form_content" rows="10" cols="50"><?= fval('content') ?>'</textarea>
+        <textarea name="content" id="form_content" rows="10" cols="50"><?= fval('content') ?></textarea>
         <?= ferr_span('content') ?>
         <span class="fieldHelp"><a href="' . url('textile') . '">Cum formatez text?</a></span>
     </li>
 
-<!--    <li id="field_security">
-        <label for="form_title">Permisiuni</label>
-        <input type="text" name="security" value="<= fval('security') ?>" id="form_security"/>
-        <= ferr_span('security') ?>
-    </li>-->
+    <li id="field_security">
+        <label for="form_security">Nivel de securitate al paginii:</label>
+<!--        <select name="security" id="form_security">
+            <option value="public">Public</option>
+            <option value="protected">Protejat</option>
+            <option value="private">Privat</option>
+            <option value="complex">Complex...</option>
+        </select>-->
+        <input type="text" name="security" value="<?= fval('security') ?>" id="form_security"/>
+        <?= ferr_span('security') ?>
+    </li>
 
     <li id="field_submit">
         <input type="submit" value="Salveaza" id="form_submit" class="button important" />

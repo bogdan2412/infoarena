@@ -181,10 +181,12 @@ function controller_textblock_edit($page_name) {
     if (!$page) {
         $page_title = $page_name;
         $page_content = "Scrie aici despre " . $page_name;
+        $page_security = "public";
         $view['title'] = "Creare " . $page_name;
     } else {
         $page_title = $page['title'];
         $page_content = $page['text'];
+        $page_security = $page['security'];
         $view['title'] = "Editare " . $page_name;
     }
 
@@ -192,7 +194,8 @@ function controller_textblock_edit($page_name) {
     $view['page_name'] = $page_name;
     $view['action'] = url($page_name, array('action' => 'save'));
     $view['form_values'] = array('content'=> $page_content,
-                                 'title' => $page_title);
+                                 'title' => $page_title,
+                                 'security' => $page_security);
     $view['form_errors'] = $form_errors;
     execute_view_die("views/textblock_edit.php", $view);
 }
@@ -215,15 +218,18 @@ function controller_textblock_save($page_name) {
 
     $page_content = getattr($_POST, 'content', "");
     $page_title = getattr($_POST, 'title', "");
+    $page_security = getattr($_POST, 'security', "");
     if (strlen($page_content) < 1) {
         $form_errors['content'] = "Continutul paginii este prea scurt.";
     }
     if (strlen($page_title) < 1) {
         $form_errors['title'] = "Titlul este prea scurt.";
     }
+    // FIXME: proper check for security changes.
     if (!$form_errors) {
-        textblock_add_revision($page_name, $page_title, $page_content,
-                               getattr($identity_user, 'id'));
+        textblock_add_revision($page_name, $page_title, $page_content, 
+                               getattr($identity_user, 'id'),
+                               $page_security);
         flash('Am actualizat continutul');
         redirect(url($page_name));
     }
@@ -234,7 +240,8 @@ function controller_textblock_save($page_name) {
         $view['action'] = url($page_name, array('action' => 'save'));
         $form_values['content'] = $page_content;
         $view['form_values'] = array('content'=> $page_content,
-                                     'title' => $page_title);
+                                     'title' => $page_title,
+                                     'security' => $page_security);
         $view['form_errors'] = $form_errors;
         execute_view_die("views/textblock_edit.php", $view);
     }

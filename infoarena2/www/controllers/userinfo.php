@@ -26,7 +26,7 @@ function controller_userinfo($pageid) {
     // FIXME: per-page?
     identity_require('user-viewinfo', $user);
 
-    log_print($page_name);
+    //log_print($page_name);
     // Hack page.
     $page = textblock_get_revision($page_name);
     if (!$page) {
