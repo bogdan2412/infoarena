@@ -32,7 +32,7 @@ if (!$jobs) {
     // For the task column.
     function format_task_link($row)
     {
-        $url = url("task/" . $row['task_id']);
+        $url = url($row['task_page']);
         return '<a href="' . $url . '">' . $row['task_title'] . '</a>';
     }
 

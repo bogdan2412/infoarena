@@ -4,21 +4,20 @@
 // That textblock can be owned by something else.
 function controller_textblock_view($page_name, $rev_num = null) {
     // Get actual page.
-    $page = textblock_get_revision($page_name, $rev_num);
+    $crpage = textblock_get_revision($page_name);
 
     // If the page is missing jump to the edit/create controller.
-    if ($page) {
+    if ($crpage) {
         if ($rev_num) {
-            $perm = textblock_get_permission('history', $page);
+            identity_require("wiki-history", $crpage);
+            $page = textblock_get_revision($page_name, $rev_num);
         } else {
-            $perm = textblock_get_permission('view', $page);
-        }
-        if (!$perm) {
-            flash_error("Nu ai voie sa vezi aceasta pagina");
-            redirect(url(''));
+            identity_require("wiki-view", $crpage);
+            $page = $crpage;
         }
     } else {
         // Missing page.
+        // FIXME: what if the user can't create the page?
         flash_error("Nu am gasit pagina, te trimit sa editezi");
         redirect(url($page_name, array('action' => 'edit')));
     }
@@ -33,21 +32,18 @@ function controller_textblock_view($page_name, $rev_num = null) {
 }
 
 // Show a textblock diff.
+// FIXME: two revisions.
 function controller_textblock_diff_revision($page_name, $rev_num) {
     global $identity_user;
     $page = textblock_get_revision($page_name);
     $rev = textblock_get_revision($page_name, $rev_num);
     if ($page) {
-        $perm = textblock_get_permission('history', $page);
-        if (!$perm) {
-            flash_error('Nu aveti permisiunea sa accesati aceasta pagina.');
-            redirect(url(''));
-        }
-    }
-    else {
+        identity_require('wiki-history', $page);
+    } else {
         flash_error("Pagina nu exista");
         redirect(url(''));
     }
+
     if (is_null($rev_num)) {
         flash_error("Nu ati specificat revizia");
         redirect(url($page_name));
@@ -73,17 +69,14 @@ function controller_textblock_restore_revision($page_name, $rev_num) {
     global $identity_user;
     $page = textblock_get_revision($page_name);
     $rev = textblock_get_revision($page_name, $rev_num);
+
     if ($page) {
-        $perm = textblock_get_permission('restore', $page);
-        if (!$perm) {
-            flash_error('Nu aveti permisiunea sa executati aceasta actiune.');
-            redirect(url(''));
-        }
-    }
-    else {
+        identity_require('wiki-restore', $page);
+    } else {
         flash_error("Pagina nu exista");
         redirect(url(''));
     }
+
     if (is_null($rev_num)) {
         flash_error("Nu ati specificat revizia");
         redirect(url($page_name));
@@ -102,13 +95,8 @@ function controller_textblock_restore_revision($page_name, $rev_num) {
 function controller_textblock_history($page_name) {
     $page = textblock_get_revision($page_name, null, false, false);
     if ($page) {
-        $perm = textblock_get_permission('history', $page);
-        if (!$perm) {
-            flash_error('Nu aveti permisiunea sa accesati aceasta pagina.');
-            redirect(url(''));
-        }
-    }
-    else {
+        identity_require('wiki-history', $page);
+    } else {
         flash_error("Pagina nu exista");
         redirect(url(''));
     }
@@ -131,18 +119,16 @@ function controller_textblock_feed($page_name) {
         flash_error("Pagina nu exista");
         redirect(url(''));
     }
+    identity_require('wiki-history', $page);
 
     $page_list = textblock_get_revisions($page_name, true, true);
     $count = count($page_list);
-    $history = textblock_get_permission('view', $page);
 
     $view = array();
     $view['channel']['title'] = 'info-arena: '.$page['title'];
     $view['channel']['link'] = url($page_name, array(), true);
     $view['channel']['description'] = $view['channel']['title'];
-    if ($history) {
-        $view['channel']['description'] .= ' ('.$count.' revizii)';
-    }
+    $view['channel']['description'] .= ' ('.$count.' revizii)';
     $view['channel']['language'] = 'ro-ro';
     $view['channel']['copyright'] = '&copy; 2006 - info-arena';
 
@@ -156,10 +142,6 @@ function controller_textblock_feed($page_name) {
     $view['item'][$i]['link'] = url($page['name'], array(), true).
                                '#'.$view['item'][$i]['guid'];
     $view['item'][$i]['author'] = $page['username'];
-
-    if (!$history) {
-        execute_view_die('views/rss.php', $view);
-    }
 
     $i = 1; 
     for($rev_num = $count-1; $rev_num >= 0; $rev_num--, $i++) {
@@ -188,21 +170,9 @@ function controller_textblock_edit($page_name) {
 
     // permission check
     if ($page) {
-        // request permission to edit textblock
-        $perm = textblock_get_permission('edit', $page);
-        if (!$perm) {
-            flash_error('Nu aveti permisiunea sa modificati aceasta pagina');
-            redirect(url(''));
-        }
-    }
-    else {
-        textblock_create_model_first($page_name);
-
-        $perm = textblock_get_permission('create', $page_name);
-        if (!$perm) {
-            flash_error('Nu aveti permisiunea sa creati aceasta pagina');
-            redirect(url(''));
-        }
+        identity_require('wiki-edit', $page);
+    } else {
+        identity_require('wiki-create', $page);
     }
 
     $view = array();
@@ -212,8 +182,7 @@ function controller_textblock_edit($page_name) {
         $page_title = $page_name;
         $page_content = "Scrie aici despre " . $page_name;
         $view['title'] = "Creare " . $page_name;
-    }
-    else {
+    } else {
         $page_title = $page['title'];
         $page_content = $page['text'];
         $view['title'] = "Editare " . $page_name;
@@ -225,7 +194,6 @@ function controller_textblock_edit($page_name) {
     $view['form_values'] = array('content'=> $page_content,
                                  'title' => $page_title);
     $view['form_errors'] = $form_errors;
-    list($view['page_class'], $view['page_id']) = textblock_split_name($page_name);
     execute_view_die("views/textblock_edit.php", $view);
 }
 
@@ -236,21 +204,9 @@ function controller_textblock_save($page_name) {
 
     // permission check
     if ($page) {
-        // request permission to edit textblock
-        $perm = textblock_get_permission('edit', $page);
-        if (!$perm) {
-            flash_error('Nu aveti permisiunea sa modificati aceasta pagina');
-            redirect(url(''));
-        }
-    }
-    else {
-        textblock_create_model_first($page_name);
-
-        $perm = textblock_get_permission('create', $page_name);
-        if (!$perm) {
-            flash_error('Nu aveti permisiunea sa creati aceasta pagina');
-            redirect(url(''));
-        }
+        identity_require('wiki-edit', $page);
+    } else {
+        identity_require('wiki-create', $page);
     }
 
     // Validate data here and place stuff in errors.
@@ -273,7 +229,6 @@ function controller_textblock_save($page_name) {
     }
     else {
         $view['title'] = "Editare " . $page_name;
-        list($view['page_class'], $view['page_id']) = textblock_split_name($page_name);
         $view['page_name'] = $page_name;
         $view['page_class'] = 
         $view['action'] = url($page_name, array('action' => 'save'));
@@ -293,51 +248,14 @@ function controller_textblock_delete($page_name)
 
     // If the page is missing jump to the edit/create controller.
     if ($page) {
-        $perm = textblock_get_permission('delete', $page);
-        if (!$perm) {
-            flash_error("Nu ai voie sa stergi aceasta pagina.");
-        } else {
-            textblock_delete($page_name);
-            flash("Pagina a fost stearsa.");
-        }
+        identity_require('wiki-delete', $page);
     } else {
         // Missing page.
         flash_error("Pagina inexistenta.");
     }
+    textblock_delete($page_name);
+    flash("Pagina a fost stearsa.");
     redirect(url('home'));
-}
-
-// Deny creation of some textblocks. Redirect user to task/round/user
-// details screen. See explanation.
-// NOTE: This function may not return.
-//
-// Some textblocks cannot be created from scratch:
-//  task/xxx  user/xxx  round/xxx ...
-//
-// Instead, their associated model must be created first.
-// Associated models are created using specific controllers.
-function textblock_create_model_first($page_name) {
-    list($page_class, $object_id) = textblock_split_name($page_name);
-
-    if (TEXTBLOCK_TASK==$page_class) {
-        // You cannot create a new task via the texblock editor
-        // The edit-details controller creates a new round object and its
-        // associated textblock
-        $message = 'Acest task nu exista. Te trimit sa il creezi.';
-    }
-    elseif (TEXTBLOCK_ROUND==$page_class) {
-        // You cannot create a new round via the texblock editor
-        // The edit-details controller creates a new round object and its
-        // associated textblock
-        $message = 'Aceasta runda nu exista. Te trimita sa o creezi.';
-    }
-    else {
-        // you may freely create textblock
-        return true;
-    }
-
-    redirect(url($page_name, array('action' => 'details')));
-    flash($message.'<br/>Mai intai, introdu cateva informatii de baza.');
 }
 
 ?>

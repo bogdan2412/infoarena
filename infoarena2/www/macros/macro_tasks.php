@@ -40,8 +40,7 @@ function macro_tasks($args) {
     // For the task column.
     function format_task_link($row)
     {
-        $url = url("task/" . $row['id']);
-        return '<a href="' . $url . '">' . $row['title'] . '</a>';
+        return '<a href="' . $row['page_name']. '">' . $row['title'] . '</a>';
     }
 
     $column_infos = array(

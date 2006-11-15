@@ -91,7 +91,7 @@ function format_standard_pager($options)
     $param_prefix = getattr($options, 'param_prefix', '');
     $surround_pages = getattr($options, 'surround_pages', 5);
 
-    log_print_r($options);
+    //log_print_r($options);
 
     $result = "";
 

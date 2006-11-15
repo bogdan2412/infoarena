@@ -20,7 +20,7 @@ function macro_include($args) {
     }
 
     // check permissions
-    if (!textblock_get_permission('view', $textblock)) {
+    if (!identity_can('wiki-view', $textblock)) {
         return macro_permission_error();
     }
 

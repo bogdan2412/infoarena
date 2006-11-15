@@ -19,14 +19,12 @@ function round_get($round_id) {
 // information to yield a correct answer.
 function round_get_info() {
     global $dbLink;
-    $query = sprintf("SELECT ia_round.id AS id, ia_round.`type` AS `type`,
-                             tblock.title AS title,
-                             ia_round.`active` AS `active`,
-                             ia_round.user_id AS user_id
-                      FROM ia_round
-                      LEFT JOIN ia_textblock AS tblock
-                        ON tblock.`name` = CONCAT('round/', ia_round.id)
-                      ORDER BY tblock.`title`");
+    $query = sprintf("SELECT `ia_round`.`id` AS `id`, `ia_round`.`type` AS `type`,
+                             `ia_round`.`title` AS `title`,
+                             `ia_round`.`active` AS `active`,
+                             `ia_round`.`user_id` AS `user_id`
+                      FROM `ia_round`
+                      ORDER BY `ia_round`.`title`");
     $list = array();
     foreach (db_fetch_all($query) as $row) {
         $list[$row['id']] = $row;
@@ -40,7 +38,7 @@ function round_get_textblock($round_id) {
 
 function round_create($round_id, $type, $user_id, $active) {
     global $dbLink;
-    $query = sprintf("INSERT INTO ia_round
+    $query = sprintf("INSERT INTO `ia_round`
                         (`id`, `type`, user_id, `active`)
                       VALUES (LCASE('%s'), '%s', '%s', '%s')",
                      db_escape($round_id), db_escape($type),
@@ -61,7 +59,7 @@ function round_create($round_id, $type, $user_id, $active) {
 }
 
 function round_update($round_id, $type, $active) {
-    $query = sprintf("UPDATE ia_round
+    $query = sprintf("UPDATE `ia_round`
                       SET `type` = '%s', `active` = '%s'
                       WHERE `id` = LCASE('%s')
                       LIMIT 1",
@@ -84,15 +82,16 @@ function round_get_task_info($round_id, $first = 0, $count = null) {
         $count = 490234;
     }
     $query = sprintf("SELECT
-                        task_id AS id, tblock.title AS title,
-                        ia_task.`hidden` AS `hidden`,
-                        ia_task.user_id AS user_id, ia_task.`type` AS `type`
+                        task_id AS id,
+                        task.`title` AS `title`,
+                        task.`page_name` AS `page_name`,
+                        task.`hidden` AS `hidden`,
+                        task.`user_id` AS `user_id`, 
+                        task.`type` AS `type`
                       FROM ia_round_task
-                      LEFT JOIN ia_task ON ia_task.id = task_id
-                      LEFT JOIN ia_textblock AS tblock
-                        ON tblock.`name` = CONCAT('task/', task_id)
+                      LEFT JOIN ia_task as task ON task.id = task_id
                       WHERE `round_id` = LCASE('%s')
-                      ORDER BY tblock.`title`
+                      ORDER BY task.`title`
                       LIMIT %d, %d",
                      db_escape($round_id), db_escape($first), db_escape($count));
     return db_fetch_all($query);

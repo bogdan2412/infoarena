@@ -15,7 +15,6 @@ require_once(IA_ROOT . "common/permissions.php");
 require_once("utilities.php");
 require_once("identity.php");
 require_once("wiki/wiki.php");
-require_once("textblock.php");
 
 
 // restore identity (if such a session exists)
