@@ -1,6 +1,6 @@
 <?php
 
-require_once("pager.php");
+require_once(IA_ROOT . "www/format/pager.php");
 
 function macro_news($args) {
     $prefix = getattr($args, 'prefix');

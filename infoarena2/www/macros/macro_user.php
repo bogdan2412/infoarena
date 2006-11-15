@@ -1,5 +1,7 @@
 <?php
 
+require_once(IA_ROOT . 'www/format/format.php');
+
 // Display a link to an user.
 // Includes avatar, etc.
 //

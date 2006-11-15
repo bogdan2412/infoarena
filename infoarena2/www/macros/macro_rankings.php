@@ -1,6 +1,7 @@
 <?php
 
-require_once("format_table.php");
+require_once(IA_ROOT . "www/format/table.php");
+require_once(IA_ROOT . "www/format/format.php");
 
 // Displays *interactive* rankings table summing up score points from a
 // pre-defined set of contest rounds.

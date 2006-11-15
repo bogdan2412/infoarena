@@ -6,6 +6,7 @@ define("IA_INSIDE_WWW", true);
 require_once("config.php");
 require_once(IA_ROOT . "common/log.php");
 require_once(IA_ROOT . "common/common.php");
+log_print("- -- --- ---- ----- Request: ".$_SERVER['QUERY_STRING']);
 check_requirements();
 
 require_once(IA_ROOT . "common/db/db.php");
@@ -16,7 +17,6 @@ require_once("identity.php");
 require_once("wiki/wiki.php");
 require_once("textblock.php");
 
-log_print("- -- --- ---- ----- Request: ".$_SERVER['QUERY_STRING']);
 
 // restore identity (if such a session exists)
 identity_restore();
@@ -36,22 +36,18 @@ if ($page == "") {
     $page = "home";
 }
 
+// Prepare some vars for url handler.
 $pagepath = explode('/', $page);
-
-// split the page url
-list($page_class, $page_id) = textblock_split_name($page);
-
-// This is the first part of the url path
 $urlstart = getattr($pagepath, 0, '');
-
-// A lot of logic depends on this, so we try to keep the code nicer.
+$page_id = implode('/', array_slice($pagepath, 1));
 $action = request('action', 'view');
 
 // Direct mapping list
 // Note: array_flip() flips keys with values in a dictionary.
 $directmaps = array_flip(array('register', 'profile', 'page_index',
                                'login', 'logout', 'reset_pass', 'json',
-                               'job_detail', 'monitor', 'submit', 'userinfo'));
+                               'job_detail', 'monitor', 'submit', 'userinfo',
+                               'round_register'));
 //
 // Here comes the big url mapper.
 // We include in the if statement to avoid an extra parsing load.
@@ -125,20 +121,9 @@ else if ($action == 'diff') {
     controller_textblock_diff_revision($page, request('revision'));
 }
 //  - view textblock feed
-else if ($action=='feed' && ($page_class!=TEXTBLOCK_NEWS || $page_id)) {
+else if ($action=='feed') {
     require_once('controllers/textblock.php');
     controller_textblock_feed($page);
-}
-
-//  - register for contest 
-else if (TEXTBLOCK_ROUND==$page_class && 'register'==$action) {
-    require_once('controllers/round.php');
-    controller_round_register($page_id);
-}
-//  - register for contest (process input)
-else if (TEXTBLOCK_ROUND==$page_class && 'register-process'==$action) {
-    require_once('controllers/round.php');
-    controller_round_register($page_id, true);
 }
 
 // attachment controllers
