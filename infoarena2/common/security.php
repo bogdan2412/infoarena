@@ -71,7 +71,7 @@ function security_textblock($user, $action, $textblock) {
             log_warn("Bad security descriptor, ask an admin.");
             return $usersec == 'admin';
         }
-        return security_query_task($user, $action, $task);
+        return security_task($user, $action, $task);
     }
     if (preg_match('/^ \s* (private|protected|public) \s* $/xi', $textsec, $matches)) {
         $textsec = $matches[1];
