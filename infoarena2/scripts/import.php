@@ -183,8 +183,8 @@ if (read_question("Import users? ")) {
     }
 }
 
-if (read_question("Set password = username for all users? ")) {
-    db_query("UPDATE `ia_user` SET `password`=SHA1(LCASE(`username`))");
+if (read_question("Clean user password & email? ")) {
+    db_query("UPDATE `ia_user` SET `password`=SHA1(LCASE(`username`)), `email`='no@spam.com'");
 }
 
 //

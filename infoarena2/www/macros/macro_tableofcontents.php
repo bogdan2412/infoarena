@@ -2,16 +2,16 @@
 
 function macro_tableofcontents($args)
 {
-    $prefix = getattr($args, 'prefix', $args['context']['page_name']);
+    $prefix = getattr($args, 'prefix', '');
 
     $subpages = textblock_get_list_by_prefix($prefix, false, false);
 
-    $res = '<div class="macro-toc" style="float:right">';
-    $res .= "<p>Table of contents for $prefix</p><ul>";
+    $res = '<div class="macro-toc">';
+    $res .= "<p>Table of contents for ".htmlentities($prefix)."</p><ul>";
     for ($i = 0; $i < count($subpages); ++$i) {
         $title = $subpages[$i]['title'];
         $link = url($subpages[$i]['name']);
-        $res .= "<li><a href=\"$link\">$title</a></li>";
+        $res .= "<li><a href=\"$link\">".htmlentities($title)."</a></li>";
     }
 
     $res .= "</ul></div>";

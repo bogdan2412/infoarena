@@ -30,11 +30,6 @@ function security_query($user, $action, $object) {
             "($username, $usersec, $action, $object_id): ".
             "username, level, action, object");
 
-    // FIXME: macro
-    if ($action == 'special-page-index') {
-        return $usersec == 'admin';
-    }
-
     // group dispatcher
     switch ($group) {
         case 'textblock':
