@@ -71,7 +71,7 @@ function identity_require($action, $ontoObject = null, $errorMessage = null,
 function identity_from_session() {
     session_start();
     if (isset($_SESSION['_identity'])) {
-        log_print('Restoring identity from PHP session');
+        // log_print('Restoring identity from PHP session');
         $identity = unserialize($_SESSION['_identity']);
     }
     else {
@@ -89,11 +89,11 @@ function identity_from_http() {
 
     if ($user || $pass) {
         // somebody is trying to authenticate via HTTP
-        log_print('Restoring identity from HTTP AUTH headers');
+        // log_print('Restoring identity from HTTP AUTH headers');
         $user = user_test_password($user, $pass);
 
         if (!$user) {
-            log_print("Invalid HTTP AUTH username/password");
+            log_warn("Invalid HTTP AUTH username/password");
         }
 
         return $user;
@@ -119,10 +119,9 @@ function identity_restore() {
     if ($identity_user) {
         log_assert(is_array($identity_user) && getattr($identity_user, 'id'),
                    'Invalid user object found in PHP session store!');
-        log_print('Remote user: '.$identity_user['username']);
-    }
-    else {
-        log_print('Anonymous remote user');
+        //log_print('Remote user: '.$identity_user['username']);
+    } else {
+        //log_print('Anonymous remote user');
     }
 
     return $identity_user;

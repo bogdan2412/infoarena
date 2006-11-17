@@ -61,39 +61,33 @@ function get_mime_type($filename)
             return $res;
         }
     }
-    log_warn("fileinfo extension failed, defaulting mime type to application/octet-stream.");
+    //log_warn("fileinfo extension failed, defaulting mime type to application/octet-stream.");
     return "application/octet-stream";
 }
 
 // Checks system requirements.
-// This will fail early. if something is missing.
+// This will fail early. Of something is missing.
 function check_requirements()
 {
-    $phpver = phpversion();
-    $finfover = phpversion("fileinfo");
-    $mysqlver = phpversion("mysql");
-    $gdver = phpversion("gd2");
-    $zipver = phpversion("zip");
+    $extensions = get_loaded_extensions();
 
-    $msg = "PHP v$phpver";
-    if ($mysqlver) $msg .= " mysql v$mysqlver";
-    if ($gdver) $msg .= " gd v$gdver";
-    if ($finfover) $msg .= " finfo v$finfover";
-    if ($zipver) $msg .= " zip v$zipver";
-
-    log_print("Running on $msg");
-
-    if (!$mysqlver) {
+    if (version_compare(phpversion(), '5.0', '<')) {
+        log_error("PHP 5.0 required.");
+    }
+    if (array_search('mysql', $extensions) === false) {
         log_error("mysql extension required.");
     }
-    if (!$finfover) {
-        log_warn("fileinfo extension missing, mime-types will default to application/octet-stream.");
-    }
-    if (!$gdver) {
+    if (array_search('gd', $extensions) === false) {
         log_warn("gd extension required.");
     }
-    if (!$zipver) {
+    if (array_search('zip', $extensions) === false) {
         log_error("zip extension required.");
+    }
+    if (!function_exists("finfo_open")) {
+        log_warn("finfo_open missing, falling back to mime_content_type.");
+        if (!function_exists("mime_content_type")) {
+            log_warn("mime_content_type missing, mime-types will default to application/octet-stream.");
+        }
     }
 }
 
