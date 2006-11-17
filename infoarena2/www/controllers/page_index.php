@@ -2,7 +2,7 @@
 
 function controller_page_index($page_name)
 {
-    identity_require('specialpage-index');
+    identity_require('special-page-index');
     $show_user = request('show_user', 1);
     $prefix = request('prefix', '');
     $view = array();

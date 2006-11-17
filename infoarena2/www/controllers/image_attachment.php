@@ -12,10 +12,6 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
     }
 
     $attach = try_attachment_get($page_name, $file_name);
-    if (!identity_can('attach-download', $attach)) {
-        die_http_404();
-    }
-
     $real_name = attachment_get_filepath($attach);
 
     $ret = getimagesize($real_name);

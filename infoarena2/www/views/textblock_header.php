@@ -1,21 +1,17 @@
 <?php
-// compute default permission prefix
-//
-// When displaying wiki page actions, we have to check for permissions.
-// The same view code is used to display static wiki pages, news, tasks.
-// task-view, wiki-view, round-view etc. 
-$perm_prefix = getattr($view, 'perm_prefix', 'wiki');
+// Show wiki operations.
+// Only show operations the current user can do.
 ?>
 
 <div id="wikiOps">
     <ul>
-        <?php if (identity_can($perm_prefix . '-edit', $textblock)) { ?>
+        <?php if (identity_can('textblock-edit', $textblock)) { ?>
         <li><a href="<?= url($textblock['name'], array('action' => 'edit')) ?>">Editeaza</a></li>
         <?php } ?>
-        <?php if (identity_can($perm_prefix . '-history', $textblock)) { ?>
+        <?php if (identity_can('textblock-history', $textblock)) { ?>
         <li><a href="<?= url($textblock['name'], array('action' => 'history')) ?>">Vezi istoria</a></li>
         <?php } ?>
-        <?php if (identity_can($perm_prefix . '-delete', $textblock)) { ?>
+        <?php if (identity_can('textblock-delete', $textblock)) { ?>
         <li><a href="<?= url($textblock['name'], array('action' => 'delete')) ?>">Sterge</a></li>
         <?php } ?>
         <?php if (identity_can('attach-create', $textblock)) { ?>

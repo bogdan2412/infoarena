@@ -286,6 +286,9 @@ function try_attachment_get($page_name, $file_name) {
     if (!$attach) {
         die_http_error();
     }
+    if (!identity_can('attach-download', $attach)) {
+        die_http_error();
+    }
 
     $real_name = attachment_get_filepath($attach);
     if (!file_exists($real_name)) {
@@ -298,9 +301,6 @@ function try_attachment_get($page_name, $file_name) {
 // download an attachment
 function controller_attachment_download($page_name, $file_name) {
     $attach = try_attachment_get($page_name, $file_name);
-    if (!identity_can('attach-download', $attach)) {
-        die_http_error();
-    }
 
     // serve attachment with proper mime types
     serve_attachment(attachment_get_filepath($attach), $file_name, $attach['mime_type']);

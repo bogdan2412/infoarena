@@ -29,17 +29,13 @@ include('views/header.php');
         <span class="fieldHelp"><a href="' . url('textile') . '">Cum formatez text?</a></span>
     </li>
 
+    <?php if (array_key_exists('security', $form_values)) { ?>
     <li id="field_security">
         <label for="form_security">Nivel de securitate al paginii:</label>
-<!--        <select name="security" id="form_security">
-            <option value="public">Public</option>
-            <option value="protected">Protejat</option>
-            <option value="private">Privat</option>
-            <option value="complex">Complex...</option>
-        </select>-->
         <input type="text" name="security" value="<?= fval('security') ?>" id="form_security"/>
         <?= ferr_span('security') ?>
     </li>
+    <?php } ?>
 
     <li id="field_submit">
         <input type="submit" value="Salveaza" id="form_submit" class="button important" />

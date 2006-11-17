@@ -10,7 +10,7 @@ log_print("- -- --- ---- ----- Request: ".$_SERVER['QUERY_STRING']);
 check_requirements();
 
 require_once(IA_ROOT . "common/db/db.php");
-require_once(IA_ROOT . "common/permissions.php");
+require_once(IA_ROOT . "common/security.php");
 
 require_once("utilities.php");
 require_once("identity.php");

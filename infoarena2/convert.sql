@@ -1,4 +1,6 @@
-# This script is for anti-magic conversion.
+# This script converts db.sql to the current schema. This way don't have
+# to update db.sql all the time.
+# Run with -f to ignore errors.
 
 ALTER TABLE `ia_task` 
     ADD `title` VARCHAR( 64 ) NOT NULL ,
@@ -13,6 +15,8 @@ ALTER TABLE `ia_textblock`
 
 ALTER TABLE `ia_textblock_revision` 
     ADD `security` VARCHAR( 64 ) NOT NULL ;
+
+ALTER TABLE `ia_round` CHANGE `active` `hidden` TINYINT( 4 ) NOT NULL DEFAULT '0';
 
 UPDATE `ia_task` SET `page_name` = CONCAT('task/', `id`);
 UPDATE `ia_task` 

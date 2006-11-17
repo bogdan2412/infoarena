@@ -32,13 +32,12 @@ function identity_anonymous($identity = null) {
 // a given action (onto an object)
 // This is a wrapper for the more-generic, session-independent permission
 // module.
-function identity_can($action, $ontoObject = null, $identity = null) {
+function identity_can($action, $object = null, $identity = null) {
     if (is_null($identity)) {
         global $identity_user;
         $identity = $identity_user;
     }
-
-    return permission_query($identity, $action, $ontoObject);
+    return security_query($identity, $action, $object);
 }
 
 // This function is similar to identity_can(), except that it automatically
