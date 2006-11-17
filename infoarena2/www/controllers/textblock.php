@@ -86,7 +86,7 @@ function controller_textblock_restore_revision($page_name, $rev_num) {
         flash_error("Revizia nu exista!");
         redirect(url($page_name));
     }
-    
+
     textblock_add_revision($rev['name'], $rev['title'], $rev['text'],
                            getattr($identity_user, 'id'));
     redirect(url($page_name));

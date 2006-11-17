@@ -21,7 +21,7 @@ function controller_json($suburl) {
             log_assert($textblock, 'Invalid textblock identifier');
 
             // check permissions & generate mark-up
-            if (!textblock_get_permission('view', $textblock)) {
+            if (!identity_can('textblock-view', $textblock)) {
                 $output = 'Not enough privileges to preview this page';
             }
             else {

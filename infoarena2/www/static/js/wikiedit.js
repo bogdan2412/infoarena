@@ -29,12 +29,9 @@ function WikiEdit_Preview() {
 
     // visual clue to indicate that preview is loading
     container.innerHTML = '<div class="loading"> <img src="' + BASE_HREF + 'static/images/indicator.gif" />Se incarca ...</div>';
+    container.style.display = '';
 
     // request preview
-    // :TODO: some web servers and proxies limit GET requests to a maximum
-    // size. This should really be POST-ed. Perhaps when MochiKit starts
-    // supporting loadJSONDoc via POST?
-    // var d = loadJSONDoc(BASE_HREF + 'json/wiki-preview?page_name=' + escape(page_name.value) + '&content=' + escape(content.value));
     var d = doXHR(BASE_HREF + 'json/wiki-preview?page_name=' + escape(page_name.value), {method: 'POST', sendContent: content.value});
 
     var ready = function(xhr) {
