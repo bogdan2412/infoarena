@@ -88,7 +88,7 @@ function controller_textblock_restore_revision($page_name, $rev_num) {
     }
 
     textblock_add_revision($rev['name'], $rev['title'], $rev['text'],
-                           getattr($identity_user, 'id'));
+                           getattr($identity_user, 'id'), $rev['security']);
     redirect(url($page_name));
 }
 
