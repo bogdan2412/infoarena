@@ -26,12 +26,13 @@ include('views/header.php');
         <label for="form_content">Continut</label>
         <textarea name="content" id="form_content" rows="10" cols="50"><?= fval('content') ?></textarea>
         <?= ferr_span('content') ?>
-        <span class="fieldHelp"><a href="' . url('textile') . '">Cum formatez text?</a></span>
+        <span class="fieldHelp"><a href="' . url('docs/textile') . '">Cum formatez text?</a></span>
     </li>
 
     <?php if (array_key_exists('security', $form_values)) { ?>
     <li id="field_security">
         <label for="form_security">Nivel de securitate al paginii:</label>
+	<span class="fieldHelp"><a href="' . url('docs/security_levels') . '">(?)</a></span>
         <input type="text" name="security" value="<?= fval('security') ?>" id="form_security"/>
         <?= ferr_span('security') ?>
     </li>
