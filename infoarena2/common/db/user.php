@@ -6,23 +6,42 @@ require_once("db.php");
  * User-related functions.
  */
 
+// Password hash function. Must be compatible with SMF.
+//
+// Also takes into account user name so that users
+// sharing the same password can't be detected
+function user_hash_password($password, $username) {
+    return sha1(strtolower($username).$password);
+}
+
 // Test password in IA1 format.
 function user_test_ia1_password($username, $password) {
+    // old ia1 users are expected to have the ia1 hashed password
+    // as their actual password
+    $password = db_query_value(sprintf("SELECT PASSWORD('%s')",
+                                       db_escape($password)));
+    // hash password ia2 style
+    $password = user_hash_password($password, $username);
+    // test
     $query = sprintf("SELECT *
                       FROM ia_user
                       WHERE LCASE(username) = LCASE('%s') AND
-                        SHA1(PASSWORD('%s')) = `password`",
+                            '%s' = `password`",
                      db_escape($username), db_escape($password));
     return db_fetch($query);
 }
 
 // Check user's password
 function user_test_password($username, $password) {
+    // hash password
+    $password = user_hash_password($password, $username);
+    // test
     $query = sprintf("SELECT *
                       FROM ia_user
-                      WHERE LCASE(username) = LCASE('%s') AND
-                        SHA1('%s') = `password`",
-                     db_escape($username), db_escape($password));
+                      WHERE LCASE(username) = LCASE('%s')
+                            AND '%s' = `password`",
+                     db_escape($username),
+                     db_escape($password));
     return db_fetch($query);
 }
 
@@ -62,11 +81,10 @@ function user_create($data) {
     $query .= ') VALUES (';
     foreach ($data as $key => $val) {
         if ($key == 'password') {
-            $query .= "SHA1('" . db_escape($val) . "'),";
+            $val = user_hash_password($val, $data['username']);
         }
-        else {
-            $query .= "'" . db_escape($val) . "',";
-        }
+
+        $query .= "'" . db_escape($val) . "',";
     }
     $query = substr($query, 0, strlen($query)-1); // delete last ,
     $query .= ')';
@@ -83,7 +101,8 @@ function user_create($data) {
     log_assert($template, 'Could not find template for new user: template/newuser');
     $title = str_replace('%user_id%', $new_user['username'], $template['title']);
     $content = str_replace('%user_id%', $new_user['username'], $template['text']);
-    textblock_add_revision('user/'.$new_user['username'], $title, $content, $new_user['id']);
+    textblock_add_revision('user/'.$new_user['username'], $title, $content,
+                           $new_user['id'], $security = '');
 
     return $new_user;
 }
@@ -94,17 +113,14 @@ function user_update($data, $id) {
     $query = "UPDATE ia_user SET ";
     foreach ($data as $key => $val) {
         if ($key == 'password') {
-            $query .= "`" . $key . "`=SHA1('" . db_escape($val) . "'),";
+            $val = user_hash_password($val, $data['username']);
         }
-        else {
-            $query .= "`" . $key . "`='" . db_escape($val) . "',";
-        }
+        $query .= "`" . $key . "`='" . db_escape($val) . "',";
     }
     $query = substr($query, 0, strlen($query)-1); // delete last ,
     $query .= " WHERE `id` = '" . db_escape($id) . "'";
 
-//    print $query; // debug info
     return db_query($query);
 }
 
-
+?>

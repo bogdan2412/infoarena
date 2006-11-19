@@ -60,10 +60,18 @@ function controller_register($suburl)
 
         // 2. process
         if (!$errors) {
-            // add user to database
+            // create database entry for user
             $qdata = $data;
             unset($qdata['password2']); // don't want to add this to db
-            if (user_create($qdata)) {
+            $ia_user = user_create($qdata);
+
+            if ($ia_user) {
+                // also create SMF user
+                require_once('smf.php');
+                $smf_id = smf_create_user($ia_user);
+                log_assert($smf_id, "SMF user for {$ia_user['username']} "
+                                    ."was not created.");
+
                 // redirect to login
                 flash("Ai fost inregistrat. Acum te rugam sa te autentifici.");
                 redirect(url("login"));
@@ -86,4 +94,5 @@ function controller_register($suburl)
     $view['form_values'] = $data;
     execute_view_die('views/profile.php', $view);
 }
+
 ?>

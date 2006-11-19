@@ -35,7 +35,7 @@ function db_query($query) {
 
 // Executes SQL query and returns value of the first column in the first
 // result row.
-// When query returns no results, it returns $default_value 
+// When query returns no results, it returns $default_value
 //
 // WARNING: This function asserts there is at most 1 result row and 1 column.
 function db_query_value($query, $default_value = null) {
@@ -55,9 +55,11 @@ function db_query_value($query, $default_value = null) {
     return $row[0];
 }
 
-// Executes SQL insert statement; wrapper for db_query
+// Executes SQL INSERT statement (wrapper for db_query)
 // Returns last SQL insert id
-// $table   SQL table name 
+
+// Arguments:
+// $table   SQL table name
 // $values  dictionary of fields to insert
 //
 // Example:
@@ -88,7 +90,7 @@ function db_insert($table, $dict) {
     $query .= "`) VALUES ('";
     $query .= join("', '", array_map('db_escape', array_values($dict)));
     $query .= "')";
- 
+
     db_query($query);
 
     return mysql_insert_id($dbLink);
