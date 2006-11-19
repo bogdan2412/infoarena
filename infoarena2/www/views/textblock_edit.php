@@ -31,7 +31,8 @@ include('views/header.php');
 
     <?php if (array_key_exists('security', $form_values)) { ?>
     <li id="field_security">
-        <label for="form_security">Nivel de securitate al paginii:</label> <a href="<?=  url('docs/security_levels') ?>">(?)</a>
+        <label for="form_security">Nivel de securitate al paginii: <a href="<?=  url('docs/security_levels') ?>">(?)</a></label> 
+
         <input type="text" name="security" value="<?= fval('security') ?>" id="form_security"/>
         <?= ferr_span('security') ?>
     </li>
