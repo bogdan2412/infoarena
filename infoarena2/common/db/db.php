@@ -33,9 +33,41 @@ function db_query($query) {
     return $result;
 }
 
+// Executes query, fetches only FIRST result row
+function db_fetch($query) {
+    global $dbLink;
+    $result = db_query($query);
+    if ($result) {
+        $row = mysql_fetch_assoc($result);
+        if ($row === false) {
+            return null;
+        }
+        return $row;
+    }
+    else {
+        return null;
+    }
+}
+
+// Executes query, fetches the all result rows
+function db_fetch_all($query) {
+    global $dbLink;
+    $result = db_query($query);
+    if ($result) {
+        $buffer = array();
+        while ($row = mysql_fetch_assoc($result)) {
+            $buffer[] = $row;
+        }
+        return $buffer;
+    }
+    else {
+        return null;
+    }
+}
+
 // Executes SQL query and returns value of the first column in the first
 // result row.
-// When query returns no results, it returns $default_value
+// When query yields no results, it returns $default_value
 //
 // WARNING: This function asserts there is at most 1 result row and 1 column.
 function db_query_value($query, $default_value = null) {
@@ -57,10 +89,10 @@ function db_query_value($query, $default_value = null) {
 
 // Executes SQL INSERT statement (wrapper for db_query)
 // Returns last SQL insert id
-
+//
 // Arguments:
 // $table   SQL table name
-// $values  dictionary of fields to insert
+// $dict    dictionary of fields to insert
 //
 // Example:
 // $user = array(
@@ -96,36 +128,61 @@ function db_insert($table, $dict) {
     return mysql_insert_id($dbLink);
 }
 
-// Executes query, fetches only FIRST result
-function db_fetch($query) {
+// Executes SQL UPDATE statement (wrapper for db_query)
+// Returns number of affected rows
+//
+// PHP null values are expanded to SQL NULL
+//
+// Arguments:
+// $table   SQL table name
+// $dict    dictionary of fields to update
+// $where   pre-escaped WHERE clause to be inserted inline
+//
+// Example:
+// $user = array(
+//      'full_name' => 'Gigi Kent',
+//      'password' => 'xxx'
+// );
+// db_update('user', $user, "username='wickedman'");
+//
+// will execute:
+// UPDATE `user`
+// SET `full_name` = 'Gigi Kent', `password` = 'xxx'
+// WHERE username='wickedman'
+function db_update($table, $dict, $where = null) {
     global $dbLink;
-    $result = db_query($query);
-    if ($result) {
-        $row = mysql_fetch_assoc($result);
-        if ($row === false) {
-            return null;
-        }
-        return $row;
-    }
-    else {
-        return null;
-    }
-}
 
-// Executes query, fetches the whole result
-function db_fetch_all($query) {
-    global $dbLink;
-    $result = db_query($query);
-    if ($result) {
-        $buffer = array();
-        while ($row = mysql_fetch_assoc($result)) {
-            $buffer[] = $row;
+    // fail safe
+    log_assert(1 <= count($dict), 'db_update() called with empty $dict');
+
+    // build query
+    $table = db_escape($table);
+    $query = "UPDATE `{$table}`\nSET ";
+    $first = true;
+    foreach ($dict as $k => $v) {
+        //  - comma
+        if (!$first) {
+            $query .= ', ';
         }
-        return $buffer;
+        $first = false;
+
+        //  - field-value pair
+        if (is_null($v)) {
+            $v = 'NULL';
+        }
+        else {
+            $v = "'".db_escape($v)."'";
+        }
+        $query .= "`{$k}` = {$v}";
     }
-    else {
-        return null;
+    //  - WHERE clause
+    if (!is_null($where)) {
+        $query .= " WHERE ".$where;
     }
+
+    db_query($query);
+
+    return mysql_affected_rows($dbLink);
 }
 
 // Include actual db functions.

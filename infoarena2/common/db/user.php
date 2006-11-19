@@ -107,7 +107,8 @@ function user_create($data) {
     return $new_user;
 }
 
-// Update user infos.
+// Update user information.
+// NOTE: When updating password, it is mandatory that you also specify username
 function user_update($data, $id) {
     global $dbLink;
     $query = "UPDATE ia_user SET ";

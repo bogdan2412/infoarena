@@ -58,33 +58,42 @@ function controller_profile($suburl) {
             $errors['lines_per_page'] = 'Minim 5 linii per pagina';
             $errors['active_tab'] = 'profileData';
         }
-        
-        if (0 != strlen($data['password']) ||
-            $data['email'] != $identity_user['email']) {
-            $errors_count = count($errors);
+
+        // changing e-mail address or specifying new password forces user
+        // to enter enter current password
+        if ($identity_user['email'] != $data['email'] || $data['password']) {
+            if (!$data['password_old']) {
+                $errors['password_old'] = 'Va rugam sa introduceti parola '
+                                          .'curenta pentru a schimba adresa '
+                                          .'de e-mail.';
+            }
+        }
+
+        // validate email
+        if ($identity_user['email'] != $data['email']) {
+            if (!preg_match('/[^@]+@.+\..+/', $data['email'])) {
+                $errors['email'] = 'Adresa de e-mail invalida';
+            }
+            elseif (user_get_by_email($data['email'])) {
+                $errors['email'] = 'Email deja existent';
+            }
+        }
+
+        // validate current password
+        if ($data['password_old']) {
             if (!user_test_password($identity_user['username'],
                                     $data['password_old'])) {
-                $errors['password_old'] = 'Parola veche nu este buna';
+                $errors['password_old'] = 'Parola curenta nu este buna';
             }
-            if (0 != strlen($data['password']))
-            {
-                if (4 >= strlen(trim($data['password']))) {
-                    $errors['password'] = 'Parola este prea scurta';
-                }
-                elseif ($data['password'] != $data['password2']) {
-                    $errors['password2'] = 'Parolele nu coincid';
-                }
+        }
+
+        // validate new password and confirmation field
+        if ($data['password']) {
+            if (4 >= strlen(trim($data['password']))) {
+                $errors['password'] = 'Parola noua este prea scurta';
             }
-            if ($data['email'] != $identity_user['email']) {
-                if (!preg_match('/[^@]+@.+\..+/', $data['email'])) {
-                    $errors['email'] = 'Adresa de e-mail invalida';
-                }
-                elseif (user_get_by_email($data['email'])) {
-                    $errors['email'] = 'Email deja existent';
-                }
-            }
-            if ($errors_count < count($errors)) {
-                $errors['active_tab'] = 'generalData';
+            elseif ($data['password'] != $data['password2']) {
+                $errors['password2'] = 'Parolele nu coincid';
             }
         }
 
@@ -137,25 +146,39 @@ function controller_profile($suburl) {
                         $errors['avatar'] = 'Fisierul nu a putut fi incarcat pe server.'; 
                     }
                 }
-                
+
                 if ($errors) {
                     $view['active_tab'] = 'profileData';
                     flash_error("Eroare la uploadul avatarului");
                     redirect(url(""));
                 }
             }
-            
+
             // modify user in database
             if (0 == strlen($qdata['password'])) {
                 unset($qdata['password']);
             }
+            else {
+                // when updating user password, it is mandatory to also specify
+                // username
+                $qdata['username'] = $identity_user['username'];
+            }
+            // trim unwanted/invalid fields
             unset($qdata['password2']);
             unset($qdata['password_old']);
             unset($qdata['avatar_size']);
+            // update
             if (user_update($qdata, $identity_user['id'])) {
+                $new_user = user_get_by_id($identity_user['id']);
+
+                // propagate changes to SMF
+                require_once('smf.php');
+                smf_update_user($new_user);
+
                 // force reload of user info
-                $identity_user = user_get_by_id($identity_user['id']);
+                $identity_user = $new_user;
                 identity_start_session($identity_user);
+
                 // redirect to home
                 flash("Modificarile de profil au fost efectuate cu succes.");
                 redirect(url(""));
@@ -174,7 +197,7 @@ function controller_profile($suburl) {
         if (0 == $data['birthday']) {
             unset($data['birthday']);
         }
-        
+ 
         unset($data['id']);
         unset($data['username']);
         unset($data['password']);
@@ -195,4 +218,5 @@ function controller_profile($suburl) {
     $view['form_values'] = $data;
     execute_view_die('views/profile.php', $view);
 }
+
 ?>

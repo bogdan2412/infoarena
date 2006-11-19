@@ -35,8 +35,8 @@ function controller_reset_pass($suburl) {
 
         if (isset($user) && $user) { // user found
             // reset password
-            $cpass = md5($user['password']);
-            
+            $cpass = sha1($user['password']);
+
             // email user
             $to = $user['email'];
             $subject = 'Recupereaza nume utilizator si parola de pe infoarena';
@@ -64,10 +64,20 @@ function controller_reset_pass($suburl) {
         $cpass = getattr($_GET, 'cpass');
         if ($username) {
             $user = user_get_by_username($username);
-            if ($user && md5($user['password']) == $cpass) {
+            if ($user && sha1($user['password']) == $cpass) {
                 // all seems to be ok, reset pass and email user
                 $new_password = mt_rand(1000000, 9999999);
-                user_update(array('password' => $new_password), $user['id']);
+
+                // update user
+                $fields = array(
+                    'password' => $new_password,
+                    'username' => $user['username']
+                );
+                user_update($fields, $user['id']);
+
+                // also update SMF user entry
+                require_once('smf.php');
+                smf_update_user(user_get_by_id($user['id']));
 
                 // send email with new password
                 $to = $user['email'];
