@@ -1,12 +1,12 @@
 /* Normal, standard links. */
 a:link
 {
-	color: #476C8E;
+	color: #478E6C;
 	text-decoration: none;
 }
 a:visited
 {
-	color: #476C8E;
+	color: #478E6C;
 	text-decoration: none;
 }
 a:hover
@@ -43,9 +43,9 @@ body, td, th , tr
 /* The main body of the entire forum. */
 body
 {
-	background-color: #E5E5E8;
+	background-color: #E5E8E5;
 	margin: 0px;
-	padding: 12px 30px 4px 30px;
+	padding: 0 30px 4px 30px;
 }
 
 /* Input boxes - just a bit smaller than normal so they align well. */
@@ -97,7 +97,7 @@ border: 0;
 .quote
 {
 	color: #000000;
-	background-color: #D7DAEC;
+	background-color: #D7ECDA;
 	border: 1px solid #000000;
 	margin: 1px;
 	padding: 1px;
@@ -166,7 +166,7 @@ border: 0;
 .windowbg
 {
 	color: #000000;
-	background-color: #ECEDF3;
+	background-color: #ECF3ED;
 }
 .windowbg2
 {
@@ -176,7 +176,7 @@ border: 0;
 .windowbg3
 {
 	color: #000000;
-	background-color: #E0E1E8;
+	background-color: #E0E8E1;
 }
 /* the today container in calendar */
 .calendar_today
@@ -219,6 +219,44 @@ border: 0;
 	text-decoration: underline;
 }
 
+/* header logo */
+#header {
+    background: url('images/logo_bg.jpg') repeat-x left top;
+    height: 64px;
+    border-bottom: 1px solid black;
+}
+
+#header h1 {
+    font-size: 0;
+    text-indent: -1000pt;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+}
+
+#header h1 a {
+    background:url('images/logo.jpg') no-repeat left top;
+    height: 55px;
+    width: 300px;
+    text-indent:-1000pt;
+    display: block;
+    margin: 0;
+}
+
+/* search box inside header */
+#header #search {
+    float:right;
+    padding: 12px 15px;
+    background:#5C880B url('images/search_bg.jpg') no-repeat bottom left;
+}
+
+#header #search input {
+    vertical-align:middle;
+}
+
+#header #search #inputbox {
+    width:120px;
+}
 /* This is used for categories, page indexes, and several other areas in the forum.
 .catbg and .catbg2 is for boardindex, while .catbg3 is for messageindex and display headers*/
 .catbg , tr.catbg td , .catbg3 , tr.catbg3 td

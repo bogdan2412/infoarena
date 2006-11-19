@@ -1,4 +1,7 @@
 <?php
+
+// Hacked template to integrate in info-arena 2 
+
 // Version: 1.1 RC3; index
 
 /*	This template is, perhaps, the most important template in the theme. It
@@ -167,29 +170,36 @@ function template_main_above()
 </head>
 <body>';
 
-	echo '
-	<div class="tborder" ', $context['browser']['needs_size_fix'] && !$context['browser']['is_ie6'] ? ' style="width: 100%;"' : '', '>
-		<table width="100%" cellpadding="0" cellspacing="0" border="0">
-			<tr>
-				<td class="catbg" height="32">';
+?>
+<div id="header">
+    <div id="search">
+        <form action="<?= $scripturl.'?action=search2' ?>" method="post" accept-charset="<?= $context['character_set'] ?>" style="margin: 0;">
+            <a href="<?= $scripturl.'?action=search;advanced'?>"><img src="<?= $settings['images_url'].'/filter.gif' ?>" align="middle" style="margin: 0 1ex;" alt="" /></a>
+            <input type="text" name="search" value="" id="inputbox" />&nbsp;
+            <input type="submit" name="submit" value="<?= $txt[182] ?>" />
+            <input type="hidden" name="advanced" value="0" />
 
-	if (empty($settings['header_logo_url']))
-		echo '
-					<span style="font-family: Verdana, sans-serif; font-size: 140%; ">', $context['forum_name'], '</span>';
-	else
-		echo '
-					<img src="', $settings['header_logo_url'], '" style="margin: 4px;" alt="', $context['forum_name'], '" />';
+<?php
+    // Search within current topic?
+    if (!empty($context['current_topic'])) {
+        echo '<input type="hidden" name="topic" value="', $context['current_topic'], '" />';
+    }
 
-	echo '
-				</td>
-				<td align="right" class="catbg">
-					<img src="', $settings['images_url'], '/smflogo.gif" style="margin: 2px;" alt="" />
-				</td>
-			</tr>
-		</table>';
+    // If we're on a certain board, limit it to this board ;).
+    elseif (!empty($context['current_board'])) {
+        echo '<input type="hidden" name="brd[', $context['current_board'], ']" value="', $context['current_board'], '" />';
+    }
+?>
+        </form>
+    </div>
+
+    <h1><a href="<?= $scripturl ?>">info-arena forum</a></h1>
+</div>
+
+<?php
 
 
-	// display user name
+	/*// display user name
 	echo '
 		<table width="100%" cellpadding="0" cellspacing="0" border="0" >
 			<tr>';
@@ -294,7 +304,9 @@ function template_main_above()
 				</td>
 			</tr>
 		</table>';
+    */
 
+    /*
 	echo '
 		<table id="upshrinkHeader2"', empty($options['collapse_header']) ? '' : ' style="display: none;"', ' width="100%" cellpadding="4" cellspacing="0" border="0">
 			<tr>';
@@ -329,7 +341,7 @@ function template_main_above()
 			</tr>
 		</table>
 	</div>';
-
+    */
 
 	// Show the menu here, according to the menu sub template.
 	template_menu();
@@ -360,15 +372,11 @@ function template_main_below()
 		<table cellspacing="0" cellpadding="3" border="0" align="center" width="100%">
 			<tr>
 				<td width="28%" valign="middle" align="', !$context['right_to_left'] ? 'right' : 'left', '">
-					<a href="http://www.mysql.com/" target="_blank"><img id="powered-mysql" src="', $settings['images_url'], '/powered-mysql.gif" alt="', $txt['powered_by_mysql'], '" width="54" height="20" style="margin: 5px 16px;" onmouseover="smfFooterHighlight(this, true);" onmouseout="smfFooterHighlight(this, false);" /></a>
-					<a href="http://www.php.net/" target="_blank"><img id="powered-php" src="', $settings['images_url'], '/powered-php.gif" alt="', $txt['powered_by_php'], '" width="54" height="20" style="margin: 5px 16px;" onmouseover="smfFooterHighlight(this, true);" onmouseout="smfFooterHighlight(this, false);" /></a>
 				</td>
 				<td valign="middle" align="center" style="white-space: nowrap;">
 					', theme_copyright(), '
 				</td>
 				<td width="28%" valign="middle" align="', !$context['right_to_left'] ? 'left' : 'right', '">
-					<a href="http://validator.w3.org/check/referer" target="_blank"><img id="valid-xhtml10" src="', $settings['images_url'], '/valid-xhtml10.gif" alt="', $txt['valid_xhtml'], '" width="54" height="20" style="margin: 5px 16px;" onmouseover="smfFooterHighlight(this, true);" onmouseout="smfFooterHighlight(this, false);" /></a>
-					<a href="http://jigsaw.w3.org/css-validator/check/referer" target="_blank"><img id="valid-css" src="', $settings['images_url'], '/valid-css.gif" alt="', $txt['valid_css'], '" width="54" height="20" style="margin: 5px 16px;" onmouseover="smfFooterHighlight(this, true);" onmouseout="smfFooterHighlight(this, false);" /></a>
 				</td>
 			</tr>
 		</table>';

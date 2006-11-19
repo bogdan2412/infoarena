@@ -78,7 +78,7 @@ $txt[97] = 'Creează un cont';
 
 $txt[101] = 'Index-ul mesajului';
 $txt[102] = 'Noutaţi';
-$txt[103] = 'Pagina principală';
+$txt[103] = 'Forum Home';
 
 $txt[104] = 'Blochează/Deblochează subiectul';
 $txt[105] = 'Mesaj';
@@ -124,7 +124,7 @@ $txt[167] = 'Căutărea este terminată';
 $txt[170] = 'Nu există nici un rezultat';
 $txt[176] = 'din';
 
-$txt[182] = 'Caută';
+$txt[182] = 'Caută în forum';
 $txt[190] = 'Toate';
 
 $txt[193] = 'Inapoi';
