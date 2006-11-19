@@ -95,7 +95,7 @@ function security_textblock($user, $action, $textblock) {
         case 'textblock-create': 
         case 'textblock-restore':
             if ($textsec == 'public') {
-                return true;
+                return $usersec != 'anonymous';
             } else {
                 return $usersec == 'admin';
             }
