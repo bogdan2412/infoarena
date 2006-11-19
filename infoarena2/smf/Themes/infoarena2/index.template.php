@@ -63,6 +63,7 @@ function template_init()
 function template_main_above()
 {
 	global $context, $settings, $options, $scripturl, $txt, $modSettings;
+    global $infoarenaurl;
 
 	// Show right to left and the character set for ease of translating.
 	echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -193,7 +194,7 @@ function template_main_above()
         </form>
     </div>
 
-    <h1><a href="<?= $scripturl ?>">info-arena forum</a></h1>
+    <h1><a href="<?= $infoarenaurl ?>">info-arena forum</a></h1>
 </div>
 
 <?php
@@ -355,6 +356,7 @@ function template_main_above()
 function template_main_below()
 {
 	global $context, $settings, $options, $scripturl, $txt;
+    global $infoarenaurl;
 
 	echo '
 	</div>';
@@ -374,6 +376,7 @@ function template_main_below()
 				<td width="28%" valign="middle" align="', !$context['right_to_left'] ? 'right' : 'left', '">
 				</td>
 				<td valign="middle" align="center" style="white-space: nowrap;">
+                    <p class="copy">&copy; asociatia <a href="', $infoarenaurl, '/Despre">asociatia info-arena</a></p>
 					', theme_copyright(), '
 				</td>
 				<td width="28%" valign="middle" align="', !$context['right_to_left'] ? 'left' : 'right', '">
@@ -476,6 +479,7 @@ function theme_linktree()
 function template_menu()
 {
 	global $context, $settings, $options, $scripturl, $txt;
+    global $infoarenaurl;
 
 	// Work out where we currently are.
 	$current_action = 'home';
@@ -506,38 +510,17 @@ function template_menu()
 				<tr>
 					<td class="maintab_' , $first , '">&nbsp;</td>';
 
+	// Main website (info-arena) button
+    echo '
+				<td valign="top" class="maintab_back' , '">
+					<strong><a href="', $infoarenaurl , '">info-arena</a></strong>
+				</td>';
+
 	// Show the [home] button.
 	echo ($current_action=='home' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
 				<td valign="top" class="maintab_' , $current_action == 'home' ? 'active_back' : 'back' , '">
 					<a href="', $scripturl, '">' , $txt[103] , '</a>
 				</td>' , $current_action == 'home' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
-
-	// Show the [help] button.
-	echo ($current_action == 'help' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
-				<td valign="top" class="maintab_' , $current_action == 'help' ? 'active_back' : 'back' , '">
-					<a href="', $scripturl, '?action=help">' , $txt[119] , '</a>
-				</td>' , $current_action == 'help' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
-
-	// How about the [search] button?
-	if ($context['allow_search'])
-		echo ($current_action == 'search' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
-				<td valign="top" class="maintab_' , $current_action == 'search' ? 'active_back' : 'back' , '">
-					<a href="', $scripturl, '?action=search">' , $txt[182] , '</a>
-				</td>' , $current_action == 'search' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
-
-	// Is the user allowed to administrate at all? ([admin])
-	if ($context['allow_admin'])
-		echo ($current_action == 'admin' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
-				<td valign="top" class="maintab_' , $current_action == 'admin' ? 'active_back' : 'back' , '">
-					<a href="', $scripturl, '?action=admin">' , $txt[2] , '</a>
-				</td>' , $current_action == 'admin' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
-
-	// Edit Profile... [profile]
-	if ($context['allow_edit_profile'])
-		echo ($current_action == 'profile' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
-				<td valign="top" class="maintab_' , $current_action == 'profile' ? 'active_back' : 'back' , '">
-					<a href="', $scripturl, '?action=profile">' , $txt[79] , '</a>
-				</td>' , $current_action == 'profile' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
 
 	// Go to PM center... [pm]
 	if ($context['user']['is_logged'] && $context['allow_pm'])
@@ -553,28 +536,61 @@ function template_menu()
 					<a href="', $scripturl, '?action=calendar">' , $txt['calendar24'] , '</a>
 				</td>' , $current_action == 'calendar' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
 
+    /* No search button. There's already a big omni-present search box
+	// How about the [search] button?
+	if ($context['allow_search'])
+		echo ($current_action == 'search' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
+				<td valign="top" class="maintab_' , $current_action == 'search' ? 'active_back' : 'back' , '">
+					<a href="', $scripturl, '?action=search">' , $txt[182] , '</a>
+				</td>' , $current_action == 'search' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
+    */
+
+    /*
 	// the [member] list button
 	if ($context['allow_memberlist'])
 		echo ($current_action == 'mlist' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
 				<td valign="top" class="maintab_' , $current_action == 'mlist' ? 'active_back' : 'back' , '">
 					<a href="', $scripturl, '?action=mlist">' , $txt[331] , '</a>
 				</td>' , $current_action == 'mlist' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
+    */
 
+	// Is the user allowed to administrate at all? ([admin])
+	if ($context['allow_admin'])
+		echo ($current_action == 'admin' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
+				<td valign="top" class="maintab_' , $current_action == 'admin' ? 'active_back' : 'back' , '">
+					<a href="', $scripturl, '?action=admin">' , $txt[2] , '</a>
+				</td>' , $current_action == 'admin' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
+
+	// Edit Profile... [profile]
+	if ($context['allow_edit_profile'])
+		echo ($current_action == 'profile' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
+				<td valign="top" class="maintab_' , $current_action == 'profile' ? 'active_back' : 'back' , '">
+					<a href="', $infoarenaurl, '/profile">' , $txt[79] , '</a>
+				</td>' , $current_action == 'profile' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
 
 	// If the user is a guest, show [login] button.
+    // Sends user to info-arena login page
 	if ($context['user']['is_guest'])
 		echo ($current_action == 'login' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
 				<td valign="top" class="maintab_' , $current_action == 'login' ? 'active_back' : 'back' , '">
-					<a href="', $scripturl, '?action=login">' , $txt[34] , '</a>
+					<a href="', $infoarenaurl, '/login">' , $txt[34] , '</a>
 				</td>' , $current_action == 'login' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
 
 
-	// If the user is a guest, also show [register] button.
+    // Display a registration link
+    // Sends user to info-arena registration page
 	if ($context['user']['is_guest'])
 		echo ($current_action == 'register' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
 				<td valign="top" class="maintab_' , $current_action == 'register' ? 'active_back' : 'back' , '">
-					<a href="', $scripturl, '?action=register">' , $txt[97] , '</a>
+					<a href="', $infoarenaurl, '/register">' , $txt[97] , '</a>
 				</td>' , $current_action == 'register' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
+
+
+	// Show the [help] button.
+	echo ($current_action == 'help' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
+				<td valign="top" class="maintab_' , $current_action == 'help' ? 'active_back' : 'back' , '">
+					<a href="', $scripturl, '?action=help">' , $txt[119] , '</a>
+				</td>' , $current_action == 'help' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
 
 
 	// Otherwise, they might want to [logout]...

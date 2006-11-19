@@ -400,6 +400,7 @@ function template_main()
 					</td>
 				</tr>';
 
+    /*
 	// If they are logged in, but SP1 style information is off... show a personal message bar.
 	if ($context['user']['is_logged'] && !$settings['show_sp1_info'])
 	{
@@ -457,6 +458,7 @@ function template_main()
 					</td>
 				</tr>';
 	}
+    */
 
 	echo '
 			</table>

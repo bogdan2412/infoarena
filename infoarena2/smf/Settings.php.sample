@@ -49,8 +49,14 @@ $mmessage = 'Okay faithful users...we\'re attempting to restore an older backup 
 $mbname = 'info-arena';		# The name of your forum.
 $language = 'english';		# The default language file set for the forum.
 
+// URL to info-arena website
+// example: http://localhost/infoarena
+$infoarena = '--edit-me--';
+
 // example: http://localhost/smf_infoarena
-$boardurl = '--edit-me--';		# URL to your forum's folder. (without the trailing /!)
+$boardurl = '--edit-me--';
+
+
 $webmaster_email = 'strat.cristian@gmail.com';		# Email address to send emails from. (like noreply@yourdomain.com.)
 $cookiename = 'SMFCookie360';		# Name of the cookie to set for authentication.
 

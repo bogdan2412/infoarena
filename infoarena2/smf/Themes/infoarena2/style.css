@@ -257,6 +257,12 @@ border: 0;
 #header #search #inputbox {
     width:120px;
 }
+
+/* copyright fineprint */
+p.copy {
+    font-size: x-small;
+}
+
 /* This is used for categories, page indexes, and several other areas in the forum.
 .catbg and .catbg2 is for boardindex, while .catbg3 is for messageindex and display headers*/
 .catbg , tr.catbg td , .catbg3 , tr.catbg3 td
@@ -409,7 +415,7 @@ border: 0;
 
 .maintab_back a:hover, .maintab_active_back a:hover
 {
-	color: #e0e0ff;
+	color: #e0ffe0;
 	text-decoration: none;
 }
 /* definitions for the mirror tab */

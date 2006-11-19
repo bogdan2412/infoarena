@@ -231,7 +231,11 @@ function smf_main()
 		'editpoll2' => array('Poll.php', 'EditPoll2'),
 		'featuresettings' => array('ModSettings.php', 'ModifyFeatureSettings'),
 		'featuresettings2' => array('ModSettings.php', 'ModifyFeatureSettings2'),
-		'findmember' => array('Subs-Auth.php', 'JSMembers'),
+
+        // Features stripped for integration with info-arena
+		// 'findmember' => array('Subs-Auth.php', 'JSMembers'),
+		// 'mlist' => array('Memberlist.php', 'Memberlist'),
+
 		'help' => array('Help.php', 'ShowHelp'),
 		'helpadmin' => array('Help.php', 'ShowAdminHelp'),
 		'im' => array('PersonalMessage.php', 'MessageMain'),
@@ -239,9 +243,12 @@ function smf_main()
 		'jsmodify' => array('Post.php', 'JavaScriptModify'),
 		'lock' => array('LockTopic.php', 'LockTopic'),
 		'lockVoting' => array('Poll.php', 'LockVoting'),
-		'login' => array('LogInOut.php', 'Login'),
-		'login2' => array('LogInOut.php', 'Login2'),
-		'logout' => array('LogInOut.php', 'Logout'),
+
+        // Features stripped for integration with info-arena
+		//  'login' => array('LogInOut.php', 'Login'),
+		// 'login2' => array('LogInOut.php', 'Login2'),
+		// 'logout' => array('LogInOut.php', 'Logout'),
+
 		'maintain' => array('Admin.php', 'Maintenance'),
 		'manageattachments' => array('ManageAttachments.php', 'ManageAttachments'),
 		'manageboards' => array('ManageBoards.php', 'ManageBoards'),
@@ -250,7 +257,6 @@ function smf_main()
 		'markasread' => array('Subs-Boards.php', 'MarkRead'),
 		'membergroups' => array('ManageMembergroups.php', 'ModifyMembergroups'),
 		'mergetopics' => array('SplitTopics.php', 'MergeTopics'),
-		'mlist' => array('Memberlist.php', 'Memberlist'),
 		'modifycat' => array('ManageBoards.php', 'ModifyCat'),
 		'modifykarma' => array('Karma.php', 'ModifyKarma'),
 		'modlog' => array('Modlog.php', 'ViewModlog'),
@@ -269,16 +275,22 @@ function smf_main()
 		'post2' => array('Post.php', 'Post2'),
 		'postsettings' => array('ManagePosts.php', 'ManagePostSettings'),
 		'printpage' => array('Printpage.php', 'PrintTopic'),
-		'profile' => array('Profile.php', 'ModifyProfile'),
-		'profile2' => array('Profile.php', 'ModifyProfile2'),
+
+        // Features stripped for integration with info-arena
+		// 'profile' => array('Profile.php', 'ModifyProfile'),
+		// 'profile2' => array('Profile.php', 'ModifyProfile2'),
+
 		'quotefast' => array('Post.php', 'QuoteFast'),
 		'quickmod' => array('Subs-Boards.php', 'QuickModeration'),
 		'quickmod2' => array('Subs-Boards.php', 'QuickModeration2'),
 		'recent' => array('Recent.php', 'RecentPosts'),
 		'regcenter' => array('ManageRegistration.php', 'RegCenter'),
-		'register' => array('Register.php', 'Register'),
-		'register2' => array('Register.php', 'Register2'),
-		'reminder' => array('Reminder.php', 'RemindMe'),
+
+        // Features stripped for integration with info-arena
+		// 'register' => array('Register.php', 'Register'),
+		// 'register2' => array('Register.php', 'Register2'),
+		// 'reminder' => array('Reminder.php', 'RemindMe'),
+
 		'removetopic2' => array('RemoveTopic.php', 'RemoveTopic2'),
 		'removeoldtopics2' => array('RemoveTopic.php', 'RemoveOldTopics2'),
 		'removepoll' => array('Poll.php', 'RemovePoll'),
@@ -306,7 +318,10 @@ function smf_main()
 		'viewErrorLog' => array('ManageErrors.php', 'ViewErrorLog'),
 		'viewmembers' => array('ManageMembers.php', 'ViewMembers'),
 		'viewprofile' => array('Profile.php', 'ModifyProfile'),
-		'verificationcode' => array('Register.php', 'VerificationCode'),
+
+        // Feature stripped for integration with info-arena
+		// 'verificationcode' => array('Register.php', 'VerificationCode'),
+
 		'vote' => array('Poll.php', 'Vote'),
 		'viewquery' => array('ViewQuery.php', 'ViewQuery'),
 		'who' => array('Who.php', 'Who'),
