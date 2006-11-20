@@ -48,7 +48,7 @@ function smf_create_user($ia_user) {
         //'memberIP2' => '',
     );
 
-    return db_insert('ia_smf_members', $fields);
+    return db_insert(DB_SMF_PREFIX.'members', $fields);
 }
 
 // Updates SMF user information from a regular info-arena user.
@@ -93,7 +93,7 @@ function smf_update_user($ia_user) {
     );
 
     $where = sprintf("memberName='%s'", db_escape($ia_user['username']));
-    $res = db_update('ia_smf_members', $fields, $where);
+    $res = db_update(DB_SMF_PREFIX.'members', $fields, $where);
 
     log_assert(1 >= $res, "smf_update_user() affected multiple rows in table "
                           ."ia_user! Needs serious attention!");
