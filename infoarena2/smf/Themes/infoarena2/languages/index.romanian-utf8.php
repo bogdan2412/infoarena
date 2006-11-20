@@ -64,7 +64,7 @@ $txt[69] = 'Adresa de mail';
 $txt[70] = 'Titlul';
 $txt[72] = 'Mesaj';
 
-$txt[79] = 'Profil';
+$txt[79] = 'Profil pe forum';
 
 $txt[81] = 'Alege o parola';
 $txt[82] = 'Verifică parola';

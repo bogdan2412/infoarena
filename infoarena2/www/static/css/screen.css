@@ -114,8 +114,8 @@ The basic layout of the homepage is as follows:
 
 #header {
     height: 80px;
-    background:url(../images/shield_new_tile.jpg) repeat-x top left;
-    position:relative;
+    background: url(../images/shield_new_tile.jpg) repeat-x top left;
+    position: relative;
 }
 
 #content_small {

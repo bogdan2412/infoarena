@@ -40,9 +40,9 @@ function controller_login() {
             flash('Bine ati venit!');
 
             // redirect
-            if (isset($_SESSION['_redirect'])) {
-                $url = $_SESSION['_redirect'];
-                unset($_SESSION['_redirect']);
+            if (isset($_SESSION['_ia_redirect'])) {
+                $url = $_SESSION['_ia_redirect'];
+                unset($_SESSION['_ia_redirect']);
 
                 redirect(IA_URL_HOST . $url);
             }

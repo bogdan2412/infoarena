@@ -565,7 +565,7 @@ function template_menu()
 	if ($context['allow_edit_profile'])
 		echo ($current_action == 'profile' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
 				<td valign="top" class="maintab_' , $current_action == 'profile' ? 'active_back' : 'back' , '">
-					<a href="', $infoarenaurl, '/profile">' , $txt[79] , '</a>
+					<a href="', $scripturl, '?action=profile">' , $txt[79] , '</a>
 				</td>' , $current_action == 'profile' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
 
 	// If the user is a guest, show [login] button.
@@ -597,7 +597,7 @@ function template_menu()
 	if ($context['user']['is_logged'])
 		echo ($current_action == 'logout' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
 				<td valign="top" class="maintab_' , $current_action == 'logout' ? 'active_back' : 'back' , '">
-					<a href="', $scripturl, '?action=logout;sesc=', $context['session_id'], '">' , $txt[108] , '</a>
+					<a href="', $infoarenaurl, '/logout">' , $txt[108] , '</a>
 				</td>' , $current_action == 'logout' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
 
 	// The end of tab section.

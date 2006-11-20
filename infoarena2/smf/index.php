@@ -32,6 +32,7 @@
 	with the URL index.php?action=action-in-url.  Relatively simple, no?
 */
 
+
 $forum_version = 'SMF 1.1 RC3';
 
 // Get everything started up...
@@ -42,6 +43,9 @@ $time_start = microtime();
 
 // Load the settings...
 require_once(dirname(__FILE__) . '/Settings.php');
+
+// info-arena integration
+require_once(dirname(__FILE__) . '/infoarena.php');
 
 // And important includes.
 require_once($sourcedir . '/QueryString.php');
@@ -245,7 +249,7 @@ function smf_main()
 		'lockVoting' => array('Poll.php', 'LockVoting'),
 
         // Features stripped for integration with info-arena
-		//  'login' => array('LogInOut.php', 'Login'),
+		// 'login' => array('LogInOut.php', 'Login'),
 		// 'login2' => array('LogInOut.php', 'Login2'),
 		// 'logout' => array('LogInOut.php', 'Logout'),
 
@@ -277,8 +281,8 @@ function smf_main()
 		'printpage' => array('Printpage.php', 'PrintTopic'),
 
         // Features stripped for integration with info-arena
-		// 'profile' => array('Profile.php', 'ModifyProfile'),
-		// 'profile2' => array('Profile.php', 'ModifyProfile2'),
+		'profile' => array('Profile.php', 'ModifyProfile'),
+		'profile2' => array('Profile.php', 'ModifyProfile2'),
 
 		'quotefast' => array('Post.php', 'QuoteFast'),
 		'quickmod' => array('Subs-Boards.php', 'QuickModeration'),

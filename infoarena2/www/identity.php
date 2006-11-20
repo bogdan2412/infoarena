@@ -56,7 +56,7 @@ function identity_require($action, $ontoObject = null, $errorMessage = null,
         }
 
         // save current URL. We redirect to here right after logging in
-        $_SESSION['_redirect'] = $_SERVER['REQUEST_URI'];
+        $_SESSION['_ia_redirect'] = $_SERVER['REQUEST_URI'];
 
         flash_error($errorMessage);
         redirect(url('login'));
@@ -69,9 +69,9 @@ function identity_require($action, $ontoObject = null, $errorMessage = null,
 // Returns identity (user) object instance
 function identity_from_session() {
     session_start();
-    if (isset($_SESSION['_identity'])) {
+    if (isset($_SESSION['_ia_identity'])) {
         // log_print('Restoring identity from PHP session');
-        $identity = unserialize($_SESSION['_identity']);
+        $identity = unserialize($_SESSION['_ia_identity']);
     }
     else {
         $identity = null;
@@ -129,13 +129,13 @@ function identity_restore() {
 
 // Persists $user to session. This is used when logging in.
 function identity_start_session($user) {
-    $_SESSION['_identity'] = serialize($user);
+    $_SESSION['_ia_identity'] = serialize($user);
 }
 
 // Terminate session for current user.
 function identity_end_session() {
-    if (isset($_SESSION['_identity'])) {
-        unset($_SESSION['_identity']);
+    if (isset($_SESSION['_ia_identity'])) {
+        unset($_SESSION['_ia_identity']);
     }
 }
 

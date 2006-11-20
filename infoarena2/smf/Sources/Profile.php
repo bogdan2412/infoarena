@@ -125,12 +125,14 @@ function ModifyProfile($post_errors = array())
 		'trackUser' => array(array('moderate_forum'), array('moderate_forum')),
 		'trackIP' => array(array('moderate_forum'), array('moderate_forum')),
 		'showPermissions' => array(array('manage_permissions'), array('manage_permissions')),
-		'account' => array(array('manage_membergroups', 'profile_identity_any', 'profile_identity_own'), array('manage_membergroups', 'profile_identity_any')),
-		'forumProfile' => array(array('profile_extra_any', 'profile_extra_own'), array('profile_extra_any')),
-		'theme' => array(array('profile_extra_any', 'profile_extra_own'), array('profile_extra_any')),
-		'notification' => array(array('profile_extra_any', 'profile_extra_own'), array('profile_extra_any')),
-		'pmprefs' => array(array('profile_extra_any', 'profile_extra_own'), array('profile_extra_any')),
-		'deleteAccount' => array(array('profile_remove_any', 'profile_remove_own'), array('profile_remove_any')),
+
+        // Features stripped for integration with info-arena
+		// 'account' => array(array('manage_membergroups', 'profile_identity_any', 'profile_identity_own'), array('manage_membergroups', 'profile_identity_any')),
+		// 'forumProfile' => array(array('profile_extra_any', 'profile_extra_own'), array('profile_extra_any')),
+		// 'theme' => array(array('profile_extra_any', 'profile_extra_own'), array('profile_extra_any')),
+		// 'notification' => array(array('profile_extra_any', 'profile_extra_own'), array('profile_extra_any')),
+		// 'pmprefs' => array(array('profile_extra_any', 'profile_extra_own'), array('profile_extra_any')),
+		// 'deleteAccount' => array(array('profile_remove_any', 'profile_remove_own'), array('profile_remove_any')),
 	);
 
 	// Set the profile layer to be displayed.
@@ -211,51 +213,6 @@ function ModifyProfile($post_errors = array())
 		}
 		if (allowedTo('manage_permissions'))
 			$context['profile_areas']['info']['areas']['showPermissions'] = '<a href="' . $scripturl . '?action=profile;u=' . $memID . ';sa=showPermissions">' . $txt['showPermissions'] . '</a>';
-	}
-
-	// Edit your/this person's profile?
-	if (($context['user']['is_owner'] && (allowedTo(array('profile_identity_own', 'profile_extra_own')))) || allowedTo(array('profile_identity_any', 'profile_extra_any', 'manage_membergroups')))
-	{
-		$context['profile_areas']['edit_profile'] = array(
-			'title' => $txt['profileEdit'],
-			'areas' => array()
-		);
-
-		if (($context['user']['is_owner'] && allowedTo('profile_identity_own')) || allowedTo(array('profile_identity_any', 'manage_membergroups')))
-			$context['profile_areas']['edit_profile']['areas']['account'] = '<a href="' . $scripturl . '?action=profile;u=' . $memID . ';sa=account">' . $txt['account'] . '</a>';
-
-		if (($context['user']['is_owner'] && allowedTo('profile_extra_own')) || allowedTo('profile_extra_any'))
-		{
-			$context['profile_areas']['edit_profile']['areas']['forumProfile'] = '<a href="' . $scripturl . '?action=profile;u=' . $memID . ';sa=forumProfile">' . $txt['forumProfile'] . '</a>';
-			$context['profile_areas']['edit_profile']['areas']['theme'] = '<a href="' . $scripturl . '?action=profile;u=' . $memID . ';sa=theme">' . $txt['theme'] . '</a>';
-			$context['profile_areas']['edit_profile']['areas']['notification'] = '<a href="' . $scripturl . '?action=profile;u=' . $memID . ';sa=notification">' . $txt['notification'] . '</a>';
-			$context['profile_areas']['edit_profile']['areas']['pmprefs'] = '<a href="' . $scripturl . '?action=profile;u=' . $memID . ';sa=pmprefs">' . $txt['pmprefs'] . '</a>';
-		}
-
-		// !!! I still don't think this warrants a new section by any means, but it's definitely not part of viewing a person's profile, if only the owner can do it.
-		if (!empty($modSettings['enable_buddylist']) && $context['user']['is_owner'] && allowedTo(array('profile_extra_own', 'profile_extra_any')))
-			$context['profile_areas']['edit_profile']['areas']['editBuddies'] = '<a href="' . $scripturl . '?action=profile;u=' . $memID . ';sa=editBuddies">' . $txt['editBuddies'] . '</a>';
-	}
-
-	// If you have permission to do something with this profile, you'll see one or more actions.
-	if (($context['user']['is_owner'] && allowedTo('profile_remove_own')) || allowedTo('profile_remove_any') || (!$context['user']['is_owner'] && allowedTo('pm_send')))
-	{
-		// Initialize the action menu group...
-		$context['profile_areas']['profile_action'] = array(
-			'title' => $txt['profileAction'],
-			'areas' => array()
-		);
-
-		// You shouldn't PM (or ban really..) yourself!! (only administrators see this because it's not in the menu.)
-		if (!$context['user']['is_owner'] && allowedTo('pm_send'))
-			$context['profile_areas']['profile_action']['areas']['send_pm'] = '<a href="' . $scripturl . '?action=pm;sa=send;u=' . $memID . '">' . $txt['profileSendIm'] . '</a>';
-		// We don't wanna ban admins, do we?
-		if (allowedTo('manage_bans') && $user_profile[$memID]['ID_GROUP'] != 1 && !in_array(1, explode(',', $user_profile[$memID]['additionalGroups'])))
-			$context['profile_areas']['profile_action']['areas']['banUser'] = '<a href="' . $scripturl . '?action=ban;sa=add;u=' . $memID . '">' . $txt['profileBanUser'] . '</a>';
-
-		// You may remove your own account 'cuz it's yours or you're an admin.
-		if (($context['user']['is_owner'] && allowedTo('profile_remove_own')) || allowedTo('profile_remove_any'))
-			$context['profile_areas']['profile_action']['areas']['deleteAccount'] = '<a href="' . $scripturl . '?action=profile;u=' . $memID . ';sa=deleteAccount">' . $txt['deleteAccount'] . '</a>';
 	}
 
 	// This is here so the menu won't be shown unless it's actually needed.

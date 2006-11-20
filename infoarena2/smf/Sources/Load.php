@@ -1939,16 +1939,25 @@ function loadSession()
 
 function sessionOpen($save_path, $session_name)
 {
+    // Feature disabled for integration with info-arena
+    fatal_error('[info-arena] please disable database stored sessions');
+
 	return true;
 }
 
 function sessionClose()
 {
+    // Feature disabled for integration with info-arena
+    fatal_error('[info-arena] please disable database stored sessions');
+
 	return true;
 }
 
 function sessionRead($session_id)
 {
+    // Feature disabled for integration with info-arena
+    fatal_error('[info-arena] please disable database stored sessions');
+
 	global $db_prefix;
 
 	if (preg_match('~^[A-Za-z0-9]{16,32}$~', $session_id) == 0)
@@ -1968,6 +1977,9 @@ function sessionRead($session_id)
 
 function sessionWrite($session_id, $data)
 {
+    // Feature disabled for integration with info-arena
+    fatal_error('[info-arena] please disable database stored sessions');
+
 	global $db_prefix;
 
 	if (preg_match('~^[A-Za-z0-9]{16,32}$~', $session_id) == 0)
@@ -1992,6 +2004,9 @@ function sessionWrite($session_id, $data)
 
 function sessionDestroy($session_id)
 {
+    // Feature disabled for integration with info-arena
+    fatal_error('[info-arena] please disable database stored sessions');
+
 	global $db_prefix;
 
 	if (preg_match('~^[A-Za-z0-9]{16,32}$~', $session_id) == 0)

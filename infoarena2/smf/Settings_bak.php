@@ -7,7 +7,7 @@
 // ATTENTION !!!
 //
 // SMF MUST also be configured from its administration panel (settings
-// are stored in database). 
+// are stored in database).
 //
 // Configure the settings from this file and then login using
 //      user: SMFAdmin;  pass: faranumar
@@ -49,6 +49,7 @@ $mbname = 'info-arena';		# The name of your forum.
 $language = 'romanian-utf8';		# The default language file set for the forum.
 
 // example: http://localhost/smf_infoarena
+$infoarenaurl = 'http://localhost/infoarena';		# URL to info-arena website
 $boardurl = 'http://localhost/iasmf';		# URL to your forum's folder. (without the trailing /!)
 $webmaster_email = 'strat.cristian@gmail.com';		# Email address to send emails from. (like noreply@yourdomain.com.)
 $cookiename = 'SMFCookie360';		# Name of the cookie to set for authentication.

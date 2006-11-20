@@ -110,15 +110,15 @@ if (isset($recent_pages) && (1 < count($recent_pages))) {
 
 <?php
     // display flash message
-    if (isset($_SESSION['_flash'])) { ?>
+    if (isset($_SESSION['_ia_flash'])) { ?>
 
-<div id="flash" class="flash <?= getattr($_SESSION, '_flash_class') ?>"><?= $_SESSION['_flash'] ?></div>
+<div id="flash" class="flash <?= getattr($_SESSION, '_ia_flash_class') ?>"><?= $_SESSION['_ia_flash'] ?></div>
 
 <?php
         // clear flash message 
-        unset($_SESSION['_flash']);
-        if (isset($_SESSION['_flash_class'])) {
-            unset($_SESSION['_flash_class']);
+        unset($_SESSION['_ia_flash']);
+        if (isset($_SESSION['_ia_flash_class'])) {
+            unset($_SESSION['_ia_flash_class']);
         }
     }
 ?>

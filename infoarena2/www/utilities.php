@@ -104,8 +104,8 @@ function image_resize_url($page, $file, $resize)
 // Message is displayed only once.
 function flash($message, $styleClass = null) {
     global $_SESSION;
-    $_SESSION['_flash'] = $message;
-    $_SESSION['_flash_class'] = $styleClass;
+    $_SESSION['_ia_flash'] = $message;
+    $_SESSION['_ia_flash_class'] = $styleClass;
 }
 
 // This is a simple binding for flash() with a fixed CSS style class
@@ -123,7 +123,7 @@ function execute_view($view_file_name, $view) {
 
     // retrieve recent page history
     // some pages display it as navigation breadcrumbs
-    $recent_pages = getattr($_SESSION, 'recent_pages', array());
+    $recent_pages = getattr($_SESSION, '_ia_recent_pages', array());
 
     // update recent page history
     $query = url_from_args($_GET);
@@ -133,7 +133,7 @@ function execute_view($view_file_name, $view) {
         if (5 < count($recent_pages)) {
             array_shift($recent_pages);
         }
-        $_SESSION['recent_pages'] = $recent_pages;
+        $_SESSION['_ia_recent_pages'] = $recent_pages;
     }
 
     // let view access recent_pages

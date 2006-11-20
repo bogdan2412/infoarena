@@ -204,71 +204,15 @@ function template_summary()
 		}
 	}
 
-	// Messenger type information.
 	echo '
 				<tr>
 					<td colspan="2"><hr size="1" width="100%" class="hrcolor" /></td>
-				</tr><tr>
-					<td><b>', $txt[513], ':</b></td>
-					<td>', $context['member']['icq']['link_text'], '</td>
-				</tr><tr>
-					<td><b>', $txt[603], ': </b></td>
-					<td>', $context['member']['aim']['link_text'], '</td>
-				</tr><tr>
-					<td><b>', $txt['MSN'], ': </b></td>
-					<td>', $context['member']['msn']['link_text'], '</td>
-				</tr><tr>
-					<td><b>', $txt[604], ': </b></td>
-					<td>', $context['member']['yim']['link_text'], '</td>
-				</tr><tr>
-					<td><b>', $txt[69], ': </b></td>
-					<td>';
-
-	// Only show the email address if it's not hidden.
-	if ($context['member']['email_public'])
-		echo '
-						<a href="mailto:', $context['member']['email'], '">', $context['member']['email'], '</a>';
-	// ... Or if the one looking at the profile is an admin they can see it anyway.
-	elseif (!$context['member']['hide_email'])
-		echo '
-						<i><a href="mailto:', $context['member']['email'], '">', $context['member']['email'], '</a></i>';
-	else
-		echo '
-						<i>', $txt[722], '</i>';
-
-	// Some more information.
-	echo '
-					</td>
-				</tr><tr>
-					<td><b>', $txt[96], ': </b></td>
-					<td><a href="', $context['member']['website']['url'], '" target="_blank">', $context['member']['website']['title'], '</a></td>
-				</tr><tr>
-					<td><b>', $txt[113], ' </b></td>
-					<td>
-						<i>', $context['can_send_pm'] ? '<a href="' . $context['member']['online']['href'] . '" title="' . $context['member']['online']['label'] . '">' : '', $settings['use_image_buttons'] ? '<img src="' . $context['member']['online']['image_href'] . '" alt="' . $context['member']['online']['text'] . '" align="middle" />' : $context['member']['online']['text'], $context['can_send_pm'] ? '</a>' : '', $settings['use_image_buttons'] ? '<span class="smalltext"> ' . $context['member']['online']['text'] . '</span>' : '', '</i>';
-
-	// Can they add this member as a buddy?
-	if (!empty($context['can_have_buddy']) && !$context['user']['is_owner'])
-		echo '
-						&nbsp;&nbsp;<a href="', $scripturl, '?action=buddy;u=', $context['member']['id'], ';sesc=', $context['session_id'], '">[', $txt['buddy_' . ($context['member']['is_buddy'] ? 'remove' : 'add')], ']</a>';
-
-	echo '
-					</td>
-				</tr><tr>
-					<td colspan="2"><hr size="1" width="100%" class="hrcolor" /></td>
-				</tr><tr>
-					<td><b>', $txt[231], ': </b></td>
-					<td>', $context['member']['gender']['name'], '</td>
-				</tr><tr>
-					<td><b>', $txt[420], ':</b></td>
-					<td>', $context['member']['age'] . ($context['member']['today_is_birthday'] ? ' &nbsp; <img src="' . $settings['images_url'] . '/bdaycake.gif" width="40" alt="" />' : ''), '</td>
-				</tr><tr>
+				</tr>
+				<tr>
 					<td><b>', $txt[227], ':</b></td>
 					<td>', $context['member']['location'], '</td>
-				</tr><tr>
-					<td><b>', $txt['local_time'], ':</b></td>
-					<td>', $context['member']['local_time'], '</td>
-				</tr><tr>';
+				</tr>
+				<tr>';
 
 	if (!empty($modSettings['userLanguage']))
 		echo '
