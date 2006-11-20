@@ -95,14 +95,9 @@ function user_create($data) {
     $new_user = user_get_by_username($data['username']);
     log_assert($new_user, 'Registration input data was validated OK but no database entry was created');
 
-    // create associated textblock entry
-    // default (initial) content is taken from an existing template
-    $template = textblock_get_revision('template/newuser');
-    log_assert($template, 'Could not find template for new user: template/newuser');
-    $title = str_replace('%user_id%', $new_user['username'], $template['title']);
-    $content = str_replace('%user_id%', $new_user['username'], $template['text']);
-    textblock_add_revision('user/'.$new_user['username'], $title, $content,
-                           $new_user['id'], $security = '');
+    require_once(IA_ROOT . "common/textblock.php");
+    $replace = array("user_id" => $data['username']);
+    textblock_copy_replace("template/newuser", "user/".$data['username'], $replace, "public", $data['id']);
 
     return $new_user;
 }

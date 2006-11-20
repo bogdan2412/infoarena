@@ -34,8 +34,7 @@ function controller_userinfo($pageid) {
         redirect(url('home'));
     }
 
-    $page['title'] = str_replace('%user_id%', $user['username'], $page['title']);
-    $page['text'] = str_replace('%user_id%', $user['username'], $page['text']);
+    textblock_template_replace($page, array("user_id" => $user['username']));
 
     // Build view.
     // FIXME: This is really hacky, MUST cleanup textblock view.

@@ -51,9 +51,10 @@ function round_create($round_id, $type, $user_id, $active) {
     // default (initial) content is taken from an existing template
     $template = textblock_get_revision('template/newround');
     log_assert($template, 'Could not find template for new round: template/newround');
-    $title = str_replace('%round_id%', $new_round['id'], $template['title']);
-    $content = str_replace('%round_id%', $new_round['id'], $template['text']);
-    textblock_add_revision('round/'.$new_round['id'], $title, $content, $user_id);
+
+    require_once(IA_ROOT . "common/textblock.php");
+    $replace = array("round_id" => $round_id);
+    textblock_copy_replace("template/newround", "round/$round_id", $replace, "public", $user_id);
 
     return $new_round['id'];
 }

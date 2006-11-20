@@ -1,5 +1,7 @@
 <?php
 
+require_once(IA_ROOT . "common/textblock.php");
+
 // This macro takes a page parameter and includes another wiki page
 //
 // Additionally it accepts an unlimited number of template parameters. The macro will substitute
@@ -27,14 +29,14 @@ function macro_include($args) {
     // FIXME: OPTIMIZE: This may prove to be a bottleneck when dealing with huge content and a lot of parameters.
     // A better algorithm would construct the resulting content in a single pass.
     $content = $textblock['text'];
+    $replace = array();
     foreach ($args as $key => $val) {
-        if ('page' == $key) {
-            continue;
+        if ('page' != $key) {
+            $replace[$key] = $val;
         }
-
-        $content = str_replace('%'.$key.'%', $val, $content);
     }
+    textblock_template_replace($textblock, $replace);
 
-    return wiki_process_text_recursive($content);
+    return wiki_process_text_recursive($textblock['text']);
 }
 ?>
