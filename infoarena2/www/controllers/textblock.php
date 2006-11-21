@@ -103,7 +103,7 @@ function controller_textblock_restore_revision($page_name, $rev_num) {
 
 // Display revisions
 function controller_textblock_history($page_name) {
-    $page = textblock_get_revision($page_name, null, false, false);
+    $page = textblock_get_revision($page_name);
     if ($page) {
         identity_require('textblock-history', $page);
     } else {
@@ -113,14 +113,32 @@ function controller_textblock_history($page_name) {
 
     $options = pager_init_options();
 
+    // revisions are browsed in reverse order, but get_revision_list
+    // takes revision start/count parameters.
+    // FIXME: This is ugly. Add reverse support in pager somehow?
+    $total = textblock_get_revision_count($page_name);
+    $start = $total - $options['first_entry'] - $options['display_entries'] + 1;
+    if ($start < 1) {
+        $count = $options['display_entries'] + $start - 1;
+        $start = 1;
+    } else {
+        $count = $options['display_entries'];
+    }
+    log_print($options['first_entry']." -> ".$options['display_entries']. " $start -> $count, $total");
+    $revs = textblock_get_revision_list(
+            $page_name, false, true,
+            $start, $count); 
+    // FIXME: horrible hack, add revision_id column.
+    for ($i = 0; $i < count($revs); ++$i) {
+        $revs[$i]['revision_id'] = $start + $i; 
+    }
+
     $view = array();
     $view['title'] = 'Istoria paginii '.$page_name;
     $view['page_name'] = $page_name;
-    $view['revisions'] = textblock_get_revisions(
-            $page_name, false, true,
-            $options['first_entry'], $options['display_entries']); 
+    $view['total_entries'] = $total;
+    $view['revisions'] = array_reverse($revs);
     $view['first_entry'] = $options['first_entry'];
-    $view['total_entries'] = textblock_get_revision_count($page_name);
     $view['display_entries'] = $options['display_entries'];
     $view['feed_link'] = url($view['page_name'], array('action' => 'feed'));
 

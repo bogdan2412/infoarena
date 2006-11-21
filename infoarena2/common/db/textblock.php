@@ -2,6 +2,8 @@
 require_once("db.php");
 
 // Textblock-related db functions.
+//
+// FIXME: this is beyond retarded, refactor mercilessly.
 
 // Add a new revision
 // FIXME: hash parameter?
@@ -31,71 +33,102 @@ function textblock_add_revision($name, $title, $content, $user_id, $security, $t
     return db_query($query);
 }
 
-// Get a certain revision of a textblock. Paramters:
-//  $name:      Textblock name.
-//  $rev_num:   Revision number. Latest if null(default).
-//  $content:   If true also get content. Default true.
-//  $username:  If true also get username (not only user_id). Default true
-function textblock_get_revision($name, $rev_num = null)
+// This is the function called by most query functions.
+function textblock_complex_query($options)
 {
-    // Build the actual query.
-    if (is_null($rev_num)) {
-        // Get the latest revision.
-        $query = sprintf("SELECT `name`, `title`, `timestamp`, `user_id`, `text`, `security`,
-                                    `user`.username as `user_name`
-                         FROM ia_textblock as textblock
-                         LEFT JOIN ia_user as user ON `textblock`.`user_id` = `user`.`id`
-                         WHERE LCASE(`name`) = '%s'",
-                         db_escape($name));
-    } else {
-        // Get an older revision.
-        $query = sprintf("SELECT `name`, `title`, `timestamp`, `user_id`, `text`, `security`,
-                                    `user`.username as `user_name`
-                         FROM ia_textblock_revision as textblock
-                         LEFT JOIN ia_user as user ON `textblock`.`user_id` = `user`.`id`
-                         WHERE LCASE(`name`) = '%s'
-                         ORDER BY `timestamp` 
-                         LIMIT %s, 1",
-                         db_escape($name), db_escape($rev_num - 1));
-    }
-    log_print_r($query);
-    return db_fetch($query);
-}
+    //log_print_r($options);
 
-// Get all revisions of a text_block.
-// $name:       The textblock name.
-// $content:    If true also get content. Defaults to false.
-// $username:   If true join for username. Defaults to true.
-function textblock_get_revisions($name, $content = false, $username = true,
-        $start = 0, $count = 99999999) {
-    // Calculate field list.
-    $field_list = "`name`, `title`, `timestamp`, `user_id`, `security`";
-    if ($content) {
+    $field_list = "`name`, `title`, `timestamp`, `security`, `user_id`";
+
+    // Select content.
+    if (getattr($options, 'content', false) == true) {
         $field_list .= ", `text`";
-    }
-    if ($username) {
-        $field_list .= ", `username`";
     }
 
     // Add a join for username.
-    if ($username) {
+    if (getattr($options, 'username', false) == true) {
         $field_list .= ", `username` as `user_name`, `full_name` as `user_fullname`";
         $join = "LEFT JOIN ia_user ON `user_id` = `ia_user`.`id`";
     } else {
         $join = "";
     }
 
-    $where = sprintf("WHERE LCASE(`name`) = '%s'", db_escape($name));
+    // prefix or page_name
+    if (getattr($options, 'page_name') === null) {
+        log_assert(is_string($options['prefix']));
+        $where = sprintf("WHERE LCASE(`name`) LIKE '%s%%'", db_escape(strtolower($options['prefix'])));
+    } else {
+        $where = sprintf("WHERE LCASE(`name`) = '%s'", db_escape(strtolower($options['page_name'])));
+    }
 
-    // Build query.
-    $query = sprintf("SELECT $field_list FROM ia_textblock_revision $join $where
-                      UNION SELECT $field_list FROM ia_textblock $join $where
-                      ORDER BY `timestamp` LIMIT %d, %d",
-                      $start, $count);
+    // When doing a history query.
+    if (getattr($options, 'history', false) == true) {
+        assert(is_whole_number($options['limit_start']));
+        assert(is_whole_number($options['limit_count']));
+        $query = sprintf("SELECT $field_list FROM ia_textblock $join $where
+                          UNION SELECT $field_list FROM ia_textblock_revision $join $where
+                          ORDER BY `timestamp` LIMIT %d, %d",
+                          $options['limit_start'], $options['limit_count']);
+    } else {
+        $query = sprintf("SELECT $field_list FROM ia_textblock $join $where");
+    }
+    //log_print("QUERY: " . $query);
     return db_fetch_all($query);
 }
 
+// Get a certain revision of a textblock. Parameters:
+//  $name:      Textblock name.
+//  $rev_num:   Revision number. Latest if null(default).
+function textblock_get_revision($name, $rev_num = null)
+{
+    if (is_null($rev_num)) {
+        // Quick latest revision query.
+        $res = textblock_complex_query(array(
+                'page_name' => $name,
+                'content' => true,
+                'username' => false,
+        ));
+    } else {
+        $res = textblock_complex_query(array(
+                'page_name' => $name,
+                'content' => true,
+                'username' => false,
+                'history' => true,
+                'limit_start' => (int)$rev_num - 1,
+                'limit_count' => 1,
+        ));
+    }
+    return array_key_exists(0, $res) ? $res[0] : null;
+}
+
+// Get all revisions of a text_block.
+// $name:       The textblock name.
+// $content:    If true also get content. Defaults to false.
+// $username:   If true join for username. Defaults to true.
+function textblock_get_revision_list($name, $content = false, $username = true,
+        $start = 1, $count = 99999999) {
+    return textblock_complex_query(array(
+            'content' => $content,
+            'username' => $username,
+            'page_name' => $name,
+            'history' => true,
+            'limit_start' => $start - 1,
+            'limit_count' => $count,
+    ));
+}
+
+// Get all textblocks(without content) with a certain prefix).
+// Ordered by name.
+function textblock_get_list_by_prefix($prefix, $content = false, $username = false) {
+    return textblock_complex_query(array(
+            'content' => $content,
+            'username' => $username,
+            'prefix' => $prefix,
+    ));
+}
+
 // Count revisions for a certain textblock.
+// FIXME: undefined if it doesn't exist.
 function textblock_get_revision_count($name) {
     global $dbLink;
     $query = sprintf("SELECT COUNT(*) AS `cnt` FROM ia_textblock_revision
@@ -103,34 +136,6 @@ function textblock_get_revision_count($name) {
                     db_escape($name));
     $row = db_fetch($query);
     return $row['cnt'] + 1;
-}
-
-// Get all textblocks(without content) with a certain prefix).
-// Ordered by name.
-function textblock_get_list_by_prefix($prefix, $content = false, $username = false) {
-    // Calculate field list.
-    $field_list = "`name`, `title`, `timestamp`, `user_id`, `security`";
-    if ($content) {
-        $field_list .= ", `text`";
-    }
-    if ($username) {
-        $field_list .= ", `username`";
-    }
-
-    // Add a join for username.
-    if ($username) {
-        $join = "LEFT JOIN ia_user ON ia_textblock.user_id = ia_user.id";
-    } else {
-        $join = "";
-    }
-
-    $query = sprintf("SELECT $field_list
-                      FROM ia_textblock
-                      $join
-                      WHERE LCASE(`name`) LIKE '%s%%'
-                      ORDER BY `name`",
-                      db_escape($prefix));
-    return db_fetch_all($query);
 }
 
 // Grep through textblocks. This is mostly a hack needed for macro_grep.php

@@ -7,8 +7,6 @@ require_once(IA_ROOT . "www/format/format.php");
     <h1>Istoria paginii <a href="<?= url($view['page_name']) ?>"><?= htmlentities($view['page_name']) ?></a></h1>
 
 <?php
-    log_print_r($view);
-
     // Format links to a certain textblock revision.
     function format_textblock_revision($row) {
         global $page_name;
@@ -68,11 +66,6 @@ require_once(IA_ROOT . "www/format/format.php");
             'pager_style' => 'standard',
             'surround_pages' => 3,
     );
-
-    // FIXME: horrible hack, add revision_id column.
-    for ($i = 0; $i < count($revisions); ++$i) {
-        $revisions[$i]['revision_id'] = $total_entries - $i - $first_entry;
-    }
 
     print format_table($revisions, $column_infos, $options);
  
