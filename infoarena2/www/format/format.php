@@ -16,10 +16,10 @@ function format_user_tiny($user_name, $user_fullname) {
     $result = "";
     $result .= "<div class=\"tiny-user\">";
     $result .= "<a href=\"$user_url\">";
-    $result .= "<img width=\"16\" height=\"16\" src=\"$avatar_url\" />";
+    $result .= "<img width=\"16\" height=\"16\" src=\"$avatar_url\" alt=\"$user_name\"/>";
     $result .= "<span class=\"fullname\">$user_fullname</span> ";
     $result .= "<span class=\"username\">($user_name)</span> ";
-    $result .= "</p></a></div>";
+    $result .= "</a></div>";
 
     return $result;
 }
