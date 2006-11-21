@@ -424,7 +424,7 @@ if (read_question("Import resources? ")) {
         log_error('IMPORT: MYSQL error -> '.mysql_error($dbOldLink));
     }
 
-    $resource_index ="h1. Resurse\n";
+    $resource_index ="h1. Link-uri\n";
 
     $category = array();
     $total = 0;
@@ -441,9 +441,9 @@ if (read_question("Import resources? ")) {
         foreach ($arr as $resource) {
             if ($resource['catId'] != $cat['id'] || !$resource['visible']) continue;
             $resource_index .= "* '".htmlentities($resource['title'], ENT_QUOTES)."':".
-                               $resource['href']." ('".
-                               htmlentities($resource['userId'], ENT_QUOTES)."':user/".
-                               $resource['userId']." @ ".$resource['postDate'].")\n";
+                               $resource['href']." ( ==user(user=\"".
+                               htmlentities($resource['userId'], ENT_QUOTES)."\" type=\"tiny\")==".
+			       " @ ".$resource['postDate'].")\n";
             $resource_index .= htmlentities($resource['description'], ENT_QUOTES)."\n";
         }
     }
@@ -486,6 +486,8 @@ if (read_question("Import downloads? ")) {
         foreach ($arr as $download) {
             if ($download['catId'] != $cat['id'] || !$download['visible']) continue;
 
+	    $download['href'] = preg_replace('/[^a-z0-9\.\-_]/i', '_', $download['href']);
+	    
             // attach the file
             $fname = $ia1_path."www/info/upload/".$download['id'];
             if (!file_exists($fname)) {
@@ -493,13 +495,14 @@ if (read_question("Import downloads? ")) {
                 continue;
             }
             else {
+	    
                 magic_file_attach("downloads", $download['href'], $fname);
-            }
+            }	    
             
-            $download_index .= "* '".htmlentities($download['title'], ENT_QUOTES)."':".
-                               $download['href']." ( _".$download['size']."_ bytes, '".
-                               htmlentities($download['userId'], ENT_QUOTES)."':user/".
-                               $download['userId']." @ ".$download['postDate']." )\n";
+            $download_index .= "* '".htmlentities($download['title'], ENT_QUOTES)."':downloads?".
+                               $download['href']." ( _".$download['size']."_ bytes, ==user(user=\"".
+                               htmlentities($download['userId'], ENT_QUOTES)."\" type=\"tiny\")==".
+                               " @ ".$download['postDate']." )\n";
             $download_index .= htmlentities($download['description'], ENT_QUOTES)."\n";
         }
     }
