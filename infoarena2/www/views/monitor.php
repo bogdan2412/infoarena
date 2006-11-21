@@ -52,8 +52,8 @@ if (!$jobs) {
             array(
                     'title' => 'Utilizator',
                     'key' => 'username',
-                    'valform' => create_function('$row',
-                            'return format_user_tiny($row["user_name"], $row["user_full"]);'),
+                    'rowform' => create_function('$row',
+                            'return format_user_tiny($row["user_name"], $row["user_fullname"]);'),
             ),
             array(
                     'title' => 'Problema',
@@ -71,7 +71,7 @@ if (!$jobs) {
     $options = array(
             'css_class' => 'monitor',
             'display_entries' => $view['display_entries'],
-            'total_entries' => $view['display_entries'],
+            'total_entries' => $view['total_entries'],
             'first_entry' => $view['first_entry'],
             'pager_style' => 'standard',
             'surround_pages' => 3,

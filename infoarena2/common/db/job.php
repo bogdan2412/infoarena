@@ -65,8 +65,8 @@ function job_get_range($start, $range) {
               SELECT job.`id`, job.`user_id`, `task_id`, `compiler_id`, `status`,
                     `submit_time`, `eval_message`, `score`,
                     task.`page_name` as task_page, task.`title` as task_title,
-                    user.`username` as username,
-                    user.`full_name` as userfullname
+                    user.`username` as user_name,
+                    user.`full_name` as user_fullname
               FROM ia_job AS job
               LEFT JOIN ia_task AS task ON job.`task_id` = `task`.`id`
               LEFT JOIN ia_user AS user ON job.`user_id` = `user`.`id`

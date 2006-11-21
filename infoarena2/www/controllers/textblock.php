@@ -1,5 +1,7 @@
 <?php
 
+require_once(IA_ROOT . "www/format/pager.php");
+
 // View a plain textblock.
 // That textblock can be owned by something else.
 function controller_textblock_view($page_name, $rev_num = null) {
@@ -8,9 +10,16 @@ function controller_textblock_view($page_name, $rev_num = null) {
 
     // If the page is missing jump to the edit/create controller.
     if ($crpage) {
-        if ($rev_num) {
+        // FIXME: hack to properly display latest revision.
+        // Checks if $rev_num is the latest.
+        if ($rev_num && $rev_num != textblock_get_revision_count($page_name)) {
             identity_require("textblock-history", $crpage);
             $page = textblock_get_revision($page_name, $rev_num);
+
+            if (!$page) {
+                flash_error("Revizia ".htmlentities($rev_num)." nu exista.");
+                $page = $crpage;
+            }
         } else {
             identity_require("textblock-view", $crpage);
             $page = $crpage;
@@ -102,14 +111,19 @@ function controller_textblock_history($page_name) {
         redirect(url(''));
     }
 
+    $options = pager_init_options();
+
     $view = array();
-    $view['page_name'] = $page_name;
     $view['title'] = 'Istoria paginii '.$page_name;
-    //$view['count'] = textblock_get_revision_count($page_name);
-    $view['page_list'] = textblock_get_revisions($page_name);
-    $view['count'] = count($view['page_list']);
-    $view['current'] = $page;
+    $view['page_name'] = $page_name;
+    $view['revisions'] = textblock_get_revisions(
+            $page_name, false, true,
+            $options['first_entry'], $options['display_entries']); 
+    $view['first_entry'] = $options['first_entry'];
+    $view['total_entries'] = textblock_get_revision_count($page_name);
+    $view['display_entries'] = $options['display_entries'];
     $view['feed_link'] = url($view['page_name'], array('action' => 'feed'));
+
     execute_view_die('views/textblock_history.php', $view);
 }
 

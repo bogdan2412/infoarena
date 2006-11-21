@@ -1,32 +1,80 @@
-<?php include('header.php'); ?>
+<?php
+include('header.php');
+require_once(IA_ROOT . "www/format/table.php");
+require_once(IA_ROOT . "www/format/format.php");
+?>
 
-    <?php if ($view['page_name']) { ?>
-        <h1>Istoria paginii <a href="<?= url($view['page_name']) ?>"><?= $view['page_name'] ?></a></h1>
-    <?php } else { ?>
-            <h1>Istoria paginii <?= htmlentities($view['page_name']) ?></h1>
-    <?php } ?>
+    <h1>Istoria paginii <a href="<?= url($view['page_name']) ?>"><?= htmlentities($view['page_name']) ?></a></h1>
 
-    <ul class="history">
-        <li>
-             <?php $v = $view['current']; ?>
-            <em>Revizia curenta (<?= htmlentities($v['timestamp']) ?>) </em>
-            <a href="<?= url($v['name']) ?>"><?= $v['title'] ? htmlentities($v['title']) : '<strong>FARA TITLU</strong>' ?></a>
-            <?php if (getattr($v, 'username')) { ?>
-                 , editat de <a href="<?= url('user/'.$v['username']) ?>"><?= htmlentities($v['username']) ?></a>
-            <?php } ?>
-        </li>
-        <?php for ($idx = $view['count']-1; $idx >= 0; $idx--) { ?>
-        <li>
-            <?php $v = $view['page_list'][$idx]; ?>
-            <em>Revizia #<?= htmlentities($idx)+1 ?> (<?= htmlentities($v['timestamp']) ?>) </em>
-            <a href="<?= url($v['name']).'?revision='.$idx ?>"><?= $v['title'] ? htmlentities($v['title']) : '<strong>FARA TITLU</strong>' ?></a>,
-            <?php if (getattr($v, 'username')) { ?>
-                editat de <a href="<?= url('user/'.$v['username']) ?>"><?= htmlentities($v['username']) ?></a>
-            <?php } ?>
-            [<a href="<?= url($v['name']).'?action=diff&revision='.$idx ?>">Compara</a>]
-            [<a href="<?= url($v['name']).'?action=restore&revision='.$idx ?>">Incarca</a>]
-        </li>
-        <?php } ?>
-    </ul>
+<?php
+    log_print_r($view);
 
+    // Format links to a certain textblock revision.
+    function format_textblock_revision($row) {
+        global $page_name;
+        $rev_id = $row['revision_id'];
+        $title = $row['title'];
+        $url = url($page_name, array('revision' => $rev_id));
+        return '<a href="'.htmlentities($url).'">#'.$rev_id.': '.$title.'</a>';
+    }
+
+    function format_operations($row)
+    {
+        global $page_name, $total_entries;
+        $diffurl = url($page_name, array(
+                'revision' => $row['revision_id'],
+                'action' => 'diff',
+        ));
+        $restoreurl = url($page_name, array(
+                'revision' => $row['revision_id'],
+                'action' => 'restore',
+        ));
+        if ($row['revision_id'] == $total_entries) {
+            return '<strong>Ultima versiune</strong>';
+        } else {
+            return  '[<a href="'.$diffurl.'">Compara</a>]'.
+                    '[<a href="'.$restoreurl.'">Incarca</a>]';
+        }
+    }
+
+    $column_infos = array(
+            array(
+                    'title' => 'Revizia',
+                    'key' => 'title',
+                    'rowform' => 'format_textblock_revision'
+            ),
+            array(
+                    'title' => 'Utilizator',
+                    'key' => 'username',
+                    'rowform' => create_function('$row',
+                            'return format_user_tiny($row["user_name"], $row["user_fullname"]);'),
+            ),
+            array(
+                    'title' => 'Data',
+                    'key' => 'timestamp',
+            ),
+
+            array(
+                    'title' => 'Operatii',
+                    'rowform' => 'format_operations',
+            ),
+    );
+
+    $options = array(
+            'css_class' => 'textblock-history',
+            'display_entries' => $display_entries,
+            'total_entries' => $total_entries,
+            'first_entry' => $first_entry,
+            'pager_style' => 'standard',
+            'surround_pages' => 3,
+    );
+
+    // FIXME: horrible hack, add revision_id column.
+    for ($i = 0; $i < count($revisions); ++$i) {
+        $revisions[$i]['revision_id'] = $total_entries - $i - $first_entry;
+    }
+
+    print format_table($revisions, $column_infos, $options);
+ 
+?>
 <?php include('footer.php'); ?>
