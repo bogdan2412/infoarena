@@ -43,7 +43,7 @@ $action = request('action', 'view');
 
 // Direct mapping list
 // Note: array_flip() flips keys with values in a dictionary.
-$directmaps = array_flip(array('register', 'profile',
+$directmaps = array_flip(array('register', 'profile', 'news_feed', 'changes',
                                'login', 'logout', 'reset_pass', 'json',
                                'job_detail', 'monitor', 'submit', 'userinfo',
                                'round_register'));
@@ -80,12 +80,6 @@ else if ($urlstart == 'admin') {
             controller_round_save_details($obj_id);
         }
     }
-}
-
-// FIXME: convert to direct mapping.
-else if ($urlstart == 'news_feed') {
-    require_once("controllers/news.php");
-    controller_news_view_feed();
 }
 
 // textblock controllers

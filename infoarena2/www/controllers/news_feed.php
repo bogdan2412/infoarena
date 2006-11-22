@@ -1,9 +1,8 @@
 <?php
 
-require_once("controllers/wiki.php");
-
-// FIXME: convert to direct mapping.
-function controller_news_view_feed() {
+// News rss.
+// FIXME: stupid hack.
+function controller_news_feed($page_name) {
     $view = array();
     $view['channel']['title'] = 'Stiri info-arena';
     $view['channel']['link'] = url('news', array(), true);
@@ -14,10 +13,8 @@ function controller_news_view_feed() {
     $news = news_get_range(0, IA_MAX_FEED_ITEMS);
     for ($i = 0; $i < count($news); $i++) {
         $view['item'][$i]['title'] = $news[$i]['title'];
-        $context = array('page_name' => $news[$i]['name'],
-                         'title' => $news[$i]['title']);
         $view['item'][$i]['description'] = wiki_process_text_recursive(
-                                           $news[$i]['text'], $context);
+                                           $news[$i]['text']);
         $view['item'][$i]['pubDate'] = date('r',
                                             strtotime($news[$i]['timestamp']));
         $view['item'][$i]['guid'] = sha1($news[$i]['name'] . 

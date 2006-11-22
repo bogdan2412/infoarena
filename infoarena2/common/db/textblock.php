@@ -61,16 +61,24 @@ function textblock_complex_query($options)
         $where = sprintf("WHERE LCASE(`name`) = '%s'", db_escape(strtolower($options['page_name'])));
     }
 
+    if (strtolower(getattr($options, 'order') == 'desc')) {
+        $order = 'DESC';
+    } else {
+        $order = 'ASC';
+    }
+
     // When doing a history query.
     if (getattr($options, 'history', false) == true) {
         assert(is_whole_number($options['limit_start']));
         assert(is_whole_number($options['limit_count']));
-        $query = sprintf("SELECT $field_list FROM ia_textblock $join $where
-                          UNION SELECT $field_list FROM ia_textblock_revision $join $where
-                          ORDER BY `timestamp` LIMIT %d, %d",
-                          $options['limit_start'], $options['limit_count']);
+        $query = sprintf("SELECT $field_list FROM ia_textblock $join %s
+                          UNION SELECT $field_list FROM ia_textblock_revision $join %s
+                          ORDER BY `timestamp` %s LIMIT %d, %d",
+                          $where, $where, $order, $options['limit_start'], $options['limit_count']);
+        log_print($query);
     } else {
-        $query = sprintf("SELECT $field_list FROM ia_textblock $join $where");
+        $query = "SELECT $field_list FROM ia_textblock $join $where";
+        log_print($query);
     }
     //log_print("QUERY: " . $query);
     return db_fetch_all($query);
@@ -119,11 +127,25 @@ function textblock_get_revision_list($name, $content = false, $username = true,
 
 // Get all textblocks(without content) with a certain prefix).
 // Ordered by name.
-function textblock_get_list_by_prefix($prefix, $content = false, $username = false) {
+function textblock_get_by_prefix($prefix, $content = false, $username = false) {
     return textblock_complex_query(array(
             'content' => $content,
             'username' => $username,
             'prefix' => $prefix,
+    ));
+}
+
+// Get all textblocks(without content) with a certain prefix).
+// Ordered by name.
+function textblock_get_changes($prefix, $content = false, $username = true, $count = 50) {
+    return textblock_complex_query(array(
+            'content' => $content,
+            'username' => $username,
+            'prefix' => $prefix,
+            'history' => true,
+            'order' => 'desc',
+            'limit_start' => 0,
+            'limit_count' => $count,
     ));
 }
 
