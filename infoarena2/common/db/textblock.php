@@ -7,7 +7,7 @@ require_once("db.php");
 
 // Add a new revision
 // FIXME: hash parameter?
-function textblock_add_revision($name, $title, $content, $user_id, $security, $timestamp = null) {
+function textblock_add_revision($name, $title, $content, $user_id, $security = "public", $timestamp = null) {
     // copy current version to revision table
     $query = sprintf("INSERT INTO ia_textblock_revision
                         SELECT *
