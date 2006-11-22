@@ -42,10 +42,9 @@ function controller_textblock_view($page_name, $rev_num = null) {
 
 // Show a textblock diff.
 // FIXME: two revisions.
-function controller_textblock_diff_revision($page_name, $rev_num) {
+function controller_textblock_diff_revision($page_name) {
     global $identity_user;
     $page = textblock_get_revision($page_name);
-    $rev = textblock_get_revision($page_name, $rev_num);
     if ($page) {
         identity_require('textblock-history', $page);
     } else {
@@ -53,21 +52,30 @@ function controller_textblock_diff_revision($page_name, $rev_num) {
         redirect(url(''));
     }
 
-    if (is_null($rev_num)) {
-        flash_error("Nu ati specificat revizia");
-        redirect(url($page_name));
-    }
-    if (!$rev) {
-        flash_error("Revizia nu exista!");
+    // Get revisions.
+    // FIXME: probably doesn't work.
+    $revfrom_id = (int)request("rev_from");
+    $revto_id = (int)request("rev_to");
+    if (is_null($revfrom_id) || is_null($revto_id)) {
+        flash_error("Nu ati specificat reviziile");
         redirect(url($page_name));
     }
 
-    $diff_title = string_diff($rev['title'], $page['title']);
-    $diff_content = string_diff($rev['text'], $page['text']);
+    $revfrom = textblock_get_revision($page_name, $revfrom_id);
+    $revto = textblock_get_revision($page_name, $revto_id);
+    if (is_null($revfrom) || is_null($revto)) {
+        flash_error("Nu am gasit reviziile");
+        redirect(url($page_name));
+    }
+
+    $diff_title = string_diff($revfrom['title'], $revto['title']);
+    $diff_content = string_diff($revfrom['text'], $revto['text']);
 
     $view = array();
     $view['page_name'] = $page_name;
-    $view['title'] = 'Diferente '.$page_name;
+    $view['title'] = "Diferente pentru $page_name intre reviziile $revfrom_id si $revto_id";
+    $view['revfrom_id'] = $revfrom_id;
+    $view['revto_id'] = $revto_id;
     $view['diff_title'] = explode("\n", $diff_title);
     $view['diff_content'] = explode("\n", $diff_content);
     execute_view_die('views/textblock_diff.php', $view);
@@ -140,11 +148,11 @@ function controller_textblock_history($page_name) {
     $view['revisions'] = array_reverse($revs);
     $view['first_entry'] = $options['first_entry'];
     $view['display_entries'] = $options['display_entries'];
-    $view['feed_link'] = url($view['page_name'], array('action' => 'feed'));
 
     execute_view_die('views/textblock_history.php', $view);
 }
 
+/*
 // give a RSS feed with the history of a textblock
 function controller_textblock_feed($page_name) {
     $page = textblock_get_revision($page_name);
@@ -196,6 +204,7 @@ function controller_textblock_feed($page_name) {
 
     execute_view_die('views/rss.php', $view);
 }
+*/
 
 // Edit a textblock
 function controller_textblock_edit($page_name) {

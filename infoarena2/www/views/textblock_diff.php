@@ -1,11 +1,14 @@
-<?php include('header.php'); ?>
+<?php
 
-<?php if ($view['page_name']) { ?>
-    <h1>Diferente pentru pagina <a href="<?= url($view['page_name']) ?>"><?= $view['page_name'] ?></a></h1>
-<?php } else { ?>
-    <h1>Diferente pentru pagina <?= $view['page_name'] ?></h1>
-<?php } ?>
-    
+include('header.php');
+include(IA_ROOT . 'www/format/format.php');
+
+?>
+
+<h1>Diferente pentru <?= format_link($page_name, url($page_name)) ?> intre reviziile
+    <?= format_link("#$revfrom_id", url($page_name, array('revision' => $revfrom_id))) ?> si
+    <?= format_link("#$revto_id", url($page_name, array('revision' => $revto_id))) ?>
+</h1>
 <?php
 
 function diff_print_color_line($s)

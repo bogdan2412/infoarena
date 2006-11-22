@@ -24,7 +24,4 @@
         <li><a href="<?= url($textblock['name'], array('action' => 'attach-list')) ?>">Listeaza atasamente</a></li>
         <?php } ?>
      </ul>
-     <a class="feed" href="<?= htmlentities(url($view['page_name'], array('action' => 'feed'))) ?>" title="RSS Istoria paginii">
-         RSS Istoria paginii <?= htmlentities($view['page_name']) ?>
-     </a>
 </div>

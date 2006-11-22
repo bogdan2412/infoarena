@@ -127,12 +127,7 @@ else if ($action == 'restore') {
 //  - view textblock differences between revisions
 else if ($action == 'diff') {
     require_once('controllers/textblock.php');
-    controller_textblock_diff_revision($page, request('revision'));
-}
-//  - view textblock feed
-else if ($action=='feed') {
-    require_once('controllers/textblock.php');
-    controller_textblock_feed($page);
+    controller_textblock_diff_revision($page);
 }
 
 // attachment controllers

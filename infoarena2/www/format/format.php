@@ -41,4 +41,11 @@ function format_user_normal($user_name, $user_fullname) {
     return $result;
 }
 
+// Quickly format a link to a certain page.
+// $url should really come from the $url function.
+function format_link($text, $url)
+{
+    return '<a href="'.htmlentities($url).'">'.htmlentities($text).'</a>';
+}
+
 ?>

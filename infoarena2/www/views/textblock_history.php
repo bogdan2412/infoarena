@@ -4,7 +4,7 @@ require_once(IA_ROOT . "www/format/table.php");
 require_once(IA_ROOT . "www/format/format.php");
 ?>
 
-    <h1>Istoria paginii <a href="<?= url($view['page_name']) ?>"><?= htmlentities($view['page_name']) ?></a></h1>
+    <h1>Istoria paginii <?= format_link($page_name, url($page_name)) ?></a></h1>
 
 <?php
     // Format links to a certain textblock revision.
@@ -13,14 +13,15 @@ require_once(IA_ROOT . "www/format/format.php");
         $rev_id = $row['revision_id'];
         $title = $row['title'];
         $url = url($page_name, array('revision' => $rev_id));
-        return '<a href="'.htmlentities($url).'">#'.$rev_id.': '.$title.'</a>';
+        return format_link("#$rev_id: $title", $url);
     }
 
     function format_operations($row)
     {
         global $page_name, $total_entries;
         $diffurl = url($page_name, array(
-                'revision' => $row['revision_id'],
+                'rev_from' => $row['revision_id'],
+                'rev_to' => $total_entries,
                 'action' => 'diff',
         ));
         $restoreurl = url($page_name, array(
