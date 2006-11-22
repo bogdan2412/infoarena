@@ -288,7 +288,6 @@ function controller_textblock_save($page_name)
     $view = array();
     $view['title'] = "Editare " . $page_name;
     $view['page_name'] = $page_name;
-    $view['page_class'] = 
     $view['action'] = url($page_name, array('action' => 'save'));
     $form_values['content'] = $page_content;
     if (identity_can('textblock-change-security')) {
@@ -301,6 +300,72 @@ function controller_textblock_save($page_name)
     }
     $view['form_errors'] = $form_errors;
     execute_view_die("views/textblock_edit.php", $view);
+}
+
+// Initial move controller.
+function controller_textblock_move($page_name)
+{
+    // Get actual page.
+    $page = textblock_get_revision($page_name);
+    if ($page) {
+        identity_require('textblock-move', $page);
+    } else {
+        // Missing page.
+        flash_error("Pagina inexistenta.");
+        redirect(url('home'));
+    }
+
+    $form_values = array();
+    $form_values['new_name'] = "";
+
+    // -- Print form
+    $view = array(
+            'title' => "Editare " . $page_name,
+            'page_name' => $page_name,
+            'action' => url($page_name, array('action' => 'move-submit')),
+            'form_values' => $form_values,
+            'form_errors' => array(),
+    );
+    execute_view_die("views/textblock_move.php", $view);
+}
+
+// Move submit controller.
+function controller_textblock_move_submit($page_name)
+{
+    $page = textblock_get_revision($page_name);
+    if ($page) {
+        identity_require('textblock-move', $page);
+    } else {
+        // Missing page.
+        flash_error("Pagina inexistenta");
+    }
+
+    // -- Get form values.
+    $form_values = array();
+    $form_values['new_name'] = $new_name = getattr($_POST, 'new_name', "");
+
+    // -- Validate form values.
+    $form_errors = array();
+    if (textblock_get_revision($new_name)) {
+        $form_errors['new_name'] = "Pagina deja exista";
+    }
+
+    if (!$form_errors) {
+        // -- Do the monkey
+        textblock_move($page_name, $new_name);
+        flash("Pagina a fost mutata.");
+        redirect(url($new_name));
+    } else {
+        // -- Back to form.
+        $view = array(
+                'title' => "Editare " . $page_name,
+                'page_name' => $page_name,
+                'action' => url($page_name, array('action' => 'move-submit')),
+                'form_values' => $form_values,
+                'form_errors' => $form_errors,
+        );
+        execute_view_die("views/textblock_move.php", $view);
+    }
 }
 
 // Delete a certain textblock.

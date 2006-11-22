@@ -11,6 +11,9 @@
         <?php if (identity_can('textblock-history', $textblock)) { ?>
         <li><a href="<?= url($textblock['name'], array('action' => 'history')) ?>">Vezi istoria</a></li>
         <?php } ?>
+        <?php if (identity_can('textblock-move', $textblock)) { ?>
+        <li><a href="<?= url($textblock['name'], array('action' => 'move')) ?>">Muta</a></li>
+        <?php } ?>
         <?php if (identity_can('textblock-delete', $textblock)) { ?>
         <li><a href="<?= url($textblock['name'], array('action' => 'delete')) ?>">Sterge</a></li>
         <?php } ?>

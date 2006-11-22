@@ -156,4 +156,46 @@ function textblock_delete($page) {
     db_query("DELETE FROM `ia_textblock_revision` WHERE `name` = '$pageesc'");
 }
 
+// Move a page from old_name to new_name.
+// Also drags attachments.
+function textblock_move($old_name, $new_name)
+{
+    log_print("Moving textblock $old_name to $new_name");
+
+    // Move current version.
+    $query = sprintf("UPDATE `ia_textblock`
+                      SET `name` = '%s'
+                      WHERE LCASE(`name`) = LCASE('%s')",
+                      db_escape($new_name), db_escape($old_name));
+    db_query($query);
+
+    // Move history.
+    $query = sprintf("UPDATE `ia_textblock_revision`
+                      SET `name` = '%s'
+                      WHERE LCASE(`name`) = LCASE('%s')",
+                      db_escape($new_name), db_escape($old_name));
+    db_query($query);
+
+    // Get a list of attachments.
+    $files = attachment_get_all($old_name);
+
+    // Move attachments in db.
+    $query = sprintf("UPDATE `ia_file`
+                      SET `page` = '%s'
+                      WHERE LCASE(`page`) = LCASE('%s')",
+                      db_escape($new_name), db_escape($old_name));
+    db_query($query);
+
+    // Move attachments on disk. Ooops.
+    foreach ($files as $file) {
+        $old_filename = attachment_get_filepath($file);
+        $file['page'] = $new_name;
+        $new_filename = attachment_get_filepath($file);
+
+        if (!@rename($old_filename, $new_filename)) {
+            log_error("Failed moving attachment from $old_filename to $new_filename");
+        }
+    }
+}
+
 ?>

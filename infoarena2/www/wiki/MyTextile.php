@@ -111,9 +111,7 @@ class MyTextile extends Textile {
     function do_format_link($args) {
         $url = getattr($args, 'url', '');
         if ($this->is_wiki_link($url)) {
-            log_print("DOWNLOAD LINK $url");
             if (preg_match("/^ ([^\?]+) \? ([a-z0-9_\.\-]+) $/sxi", $url, $matches)) {
-                log_print("MAGIC_DOWNLOAD_LINK");
                 $args['url'] = url($matches[1], array(
                         'action' => 'download',
                         'file' => $matches[2],

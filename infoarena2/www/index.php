@@ -109,6 +109,16 @@ else if ($action == 'history') {
     require_once('controllers/textblock.php');
     controller_textblock_history($page);
 }
+//  - move textblock
+else if ($action == 'move') {
+    require_once('controllers/textblock.php');
+    controller_textblock_move($page);
+}
+//  - move textblock/submit
+else if ($action == 'move-submit') {
+    require_once('controllers/textblock.php');
+    controller_textblock_move_submit($page);
+}
 //  - restore textblock
 else if ($action == 'restore') {
     require_once('controllers/textblock.php');
