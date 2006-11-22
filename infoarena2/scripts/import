@@ -89,7 +89,7 @@ function magic_title($ugly_title) {
 if (1 < $argc) {
     $ia1_path = $argv[1];
 } else {
-    $ia1_path = read_line("Unde gasesc info-arena 1.0?");
+    $ia1_path = read_line("Where is infoarena1?");
 }
 
 //

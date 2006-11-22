@@ -4,7 +4,7 @@ function macro_tableofcontents($args)
 {
     $prefix = getattr($args, 'prefix', '');
 
-    $subpages = textblock_get_list_by_prefix($prefix, false, false);
+    $subpages = textblock_get_by_prefix($prefix, false, false);
 
     $res = '<div class="macro-toc">';
     $res .= "<p>Table of contents for ".htmlentities($prefix)."</p><ul>";

@@ -19,7 +19,7 @@ function read_line($question, $default = null) {
     if ($default === null) {
         echo "$question ";
     } else {
-        echo "$question"."[$default]";
+        echo "$question"." (default:$default) ";
     }
     $r = trim(fgets(STDIN));
     if ($r == "") {

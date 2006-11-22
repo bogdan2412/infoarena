@@ -13,12 +13,12 @@ $userlink = format_user_tiny($rev['user_name'], $rev['user_fullname']);
 $pagelink = format_link($rev['title'], url($rev['name'], array(), true));
 $diffurl_params = array(
         'action' => 'diff',
-        'rev_from' => $rev['revision_id'],
-        'rev_to' => $rev['revision_id'] - 1,
+        'rev_to' => $rev['revision_id'],
+        'rev_from' => $rev['revision_id'] - 1,
 );
-$difflink = format_link("modificari", url($rev['name'], $diffurl_params, true));
-$tstamp = $rev['timestamp'];
-echo "$pagelink, modificata de $userlink la $tstamp($difflink).";
+$difflink = format_link("diff", url($rev['name'], $diffurl_params, true));
+$tstamp = date('j/n H:i', strtotime($rev['timestamp']));
+echo "$tstamp: $userlink a modificat $pagelink ($difflink).";
 ?>
     </li>
     <?php } ?>

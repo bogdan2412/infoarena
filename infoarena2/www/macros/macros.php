@@ -13,10 +13,11 @@ function get_macro_include_file($macro_name)
     global $macro_file_map;
     $macro_name = strtolower($macro_name);
     if (array_key_exists($macro_name, $macro_file_map)) {
-        return $macro_file_map[$macro_name];
+        $file_name = $macro_file_map[$macro_name];
     } else {
-        return "macro_" . $macro_name . '.php';
+        $file_name = "macro_" . $macro_name . '.php';
     }
+    return IA_ROOT . "www/macros/" . $file_name;
 }
 
 // Format an error message as a html div.
@@ -33,18 +34,22 @@ function macro_message($text, $raw_html = false) {
 
 // Preset error message for insufficient privileges.
 function macro_permission_error() {
-    return macro_error('Not enough privileges to expand this macro');
+    return macro_error('Nu ai destul permisiuni pentru acest macro.');
 }
 
 function execute_macro($macro_name, $macro_args) {
     $macro_file = get_macro_include_file($macro_name);
+//    return macro_message($macro_file);
+    if (!is_readable($macro_file)) {
+        return macro_error('Nu exista macro-ul "'.$macro_name.'".');
+    }
     if ($macro_file !== '') {
         // FIXME: this kills log messages.
         include_once($macro_file);
     }
     $macro_func = 'macro_'.$macro_name;
     if (!function_exists($macro_func)) {
-        return macro_error('No such macro: "'.$macro_name.'"');
+        return macro_error('Nu exista macro-ul: "'.$macro_name.'".');
     }
     return $macro_func($macro_args);
 }
