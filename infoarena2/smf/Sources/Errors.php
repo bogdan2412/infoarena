@@ -421,4 +421,18 @@ function db_fatal_error($loadavg = false)
 	return false;
 }
 
+// Provided to integrate with info-arena
+// When $expr is false it raises fatal error
+function log_assert($expr, $msg) {
+    if (!$expr) {
+        fatal_error($msg);
+    }
+}
+
+// Provided to integrate with info-arena
+// Forwards error to log_error()
+function log_warn($error) {
+    log_error($error);
+}
+
 ?>

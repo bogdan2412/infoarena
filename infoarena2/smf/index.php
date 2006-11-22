@@ -44,13 +44,14 @@ $time_start = microtime();
 // Load the settings...
 require_once(dirname(__FILE__) . '/Settings.php');
 
-// info-arena integration
-require_once(dirname(__FILE__) . '/infoarena.php');
-
 // And important includes.
 require_once($sourcedir . '/QueryString.php');
 require_once($sourcedir . '/Subs.php');
 require_once($sourcedir . '/Errors.php');
+
+// info-arena integration (must stay here)
+require_once(dirname(__FILE__) . '/infoarena.php');
+
 require_once($sourcedir . '/Load.php');
 require_once($sourcedir . '/Security.php');
 

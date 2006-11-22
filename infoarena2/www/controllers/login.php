@@ -63,6 +63,7 @@ function controller_login() {
     $view['title'] = "Login";
     $view['form_values'] = $data;
     $view['form_errors'] = array();
+    $view['topnav_select'] = 'login';
     $view['action'] = url('login', array('action' => 'login'));
 
     execute_view_die('views/login.php', $view);

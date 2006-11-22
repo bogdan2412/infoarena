@@ -11,7 +11,7 @@ function request($paramName, $defaultValue = null) {
 // printing stuff too early or you're trying to redirect too late (view?).
 // Either way, it is a bug and it must be solved rather than handled gracefully
 // FIXME: Is that even remotely possible?
-// FIXME: Would be usefull for debugging though.
+// FIXME: Would be useful for debugging though.
 function redirect($absoluteUrl) {
     log_print("HTTP Redirect to $absoluteUrl from {$_SERVER['QUERY_STRING']}");
     header("Location: {$absoluteUrl}\n\n");
@@ -33,7 +33,7 @@ function href($url, $content) {
     return "<a href=\"$url\">$content</a>";
 }
 
-// Get an url.
+// Compute url.
 // The params array contains http get parameter,
 // it's formatted in the end result as a series
 // of key1=value1&key2=value2.
@@ -63,7 +63,7 @@ function url_from_args($args, $absolute = false)
         $url = IA_URL_PREFIX;
     }
     $url .= $args["page"];
-    
+
     // Actual args.
     $first = true;
     foreach ($args as $k => $v) {
@@ -158,7 +158,7 @@ function execute_view($view_file_name, $view) {
     //include('views/vardump.php');
 }
 
-// Execute and the die.
+// Execute view and then die.
 function execute_view_die($view_file_name, $view) {
     execute_view($view_file_name, $view);
     session_write_close();

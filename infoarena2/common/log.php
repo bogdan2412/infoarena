@@ -245,7 +245,9 @@ function logging_error_handler($errno, $errstr, $errfile, $errline) {
         error_log("Caught a fatal error, printing a full backtrace");
         log_backtrace(2, false, true);
 
-        if (IA_DEBUG_MODE && defined('IA_INSIDE_WWW')) {
+        $inside_www = isset($_SERVER['REQUEST_URI']);
+
+        if (IA_DEBUG_MODE && $inside_www) {
             //echo '<html><head><title>Info-arena2 made a booboo</title></head><body>';
             echo $errstr.' <br /> Printing full backtrace:';
             echo '<ul>';

@@ -1,8 +1,5 @@
 <?php
 
-// common/log.php checks this.
-define("IA_INSIDE_WWW", true);
-
 require_once("config.php");
 require_once(IA_ROOT . "common/log.php");
 require_once(IA_ROOT . "common/common.php");

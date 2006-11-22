@@ -97,7 +97,7 @@ function user_create($data) {
 
     require_once(IA_ROOT . "common/textblock.php");
     $replace = array("user_id" => $data['username']);
-    textblock_copy_replace("template/newuser", "user/".$data['username'], $replace, "public", $data['id']);
+    textblock_copy_replace("template/newuser", "user/".$data['username'], $replace, "public", $data['username']);
 
     return $new_user;
 }

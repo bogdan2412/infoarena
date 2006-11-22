@@ -1,0 +1,123 @@
+/* site header */
+#header {
+    height: 64px;
+    border-bottom: 1px solid #333;
+    background: url('../images/logo_bg.jpg') repeat-x top left;
+    position: relative;
+}
+
+#header h1 a {
+    background:url('../images/logo.jpg') no-repeat left top;
+    height:60px;
+    width:300px;
+    text-indent:-9999px;
+    display: block;
+}
+
+#header #search {
+    float:right;
+    padding: 12px 15px;
+    background:#5C880B url(../images/search.jpg) no-repeat bottom left;
+}
+
+#header #search input {
+    vertical-align:middle;
+}
+
+#header #search #inputbox {
+    width:120px;
+}
+
+/* site footer */
+#footer {
+    border-top:1px solid #B7D285;
+    background:url(../images/footer.jpg) repeat-x top;
+    margin-top:1px;
+    padding:10px 20px;
+    font-size:11px;
+    color:#999;
+}
+
+#footer ul {
+}
+
+#footer li {
+    display:block;
+    float:left;
+    margin-right:15px;
+}
+
+#footer li.top {
+    float:right;
+}
+
+#footer li a {
+    display:block;
+}
+
+#footer p {
+    font-size:10px;
+    margin-top:6px;
+}
+
+/* top navigation bar */
+#topnav {
+    float: left;
+    width: auto;
+    line-height: normal;
+    margin: 0 0 .5em 1em;
+    padding: 0 6px 0 0;
+    background: url('../images/tab/end.gif') right bottom no-repeat;
+}
+
+#topnav ul {
+    float: left;
+    margin: 0;
+    padding: 0 0 0 6px;
+    background: url('../images/tab/begin.gif') left bottom no-repeat;
+}
+
+#topnav li {
+    float: left;
+    padding: 0;
+    margin: 0 .4em 0 .4em;
+    display: inline;
+    list-style-type: none;
+}
+
+#topnav a {
+    display: block;
+    color: white;
+    font-size: 8pt;
+    padding: .1em 0 .5em 0;
+}
+
+#topnav a:hover {
+    text-decoration: underline;
+}
+
+#topnav strong {
+    display: block;
+    background: url('../images/tab/a_end.gif') right bottom no-repeat;
+    padding-right: 4px;
+}
+
+#topnav strong a {
+    background: url('../images/tab/a_begin.gif') left bottom no-repeat;
+    padding-left: 12px;
+    padding-right: 6px;
+}
+
+/* misc */
+.clear:after {
+    content:".";
+    height:0;
+    display:block;
+    visibility:hidden;
+    clear:both;
+}
+
+* html .clear {
+    height: 1%;
+}
+

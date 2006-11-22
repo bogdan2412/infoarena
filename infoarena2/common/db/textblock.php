@@ -69,16 +69,14 @@ function textblock_complex_query($options)
 
     // When doing a history query.
     if (getattr($options, 'history', false) == true) {
-        assert(is_whole_number($options['limit_start']));
-        assert(is_whole_number($options['limit_count']));
+        log_assert(is_whole_number($options['limit_start']));
+        log_assert(is_whole_number($options['limit_count']));
         $query = sprintf("SELECT $field_list FROM ia_textblock $join %s
                           UNION SELECT $field_list FROM ia_textblock_revision $join %s
                           ORDER BY `timestamp` %s LIMIT %d, %d",
                           $where, $where, $order, $options['limit_start'], $options['limit_count']);
-        log_print($query);
     } else {
         $query = "SELECT $field_list FROM ia_textblock $join $where";
-        log_print($query);
     }
     //log_print("QUERY: " . $query);
     return db_fetch_all($query);

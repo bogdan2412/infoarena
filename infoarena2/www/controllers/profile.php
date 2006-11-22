@@ -216,6 +216,7 @@ function controller_profile($suburl) {
     $view['register'] = false;
     $view['form_errors'] = $errors;
     $view['form_values'] = $data;
+    $view['topnav_select'] = 'profile';
     execute_view_die('views/profile.php', $view);
 }
 

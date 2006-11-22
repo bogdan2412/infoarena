@@ -1,9 +1,8 @@
 <?php
 
-function controller_register($suburl)
-{
+function controller_register($suburl) {
     require_once("register_profile_common.php");
-    
+
     // Initialize view parameters.
     // form data goes in data.
     // form errors go in errors.
@@ -40,7 +39,7 @@ function controller_register($suburl)
         $errors = validate_data($data);
 
         // ==register specific validation==
-        
+
         if (0 == strlen($data['username'])) {
             $errors['username'] = 'Nu ati introdus un nume utilizator';
         }
@@ -92,6 +91,7 @@ function controller_register($suburl)
     $view['register'] = true;
     $view['form_errors'] = $errors;
     $view['form_values'] = $data;
+    $view['topnav_select'] = 'register';
     execute_view_die('views/profile.php', $view);
 }
 

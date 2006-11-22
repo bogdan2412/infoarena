@@ -1,10 +1,16 @@
-<?php check_view($view); ?>
+<?php
+
+require_once('views/sitewide.php');
+
+check_view($view);
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-2" />
     <title><?= htmlentities(getattr($view, 'title')) ?></title>
 
+    <link type="text/css" rel="stylesheet" href="<?= url('static/css/sitewide.css') ?>"/>
     <link type="text/css" rel="stylesheet" href="<?= url('static/css/screen.css') ?>"/>
     <link type="text/css" rel="stylesheet" href="<?= url('static/css/tabber.css') ?>"/>
     <link type="text/css" rel="stylesheet" href="<?= url('static/css/SyntaxHighlighter.css') ?>"/>
@@ -26,13 +32,14 @@
 
 <div id="page">
 
-<div id="header" class="clear">
-    <form id="search" action="get">
-        <input type="text" id="inputbox" />
-        <input type="submit" value="Cauta &raquo;"/>
-    </form>
-    <h1><a title="informatica de performanta" href="<?= url('') ?>">info-arena, informatica de performanta</a></h1>
-</div>
+<?php
+if (!isset($topnav_select)) {
+    $topnav_select = 'infoarena';
+}
+ia_template_header();
+$smf_admin = ('admin' == getattr($identity_user, 'security_level'));
+ia_template_topnav($topnav_select, $smf_admin);
+?>
 
 <div id="content_small" class="clear">
 <div id="sidebar">
@@ -79,7 +86,7 @@
             <li><a href="<?= url('register') ?>">Inregistreaza-te!</a></li>
         </ul>
     </div>
-    <?php } ?>  
+    <?php } ?>
 </div>
 
 <div id="main">
@@ -90,7 +97,7 @@ if (isset($recent_pages) && (1 < count($recent_pages))) {
     $bstring = '';
     foreach ($recent_pages as $rec_key => $rec_entry) {
         list($rec_url, $rec_title) = $rec_entry;
-        
+
         $rec_title = htmlentities($rec_title);
 
         if ($bstring) {

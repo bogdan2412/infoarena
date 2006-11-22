@@ -420,7 +420,7 @@ if (read_bool("Import links?", false)) {
 
     textblock_add_revision("links", "Link-uri", $resource_index, 0);
 }
-    
+
 if (read_bool("Import downloads?", false)) {
     $downloads = mysql_query("SELECT *, DATE_FORMAT(postDate, '%Y-%m-%d') AS postDate
                              FROM info_down ORDER BY postDate DESC", $dbOldLink);

@@ -43,7 +43,6 @@ body, td, th , tr
 /* The main body of the entire forum. */
 body
 {
-	background-color: #E5E8E5;
 	margin: 0px;
 	padding: 0 30px 4px 30px;
 }
@@ -166,12 +165,12 @@ border: 0;
 .windowbg
 {
 	color: #000000;
-	background-color: #ECF3ED;
+	background-color: #fff;
 }
 .windowbg2
 {
 	color: #000000;
-	background-color: #F6F6F6;
+	background-color: #fff;
 }
 .windowbg3
 {
@@ -274,7 +273,7 @@ p.copy {
 }
 .catbg2 , tr.catbg2 td
 {
-	background: url(images/catbg2.jpg) #A1BFD9 repeat-x;
+	background: url(images/catbg2.jpg) #6a6 repeat-x;
 	color: #ffffff;
 	padding-left: 10px;
 	padding-right: 10px;

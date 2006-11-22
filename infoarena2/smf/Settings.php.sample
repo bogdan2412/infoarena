@@ -18,10 +18,6 @@
 require_once("../config.php");
 
 
-// The *absolute* disk path to the forum's folder. No trailing slash
-// example: /home/alexandru/devel/infoarena2/smf
-$boarddir = '--edit-me--';
-
 // Webmaster email (e-mail where it sends reports in case shit)
 // Also serves as address to send emails from
 $webmaster_email = '--edit-me--';
@@ -33,6 +29,9 @@ $webmaster_email = '--edit-me--';
 // Decent defaults below (edit only if you get bored)
 // ---------------------------------------------------------------
 
+// The *absolute* disk path to the forum's folder. No trailing slash
+$boarddir = IA_ROOT . 'smf';
+
 // Maintenance
 // Note: If $maintenance is set to 2, the forum will be unusable!
 // Change it to 0 to fix it.
@@ -42,8 +41,8 @@ $mmessage = 'Okay faithful users...we\'re attempting to restore an '
             .'older backup of the database...news will be posted once '
             .'we\'re back!';
 
-// Forum 
-$mbname = 'info-arena';
+// Forum
+$mbname = 'infoarena';
 $language = 'romanian-utf8';
 
 // URL to info-arena website

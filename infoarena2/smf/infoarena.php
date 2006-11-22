@@ -1,7 +1,24 @@
 <?php
 
-// init SMF hooks to integrate with info-arena
+// link some infoarena API
+//
+// WARNING:
+// This is really dirty practice! We can't do anything but hope there are
+// no serious name clashes between infoarena and SMF.
+// Somebody, please code some namespaces in PHP!
+//
+// NONE: We cannot link infoarena's db.php or log.php since it clashes
+// with SMF built-ins. We'll have to program our way around them.
 
+require_once(IA_ROOT."common/common.php");
+check_requirements();
+require_once(IA_ROOT."common/security.php");
+require_once(IA_ROOT."www/utilities.php");
+require_once(IA_ROOT."www/identity.php");
+
+
+// init SMF hooks to integrate with info-arena
+// These are native integration features built into SMF. Sweet!
 $ia_integration = array(
     'integrate_verify_user'  => 'ia_verify_user',
     'securityDisable'        => true,
@@ -11,30 +28,20 @@ $ia_integration = array(
 define("SMF_INTEGRATION_SETTINGS", serialize($ia_integration));
 
 
+// restore info-arena session (if such a session exists)
+identity_restore();
+
+
 
 
 // Determine which SMF user is logged based on info-arena
-// identity information
+// identity information.
+// This is an integration hook.
 function ia_verify_user() {
+    global $identity_user;
     global $db_prefix;
-    $key = '_ia_identity';
 
-    session_start();
-
-    // info-arena identity
-    if (isset($_SESSION[$key])) {
-        $ia_user = unserialize($_SESSION[$key]);
-        // basic checks
-        if (!is_array($ia_user) || !isset($ia_user['id'])
-            || !isset($ia_user['username'])) {
-            $ia_user = null;
-        }
-    }
-    else {
-        $ia_user = null;
-    }
-
-    if (!$ia_user) {
+    if (!$identity_user) {
         // When info-arena session is no longer active,
         // destroy any SMF session still hanging active
         global $cookiename;
@@ -48,7 +55,7 @@ function ia_verify_user() {
 	$result = db_query("
 		SELECT ID_MEMBER 
 		FROM {$db_prefix}members
-		WHERE memberName = '" . addslashes($ia_user['username']) . "'
+		WHERE memberName = '" . addslashes($identity_user['username']) . "'
 		LIMIT 1", __FILE__, __LINE__);
     $member_id = null;
 	list($member_id) = mysql_fetch_row($result);
@@ -59,8 +66,9 @@ function ia_verify_user() {
     }
     else {
         global $webmaster_email;
-        fatal_error("Utilizatorul {$ia_user['username']} nu are echivalent in "
-                    ."SMF! Va rugam sa contactati administratorul la adresa "
+        fatal_error("Utilizatorul {$identity_user['username']} nu are "
+                    ."echivalent in SMF! Va rugam sa contactati "
+                    ."administratorul la adresa "
                     .$webmaster_email);
     }
 }

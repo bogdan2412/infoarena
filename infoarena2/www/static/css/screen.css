@@ -12,25 +12,12 @@ body {
     color:#222;
 }
 
-.clear:after {
-    content:".";
-    height:0;
-    display:block;
-    visibility:hidden;
-    clear:both;
-}
-
-* html .clear {
-    height: 1%;
-}
-
 a {
     color:#006699;
     text-decoration:none;
 }
 
 a:hover {
-    background:#F8F8EF;
     text-decoration:underline;
 }
 
@@ -81,7 +68,7 @@ div.sidehelp {
     background-color: #ccf;
 }
 
-/* Layout */ 
+/* Layout */
 /*
 The basic layout of the homepage is as follows:
 
@@ -110,12 +97,6 @@ The basic layout of the homepage is as follows:
     text-align:left;
     background:#fff url(../images/top.gif) no-repeat top center;
     /*border:1px solid #9CA29E;*/
-}
-
-#header {
-    height: 80px;
-    background: url(../images/shield_new_tile.jpg) repeat-x top left;
-    position: relative;
 }
 
 #content_small {
@@ -150,15 +131,6 @@ The basic layout of the homepage is as follows:
     padding:5px;
     background:#fc0 url(../images/upcoming.jpg) no-repeat bottom left;
     border:1px solid #fc0;
-}
-
-#footer {
-    border-top:1px solid #B7D285;
-    background:url(../images/footer.jpg) repeat-x top;
-    margin-top:1px;
-    padding:10px 20px;
-    font-size:11px;
-    color:#999;
 }
 
 #upcoming ul, #newprobs ul {
@@ -197,32 +169,9 @@ The basic layout of the homepage is as follows:
 }
 
 #upcoming a span {
-display:block;
+    display:block;
 }
 
-
-/* Page header */
-#header h1 a {
-    background:url(../images/shield_new.jpg) no-repeat left top;
-    height:60px;
-    width:300px;
-    text-indent:-9999px;
-    display: block;
-}
-
-#header #search {
-    float:right;
-    padding: 12px 15px;
-    background:#5C880B url(../images/search.jpg) no-repeat bottom left;
-}
-
-#header #search input {
-    vertical-align:middle;
-}
-
-#header #search #inputbox {
-    width:120px;
-}
 
 /* Wikipage options (actions) */
 #wikiOps {
@@ -272,7 +221,7 @@ display:block;
 
 #nav li a {
     display:block;
-    padding:3px 15px; 
+    padding:3px 15px;
     color:#6A6A6B;
     text-decoration:none;
     background:url(../images/bullet.gif) no-repeat 3px center ;
@@ -322,8 +271,7 @@ display:block;
 #login h2 {
     text-transform:uppercase;
     font-size:14px;
-    font-weight:bold;
-    
+    font-weight:bold; 
 }
 
 #login input {
@@ -463,29 +411,6 @@ display:block;
 .strap a {
     font-weight:bold;
     text-transform:uppercase;
-}
-
-/* Footer */
-#footer ul {
-}
-
-#footer li {
-    display:block;
-    float:left;
-    margin-right:15px;
-}
-
-#footer li.top {
-    float:right;
-}
-
-#footer li a {
-    display:block;
-}
-
-#footer p {
-    font-size:10px;
-    margin-top:6px;
 }
 
 /* Macros */

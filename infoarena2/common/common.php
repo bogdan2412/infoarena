@@ -1,7 +1,5 @@
 <?php
 
-require_once(IA_ROOT . 'common/log.php');
-
 // Nicer way to get an element from an array. It returns a default value
 // (defaulting to null) instead of throwing an error.
 function getattr($dict, $attribute, $defaultValue = null) {
