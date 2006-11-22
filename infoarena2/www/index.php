@@ -36,7 +36,10 @@ if ($page == "") {
 }
 
 // Prepare some vars for url handler.
+// Filter empty path elements. Strips extra '/'s
 $pagepath = explode('/', $page);
+$pagepath = array_filter($pagepath, create_function('$var', 'return $var != "";'));
+$page = implode('/', $pagepath);
 $urlstart = getattr($pagepath, 0, '');
 $page_id = implode('/', array_slice($pagepath, 1));
 $action = request('action', 'view');
@@ -59,19 +62,20 @@ if (isset($directmaps[$urlstart])) {
     $fname($page_id);
 }
 
-// Admin pages.
-else if ($urlstart == 'admin') {
-    // Task detail editor.
+// Task detail editor.
+else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'task') {
     $obj_id = implode("/", array_slice($pagepath, 2));
-    if (getattr($pagepath, 1) == 'task') {
-        require_once('controllers/task.php');
-        if ($action == 'save') {
-            controller_task_save_details($obj_id);
-        } else {
-            controller_task_edit_details($obj_id);
-        }
+    require_once('controllers/task.php');
+    if ($action == 'save') {
+        controller_task_save_details($obj_id);
+    } else {
+        controller_task_edit_details($obj_id);
     }
-    // Round detail editor.
+}
+
+// Round detail editor.
+else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'round') {
+    $obj_id = implode("/", array_slice($pagepath, 2));
     if (getattr($pagepath, 1) == 'round') {
         require_once('controllers/round.php');
         if ($action == 'save') {
