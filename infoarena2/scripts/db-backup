@@ -1,0 +1,17 @@
+#! /usr/bin/env php
+<?php
+
+require_once("utilities.php");
+
+// This is a really dumb script that calls to mysqldump.
+// Uses auth stuff from config.php.
+// FIXME: password visible in ps list. How retarded.
+
+$cmd = sprintf("mysqldump --user=%s --password=%s --host=%s %s > %s",
+        DB_USER, DB_PASS, DB_HOST, DB_NAME, IA_ROOT . "backup.sql");
+
+log_print("Running '$cmd'");
+
+system($cmd);
+
+?>

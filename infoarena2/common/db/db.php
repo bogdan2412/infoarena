@@ -4,8 +4,6 @@
 // Note: We keep database-persisted "models" very simple. Most of them are
 // simple dictionaries. 
 
-require_once("../common/log.php");
-
 // Establish database connection
 // Repetitive include guard. Is this really needed?
 log_assert(!isset($dbLink));

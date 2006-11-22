@@ -1,37 +1,7 @@
 #! /usr/bin/env php
 <?php
 
-echo "********************************\n";
-echo "*** IMPORT SCRIPT 2.0 (beta) ***\n";
-echo "********************************\n";
-
-require_once("../config.php");
-require_once("../common/common.php");
-require_once("../common/db/db.php");
-
-if (!function_exists("finfo_open")) {
-    log_warn("finfo not found, mime type defaults to application/octet-stream");
-}
-
-function read_line($caption = "") {
-    echo $caption;
-    $r = trim(fgets(STDIN));
-    return $r;
-}
-
-// Same as read_line, but returns true/false
-function read_question($caption = "") {
-    while (true) {
-        $answer = read_line($caption);
-        if (preg_match("/t|true|y|yes|d|da/i", $answer)) {
-            return true;
-        }
-        if (preg_match("/f|false|n|no|nu/i", $answer)) {
-            return false;
-        }
-        echo "Raspunde da/nu/true/false/etc. Ceva sa inteleg si eu.";
-    }
-}
+require_once("utilities.php");
 
 // Attach a file(from the disk) to a certain page as attachment $attname.
 function magic_file_attach($page, $attname, $file)
@@ -119,9 +89,8 @@ function magic_title($ugly_title) {
 if (1 < $argc) {
     $ia1_path = $argv[1];
 } else {
-    $ia1_path = read_line("Calea catre info-arena 1.0:\n");
+    $ia1_path = read_line("Unde gasesc info-arena 1.0?");
 }
-
 
 //
 // Connect to database.
@@ -130,14 +99,14 @@ log_assert(!isset($dbOldLink));
 $dbOldLink = mysql_connect(DB_HOST, DB_USER, DB_PASS, true) or log_die('IMPORT: Cannot connect to database.');
 mysql_select_db("infoarena1", $dbOldLink) or log_die('IMPORT: Cannot select database.');
 
-if (read_question("Delete wiki? ")) {
+if (read_bool("Delete wiki?", false)) {
     db_query("TRUNCATE TABLE ia_textblock_revision");
     db_query("DELETE FROM ia_textblock
                 WHERE NOT (`name` LIKE 'template/%') AND
                       NOT (`name` LIKE 'sandbox/%') AND `name` != 'Home'");
 }
 
-if (read_question("Delete attachments? ")) {
+if (read_bool("Delete attachments?", false)) {
     log_warn("Actual files are not deleted.");
     db_query("TRUNCATE TABLE ia_file");
 }
@@ -145,10 +114,10 @@ if (read_question("Delete attachments? ")) {
 //
 // Import users.
 //
-if (read_question("Import users? ")) {
+if (read_bool("Import users?", false)) {
     $query = "SELECT * FROM devnet_users";
 
-    $import_avatars = read_question("Attach old avatars? ");
+    $import_avatars = read_bool("Attach old avatars?", false);
 
     db_query("TRUNCATE TABLE ia_user");
     $result = mysql_query("SELECT * FROM devnet_users", $dbOldLink);
@@ -183,14 +152,14 @@ if (read_question("Import users? ")) {
     }
 }
 
-if (read_question("Clean user password & email? ")) {
+if (read_bool("Clean user password & email?", true)) {
     db_query("UPDATE `ia_user` SET `password`=SHA1(CONCAT(LCASE(`username`),LCASE(`username`))), `email`='no@spam.com'");
 }
 
 //
 //  Import rounds.
 //
-if (read_question("Import rounds? ")) {
+if (read_bool("Import rounds?", false)) {
     log_print("Importing rounds...");
     db_query("TRUNCATE TABLE ia_round");
     db_query("TRUNCATE TABLE ia_round_task");
@@ -238,7 +207,7 @@ if (read_question("Import rounds? ")) {
 //
 //  Import scores
 //
-if (read_question("Import scores? ")) {
+if (read_bool("Import scores?", false)) {
     log_print("Importing scores... might take a while.");
 
     // Prevents adding missing contests
@@ -266,12 +235,12 @@ if (read_question("Import scores? ")) {
 //
 //  Import tasks
 //
-if (read_question("Import tasks? ")) {
+if (read_bool("Import tasks?", false)) {
     db_query("TRUNCATE TABLE ia_task");
     db_query("DELETE FROM ia_file WHERE `page` LIKE 'task/%'");
-    $import_text = read_question("Import task statements? ");
-    $import_eval = read_question("Import task evaluators? ");
-    $import_tests = read_question("Import task tests? ");
+    $import_text = read_bool("Import task statements?", false);
+    $import_eval = read_bool("Import task evaluators?", true);
+    $import_tests = read_bool("Import task tests?", true);
 
     if ($import_text) {
         log_print('Deleting task statements.');
@@ -360,7 +329,7 @@ if (read_question("Import tasks? ")) {
     }
 }
 
-if (read_question('Import articles? ')) {
+if (read_bool('Import articles?', false)) {
     // hash article categories
     $art_cat = mysql_query("SELECT * FROM info_artcat", $dbOldLink);
     if (!$art_cat){
@@ -407,7 +376,7 @@ if (read_question('Import articles? ')) {
     textblock_add_revision("articles", "Articole", $article_index, 0);
 };
 
-if (read_question("Import resources? ")) {
+if (read_bool("Import links?", false)) {
     $resources = mysql_query("SELECT *, DATE_FORMAT(postDate, '%Y-%m-%d') AS postDate
                              FROM info_res ORDER BY postDate DESC", $dbOldLink);
     if (!$resources){
@@ -452,7 +421,7 @@ if (read_question("Import resources? ")) {
     textblock_add_revision("links", "Link-uri", $resource_index, 0);
 }
     
-if (read_question("Import downloads? ")) {
+if (read_bool("Import downloads?", false)) {
     $downloads = mysql_query("SELECT *, DATE_FORMAT(postDate, '%Y-%m-%d') AS postDate
                              FROM info_down ORDER BY postDate DESC", $dbOldLink);
     if (!$downloads){
