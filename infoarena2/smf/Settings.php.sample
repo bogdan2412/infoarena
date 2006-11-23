@@ -52,6 +52,7 @@ $infoarenaurl = IA_URL;
 $boardurl = IA_SMF_URL;
 
 // Name of the cookie to set for authentication
+// NOTE: This is never used
 $cookiename = 'SMFCookie3210';
 
 // Database Info
@@ -72,9 +73,9 @@ $db_last_error = 0;
 
 // Make sure the paths are correct... at least try to fix them.
 if (!file_exists($boarddir) && file_exists(dirname(__FILE__) . '/agreement.txt'))
-	$boarddir = dirname(__FILE__);
+    $boarddir = dirname(__FILE__);
 if (!file_exists($sourcedir) && file_exists($boarddir . '/Sources'))
-	$sourcedir = $boarddir . '/Sources';
+    $sourcedir = $boarddir . '/Sources';
 
 $db_character_set = 'utf8';
 

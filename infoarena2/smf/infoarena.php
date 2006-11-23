@@ -23,6 +23,7 @@ $ia_integration = array(
     'integrate_verify_user'  => 'ia_verify_user',
     'securityDisable'        => true,
     'databaseSession_enable' => false,
+    'theme_default'          => 1,
 );
 
 define("SMF_INTEGRATION_SETTINGS", serialize($ia_integration));
