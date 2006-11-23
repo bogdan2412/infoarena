@@ -21,7 +21,7 @@ function round_get_info() {
     global $dbLink;
     $query = sprintf("SELECT `ia_round`.`id` AS `id`, `ia_round`.`type` AS `type`,
                              `ia_round`.`title` AS `title`,
-                             `ia_round`.`active` AS `active`,
+                             `ia_round`.`hidden` AS `hidden`,
                              `ia_round`.`user_id` AS `user_id`
                       FROM `ia_round`
                       ORDER BY `ia_round`.`title`");
@@ -36,13 +36,13 @@ function round_get_textblock($round_id) {
     return textblock_get_revision('round/' . $round_id);
 }
 
-function round_create($round_id, $type, $user_id, $active) {
+function round_create($round_id, $type, $user_id, $hidden) {
     global $dbLink;
     $query = sprintf("INSERT INTO `ia_round`
-                        (`id`, `type`, user_id, `active`)
+                        (`id`, `type`, user_id, `hidden`)
                       VALUES (LCASE('%s'), '%s', '%s', '%s')",
                      db_escape($round_id), db_escape($type),
-                     db_escape($user_id), db_escape($active));
+                     db_escape($user_id), db_escape($hidden));
     db_query($query);
     $new_round = round_get($round_id);
     log_assert($new_round, 'New round input was validated OK but no database entry was created');
@@ -54,17 +54,17 @@ function round_create($round_id, $type, $user_id, $active) {
 
     require_once(IA_ROOT . "common/textblock.php");
     $replace = array("round_id" => $round_id);
-    textblock_copy_replace("template/newround", "round/$round_id", $replace, "public", $user_id);
+    textblock_copy_replace("template/newround", "round/$round_id", $replace, "round: $round_id", $user_id);
 
     return $new_round['id'];
 }
 
-function round_update($round_id, $type, $active) {
+function round_update($round_id, $type, $hidden) {
     $query = sprintf("UPDATE `ia_round`
-                      SET `type` = '%s', `active` = '%s'
+                      SET `type` = '%s', `hidden` = '%s'
                       WHERE `id` = LCASE('%s')
                       LIMIT 1",
-                     db_escape($type), db_escape($active),
+                     db_escape($type), db_escape($hidden),
                      db_escape($round_id));
     return db_query($query);
 }

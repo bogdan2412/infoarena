@@ -36,33 +36,28 @@ function round_get_parameter_infos_hack() {
 function round_validate_parameters($round_type, $parameters) {
     $errors = array();
     if ($round_type == 'classic') {
+
+        // Check start time.
         if (!is_datetime($parameters['starttime'])) {
             $errors['starttime'] = "Momentul de inceput trebuie specificat in format YYYY-MM-DD HH:MM:SS.";
-        }
-        else {
-            $tstamp = parse_datetime($parameters['starttime']);
-            if ($tstamp < time()) {
-                $errors['starttime'] = 'Momentul de inceput trebuie sa fie in viitor.';
-            }
+            $start_tstamp = false;
+        } else {
+            $start_tstamp = parse_datetime($parameters['starttime']);
         }
 
-        // FIXME: Make sure endtime is in the future, greater than starttime
+        // Check end time.
         if (!is_datetime($parameters['endtime'])) {
             $errors['endtime'] = "Momentul de sfarsit trebuie specificat in format YYYY-MM-DD HH:MM:SS.";
+            $end_tstamp = false;
+        } else {
+            $end_tstamp = parse_datetime($parameters['endtime']);
         }
-        else {
-            $tstamp = parse_datetime($parameters['endtime']);
-            $tstamp0 = is_datetime($parameters['starttime']) ? parse_datetime($parameters['starttime']) : false;
 
-            if ($tstamp < time()) {
-                $errors['endtime'] = 'Momentul de sfarsit trebuie sa fie in viitor.';
-            }
-            else if ($tstamp0 && ($tstamp < $tstamp0)) {
-                $errors['endtime'] = 'Sfarsitul trebuie sa fie dupa inceput. ;)';
-            }
+        // Check start time < end time.
+        if ($start_tstamp && $end_tstamp && ($tstamp < $tstamp0)) {
+            $errors['endtime'] = 'Sfarsitul trebuie sa fie dupa inceput.';
         }
-    }
-    else {
+    } else {
         log_error("Bad round_type");
     }
 

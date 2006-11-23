@@ -59,6 +59,15 @@ function security_query($user, $action, $object) {
     }
 }
 
+// Check if textblock security string is valid
+// FIXME: check task/round existence?
+function is_textblock_security_descriptor($descriptor)
+{
+    return  preg_match("/^ \s* task: \s* ([a-z0-9]*) \s* $/xi", $descriptor) ||
+            preg_match("/^ \s* round: \s* ([a-z0-9]*) \s* $/xi", $descriptor) ||
+            preg_match('/^ \s* (private|protected|public) \s* $/xi', $descriptor);
+}
+
 // Handles textblock security.
 function security_textblock($user, $action, $textblock) {
     $textsec = $textblock['security'];
@@ -73,6 +82,17 @@ function security_textblock($user, $action, $textblock) {
         }
         return security_task($user, $action, $task);
     }
+
+    // Forward security to round.
+    if (preg_match("/^ \s* round: \s* ([a-z0-9]*) \s* $/xi", $textsec, $matches)) {
+        $round = round_get($matches[1]);
+        if ($round === null) {
+            log_warn("Bad security descriptor, ask an admin.");
+            return $usersec == 'admin';
+        }
+        return security_round($user, $action, $round);
+    }
+
     if (preg_match('/^ \s* (private|protected|public) \s* $/xi', $textsec, $matches)) {
         $textsec = $matches[1];
     } else {

@@ -1,5 +1,7 @@
 <?
+
 require_once("db.php");
+require_once(IA_ROOT . "common/security.php");
 
 // Textblock-related db functions.
 //
@@ -8,6 +10,9 @@ require_once("db.php");
 // Add a new revision
 // FIXME: hash parameter?
 function textblock_add_revision($name, $title, $content, $user_id, $security = "public", $timestamp = null) {
+    assert(is_textblock_security_descriptor($security));
+    assert(is_whole_number($user_id));
+
     // copy current version to revision table
     $query = sprintf("INSERT INTO ia_textblock_revision
                         SELECT *

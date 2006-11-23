@@ -11,8 +11,10 @@ require_once(IA_ROOT . "common/db/textblock.php");
 function textblock_copy_replace($srcprefix, $dstprefix, $replace, $security, $user_id)
 {
     assert($srcprefix != $dstprefix);
+    assert(is_textblock_security_descriptor($security));
+    assert(is_whole_number($user_id));
 
-    $textblocks = textblock_get_list_by_prefix($srcprefix, true, false);
+    $textblocks = textblock_get_by_prefix($srcprefix, true, false);
     foreach ($textblocks as $textblock) {
         if ($replace !== null) {
             textblock_template_replace($textblock, $replace);
@@ -23,7 +25,7 @@ function textblock_copy_replace($srcprefix, $dstprefix, $replace, $security, $us
         $textblock['name'] = preg_replace('/^'.preg_quote($srcprefix, '/').'/i', $dstprefix, $textblock['name']);
         log_print("Adding {$textblock['name']}");
         textblock_add_revision($textblock['name'], $textblock['title'],
-                $textblock['text'], $textblock['security'], $user_id);
+                $textblock['text'], $user_id, $textblock['security']);
     }
 }
 

@@ -221,6 +221,7 @@ if (read_bool("Import rounds?", false)) {
     db_query("DELETE FROM ia_textblock WHERE `name` LIKE 'round/%'");
     db_query("DELETE FROM ia_textblock_revision WHERE `name` LIKE 'round/%'");
     db_query("DELETE FROM ia_file WHERE `page` LIKE 'round/%'");
+    db_query("DELETE FROM ia_parameter_value WHERE `object_type` = 'round'");
 
     // DB query.
     $result = mysql_query("SELECT * FROM contests", $dbOldLink);
@@ -231,24 +232,28 @@ if (read_bool("Import rounds?", false)) {
         $contest['ID'] = strip_tags($contest['ID']);
         log_print("Adding round \"".$contest['ID']."\" ...");
 
+        // Create round.
         $round_id = $contest['ID'];
         $round_type = "classic";
         $round_user_id = 0;
         $round_active = false;
         round_create($round_id, $round_type, $round_user_id, $round_active);
 
-        /*
-            TO DO:
-            insert round parameters into database
-        */
+        // Basic text import.
+        $textblock_content = "h1: Runda {$round_id}\n\n";
+        $textblock_content .= magic_convert_textile(null, $contest['overview']);
+        $textblock_content .= "\n\nh2. 'Clasament':round/$round_id/clasament\n\nh2. Logo\n\n!round/$round_id?logo!";
+        textblock_add_revision(
+                "round/".$round_id,
+                strip_tags($contest['name']),
+                $textblock_content,
+                0, 'public');
 
-        $textblock_content = "";
-        $textblock_content .= "==Include(page=\"template/roundheader\" round_id=\"$round_id\")==\n\n";
-        $textblock_content .= "p. %{color:red}Reverse% %{color:blue}textile% %{color:green}here.%\n";
-        $textblock_content .= "==Include(page=\"template/roundfooter\" round_id=\"$round_id\")==";
-        $template = textblock_get_revision('template/new_round');
-        textblock_add_revision("round/".$round_id, $contest['name'], $textblock_content, 0);
+        // Attach logo.
+        $logo_file_name = $ia1_path . "www/infoarena/docs/$round_id/".$contest['logoimg'];
+        magic_file_attach("round/$round_id", "logo", $logo_file_name);
 
+        // Import task list.
         $task_list = mysql_query("SELECT * FROM tasktable_".$contest['ID']);
         $tasks = array();
         while ($task = mysql_fetch_assoc($task_list)) {
@@ -292,13 +297,14 @@ if (read_bool("Import scores?", false)) {
 //
 if (read_bool("Import tasks?", false)) {
     db_query("TRUNCATE TABLE ia_task");
-    db_query("DELETE FROM ia_file WHERE `page` LIKE 'task/%'");
+    db_query("DELETE FROM ia_parameter_value WHERE `object_type` = 'task'");
     $import_text = read_bool("Import task statements?", false);
     $import_eval = read_bool("Import task evaluators?", true);
     $import_tests = read_bool("Import task tests?", true);
 
     if ($import_text) {
         log_print('Deleting task statements.');
+        db_query("DELETE FROM ia_file WHERE `page` LIKE 'task/%'");
         db_query("DELETE FROM ia_textblock WHERE `name` LIKE 'task/%'");
         db_query("DELETE FROM ia_textblock_revision WHERE `name` LIKE 'task/%'");
     }
