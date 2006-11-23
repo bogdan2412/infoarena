@@ -32,8 +32,6 @@ define("SMF_INTEGRATION_SETTINGS", serialize($ia_integration));
 identity_restore();
 
 
-
-
 // Determine which SMF user is logged based on info-arena
 // identity information.
 // This is an integration hook.
@@ -52,14 +50,14 @@ function ia_verify_user() {
     }
 
     // relate ia_user with SMF member
-	$result = db_query("
-		SELECT ID_MEMBER 
-		FROM {$db_prefix}members
-		WHERE memberName = '" . addslashes($identity_user['username']) . "'
-		LIMIT 1", __FILE__, __LINE__);
+    $result = db_query("
+                SELECT ID_MEMBER 
+                FROM {$db_prefix}members
+                WHERE memberName = '" . addslashes($identity_user['username']) . "'
+                LIMIT 1", __FILE__, __LINE__);
     $member_id = null;
-	list($member_id) = mysql_fetch_row($result);
-	mysql_free_result($result);
+    list($member_id) = mysql_fetch_row($result);
+    mysql_free_result($result);
 
     if ($member_id) {
         return $member_id;

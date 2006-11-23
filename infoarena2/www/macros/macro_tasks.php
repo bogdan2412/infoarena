@@ -37,16 +37,11 @@ function macro_tasks($args) {
     $tasks = round_get_task_info($round_id, $options['first_entry'], $options['display_entries']);
     $options['total_entries'] = round_get_task_count($round_id);
 
-    // For the task column.
-    function format_task_link($row)
-    {
-        return '<a href="'.url($row['page_name']).'">' . $row['title'] . '</a>';
-    }
-
     $column_infos = array(
             array(
                 'title' => 'Titlul problemei',
-                'rowform' => 'format_task_link',
+                'rowform' => create_function('$row',
+                        'return "<a href=\"".url($row["page_name"])."\">".$row["title"]."</a>";'),
             ),
     );
 

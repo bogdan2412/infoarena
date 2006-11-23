@@ -50,6 +50,10 @@ define("IA_ROOT_WWW", IA_ROOT . "www/");
 // Attachment dir
 define("IA_ATTACH_DIR", IA_ROOT . "attach/");
 
+// cookie domain
+// leave null when working on localhost
+define("IA_COOKIE_DOMAIN", null);
+
 // Fatal error mask.
 // These are the errors the scripts halts on.
 // E_ALL & ~ (E_USER_NOTICE | E_USER_WARNING)

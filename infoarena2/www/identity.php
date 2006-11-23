@@ -68,7 +68,11 @@ function identity_require($action, $ontoObject = null, $errorMessage = null,
 // identity information from cookie-based session
 // Returns identity (user) object instance
 function identity_from_session() {
+    // cookie lasts for 6h
+    session_set_cookie_params(6*3600, '/', IA_COOKIE_DOMAIN);
+    session_name('infoarena2sessid');
     session_start();
+
     if (isset($_SESSION['_ia_identity'])) {
         // log_print('Restoring identity from PHP session');
         $identity = unserialize($_SESSION['_ia_identity']);
@@ -86,7 +90,7 @@ function identity_from_http() {
     $user = getattr($_SERVER, 'PHP_AUTH_USER');
     $pass = getattr($_SERVER, 'PHP_AUTH_PW');
 
-    if ($user || $pass) {
+    if (function_exists('user_test_password') && ($user || $pass)) {
         // somebody is trying to authenticate via HTTP
         // log_print('Restoring identity from HTTP AUTH headers');
         $user = user_test_password($user, $pass);

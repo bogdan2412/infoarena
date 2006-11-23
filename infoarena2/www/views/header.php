@@ -51,13 +51,13 @@ ia_template_topnav($topnav_select, $smf_admin);
     <?php } ?>
 
     <ul id="nav" class="clear">
-        <li><a href="<?= url('Home') ?>">Prima pagina</a></li>
-        <li><a href="<?= url('News') ?>">Arhiva stiri</a></li>
-        <li><a href="<?= url('round/arhiva') ?>">Arhiva de probleme</a></li>
-        <li><a href="<?= url('Contests') ?>">Concursuri</a></li>
-        <li><a href="<?= url('Articles') ?>">Articole</a></li>
-        <li><a href="<?= url('Links') ?>">Link-uri</a></li>
-        <li><a href="<?= url('Downloads') ?>">Download-uri</a></li>
+        <li><a href="<?= url('home') ?>">Prima pagina</a></li>
+        <li><a href="<?= url('news') ?>">Arhiva stiri</a></li>
+        <li><a href="<?= url('arhiva') ?>">Arhiva de probleme</a></li>
+        <li><a href="<?= url('lista-rundelor') ?>">Concursuri</a></li>
+        <li><a href="<?= url('articole') ?>">Articole</a></li>
+        <li><a href="<?= url('links') ?>">Link-uri</a></li>
+        <li><a href="<?= url('downloads') ?>">Download-uri</a></li>
         <li><a href="<?= IA_SMF_URL ?>">Forum</a></li>
         <?php if (identity_can('user-editprofile', $identity_user)) { ?>
         <li class="separator"><hr/></li>
