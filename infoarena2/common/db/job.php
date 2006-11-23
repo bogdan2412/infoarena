@@ -26,7 +26,7 @@ function job_get_next_job() {
         WHERE `status` != 'done' AND `next_eval` < NOW()
         ORDER BY `submit_time` ASC LIMIT 1
     ";
-    return db_fetch($query);      
+    return db_fetch($query);
 }
 
 // Mark job status and next_eval.

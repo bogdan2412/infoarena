@@ -77,13 +77,20 @@ function url_from_args($args, $absolute = false)
     return $url;
 }
 
+// Url to user profile page
+function user_profile_url($username, $absolute = false) {
+    return url('utilizator/'.$username, array(), $absolute);
+}
+
+// Url to task page
+function task_url($task_id, $absolute = false) {
+    return url('problema/'.$task_id, array(), $absolute);
+}
+
 // Get an url for an attachement
-function attachment_url($page, $file)
-{
-    return url($page, array(
-            'action' => 'download',
-            'file' => $file,
-    ));
+function attachment_url($page, $file, $absolute = false) {
+    return url($page, array('action' => 'download', 'file' => $file),
+               false);
 }
 
 // Get an url for a resized image.

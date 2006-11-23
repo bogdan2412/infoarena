@@ -45,28 +45,22 @@ ia_template_topnav($topnav_select, $smf_admin);
 <div id="sidebar">
     <?php if (!identity_anonymous()) { ?>
     <div id="avatar">
-        <a href="<?= url("user/".$identity_user['username']) ?>"><img width="50" height="50" src="<?= url('user/'.$identity_user['username'], array('action' => 'download', 'file' => 'avatar', 'resize'=>'@50x50')) ?>" /></a>
-        <p><strong><?= $identity_user['username'] ?></strong></p>
+        <a href="<?= user_profile_url($identity_user['username']) ?>"><img src="<?= url('user/'.$identity_user['username'], array('action' => 'download', 'file' => 'avatar', 'resize'=>'@50x50')) ?>" /></a>
+        <p><strong><a href="<?= user_profile_url($identity_user['username']) ?>"><?= $identity_user['username'] ?></a></strong><br/><?= htmlentities($identity_user['full_name']) ?></p>
     </div>
     <?php } ?>
 
     <ul id="nav" class="clear">
-        <li><a href="<?= url('home') ?>">Prima pagina</a></li>
-        <li><a href="<?= url('news') ?>">Arhiva stiri</a></li>
-        <li><a href="<?= url('arhiva') ?>">Arhiva de probleme</a></li>
-        <li><a href="<?= url('lista-rundelor') ?>">Concursuri</a></li>
+        <li><a href="<?= url('arhiva-probleme') ?>">Arhiva de probleme</a></li>
+        <li><a href="<?= url('concursuri') ?>">Concursuri online</a></li>
         <li><a href="<?= url('articole') ?>">Articole</a></li>
-        <li><a href="<?= url('links') ?>">Link-uri</a></li>
-        <li><a href="<?= url('downloads') ?>">Download-uri</a></li>
-        <li><a href="<?= IA_SMF_URL ?>">Forum</a></li>
-        <?php if (identity_can('user-editprofile', $identity_user)) { ?>
-        <li class="separator"><hr/></li>
-        <li><a href="<?= url('profile') ?>">Profilul meu</a></li>
-        <li><a href="<?= url('logout') ?>">Inchide sesiunea</a></li>
-        <? } ?>
+        <li><a href="<?= url('downloads') ?>">Downloads</a></li>
+        <li><a href="<?= url('links') ?>">Links</a></li>
+        <li><a href="<?= url('stiri') ?>">Arhiva de stiri</a></li>
+        <li><a href="<?= url('arhiva-stiri') ?>">Despre infoarena</a></li>
         <li class="separator"><hr/></li>
         <?php if (!identity_anonymous()) { ?>
-        <li><a href="<?= url('submit') ?>">Trimite solutii</a></li>
+        <li><strong><a href="<?= url('submit') ?>">Trimite solutii</a></strong></li>
         <?php } ?>
         <li><a href="<?= url('monitor') ?>">Monitorul de evaluare</a></li>
     </ul>
@@ -83,7 +77,7 @@ ia_template_topnav($topnav_select, $smf_admin);
         </form>
         <ul>
             <li><a href="<?= url("reset_pass") ?>">Am uitat parola</a></li>
-            <li><a href="<?= url('register') ?>">Inregistreaza-te!</a></li>
+            <li><a href="<?= url('register') ?>">Ma inregistrez!</a></li>
         </ul>
     </div>
     <?php } ?>

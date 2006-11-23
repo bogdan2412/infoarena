@@ -22,6 +22,8 @@ function ia_template_header() {
 
 // display main navigation bar 
 function ia_template_topnav($selected = 'infoarena', $smf_admin = false) {
+    global $identity_user;
+
     $pre = array($selected => '<strong>');
     $post = array($selected => '</strong>');
 ?>
@@ -29,12 +31,12 @@ function ia_template_topnav($selected = 'infoarena', $smf_admin = false) {
 <ul>
     <li><?= getattr($pre, 'infoarena') ?><a href="<?= url('', array(), true) ?>">info<em>arena</em></a><?= getattr($post, 'infoarena') ?></li>
     <li><?= getattr($pre, 'forum') ?><a href="<?= IA_SMF_URL ?>">forum</a><?= getattr($post, 'forum') ?></li>
-    <li><?= getattr($pre, 'calendar') ?><a href="<?= IA_SMF_URL ?>?action=calendar">calendar</a><?= getattr($post, 'calendar') ?></li>
+    <li><?= getattr($pre, 'calendar') ?><a href="<?= IA_SMF_URL ?>?action=calendar">calendar competitii</a><?= getattr($post, 'calendar') ?></li>
 <?php if (identity_anonymous()) { ?>
     <li><?= getattr($pre, 'login') ?><a href="<?= url('login', array(), true) ?>">autentificare</a><?= getattr($post, 'login') ?></li>
     <li><?= getattr($pre, 'register') ?><a href="<?= url('register', array(), true) ?>">inregistrare</a><?= getattr($post, 'register') ?></li>
 <?php } else { ?>
-    <li><?= getattr($pre, 'profile') ?><a href="<?= url('profile', array(), true) ?>">profilul meu</a><?= getattr($post, 'profile') ?></li>
+    <li><?= getattr($pre, 'profile') ?><a href="<?= user_profile_url($identity_user['username'], true) ?>">profilul meu</a><?= getattr($post, 'profile') ?></li>
     <li><?= getattr($pre, 'pm') ?><a href="<?= IA_SMF_URL ?>?action=pm">mesaje</a><?= getattr($post, 'pm') ?></li>
 <?php if ($smf_admin) { ?>
     <li><?= getattr($pre, 'smf_admin') ?><a href="<?= IA_SMF_URL ?>?action=admin">forum admin</a><?= getattr($post, 'smf_admin') ?></li>
@@ -53,12 +55,12 @@ function ia_template_footer() {
 <div id="footer">
     <ul class="clear">
         <li><a href="<?= url('', array(), true) ?>">Prima pagina</a></li>
-        <li><a href="<?= url('Despre', array(), true) ?>">Despre info-arena</a></li>
-        <li><a href="<?= url('Termeni', array(), true) ?>">Termeni si conditii</a></li>
+        <li><a href="<?= url('Despre-infoarena', array(), true) ?>">Despre infoarena</a></li>
+        <li><a href="<?= url('Termeni-si-conditii', array(), true) ?>">Termeni si conditii</a></li>
         <li><a href="<?= url('Contact', array(), true) ?>">Contact</a></li>
         <li class="top"><a href="#header">Sari la inceputul paginii &uarr;</a></li>
     </ul>
-    <p>&copy; 2006 - <a href="<?= url('Asociatia_info-arena', array(), true) ?>">asociatia info-arena</a></p>
+    <p>&copy; 2006 - <a href="<?= url('Asociatia-infoarena', array(), true) ?>">Asociatia infoarena</a></p>
 </div>
 <?php
 }

@@ -7,7 +7,7 @@ include('header.php');
 
 print('<h1>'.htmlentities($view['title']).'</h1>');
 if (!$jobs) {
-    print "<h3>Nu s-a gasit nici o submisie</h3>";
+    print "<h3>Nici o solutie in coada de evaluare</h3>";
 } else {
     // For the score column.
     function format_state($row) {
@@ -23,7 +23,7 @@ if (!$jobs) {
             return href($url, $msg);
         }
         if ($row['status'] == 'waiting') {
-            $msg = '<span style="color:blue">in asteaptare</span>';
+            $msg = '<span style="color:blue">in asteptare</span>';
             return href($url, $msg);
         }
         log_die("Invalid job status");
