@@ -96,8 +96,8 @@ if (1 < $argc) {
 // Connect to database.
 //
 log_assert(!isset($dbOldLink));
-$dbOldLink = mysql_connect(DB_HOST, DB_USER, DB_PASS, true) or log_die('IMPORT: Cannot connect to database.');
-mysql_select_db("infoarena1", $dbOldLink) or log_die('IMPORT: Cannot select database.');
+$dbOldLink = mysql_connect(DB_HOST, DB_USER, DB_PASS, true) or log_error('IMPORT: Cannot connect to database.');
+mysql_select_db("infoarena1", $dbOldLink) or log_error('IMPORT: Cannot select database.');
 
 if (read_bool("Delete wiki?", false)) {
     db_query("TRUNCATE TABLE ia_textblock_revision");
@@ -152,8 +152,29 @@ if (read_bool("Import users?", false)) {
     }
 }
 
-if (read_bool("Clean user password & email?", true)) {
-    db_query("UPDATE `ia_user` SET `password`=SHA1(CONCAT(LCASE(`username`),LCASE(`username`))), `email`='no@spam.com'");
+if (read_bool("Clean user password & email?", false)) {
+    db_query("UPDATE `ia_user` SET `password`=SHA1(CONCAT(LCASE(`username`),`username`)), `email`='no@spam.com'");
+}
+
+//
+// Import users into forum
+//
+if (read_bool("Import infoarena users into SMF user table?", false)) {
+    log_print("Creating SMF users ...");
+    $smfprefix = DB_SMF_PREFIX;
+
+    // fetch all infoarena users
+    db_query("TRUNCATE TABLE {$smfprefix}members");
+    $ia_users = db_fetch_all("SELECT * FROM ia_user");
+
+    // iterate & create smf users
+    $count = 0;
+    foreach ($ia_users as $ia_user) {
+        $member_id = smf_create_user($ia_user);
+        log_assert($member_id, "Could not create SMF user for {$ia_user['username']}!");
+        $count++;
+    }
+    log_print("DONE importing {$count} SMF users");
 }
 
 //
@@ -456,7 +477,7 @@ if (read_bool("Import downloads?", false)) {
             if ($download['catId'] != $cat['id'] || !$download['visible']) continue;
 
 	    $download['href'] = preg_replace('/[^a-z0-9\.\-_]/i', '_', $download['href']);
-	    
+
             // attach the file
             $fname = $ia1_path."www/info/upload/".$download['id'];
             if (!file_exists($fname)) {
@@ -464,7 +485,7 @@ if (read_bool("Import downloads?", false)) {
                 continue;
             }
             else {
-	    
+
                 magic_file_attach("downloads", $download['href'], $fname);
             }	    
             

@@ -5,6 +5,7 @@ $curdir = dirname($argv[0]);
 
 require_once($curdir . "/../config.php");
 require_once(IA_ROOT . "common/common.php");
+require_once(IA_ROOT . "common/log.php");
 require_once(IA_ROOT . "common/db/db.php");
 
 if (realpath(IA_ROOT . 'scripts') != realpath($curdir)) {

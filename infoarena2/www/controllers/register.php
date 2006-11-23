@@ -66,7 +66,6 @@ function controller_register($suburl) {
 
             if ($ia_user) {
                 // also create SMF user
-                require_once('smf.php');
                 $smf_id = smf_create_user($ia_user);
                 log_assert($smf_id, "SMF user for {$ia_user['username']} "
                                     ."was not created.");

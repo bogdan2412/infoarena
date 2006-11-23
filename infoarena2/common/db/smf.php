@@ -46,6 +46,9 @@ function smf_create_user($ia_user) {
         //'messageLabels' => '',
         //'buddy_list' => '',
         //'memberIP2' => '',
+
+        // ID_GROUP 1 is forum administrator
+        'ID_GROUP' => ('admin' == $ia_user['security_level'] ? 1 : null),
     );
 
     return db_insert(DB_SMF_PREFIX.'members', $fields);
@@ -90,6 +93,9 @@ function smf_update_user($ia_user) {
         //'messageLabels' => '',
         //'buddy_list' => '',
         //'memberIP2' => '',
+
+        // ID_GROUP 1 is forum administrator
+        'ID_GROUP' => ('admin' == $ia_user['security_level'] ? 1 : null),
     );
 
     $where = sprintf("memberName='%s'", db_escape($ia_user['username']));

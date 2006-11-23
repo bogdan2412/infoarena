@@ -76,7 +76,6 @@ function controller_reset_pass($suburl) {
                 user_update($fields, $user['id']);
 
                 // also update SMF user entry
-                require_once('smf.php');
                 smf_update_user(user_get_by_id($user['id']));
 
                 // send email with new password

@@ -264,4 +264,5 @@ function logging_error_handler($errno, $errstr, $errfile, $errline) {
 
 // Change the default error handler.
 set_error_handler("logging_error_handler");
+
 ?>

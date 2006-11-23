@@ -191,6 +191,7 @@ require_once(IA_ROOT . "common/db/textblock.php");
 require_once(IA_ROOT . "common/db/user.php");
 require_once(IA_ROOT . "common/db/score.php");
 require_once(IA_ROOT . "common/db/attachment.php");
+require_once(IA_ROOT . "common/db/smf.php");
 
 /**
  * Parameter

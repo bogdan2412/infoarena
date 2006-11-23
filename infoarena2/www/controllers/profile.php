@@ -3,7 +3,7 @@
 // Profile controller.
 function controller_profile($suburl) {
     require_once("register_profile_common.php");
-    
+
     global $identity_user;
     // FIXME: Actually, we should allow changing ANY user profile as long
     // as we have the proper permissions.
@@ -172,7 +172,6 @@ function controller_profile($suburl) {
                 $new_user = user_get_by_id($identity_user['id']);
 
                 // propagate changes to SMF
-                require_once('smf.php');
                 smf_update_user($new_user);
 
                 // force reload of user info
