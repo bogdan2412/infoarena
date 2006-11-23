@@ -448,7 +448,7 @@ $txt['moveTopic4'] = 'Schimbă titlul tuturor mesajelor';
 $txt['theme_template_error'] = 'Eroare la \'%s\' tema grafică.';
 $txt['theme_language_error'] = 'Eroare la \'%s\' fişierul de limba.';
 
-$txt['parent_boards'] = 'Subsecţiuni/Subcategorii';
+$txt['parent_boards'] = 'Subcategorii';
 
 $txt['smtp_no_connect'] = 'Legătura esuată cu serverul SMTP';
 $txt['smtp_port_ssl'] = 'Portul setat pentru SMTP nu este corect; ar trebui să fie 465 pentru server SSL.';
