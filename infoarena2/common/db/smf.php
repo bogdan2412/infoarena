@@ -103,6 +103,7 @@ function smf_update_user($ia_user) {
 
     log_assert(1 >= $res, "smf_update_user() affected multiple rows in table "
                           ."ia_user! Needs serious attention!");
+    return $res;
 }
 
 ?>

@@ -164,17 +164,51 @@ if (read_bool("Import infoarena users into SMF user table?", false)) {
     $smfprefix = DB_SMF_PREFIX;
 
     // fetch all infoarena users
-    db_query("TRUNCATE TABLE {$smfprefix}members");
     $ia_users = db_fetch_all("SELECT * FROM ia_user");
 
-    // iterate & create smf users
-    $count = 0;
+    // count existing SMF users
+    $smf_initial_count = db_query_value("SELECT COUNT(*) FROM {$smfprefix}members");
+
+    // create/update smf users
+    $cnt_create = $cnt_update = $cnt_delete = 0;
     foreach ($ia_users as $ia_user) {
-        $member_id = smf_create_user($ia_user);
-        log_assert($member_id, "Could not create SMF user for {$ia_user['username']}!");
-        $count++;
+        // see if SMF user already exists
+        $query = sprintf("SELECT COUNT(*) FROM {$smfprefix}members
+                          WHERE memberName = '%s'", db_escape($ia_user['username']));
+
+        if (db_query_value($query)) {
+            // user already exists => update info
+            $cnt_update += smf_update_user($ia_user);
+        }
+        else {
+            // new SMF user
+            $member_id = smf_create_user($ia_user);
+            log_assert($member_id, "Could not create SMF user for {$ia_user['username']}!");
+            $cnt_create++;
+        }
     }
-    log_print("DONE importing {$count} SMF users");
+
+    // Mark SMF users which have no infoarena counterpart.
+    // These users will later be deleted via the SMF admin control panel
+    // which takes care of all cascading deletes.
+    $query = "
+        UPDATE {$smfprefix}members AS su
+        LEFT JOIN ia_user AS iu ON iu.username = su.memberName
+        SET su.memberName = CONCAT('_deleteme_', su.memberName)
+        WHERE iu.username IS NULL";
+    db_query($query);
+
+    // count users marked for deletion
+    $query = "
+        SELECT COUNT(*) FROM {$smfprefix}members
+        WHERE memberName LIKE '_deleteme_%'
+    ";
+    $cnt_delete = db_query_value($query);
+
+    log_print("DONE: imported {$cnt_update} "
+              ."(".((int)(100*$cnt_update)/$smf_initial_count)."%), "
+              ."created {$cnt_create}, {$cnt_delete} marked "
+              ."for deletion");
 }
 
 //
