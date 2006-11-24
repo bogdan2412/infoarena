@@ -119,6 +119,7 @@ function round_update_task_list($round_id, $tasks) {
     }
 }
 
+/* FIXME: round registration disabled.
 // Returns boolean whether given user is registered to round $round_id
 function round_is_registered($round_id, $user_id) {
     $query = sprintf("SELECT COUNT(*) AS `cnt` FROM ia_user_round
@@ -142,5 +143,6 @@ function round_register_user($round_id, $user_id) {
     );
     return db_insert('ia_user_round', $insert_fields);
 }
+*/
 
 ?>

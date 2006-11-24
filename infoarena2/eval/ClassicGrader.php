@@ -17,6 +17,7 @@ class ClassicGrader {
 
     function __construct($id, $parameters) {
         $this->task_id = $id;
+        $this->task = task_get($id);
 
         if (!task_validate_parameters("classic", $parameters)) {
             log_warn("Invalid task parameters");
@@ -55,7 +56,7 @@ class ClassicGrader {
 
         // Compile custom evaluator.
         if (!$this->unique_output) {
-            if (!copy_grader_file($this->task_id, $this->evaluator,
+            if (!copy_grader_file($this->task, $this->evaluator,
                     IA_EVAL_TEMP_DIR . $this->evaluator)) {
                 return JobResult::SystemError();
             }
@@ -97,7 +98,7 @@ class ClassicGrader {
                 return JobResult::SystemError();
             }
 
-            if (!copy_grader_file($this->task_id, 'test' . $testno . '.in',
+            if (!copy_grader_file($this->task, 'test' . $testno . '.in',
                         IA_EVAL_JAIL_DIR . $this->task_id . '.in')) {
                 return JobResult::SystemError();
             }
@@ -128,7 +129,7 @@ class ClassicGrader {
 
             // Copy ok file, if used.
             if ($this->has_ok_files) {
-                if (!copy_grader_file($this->task_id , 'test' . $testno . '.ok',
+                if (!copy_grader_file($this->task , 'test' . $testno . '.ok',
                             IA_EVAL_JAIL_DIR . $this->task_id . '.ok')) {
                     return JobResult::SystemError();
                 }

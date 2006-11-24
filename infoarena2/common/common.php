@@ -15,12 +15,6 @@ function is_whole_number($x) {
     return is_numeric($x) && $x == intval($x);
 }
 
-// Tells whether $task_id is a valid task identifier
-// Does not check existence.
-function is_task_id($task_id) {
-    return preg_match('/^[a-z0-9][a-z0-9_]*$/i', $task_id);
-}
-
 // Validates page name
 function is_page_name($page_name) {
     return preg_match('/^([a-z0-9][a-z0-9_\-\/\.]*)$/i', $page_name);
@@ -70,6 +64,12 @@ function is_round($round) {
            isset($round['hidden']) && // How the fuck do I check this?
            isset($round['type']) && $round['type'] == 'classic' &&
            isset($round['id']) && is_round_id($round['id']);
+}
+
+// Tells whether $task_id is a valid task identifier
+// Does not check existence.
+function is_task_id($task_id) {
+    return preg_match('/^[a-z0-9][a-z0-9_]*$/i', $task_id);
 }
 
 // tells whether given string is a valid datetime value

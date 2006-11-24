@@ -28,7 +28,8 @@ function controller_submit() {
             identity_require('task-submit', $task);
 
             // make sure user is already registered to at least one round that includes this task
-            $rounds = task_get_parent_rounds($task['id']);
+            // FIXME: registration features disabled.
+            /* $rounds = task_get_parent_rounds($task['id']);
             $registered = false;
             foreach ($rounds as $round_id) {
                 if (round_is_registered($round_id, $identity_user['id']))  {
@@ -39,7 +40,7 @@ function controller_submit() {
             if (!$registered) {
                 $form_errors['task_id'] = 'Inscrie-te mai intai intr-o runda '
                                           .'pentru a trimite solutii la aceasta problema';
-            }
+            }*/
 
             // Check compiler.
             if ('output-only'!=$task['type'] && (false===array_search($form_values['compiler_id'], array('c', 'cpp', 'fpc')))) {
@@ -93,7 +94,6 @@ function controller_submit() {
         $form_values = array();
     }
     
-
     // get task list.
     // FIXME: proper filter?
     $tasks_unfiltered = task_list_info();

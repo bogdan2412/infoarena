@@ -1,5 +1,7 @@
 <?php
 
+// Disabled.
+/*
 // Displays form to register remote user to given round
 function controller_round_register($round_id) {
     global $identity_user;
@@ -38,6 +40,6 @@ function controller_round_register($round_id) {
         );
         execute_view_die('views/round_register.php', $view);
     }
-}
+}*/
 
 ?>

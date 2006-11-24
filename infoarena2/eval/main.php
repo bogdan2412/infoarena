@@ -2,11 +2,11 @@
 <?php
 
 require_once('config.php');
-require_once('../common/log.php');
-require_once('../common/common.php');
-require_once('../common/task.php');
-require_once('../common/permissions.php');
-require_once('../common/db/db.php');
+require_once(IA_ROOT.'common/log.php');
+require_once(IA_ROOT.'common/common.php');
+require_once(IA_ROOT.'common/task.php');
+require_once(IA_ROOT.'common/security.php');
+require_once(IA_ROOT.'common/db/db.php');
 require_once('utilities.php');
 require_once('download.php');
 require_once('ClassicGrader.php');
@@ -102,16 +102,6 @@ function job_handle($job) {
     if (!$user) {
         log_print("Nu am gasit utilizatorul " . $job['user_id']);
         job_send_result($job, JobResult::SystemError());
-        return;
-    }
-
-    // Check permissions. If I can't eval, do it later.
-    if (!permission_query($user, "job-eval", $job)) {
-        // FIXME: optimize?
-        log_print("Can't eval job $job[id], retry later");
-        // No result, leave it in waiting, will try again in 5 minutes.
-        log_print("");
-        log_print("");
         return;
     }
 

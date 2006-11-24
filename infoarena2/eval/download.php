@@ -1,15 +1,19 @@
 <?php
 
+require_once(IA_ROOT . 'common/common.php');
+
 // Copy a grader file over to some other location.
 // This will download the file from the server and cache it.
 //
 // FIXME: Don't download if www runs locally.
-function copy_grader_file($taskname, $filename, $target)
+function copy_grader_file($task, $filename, $target)
 {
+    $taskname = $task['name'];
+
     // Get attachment from database.
-    $att = attachment_get("grader_$filename", TB_TASK_PREFIX."$taskname");
+    $att = attachment_get("grader_$filename", $task['page_name']);
     if (!$att) {
-        log_warn("Attachment ".TB_TASK_PREFIX."$taskname?grader_$filename not found.");
+        log_warn("Attachment ".$task['page_name']."/grader_$filename not found.");
         return false;
     }
 
@@ -28,7 +32,7 @@ function copy_grader_file($taskname, $filename, $target)
 
     if ($cachemtime === null || $cachemtime < $servermtime) {
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, IA_URL . TB_TASK_PREFIX."$taskname?action=download&file=grader_$filename");
+        curl_setopt($curl, CURLOPT_URL, IA_URL . $task['page_name'] . "?action=download&file=grader_$filename");
         curl_setopt($curl, CURLOPT_USERPWD, IA_JUDGE_USERNAME . ":" . IA_JUDGE_PASSWD);
 
         $cachefd = fopen($cachefname, "wb");

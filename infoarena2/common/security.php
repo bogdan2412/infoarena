@@ -287,14 +287,15 @@ function security_macro($user, $action, $args) {
     }
 }
 
+// FIXME: implement job security.
+// * job-view-source
+// * job-view
+//
+// There is no job-eval, jobs are evaluated on the spot, we check job-view instead.
 function security_job($user, $action, $job) {
     $usersec = getattr($user, 'security_level', 'anonymous');
 
     switch ($action) {
-        case 'job-eval':
-            // FIXME: proper implementation.
-            log_warn("job-eval is RANDOM!!!");
-            return rand(0, 100) < 50;
         default:
             log_error('Invalid job action: '.$action);
             return false;

@@ -70,7 +70,7 @@ function job_get_range($start, $range) {
               FROM ia_job AS job
               LEFT JOIN ia_task AS task ON job.`task_id` = `task`.`id`
               LEFT JOIN ia_user AS user ON job.`user_id` = `user`.`id`
-              ORDER BY job.`next_eval` DESC LIMIT %s, %s",
+              ORDER BY job.`submit_time` DESC LIMIT %s, %s",
               $start, $range);
     return db_fetch_all($query);
 }

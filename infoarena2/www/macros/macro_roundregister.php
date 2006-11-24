@@ -1,5 +1,6 @@
 <?php
 
+// FIXME: round registration disabled.
 // Display registration invitation for a round when user is not registered.
 // If user is already registered, display a confirmation message instead.
 // 
@@ -15,7 +16,7 @@
 //
 // Examples:
 //      RoundRegister(page_invitation="template/roundinvitation")
-function macro_roundregister($args) {
+/*function macro_roundregister($args) {
     $page_invitation = getattr($args, 'page_invitation', 'template/roundinvitation');
     $page_registered = getattr($args, 'page_registered');
     $round_id = getattr($args, 'round_id');
@@ -43,6 +44,6 @@ function macro_roundregister($args) {
     else {
         return '';
     }
-}
+}*/
 
 ?>

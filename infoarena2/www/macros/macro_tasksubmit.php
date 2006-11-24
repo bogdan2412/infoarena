@@ -22,19 +22,17 @@ function macro_tasksubmit($args) {
         return macro_error("Invalid task identifier");
     }
 
-    // permission check
-    if (!identity_can('task-submit', $task)) {
-        if (identity_anonymous()) {
-            $url = url("login");
-            return macro_message("Trebuie sa va autentificati pentru a trimite solutii. <a href=\"{$url}\">Click aici</a>", true);
-        }
-        else {
-            return macro_message("Nu se (mai) pot trimite solutii la aceasta problema.", true);
-        }
+    if (identity_anonymous()) {
+        $url = url("login");
+        return macro_message("Trebuie sa va autentificati pentru a trimite solutii. <a href=\"{$url}\">Click aici</a>", true);
     }
 
-    log_assert($identity_user);
+    // Permission check. Should never fail right now.
+    if (!identity_can('task-submit', $task)) {
+        return macro_message("Nu se (mai) pot trimite solutii la aceasta problema.", true);
+    }
 
+    /* FIXME: round registration disabled
     // make sure user is already registered to at least one round that includes this task
     $rounds = task_get_parent_rounds($task['id']);
     $registered = false;
@@ -48,6 +46,7 @@ function macro_tasksubmit($args) {
     if (!$registered) {
         return macro_message('Inscrie-te intr-o runda pentru a putea trimite solutii.');
     }
+    */
 
     // display form
     ob_start();
