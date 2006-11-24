@@ -2,11 +2,6 @@
 
 require_once(IA_ROOT . "common/task.php");
 
-// tells whether $task_id is a valid task identifier
-function task_is_valid_id($task_id) {
-    return preg_match('/^[a-z0-9][a-z0-9_]*$/i', $task_id);
-}
-
 // Displays form to either create a new task or edit an existing one.
 // This form does not edit task content (its associated textblock)
 // (textblock editor does that)

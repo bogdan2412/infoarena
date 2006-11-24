@@ -59,15 +59,6 @@ function security_query($user, $action, $object) {
     }
 }
 
-// Check if textblock security string is valid
-// FIXME: check task/round existence?
-function is_textblock_security_descriptor($descriptor)
-{
-    return  preg_match("/^ \s* task: \s* ([a-z0-9]*) \s* $/xi", $descriptor) ||
-            preg_match("/^ \s* round: \s* ([a-z0-9]*) \s* $/xi", $descriptor) ||
-            preg_match('/^ \s* (private|protected|public) \s* $/xi', $descriptor);
-}
-
 // Handles textblock security.
 function security_textblock($user, $action, $textblock) {
     $textsec = $textblock['security'];

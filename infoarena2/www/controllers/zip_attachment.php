@@ -25,7 +25,7 @@ function get_zipped_attachments($filename) {
 
             // validate file name and make sure there are no duplicates
             $aname = basename($stat['name']);
-            if (isset($namehash[$aname]) || !attachment_is_valid_name($aname)) {
+            if (isset($namehash[$aname]) || !is_attachment_name($aname)) {
                 continue;
             }
 

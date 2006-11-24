@@ -38,8 +38,9 @@ function magic_convert_textile($filename, $content = null) {
             $handle = fopen($filename, "w");
             fwrite($handle, $content);
             fclose($handle);
+        } else {
+            log_error("File $filename to convert not found");
         }
-        else log_error("File $filename to convert not found");
     }
     ob_start();
     system("elinks -dump 1 -dump-width 1024 $filename");
@@ -233,25 +234,15 @@ if (read_bool("Import rounds?", false)) {
         log_print("Adding round \"".$contest['ID']."\" ...");
 
         // Create round.
-        $round_id = $contest['ID'];
-        $round_type = "classic";
-        $round_user_id = 0;
-        $round_active = false;
-        round_create($round_id, $round_type, $round_user_id, $round_active);
-
-        // Basic text import.
-        $textblock_content = "h1: Runda {$round_id}\n\n";
-        $textblock_content .= magic_convert_textile(null, $contest['overview']);
-        $textblock_content .= "\n\nh2. 'Clasament':round/$round_id/clasament\n\nh2. Logo\n\n!round/$round_id?logo!";
-        textblock_add_revision(
-                "round/".$round_id,
-                strip_tags($contest['name']),
-                $textblock_content,
-                0, 'public');
-
-        // Attach logo.
-        $logo_file_name = $ia1_path . "www/infoarena/docs/$round_id/".$contest['logoimg'];
-        magic_file_attach("round/$round_id", "logo", $logo_file_name);
+        $round = array(
+                'id' => $contest['ID'],
+                'type' => 'classic',
+                'user_id' => 0,
+                'hidden' => false,
+                'title' => strip_tags($contest['name']),
+                'page_name' => 'concursuri',
+        );
+        round_create($round);
 
         // Import task list.
         $task_list = mysql_query("SELECT * FROM tasktable_".$contest['ID']);
@@ -259,8 +250,9 @@ if (read_bool("Import rounds?", false)) {
         while ($task = mysql_fetch_assoc($task_list)) {
             $tasks[] = $task['ID'];
         }    
-        round_update_task_list($round_id, $tasks);
-        log_print("DONE ".$contest['ID']."\n");
+        round_update_task_list($round['id'], $tasks);
+
+        log_print("DONE ".$round['id']."\n");
     }
 }
 

@@ -13,11 +13,7 @@ function check_view($view)
     log_assert(!isset($view['wikipage']));
     if (isset($view['textblock'])) {
         log_assert(is_string($view['page_name']));
-        log_assert(is_array($view['textblock']));
-        log_assert(array_key_exists('name', $view['textblock']));
-        log_assert(array_key_exists('title', $view['textblock']));
-        log_assert(array_key_exists('text', $view['textblock']));
-        log_assert(array_key_exists('timestamp', $view['textblock']));
+        log_assert(is_textblock($view['textblock']));
     }
     if (isset($view['task'])) {
         log_assert(is_array($view['task']));
@@ -26,40 +22,40 @@ function check_view($view)
     }
 }
 
-function fval($paramName, $escapeHtml = true) {
+// returns a form value, html-escaped by default.
+function fval($param_name, $escape_html = true) {
     global $view;
 
     if (!isset($view['form_values'])) {
         return '';
     }
 
-    if ($escapeHtml) {
-        return htmlentities(getattr($view['form_values'], $paramName));
-    }
-    else {
-        return getattr($view['form_values'], $paramName);
+    if ($escape_html) {
+        return htmlentities(getattr($view['form_values'], $param_name));
+    } else {
+        return getattr($view['form_values'], $param_name);
     }
 }
 
-function ferr_span($paramName, $escapeHtml = true) {
-    $error = ferr($paramName, $escapeHtml);
+// returns a form error, html-escaped by default.
+function ferr($param_name, $escape_html = true) {
+    global $view;
+
+    if ($escape_html) {
+        return htmlentities(getattr($view['form_errors'], $param_name));
+    } else {
+        return getattr($view['form_errors'], $param_name);
+    }
+}
+
+// returns a form error span, html-escaped by default.
+function ferr_span($param_name, $escape_html = true) {
+    $error = ferr($param_name, $escape_html);
 
     if ($error) {
         return '<span class="fieldError">' . $error . '</span>';
-    }
-    else {
+    } else {
         return null;
-    }
-}
-
-function ferr($paramName, $escapeHtml = true) {
-    global $view;
-
-    if ($escapeHtml) {
-        return htmlentities(getattr($view['form_errors'], $paramName));
-    }
-    else {
-        return getattr($view['form_errors'], $paramName);
     }
 }
 

@@ -12,7 +12,7 @@ function macro_tasksubmit($args) {
     $task_id = getattr($args, 'task_id');
 
     // validate arguments
-    if (!$task_id) {
+    if (!is_task_id($task_id)) {
         return macro_error("Expecting parameter `task_id`");
     }
 

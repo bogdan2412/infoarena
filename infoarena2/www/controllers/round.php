@@ -2,11 +2,6 @@
 
 require_once(IA_ROOT . "common/round.php");
 
-// tells whether $round_id is a valid round identifier
-function round_is_valid_id($round_id) {
-    return preg_match('/^[a-z0-9][a-z0-9_]*$/i', $round_id);
-}
-
 /*
 // Displays a form to either create a new round or edit an existing one.
 // This form does not edit round content (its associated textblock)

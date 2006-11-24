@@ -21,15 +21,15 @@ identity_restore();
 // All urls that pass are valid, they can be missing wiki pages.
 $page = request('page');
 
-if (!preg_match('/^([a-z0-9_\-\/]*)$/i', $page)) {
-    flash_error('invalid URL');
-    redirect(url(''));
-}
-
-
 // Redirect to home if in /
 if ($page == "") {
     $page = "home";
+}
+
+// Check page name.
+if (!is_page_name($page)) {
+    flash_error('invalid URL');
+    redirect(url(''));
 }
 
 // Prepare some vars for url handler.

@@ -47,7 +47,7 @@ function attachment_insert($name, $size, $mime_type, $page, $user_id) {
 }
 
 function attachment_delete($id) {
-    global $dbLink;
+    assert(is_whole_number($id));
     $query = sprintf("DELETE FROM ia_file WHERE `id` = %s", db_escape($id));
     return db_query($query);
 }
@@ -79,17 +79,6 @@ function attachment_get_filepath($attach) {
             preg_replace('/[^a-z0-9\.\-_]/i', '_', $attach['page']) . '_' .
             preg_replace('/[^a-z0-9\.\-_]/i', '_', $attach['name']) . '_' .
             $attach['id'];
-}
-
-// returns boolean whether specified attach name is valid
-// NOTE: We hereby limit file names. No spaces, please. Not that we have
-// a problem with spaces inside URLs. Everything should be (and hopefully is)
-// urlencode()-ed. However, practical experience shows it is hard to work with
-// such file names, mostly due to URLs word-wrapping when inserted in texts,
-// unless, of course, one knows how to properly escape spaces with %20 or +
-// FIXME: does this belong here?
-function attachment_is_valid_name($attach_name) {
-    return preg_match('/^[a-z0-9\.\-_]+$/i', $attach_name);
 }
 
 ?>

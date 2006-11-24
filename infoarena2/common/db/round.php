@@ -2,10 +2,9 @@
 
 require_once("db.php");
 
-/**
- * Round stuff. Mostly evil.
- */
+// Get round
 function round_get($round_id) {
+    log_assert(is_round_id($round_id));
     $query = sprintf("SELECT * FROM ia_round WHERE `id` = LCASE('%s')",
                      db_escape($round_id));
     return db_fetch($query);
@@ -18,7 +17,6 @@ function round_get($round_id) {
 // Make sure that calls such as identity_require() have all necessary
 // information to yield a correct answer.
 function round_get_info() {
-    global $dbLink;
     $query = sprintf("SELECT `ia_round`.`id` AS `id`, `ia_round`.`type` AS `type`,
                              `ia_round`.`title` AS `title`,
                              `ia_round`.`hidden` AS `hidden`,
@@ -32,38 +30,25 @@ function round_get_info() {
     return $list;
 }
 
-function round_create($round_id, $type, $user_id, $hidden) {
-    global $dbLink;
-    $query = sprintf("INSERT INTO `ia_round`
-                        (`id`, `type`, user_id, `hidden`)
-                      VALUES (LCASE('%s'), '%s', '%s', '%s')",
-                     db_escape($round_id), db_escape($type),
-                     db_escape($user_id), db_escape($hidden));
-    db_query($query);
-    $new_round = round_get($round_id);
-    log_assert($new_round, 'New round input was validated OK but no database entry was created');
+// Create new round
+function round_create($round) {
+    assert(is_round($round));
+    db_insert('ia_round', $round);
 
-    // create associated textblock entry
-    // default (initial) content is taken from an existing template
-    $template = textblock_get_revision('template/newround');
-    log_assert($template, 'Could not find template for new round: template/newround');
+    $new_round = round_get($round['id']);
+    log_assert(is_round($new_round), 'New round input was validated OK but no database entry was created');
 
     // FIXME: move in controller?
     require_once(IA_ROOT . "common/textblock.php");
-    $replace = array("round_id" => $round_id);
-    textblock_copy_replace("template/newround", TB_ROUND_PREFIX."$round_id", $replace, "round: $round_id", $user_id);
+    $replace = array("round_id" => $round['id']);
+    textblock_copy_replace("template/newround", $round['page_name'],
+            $replace, "public", $round['user_id']);
 
-    return $new_round['id'];
+    return $round['id'];
 }
 
-function round_update($round_id, $type, $hidden) {
-    $query = sprintf("UPDATE `ia_round`
-                      SET `type` = '%s', `hidden` = '%s'
-                      WHERE `id` = LCASE('%s')
-                      LIMIT 1",
-                     db_escape($type), db_escape($hidden),
-                     db_escape($round_id));
-    return db_query($query);
+function round_update($round) {
+    return db_update('ia_round', $round);
 }
 
 // Returns array with all tasks attached to the specified round
@@ -75,7 +60,6 @@ function round_update($round_id, $type, $hidden) {
 //
 // FIXME: sensible ordering.
 function round_get_task_info($round_id, $first = 0, $count = null) {
-    global $dbLink;
     if ($count === null) {
         $count = 490234;
     }

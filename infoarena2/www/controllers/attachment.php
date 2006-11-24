@@ -57,7 +57,7 @@ function controller_attachment_submit($page_name) {
     $form_values['file_size'] = $_FILES['file_name']['size'];
 
     // Validate filename.
-    if (!attachment_is_valid_name($form_values['file_name'])) {
+    if (!is_attachment_name($form_values['file_name'])) {
         $form_errors['file_name'] = 'Nume de fisier invalid'.
                                     '(va rugam sa nu folositi spatii)';
     }                
