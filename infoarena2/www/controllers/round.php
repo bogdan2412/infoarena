@@ -2,7 +2,7 @@
 
 require_once(IA_ROOT . "common/round.php");
 
-/*
+/* FIXME: disabled
 // Displays a form to either create a new round or edit an existing one.
 // This form does not edit round content (its associated textblock)
 // (textblock editor does that)

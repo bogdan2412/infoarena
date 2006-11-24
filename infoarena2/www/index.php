@@ -60,6 +60,7 @@ if (isset($directmaps[$urlstart])) {
 }
 
 // Task detail editor.
+/* FIXME: disabled
 else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'task') {
     $obj_id = implode("/", array_slice($pagepath, 2));
     require_once('controllers/task.php');
@@ -68,7 +69,7 @@ else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'task') {
     } else {
         controller_task_edit_details($obj_id);
     }
-}
+}*/
 
 // Round detail editor.
 // FIXME: doesn't work, fix later.

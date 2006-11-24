@@ -33,18 +33,15 @@ function round_get_info() {
 // Create new round
 function round_create($round) {
     assert(is_round($round));
-    db_insert('ia_round', $round);
+    return db_insert('ia_round', $round);
 
-    $new_round = round_get($round['id']);
-    log_assert(is_round($new_round), 'New round input was validated OK but no database entry was created');
-
-    // FIXME: move in controller?
+/*    // FIXME: move in controller
+      // FIXME: controller broken
     require_once(IA_ROOT . "common/textblock.php");
     $replace = array("round_id" => $round['id']);
     textblock_copy_replace("template/newround", $round['page_name'],
             $replace, "public", $round['user_id']);
-
-    return $round['id'];
+*/
 }
 
 function round_update($round) {

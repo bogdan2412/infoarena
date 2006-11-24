@@ -2,6 +2,7 @@
 
 require_once(IA_ROOT . "common/task.php");
 
+/* FIXME: broken
 // Displays form to either create a new task or edit an existing one.
 // This form does not edit task content (its associated textblock)
 // (textblock editor does that)
@@ -26,7 +27,7 @@ function controller_task_edit_details($task_id, $form_data = null, $form_errors 
     }
 
     // validate task_id
-    if (!task_is_valid_id($task_id)) {
+    if (!is_task_id($task_id)) {
         flash_error('Identificatorul de task este invalid');
         redirect(url(''));
     }
@@ -176,6 +177,11 @@ function controller_task_save_details($task_id) {
             task_create($task_id, $data['type'], $data['hidden'],
                         $data['author'], $data['source'],
                         getattr($identity_user, 'id'));
+
+            // Copy templates.
+            require_once(IA_ROOT . "common/textblock.php");
+            $replace = array("task_id" => $task_id);
+            textblock_copy_replace("template/newtask", TB_TASK_PREFIX."$task_id", $replace, "task: $task_id", $user_id);
         }
         // - update parameter values
         task_update_parameters($task_id, $param_values);
@@ -194,6 +200,6 @@ function controller_task_save_details($task_id) {
         flash_error('Unul sau mai multe campuri au fost completate incorect!');
         controller_task_edit_details($task_id, $data, $errors);
     }
-}
+} */
 
 ?>

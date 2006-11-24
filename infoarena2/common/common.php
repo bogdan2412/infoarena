@@ -52,10 +52,10 @@ function is_textblock($tb) {
 // tells whether $round_id is a valid round identifier
 // Does not check existence.
 function is_round_id($round_id) {
-    return preg_match('/^[a-z0-9][a-z0-9_]*$/i', $round_id);
+    return preg_match('/^[a-z0-9][a-z0-9_]*$/i', $round_id) && strlen($round_id) < 16;
 }
 
-// Checks if round is a valid round.
+// Checks if $round is a valid round.
 function is_round($round) {
     return is_array($round) &&
            isset($round['title']) && is_string($round['title']) &&
@@ -69,7 +69,20 @@ function is_round($round) {
 // Tells whether $task_id is a valid task identifier
 // Does not check existence.
 function is_task_id($task_id) {
-    return preg_match('/^[a-z0-9][a-z0-9_]*$/i', $task_id);
+    return preg_match('/^[a-z0-9][a-z0-9_]*$/i', $task_id) && strlen($task_id) < 16;
+}
+
+// Checks if $task is a valid task.
+function is_task($task) {
+    return is_array($task) &&
+           isset($task['title']) && is_string($task['title']) &&
+           isset($task['author']) && is_string($task['author']) &&
+           isset($task['source']) && is_string($task['source']) &&
+           isset($task['page_name']) && is_page_name($task['page_name']) &&
+           isset($task['user_id']) && is_whole_number($task['user_id']) &&
+           isset($task['hidden']) && // How the fuck do I check this?
+           isset($task['type']) && $task['type'] == 'classic' &&
+           isset($task['id']) && is_task_id($task['id']);
 }
 
 // tells whether given string is a valid datetime value
