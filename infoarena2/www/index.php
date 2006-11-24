@@ -71,7 +71,8 @@ else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'task') {
 }
 
 // Round detail editor.
-else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'round') {
+// FIXME: doesn't work, fix later.
+/*else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'round') {
     $obj_id = implode("/", array_slice($pagepath, 2));
     if (getattr($pagepath, 1) == 'round') {
         require_once('controllers/round.php');
@@ -81,7 +82,7 @@ else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'round') {
             controller_round_save_details($obj_id);
         }
     }
-}
+}*/
 
 // textblock controllers
 //  - edit textblock

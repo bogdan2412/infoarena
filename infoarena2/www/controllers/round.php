@@ -7,6 +7,7 @@ function round_is_valid_id($round_id) {
     return preg_match('/^[a-z0-9][a-z0-9_]*$/i', $round_id);
 }
 
+/*
 // Displays a form to either create a new round or edit an existing one.
 // This form does not edit round content (its associated textblock)
 // (textblock editor does that)
@@ -108,7 +109,7 @@ function controller_round_edit_details($round_id, $form_data = null,
     $view['param_list'] = $param_list;
     $view['param_values'] = $param_values;
     $view['all_tasks'] = $all_tasks;
-    $view['page_name'] = TB_ROUND_PREFIX.$round_id;
+    $view['page_name'] = 'admin/round/'.$round_id;
     execute_view_die("views/round_edit.php", $view);
 }
 
@@ -208,11 +209,11 @@ function controller_round_save_details($round_id) {
         // - done
         if ($round) {
             flash('Informatiile despre runda au fost salvate.');
-            redirect(url(TB_ROUND_PREFIX.$round_id));
+            redirect(url($round['page_name']));
         }
         else {
             flash('O noua runda a fost creata. Acum trebuie sa editezi continutul...');
-            redirect(url(TB_ROUND_PREFIX.$round_id, array('action'=>'edit')));
+            redirect(url($round['page_name'], array('action'=>'edit')));
         }
     }
     else {
@@ -221,5 +222,6 @@ function controller_round_save_details($round_id) {
         controller_round_edit_details($round_id, $data, $errors);
     }
 }
+*/
 
 ?>

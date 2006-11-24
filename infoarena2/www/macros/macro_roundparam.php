@@ -34,7 +34,6 @@ function macro_roundparam($args) {
         $round = round_get($round_id);
         if ($round) {
             $params = round_get_parameters($round_id);
-            $textblock = round_get_textblock($round_id);
         }
 
         // remember
@@ -52,15 +51,15 @@ function macro_roundparam($args) {
     // serve desired value
     switch ($param) {
         case 'title':
-            return $textblock['title'];
+            return htmlentities($round['title']);
 
         case 'id':
-            return $task['id'];
+            return htmlentities($round['id']);
 
         default:
             if (!isset($params[$param])) {
                 if ($isset($args['default_value'])) {
-                    return $args['default_value'];
+                    return htmlentities($args['default_value']);
                 }
                 else {
                     return macro_error("Round doesn't have parameter '$param'");

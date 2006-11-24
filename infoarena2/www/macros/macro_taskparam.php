@@ -34,7 +34,6 @@ function macro_taskparam($args) {
         $task = task_get($task_id);
         if ($task) {
             $params = task_get_parameters($task_id);
-            $textblock = task_get_textblock($task_id);
         }
 
         // remember
@@ -52,26 +51,25 @@ function macro_taskparam($args) {
     // serve desired value
     switch ($param) {
         case 'title':
-            return $textblock['title'];
+            return htmlentities($task['title']);
 
         case 'author':
-            return $task['author'];
+            return htmlentities($task['author']);
 
         case 'source':
-            return $task['source'];
+            return htmlentities($task['source']);
 
         case 'type':
-            return $task['type'];
+            return htmlentities($task['type']);
 
         case 'id':
-            return $task['id'];
+            return htmlentities($task['id']);
 
         default:
             if (!isset($params[$param])) {
                 if (isset($args['default_value'])) {
-                    return $args['default_value'];
-                }
-                else {
+                    return htmlentities($args['default_value']);
+                } else {
                     return macro_error("Task doesn't have parameter '$param'");
                 }
             } else {

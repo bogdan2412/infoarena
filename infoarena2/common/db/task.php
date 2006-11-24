@@ -11,11 +11,6 @@ function task_get($task_id) {
     return db_fetch($query);
 }
 
-// Get the textblock associated to a task.
-function task_get_textblock($task_id) {
-    return textblock_get_revision(TB_TASK_PREFIX.$task_id);
-}
-
 // create new task
 function task_create($task_id, $type, $hidden, $author, $source, $user_id) {
     global $dbLink;
@@ -32,6 +27,7 @@ function task_create($task_id, $type, $hidden, $author, $source, $user_id) {
     $new_task = task_get($task_id);
     log_assert($new_task, 'New task input was validated OK but no database entry was created');
 
+    // FIXME: move in controller?
     require_once(IA_ROOT . "common/textblock.php");
     $replace = array("task_id" => $task_id);
     textblock_copy_replace("template/newtask", TB_TASK_PREFIX."$task_id", $replace, "task: $task_id", $user_id);

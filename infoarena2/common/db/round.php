@@ -32,10 +32,6 @@ function round_get_info() {
     return $list;
 }
 
-function round_get_textblock($round_id) {
-    return textblock_get_revision(TB_ROUND_PREFIX.$round_id);
-}
-
 function round_create($round_id, $type, $user_id, $hidden) {
     global $dbLink;
     $query = sprintf("INSERT INTO `ia_round`
@@ -52,6 +48,7 @@ function round_create($round_id, $type, $user_id, $hidden) {
     $template = textblock_get_revision('template/newround');
     log_assert($template, 'Could not find template for new round: template/newround');
 
+    // FIXME: move in controller?
     require_once(IA_ROOT . "common/textblock.php");
     $replace = array("round_id" => $round_id);
     textblock_copy_replace("template/newround", TB_ROUND_PREFIX."$round_id", $replace, "round: $round_id", $user_id);
