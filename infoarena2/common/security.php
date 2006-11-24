@@ -285,9 +285,10 @@ function security_macro($user, $action, $args) {
     switch ($action) {
         case 'macro-debug':
         case 'macro-grep':
+        case 'macro-remotebox':
             // only administrators can execute these macros 
             return $usersec == 'admin';
-        
+
         default:
             log_error('Invalid macro action: '.$action);
             return false;

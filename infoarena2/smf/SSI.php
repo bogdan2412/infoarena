@@ -55,6 +55,10 @@ if (substr($sourcedir, 0, 1) == '.' && substr($sourcedir, 1, 1) != '.')
 require_once($sourcedir . '/QueryString.php');
 require_once($sourcedir . '/Subs.php');
 require_once($sourcedir . '/Errors.php');
+
+// info-arena integration (must stay here)
+require_once(dirname(__FILE__) . '/infoarena.php');
+
 require_once($sourcedir . '/Load.php');
 require_once($sourcedir . '/Security.php');
 
@@ -254,7 +258,7 @@ function ssi_recentPostsFromTopic($topicID, $num_recent = 8, $exclude_boards = n
 			LEFT JOIN {$db_prefix}members AS mem ON (mem.ID_MEMBER = m.ID_MEMBER)" . (!$user_info['is_guest'] ? "
 			LEFT JOIN {$db_prefix}log_topics AS lt ON (lt.ID_TOPIC = m.ID_TOPIC AND lt.ID_MEMBER = $ID_MEMBER)
 			LEFT JOIN {$db_prefix}log_mark_read AS lmr ON (lmr.ID_BOARD = m.ID_BOARD AND lmr.ID_MEMBER = $ID_MEMBER)" : '') . "
-		WHERE m.ID_MSG >= " . ($modSettings['maxMsgID'] - 25 * min($num_recent, 5)) . "
+		WHERE m.ID_MSG >= " . ($modSettings['maxMsgID'] - 125 * $num_recent) . "
 			AND m.ID_TOPIC = " . $topicID . "
 			AND b.ID_BOARD = m.ID_BOARD" . (empty($exclude_boards) ? '' : "
 			AND b.ID_BOARD NOT IN (" . implode(', ', $exclude_boards) . ")") . "

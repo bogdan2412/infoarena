@@ -8,14 +8,19 @@
 //
 // NOTE: This macro requires special user permissions since it poses quite
 // a few security concerns.
-function macro_remotebox($args) {
+function macro_remotebox($args, $bypass_security = false) {
     $url = getattr($args, 'url');
+
+    if (!$bypass_security && !identity_can('macro-remotebox')) {
+        return macro_permission_error();
+    }
+
     if (!$url) {
-        return macro_error('Expecting argument `url`'); 
+        return macro_error('Expecting argument `url`');
     }
 
     $buffer = '';
-    $buffer .= '<div id="remotebox"></div>';
+    $buffer .= '<div id="remotebox">remote content</div>';
     $buffer .= '<script type="text/javascript">RemoteBox_Url="'.$args['url'].'";</script>';
 
     return $buffer;
