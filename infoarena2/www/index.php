@@ -44,7 +44,7 @@ $action = request('action', 'view');
 // Direct mapping list
 // Note: array_flip() flips keys with values in a dictionary.
 $directmaps = array_flip(array('register', 'profile', 'news_feed', 'changes',
-                               'login', 'logout', 'reset_pass', 'json',
+                               'login', 'logout', 'json',
                                'job_detail', 'monitor', 'submit', 'userinfo',
                                ));
 //
@@ -160,6 +160,17 @@ else if ($action == 'download') {
         // regular file download
         controller_attachment_download($page, request('file'));
     }
+}
+
+// reset password
+else if ('confirm' == $urlstart) {
+    // confirm reset code
+    require_once(IA_ROOT.'www/controllers/resetpass.php');
+    controller_resetpass_confirm();
+}
+else if ('resetpass' == $urlstart) {
+    require_once(IA_ROOT.'www/controllers/resetpass.php');
+    controller_resetpass();
 }
 
 // textblock view

@@ -213,31 +213,28 @@ function string_diff($string1, $string2) {
 function send_email($to, $subject, $message,
                     $from = IA_MAIL_SENDER_NO_REPLY, $reply = 0)
 {
-    /** TODO FIXME: when server can send emails, fix this function
-                    by removing all echo calls **/
-    echo "<strong>Currently the server can't send emails, " . 
-         "so the contents of the email is printed on screen instead. " .
-         "Please ignore errors and when fixed remove this! " .
-         "(utilities.php -> function send_mail)</strong><br><br>";
-
     // if we don't specify reply-to, should be the same as the from
     if ($reply === 0) {
         $reply = $from;
     }
 
-    // put [info-arena] tag in mail subject
-    $subject = '[info-arena] ' . $subject;
+    // put [infoarena] tag in mail subject
+    $subject = '[infoarena] '.$subject;
 
     // word-wrap message, some mail-clients are stupid
     $message = wordwrap($message, 70);
 
+    // headers
     $headers = 'From: ' . $from . "\r\n" .
                'Reply-To: ' . $reply . "\r\n" .
                'X-Mailer: PHP/' . phpversion();
-    mail($to, $subject, $message, $headers);
-    echo $to . '<br>' . $subject . '<br>' . $message; // debug info
 
-    die();
+    // log
+    log_print("Sending mail to: {$to}, subject: {$subject}, message length: "
+              .strlen($message));
+
+    // send e-mail
+    mail($to, $subject, $message, $headers);
 }
 
 // Resize 2D coordinates according to 'textual' instructions

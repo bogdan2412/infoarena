@@ -2,7 +2,7 @@
 
 <h1><?= htmlentities($view['title']) ?></h1>
 
-<p>Daca esti deja inregistrat te poti <a href="<?= url('login') ?>">autentifica aici</a>; daca ti-ai uitat parola, o poti <a href="<?= url('reset_pass') ?>">reseta aici</a>.</p>
+<p>Daca esti deja inregistrat te poti <a href="<?= url('login') ?>">autentifica aici</a>; daca ti-ai uitat parola, o poti <a href="<?= url('resetpass') ?>">reseta aici</a>.</p>
 
 <div id="sidebar2">
 <div class="section">

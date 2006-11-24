@@ -70,7 +70,7 @@ ia_template_topnav($topnav_select, $smf_admin);
         <?php if (!isset($no_sidebar_login)) include(IA_ROOT.'www/views/form_login.php') ?>
         <p>
         <a href="<?= url('register') ?>">Ma inregistrez!</a><br/>
-        <a href="<?= url("reset_pass") ?>">Mi-am uitat parola&hellip;</a>
+        <a href="<?= url("resetpass") ?>">Mi-am uitat parola&hellip;</a>
         </p>
     </div>
     <?php } ?>

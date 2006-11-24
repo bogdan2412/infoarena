@@ -10,7 +10,7 @@ function Page_Init() {
         var callback = function() {
             hideElement(flash);
         }
-        setTimeout(callback, 4000);
+        setTimeout(callback, 13000);
     }
 }
 
