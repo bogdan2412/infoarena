@@ -12,13 +12,14 @@ function controller_login() {
     // It is a dictionary, indexed by field names
     $errors = array();
 
-    // action
-    $action = request('action');
+    // process input?
+    $submit = ('post' == strtolower(getattr($_SERVER, 'REQUEST_METHOD')));
 
-    if ('login' == $action) {
+    if ($submit) {
         // Validate data here and place stuff in errors.
         $data['username'] = getattr($_POST, 'username');
         $data['password'] = getattr($_POST, 'password');
+        $data['remember'] = getattr($_POST, 'remember');
         $user = user_test_password($data['username'], $data['password']);
         if (!$user) {
             $user = user_test_ia1_password($data['username'], $data['password']);
@@ -35,9 +36,11 @@ function controller_login() {
         // process
         if (!$errors) {
             // persist user to session (login)
-            identity_start_session($user);
+            //  - session lifetime may be 5d or until browser is closed
+            $lifetime = ($data['remember'] ? 5*24*60*60 : 0);
+            identity_start_session($user, $lifetime);
 
-            flash('Bine ati venit!');
+            flash('Bine ai venit!');
 
             // redirect
             if (isset($_SESSION['_ia_redirect'])) {
@@ -52,7 +55,7 @@ function controller_login() {
         }
         else {
             flash_error('Numele de utilizator inexistent sau parola ' .
-                        'incorecta. Va rugam sa incercati din nou.');
+                        'incorecta. Incearca din nou.');
         }
     }
 
@@ -60,11 +63,11 @@ function controller_login() {
     $data['password'] = '';
 
     $view['page_name'] = "login";
-    $view['title'] = "Login";
+    $view['title'] = "Autentificare";
     $view['form_values'] = $data;
     $view['form_errors'] = array();
     $view['topnav_select'] = 'login';
-    $view['action'] = url('login', array('action' => 'login'));
+    $view['no_sidebar_login'] = true;
 
     execute_view_die('views/login.php', $view);
 }

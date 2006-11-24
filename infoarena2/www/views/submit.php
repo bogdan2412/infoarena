@@ -15,7 +15,7 @@ foreach ($tasks as $t) {
 
 <h1><?= htmlentities($title)  ?></h1>
 
-<div class="sidehelp">
+<div id="sidebar2">
     Daca intampinati probleme la trimiterea solutiilor puteti sa consultati
     <a href="<?= url('Ajutor/Trimite_Solutii') ?>">documentatia</a>.
 </div>

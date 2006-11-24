@@ -69,7 +69,6 @@ function identity_require($action, $ontoObject = null, $errorMessage = null,
 // Returns identity (user) object instance
 function identity_from_session() {
     // cookie lasts for 6h
-    session_set_cookie_params(6*3600, '/', IA_COOKIE_DOMAIN);
     session_name('infoarena2sessid');
     session_start();
 
@@ -132,7 +131,13 @@ function identity_restore() {
 
 
 // Persists $user to session. This is used when logging in.
-function identity_start_session($user) {
+//
+// $remember_seconds specifies cookie lifetime. Leave 0 for the
+// cookie to expire when browser is closed.
+function identity_start_session($user, $remember_seconds = 0) {
+    session_write_close();
+    session_set_cookie_params($remember_seconds, '/', IA_COOKIE_DOMAIN);
+    session_start();
     $_SESSION['_ia_identity'] = serialize($user);
 }
 

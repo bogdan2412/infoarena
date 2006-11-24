@@ -29,6 +29,10 @@ function check_view($view)
 function fval($paramName, $escapeHtml = true) {
     global $view;
 
+    if (!isset($view['form_values'])) {
+        return '';
+    }
+
     if ($escapeHtml) {
         return htmlentities(getattr($view['form_values'], $paramName));
     }

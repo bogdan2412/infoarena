@@ -67,18 +67,11 @@ ia_template_topnav($topnav_select, $smf_admin);
 
     <?php if (identity_anonymous()) { ?>
     <div id="login">
-        <h2>Autentificare</h2>
-        <form action="<?= url('login', array('action' => 'login')) ?>" method="post">
-            <label for="form_username">Utilizator</label>
-            <input type="text" name="username" id="form_username" value="" />
-            <label for="form_password">Parola</label>
-            <input type="password" name="password" id="form_password" value="" />
-            <input type="submit" value="Autentificare" id="form_submit" class="button important" />
-        </form>
-        <ul>
-            <li><a href="<?= url("reset_pass") ?>">Am uitat parola</a></li>
-            <li><a href="<?= url('register') ?>">Ma inregistrez!</a></li>
-        </ul>
+        <?php if (!isset($no_sidebar_login)) include(IA_ROOT.'www/views/form_login.php') ?>
+        <p>
+        <a href="<?= url('register') ?>">Ma inregistrez!</a><br/>
+        <a href="<?= url("reset_pass") ?>">Mi-am uitat parola&hellip;</a>
+        </p>
     </div>
     <?php } ?>
 </div>

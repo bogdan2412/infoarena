@@ -142,6 +142,7 @@ function security_user($user, $action, $target_user) {
         case 'user-login':
             // FIXME: should we really handle this in security code?
             // any user can try to login, even if it's already authenticated
+            // FIXME?: we could use this for banning IPs
             return true;
 
         case 'user-logout':

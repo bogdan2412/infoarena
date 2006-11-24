@@ -2,7 +2,9 @@
 
 <h1><?= htmlentities($view['title']) ?></h1>
 
-<div class="sidebar">
+<p>Daca esti deja inregistrat te poti <a href="<?= url('login') ?>">autentifica aici</a>; daca ti-ai uitat parola, o poti <a href="<?= url('reset_pass') ?>">reseta aici</a>.</p>
+
+<div id="sidebar2">
 <div class="section">
     <h3>De ce sa te inregistrezi?</h3>
     <ul>
@@ -27,7 +29,7 @@
     <legend>Utilizator infoarena</legend>
     <ul class="form">
         <li>
-            <label for='form_username'>Nume utilizator</label>
+            <label for='form_username'>Nume cont utilizator</label>
             <?= ferr_span('username') ?>
             <input type="text" name="username" value="<?= fval('username') ?>" id="form_username" />
             <span class="fieldHelp">Fara spatii sau diacritice</span>
