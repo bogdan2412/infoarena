@@ -12,8 +12,7 @@ $files = glob(IA_ROOT . "attach/*");
 $extra_files = array_flip($files);
 $extra_atts = array();
 
-// log_print_r($extra_files);
-
+// Check attachments.
 foreach ($atts as $att) {
     $fname = attachment_get_filepath($att);
     // log_print("Looking for $fname");
@@ -23,6 +22,8 @@ foreach ($atts as $att) {
         $extra_atts[] = $att;
     }
 }
+
+// FIXME: check cache.
 
 $extra_files = array_keys($extra_files);
 
@@ -54,6 +55,37 @@ if (count($extra_files) == 0 && count($extra_atts) == 0) {
             foreach ($extra_atts as $att) {
                 attachment_delete($att['id']);
             }
+        }
+    }
+}
+
+// Again, in case we changed something.
+$atts = attachment_get_all("%", "%");
+$files = glob(IA_ROOT . "attach/*");
+
+if (read_bool("Enforce permissions?", no)) {
+    $defowner = null;
+    if (preg_match('/\/home\/([^\/]*)/', IA_ROOT, $matches)) {
+        $defowner = $matches[1];
+    }
+    $userown = read_line("Owning user?", $defowner);
+    $groupown = read_line("Owning group?", $defowner);
+    foreach ($files as $file) {
+        $err = false;
+        if (@chmod($file, 0660) == false) {
+            log_print("Failed chmod on $file");
+            $err = true;
+        }
+        if (@chown($file, $userown) == false) {
+            log_print("Failed chown on $file");
+            $err = true;
+        }
+        if (@chgrp($file, $userown) == false) {
+            log_print("Failed chgrp on $file");
+            $err = true;
+        }
+        if (!$err) {
+            log_print("Fixed permissions for $file");
         }
     }
 }
