@@ -13,7 +13,7 @@ function task_get($task_id) {
 
 // Get the textblock associated to a task.
 function task_get_textblock($task_id) {
-    return textblock_get_revision('task/' . $task_id);
+    return textblock_get_revision(TB_TASK_PREFIX.$task_id);
 }
 
 // create new task
@@ -34,7 +34,7 @@ function task_create($task_id, $type, $hidden, $author, $source, $user_id) {
 
     require_once(IA_ROOT . "common/textblock.php");
     $replace = array("task_id" => $task_id);
-    textblock_copy_replace("template/newtask", "task/$task_id", $replace, "task: $task_id", $user_id);
+    textblock_copy_replace("template/newtask", TB_TASK_PREFIX."$task_id", $replace, "task: $task_id", $user_id);
 
     return $new_task['id'];
 }

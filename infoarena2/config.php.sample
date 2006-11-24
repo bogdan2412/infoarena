@@ -64,4 +64,13 @@ define("LOG_FATAL_ERRORS", 0x19FF);
 // NOTE: set this to false when public.
 define("IA_DEBUG_MODE", true);
 
+// This aren't really settings.
+// FIXME: Couldn't find a better place to put this in.
+//  - NOTE: it can't reside in common/db/*.php files since SMF cannot link db api.
+//  - NOTE: it can't reside in www/format/* since judge needs it too
+define("TB_TASK_PREFIX", 'problema/');
+define("TB_USER_PREFIX", 'utilizator/');
+// FIXME: Do we really need this?
+define("TB_ROUND_PREFIX", 'runda/');
+
 ?>

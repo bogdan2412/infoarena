@@ -7,9 +7,9 @@
 function copy_grader_file($taskname, $filename, $target)
 {
     // Get attachment from database.
-    $att = attachment_get("grader_$filename", "task/$taskname");
+    $att = attachment_get("grader_$filename", TB_TASK_PREFIX."$taskname");
     if (!$att) {
-        log_warn("Attachment task/$taskname?grader_$filename not found.");
+        log_warn("Attachment ".TB_TASK_PREFIX."$taskname?grader_$filename not found.");
         return false;
     }
 
@@ -28,7 +28,7 @@ function copy_grader_file($taskname, $filename, $target)
 
     if ($cachemtime === null || $cachemtime < $servermtime) {
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, IA_URL . "task/$taskname?action=download&file=grader_$filename");
+        curl_setopt($curl, CURLOPT_URL, IA_URL . TB_TASK_PREFIX."$taskname?action=download&file=grader_$filename");
         curl_setopt($curl, CURLOPT_USERPWD, IA_JUDGE_USERNAME . ":" . IA_JUDGE_PASSWD);
 
         $cachefd = fopen($cachefname, "wb");

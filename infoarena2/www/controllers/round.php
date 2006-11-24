@@ -108,7 +108,7 @@ function controller_round_edit_details($round_id, $form_data = null,
     $view['param_list'] = $param_list;
     $view['param_values'] = $param_values;
     $view['all_tasks'] = $all_tasks;
-    $view['page_name'] = 'round/'.$round_id;
+    $view['page_name'] = TB_ROUND_PREFIX.$round_id;
     execute_view_die("views/round_edit.php", $view);
 }
 
@@ -208,11 +208,11 @@ function controller_round_save_details($round_id) {
         // - done
         if ($round) {
             flash('Informatiile despre runda au fost salvate.');
-            redirect(url('round/'.$round_id));
+            redirect(url(TB_ROUND_PREFIX.$round_id));
         }
         else {
             flash('O noua runda a fost creata. Acum trebuie sa editezi continutul...');
-            redirect(url('round/'.$round_id, array('action'=>'edit')));
+            redirect(url(TB_ROUND_PREFIX.$round_id, array('action'=>'edit')));
         }
     }
     else {

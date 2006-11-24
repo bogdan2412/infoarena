@@ -116,7 +116,7 @@ function controller_profile($suburl) {
             // similar to attachments
             if ($avatar) {
                 // Add the file to the database.
-                $user_page = 'user/' . $identity_user['username'];
+                $user_page = TB_PREFIX_USER . $identity_user['username'];
                 $file_name = 'avatar';
                 $attach = attachment_get($file_name, $user_page);
                 if ($attach) {

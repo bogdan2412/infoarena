@@ -5,7 +5,7 @@
 //       to avoid multiple database queries.
 //
 // Arguments:
-//      task_id (required)            Task identifier (without task/ prefix)
+//      task_id (required)            Task identifier (without prefix)
 //      param (required)              Parameter name. See the source code for possible values.
 //      default_value (optional)      Display this when no such parameter is found
 //

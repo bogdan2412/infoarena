@@ -8,7 +8,7 @@
     <li>
         <a href="<?= url($view['page_name'],array ('action' => 'download', 'file'=> $v['name'])) ?>">
         <?= $v['name'] ?></a><span class="details"><?= ", atasat de " ?>
-        <a href="<?= url('user/'.$v['username']) ?>"><?= htmlentities($v['username']) ?></a>
+        <a href="<?= url(TB_USER_PREFIX.$v['username']) ?>"><?= htmlentities($v['username']) ?></a>
         <?= " la ".$v['timestamp'].", " ?></span>
         <a href="<?= url($view['page_name'],array ('action' => 'attach-del', 'file'=> $v['name'])) ?>">
         Sterge </a>

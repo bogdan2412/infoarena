@@ -77,7 +77,7 @@
                 <?php // display avatar
                     $dic['action'] = 'download';
                     $dic['file'] = 'avatar';
-                    echo '<img src="' . url('user/'.$username, $dic) . '"/>';
+                    echo '<img src="' . url(TB_USER_PREFIX.$username, $dic) . '"/>';
                 ?>
                 <label for="form_avatar">Avatar</label>
                 <input type="file" name="avatar" value="" id="form_avatar" />

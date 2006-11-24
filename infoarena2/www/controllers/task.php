@@ -93,7 +93,7 @@ function controller_task_edit_details($task_id, $form_data = null, $form_errors 
     $view['action'] = url('admin/task/' . $task_id, array('action' => 'save'));
     $view['form_values'] = $form_data;
     $view['form_errors'] = $form_errors;
-    $view['page_name'] = 'task/'.$task_id;
+    $view['page_name'] = TB_TASK_PREFIX.$task_id;
     $view['param_list'] = $param_list;
     $view['param_values'] = $param_values;
     execute_view_die("views/task_edit.php", $view);
@@ -187,11 +187,11 @@ function controller_task_save_details($task_id) {
         // - done
         if ($task) {
             flash('Informatiile despre task au fost actualizate.');
-            redirect(url('task/'.$task_id));
+            redirect(url(TB_TASK_PREFIX.$task_id));
         }
         else {
             flash('Un nou task a fost creat. Acum trebuie sa editezi continutul ...');
-            redirect(url('task/'.$task_id, array('action'=>'edit')));
+            redirect(url(TB_TASK_PREFIX.$task_id, array('action'=>'edit')));
         }
     }
     else {

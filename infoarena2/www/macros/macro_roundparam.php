@@ -5,7 +5,7 @@
 //       to avoid multiple database queries.
 //
 // Arguments:
-//      round_id (required)           Round identifier (without round/ prefix)
+//      round_id (required)           Round identifier (without prefix)
 //      param (required)              Parameter name. See the source code for possible values.
 //      default_value (optional)      Display this when no such parameter is found
 //

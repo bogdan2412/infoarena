@@ -23,7 +23,7 @@ function controller_round_register($round_id) {
     log_assert($identity_user);
     if (round_is_registered($round['id'], $identity_user['id'])) {
         flash_error('Sunteti deja inregistrat in runda <em>'.htmlentities($textblock['title']).'</em>!');
-        redirect(url('round/'.$round['id']));
+        redirect(url(TB_ROUND_PREFIX.$round['id']));
     }
 
     if ($submit) {
@@ -31,7 +31,7 @@ function controller_round_register($round_id) {
         round_register_user($round['id'], $identity_user['id']);
         // FIXME: should redirect to referrer
         flash('Ati fost inregistrat la <em>'.htmlentities($textblock['title']).'</em>!');
-        redirect(url('round/'.$round['id']));
+        redirect(url(TB_ROUND_PREFIX.$round['id']));
     }
     else {
         // display form

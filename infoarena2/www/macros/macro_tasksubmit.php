@@ -3,7 +3,7 @@
 // Display solution submission form for a given task
 //
 // Arguments:
-//      task_id (required)            Task identifier (without task/ prefix)
+//      task_id (required)            Task identifier (without prefix)
 //
 // Examples:
 //      TaskSubmit(task_id="adunare")
