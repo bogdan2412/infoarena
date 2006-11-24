@@ -51,13 +51,13 @@ ia_template_topnav($topnav_select, $smf_admin);
     <?php } ?>
 
     <ul id="nav" class="clear">
-        <li><a href="<?= url('arhiva-probleme') ?>">Arhiva de probleme</a></li>
+        <li><a href="<?= url('arhiva') ?>">Arhiva de probleme</a></li>
         <li><a href="<?= url('concursuri') ?>">Concursuri online</a></li>
         <li><a href="<?= url('articole') ?>">Articole</a></li>
         <li><a href="<?= url('downloads') ?>">Downloads</a></li>
         <li><a href="<?= url('links') ?>">Links</a></li>
         <li><a href="<?= url('stiri') ?>">Arhiva de stiri</a></li>
-        <li><a href="<?= url('arhiva-stiri') ?>">Despre infoarena</a></li>
+        <li><a href="<?= url('despre-infoarena') ?>">Despre infoarena</a></li>
         <li class="separator"><hr/></li>
         <?php if (!identity_anonymous()) { ?>
         <li><strong><a href="<?= url('submit') ?>">Trimite solutii</a></strong></li>

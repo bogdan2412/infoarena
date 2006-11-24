@@ -23,7 +23,7 @@ function macro_smftopic($args) {
     }
 
     $args = array(
-        'url' => IA_SMF_URL.'/ia_recentposts.php?topic_id='.$topic_id.'&count='.$count
+        'url' => IA_URL.'sdhack/?file=ia_recentposts&topic_id='.$topic_id.'&count='.$count
     );
     return macro_remotebox($args, true);
 }

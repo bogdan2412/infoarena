@@ -42,6 +42,7 @@ $time_start = microtime();
 require_once(dirname(__FILE__) . '/Settings.php');
 
 $ssi_error_reporting = error_reporting(E_ALL);
+ini_set('display_errors', false);
 
 // Don't do john didley if the forum's been shut down competely.
 if ($maintenance == 2 && (!isset($ssi_maintenance_off) || $ssi_maintenance_off !== true))
@@ -258,8 +259,8 @@ function ssi_recentPostsFromTopic($topicID, $num_recent = 8, $exclude_boards = n
 			LEFT JOIN {$db_prefix}members AS mem ON (mem.ID_MEMBER = m.ID_MEMBER)" . (!$user_info['is_guest'] ? "
 			LEFT JOIN {$db_prefix}log_topics AS lt ON (lt.ID_TOPIC = m.ID_TOPIC AND lt.ID_MEMBER = $ID_MEMBER)
 			LEFT JOIN {$db_prefix}log_mark_read AS lmr ON (lmr.ID_BOARD = m.ID_BOARD AND lmr.ID_MEMBER = $ID_MEMBER)" : '') . "
-		WHERE m.ID_MSG >= " . ($modSettings['maxMsgID'] - 125 * $num_recent) . "
-			AND m.ID_TOPIC = " . $topicID . "
+		WHERE 
+			m.ID_TOPIC = " . $topicID . "
 			AND b.ID_BOARD = m.ID_BOARD" . (empty($exclude_boards) ? '' : "
 			AND b.ID_BOARD NOT IN (" . implode(', ', $exclude_boards) . ")") . "
 			AND $user_info[query_see_board]
