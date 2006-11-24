@@ -15,7 +15,7 @@ function try_textblock_get($page_name) {
 // List attachments to a textblock
 function controller_attachment_list($page_name) {
     $page = try_textblock_get($page_name);
-    identity_require('attach-list', $page);
+    identity_require('textblock-list-attach', $page);
 
     $view = array();
     $view['attach_list'] = attachment_get_all($page_name);
@@ -28,7 +28,7 @@ function controller_attachment_list($page_name) {
 // Create a new attachment to a textblock.
 function controller_attachment_create($page_name) {
     $page = try_textblock_get($page_name);
-    identity_require('attach-create', $page);
+    identity_require('textblock-attach', $page);
 
     // Initial attachment page. Rather empty.
     $view['title'] = 'Ataseaza la pagina '.$page_name;
@@ -41,7 +41,7 @@ function controller_attachment_create($page_name) {
 // Submit an attachment to a textblock.
 function controller_attachment_submit($page_name) {
     $page = try_textblock_get($page_name);
-    identity_require('attach-create', $page);
+    identity_require('textblock-attach', $page);
 
     global $identity_user;
 

@@ -34,14 +34,8 @@ function task_get_parameter_infos() {
                             'type' => 'boolean',
                             'name' => "Foloseste .ok",
                     ),
-                    'unique_output' => array(
-                            'description' => "Evaluare cu diff.",
-                            'default' => false,
-                            'type' => 'boolean',
-                            'name' => "Output unic",
-                    ),
                     'evaluator' => array(
-                            'description' => "Numele fisierului atasat, fara grader_.",
+                            'description' => "Sursa evaluatorului. Poate fi omis pentru evaluare cu diff",
                             'default' => 'eval.c',
                             'type' => 'string',
                             'name' => "Evaluator",
@@ -54,14 +48,8 @@ function task_get_parameter_infos() {
                             'type' => 'boolean',
                             'name' => "Foloseste .ok",
                     ),
-                    'unique_output' => array(
-                            'description' => "Evaluare cu diff.",
-                            'default' => false,
-                            'type' => 'boolean',
-                            'name' => "Output unic",
-                    ),
                     'evaluator' => array(
-                            'description' => "Numele fisierului atasat, fara grader_.",
+                            'description' => "Sursa evaluatorului. Poate fi omis pentru evaluare cu diff",
                             'default' => 'eval.c',
                             'type' => 'string',
                             'name' => "Evaluator",
@@ -107,22 +95,29 @@ function task_validate_parameters($task_type, $parameters) {
         if ($parameters['okfiles'] != '0' && $parameters['okfiles'] != '1') {
             $errors['okfiles'] = "0/1 only";
         }
-        if ($parameters['unique_output'] != '0' && $parameters['unique_output'] != '1') {
-            $errors['unique_output'] = "0/1 only";
-        }
 
-        if (!preg_match("/[a-bA-B0-9\-\.]+/", $parameters['evaluator'])) {
-            $errors['evaluator'] = "Nume de fisier invalid.";
+        if ($parameters['evaluator'] == "") {
+            if (!$parameters['okfiles']) {
+                $errors['evaluator'] = "Pentru evaluare cu diff e nevoie e fisiere .ok";
+            }
+        } else {
+            if (!is_attachment_name($parameters['evaluator'])) {
+                $errors['evaluator'] = "Nume de fisier invalid.";
+            }
         }
     } else if ($task_type == 'output-only') {
         if ($parameters['okfiles'] != '0' && $parameters['okfiles'] != '1') {
             $errors['okfiles'] = "0/1 only";
         }
-        if ($parameters['unique_output'] != '0' && $parameters['unique_output'] != '1') {
-            $errors['unique_output'] = "0/1 only";
-        }
-        if (!preg_match("/[a-bA-B0-9\-\.]+/", $parameters['evaluator'])) {
-            $errors['evaluator'] = "Nume de fisier invalid.";
+
+        if ($parameters['evaluator'] == "") {
+            if (!$parameters['okfiles']) {
+                $errors['evaluator'] = "Pentru evaluare cu diff e nevoie e fisiere .ok";
+            }
+        } else {
+            if (!is_attachment_name($parameters['evaluator'])) {
+                $errors['evaluator'] = "Nume de fisier invalid.";
+            }
         }
     } else {
         log_error("Bad task_type");

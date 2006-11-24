@@ -16,12 +16,14 @@ function magic_file_attach($page, $attname, $file)
 
     $mime = get_mime_type($file);
     $att = attachment_get($attname, $page);
+    $uid = user_get_by_username("fluffy");
+    $uid = $uid['id'];
     if ($att) {
         $id = $att['id'];
-        attachment_update($id, $attname, filesize($file), $mime, $page, 0);
+        attachment_update($id, $attname, filesize($file), $mime, $page, $uid);
         log_print("Updating attachment $attname to $page mime type $mime.");
     } else {
-        $id = attachment_insert($attname, filesize($file), $mime, $page, 0);
+        $id = attachment_insert($attname, filesize($file), $mime, $page, $uid);
         log_print("New attachment $attname to $page mime type $mime.");
         $att = attachment_get($attname, $page);
     }
@@ -239,6 +241,7 @@ if (read_bool("Import scores?", false)) {
 if (read_bool("Import tasks?", false)) {
     db_query("TRUNCATE TABLE ia_task");
     db_query("DELETE FROM ia_parameter_value WHERE `object_type` = 'task'");
+    db_query("DELETE FROM ia_file WHERE `page` like 'problema/%' AND `name` LIKE 'grader_%'");
     $import_eval = read_bool("Import task evaluators?", true);
     $import_tests = read_bool("Import task tests?", true);
 
@@ -273,7 +276,7 @@ if (read_bool("Import tasks?", false)) {
  
         // Handle evaluator.
         if ($import_eval) {
-            $task_dir = $ia1_path . "eval/arhiva/$task_id/";
+            $task_dir = $ia1_path . "eval/arhiva/" . $task['id'] . '/';
             if (file_exists($task_dir . "eval.c")) {
                 $parameters['evaluator'] = "eval.c";
                 log_print("Found C evaluator.");

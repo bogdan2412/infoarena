@@ -17,10 +17,10 @@
         <?php if (identity_can('textblock-delete', $textblock)) { ?>
         <li><a href="<?= url($textblock['name'], array('action' => 'delete')) ?>">Sterge</a></li>
         <?php } ?>
-        <?php if (identity_can('attach-create', $textblock)) { ?>
+        <?php if (identity_can('textblock-attach', $textblock)) { ?>
         <li><a href="<?= url($textblock['name'], array('action' => 'attach')) ?>">Ataseaza</a></li>
         <?php } ?>
-        <?php if (identity_can('attach-list', $textblock)) { ?>
+        <?php if (identity_can('textblock-list-attach', $textblock)) { ?>
         <li><a href="<?= url($textblock['name'], array('action' => 'attach-list')) ?>">Listeaza atasamente</a></li>
         <?php } ?>
      </ul>

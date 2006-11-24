@@ -95,6 +95,8 @@ function security_textblock($user, $action, $textblock) {
         // Read-only
         case 'textblock-view':
         case 'textblock-history':
+        case 'textblock-list-attach':
+        case 'attach-download':
             if ($textsec == 'private') {
                 return $usersec == 'admin';
             } else {
@@ -114,6 +116,9 @@ function security_textblock($user, $action, $textblock) {
         // Permanent changes. Admin only
         case 'textblock-move':
         case 'textblock-delete':
+        case 'textblock-attach':
+        case 'attach-overwrite':
+        case 'attach-delete':
             return $usersec == 'admin';
 
         // Special: admin only.
@@ -159,24 +164,10 @@ function security_user($user, $action, $target_user) {
 // FIXME: query textblock here.
 // FIXME: magic prefix.
 function security_attach($user, $action, $attach) {
-    $usersec = getattr($user, 'security_level', 'anonymous');
-
-    switch ($action) {
-        case 'attach-download':
-        case 'attach-list':
-            // anyone can download/list attachments
-            return true;
-
-        // Irreversible modifications, admin only:
-        case 'attach-create':
-        case 'attach-overwrite':
-        case 'attach-delete':
-            return $usersec == 'admin';
-
-        default:
-            log_error('Invalid attach action: '.$action);
-            return false;
+    if (preg_match('/$grader_/', $attach['name'])) {
+        $action = preg_replace('/$attach/', 'grader', $action);
     }
+    return security_textblock($user, $action, textblock_get_revision($attach['page']));
 }
 
 // FIXME: round logic.
@@ -186,9 +177,11 @@ function security_task($user, $action, $task) {
     // Normalize action.
     switch ($action) {
         // Read-only access.
-        case 'task-view':
         case 'textblock-view':
         case 'textblock-history':
+        case 'textblock-list-attach':
+        case 'task-view':
+        case 'attach-download':
             // Everybody can see public tasks.
             // Helpers can see their own tasks.
             return (!$task['hidden']) || ($usersec == 'admin') ||
@@ -200,6 +193,13 @@ function security_task($user, $action, $task) {
         case 'textblock-edit':
         case 'textblock-restore':
         case 'textblock-move':
+        case 'textblock-attach':
+        case 'attach-overwrite':
+        case 'attach-delete':
+        case 'grader-download':
+        case 'grader-create':
+        case 'grader-overwrite':
+        case 'grader-delete':
             return ($task['hidden'] && $usersec == 'helper' && $task['user_id'] == $user['id']) ||
                     $usersec == 'admin';
 
@@ -240,6 +240,8 @@ function security_round($user, $action, $round) {
         case 'round-view':
         case 'textblock-view':
         case 'textblock-history':
+        case 'textblock-list-attach':
+        case 'attach-download':
             // Everybody can see public rounds.
             // Helpers can see their own rounds.
             return (!$round['hidden']) || ($usersec == 'admin') ||
@@ -251,6 +253,9 @@ function security_round($user, $action, $round) {
         case 'textblock-edit':
         case 'textblock-restore':
         case 'textblock-move':
+        case 'textblock-attach':
+        case 'attach-overwrite':
+        case 'attach-delete':
             return ($round['hidden'] && $usersec == 'helper' && $round['user_id'] == $user['id']) ||
                     $usersec == 'admin';
 

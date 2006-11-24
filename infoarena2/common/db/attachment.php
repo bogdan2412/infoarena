@@ -59,7 +59,7 @@ function attachment_delete($id) {
 function attachment_get_all($page, $name='%') {
     $query = sprintf("SELECT ia_file.*, ia_user.username, ia_user.full_name
                       FROM ia_file
-                      JOIN ia_user ON ia_user.id = ia_file.user_id
+                      LEFT JOIN ia_user ON ia_user.id = ia_file.user_id
                       WHERE ia_file.page LIKE '%s'
                             AND ia_file.`name` LIKE '%s'
                       ORDER BY ia_file.`name`, ia_file.`timestamp` DESC",
