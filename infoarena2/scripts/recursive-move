@@ -1,0 +1,30 @@
+#! /usr/bin/env php
+<?php
+
+require_once("utilities.php");
+require_once(IA_ROOT . "common/db/textblock.php");
+
+log_print("Recursive page move, for huge changes.");
+
+$src = read_line("Source root?", 'task');
+$dst = read_line("Destination root?", 'problema');
+
+$page_list = textblock_get_by_prefix($src, false, false);
+
+if (count($page_list) == 0) {
+    log_error("No pages found.");
+}
+
+if (!read_bool("Are you sure you want to move ".count($page_list)." pages?", false)) {
+    log_print("Aborted");
+    die();
+}
+
+foreach ($page_list as $page) {
+    $old_name = $page['name'];
+    $new_name = preg_replace("/^".preg_quote($src, '/').'/si', preg_quote($dst, '/'), $old_name);
+    log_print("Moving $old_name to $new_name");
+    textblock_move($old_name, $new_name);
+}
+
+?>
