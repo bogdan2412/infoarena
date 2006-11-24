@@ -1,7 +1,7 @@
 /**
- * DHTML for RemoteBox macro 
- * (c) 2006 info-arena
- */ 
+ * DHTML for RemoteBox macro
+ * (c) infoarena
+ */
 var RemoteBox_Url = '';
 
 function RemoteBox_Init() {

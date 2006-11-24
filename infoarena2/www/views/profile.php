@@ -3,9 +3,9 @@
 <h1><?= htmlentities($view['title']) ?></h1>
 
 <?php if ($register) { ?>
-<form enctype="multipart/form-data" action="<?= url('register/save') ?>" method="post">
+<form enctype="multipart" action="<?= url('register') ?>" method="post">
 <?php } else {?>
-<form enctype="multipart/form-data" action="<?= url('profile/save') ?>" method="post">
+<form enctype="multipart/form-data" action="<?= url('profile') ?>" method="post">
 <?php } ?>
 <div class="tabber userProfile">
     <?php if (!$register) { ?>

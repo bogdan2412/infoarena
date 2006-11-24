@@ -61,11 +61,24 @@ div.loading img {
     border: 1px dotted silver;
 }
 
-div.sidehelp {
+.sidebar {
     float: right;
-    width: 12em;
+    width: 15em;
     padding: 1em;
-    background-color: #ccf;
+    background-color: #B7D285;
+}
+
+.sidebar h3 {
+    margin: 0;
+    font-weight: normal;
+}
+
+.sidebar .section {
+    margin-bottom: 1em;
+}
+
+.sidebar ul {
+    padding-left: 1.5em;
 }
 
 /* Layout */
@@ -439,27 +452,31 @@ div.flash {
     padding: .5em;
     border: 1px solid olive;
     width: 50%;
+    background-image: url('../images/icons/notice.gif');
+    background-position: 4px 50%;
+    background-repeat: no-repeat;
 }
 
 div.flashError {
-    background-color: red;
+    background-color: #cc0000;
     color: white;
     border: 1px solid pink;
+    background-image: url('../images/icons/error.gif');
 }
 
 /* Forms */
 form {
-    margin: 1em 0 1em 0;
+    margin: 0;
     padding: 4px;
     font-size: 1em;
 }
 
 input, select, textarea {
-    font-family: Trebuchet MS, Tahoma, Arial;
+    font-family: Trebuchet MS, Tahoma, Helvetica, Arial;
+    padding: .2em;
 }
 
 select {
-    padding: 0;
     cursor: pointer;
 }
 
@@ -472,10 +489,10 @@ input.button {
     background-image: url('../images/background_form_element.gif');
     background-repeat: repeat-x;
     color: black;
-    margin: 2px;
+    margin: 0;
     font-weight: bold;
     font-size: .95em;
-    padding: .2em; 
+    padding: .2em;
 }
 
 input.important {
@@ -492,13 +509,25 @@ input.button:active {
 .fieldError, .fieldHelp {
     display: block;
     color: red;
-    font-size: small;
     font-weight: bold;
-    font-family: Trebuchet MS, Tahoma, Arial;  
+    font-family: Trebuchet MS, Tahoma, Arial;
 }
 
 .fieldHelp {
     color: black;
+    font-weight: normal;
+}
+
+fieldset {
+    padding: 0 1em 1em 1em;
+    margin: 0 1em 1em 1em;
+    border-color: silver;
+    border-collapse: collapse;
+    width: 50%;
+}
+
+legend {
+    padding: 0 .5em 0 .5em;
 }
 
 ul.form {
@@ -507,11 +536,32 @@ ul.form {
     padding: 0;
 }
 
+ul.form li {
+    margin: .5em 0 .5em 0;
+}
+
 ul.form label {
     display: block;
     font-weight: bold;
-    padding: 1em 0 0 0;
-    font-size: .9em;
+}
+
+ul.form label.checkbox {
+    display: inline;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+ul.form {
+    margin-left: 1em;
+}
+
+fieldset ul.form {
+    margin-left: 0;
+}
+
+/* user profile form */
+form.profile fieldset input {
+    width: 20em;
 }
 
 /* textblock editor */

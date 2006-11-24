@@ -1,7 +1,7 @@
 /**
  * DHTML for task solution submission
- * (c) 2006 info-arena
- */ 
+ * (c) 2006 infoarena
+ */
 
 var Submit_CompilerDisplay;
 

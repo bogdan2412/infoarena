@@ -1,7 +1,7 @@
 /**
  * DHTML for wiki editing page.
- * (c) 2006 info-arena
- */ 
+ * (c) infoarena
+ */
 
 var WikiEdit_Saved = false;
 

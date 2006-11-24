@@ -71,6 +71,7 @@ function user_get_by_id($id) {
 }
 
 // Create a new user.
+// FIXME: Expand $data into specific fields just like task_create()!
 function user_create($data) {
     global $dbLink;
     $query = "INSERT INTO ia_user (";
@@ -97,13 +98,15 @@ function user_create($data) {
 
     require_once(IA_ROOT . "common/textblock.php");
     $replace = array("user_id" => $data['username']);
-    textblock_copy_replace("template/newuser", TB_USER_PREFIX.$data['username'], $replace, "public", $data['username']);
+    textblock_copy_replace("template/newuser", TB_USER_PREFIX.$data['username'],
+                           $replace, "public", $new_user['id']);
 
     return $new_user;
 }
 
 // Update user information.
 // NOTE: When updating password, it is mandatory that you also specify username
+// FIXME: Expand $data into specific fields just like task_create()!
 function user_update($data, $id) {
     global $dbLink;
     $query = "UPDATE ia_user SET ";
