@@ -184,6 +184,7 @@ function db_update($table, $dict, $where = null) {
 }
 
 // Include actual db functions.
+// FIXME: parser overload.
 require_once(IA_ROOT . "common/db/job.php");
 require_once(IA_ROOT . "common/db/round.php");
 require_once(IA_ROOT . "common/db/task.php");
@@ -244,7 +245,7 @@ function news_get_range($start, $range, $prefix = null) {
     $query = sprintf("SELECT
                         *
                       FROM ia_textblock
-                      WHERE LCASE(`name`) LIKE 'news/%s%%'
+                      WHERE LCASE(`name`) LIKE 'stiri/%s%%'
                       ORDER BY ia_textblock.`timestamp` DESC
                       LIMIT %s,%s",
                      db_escape($prefix), db_escape($start), db_escape($range));
@@ -254,7 +255,7 @@ function news_get_range($start, $range, $prefix = null) {
 function news_count($prefix = null) {
     $query = sprintf("SELECT COUNT(*) AS `cnt`
                       FROM ia_textblock
-                      WHERE LCASE(`name`) LIKE 'news/%s%%'",
+                      WHERE LCASE(`name`) LIKE 'stiri/%s%%'",
                       db_escape($prefix));
     $tmp = db_fetch($query);
     return $tmp['cnt'];

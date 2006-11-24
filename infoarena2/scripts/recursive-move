@@ -23,7 +23,6 @@ if (!read_bool("Are you sure you want to move ".count($page_list)." pages?", fal
 foreach ($page_list as $page) {
     $old_name = $page['name'];
     $new_name = preg_replace("/^".preg_quote($src, '/').'/si', preg_quote($dst, '/'), $old_name);
-    log_print("Moving $old_name to $new_name");
     textblock_move($old_name, $new_name);
 }
 

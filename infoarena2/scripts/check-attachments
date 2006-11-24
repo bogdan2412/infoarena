@@ -1,0 +1,61 @@
+#! /usr/bin/env php
+<?php
+
+require_once("utilities.php");
+require_once(IA_ROOT . "common/db/attachment.php");
+
+log_print("Checking attachment dir...");
+
+$atts = attachment_get_all("%", "%");
+$files = glob(IA_ROOT . "attach/*");
+
+$extra_files = array_flip($files);
+$extra_atts = array();
+
+// log_print_r($extra_files);
+
+foreach ($atts as $att) {
+    $fname = attachment_get_filepath($att);
+    // log_print("Looking for $fname");
+    if (array_key_exists($fname, $extra_files)) {
+        unset($extra_files[$fname]);
+    } else {
+        $extra_atts[] = $att;
+    }
+}
+
+$extra_files = array_keys($extra_files);
+
+if (count($extra_files) == 0 && count($extra_atts) == 0) {
+    log_print("Database and attach dir are in perfect sync.");
+} else {
+    log_print("There are are ".count($extra_files)." out of ".count($files)." disk files with no db entry.");
+    if (count($extra_files)) {
+        if (read_bool("Do you want to see a list?", false)) {
+            foreach ($extra_files as $file) {
+                log_print($file);
+            }
+        }
+        if (read_bool("Want to delete them?", false)) {
+            foreach ($extra_files as $file) {
+                unlink($file);
+            }
+        }
+    }
+
+    log_print("There are are ".count($extra_atts)." out of ".count($atts)." db files with no disk file.");
+    if (count($extra_atts)) {
+        if (read_bool("Do you want to see a list?", false)) {
+            foreach ($extra_atts as $att) {
+                log_print("page ".$att['page']." name ".$att['name']);
+            }
+        }
+        if (read_bool("Want to delete them?", false)) {
+            foreach ($extra_atts as $att) {
+                attachment_delete($att['id']);
+            }
+        }
+    }
+}
+
+?>
