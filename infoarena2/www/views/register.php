@@ -24,7 +24,7 @@
 
 </div>
 
-<form enctype="multipart" action="<?= $action ?>" method="post" class="profile">
+<form enctype="multipart" action="<?= $action ?>" method="post" class="profile hollyfix">
 <fieldset>
     <legend>Utilizator infoarena</legend>
     <ul class="form">
@@ -47,6 +47,7 @@
         </li>
     <ul>
 </fieldset>
+
 <fieldset>
     <legend>Informatii personale</legend>
     <ul class="form">
@@ -65,7 +66,7 @@
     </ul>
 </fieldset>
 
-<ul class="form">
+<ul class="form hollyfix">
     <li>
         <input type="checkbox" <?php if (fval('newsletter'))
             echo 'checked="checked"'; ?> name="newsletter" id="form_newsletter"/>

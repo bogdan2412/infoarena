@@ -45,7 +45,6 @@ function ia_template_topnav($selected = 'infoarena', $smf_admin = false) {
 <?php } ?>
 </ul>
 </div>
-<div class="clear"></div>
 
 <?php
 }

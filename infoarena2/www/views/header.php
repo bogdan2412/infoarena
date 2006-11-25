@@ -61,7 +61,7 @@ ia_template_topnav($topnav_select, $smf_admin);
         <li class="separator"><hr/></li>
         <li><a href="<?= url('monitor') ?>">Monitorul de evaluare</a></li>
         <?php if (!identity_anonymous()) { ?>
-        <li><strong><a href="<?= url('submit') ?>">Trimite solutii</a></strong></li>
+        <li><a href="<?= url('submit') ?>"><strong>Trimite solutii</strong></a></li>
         <li><a href="<?= url('account') ?>">Contul meu</a></li>
         <?php } ?>
     </ul>

@@ -19,7 +19,7 @@
 
 </div>
 
-<form enctype="multipart/form-data" action="<?= $action ?>" method="post" class="profile">
+<form enctype="multipart/form-data" action="<?= $action ?>" method="post" class="profile hollyfix">
 <fieldset>
     <legend>Schimba parola</legend>
     <ul class="form">
@@ -80,7 +80,7 @@
     </ul>
 </fieldset>
 
-<ul class="form">
+<ul class="form hollyfix">
     <li>
         <input type="checkbox" <?php if (fval('newsletter'))
             echo 'checked="checked"'; ?> name="newsletter" id="form_newsletter"/>
