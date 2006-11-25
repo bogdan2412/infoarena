@@ -18,7 +18,7 @@ function controller_resetpass() {
     $errors = array();
 
     // submit?
-    $submit = ('post' == strtolower(getattr($_SERVER, 'REQUEST_METHOD')));
+    $submit = request_is_post();
 
     if ($submit) {
         // 1. validate

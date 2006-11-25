@@ -43,7 +43,7 @@ $action = request('action', 'view');
 
 // Direct mapping list
 // Note: array_flip() flips keys with values in a dictionary.
-$directmaps = array_flip(array('register', 'profile', 'news_feed', 'changes',
+$directmaps = array_flip(array('register', 'account', 'news_feed', 'changes',
                                'login', 'logout', 'json',
                                'job_detail', 'monitor', 'submit', 'userinfo',
                                ));

@@ -20,11 +20,7 @@ define("IA_ATTACH_MAXSIZE", 20*1024*1024);
 define("IA_SUBMISSION_MAXSIZE", 256*1024);
 
 // maximum avatar file-size
-define("IA_AVATAR_MAXSIZE", 200*1024);
-
-// maximum avatar dimensions
-define("IA_AVATAR_WIDTH", 100);
-define("IA_AVATAR_HEIGHT", 100);
+define("IA_AVATAR_MAXSIZE", 400*1024);
 
 // Number of items in a RSS feed
 define('IA_MAX_FEED_ITEMS', 15);

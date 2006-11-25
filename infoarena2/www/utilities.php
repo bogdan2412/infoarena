@@ -4,6 +4,12 @@ function request($paramName, $defaultValue = null) {
     return getattr($_REQUEST, $paramName, $defaultValue);
 }
 
+// Returns boolean whether current request method is POST
+function request_is_post() {
+    $post = ('post' == strtolower(getattr($_SERVER, 'REQUEST_METHOD')));
+    return $post;
+}
+
 // Call this function for a http-level redirect.
 // NOTE: this function DOES NOT RETURN.
 // FIXME: Detect if output started and still do a redirect?
@@ -134,7 +140,7 @@ function execute_view($view_file_name, $view) {
 
     // update recent page history
     $query = url_from_args($_GET);
-    if (!preg_match('/\/json\//', $query) && 'get'==strtolower(getattr($_SERVER, 'REQUEST_METHOD'))) {
+    if (!preg_match('/\/json\//', $query) && !request_is_post()) {
         $hashkey = strtolower($query);
         $recent_pages[$hashkey] = array($query, getattr($view, 'title', $query)); 
         if (5 < count($recent_pages)) {

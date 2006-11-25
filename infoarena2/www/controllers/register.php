@@ -1,10 +1,9 @@
 <?php
 
-require_once(IA_ROOT."www/controllers/profile_validator.php");
+require_once(IA_ROOT."www/controllers/account_validator.php");
 
 function controller_register() {
-
-    $submit = ('post' == strtolower(getattr($_SERVER, 'REQUEST_METHOD')));
+    $submit = request_is_post();
 
     // Initialize view parameters.
     // form data goes in data.

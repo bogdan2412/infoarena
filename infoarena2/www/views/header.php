@@ -59,10 +59,11 @@ ia_template_topnav($topnav_select, $smf_admin);
         <li><a href="<?= url('stiri') ?>">Arhiva de stiri</a></li>
         <li><a href="<?= url('despre-infoarena') ?>">Despre infoarena</a></li>
         <li class="separator"><hr/></li>
+        <li><a href="<?= url('monitor') ?>">Monitorul de evaluare</a></li>
         <?php if (!identity_anonymous()) { ?>
         <li><strong><a href="<?= url('submit') ?>">Trimite solutii</a></strong></li>
+        <li><a href="<?= url('account') ?>">Contul meu</a></li>
         <?php } ?>
-        <li><a href="<?= url('monitor') ?>">Monitorul de evaluare</a></li>
     </ul>
 
     <?php if (identity_anonymous()) { ?>

@@ -20,7 +20,7 @@ function format_user_tiny($user_name, $user_fullname) {
     $result = "";
     $result .= "<div class=\"tiny-user\">";
     $result .= "<a href=\"$user_url\">";
-    $result .= "<img width=\"16\" height=\"16\" src=\"$avatar_url\" alt=\"$user_name\"/>";
+    $result .= "<img src=\"$avatar_url\" alt=\"$user_name\"/>";
     $result .= "<span class=\"fullname\">$user_fullname</span> ";
     $result .= "<span class=\"username\">($user_name)</span> ";
     $result .= "</a></div>";
@@ -28,12 +28,12 @@ function format_user_tiny($user_name, $user_fullname) {
     return $result;
 }
 
-// Format a tiny user link, with a 16x16 avatar.
+// Format a tiny user link, with a 32x32 avatar.
 // FIXME: proper styling
 function format_user_normal($user_name, $user_fullname) {
     $pagename = TB_USER_PREFIX.$user_name;
     $user_url = url($pagename);
-    $avatar_url = image_resize_url($pagename, "avatar", "16x16");
+    $avatar_url = image_resize_url($pagename, "avatar", "32x32");
 
     $user_fullname = htmlentities($user_fullname);
 

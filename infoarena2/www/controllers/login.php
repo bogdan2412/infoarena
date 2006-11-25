@@ -13,7 +13,7 @@ function controller_login() {
     $errors = array();
 
     // process input?
-    $submit = ('post' == strtolower(getattr($_SERVER, 'REQUEST_METHOD')));
+    $submit = request_is_post();
 
     if ($submit) {
         // Validate data here and place stuff in errors.

@@ -5,6 +5,8 @@ require_once(IA_ROOT . "www/format/pager.php");
 // View a plain textblock.
 // That textblock can be owned by something else.
 function controller_textblock_view($page_name, $rev_num = null) {
+    global $identity_user;
+
     // Get actual page.
     $crpage = textblock_get_revision($page_name);
 
@@ -37,6 +39,12 @@ function controller_textblock_view($page_name, $rev_num = null) {
     $view['revision'] = $rev_num;
     $view['page_name'] = $page['name'];
     $view['textblock'] = $page;
+
+    // hack to select `profile` tab in top navigation bar
+    if ($page['name'] == TB_USER_PREFIX.getattr($identity_user, 'username')) {
+        $view['topnav_select'] = 'profile';
+    }
+
     execute_view_die('views/textblock_view.php', $view);
 }
 

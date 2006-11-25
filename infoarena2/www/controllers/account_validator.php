@@ -2,17 +2,19 @@
 
 // validates registration input data (wrapper for validate_data)
 function validate_register_data($data) {
-    return validate_user_data($data, true);
+    return validate_user_data($data, true, null);
 }
 
 // validates user profile input data (wrapper for validate_data)
-function validate_profile_data($data) {
-    return validate_user_data($data, false);
+function validate_profile_data($data, $user) {
+    return validate_user_data($data, false, $user);
 }
 
 // validate fields found in register/profile forms
-function validate_user_data($data, $register) {
+function validate_user_data($data, $register, $user = null) {
     $errors = array();
+
+    log_assert($register ^ $user);
 
     // username
     if ($register) {
@@ -39,9 +41,30 @@ function validate_user_data($data, $register) {
     elseif (!preg_match('/[^@]+@.+\..+/', $data['email'])) {
         $errors['email'] = 'Adresa de e-mail introdusa este invalida.';
     }
-    elseif (user_get_by_email($data['email'])) {
-        $errors['email'] = 'Adresa de e-mail este deja asociata unui cont. '
-                           .'Reseteaza-ti parola daca ai uitat-o.';
+
+    // changing e-mail address or specifying new password forces user
+    // to enter enter current password
+    if (!$register && ($user['email'] != $data['email'])) {
+        if (!$data['passwordold']) {
+            $errors['passwordold'] = 'Introdu parola curenta (veche) pentru a '
+                                      .'schimba adresa de e-mail.';
+        }
+    }
+
+    // changing password forces user to enter current password
+    if (!$register && ($data['password'] || $data['password2'])) {
+        if (!$data['passwordold']) {
+            $errors['passwordold'] = 'Introdu parola curenta (veche) pentru a '
+                                     .'o schimba.';
+        }
+    }
+
+    // When registering or changing e-mail address, make sure e-mail is unique
+    if ($register || ($user['email'] != $data['email'])) {
+        if (user_get_by_email($data['email'])) {
+            $errors['email'] = 'Adresa de e-mail este deja asociata unui cont!'
+                               .' Reseteaza-ti parola daca ai uitat-o.';
+        }
     }
 
     // password
@@ -54,6 +77,13 @@ function validate_user_data($data, $register) {
         }
         elseif ($data['password'] != $data['password2']) {
             $errors['password2'] = 'Parolele nu coincid.';
+        }
+    }
+
+    // current password
+    if (!$register && $data['passwordold']) {
+        if (!user_test_password($user['username'], $data['passwordold'])) {
+            $errors['passwordold'] = 'Nu aceasta este parola curenta!';
         }
     }
 
