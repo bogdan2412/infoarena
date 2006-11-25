@@ -37,12 +37,6 @@ function macro_userinfo($args) {
             return $user['username'];
         case 'security':
             return $user['security_level'];
-        case 'country':
-            return $user['country'];
-        case 'county':
-            return $user['county'];
-        case 'birthday':
-            return $user['birthday'];
         default:
             return macro_error("Invalid info paramater");
     }

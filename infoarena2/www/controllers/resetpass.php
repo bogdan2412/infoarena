@@ -148,8 +148,8 @@ Echipa infoarena
     send_email($to, $subject, $message);
 
     // notify yser
-    flash('Parola a fost resetata si trimisa pe e-mail. Acum te poti '
-          .'autentifica');
+    flash('Parola a fost resetata si trimisa pe e-mail. Verifica-ti '
+          .'e-mail-ul ca sa afli noua parola.');
     redirect(url('login'));
 }
 
