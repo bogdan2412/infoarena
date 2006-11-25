@@ -1,6 +1,6 @@
 <?php
 
-require_once('../config.php');
+require_once(dirname($argv[0]) . '/../config.php');
 
 // The directory used as the jail.
 define("IA_EVAL_DIR", IA_ROOT . 'eval/');

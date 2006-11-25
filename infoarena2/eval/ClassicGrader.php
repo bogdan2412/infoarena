@@ -1,191 +1,156 @@
 <?php
 
-class ClassicGrader {
-    public $task_id;
+// Grades a classic task.
+function task_grade_job_classic($task, $tparams, $job) {
+    $jobresult = array(
+            'score' => 0,
+            'message' => 'Evaluare incompleta',
+            'log' => ''
+    );
 
-    public $test_count;
+    // Clean jail and temp
+    if (!clean_dir(IA_EVAL_TEMP_DIR)) {
+        log_warn("Can't clean to temp dir.");
+        return jobresult_system_error();
+    }
 
-    public $time_limit;
+    // chdir to temp dir.
+    if (!@chdir(IA_EVAL_TEMP_DIR)) {
+        log_warn("Can't chdir to temp dir.");
+        return jobresult_system_error();
+    }
 
-    public $memory_limit;
-
-    public $uses_ok_files;
-
-    public $unique_output;
-
-    public $evaluator;
-
-    function __construct($id, $parameters) {
-        $this->task_id = $id;
-        $this->task = task_get($id);
-
-        if (!task_validate_parameters("classic", $parameters)) {
-            log_warn("Invalid task parameters");
-        }
-        $this->evaluator = (string)$parameters['evaluator'];
-        $this->test_count = (int)$parameters['tests'];
-        $this->time_limit = (float)$parameters['timelimit'];
-        $this->memory_limit = (int)$parameters['memlimit'];
-        $this->unique_output = (bool)$parameters['unique_output'];
-        $this->has_ok_files = (bool)$parameters['okfiles'];
-
-        if ($this->unique_output == true && $this->has_ok_files == false) {
-            log_warn("Task has unique output but no ok files");
+    // Compile custom evaluator.
+    if (!$tparams['unique_output']) {
+        if (!copy_grader_file($task, $tparams['evaluator'],
+                IA_EVAL_TEMP_DIR . $tparams['evaluator'])) {
+            return jobresult_system_error();
         }
 
-        if ($this->unique_output == true && $this->evaluator != "") {
-            log_warn("Task has both unique output and evaluator");
+        if (!compile_file($tparams['evaluator'] , $compiler_messages)) {
+            log_warn("Can't compile evaluator.");
+            return jobresult_system_error();
         }
     }
 
-    function Grade($file_contents, $file_extension) {
-        $result = new JobResult();
-        $result->score = 0;
+    // Compile user source.
+    if (!@file_put_contents("user." . $job['compiler_id'], $job['file_contents'])) {
+        log_warn("Can't write user file on disk.");
+        return jobresult_system_error();
+    }
+    if (!compile_file("user." . $job['compiler_id'], $compiler_messages)) {
+        if ($compiler_messages === false) {
+            return jobresult_system_error();
+        }
+        $jobresult['message'] = "Eroare de compilare";
+        $jobresult['log'] = "Eroare de compilare:\n" . $compiler_messages;
+    } else {
+        $jobresult['log'] = "Compilare:\n" . $compiler_messages . "\n";
+    }
 
-        // Clean jail and temp
-        if (!clean_dir(IA_EVAL_TEMP_DIR)) {
-            log_warn("Can't clean to temp dir.");
-            return JobResult::SystemError();
+    // Running tests.
+    for ($testno = 1; $testno <= $tparams['tests']; ++$testno) {
+        $jobresult['log'] .= "\nRulez testul $testno: ";
+
+        if (!@chdir(IA_EVAL_DIR)) {
+            log_warn("Can't chdir to eval dir.");
+            return jobresult_system_error();
+        }
+        if (!clean_dir(IA_EVAL_JAIL_DIR)) {
+            return jobresult_system_error();
+        }
+        if (!@chdir(IA_EVAL_JAIL_DIR)) {
+            log_warn("Can't chdir to jail dir.");
+            return jobresult_system_error();
         }
 
-        // chdir to temp dir.
-        if (!@chdir(IA_EVAL_TEMP_DIR)) {
-            log_warn("Can't chdir to temp dir.");
-            return JobResult::SystemError();
+        if (!copy_grader_file($task, 'test' . $testno . '.in',
+                    IA_EVAL_JAIL_DIR . $task['id'] . '.in')) {
+            return jobresult_system_error();
         }
 
-        // Compile custom evaluator.
-        if (!$this->unique_output) {
-            if (!copy_grader_file($this->task, $this->evaluator,
-                    IA_EVAL_TEMP_DIR . $this->evaluator)) {
-                return JobResult::SystemError();
-            }
-
-            if (!compile_file($this->evaluator , $compiler_messages)) {
-                log_warn("Can't compile evaluator.");
-                return JobResult::SystemError();
-            }
+        if (!@copy(IA_EVAL_TEMP_DIR . 'user', IA_EVAL_JAIL_DIR . 'user')) {
+            log_warn("Failed copying user program");
+            return jobresult_system_error();
         }
-
-        // Compile user source.
-        if (!@file_put_contents("user." . $file_extension, $file_contents)) {
-            log_warn("Can't write user file on disk.");
-            return JobResult::SystemError();
+        @system("chmod a+x user", $res);
+        if ($res) {
+            log_warn("Failed to chmod a+x user program");
+            return jobresult_system_error();
         }
-        if (!compile_file("user." . $file_extension, $compiler_messages)) {
-            if ($compiler_messages === false) {
-                return JobResult::SystemError();
-            }
-            $result->message = "Eroare de compilare";
-            $result->log = "Eroare de compilare:\n" . $compiler_messages;
-        } else {
-            $result->log = "Compilare:\n" . $compiler_messages . "\n";
-        }
-
-        // Running tests.
-        for ($testno = 1; $testno <= $this->test_count; ++$testno) {
-            $result->log .= "\nRulez testul $testno: ";
-
-            if (!@chdir(IA_EVAL_DIR)) {
-                log_warn("Can't chdir to eval dir.");
-                return JobResult::SystemError();
-            }
-            if (!clean_dir(IA_EVAL_JAIL_DIR)) {
-                return JobResult::SystemError();
-            }
-            if (!@chdir(IA_EVAL_JAIL_DIR)) {
-                log_warn("Can't chdir to jail dir.");
-                return JobResult::SystemError();
-            }
-
-            if (!copy_grader_file($this->task, 'test' . $testno . '.in',
-                        IA_EVAL_JAIL_DIR . $this->task_id . '.in')) {
-                return JobResult::SystemError();
-            }
-
-            if (!@copy(IA_EVAL_TEMP_DIR . 'user', IA_EVAL_JAIL_DIR . 'user')) {
-                log_warn("Failed copying user program");
-                return JobResult::SystemError();
-            }
-            @system("chmod a+x user", $res);
-            if ($res) {
-                log_warn("Failed to chmod a+x user program");
-                return JobResult::SystemError();
-            }
-         
-            // Run user program.
-            $jrunres = jail_run('user', $this->time_limit * 1000, $this->memory_limit);
-            log_print("JRUN user: ".$jrunres['result'].": ".$jrunres['message']);
-            if ($jrunres['result'] == 'ERROR') {
-                return JobResult::SystemError();
-            } else if ($jrunres['result'] == 'FAIL') {
-                $result->log .= "eroare: ".$jrunres['message'].": 0 puncte";
-                log_print("");
-                continue;
-            } else {
-                $result->log .= "ok: timp ".$jrunres['time']."ms ".
-                        $jrunres['memory']."kb: ";
-            }
-
-            // Copy ok file, if used.
-            if ($this->has_ok_files) {
-                if (!copy_grader_file($this->task , 'test' . $testno . '.ok',
-                            IA_EVAL_JAIL_DIR . $this->task_id . '.ok')) {
-                    return JobResult::SystemError();
-                }
-            }
-
-            if ($this->has_unique_output) {
-                log_error("Nu stiu ce sa fac cu output unic");
-                return JobResult::SystemError();
-            } else {
-                // Custom grader.
-                if (!@copy(IA_EVAL_TEMP_DIR . 'eval', IA_EVAL_JAIL_DIR . 'eval')) {
-                    log_warn("Failed copying custom grader");
-                    return JobResult::SystemError();
-                }
-                @system("chmod a+x eval", $res);
-                if ($res) {
-                    log_warn("Failed to chmod a+x custom grader");
-                    return JobResult::SystemError();
-                }
-
-                $jrunres = jail_run('eval', 1000, 64000, true);
-                log_print("JRUN grader: ".$jrunres['result'].": ".$jrunres['message']);
-                if ($jrunres['result'] != 'OK') {
-                    log_warn("Failed running grader!");
-                    return JobResult::SystemError();
-                }
-
-                $jrunres['stdout'] = trim($jrunres['stdout']);
-                $score = (int)$jrunres['stdout'];
-                if ((string)$score !== $jrunres['stdout']) {
-                    log_warn("Grader didn't return a score in stdout");
-                    return JobResult::SystemError();
-                }
-
-                $message = $jrunres['stderr'];
-                $message = preg_replace("/\s*\.?\n?^/i", "", $message);
-                if (strpos("\n", $message) || strlen($message) > 100) {
-                    log_warn("Grader returned a malformed message");
-                    return JobResult::SystemError();
-                }
-
-                log_print("Grader gave $score points and said $message");
-
-                // FIXME: Run grader here.
-                $score = 100 / $this->test_count;
-                $result->score += $score;
-                $result->log .= "$message: $score puncte";
-            }
-
+     
+        // Run user program.
+        $jrunres = jail_run('user', $tparams['time_limit'] * 1000, $tparams['memory_limit']);
+        log_print("JRUN user: ".$jrunres['result'].": ".$jrunres['message']);
+        if ($jrunres['result'] == 'ERROR') {
+            return jobresult_system_error();
+        } else if ($jrunres['result'] == 'FAIL') {
+            $result['log'] = "eroare: ".$jrunres['message'].": 0 puncte";
             log_print("");
+            continue;
+        } else {
+            $result['log'] .= "ok: timp ".$jrunres['time']."ms ".
+                    $jrunres['memory']."kb: ";
         }
 
-        $result->log .= "\n\nPunctaj total: {$result->score}\n";
+        // Copy ok file, if used.
+        if ($tparams['ok_files']) {
+            if (!copy_grader_file($task , 'test' . $testno . '.ok',
+                        IA_EVAL_JAIL_DIR . $task['id'] . '.ok')) {
+                return jobresult_system_error();
+            }
+        }
 
-        return $result;
+        if ($tparams['unique_output']) {
+            log_error("Nu stiu ce sa fac cu output unic");
+            return jobresult_system_error();
+        } else {
+            // Custom grader.
+            if (!@copy(IA_EVAL_TEMP_DIR . 'eval', IA_EVAL_JAIL_DIR . 'eval')) {
+                log_warn("Failed copying custom grader");
+                return jobresult_system_error();
+            }
+            @system("chmod a+x eval", $res);
+            if ($res) {
+                log_warn("Failed to chmod a+x custom grader");
+                return jobresult_system_error();
+            }
+
+            $jrunres = jail_run('eval', 1000, 64000, true);
+            log_print("JRUN grader: ".$jrunres['result'].": ".$jrunres['message']);
+            if ($jrunres['result'] != 'OK') {
+                log_warn("Failed running grader!");
+                return jobresult_system_error();
+            }
+
+            $jrunres['stdout'] = trim($jrunres['stdout']);
+            $score = (int)$jrunres['stdout'];
+            if ((string)$score !== $jrunres['stdout']) {
+                log_warn("Grader didn't return a score in stdout");
+                return jobresult_system_error();
+            }
+
+            $message = $jrunres['stderr'];
+            $message = preg_replace("/\s*\.?\n?^/i", "", $message);
+            if (strpos("\n", $message) || strlen($message) > 100) {
+                log_warn("Grader returned a malformed message");
+                return jobresult_system_error();
+            }
+
+            log_print("Grader gave $score points and said $message");
+
+            // FIXME: Run grader here.
+            $score = 100 / $tparams['tests'];
+            $result['score'] += $score;
+            $result['log'] .= "$message: $score puncte";
+        }
+
+        log_print("");
     }
+
+    $result['log'] .= "\n\nPunctaj total: {$result['score']}\n";
+
+    return $result;
 }
 
 ?>
