@@ -106,4 +106,14 @@ function smf_update_user($ia_user) {
     return $res;
 }
 
+// Returns SMF member id from infoarena username
+function smf_get_member_id($username) {
+    $prefix = DB_SMF_PREFIX;
+    $query = "
+        SELECT ID_MEMBER FROM {$prefix}members
+        WHERE memberName = '%s'
+    ";
+    return db_query_value(sprintf($query, $username));
+}
+
 ?>

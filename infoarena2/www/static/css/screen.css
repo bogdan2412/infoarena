@@ -636,6 +636,7 @@ form.round li#field_tasks select {
 }
 
 .wiki_text_block table {
+    margin: .5em;
 }
 
 .wiki_text_block table.layout th, .wiki_text_block table.layout td {
@@ -651,6 +652,14 @@ form.round li#field_tasks select {
     font-size: 1.3em;
     font-weight: normal;
     background-color: white;    
+}
+
+.wiki_text_block .compact {
+    width: auto;
+}
+
+.wiki_text_block .compact td, .wiki_text_block .compact th {
+    padding: .2em;
 }
 
 /* Job details */

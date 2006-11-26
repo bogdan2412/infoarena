@@ -220,7 +220,7 @@ function controller_textblock_save($page_name)
     $values['security'] = getattr($_POST, 'security', $page['security']);
 
     // Get new page.
-    $new_page = $page;
+    $new_page['name'] = $page_name;
     $new_page['text'] = $values['text'];
     $new_page['title'] = $values['title'];
     $new_page['security'] = $values['security'];

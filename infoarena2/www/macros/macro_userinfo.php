@@ -1,5 +1,7 @@
 <?php
 
+require_once(IA_ROOT."common/db/user.php");
+
 // Displays user information.
 // Includes avatar, etc.
 //
@@ -29,8 +31,8 @@ function macro_userinfo($args) {
 
     switch ($info) {
         case 'email':
-            // FIXME: private email?
-            return $user['email'];
+            // FIXME: display e-mail only for admins
+            return macro_error("E-mail address is private!");
         case 'fullname':
             return $user['full_name'];
         case 'username':

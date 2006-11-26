@@ -18,7 +18,7 @@ function controller_json($suburl) {
 
             // get text block
             $textblock = textblock_get_revision($page_name);
-            log_assert($textblock, 'Invalid textblock identifier');
+            log_assert($textblock, 'Invalid textblock identifier: '.$page_name);
 
             // check permissions & generate mark-up
             if (!identity_can('textblock-view', $textblock)) {
