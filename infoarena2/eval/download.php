@@ -1,6 +1,7 @@
 <?php
 
 require_once(IA_ROOT . 'common/common.php');
+require_once(IA_ROOT . 'common/db/attachment.php');
 
 // Copy a grader file over to some other location.
 // This will download the file from the server and cache it.

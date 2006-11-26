@@ -1,6 +1,7 @@
 <?php
 
 require_once(IA_ROOT . "www/format/pager.php");
+require_once(IA_ROOT . "common/textblock.php");
 
 // View a plain textblock.
 // That textblock can be owned by something else.
@@ -176,12 +177,12 @@ function controller_textblock_edit($page_name) {
 
     if (!$page) {
         $page_title = $page_name;
-        $page_content = "Scrie aici despre " . $page_name;
+        $page_text = "Scrie aici despre " . $page_name;
         $page_security = "public";
         $view['title'] = "Creare " . $page_name;
     } else {
         $page_title = $page['title'];
-        $page_content = $page['text'];
+        $page_text = $page['text'];
         $page_security = $page['security'];
         $view['title'] = "Editare " . $page_name;
     }
@@ -190,11 +191,11 @@ function controller_textblock_edit($page_name) {
     $view['page_name'] = $page['name'];
     $view['action'] = url($page_name, array('action' => 'save'));
     if (identity_can('textblock-change-security')) {
-        $view['form_values'] = array('content'=> $page_content,
+        $view['form_values'] = array('text'=> $page_text,
                                      'title' => $page_title,
                                      'security' => $page_security);
     } else {
-        $view['form_values'] = array('content'=> $page_content,
+        $view['form_values'] = array('text'=> $page_text,
                                      'title' => $page_title);
     }
     $view['form_errors'] = $form_errors;
@@ -212,37 +213,34 @@ function controller_textblock_save($page_name)
         identity_require('textblock-create', $page);
     }
 
-    // Get stuff from HTTP post
-    $page_content = getattr($_POST, 'content', "");
-    $page_title = getattr($_POST, 'title', "");
-    $page_security = getattr($_POST, 'security', $page['security']);
+    // Get form data
+    $values = array();
+    $values['text'] = getattr($_POST, 'text', "");
+    $values['title'] = getattr($_POST, 'title', "");
+    $values['security'] = getattr($_POST, 'security', $page['security']);
 
-    // Validate form data
-    // FIXME: validation belongs in security code somehow.
-    $form_errors = array();
-    if ($page_security != $page['security']) {
+    // Get new page.
+    $new_page = $page;
+    $new_page['text'] = $values['text'];
+    $new_page['title'] = $values['title'];
+    $new_page['security'] = $values['security'];
+    $new_page['timestamp'] = format_datetime();
+    global $identity_user;
+    $new_page['user_id'] = getattr($identity_user, 'id');
+
+    // Special permissions required for security change.
+    if ($new_page['security'] != $page['security']) {
         identity_require('textblock-change-security');
     }
-    if (preg_match("/^ \s* task: \s* ([a-z0-9]*) \s* $/xi", $page_security, $matches)) {
-        if (!task_get($matches[1])) {
-            $form_errors['security'] = ("Nu exists task-ul <".$matches[1].">");
-        }
-    } else if (!preg_match("/^ \s* (private|public|protected) \s* $/xi", $page_security)) {
-        $form_errors['security'] = "Descriptor de securitate gresit.";
-    }
-    if (strlen($page_content) < 1) {
-        $form_errors['content'] = "Continutul paginii este prea scurt.";
-    }
-    if (strlen($page_title) < 1) {
-        $form_errors['title'] = "Titlul este prea scurt.";
-    }
+
+    // Validate new page
+    $errors = textblock_validate($new_page);
 
     // It worked
-    if (!$form_errors) {
-        global $identity_user;
-        textblock_add_revision($page_name, $page_title, $page_content, 
-                               getattr($identity_user, 'id'),
-                               $page_security);
+    if (!$errors) {
+        textblock_add_revision($new_page['name'], $new_page['title'],
+                               $new_page['text'], $new_page['user_id'],
+                               $new_page['security'], $new_page['timestamp']);
         flash('Am actualizat continutul');
         redirect(url($page_name));
     }
@@ -252,16 +250,11 @@ function controller_textblock_save($page_name)
     $view['title'] = "Editare " . $page['name'];
     $view['page_name'] = $page['name'];
     $view['action'] = url($page_name, array('action' => 'save'));
-    $form_values['content'] = $page_content;
-    if (identity_can('textblock-change-security')) {
-        $view['form_values'] = array('content'=> $page_content,
-                                     'title' => $page_title,
-                                     'security' => $page_security);
-    } else {
-        $view['form_values'] = array('content'=> $page_content,
-                                     'title' => $page_title);
+    if (!identity_can('textblock-change-security')) {
+        unset($data['security']);
     }
-    $view['form_errors'] = $form_errors;
+    $view['form_values'] = $values;
+    $view['form_errors'] = $errors;
     execute_view_die("views/textblock_edit.php", $view);
 }
 

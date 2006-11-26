@@ -1,5 +1,7 @@
 <?php
 
+require_once(IA_ROOT . "common/db/round.php");
+
 // Displays a round field, be it a hard-coded field such as round title or a grader parameter such as `type`.
 // NOTE: The macro employs a simple caching mechanism (via static variables, cache expires at the end of the request)
 //       to avoid multiple database queries.

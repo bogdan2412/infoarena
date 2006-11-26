@@ -10,10 +10,10 @@ function check_view($view)
         log_assert(is_array($view['form_errors']));
         log_assert(is_array($view['form_values']));
     }
-    log_assert(!isset($view['wikipage']));
     if (isset($view['textblock'])) {
+        require_once(IA_ROOT . "common/textblock.php");
         log_assert(is_string($view['page_name']));
-        log_assert(is_textblock($view['textblock']));
+        log_assert_valid(textblock_validate($view['textblock']));
     }
     if (isset($view['task'])) {
         log_assert(is_array($view['task']));

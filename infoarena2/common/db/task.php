@@ -8,17 +8,21 @@ require_once("db.php");
 function task_get($task_id) {
     $query = sprintf("SELECT * FROM ia_task WHERE `id` = LCASE('%s')",
                      db_escape($task_id));
-    return db_fetch($query);
+    $res = db_fetch($query);
+    if ($res) {
+        log_assert_valid(task_validate($res));
+    }
+    return $res;
 }
 
 // create new task
 function task_create($task) {
-    log_assert(is_task($task));
+    log_assert_valid(task_validate($task));
     return db_insert('ia_task', $task);
 }
 
 function task_update($task) {
-    log_assert(is_task($task));
+    log_assert_valid(task_validate($task));
     return db_update('ia_task', $task);
 }
 

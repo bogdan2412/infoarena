@@ -1,4 +1,7 @@
 <?php
+
+require_once(IA_ROOT . "common/db/job.php");
+
 function controller_job_detail($suburl) {
     $job_id = getattr($_GET, 'id');
     $job = job_get_by_id($job_id);
@@ -11,4 +14,5 @@ function controller_job_detail($suburl) {
     }
     execute_view('views/job_detail.php', $view);
 }
+
 ?>

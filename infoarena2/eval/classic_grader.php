@@ -2,7 +2,7 @@
 
 // Grades a classic task.
 function task_grade_job_classic($task, $tparams, $job) {
-    $jobresult = array(
+    $result = array(
             'score' => 0,
             'message' => 'Evaluare incompleta',
             'log' => ''
@@ -42,15 +42,15 @@ function task_grade_job_classic($task, $tparams, $job) {
         if ($compiler_messages === false) {
             return jobresult_system_error();
         }
-        $jobresult['message'] = "Eroare de compilare";
-        $jobresult['log'] = "Eroare de compilare:\n" . $compiler_messages;
+        $result['message'] = "Eroare de compilare";
+        $result['log'] = "Eroare de compilare:\n" . $compiler_messages;
     } else {
-        $jobresult['log'] = "Compilare:\n" . $compiler_messages . "\n";
+        $result['log'] = "Compilare:\n" . $compiler_messages . "\n";
     }
 
     // Running tests.
     for ($testno = 1; $testno <= $tparams['tests']; ++$testno) {
-        $jobresult['log'] .= "\nRulez testul $testno: ";
+        $result['log'] .= "\nRulez testul $testno: ";
 
         if (!@chdir(IA_EVAL_DIR)) {
             log_warn("Can't chdir to eval dir.");

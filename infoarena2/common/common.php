@@ -30,23 +30,10 @@ function is_attachment_name($attach_name) {
     return preg_match('/^[a-z0-9][a-z0-9\.\-_]*$/i', $attach_name);
 }
 
-// Check if textblock security string is valid
-// FIXME: check task/round existence?
-function is_textblock_security_descriptor($descriptor)
+// FIXME: crappy check
+function is_user_id($user_id)
 {
-    return  preg_match("/^ \s* task: \s* ([a-z0-9]*) \s* $/xi", $descriptor) ||
-            preg_match("/^ \s* round: \s* ([a-z0-9]*) \s* $/xi", $descriptor) ||
-            preg_match('/^ \s* (private|protected|public) \s* $/xi', $descriptor);
-}
-
-// Check if arg is a textblock.
-function is_textblock($tb) {
-    return is_array($tb) &&
-           isset($tb['name']) && is_string($tb['name']) &&
-           isset($tb['title']) && is_string($tb['title']) &&
-           isset($tb['text']) && is_string($tb['text']) &&
-           isset($tb['timestamp']) && is_datetime($tb['timestamp']) &&
-           isset($tb['security']) && is_textblock_security_descriptor($tb['security']);
+    return is_whole_number($user_id);
 }
 
 // tells whether $round_id is a valid round identifier
@@ -70,19 +57,6 @@ function is_round($round) {
 // Does not check existence.
 function is_task_id($task_id) {
     return preg_match('/^[a-z0-9][a-z0-9_]*$/i', $task_id) && strlen($task_id) < 16;
-}
-
-// Checks if $task is a valid task.
-function is_task($task) {
-    return is_array($task) &&
-           isset($task['title']) && is_string($task['title']) &&
-           isset($task['author']) && is_string($task['author']) &&
-           isset($task['source']) && is_string($task['source']) &&
-           isset($task['page_name']) && is_page_name($task['page_name']) &&
-           isset($task['user_id']) && is_whole_number($task['user_id']) &&
-           isset($task['hidden']) && // How the fuck do I check this?
-           isset($task['type']) && $task['type'] == 'classic' &&
-           isset($task['id']) && is_task_id($task['id']);
 }
 
 // tells whether given string is a valid datetime value
@@ -109,8 +83,12 @@ function parse_datetime($string) {
 
 // formats unix timestamp as a datetime parameter value
 // i.e.: 2006-11-27 23:59:59
-function format_datetime($timestamp) {
-    return strftime('%Y-%m-%d %T', $timestamp);
+function format_datetime($timestamp = null) {
+    if ($timestamp === null) {
+        return strftime('%Y-%m-%d %T');
+    } else {
+        return strftime('%Y-%m-%d %T', $timestamp);
+    }
 }
 
 // Get a file's mime type.

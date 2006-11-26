@@ -3,6 +3,10 @@
 
 require_once(dirname($argv[0]) . "/utilities.php");
 require_once(IA_ROOT . "common/task.php");
+require_once(IA_ROOT . "common/db/task.php");
+require_once(IA_ROOT . "common/db/round.php");
+require_once(IA_ROOT . "common/db/attachment.php");
+require_once(IA_ROOT . "common/db/user.php");
 
 // Attach a file(from the disk) to a certain page as attachment $attname.
 function magic_file_attach($page, $attname, $file)

@@ -1,5 +1,8 @@
 <?php
 
+require_once(IA_ROOT . "common/db/textblock.php");
+require_once(IA_ROOT . "common/db/attachment.php");
+
 // Try to get the textblock model for a certain page.
 // If it fails it will flash and redirect
 function try_textblock_get($page_name) {

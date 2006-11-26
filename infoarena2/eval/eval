@@ -5,9 +5,13 @@ require_once(dirname($argv[0]) . "/config.php");
 
 require_once(IA_ROOT.'common/log.php');
 require_once(IA_ROOT.'common/common.php');
+
 require_once(IA_ROOT.'common/task.php');
 require_once(IA_ROOT.'common/security.php');
-require_once(IA_ROOT.'common/db/db.php');
+require_once(IA_ROOT.'common/db/task.php');
+require_once(IA_ROOT.'common/db/job.php');
+require_once(IA_ROOT.'common/db/user.php');
+
 require_once(IA_ROOT.'eval/utilities.php');
 require_once(IA_ROOT.'eval/download.php');
 require_once(IA_ROOT.'eval/classic_grader.php');
@@ -31,9 +35,8 @@ function jobresult_system_error()
 // Send job result.
 function job_send_result($jobid, $jobresult)
 {
-    if ($result->message == "Eroare de sistem") {
+    if ($jobresult['message'] == "Eroare de sistem") {
         log_warn("System error on job $jobid");
-    } else {
     }
     log_print("Sending job $jobid msg {$jobresult['message']} score {$jobresult['score']}");
     job_mark_done($jobid, $jobresult['log'], $jobresult['message'], $jobresult['score']);
@@ -52,7 +55,7 @@ function job_eval($job)
     
     // Get task
     $task = task_get($job['task_id']);
-    if (!is_task($task)) {
+    if (!$task) {
         log_print("Nu am putut lua task-ul " . $job['task_id']);
         return jobresult_system_error();
     }
@@ -94,6 +97,7 @@ function job_handle($job) {
         log_print("Bug in get_job_result");
         $job_result = jobresult_system_error();
     }
+    log_assert(getattr($job_result, "message"));
 
     job_send_result($job['id'], $job_result);
 }

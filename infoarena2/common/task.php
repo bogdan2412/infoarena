@@ -64,6 +64,44 @@ function task_get_parameter_infos_hack() {
     return $ret;
 }
 
+
+// Validates a textblock.
+// NOTE: this might be incomplete, so don't rely on it exclusively
+function task_validate($task) {
+    $errors = array();
+
+    // FIXME How to handle this?
+    log_assert(is_array($task), "You didn't even pass an array");
+
+    if (strlen(getattr($task, 'title', '')) < 1) {
+        $errors['title'] = 'Titlu prea scurt.';
+    }
+
+    if (!is_page_name(getattr($task, 'page_name'))) {
+        $errors['page_name'] = 'Homepage invalid';
+    }
+
+    if (!is_user_id(getattr($tb, 'user_id'))) {
+        $errors['user_id'] = 'ID de utilizator invalid';
+    }
+    /*if (!get_user_by_id(getattr($tb, 'user_id'))) {
+        $errors['user_id'] = 'Utilizator inexistent';
+    }*/
+
+    $hidden = getattr($tank, 'hidden');
+    if ($hidden != '0' && $hidden != '1') {
+        $errors['hidden'] = 'Se accepta doar 0/1';
+    }
+
+    if (!in_array(getattr($task, 'type', ''), task_get_types())) {
+        $errors['type'] = "Tipul task-ului este invalid";
+    }
+
+    if (!is_task_id(getattr($task, 'id', ''))) {
+        $errors['id'] = 'ID de task invalid';
+    }
+}
+
 // Valideaza parametrii. Returneaza errorile sub conventie de $form_errors.
 function task_validate_parameters($task_type, $parameters) {
     $errors = array();

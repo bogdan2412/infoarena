@@ -1,6 +1,7 @@
 <?
 
 require_once(IA_ROOT . "www/format/pager.php");
+require_once(IA_ROOT . "common/db/job.php");
 
 // Job monitor controller.
 function controller_monitor() {

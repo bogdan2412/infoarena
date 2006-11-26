@@ -23,9 +23,9 @@ include('views/header.php');
     </li>
 
     <li id="field_content">
-        <label for="form_content">Continut</label>
-        <textarea name="content" id="form_content" rows="10" cols="50"><?= fval('content') ?></textarea>
-        <?= ferr_span('content') ?>
+        <label for="form_text">Continut</label>
+        <textarea name="text" id="form_text" rows="10" cols="50"><?= fval('text') ?></textarea>
+        <?= ferr_span('text') ?>
         <span class="fieldHelp"><a href="<?=  url('documentatie/wiki') ?>">Cum formatez text?</a></span>
     </li>
 

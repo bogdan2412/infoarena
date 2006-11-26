@@ -183,17 +183,6 @@ function db_update($table, $dict, $where = null) {
     return mysql_affected_rows($dbLink);
 }
 
-// Include actual db functions.
-// FIXME: parser overload.
-require_once(IA_ROOT . "common/db/job.php");
-require_once(IA_ROOT . "common/db/round.php");
-require_once(IA_ROOT . "common/db/task.php");
-require_once(IA_ROOT . "common/db/textblock.php");
-require_once(IA_ROOT . "common/db/user.php");
-require_once(IA_ROOT . "common/db/score.php");
-require_once(IA_ROOT . "common/db/attachment.php");
-require_once(IA_ROOT . "common/db/smf.php");
-
 /**
  * Parameter
  * FIXME: This is sort of shared between rounds and tasks.
@@ -237,6 +226,7 @@ function parameter_get_values($object_type, $object_id) {
     return $dict;
 }
 
+// FIXME: obliterate
 /**
  * News
  * This is for the special "news" controller.

@@ -1,6 +1,7 @@
 <?php
 
 require_once(IA_ROOT . "www/format/table.php");
+require_once(IA_ROOT . "common/db/round.php");
 
 // Lists all tasks attached to a given round
 // Takes into consideration user permissions.

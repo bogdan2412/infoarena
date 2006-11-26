@@ -5,9 +5,9 @@ include(IA_ROOT . 'www/format/format.php');
 
 ?>
 
-<h1>Diferente pentru <?= format_link($page_name, url($page_name)) ?> intre reviziile
-    <?= format_link("#$revfrom_id", url($page_name, array('revision' => $revfrom_id))) ?> si
-    <?= format_link("#$revto_id", url($page_name, array('revision' => $revto_id))) ?>
+<h1>Diferente pentru <?= href(url($page_name), htmlentities($page_name)) ?> intre reviziile
+    <?= href(url($page_name, array('revision' => $revfrom_id)), "#$revfrom_id") ?> si
+    <?= href(url($page_name, array('revision' => $revto_id)), "#$revto_id") ?>
 </h1>
 <?php
 

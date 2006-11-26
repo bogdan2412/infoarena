@@ -140,7 +140,7 @@ function jail_run($program, $time, $memory, $capture_std = false)
         $cmdline .= " --memory-limit=" . $memory;
     }
 
-    log_print("Running $cmdline");
+    //log_print("Running $cmdline");
     ob_start();
     @system($cmdline, $res);
     $message = ob_get_contents();

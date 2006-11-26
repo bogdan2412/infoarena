@@ -6,13 +6,10 @@ require_once(IA_ROOT . "common/common.php");
 log_print("- -- --- ---- ----- Request: ".$_SERVER['QUERY_STRING']);
 check_requirements();
 
-require_once(IA_ROOT . "common/db/db.php");
 require_once(IA_ROOT . "common/security.php");
-
 require_once("utilities.php");
 require_once("identity.php");
 require_once("wiki/wiki.php");
-
 
 // restore identity (if such a session exists)
 identity_restore();

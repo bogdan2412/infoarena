@@ -164,6 +164,20 @@ function log_assert($value, $message = "Assertion failed", $include_origin = tru
     }
 }
 
+// Assert that something is valid; to be used with form-like validation functions.
+// This passed if $errors is an empty array, other
+function log_assert_valid($errors)
+{
+    log_assert(is_array($errors) || $errors == null, "Invalid argument");
+
+    if ($errors) {
+        foreach ($errors as $k => $v) {
+            log_print("Invalid $k ($v)");
+        }
+        log_error("Validation failed");
+    }
+}
+
 // Custom error_handler.
 // This behaves as close standard error handler as possible, it uses
 // error_log and all. file/line information is not printed for messages

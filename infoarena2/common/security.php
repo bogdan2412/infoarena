@@ -66,6 +66,7 @@ function security_textblock($user, $action, $textblock) {
 
     // Forward security to task.
     if (preg_match("/^ \s* task: \s* ([a-z0-9]*) \s* $/xi", $textsec, $matches)) {
+        require_once(IA_ROOT . "common/db/task.php");
         $task = task_get($matches[1]);
         if ($task === null) {
             log_warn("Bad security descriptor, ask an admin.");
@@ -76,6 +77,7 @@ function security_textblock($user, $action, $textblock) {
 
     // Forward security to round.
     if (preg_match("/^ \s* round: \s* ([a-z0-9]*) \s* $/xi", $textsec, $matches)) {
+        require_once(IA_ROOT . "common/db/round.php");
         $round = round_get($matches[1]);
         if ($round === null) {
             log_warn("Bad security descriptor, ask an admin.");

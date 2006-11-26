@@ -2,6 +2,53 @@
 
 require_once(IA_ROOT . "common/db/textblock.php");
 
+// Check if textblock security string is valid
+// FIXME: check task/round existence?
+function is_textblock_security_descriptor($descriptor)
+{
+    return  preg_match("/^ \s* task: \s* ([a-z0-9]*) \s* $/xi", $descriptor) ||
+            preg_match("/^ \s* round: \s* ([a-z0-9]*) \s* $/xi", $descriptor) ||
+            preg_match('/^ \s* (private|protected|public) \s* $/xi', $descriptor);
+}
+
+// Validates a textblock.
+// NOTE: this might be incomplete, so don't rely on it exclusively
+function textblock_validate($tb) {
+    $errors = array();
+
+    // FIXME How to handle this?
+    log_assert(is_array($tb), "You didn't even pass an array");
+
+    if (!is_page_name(getattr($tb, 'name', ''))) {
+        $errors['name'] = 'Nume de pagina invalid.';
+    }
+
+    if (strlen(getattr($tb, 'title', '')) < 1) {
+        $errors['title'] = 'Titlu prea scurt.';
+    }
+    if (strlen(getattr($tb, 'title', '')) > 50) {
+        $errors['title'] = 'Titlu prea lung.';
+    }
+
+    if (strlen(getattr($tb, 'text', '')) < 1) {
+        $errors['text'] = 'Continut prea scurt.';
+    }
+
+    if (!is_user_id(getattr($tb, 'user_id'))) {
+        $errors['user_id'] = 'ID de utilizator invalid';
+    }
+
+    if (!is_datetime(getattr($tb, 'timestamp', ''))) {
+        $errors['timestamp'] = 'Timestamp invalid.';
+    }
+
+    if (!is_textblock_security_descriptor(getattr($tb, 'security'))) {
+        $errors['security'] = "Descriptor de securitate gresit.";
+    }
+
+    return $errors;
+}
+
 // This function copies all starting with $srcprefix and copies the over to
 // $destprefix.
 // It also does template-replacing for everything in $replace, if non-null.
