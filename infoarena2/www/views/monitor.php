@@ -11,36 +11,33 @@ if (!$jobs) {
 } else {
     // For the score column.
     function format_state($row) {
-        $url = url("job_detail", array('id' => $row['id']));
+        $url = url_job_detail($row['id']);
         if ($row['status'] == 'done') {
-            $msg = $row['eval_message'].": ".$row['score']." puncte";
-            $msg = "<span style=\"color:green\">$msg</span>";
+            $msg = sprintf("%s: %s puncte",
+                    htmlentities($row['eval_message']), $row['score']);
+            $msg = "<span style=\"job-status-done\">$msg</span>";
             return href($url, $msg);
         }
         if ($row['status'] == 'processing') {
             // FIXME: animation? :)
-            $msg = '<span style="color:red">se evalueaza</span>';
+            $msg = '<span class="job-status-processing">se evalueaza</span>';
             return href($url, $msg);
         }
         if ($row['status'] == 'waiting') {
-            $msg = '<span style="color:blue">in asteptare</span>';
+            $msg = '<span style="job-stats-waiting">in asteptare</span>';
             return href($url, $msg);
         }
         log_die("Invalid job status");
     }
 
     // For the task column.
-    function format_task_link($row)
-    {
-        $url = url($row['task_page']);
-        return '<a href="' . $url . '">' . $row['task_title'] . '</a>';
+    function format_task_link($row) {
+        return href($row['task_page_name'], htmlentities($row['task_title']));
     }
 
     // For the detail column.
-    function format_jobdetail_link($val)
-    {
-        $url = url("job_detail", array('id' => $val));
-        return href($url, "#$val");
+    function format_jobdetail_link($val) {
+        return href(url_job_detail($val), "#$val");
     }
 
     $column_infos = array(
@@ -78,7 +75,6 @@ if (!$jobs) {
     );
 
     print format_table($jobs, $column_infos, $options);
-//    print format_table($jobs);
 }
 
 include('footer.php');

@@ -44,6 +44,9 @@ function job_mark_delay($job_id, $status, $delay = 300) {
 
 // Mark a certain job as 'done'
 function job_mark_done($job_id, $eval_log, $eval_message, $score) {
+    log_assert(is_whole_number($job_id));
+    log_assert(is_whole_number($score));
+    log_assert($score >= 0 && $score <= 100);
     $query = sprintf("
             UPDATE `ia_job` SET
             `status` = 'done', `eval_log` = '%s',
@@ -54,19 +57,28 @@ function job_mark_done($job_id, $eval_log, $eval_message, $score) {
 }
 
 function job_get_by_id($job_id) {
-    $query = sprintf("SELECT * FROM `ia_job` WHERE `id`='%s'",
-                     db_escape($job_id));
+    log_assert(is_whole_number($job_id));
+    $query = sprintf("
+              SELECT job.`id`, job.`user_id`, `task_id`, `compiler_id`, `status`,
+                    `submit_time`, `eval_message`, `score`, `eval_log`,
+                    task.`page_name` as task_page_name, task.`title` as task_title,
+                    user.`username` as user_name, user.`full_name` as user_fullname
+              FROM ia_job AS job
+              LEFT JOIN ia_task AS task ON job.`task_id` = `task`.`id`
+              LEFT JOIN ia_user AS user ON job.`user_id` = `user`.`id`
+              WHERE `job`.`id` = %d", $job_id);
     return db_fetch($query);
 }
 
 function job_get_range($start, $range) {
+    log_assert(is_whole_number($start));
+    log_assert(is_whole_number($range));
     log_assert($start >= 0);
     $query = sprintf("
               SELECT job.`id`, job.`user_id`, `task_id`, `compiler_id`, `status`,
                     `submit_time`, `eval_message`, `score`,
-                    task.`page_name` as task_page, task.`title` as task_title,
-                    user.`username` as user_name,
-                    user.`full_name` as user_fullname
+                    task.`page_name` as task_page_name, task.`title` as task_title,
+                    user.`username` as user_name, user.`full_name` as user_fullname
               FROM ia_job AS job
               LEFT JOIN ia_task AS task ON job.`task_id` = `task`.`id`
               LEFT JOIN ia_user AS user ON job.`user_id` = `user`.`id`

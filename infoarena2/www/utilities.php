@@ -123,6 +123,11 @@ function url_user_avatar($username, $resize = "@50x50", $absolute = false) {
     return url_image_resize(TB_USER_PREFIX . $username, 'avatar', $resize, $absolute);
 }
 
+// Url to job detail page
+function url_job_detail($job_id, $absolute = false) {
+    return url("job_detail", array('id' => $job_id), $absolute);
+}
+
 // Use flash() to display a message right after redirecting the user.
 // Message is displayed only once.
 function flash($message, $styleClass = null) {

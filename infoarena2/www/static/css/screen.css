@@ -654,38 +654,29 @@ form.round li#field_tasks select {
 }
 
 /* Job details */
-.jobDetail ul {
+.job-detail ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
 }
 
-.jobDetail li {
+.job-detail li {
     display: block;
     float: none;
-    width: 30%;
 }
 
-.jobDetail li .desc {
-    width: 7em;
-    display: block;
+.job-detail li span.desc {
+    width: 10em;
+    font-weight: bold;
     float: left;
 }
 
-.jobDetail li.evalLog {
-    clear: left;
-    float: none;
-    width: 100%;
-}
-
-.jobDetail div.evalLog span {
+.job-detail li.eval-log span.val {
     display: block;
+    font-family: monospace;
     float: none;
     width: auto;
-}
-
-.jobDetail div.evalLog pre {
-    display: block;
+    white-space: pre;
 }
 
 /* Basic table css */
@@ -823,7 +814,6 @@ div.normal-user img {
     float:left;
     margin:7px;
 }
-
 
 
 
