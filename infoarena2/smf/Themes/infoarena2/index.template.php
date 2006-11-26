@@ -208,7 +208,7 @@ function template_main_above()
 
     // The main content should go here.
     echo '
-    <div id="bodyarea" style="padding: 1ex 0px 2ex 0px;">';
+    <div id="bodyarea" style="padding: 1ex 0px 2ex 0px; clear: left">';
 }
 
 function template_main_below()
