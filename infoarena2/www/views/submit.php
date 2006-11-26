@@ -20,7 +20,7 @@ foreach ($tasks as $t) {
     <a href="<?= url('Ajutor/Trimite_Solutii') ?>">documentatia</a>.
 </div>
 
-<form enctype="multipart/form-data" action="<?= url('submit', array('action' => 'save')) ?>" method="post" class="submit" id="task_submit">
+<form enctype="multipart/form-data" action="<?= url_submit() ?>" method="post" class="submit" id="task_submit">
 
 <input type="hidden" id="output_only" value="<?= ':' . join(':', $output_only_ids) . ':' ?>" />
 

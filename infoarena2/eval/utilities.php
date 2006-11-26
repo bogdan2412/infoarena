@@ -45,20 +45,23 @@ function compile_file($file_name, &$compiler_message)
     $cmdline = preg_replace('/%file_name%/', $file_name, $cmdline);
     $cmdline = preg_replace('/%exe_name%/', $exe_name, $cmdline);
 
-    log_print("Running $cmdline");
-    @system("$cmdline &> compiler.log", $res);
-    if ($res) {
-        log_print("Compilation failed");
-        return false;
-    }
+    // Running compiler
+    //log_print("Running $cmdline");
+    @system("$cmdline 2>&1 | head -n 25 &> compiler.log");
+
+    // This is the BEST way to determine if compilation worked.
+    $res = is_executable($exe_name);
+
+    // Get compiler messages.
     $compiler_message = file_get_contents('compiler.log');
     if ($compiler_message === false) {
         log_print("Failed getting compiler messages");
         $compiler_message = false;
         return false;
     }
-    log_print($compiler_messages);
-    return true;
+    //log_print("Compiler " . ($res ? 'succeeded' : 'failed') . " and said:\n$compiler_message\n");
+
+    return $res;
 }
 
 // Parses jrun output.

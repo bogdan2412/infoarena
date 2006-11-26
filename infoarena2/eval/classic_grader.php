@@ -31,6 +31,8 @@ function task_grade_job_classic($task, $tparams, $job) {
             log_warn("Can't compile evaluator.");
             return jobresult_system_error();
         }
+    } else {
+        log_print("Unique output, no evaluator!");
     }
 
     // Compile user source.
@@ -44,6 +46,7 @@ function task_grade_job_classic($task, $tparams, $job) {
         }
         $result['message'] = "Eroare de compilare";
         $result['log'] = "Eroare de compilare:\n" . $compiler_messages;
+        return $result;
     } else {
         $result['log'] = "Compilare:\n" . $compiler_messages . "\n";
     }
@@ -51,6 +54,10 @@ function task_grade_job_classic($task, $tparams, $job) {
     // Running tests.
     for ($testno = 1; $testno <= $tparams['tests']; ++$testno) {
         $result['log'] .= "\nRulez testul $testno: ";
+
+        $infile = IA_EVAL_JAIL_DIR . $task['id'] . '.in';
+        $outfile = IA_EVAL_JAIL_DIR . $task['id'] . '.out';
+        $okfile = IA_EVAL_JAIL_DIR . $task['id'] . '.ok';
 
         if (!@chdir(IA_EVAL_DIR)) {
             log_warn("Can't chdir to eval dir.");
@@ -64,8 +71,7 @@ function task_grade_job_classic($task, $tparams, $job) {
             return jobresult_system_error();
         }
 
-        if (!copy_grader_file($task, 'test' . $testno . '.in',
-                    IA_EVAL_JAIL_DIR . $task['id'] . '.in')) {
+        if (!copy_grader_file($task, 'test' . $testno . '.in', $infile)) {
             return jobresult_system_error();
         }
 
@@ -95,15 +101,23 @@ function task_grade_job_classic($task, $tparams, $job) {
 
         // Copy ok file, if used.
         if ($tparams['ok_files']) {
-            if (!copy_grader_file($task , 'test' . $testno . '.ok',
-                        IA_EVAL_JAIL_DIR . $task['id'] . '.ok')) {
+            if (!copy_grader_file($task , 'test' . $testno . '.ok', $okfile)) {
                 return jobresult_system_error();
             }
         }
 
         if ($tparams['unique_output']) {
-            log_error("Nu stiu ce sa fac cu output unic");
-            return jobresult_system_error();
+            if (!is_readable($outfile)) {
+                $result['log'] += "Fisier de iesire lipsa: 0 puncte";
+            }
+            @system("diff -BbEa $infile $outfile &> /dev/null", $res);
+            if ($res) {
+                $score = 100 / $tparams['tests'];
+                $result['score'] += $score;
+                $result['log'] += "OK: $score puncte";
+            } else {
+                $result['log'] += "Incorect: 0 puncte";
+            }
         } else {
             // Custom grader.
             if (!@copy(IA_EVAL_TEMP_DIR . 'eval', IA_EVAL_JAIL_DIR . 'eval')) {
@@ -140,7 +154,6 @@ function task_grade_job_classic($task, $tparams, $job) {
             log_print("Grader gave $score points and said $message");
 
             // FIXME: Run grader here.
-            $score = 100 / $tparams['tests'];
             $result['score'] += $score;
             $result['log'] .= "$message: $score puncte";
         }
@@ -148,6 +161,7 @@ function task_grade_job_classic($task, $tparams, $job) {
         log_print("");
     }
 
+    $result['message'] = 'Evaluare completa';
     $result['log'] .= "\n\nPunctaj total: {$result['score']}\n";
 
     return $result;

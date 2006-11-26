@@ -69,6 +69,7 @@ function job_eval($job)
 
     // Make the grader and execute it.
     if ($task['type'] == 'classic') {
+        log_print("Grading {$task['id']}, type {$task['type']}");
         return task_grade_job_classic($task, $task_parameters, $job);
     } else {
         log_print("Nu stiu sa evaluez task-uri de tip ".$task['type']);

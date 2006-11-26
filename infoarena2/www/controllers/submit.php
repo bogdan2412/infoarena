@@ -6,28 +6,26 @@ require_once(IA_ROOT . "common/db/job.php");
 
 // Big bad submit controller.
 function controller_submit() {
-    global $identity_user;
-
     if (identity_anonymous()) {
         flash_error('Va rugam sa va autentificati mai intai');
-        redirect(url('login'));
+        redirect(url_login());
     }
 
-    $action = request("action");
-    if ('save' == $action) {
-        $form_values = array(
+    $values = array();
+    $errors = array();
+
+    if (request_is_post()){
+        $values = array(
             'task_id' => getattr($_POST, 'task_id'),
             'compiler_id' => getattr($_POST, 'compiler_id')
         );
-        $form_errors = array();
 
         // Check task
-        $task = task_get($form_values['task_id']);
-        if (!$task) {
-            $form_errors['task_id'] = 'Va rugam sa alegeti problema la care doriti sa '
+        if ((!is_task_id($values['task_id'])) ||
+            (!$task = task_get($values['task_id']))) {
+            $errors['task_id'] = 'Va rugam sa alegeti problema la care doriti sa '
                                       . 'trimiteti solutie.';
-        }
-        else {
+        } else {
             // require permissions
             identity_require('task-submit', $task);
 
@@ -46,8 +44,10 @@ function controller_submit() {
                                           .'pentru a trimite solutii la aceasta problema';
             }*/
 
+            $valid_compilers = array('c', 'cpp', 'fpc');
             // Check compiler.
-            if ('output-only'!=$task['type'] && (false===array_search($form_values['compiler_id'], array('c', 'cpp', 'fpc')))) {
+            if ('output-only' != $task['type'] &&
+                (false === array_search($values['compiler_id'], $valid_compilers))) {
                 $form_errors['compiler_id'] = 'Compilator invalid!';
             }
 
@@ -55,47 +55,35 @@ function controller_submit() {
             if (isset($_FILES['solution'])) {
                 if (is_uploaded_file($_FILES['solution']['tmp_name'])) {
                     if (IA_SUBMISSION_MAXSIZE >= $_FILES['solution']['size']) {
-                        $filepath = $_FILES['solution']['tmp_name'];
-                        $file_buffer = file_get_contents($filepath);
+                        $file_path = $_FILES['solution']['tmp_name'];
+                        $file_buffer = file_get_contents($file_path);
                     }
                     else {
-                        $form_errors['solution'] =
+                        $errors['solution'] =
                             'Fisierul atasat depaseste dimensiunea maxima admisa!';
                     }
-                }
-                else {
-                    $form_errors['solution'] = '
+                } else {
+                    $errors['solution'] = '
                         Fisierul atasat nu a putut fi citit! Incercati din nou.
                         Daca problema persista va rugam sa <a href="' .
                         url('Contact') . '">contactati administratorul</a>.';
                 }
-            }
-            else {
-                $form_errors['solution'] = 'Va rugam sa atasati fisierul solutie.';
+            } else {
+                $errors['solution'] = 'Va rugam sa atasati fisierul solutie.';
             }
         }
 
         // The end.
-        if ($form_errors) {
+        if ($errors) {
             flash_error('NU am salvat solutia trimisa! Unul sau mai multe campuri
                          nu au fost completate corect.');
-        }
-        else {
-            job_create($task['id'], getattr($identity_user, 'id'),
-                       $form_values['compiler_id'], $file_buffer);
-            // no errors => save submission
+        } else {
+            job_create($task['id'], identity_get_user_id(),
+                       $values['compiler_id'], $file_buffer);
             flash('Solutia a fost salvata.');
-            $url = getattr($_SERVER, 'HTTP_REFERER');
-            if (!$url) {
-                $url = url('submit');
-            }
-            redirect($url);
+            redirect(getattr($_SERVER, 'HTTP_REFERER', url_submit()));
         }
         // Fall through to submit form.
-    }
-    else {
-        $form_errors = array();
-        $form_values = array();
     }
     
     // get task list.
@@ -111,8 +99,8 @@ function controller_submit() {
     $view = array(
             'title' => 'Trimite solutie',
             'tasks' => $tasks,
-            'form_errors' => $form_errors,
-            'form_values' => $form_values,
+            'form_errors' => $errors,
+            'form_values' => $values,
     );
 
     execute_view_die('views/submit.php', $view);

@@ -28,6 +28,13 @@ function identity_anonymous($identity = null) {
     }
 }
 
+// Get user_id for current user.
+function identity_get_user_id() {
+    log_assert(!identity_anonymous(), 'Check identity_anonymous first');
+    global $identity_user;
+    return $identity_user['id'];
+}
+
 // Check whether current user (or any other arbitrary user) can perform
 // a given action (onto an object)
 // This is a wrapper for the more-generic, session-independent permission

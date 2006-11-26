@@ -104,6 +104,16 @@ function url_image_resize($page, $file, $resize, $absolute = false)
     }
 }
 
+// Url to the login page
+function url_login() {
+    return url("login");
+}
+
+// Url to the submit page
+function url_submit() {
+    return url("submit");
+}
+
 // Url to user profile page
 function url_user_profile($username, $absolute = false) {
     return url(TB_USER_PREFIX . $username, array(), $absolute);

@@ -9,7 +9,8 @@ require_once(IA_ROOT . 'common/db/attachment.php');
 // FIXME: Don't download if www runs locally.
 function copy_grader_file($task, $filename, $target)
 {
-    $taskname = $task['name'];
+    $taskname = $task['id'];
+    log_assert(is_task_id($taskname));
 
     // Get attachment from database.
     $att = attachment_get("grader_$filename", $task['page_name']);
