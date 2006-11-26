@@ -10,10 +10,10 @@ require_once(IA_ROOT.'common/security.php');
 require_once(IA_ROOT.'common/db/db.php');
 require_once(IA_ROOT.'eval/utilities.php');
 require_once(IA_ROOT.'eval/download.php');
-require_once(IA_ROOT.'eval/ClassicGrader.php');
+require_once(IA_ROOT.'eval/classic_grader.php');
 
 log_print("");
-log_print("Judge started");
+log_print("Eval started");
 log_print("");
 
 // Create a job_result for a system error
@@ -98,16 +98,11 @@ function job_handle($job) {
     job_send_result($job['id'], $job_result);
 }
 
-// main function. C rules.
-function main() {
-    while (1) {
-        while ($job = job_get_next_job()) {
-            job_handle($job);
-        }
-        milisleep(10);
+while (1) {
+    while ($job = job_get_next_job()) {
+        job_handle($job);
     }
+    milisleep(10);
 }
-
-main()
 
 ?>
