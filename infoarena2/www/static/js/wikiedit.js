@@ -10,7 +10,7 @@ function WikiEdit_Init() {
     var b1 = $('form_preview');
     var b2 = $('preview_close');
     var felem = $('form_wikiedit');
-    var fc = $('form_content');
+    var fc = $('form_text');
     connect(b1, 'onclick', WikiEdit_Preview);
     connect(b2, 'onclick', WikiEdit_ClosePreview);
     connect(felem, 'onsubmit', WikiEdit_ObserveSave);
@@ -23,7 +23,7 @@ function WikiEdit_Init() {
 function WikiEdit_Preview() {
     var container = $('wiki_preview');
     var toolbar = $('wiki_preview_toolbar');
-    var content = $('form_content');
+    var content = $('form_text');
     var page_name = $('form_page_name');
     if (!container || !content) return;
 
@@ -81,7 +81,7 @@ function WikiEdit_ObserveSave() {
 function WikiEdit_ObserveChange() {
     WikiEdit_Saved = false;
 
-    var fc = $('form_content');
+    var fc = $('form_text');
     fc.onkeypress = null;
 }
 
