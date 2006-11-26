@@ -7,8 +7,9 @@
 // Establish database connection
 // Repetitive include guard. Is this really needed?
 log_assert(!isset($dbLink));
+log_print("connecting to database");
 $dbLink = mysql_connect(DB_HOST, DB_USER, DB_PASS) or log_error('Cannot connect to database.');
-mysql_select_db(DB_NAME, $dbLink) or die ('Cannot select database.');
+mysql_select_db(DB_NAME, $dbLink) or log_error('Cannot select database.');
 
 // Escapes a string to be safely included in a query.
 function db_escape($str) {
@@ -17,6 +18,14 @@ function db_escape($str) {
 
 function db_num_rows($res) {
     return mysql_num_rows($res);
+}
+
+// Returns last SQL inserted id
+function db_insert_id() {
+    global $dbLink;
+
+    log_assert($dbLink);
+    return mysql_insert_id($dbLink);
 }
 
 // Executes query. Outputs error messages
@@ -33,7 +42,6 @@ function db_query($query) {
 
 // Executes query, fetches only FIRST result row
 function db_fetch($query) {
-    global $dbLink;
     $result = db_query($query);
     if ($result) {
         $row = mysql_fetch_assoc($result);
@@ -49,7 +57,6 @@ function db_fetch($query) {
 
 // Executes query, fetches the all result rows
 function db_fetch_all($query) {
-    global $dbLink;
     $result = db_query($query);
     if ($result) {
         $buffer = array();
@@ -123,7 +130,7 @@ function db_insert($table, $dict) {
 
     db_query($query);
 
-    return mysql_insert_id($dbLink);
+    return db_insert_id();
 }
 
 // Executes SQL UPDATE statement (wrapper for db_query)

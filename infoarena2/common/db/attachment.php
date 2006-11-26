@@ -35,7 +35,6 @@ function attachment_update($id, $name, $size, $mime_type, $page, $user_id) {
 }
 
 function attachment_insert($name, $size, $mime_type, $page, $user_id) {
-    global $dbLink;
     $query = sprintf("INSERT INTO ia_file
                         (`name`, page, `size`, mime_type, user_id, `timestamp`)
                       VALUES ('%s', '%s', '%s', '%s', '%s', NOW())",
@@ -43,7 +42,7 @@ function attachment_insert($name, $size, $mime_type, $page, $user_id) {
                      db_escape($size), db_escape($mime_type),
                      db_escape($user_id));
     db_query($query);
-    return mysql_insert_id($dbLink);
+    return db_insert_id();
 }
 
 function attachment_delete($id) {

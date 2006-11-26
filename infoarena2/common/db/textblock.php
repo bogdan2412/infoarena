@@ -1,7 +1,7 @@
 <?
 
-require_once("db.php");
-require_once(IA_ROOT . "common/security.php");
+require_once(IA_ROOT."common/db/db.php");
+require_once(IA_ROOT."common/security.php");
 
 // Textblock-related db functions.
 //
@@ -83,7 +83,7 @@ function textblock_complex_query($options)
     } else {
         $query = "SELECT $field_list FROM ia_textblock $join $where";
     }
-    //log_print("QUERY: " . $query);
+    // log_print("QUERY: " . $query);
     return db_fetch_all($query);
 }
 
@@ -155,7 +155,6 @@ function textblock_get_changes($prefix, $content = false, $username = true, $cou
 // Count revisions for a certain textblock.
 // FIXME: undefined if it doesn't exist.
 function textblock_get_revision_count($name) {
-    global $dbLink;
     $query = sprintf("SELECT COUNT(*) AS `cnt` FROM ia_textblock_revision
                       WHERE LCASE(`name`) = '%s'",
                     db_escape($name));

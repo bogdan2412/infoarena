@@ -28,7 +28,7 @@ while ($att = mysql_fetch_assoc($res)) {
 $extra_files = array_keys($extra_files);
 
 if (count($extra_files) == 0 && count($extra_atts) == 0) {
-    log_print("Database and attach dir are in perfect sync.");
+    log_print("Database and attach dir are in perfect sync, $total_files total files.");
 } else {
     log_print("There are are ".count($extra_files)." out of ".$total_files." disk files with no db entry.");
     if (count($extra_files)) {
@@ -73,23 +73,30 @@ if (read_bool("Enforce permissions?", no)) {
     }
     $userown = read_line("Owning user?", $defowner);
     $groupown = read_line("Owning group?", $defowner);
+    $quiet = read_bool("Do it quietly?", true);
+    $errs = false;
     foreach ($files as $file) {
-        $err = false;
+        $err = array();
         if (@chmod($file, 0660) == false) {
-            log_print("Failed chmod on $file");
-            $err = true;
+            $err[] = "chmod";
         }
         if (@chown($file, $userown) == false) {
-            log_print("Failed chown on $file");
-            $err = true;
+            $err[] = "chown";
         }
         if (@chgrp($file, $userown) == false) {
-            log_print("Failed chgrp on $file");
-            $err = true;
+            $err[] = "chgrp";
         }
-        if (!$err) {
-            log_print("Fixed permissions for $file");
+        $errs |= $err;
+        if (!$quiet) {
+            if ($err) {
+                log_print("Failed ".implode(', ', $err)." on $file");
+            } else {
+                log_print("Fixed permissions for $file");
+            }
         }
+    }
+    if ($errs) {
+        log_print("There were some errors. You should run this as root.");
     }
 }
 

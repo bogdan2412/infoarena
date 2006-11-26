@@ -1,5 +1,7 @@
 <?php
 
+require_once(IA_ROOT.'common/db/textblock.php');
+
 // This controller serves as a data server for AJAX requests.
 // Instead of generating HTML content to be displayed in a browser,
 // data computed by JSON controllers is served in JSON format.
@@ -11,9 +13,7 @@ function controller_json($suburl) {
         case 'wiki-preview':
             // Parse wiki markup and return JSON with HTML output.
             // This is used for previewing markup when editing the wiki.
-            $page_content = request('content');
             $page_name = request('page_name');
-
             $page_content = file_get_contents('php://input'); 
 
             // get text block

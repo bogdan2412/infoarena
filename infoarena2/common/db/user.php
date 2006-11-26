@@ -73,7 +73,6 @@ function user_get_by_id($id) {
 // Create a new user.
 // FIXME: Expand $data into specific fields just like task_create()!
 function user_create($data) {
-    global $dbLink;
     $query = "INSERT INTO ia_user (";
     foreach ($data as $key => $val) {
         $query .= '`' . $key . '`,';
@@ -108,7 +107,6 @@ function user_create($data) {
 // NOTE: When updating password, it is mandatory that you also specify username
 // FIXME: Expand $data into specific fields just like task_create()!
 function user_update($data, $id) {
-    global $dbLink;
     $query = "UPDATE ia_user SET ";
     foreach ($data as $key => $val) {
         if ($key == 'password') {
