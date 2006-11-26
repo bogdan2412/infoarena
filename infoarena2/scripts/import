@@ -333,4 +333,28 @@ if (read_bool("Import tasks?", false)) {
     }
 }
 
+if (read_bool("Import downloads?", false)) {
+    $downloads = mysql_query("SELECT *, DATE_FORMAT(postDate, '%Y-%m-%d') AS postDate
+                             FROM info_down ORDER BY postDate DESC", $dbOldLink);
+    if (!$downloads){
+        log_error('IMPORT: MYSQL error -> '.mysql_error($dbOldLink));
+    }
+    $arr = array();
+    while ($down = mysql_fetch_assoc($downloads)) {
+        $arr[] = $down;
+    }
+
+    foreach ($arr as $download) {
+        $download['href'] = preg_replace('/[^a-z0-9\.\-_]/i', '_', $download['href']);
+
+        // attach the file
+        $fname = $ia1_path."www/info/upload/".$download['id'];
+        if (!is_readable($fname)) {
+            log_print("{$download['href']} should be in $fname but it's missing");
+        } else {
+            magic_file_attach("downloads", $download['href'], $fname);
+        }
+    }
+}
+
 ?>
