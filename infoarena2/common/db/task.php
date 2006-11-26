@@ -1,6 +1,7 @@
 <?php
 
-require_once("db.php");
+require_once(IA_ROOT . "common/db/db.php");
+require_once(IA_ROOT . "common/task.php");
 
 // Task-related db functions.
 

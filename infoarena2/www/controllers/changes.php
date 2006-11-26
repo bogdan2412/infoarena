@@ -2,6 +2,7 @@
 
 require_once(IA_ROOT . "www/format/pager.php");
 require_once(IA_ROOT . "www/format/format.php");
+require_once(IA_ROOT . "common/db/textblock.php");
 
 // View recent changes.
 function controller_changes($page_name) {
@@ -40,13 +41,13 @@ function controller_changes($page_name) {
                     $rev['title'] , $rev['user_name']);
 
             $userlink = format_user_tiny($rev['user_name'], $rev['user_fullname']);
-            $pagelink = format_link($rev['title'], url($rev['name'], array(), true));
+            $pagelink = href(url($rev['name'], array(), true), htmlentities($rev['title']));
             $diffurl_params = array(
                     'action' => 'diff',
                     'rev_from' => $rev['revision_id'],
                     'rev_to' => $rev['revision_id'] - 1,
             );
-            $difflink = format_link("modificari", url($rev['name'], $diffurl_params, true));
+            $difflink = href(url($rev['name'], $diffurl_params, true), "modificari");
             $tstamp = $rev['timestamp'];
             $item['description'] = "La data de $tstamp pagina $pagelink a fost modificata de $userlink($difflink).";
 

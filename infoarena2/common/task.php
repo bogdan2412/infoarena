@@ -81,14 +81,14 @@ function task_validate($task) {
         $errors['page_name'] = 'Homepage invalid';
     }
 
-    if (!is_user_id(getattr($tb, 'user_id'))) {
+    if (!is_user_id(getattr($task, 'user_id'))) {
         $errors['user_id'] = 'ID de utilizator invalid';
     }
     /*if (!get_user_by_id(getattr($tb, 'user_id'))) {
         $errors['user_id'] = 'Utilizator inexistent';
     }*/
 
-    $hidden = getattr($tank, 'hidden');
+    $hidden = getattr($task, 'hidden');
     if ($hidden != '0' && $hidden != '1') {
         $errors['hidden'] = 'Se accepta doar 0/1';
     }

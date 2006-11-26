@@ -1,5 +1,7 @@
 <?php
 
+require_once(IA_ROOT . "common/db/user.php");
+
 function controller_login() {
     global $identity_user;
     identity_require('user-login', $identity_user);
