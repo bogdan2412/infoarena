@@ -29,7 +29,8 @@ function controller_login() {
             }
             else {
                 // update password to the SHA1 algorithm
-                user_update(array('password' => $data['password']),
+                user_update(array('password' => $data['password'],
+                                  'username' => $data['username']),
                             $user['id']);
             }
         }
