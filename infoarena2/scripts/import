@@ -115,7 +115,7 @@ if (read_bool("Import users?", false)) {
 
         if ($import_avatars) {
             $avatar_file = sprintf($ia1_path . 'www/infoarena/gfx/faces/%02d.gif', (int)$row['avatar']);
-            magic_file_attach("user/" . $data['username'], "avatar", $avatar_file);
+            magic_file_attach(IA_USER_PREFIX . $data['username'], "avatar", $avatar_file);
         }
     }
 
