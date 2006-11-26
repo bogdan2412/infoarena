@@ -4,7 +4,6 @@ require_once(IA_ROOT . "common/db/user.php");
 
 function controller_login() {
     global $identity_user;
-    identity_require('user-login', $identity_user);
 
     // `data` dictionary is a dictionary with data to be displayed by form view
     // when displaying the form for the first time, this is filled with

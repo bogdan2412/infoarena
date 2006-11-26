@@ -26,36 +26,98 @@ function security_query($user, $action, $object) {
     $username = getattr($user, 'username', 'null');
     $usersec = getattr($user, 'security_level', 'anonymous');
     $object_id = getattr($object, 'id', getattr($object, 'name', $object));
-    log_print("SECURITY QUERY ".
+    log_print("SECURITY QUERY: ".
             "($username, $usersec, $action, $object_id): ".
-            "username, level, action, object");
+            "(username, level, action, object)");
 
     // group dispatcher
     switch ($group) {
         case 'textblock':
-            return security_textblock($user, $action, $object);
+            $result = security_textblock($user, $action, $object);
+            break;
 
         case 'user':
-            return security_user($user, $action, $object);
+            $result = security_user($user, $action, $object);
+            break;
 
         case 'round':
-            return security_round($user, $action, $object);
+            $result = security_round($user, $action, $object);
+            break;
 
         case 'task':
-            return security_task($user, $action, $object);
+            $result = security_task($user, $action, $object);
+            break;
 
         case 'attach':
-            return security_attach($user, $action, $object);
+            $result = security_attach($user, $action, $object);
+            break;
 
         case 'macro':
-            return security_macro($user, $action, $object);
+            $result = security_macro($user, $action, $object);
+            break;
 
         case 'job':
-            return security_job($user, $action, $object);
+            $result = security_job($user, $action, $object);
+            break;
 
         default:
-            log_error('Invalid group: "' . $group . '"');
-            return false;
+            log_error('Invalid action group: "' . $group . '"');
+    }
+
+    log_print("SECURITY RESULT: $result");
+    return $result;
+}
+
+// This function simplifies $action.
+function security_simplify_action($action)
+{
+    switch ($action) {
+        // View access.
+        case 'textblock-view':
+        case 'textblock-history':
+        case 'textblock-list-attach':
+        case 'attach-download':
+        case 'user-viewinfo':
+        case 'task-view':
+        case 'round-view':
+            return 'simple-view';
+
+        // Reversible edits access.
+        case 'textblock-edit':
+        case 'textblock-restore':
+        case 'textblock-attach':
+            return 'simple-rev-edit';
+
+        // Irreversible edits.
+        case 'textblock-move':
+        case 'attach-overwrite':
+        case 'attach-delete':
+        case 'task-edit':
+        case 'task-create':
+        case 'task-delete':
+        case 'round-edit':
+        case 'round-create':
+        case 'round-delete':
+        case 'textblock-delete':
+        case 'textblock-move':
+            return 'simple-edit';
+
+        // Admin stuff:
+        case 'task-hide':
+        case 'task-publish':
+        case 'round-hide':
+        case 'round-publish':
+        case 'textblock-change-security':
+            return 'simple-critical';
+
+        // Special actions fall through
+        // FIXME: As few as possible.
+        case 'task-submit':
+        case 'user-editprofile':
+            return $action;
+
+        default:
+            log_error('Invalid action: '.$action);
     }
 }
 
@@ -93,12 +155,15 @@ function security_textblock($user, $action, $textblock) {
         return $usersec == 'admin';
     }
 
+    // Log query response.
+    $action = security_simplify_action($action);
+    $objid = $textblock['name'];
+    log_print("SECURITY QUERY TEXTBLOCK: ".
+            "($usersec, $action, $objid):".
+            "(level, action, object");
+
     switch ($action) {
-        // Read-only
-        case 'textblock-view':
-        case 'textblock-history':
-        case 'textblock-list-attach':
-        case 'attach-download':
+        case 'simple-view':
             if ($textsec == 'private') {
                 return $usersec == 'admin';
             } else {
@@ -106,9 +171,7 @@ function security_textblock($user, $action, $textblock) {
             }
 
         // Reversible modifications.
-        case 'textblock-edit':
-        case 'textblock-create': 
-        case 'textblock-restore':
+        case 'simple-rev-edit':
             if ($textsec == 'public') {
                 return $usersec != 'anonymous';
             } else {
@@ -116,43 +179,30 @@ function security_textblock($user, $action, $textblock) {
             }
 
         // Permanent changes. Admin only
-        case 'textblock-move':
-        case 'textblock-delete':
-        case 'textblock-attach':
-        case 'attach-overwrite':
-        case 'attach-delete':
-            return $usersec == 'admin';
-
-        // Special: admin only.
-        case 'textblock-change-security':
+        case 'simple-edit':
             return $usersec == 'admin';
 
         default:
-            log_error('Invalid wiki action: '.$action);
+            log_error('Invalid textblock action: '.$action);
             return false;
     }
 }
 
+// Jump to security_textblock.
+// FIXME: attach-grader?
+function security_attach($user, $action, $attach) {
+    // HACK: magic prefix.
+    if (preg_match('/$grader_/', $attach['name'])) {
+        $action = preg_replace('/$attach/', 'grader', $action);
+    }
+    return security_textblock($user, $action, textblock_get_revision($attach['page']));
+}
+
+// FIXME: more?
 function security_user($user, $action, $target_user) {
     $usersec = getattr($user, 'security_level', 'anonymous');
 
-    switch ($action) {
-        case 'user-login':
-            // FIXME: should we really handle this in security code?
-            // any user can try to login, even if it's already authenticated
-            // FIXME?: we could use this for banning IPs
-            return true;
-
-        case 'user-logout':
-            // FIXME: should we really handle this in security code?
-            // only authenticated users can logout
-            return !is_null($user);
-
-        case 'user-viewinfo':
-            // This is for userinfo/$userinfo/*
-            // user-info is public.
-            return true;
-
+    switch (security_simplify_action($action)) {
         case 'user-editprofile':
             // anyone can edit their own profile. admins can edit any profile
             return ($user['id'] == $target_user['id'] || $usersec == 'admin');
@@ -163,69 +213,43 @@ function security_user($user, $action, $target_user) {
     }
 }
 
-// FIXME: query textblock here.
-// FIXME: magic prefix.
-function security_attach($user, $action, $attach) {
-    if (preg_match('/$grader_/', $attach['name'])) {
-        $action = preg_replace('/$attach/', 'grader', $action);
-    }
-    return security_textblock($user, $action, textblock_get_revision($attach['page']));
-}
-
 // FIXME: round logic.
 function security_task($user, $action, $task) {
     $usersec = getattr($user, 'security_level', 'anonymous');
+    $is_admin = $usersec == 'admin';
+    $is_owner = $task['user_id'] = $user['id'];
 
-    // Normalize action.
+    // Log query response.
+    $action = security_simplify_action($action);
+    $level = ($is_admin ? 'admin' : ($is_owner ? 'owner' : 'other'));
+    $objid = $task['id'];
+    log_print("SECURITY QUERY TASK".
+            "($level, $action, $objid):".
+            "(level, action, object");
+
     switch ($action) {
         // Read-only access.
-        case 'textblock-view':
-        case 'textblock-history':
-        case 'textblock-list-attach':
-        case 'task-view':
-        case 'attach-download':
-            // Everybody can see public tasks.
-            // Helpers can see their own tasks.
-            return (!$task['hidden']) || ($usersec == 'admin') ||
-                    ($task['hidden'] && $usersec == 'helper' && $task['user_id'] == $user['id']) ||
-                    ($usersec == 'admin');
+        case 'simple-view':
+            return ($task['hidden'] == false) || $is_owner || $is_admin;
 
         // Edit access.
-        case 'task-edit':
-        case 'textblock-edit':
-        case 'textblock-restore':
-        case 'textblock-move':
-        case 'textblock-attach':
-        case 'attach-overwrite':
-        case 'attach-delete':
-        case 'grader-download':
-        case 'grader-create':
-        case 'grader-overwrite':
-        case 'grader-delete':
-            return ($task['hidden'] && $usersec == 'helper' && $task['user_id'] == $user['id']) ||
-                    $usersec == 'admin';
+        case 'simple-rev-edit':
+            return $is_owner || $is_admin;
+
+        case 'simple-edit':
+            return ($task['hidden'] == false && $is_owner) || $is_admin;
 
         // Admin stuff:
-        case 'task-hide':
-        case 'task-publish':
-        case 'textblock-delete':
-        case 'textblock-change-security':
-            return $usersec == 'admin';
+        case 'simple-critical':
+            return $is_admin;
 
         // Special: submit.
+        // FIXME: contest logic?
         case 'task-submit':
             if ($usersec == 'anonymous') {
                 return false;
             }
-            if ($task['hidden']) {
-                return $usersec == 'admin' || ($usersec == 'helper' && $task['user_id'] = $user['id']);
-            } else {
-                return true;
-            }
-
-        // Special, creating a new task.
-        case 'task-create':
-            return $usersec == 'admin' || $usersec == 'helper';
+            return ($task['hidden'] == false) || $is_owner || $is_admin;
 
         default:
             log_error('Invalid task action: '.$action);
@@ -236,41 +260,41 @@ function security_task($user, $action, $task) {
 // FIXME: contest logic.
 function security_round($user, $action, $round) {
     $usersec = getattr($user, 'security_level', 'anonymous');
+    $is_admin = $usersec == 'admin';
+    $is_owner = $task['user_id'] = $user['id'];
+
+    // Log query response.
+    $action = security_simplify_action($action);
+    $level = ($is_admin ? 'admin' : ($is_owner ? 'owner' : 'other'));
+    $objid = $task['id'];
+    log_print("SECURITY QUERY ROUND: ".
+            "($level, $action, $objid):".
+            "(level, action, object");
+
 
     switch ($action) {
         // Read-only access.
-        case 'round-view':
-        case 'textblock-view':
-        case 'textblock-history':
-        case 'textblock-list-attach':
-        case 'attach-download':
-            // Everybody can see public rounds.
-            // Helpers can see their own rounds.
-            return (!$round['hidden']) || ($usersec == 'admin') ||
-                    ($round['hidden'] && $usersec == 'helper' && $round['user_id'] == $user['id']) ||
-                    ($usersec == 'admin');
+        case 'simple-view':
+            return ($task['hidden'] == false) || $is_owner || $is_admin;
 
         // Edit access.
-        case 'round-edit':
-        case 'textblock-edit':
-        case 'textblock-restore':
-        case 'textblock-move':
-        case 'textblock-attach':
-        case 'attach-overwrite':
-        case 'attach-delete':
-            return ($round['hidden'] && $usersec == 'helper' && $round['user_id'] == $user['id']) ||
-                    $usersec == 'admin';
+        case 'simple-rev-edit':
+            return $is_owner || $is_admin;
 
-        // Admin only operations:
-        case 'textblock-change-security':
-        case 'textblock-delete':
-        case 'round-publish':
-        case 'round-hide':
-            return $usersec == 'admin';
+        case 'simple-edit':
+            return ($task['hidden'] == false && $is_owner) || $is_admin;
 
-        // Special, creating a new round.
-        case 'round-create':
-            return $usersec == 'admin' || $usersec == 'helper';
+        // Admin stuff:
+        case 'simple-critical':
+            return $is_admin;
+
+        // Special: submit.
+        // FIXME: contest logic?
+        case 'task-submit':
+            if ($usersec == 'anonymous') {
+                return false;
+            }
+            return ($task['hidden'] == false) || $is_owner || $is_admin;
 
         default:
             log_error('Invalid round action: '.$action);
@@ -278,6 +302,7 @@ function security_round($user, $action, $round) {
     }
 }
 
+// FIXME: macro security is stupid.
 function security_macro($user, $action, $args) {
     $usersec = getattr($user, 'security_level', 'anonymous');
 
