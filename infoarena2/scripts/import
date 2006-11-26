@@ -107,7 +107,6 @@ if (read_bool("Import users?", false)) {
             log_error("Failed creating user $data[username]");
         }
         $ucount++;
-        if ($ucount > 50) { break; }
 
         // print out admins
         if ('admin' == $data['security_level']) {
