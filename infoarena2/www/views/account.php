@@ -49,7 +49,7 @@
         <li>
             <?php
                 // display avatar
-                $avatar_url = image_resize_url(TB_USER_PREFIX.$user['username'], "avatar", "150x150");
+                $avatar_url = url_user_avatar($user['username']);
                 echo '<img class="avatar" src="'.$avatar_url.'"/>';
             ?>
         </li>

@@ -13,7 +13,7 @@ function format_user_link($user_name, $user_fullname) {
 function format_user_tiny($user_name, $user_fullname) {
     $pagename = TB_USER_PREFIX.$user_name;
     $user_url = url($pagename);
-    $avatar_url = image_resize_url($pagename, "avatar", "16x16");
+    $avatar_url = url_user_avatar($user_name, "16x16");
 
     $user_fullname = htmlentities($user_fullname);
 
@@ -33,7 +33,7 @@ function format_user_tiny($user_name, $user_fullname) {
 function format_user_normal($user_name, $user_fullname) {
     $pagename = TB_USER_PREFIX.$user_name;
     $user_url = url($pagename);
-    $avatar_url = image_resize_url($pagename, "avatar", "32x32");
+    $avatar_url = url_user_avatar($user_name, "32x32");
 
     $user_fullname = htmlentities($user_fullname);
 

@@ -56,15 +56,26 @@ function attachment_delete($id) {
 // to page $page.
 //
 // You may use % as a wildcard
-function attachment_get_all($page, $name='%') {
+function attachment_get_all($page, $name='%', $start = 0, $count = 999999) {
+    assert(is_whole_number($start));
+    assert(is_whole_number($count));
     $query = sprintf("SELECT ia_file.*, ia_user.username, ia_user.full_name
                       FROM ia_file
                       LEFT JOIN ia_user ON ia_user.id = ia_file.user_id
-                      WHERE ia_file.page LIKE '%s'
-                            AND ia_file.`name` LIKE '%s'
-                      ORDER BY ia_file.`name`, ia_file.`timestamp` DESC",
-                     db_escape($page), db_escape($name));
+                      WHERE ia_file.page LIKE '%s' AND ia_file.`name` LIKE '%s'
+                      ORDER BY ia_file.`name`, ia_file.`timestamp` DESC
+                      LIMIT %d, %d",
+                     db_escape($page), db_escape($name), $start, $count);
     return db_fetch_all($query);
+}
+
+// _count for the above.
+function attachment_get_count($page, $name='%') {
+    $query = sprintf("SELECT COUNT(*)
+                      FROM ia_file
+                      WHERE ia_file.page LIKE '%s' AND ia_file.`name` LIKE '%s'",
+                      db_escape($page), db_escape($name));
+    return db_query_value($query);
 }
 
 // Returns "real file name" (as stored on the file system) for a given

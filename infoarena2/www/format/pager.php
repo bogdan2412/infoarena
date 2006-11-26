@@ -74,7 +74,7 @@ function pager_init_options($args = null)
 function format_pager($options)
 {
     if ($options['pager_style'] == 'standard') {
-        return "<span class=\"standard-pager\">" . format_standard_pager($options) . '</span>';
+        return '<div class="pager"><div class="standard-pager">' . format_standard_pager($options) . '</div></div>';
     } else {
         return '';
     }
@@ -91,9 +91,11 @@ function format_standard_pager($options)
     $param_prefix = getattr($options, 'param_prefix', '');
     $surround_pages = getattr($options, 'surround_pages', 5);
 
-    //log_print_r($options);
+    assert(is_whole_number($display_entries));
+    assert(is_whole_number($first_entry));
+    assert(is_whole_number($total_entries));
 
-    $result = "";
+    //log_print_r($options);
 
     $curpage = (int)($first_entry / $display_entries);
     $totpages = (int)(($total_entries + $display_entries - 1) / $display_entries);
@@ -101,7 +103,7 @@ function format_standard_pager($options)
     if ($totpages == 1) {
         return "Exista o singura pagina.";
     }
-    $result .= "Vezi pagina ".($curpage + 1)." din $totpages: ";
+    $result = "Vezi pagina ".($curpage + 1)." din $totpages: ";
     if ($curpage < 8) {
         for ($i = 0; $i < $curpage; ++$i) {
             $url_args[$param_prefix.'first_entry'] = $i * $display_entries;

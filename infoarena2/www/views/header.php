@@ -43,10 +43,11 @@ ia_template_topnav($topnav_select, $smf_admin);
 
 <div id="content_small" class="clear">
 <div id="sidebar">
-    <?php if (!identity_anonymous()) { ?>
+    <?php if (!identity_anonymous()) { $username = $identity_user['username']; ?>
     <div id="avatar">
-        <a href="<?= user_profile_url($identity_user['username']) ?>"><img src="<?= url(TB_USER_PREFIX.$identity_user['username'], array('action' => 'download', 'file' => 'avatar', 'resize'=>'@50x50')) ?>" /></a>
-        <p><strong><a href="<?= url(TB_USER_PREFIX.$identity_user['username']) ?>"><?= $identity_user['username'] ?></a></strong><br/><?= htmlentities($identity_user['full_name']) ?></p>
+        <a href="<?= url_user_profile($username) ?>"><img src="<?= url_user_avatar($username) ?>" /></a>
+        <p><strong><a href="<?= url_user_profile($username) ?>"><?= $username ?></a></strong><br/>
+        <?= htmlentities($identity_user['full_name']) ?></p>
     </div>
     <?php } ?>
 

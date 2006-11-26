@@ -36,7 +36,7 @@ function ia_template_topnav($selected = 'infoarena', $smf_admin = false) {
     <li><?= getattr($pre, 'login') ?><a href="<?= url('login', array(), true) ?>">autentificare</a><?= getattr($post, 'login') ?></li>
     <li><?= getattr($pre, 'register') ?><a href="<?= url('register', array(), true) ?>">inregistrare</a><?= getattr($post, 'register') ?></li>
 <?php } else { ?>
-    <li><?= getattr($pre, 'profile') ?><a href="<?= user_profile_url($identity_user['username'], true) ?>">profilul meu</a><?= getattr($post, 'profile') ?></li>
+    <li><?= getattr($pre, 'profile') ?><a href="<?= url_user_profile($identity_user['username'], true) ?>">profilul meu</a><?= getattr($post, 'profile') ?></li>
     <li><?= getattr($pre, 'pm') ?><a href="<?= IA_SMF_URL ?>?action=pm">mesaje</a><?= getattr($post, 'pm') ?></li>
 <?php if ($smf_admin) { ?>
     <li><?= getattr($pre, 'smf_admin') ?><a href="<?= IA_SMF_URL ?>?action=admin">forum admin</a><?= getattr($post, 'smf_admin') ?></li>

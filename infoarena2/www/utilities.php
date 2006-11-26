@@ -83,34 +83,34 @@ function url_from_args($args, $absolute = false)
     return $url;
 }
 
-// Url to user profile page
-function user_profile_url($username, $absolute = false) {
-    return url('utilizator/'.$username, array(), $absolute);
-}
-
-// Url to task page
-function task_url($task_id, $absolute = false) {
-    return url('problema/'.$task_id, array(), $absolute);
-}
-
 // Get an url for an attachement
-function attachment_url($page, $file, $absolute = false) {
-    return url($page, array('action' => 'download', 'file' => $file),
-               false);
+function url_attachment($page, $file, $absolute = false) {
+    log_assert(is_page_name($page));
+    log_assert(is_attachment_name($file));
+    return url($page, array('action' => 'download', 'file' => $file), $absolute);
 }
 
 // Get an url for a resized image.
-function image_resize_url($page, $file, $resize)
+function url_image_resize($page, $file, $resize, $absolute = false)
 {
     if ($resize) {
         return url($page, array(
                 'action' => 'download',
                 'file' => $file,
                 'resize' => $resize,
-        ));
+        ), $absolute);
     } else {
-        return attachment_url($page, $file);
+        return url_attachment($page, $file, $absolute);
     }
+}
+
+// Url to user profile page
+function url_user_profile($username, $absolute = false) {
+    return url(TB_USER_PREFIX . $username, array(), $absolute);
+}
+
+function url_user_avatar($username, $resize = "@50x50", $absolute = false) {
+    return url_image_resize(TB_USER_PREFIX . $username, 'avatar', $resize, $absolute);
 }
 
 // Use flash() to display a message right after redirecting the user.
@@ -254,6 +254,7 @@ function send_email($to, $subject, $message,
 // Alternatively you can just use X% to resize both dimensions.
 //
 // Returns 2-element array: (width, height) or null if invalid format
+// FIXME: Does not belong here.
 function resize_coordinates($width, $height, $resize) {
     // log_print("Parsing resize '$resize'");
     // Both with and height.

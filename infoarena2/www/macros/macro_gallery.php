@@ -1,6 +1,7 @@
 <?php
 
-define("MACRO_GALLERY_MAX", 100);
+require_once(IA_ROOT . "common/db/attachment.php");
+
 define("MACRO_GALLERY_RESIZE", "130x80");
 
 // Display image gallery of file (image) attachments.
@@ -16,6 +17,11 @@ define("MACRO_GALLERY_RESIZE", "130x80");
 //          displays all files ending with .jpg, attached to
 //          any page beginning with preONI/Ziua
 function macro_gallery($args) {
+    if (!isset($args['display_entries'])) {
+        $args['display_entries'] = 18;
+    }
+    $options = pager_init_options($args);
+
     $page = getattr($args, 'page');
     $file = getattr($args, 'file');
 
@@ -28,25 +34,18 @@ function macro_gallery($args) {
     }
 
     // get attachment list
-    $att_unfiltered = attachment_get_all($page, $file);
-
-    // filter attachments by user permissions
-    $attachments = array();
-    foreach ($att_unfiltered as $attach) {
-        if (!identity_can('attach-download', $attach)) {
-            continue;
-        }
-        $attachments[] = $attach;
-    }
+    $options['total_entries'] = attachment_get_count($page, $file);
+    $atts = attachment_get_all($page, $file, $options['first_entry'], $options['display_entries']);
 
     // display gallery
-    $buffer = '<div class="gallery">';
-    foreach ($attachments as $attach) {
-        $thumbsrc = url($attach['page'], array('action'=>'download', 'file'=>$attach['name'],
-                                                    'resize'=>MACRO_GALLERY_RESIZE));
-        $fullsrc = url($attach['page'], array('action'=>'download', 'file'=>$attach['name']));
+    $buffer = '<div class="gallery"><div class="images">';
+    foreach ($atts as $attach) {
+        $thumbsrc = url_image_resize($attach['page'], $attach['name'], "130x80");
+        $fullsrc = url_image_resize($attach['page'], $attach['name'], null);
         $buffer .= "<a href=\"{$fullsrc}\"><img src=\"{$thumbsrc}\" alt=\"{$attach['page']}\" /></a>";
     }
+    $buffer .= '</div>';
+    $buffer .= format_pager($options);
     $buffer .= '</div>';
 
     return $buffer;
