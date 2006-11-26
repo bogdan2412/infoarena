@@ -6,16 +6,17 @@ require_once(IA_ROOT . "common/db/attachment.php");
 
 log_print("Checking attachment dir...");
 
-$atts = attachment_get_all("%", "%");
-$files = glob(IA_ROOT . "attach/*");
+$res = db_query("SELECT `id`, `name`, `page` FROM ia_file");
+$extra_files = array_flip(glob(IA_ROOT . "attach/*"));
 
-$extra_files = array_flip($files);
 $extra_atts = array();
+$total_files = count($extra_files);
+$total_atts = 0;
 
 // Check attachments.
-foreach ($atts as $att) {
+while ($att = mysql_fetch_assoc($res)) {
+    ++$total_atts;
     $fname = attachment_get_filepath($att);
-    // log_print("Looking for $fname");
     if (array_key_exists($fname, $extra_files)) {
         unset($extra_files[$fname]);
     } else {
@@ -24,13 +25,12 @@ foreach ($atts as $att) {
 }
 
 // FIXME: check cache.
-
 $extra_files = array_keys($extra_files);
 
 if (count($extra_files) == 0 && count($extra_atts) == 0) {
     log_print("Database and attach dir are in perfect sync.");
 } else {
-    log_print("There are are ".count($extra_files)." out of ".count($files)." disk files with no db entry.");
+    log_print("There are are ".count($extra_files)." out of ".$total_files." disk files with no db entry.");
     if (count($extra_files)) {
         if (read_bool("Do you want to see a list?", false)) {
             foreach ($extra_files as $file) {
@@ -44,7 +44,7 @@ if (count($extra_files) == 0 && count($extra_atts) == 0) {
         }
     }
 
-    log_print("There are are ".count($extra_atts)." out of ".count($atts)." db files with no disk file.");
+    log_print("There are are ".count($extra_atts)." out of ".$total_atts." db files with no disk file.");
     if (count($extra_atts)) {
         if (read_bool("Do you want to see a list?", false)) {
             foreach ($extra_atts as $att) {
@@ -58,6 +58,9 @@ if (count($extra_files) == 0 && count($extra_atts) == 0) {
         }
     }
 }
+
+unset($extra_atts);
+unset($extra_files);
 
 // Again, in case we changed something.
 $atts = attachment_get_all("%", "%");
