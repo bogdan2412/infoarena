@@ -142,7 +142,7 @@ function controller_textblock_history($page_name) {
     } else {
         $count = $options['display_entries'];
     }
-    log_print($options['first_entry']." -> ".$options['display_entries']. " $start -> $count, $total");
+    //log_print($options['first_entry']." -> ".$options['display_entries']. " $start -> $count, $total");
     $revs = textblock_get_revision_list(
             $page_name, false, true,
             $start, $count); 

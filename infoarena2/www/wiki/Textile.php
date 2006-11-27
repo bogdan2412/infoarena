@@ -3191,10 +3191,12 @@ class Textile {
     $depth = 6;
     $nested_tags = substr(str_repeat('(?:</?[A-Za-z0-9:]+ \s? (?:[^<>]|', $depth), 0, -1)
       . str_repeat(')*>)', $depth);
-    $match = '(?s: <! ( -- .*? -- \s* )+ > )|  # comment
+    $match = '(?s: <! ( -- .*? -- \s* )+ > )|  # comment '.
+/*
               (?s: <\? .*? \?> )|              # processing instruction
               (?s: <% .*? %> )|                # ASP-like
-              (?:' . $nested_tags . ')|
+*/
+             '(?:' . $nested_tags . ')|
               (?:' . $this->codere . ')';     // nested tags
 
     while (preg_match('{(' . $match . ')}x', substr($str, $pos), $matches, PREG_OFFSET_CAPTURE)) {

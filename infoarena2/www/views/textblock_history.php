@@ -13,26 +13,19 @@ require_once(IA_ROOT . "www/format/format.php");
         $rev_id = $row['revision_id'];
         $title = $row['title'];
         $url = url($page_name, array('revision' => $rev_id));
-        return href($url, htmlentities("#$rev_id: $title"));
+        return href($url, "#$rev_id: $title");
     }
 
     function format_operations($row)
     {
         global $page_name, $total_entries;
-        $diffurl = url($page_name, array(
-                'rev_from' => $row['revision_id'],
-                'rev_to' => $total_entries,
-                'action' => 'diff',
-        ));
-        $restoreurl = url($page_name, array(
-                'revision' => $row['revision_id'],
-                'action' => 'restore',
-        ));
+        $diffurl = url_textblock_diff($page_name, $row['revision_id'], $total_entries);
+        $resturl = url_textblock_restore($page_name, $row['revision_id']);
         if ($row['revision_id'] == $total_entries) {
             return '<strong>Ultima versiune</strong>';
         } else {
-            return  '[<a href="'.$diffurl.'">Compara</a>]'.
-                    '[<a href="'.$restoreurl.'">Incarca</a>]';
+            return  '['. href($diffurl, "Compara") .']'.
+                    '['. href($resturl, "Incarca") .']';
         }
     }
 

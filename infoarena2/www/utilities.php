@@ -36,8 +36,25 @@ function die_http_error($code = 404, $msg = "File not found") {
 }
 
 // Build a simple href
-function href($url, $content) {
+// By default escapes url & content
+// You can set it to false and escape by hand etc.
+function href($url, $content, $escape = true) {
+    if ($escape) {
+        $url = htmlentities($url);
+        $escape = htmlentities($escape);
+    }
     return "<a href=\"$url\">$content</a>";
+}
+
+// Format img tag.
+// NOTE: html says alt is REQUIRED.
+// Escapes src/alt by default.
+function img($src, $alt, $escape = true) {
+    if ($escape) {
+        $src = htmlentities($src);
+        $alt = htmlentities($alt);
+    }
+    return "<a href=\"$src\", alt=\"$alt\" />";
 }
 
 // Compute url.
@@ -115,16 +132,37 @@ function url_submit($absolute = false) {
     return url("submit", array(), $absolute);
 }
 
-// Trivial.
-function url_textblock_view($page_name, $absolute = false)
-{
+function url_textblock($page_name, $absolute = false) {
     return url($page_name, array(), $absolute);
 }
 
-// Trivial.
-function url_textblock_edit($page_name, $absolute = false)
-{
+function url_textblock_edit($page_name, $absolute = false) {
     return url($page_name, array('action' => 'edit'), $absolute);
+}
+
+function url_textblock_history($page_name, $absolute = false) {
+    return url($page_name, array('action' => 'history'), $absolute);
+}
+
+function url_textblock_diff($page_name, $revfrom, $revto, $absolute = false) {
+    $args = array(
+            'action' => 'diff',
+            'rev_from' => $revfrom,
+            'rev_to' => $revto
+    );
+    return url($page_name, $args, $absolute);
+}
+
+function url_textblock_revision($page_name, $rev, $absolute = false) {
+    return url($page_name, array('revision' => $rev), $absolute);
+}
+
+function url_textblock_restore($page_name, $rev, $absolute = false) {
+    $args = array(
+            'action' => 'restore',
+            'revision' => $rev,
+    );
+    return url($page_name, $args, $absolute);
 }
 
 // Url to user profile page

@@ -27,9 +27,9 @@ function controller_textblock_edit($page_name) {
 
     // Get form data
     $values = array();
-    $values['text'] = request('form_text', $page['text']);
-    $values['title'] = request('form_title', $page['title']);
-    $values['security'] = request('form_security', $page['security']);
+    $values['text'] = request('text', $page['text']);
+    $values['title'] = request('title', $page['title']);
+    $values['security'] = request('security', $page['security']);
 
     if (request_is_post()) {
         // Get new page
@@ -54,7 +54,7 @@ function controller_textblock_edit($page_name) {
                                    $new_page['security']);
             log_print("TEXTBLOCK_ADD_REVISION");
             flash('Am actualizat continutul');
-            redirect(url_textblock_view($page_name));
+            redirect(url_textblock($page_name));
         }
     } else {
         $errors = array();
