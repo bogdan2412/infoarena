@@ -3,6 +3,7 @@
 require_once(IA_ROOT."common/db/db.php");
 require_once(IA_ROOT."common/db/attachment.php");
 require_once(IA_ROOT."common/security.php");
+require_once(IA_ROOT."common/textblock.php");
 
 // Textblock-related db functions.
 //
@@ -11,8 +12,15 @@ require_once(IA_ROOT."common/security.php");
 // Add a new revision
 // FIXME: hash parameter?
 function textblock_add_revision($name, $title, $content, $user_id, $security = "public", $timestamp = null) {
-    assert(is_textblock_security_descriptor($security));
-    assert(is_whole_number($user_id));
+    $tb = array(
+            'name' => $name,
+            'title' => $title,
+            'text' => $content,
+            'user_id' => $user_id,
+            'security' => $security,
+            'timestamp' => $timestamp,
+    );
+    log_assert_valid(textblock_validate($tb));
 
     // copy current version to revision table
     $query = sprintf("INSERT INTO ia_textblock_revision
@@ -175,8 +183,9 @@ function textblock_grep($substr, $page) {
 
 // Delete a certain page, including all revisions.
 // WARNING: This is irreversible.
-function textblock_delete($page) {
-    $pageesc = db_escape($page);
+function textblock_delete($page_name) {
+    log_assert(is_page_name($page_name));
+    $pageesc = db_escape($page_name);
     db_query("DELETE FROM `ia_textblock` WHERE `name` = '$pageesc'");
     db_query("DELETE FROM `ia_textblock_revision` WHERE `name` = '$pageesc'");
 }
