@@ -1,6 +1,6 @@
 <?php
 
-require_once('views/sitewide.php');
+require_once(IA_ROOT.'www/views/sitewide.php');
 
 check_view($view);
 ?>

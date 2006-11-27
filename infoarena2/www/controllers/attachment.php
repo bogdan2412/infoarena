@@ -1,7 +1,8 @@
 <?php
 
-require_once(IA_ROOT . "common/db/textblock.php");
-require_once(IA_ROOT . "common/db/attachment.php");
+require_once(IA_ROOT."common/db/textblock.php");
+require_once(IA_ROOT."common/db/attachment.php");
+require_once(IA_ROOT.'www/controllers/zip_attachment.php');
 
 // Try to get the textblock model for a certain page.
 // If it fails it will flash and redirect
@@ -83,7 +84,6 @@ function controller_attachment_submit($page_name) {
     $attachments = array();
     if (!$form_errors) {
         if ($autoextract) {
-            require_once('controllers/zip_attachment.php');
             $attachments = get_zipped_attachments($_FILES['file_name']['tmp_name']);
 
             if (false === $attachments) {

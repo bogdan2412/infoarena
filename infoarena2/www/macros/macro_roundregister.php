@@ -1,6 +1,7 @@
 <?php
 
 require_once(IA_ROOT."common/db/round.php");
+require_once(IA_ROOT."www/macros/macro_include.php");
 
 // FIXME: round registration disabled.
 // Display registration invitation for a round when user is not registered.

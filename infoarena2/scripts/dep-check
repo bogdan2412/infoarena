@@ -20,7 +20,7 @@ while (!feof($fd)) {
 }
 fclose($fd);
 
-// some modules are sure to be included already so we skip them for checking
+// some modules are bound to be included anywhere so we skip them for checking
 unset($exports['config.php']);
 unset($exports['common/common.php']);
 unset($exports['common/log.php']);
@@ -38,18 +38,17 @@ unset($exports['eval/utilities.php']);
 unset($exports['eval/config.php']);
 unset($exports['scripts/utilities.php']);
 
+// some hacks
+$exports['common/db/db.php'] = $exports['common/db/db.php']
+                               + $exports['common/db/db_mysql.php'];
+unset($exports['common/db/db_mysql.php']);
+
 // grep for all identifiers
 // this will take forever
 foreach ($exports as $module => $idents) {
-    // for starters, only check relative paths to current project
-    // FIXME: when you get bored, force checking for absolute paths
-    $gmodule = split("/", $module);
-    array_shift($gmodule);
-    $gmodule = join("/", $gmodule);
-
     foreach ($idents as $ident) {
         // do grep
-        $fd = popen("./_dcgrep {$ident} {$gmodule} ".IA_ROOT, "r");
+        $fd = popen("./_dcgrep {$ident} {$module} ".IA_ROOT, "r");
         log_assert($fd);
         $buffer = fread($fd, 500*1024);
         pclose($fd);

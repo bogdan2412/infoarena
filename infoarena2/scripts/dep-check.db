@@ -329,5 +329,6 @@ validate_profile_data	www/controllers/account_validator.php
 validate_register_data	www/controllers/account_validator.php
 validate_user_data	www/controllers/account_validator.php
 version	www/wiki/Textile.php
+wiki_include	www/views/utilities.php
 wiki_process_text	www/wiki/wiki.php
 wiki_process_text_recursive	www/wiki/wiki.php
