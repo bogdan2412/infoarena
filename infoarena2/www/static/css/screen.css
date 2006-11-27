@@ -689,6 +689,46 @@ form.round li#field_tasks select {
     padding: .2em;
 }
 
+/* wiki vertical menu */
+.wiki_text_block .vmenu {
+    float: right;
+    border: 1px solid silver;
+    width: 13em;
+    margin: .5em;
+    padding: .5em;
+    background-color: #f0f0f0;
+}
+
+.wiki_text_block .vmenu li {
+    margin-left: 1em;
+    list-style-type: none;
+}
+
+.wiki_text_block .vmenu li.section {
+    margin-left: 0;
+    font-weight: bold;
+}
+
+.wiki_text_block .vmenu br {
+    display: none;
+}
+
+.wiki_text_block .vmenu li a {
+    display: block;
+    width: 95%;
+    padding-left: .4em;
+}
+
+.wiki_text_block .vmenu li a:hover {
+    background-color: #006699;
+    color: white;
+    text-decoration: none;
+}
+
+.wiki_text_block .vmenu li a:visited {
+    border-right: 2px solid white;
+}
+
 /* Job details */
 .job-detail ul {
     list-style-type: none;
