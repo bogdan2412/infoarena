@@ -80,6 +80,32 @@ div.loading img {
 
 #sidebar2 ul {
     padding-left: 1.5em;
+    margin: 0;
+}
+
+#sidebar2 ul li {
+    list-style-type: disc;
+}
+
+/* block quotes */
+
+blockquote {
+    text-indent: 25px;
+    background: url('../images/quotes1.png');
+    background-position: 0 2px;
+    background-repeat: no-repeat;
+    margin: 1em 0 1em 0;
+}
+
+blockquote p {
+    line-height: 2em;
+    display: inline;
+    margin: 0;
+    font-style: italic;
+    padding-right: 24px;
+    background: url('../images/quotes2.png');
+    background-position: bottom right;
+    background-repeat: no-repeat;
 }
 
 /* Layout */
