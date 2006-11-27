@@ -106,7 +106,7 @@ function identity_from_http() {
     $user = getattr($_SERVER, 'PHP_AUTH_USER');
     $pass = getattr($_SERVER, 'PHP_AUTH_PW');
 
-    if (function_exists('user_test_password') && ($user || $pass)) {
+    if (!defined("IA_FROM_SMF") && ($user || $pass)) {
         // somebody is trying to authenticate via HTTP
         // log_print('Restoring identity from HTTP AUTH headers');
         $user = user_test_password($user, $pass);
