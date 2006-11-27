@@ -637,6 +637,7 @@ form.round li#field_tasks select {
 
 .wiki_text_block table {
     margin: .5em;
+    width: 95%; /* IE FIX */
 }
 
 .wiki_text_block table.layout th, .wiki_text_block table.layout td {
@@ -690,7 +691,6 @@ form.round li#field_tasks select {
 
 /* Basic table css */
 table {
-    width: 99%; /* IE fix */
     border-collapse: collapse;
 }
 
