@@ -35,12 +35,12 @@ function macro_smflink($args) {
         case 'stats':
             // link to user activity statistics
             $url = IA_SMF_URL.'?action=profile;u='.$member_id.';sa=statPanel';
-            return "<a href=\"{$url}\">{$title}</a>";
+            break;
 
         case 'pm':
             // send private message
             $url = IA_SMF_URL.'?action=pm;sa=send;u='.$member_id;
-            return "<a href=\"{$url}\">{$title}</a>";
+            break;
 
         case 'board':
             // link to SMF board
@@ -49,7 +49,7 @@ function macro_smflink($args) {
                 return macro_error('Expecting argument `board`');
             }
             $url = IA_SMF_URL."?board={$board_id}.0";
-            return "<a href=\"{$url}\">{$title}</a>";
+            break;
 
         case 'topic':
             // link to SMF topic 
@@ -58,11 +58,18 @@ function macro_smflink($args) {
                 return macro_error('Expecting argument `topic`');
             }
             $url = IA_SMF_URL."?topic={$topic_id}.0";
-            return "<a href=\"{$url}\">{$title}</a>";
+            break;
+
+        case 'forum':
+            // link to SMF
+            $url = IA_SMF_URL;
+            break;
 
         default:
             return macro_error('Invalid link type');
     }
+
+    return "<a href=\"{$url}\">{$title}</a>";
 }
 
 ?>
