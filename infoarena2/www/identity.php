@@ -61,15 +61,22 @@ function identity_require($action, $ontoObject = null, $errorMessage = null,
 {
     $can = identity_can($action, $ontoObject, $identity);
     if (!$can) {
-        if (is_null($errorMessage)) {
-            $errorMessage = "Nu aveti acces la aceasta resursa!";
+        if (identity_anonymous()) {
+            // when user is anonymous, send it to login page
+            // and redirect it back after she logins
+
+            flash_error("Mai intai trebuie sa te autentifici.");
+
+            // save current URL. We redirect to here right after logging in
+            $_SESSION['_ia_redirect'] = $_SERVER['REQUEST_URI'];
+            redirect(url('login'));
         }
-
-        // save current URL. We redirect to here right after logging in
-        $_SESSION['_ia_redirect'] = $_SERVER['REQUEST_URI'];
-
-        flash_error($errorMessage);
-        redirect(url('login'));
+        else {
+            // user hasn't got enough privileges. there's nothing she can do
+            flash_error('Nu ai permisiuni suficiente pentru a executa aceasta '
+                        .'actiune! Te redirectez ...');
+            redirect(url(''));
+        }
     }
 
     return $can;

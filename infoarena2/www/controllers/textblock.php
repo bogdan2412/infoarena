@@ -31,7 +31,7 @@ function controller_textblock_view($page_name, $rev_num = null) {
     } else {
         // Missing page.
         // FIXME: what if the user can't create the page?
-        flash_error("Nu am gasit pagina, te trimit sa editezi");
+        flash_error("Nu am gasit pagina. Te trimit sa editezi ...");
         redirect(url($page_name, array('action' => 'edit')));
     }
 
@@ -58,7 +58,7 @@ function controller_textblock_diff_revision($page_name) {
     if ($page) {
         identity_require('textblock-history', $page);
     } else {
-        flash_error("Pagina nu exista");
+        flash_error("Aceasta pagina nu exista!");
         redirect(url(''));
     }
 
