@@ -4,7 +4,8 @@ require_once(IA_ROOT."common/db/db.php");
 
 // Get round
 function round_get($round_id) {
-    log_assert(is_round_id($round_id));
+    // this assert brakes templates pages with round_id = %round_id%
+    // log_assert(is_round_id($round_id));
     $query = sprintf("SELECT * FROM ia_round WHERE `id` = LCASE('%s')",
                      db_escape($round_id));
     return db_fetch($query);
