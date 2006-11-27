@@ -1,6 +1,5 @@
 <?php
 
-require_once(IA_ROOT."common/db/textblock.php");
 
 // This module implements everything related to security.
 //
@@ -67,7 +66,12 @@ function security_query($user, $action, $object) {
             log_error('Invalid action group: "' . $group . '"');
     }
 
-    log_print("SECURITY RESULT: $result");
+    log_assert(is_bool($result), "SECURITY: FAILED, didn't return a bool");
+    if ($result) {
+        log_print("SECURITY: GRANTED");
+    } else {
+        log_print("SECURITY: DENIED");
+    }
     return $result;
 }
 
@@ -89,6 +93,7 @@ function security_simplify_action($action)
         case 'textblock-edit':
         case 'textblock-restore':
         case 'textblock-attach':
+        case 'textblock-create':
             return 'simple-rev-edit';
 
         // Irreversible edits.
@@ -125,9 +130,14 @@ function security_simplify_action($action)
 }
 
 // Handles textblock security.
-function security_textblock($user, $action, $textblock) {
+function security_textblock($user, $action, $textblock)
+{
+    require_once(IA_ROOT."common/textblock.php");
+
     $textsec = $textblock['security'];
     $usersec = getattr($user, 'security_level', 'anonymous');
+
+    log_assert_valid(textblock_validate($textblock));
 
     // Forward security to task.
     if (preg_match("/^ \s* task: \s* ([a-z0-9]*) \s* $/xi", $textsec, $matches)) {
@@ -162,7 +172,7 @@ function security_textblock($user, $action, $textblock) {
     $action = security_simplify_action($action);
     $objid = $textblock['name'];
     log_print("SECURITY QUERY TEXTBLOCK: ".
-            "($usersec, $action, $objid):".
+            "($usersec, $action, $objid): ".
             "(level, action, object");
 
     switch ($action) {
@@ -183,11 +193,11 @@ function security_textblock($user, $action, $textblock) {
 
         // Permanent changes. Admin only
         case 'simple-edit':
+        case 'simple-critical':
             return $usersec == 'admin';
 
         default:
             log_error('Invalid textblock action: '.$action);
-            return false;
     }
 }
 
@@ -220,14 +230,14 @@ function security_user($user, $action, $target_user) {
 function security_task($user, $action, $task) {
     $usersec = getattr($user, 'security_level', 'anonymous');
     $is_admin = $usersec == 'admin';
-    $is_owner = $task['user_id'] = $user['id'];
+    $is_owner = ($task['user_id'] == $user['id'] && $usersec == 'helper');
 
     // Log query response.
     $action = security_simplify_action($action);
     $level = ($is_admin ? 'admin' : ($is_owner ? 'owner' : 'other'));
     $objid = $task['id'];
-    log_print("SECURITY QUERY TASK".
-            "($level, $action, $objid):".
+    log_print("SECURITY QUERY TASK: ".
+            "($level, $action, $objid): ".
             "(level, action, object");
 
     switch ($action) {
@@ -256,7 +266,6 @@ function security_task($user, $action, $task) {
 
         default:
             log_error('Invalid task action: '.$action);
-            return false;
     }
 }
 
@@ -264,14 +273,14 @@ function security_task($user, $action, $task) {
 function security_round($user, $action, $round) {
     $usersec = getattr($user, 'security_level', 'anonymous');
     $is_admin = $usersec == 'admin';
-    $is_owner = $task['user_id'] = $user['id'];
+    $is_owner = ($task['user_id'] == $user['id'] && $usersec == 'helper');
 
     // Log query response.
     $action = security_simplify_action($action);
     $level = ($is_admin ? 'admin' : ($is_owner ? 'owner' : 'other'));
     $objid = $task['id'];
     log_print("SECURITY QUERY ROUND: ".
-            "($level, $action, $objid):".
+            "($level, $action, $objid): ".
             "(level, action, object");
 
 
@@ -301,7 +310,6 @@ function security_round($user, $action, $round) {
 
         default:
             log_error('Invalid round action: '.$action);
-            return false;
     }
 }
 
@@ -318,7 +326,6 @@ function security_macro($user, $action, $args) {
 
         default:
             log_error('Invalid macro action: '.$action);
-            return false;
     }
 }
 
@@ -333,7 +340,6 @@ function security_job($user, $action, $job) {
     switch ($action) {
         default:
             log_error('Invalid job action: '.$action);
-            return false;
     }
 }
 

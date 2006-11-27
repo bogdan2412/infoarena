@@ -38,7 +38,9 @@ function textblock_validate($tb) {
         $errors['user_id'] = 'ID de utilizator invalid';
     }
 
-    if (!is_datetime(getattr($tb, 'timestamp', ''))) {
+    // NOTE: missing timestamp is OK!!!
+    // It stands for 'current moment'.
+    if (!is_datetime(getattr($tb, 'timestamp', format_datetime()))) {
         $errors['timestamp'] = 'Timestamp invalid.';
     }
 

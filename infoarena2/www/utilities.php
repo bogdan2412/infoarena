@@ -1,7 +1,7 @@
 <?php
 
-function request($paramName, $defaultValue = null) {
-    return getattr($_REQUEST, $paramName, $defaultValue);
+function request($param, $default = null) {
+    return getattr($_REQUEST, $param, $default);
 }
 
 // Returns boolean whether current request method is POST
@@ -12,15 +12,16 @@ function request_is_post() {
 
 // Call this function for a http-level redirect.
 // NOTE: this function DOES NOT RETURN.
-// FIXME: Detect if output started and still do a redirect?
-// FIXMENOT: If output started before issuing a redirect means you're either
+// 
+// NOTE: this must be called before any other output.
+// If output started before issuing a redirect means you're either
 // printing stuff too early or you're trying to redirect too late (view?).
 // Either way, it is a bug and it must be solved rather than handled gracefully
-// FIXME: Is that even remotely possible?
-// FIXME: Would be useful for debugging though.
-function redirect($absoluteUrl) {
-    log_print("HTTP Redirect to $absoluteUrl from {$_SERVER['QUERY_STRING']}");
-    header("Location: {$absoluteUrl}\n\n");
+//
+// FIXME: bool to se ia_redirect to REQUEST_URI? might be usefull.
+function redirect($absolute_url) {
+    log_print("HTTP Redirect to $absolute_url from {$_SERVER['QUERY_STRING']}");
+    header("Location: {$absolute_url}\n\n");
     session_write_close();
     die();
 }
@@ -105,13 +106,25 @@ function url_image_resize($page, $file, $resize, $absolute = false)
 }
 
 // Url to the login page
-function url_login() {
-    return url("login");
+function url_login($absolute = false) {
+    return url("login", array(), $absolute);
 }
 
 // Url to the submit page
-function url_submit() {
-    return url("submit");
+function url_submit($absolute = false) {
+    return url("submit", array(), $absolute);
+}
+
+// Trivial.
+function url_textblock_view($page_name, $absolute = false)
+{
+    return url($page_name, array(), $absolute);
+}
+
+// Trivial.
+function url_textblock_edit($page_name, $absolute = false)
+{
+    return url($page_name, array('action' => 'edit'), $absolute);
 }
 
 // Url to user profile page
@@ -130,10 +143,10 @@ function url_job_detail($job_id, $absolute = false) {
 
 // Use flash() to display a message right after redirecting the user.
 // Message is displayed only once.
-function flash($message, $styleClass = null) {
+function flash($message, $style_class = null) {
     global $_SESSION;
     $_SESSION['_ia_flash'] = $message;
-    $_SESSION['_ia_flash_class'] = $styleClass;
+    $_SESSION['_ia_flash_class'] = $style_class;
 }
 
 // This is a simple binding for flash() with a fixed CSS style class

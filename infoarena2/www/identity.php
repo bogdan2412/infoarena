@@ -50,20 +50,36 @@ function identity_can($action, $object = null, $identity = null) {
     return security_query($identity, $action, $object);
 }
 
+// Require login first.
+// It makes a lot of sense to separate this from security. No matter what
+// dumb little security.php might say, some things absolutely require login.
+function identity_require_login()
+{
+    if (identity_anonymous()) {
+        flash_error("Mai intai trebuie sa te autentifici.");
+
+        // save current URL. We redirect to here right after logging in
+        $_SESSION['_ia_redirect'] = $_SERVER['REQUEST_URI'];
+        redirect(url('login'));
+    }
+}
+
 // This function is similar to identity_can(), except that it automatically
 // redirects to the login page and displays a generic message when faced
 // with insufficient privileges.
 //
 // Leave $errorMessage set to null and it will automatically display a generic
 // error message.
-function identity_require($action, $ontoObject = null, $errorMessage = null,
+//
+// FIXME: message not used, lol.
+function identity_require($action, $object = null, $message = null,
                           $identity = null)
 {
-    $can = identity_can($action, $ontoObject, $identity);
+    $can = identity_can($action, $object, $identity);
     if (!$can) {
         if (identity_anonymous()) {
             // when user is anonymous, send it to login page
-            // and redirect it back after she logins
+            // and redirect it back after login
 
             flash_error("Mai intai trebuie sa te autentifici.");
 
@@ -72,7 +88,7 @@ function identity_require($action, $ontoObject = null, $errorMessage = null,
             redirect(url('login'));
         }
         else {
-            // user hasn't got enough privileges. there's nothing she can do
+            // User doesn't have enough priviledges, tell him to fuck off.
             flash_error('Nu ai permisiuni suficiente pentru a executa aceasta '
                         .'actiune! Te redirectez ...');
             redirect(url(''));

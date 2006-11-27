@@ -270,14 +270,12 @@ function logging_error_handler($errno, $errstr, $errfile, $errline) {
 
         if (IA_DEBUG_MODE && $inside_www) {
             //echo '<html><head><title>Info-arena2 made a booboo</title></head><body>';
-            echo $errstr.' <br /> Printing full backtrace:';
-            echo '<ul>';
+            echo '<pre class="debug-error">'.$errstr."\nPrinting full backtrace:\n";
             $backtrace = debug_backtrace();
             for ($i = 1; $i < count($backtrace); ++$i) {
-                echo "<li>Backtrace Level $i: ".format_backtrace($i, $backtrace) . "</li>";
+                echo "Backtrace Level $i: ".format_backtrace($i, $backtrace) . "\n";
             }
-            echo '</ul>';
-            //echo '</body></html>';
+            echo '</pre>';
         }
         die();
     }

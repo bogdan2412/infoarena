@@ -85,13 +85,8 @@ else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'task') {
 // textblock controllers
 //  - edit textblock
 else if ($action == 'edit') {
-    require_once(IA_ROOT.'www/controllers/textblock.php');
+    require_once(IA_ROOT.'www/controllers/textblock_edit.php');
     controller_textblock_edit($page);
-}
-//  - save textblock
-else if ($action == 'save') {
-    require_once(IA_ROOT.'www/controllers/textblock.php');
-    controller_textblock_save($page);
 }
 //  - delete textblock
 else if ($action == 'delete') {

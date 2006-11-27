@@ -6,7 +6,7 @@ include('views/header.php');
 
 ?>
 
-<form action="<?= getattr($view, 'action') ?>" method="post" id="form_wikiedit">
+<form action="<?= url_textblock_edit($page_name) ?>" method="post" id="form_wikiedit">
 
 <input type="hidden" id="form_page_name" value="<?= $page_name ?>" />
 
