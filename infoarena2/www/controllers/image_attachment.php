@@ -11,8 +11,30 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
         controller_attachment_download($page_name, $file_name);
     }
 
-    $attach = try_attachment_get($page_name, $file_name);
-    $real_name = attachment_get_filepath($attach);
+    // check if image exists
+    $found = true;
+    $attach = attachment_get($file_name, $page_name);
+    if (!$attach) {
+        $found = false;
+    }
+    if ($found) {
+        $real_name = attachment_get_filepath($attach);
+        $found = file_exists($real_name);
+    }
+
+    // if image was not found we display a placeholder image
+    if (!$found) {
+    $page_name = 'template/infoarena';
+    $file_name = 'noimage';
+        $attach = attachment_get($file_name, $page_name);
+        log_assert($attach);
+        $real_name = attachment_get_filepath($attach);
+    }
+
+    // check permission to download file
+    if (!identity_can('attach-download', $attach)) {
+        die_http_error();
+    }
 
     $ret = getimagesize($real_name);
     if (false === $ret) {

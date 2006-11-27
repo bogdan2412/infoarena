@@ -49,7 +49,7 @@
         <li>
             <?php
                 // display avatar
-                $avatar_url = url_user_avatar($user['username']);
+                $avatar_url = url_user_avatar($user['username'], "150x150");
                 echo '<img class="avatar" src="'.$avatar_url.'"/>';
             ?>
         </li>
