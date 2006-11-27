@@ -12,7 +12,7 @@ function macro_smflink($args) {
         return macro_error('Expecting argument `link`');
     }
     if (!$title) {
-        return macro_error('Expecting argument `title`');
+        return macro_error('Expecting argument `caption`');
     }
 
     // some links require SMF member id
