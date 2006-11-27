@@ -1,5 +1,7 @@
 <?php
 
+require_once(IA_ROOT."common/db/db.php");
+
 // Various routines used for tight SMF integration.
 //
 // There is no decent way of linking native SMF APIs so we resort

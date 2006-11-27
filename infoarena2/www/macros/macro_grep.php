@@ -1,5 +1,7 @@
 <?php
 
+require_once(IA_ROOT."common/db/textblock.php");
+
 // FIXME: document this macro 
 function macro_grep($args) {
     $substr = getattr($args, 'substr');

@@ -1,6 +1,8 @@
 <?php
 
-require_once(IA_ROOT . "common/round.php");
+require_once(IA_ROOT."common/db/round.php");
+require_once(IA_ROOT."common/db/task.php");
+require_once(IA_ROOT."common/round.php");
 
 /* FIXME: disabled
 // Displays a form to either create a new round or edit an existing one.

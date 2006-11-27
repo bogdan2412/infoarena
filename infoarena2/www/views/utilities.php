@@ -1,8 +1,7 @@
 <?php
 
 // Check the big view variable for consistency.
-function check_view($view)
-{
+function check_view($view) {
     // Checking $view.
     log_assert(is_array($view));
     log_assert(is_string($view['title']));

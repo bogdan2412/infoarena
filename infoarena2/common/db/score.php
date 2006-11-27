@@ -1,5 +1,7 @@
 <?php
 
+require_once(IA_ROOT."common/db/db.php");
+
 // Update a score.
 // user/task/round can be null.
 function score_update($rank_id, $user_id, $task_id, $round_id, $value)

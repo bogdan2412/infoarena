@@ -1,5 +1,8 @@
 <?php
 
+require_once(IA_ROOT."common/db/smf.php");
+require_once(IA_ROOT."common/db/user.php");
+
 // hash user info in password reset code
 // Note: we keep the code short enough so it does not wrap on several lines
 // in bad e-mail clients.

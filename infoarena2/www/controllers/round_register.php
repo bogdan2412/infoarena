@@ -1,5 +1,7 @@
 <?php
 
+require_once(IA_ROOT."common/db/round.php");
+
 // Disabled.
 /*
 // Displays form to register remote user to given round

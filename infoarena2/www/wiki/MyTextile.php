@@ -1,7 +1,7 @@
 <?php
 
-@require_once("Textile.php");
-require_once("macros/macros.php");
+@require_once(IA_ROOT."www/wiki/Textile.php");
+require_once(IA_ROOT."www/macros/macros.php");
 
 class MyTextile extends Textile {
     // url for external urls.

@@ -10,6 +10,8 @@
 // NONE: We cannot link infoarena's db.php or log.php since it clashes
 // with SMF built-ins. We'll have to program our way around them.
 
+define("IA_FROM_SMF", true);
+
 require_once(IA_ROOT."common/common.php");
 check_requirements();
 require_once(IA_ROOT."common/security.php");

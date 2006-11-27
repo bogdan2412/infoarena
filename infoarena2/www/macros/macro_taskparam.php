@@ -1,5 +1,7 @@
 <?php
 
+require_once(IA_ROOT . "common/db/task.php");
+
 // Displays a task field, be it a hard-coded field such as task author or a grader parameter such as `timelimit`.
 // NOTE: The macro employs a simple caching mechanism (via static variables, cache expires at the end of the request)
 //       to avoid multiple database queries.

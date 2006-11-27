@@ -1,5 +1,6 @@
 <?php
 
+require_once(IA_ROOT . "common/db/task.php");
 require_once(IA_ROOT . "common/task.php");
 
 /* FIXME: broken

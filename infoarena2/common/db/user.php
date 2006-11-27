@@ -1,6 +1,6 @@
 <?php
 
-require_once("db.php");
+require_once(IA_ROOT."common/db/db.php");
 
 /**
  * User-related functions.
@@ -71,7 +71,7 @@ function user_get_by_id($id) {
 }
 
 // Create a new user.
-// FIXME: Expand $data into specific fields just like task_create()!
+// FIXME: Expand $data into specific fields just like task_create ()!
 function user_create($data) {
     $query = "INSERT INTO ia_user (";
     foreach ($data as $key => $val) {
@@ -105,7 +105,7 @@ function user_create($data) {
 
 // Update user information.
 // NOTE: When updating password, it is mandatory that you also specify username
-// FIXME: Expand $data into specific fields just like task_create()!
+// FIXME: Expand $data into specific fields just like task_create ()!
 function user_update($data, $id) {
     $query = "UPDATE ia_user SET ";
     foreach ($data as $key => $val) {

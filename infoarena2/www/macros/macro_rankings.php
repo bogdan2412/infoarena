@@ -1,6 +1,7 @@
 <?php
 
 require_once(IA_ROOT . "www/format/table.php");
+require_once(IA_ROOT . "www/format/pager.php");
 require_once(IA_ROOT . "www/format/format.php");
 require_once(IA_ROOT . "common/db/score.php");
 

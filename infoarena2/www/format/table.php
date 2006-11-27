@@ -1,7 +1,7 @@
 <?php
 
-require_once("utilities.php");
-require_once("pager.php");
+require_once(IA_ROOT."www/utilities.php");
+require_once(IA_ROOT."www/format/pager.php");
 
 // This builds a bunch of default $column_infos for format_table.
 // See format_table for an explanation.

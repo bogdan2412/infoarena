@@ -1,5 +1,6 @@
 <?php
 
+require_once(IA_ROOT . "common/db/db.php");
 require_once(IA_ROOT . "www/format/pager.php");
 require_once(IA_ROOT . "www/format/format.php");
 

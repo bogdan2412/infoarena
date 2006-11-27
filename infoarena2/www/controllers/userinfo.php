@@ -1,5 +1,9 @@
 <?
 
+require_once(IA_ROOT."common/textblock.php");
+require_once(IA_ROOT."common/db/textblock.php");
+require_once(IA_ROOT."common/db/user.php");
+
 // Prints detailed user information, mostly for admins.
 // For an url of userinfo/$user/$page it displays template/userinfo/$page.
 // $page can be missing.

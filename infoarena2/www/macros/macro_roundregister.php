@@ -1,5 +1,7 @@
 <?php
 
+require_once(IA_ROOT."common/db/round.php");
+
 // FIXME: round registration disabled.
 // Display registration invitation for a round when user is not registered.
 // If user is already registered, display a confirmation message instead.

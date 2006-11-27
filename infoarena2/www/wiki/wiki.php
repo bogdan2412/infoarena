@@ -1,7 +1,7 @@
 <?php
 
-require_once("macros/macros.php");
-require_once("MyTextile.php");
+require_once(IA_ROOT."www/macros/macros.php");
+require_once(IA_ROOT."www/wiki/MyTextile.php");
 
 // This processes a big chunk of wiki-formatted text and returns html.
 function wiki_process_text($content) {

@@ -26,7 +26,7 @@ function textblock_validate($tb) {
     if (strlen(getattr($tb, 'title', '')) < 1) {
         $errors['title'] = 'Titlu prea scurt.';
     }
-    if (strlen(getattr($tb, 'title', '')) > 50) {
+    if (strlen(getattr($tb, 'title', '')) > 150) {
         $errors['title'] = 'Titlu prea lung.';
     }
 

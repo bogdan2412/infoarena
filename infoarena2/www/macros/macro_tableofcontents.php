@@ -1,5 +1,7 @@
 <?php
 
+require_once(IA_ROOT . "common/db/textblock.php");
+
 function macro_tableofcontents($args)
 {
     $prefix = getattr($args, 'prefix', '');

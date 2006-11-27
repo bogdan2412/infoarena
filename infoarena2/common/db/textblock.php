@@ -1,6 +1,7 @@
 <?
 
 require_once(IA_ROOT."common/db/db.php");
+require_once(IA_ROOT."common/db/attachment.php");
 require_once(IA_ROOT."common/security.php");
 
 // Textblock-related db functions.

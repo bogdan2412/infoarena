@@ -1,66 +1,25 @@
 <?php
 // This module contains various database-related functions and routines.
-//
-// Note: We keep database-persisted "models" very simple. Most of them are
-// simple dictionaries. 
 
-// Establish database connection
-// Repetitive include guard. Is this really needed?
-log_assert(!isset($dbLink));
-log_print("connecting to database");
-$dbLink = mysql_connect(DB_HOST, DB_USER, DB_PASS) or log_error('Cannot connect to database.');
-mysql_select_db(DB_NAME, $dbLink) or log_error('Cannot select database.');
-
-// Escapes a string to be safely included in a query.
-function db_escape($str) {
-    return mysql_escape_string($str);
+// When including infoarena API from SMF, it is required to skip this
+// module as it clashes with SMF's db_* functions.
+// FIXME: Find a better hack
+if (defined("IA_FROM_SMF")) {
+    return;
 }
 
-function db_num_rows($res) {
-    return mysql_num_rows($res);
-}
+// We currently use mysql
+// This also connects to mysql server
+require_once(IA_ROOT."common/db/db_mysql.php");
 
-// Returns last SQL inserted id
-function db_insert_id() {
-    global $dbLink;
 
-    log_assert($dbLink);
-    return mysql_insert_id($dbLink);
-}
-
-// Executes query. Outputs error messages
-// Returns native PHP mysql resource handle
-function db_query($query) {
-    global $dbLink;
-    $result = mysql_query($query, $dbLink);
-    if (!$result) {
-        log_print("Query: '$query'");
-        log_error("MYSQL error: ".mysql_error($dbLink));
-    }
-    return $result;
-}
-
-// Executes query, fetches only FIRST result row
-function db_fetch($query) {
-    $result = db_query($query);
-    if ($result) {
-        $row = mysql_fetch_assoc($result);
-        if ($row === false) {
-            return null;
-        }
-        return $row;
-    }
-    else {
-        return null;
-    }
-}
 
 // Executes query, fetches the all result rows
 function db_fetch_all($query) {
     $result = db_query($query);
     if ($result) {
         $buffer = array();
-        while ($row = mysql_fetch_assoc($result)) {
+        while ($row = db_next_row($result)) {
             $buffer[] = $row;
         }
         return $buffer;
@@ -187,7 +146,7 @@ function db_update($table, $dict, $where = null) {
 
     db_query($query);
 
-    return mysql_affected_rows($dbLink);
+    return db_affected_rows();
 }
 
 /**

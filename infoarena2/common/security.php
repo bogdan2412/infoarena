@@ -1,4 +1,7 @@
 <?php
+
+require_once(IA_ROOT."common/db/textblock.php");
+
 // This module implements everything related to security.
 //
 // You should use security_query to determine if a certain user is allowed

@@ -1,4 +1,9 @@
-<?php include('header.php'); ?>
+<?php
+
+require_once(IA_ROOT . "www/format/format.php");
+include('header.php');
+
+?>
 
     <h1>Ultimele modificari de pe infoarena</h1>
 

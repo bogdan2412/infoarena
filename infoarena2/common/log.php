@@ -1,5 +1,12 @@
 <?php
 
+// When including infoarena API from SMF, it is required to skip this
+// module as it clashes with SMF's log_* functions.
+// FIXME: Find a better hack
+if (defined("IA_FROM_SMF")) {
+    return;
+}
+
 // This file contains a simple logging/debug api. You should always use these
 // functions instead of print, print_r and echo.
 //

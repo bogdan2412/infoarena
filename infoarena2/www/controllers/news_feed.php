@@ -1,5 +1,7 @@
 <?php
 
+require_once(IA_ROOT."common/db/db.php");
+
 // News rss.
 // FIXME: stupid hack.
 function controller_news_feed($page_name) {

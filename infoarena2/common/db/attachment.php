@@ -1,6 +1,6 @@
 <?php
 
-require_once("db.php");
+require_once(IA_ROOT."common/db/db.php");
 
 /**
  * Attachment functions.

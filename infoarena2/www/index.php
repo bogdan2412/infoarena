@@ -1,15 +1,15 @@
 <?php
 
 require_once("config.php");
-require_once(IA_ROOT . "common/log.php");
-require_once(IA_ROOT . "common/common.php");
+require_once(IA_ROOT."common/log.php");
+require_once(IA_ROOT."common/common.php");
 log_print("- -- --- ---- ----- Request: ".$_SERVER['QUERY_STRING']);
 check_requirements();
 
-require_once(IA_ROOT . "common/security.php");
-require_once("utilities.php");
-require_once("identity.php");
-require_once("wiki/wiki.php");
+require_once(IA_ROOT."common/security.php");
+require_once(IA_ROOT."www/utilities.php");
+require_once(IA_ROOT."www/identity.php");
+require_once(IA_ROOT."www/wiki/wiki.php");
 
 // restore identity (if such a session exists)
 identity_restore();
@@ -51,7 +51,7 @@ $directmaps = array_flip(array('register', 'account', 'news_feed', 'changes',
 
 // Trivial direct mappings.
 if (isset($directmaps[$urlstart])) {
-    require_once("controllers/{$urlstart}.php");
+    require_once(IA_ROOT."www/controllers/{$urlstart}.php");
     $fname = "controller_{$urlstart}";
     $fname($page_id);
 }
@@ -60,7 +60,7 @@ if (isset($directmaps[$urlstart])) {
 /* FIXME: disabled
 else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'task') {
     $obj_id = implode("/", array_slice($pagepath, 2));
-    require_once('controllers/task.php');
+    require_once(IA_ROOT.'www/controllers/task.php');
     if ($action == 'save') {
         controller_task_save_details($obj_id);
     } else {
@@ -73,7 +73,7 @@ else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'task') {
 /*else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'round') {
     $obj_id = implode("/", array_slice($pagepath, 2));
     if (getattr($pagepath, 1) == 'round') {
-        require_once('controllers/round.php');
+        require_once(IA_ROOT.'www/controllers/round.php');
         if ($action == 'save') {
             controller_round_edit_details($obj_id);
         } else {
@@ -85,75 +85,75 @@ else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'task') {
 // textblock controllers
 //  - edit textblock
 else if ($action == 'edit') {
-    require_once('controllers/textblock.php');
+    require_once(IA_ROOT.'www/controllers/textblock.php');
     controller_textblock_edit($page);
 }
 //  - save textblock
 else if ($action == 'save') {
-    require_once('controllers/textblock.php');
+    require_once(IA_ROOT.'www/controllers/textblock.php');
     controller_textblock_save($page);
 }
 //  - delete textblock
 else if ($action == 'delete') {
-    require_once('controllers/textblock.php');
+    require_once(IA_ROOT.'www/controllers/textblock.php');
     controller_textblock_delete($page);
 }
 //  - view textblock history
 else if ($action == 'history') {
-    require_once('controllers/textblock.php');
+    require_once(IA_ROOT.'www/controllers/textblock.php');
     controller_textblock_history($page);
 }
 //  - move textblock
 else if ($action == 'move') {
-    require_once('controllers/textblock.php');
+    require_once(IA_ROOT.'www/controllers/textblock.php');
     controller_textblock_move($page);
 }
 //  - move textblock/submit
 else if ($action == 'move-submit') {
-    require_once('controllers/textblock.php');
+    require_once(IA_ROOT.'www/controllers/textblock.php');
     controller_textblock_move_submit($page);
 }
 //  - restore textblock
 else if ($action == 'restore') {
-    require_once('controllers/textblock.php');
+    require_once(IA_ROOT.'www/controllers/textblock.php');
     controller_textblock_restore_revision($page, request('revision'));
 }
 //  - view textblock differences between revisions
 else if ($action == 'diff') {
-    require_once('controllers/textblock.php');
+    require_once(IA_ROOT.'www/controllers/textblock.php');
     controller_textblock_diff_revision($page);
 }
 
 // attachment controllers
 //  - create attachment
 else if ($action == 'attach') {
-    require_once('controllers/attachment.php');
+    require_once(IA_ROOT.'www/controllers/attachment.php');
     controller_attachment_create($page);
 }
 //  - save attachment
 else if ($action == 'attach-submit') {
-    require_once('controllers/attachment.php');
+    require_once(IA_ROOT.'www/controllers/attachment.php');
     controller_attachment_submit($page);
 }
 //  - print attachment list
 else if ($action == 'attach-list') {
-    require_once('controllers/attachment.php');
+    require_once(IA_ROOT.'www/controllers/attachment.php');
     controller_attachment_list($page);
 }
 //  - attachment delete
 else if ($action == 'attach-del') {
-    require_once('controllers/attachment.php');
+    require_once(IA_ROOT.'www/controllers/attachment.php');
     controller_attachment_delete($page);
 }
 //  - attachment download
 else if ($action == 'download') {
     if (request('resize')) {
-        require_once('controllers/image_attachment.php');
+        require_once(IA_ROOT.'www/controllers/image_attachment.php');
         // download resized image
         controller_attachment_resized_img($page, request('file'), request('resize'));
     }
     else {
-        require_once('controllers/attachment.php');
+        require_once(IA_ROOT.'www/controllers/attachment.php');
         // regular file download
         controller_attachment_download($page, request('file'));
     }
@@ -172,7 +172,7 @@ else if ('resetpass' == $urlstart) {
 
 // textblock view
 else if ($action == 'view') {
-    require_once('controllers/textblock.php');
+    require_once(IA_ROOT.'www/controllers/textblock.php');
     controller_textblock_view($page, request('revision'));
 }
 

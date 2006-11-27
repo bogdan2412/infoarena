@@ -1,6 +1,7 @@
 <?php
 
 require_once(IA_ROOT . "www/format/pager.php");
+require_once(IA_ROOT . "common/db/textblock.php");
 require_once(IA_ROOT . "common/textblock.php");
 
 // View a plain textblock.

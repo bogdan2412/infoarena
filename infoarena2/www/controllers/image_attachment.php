@@ -1,6 +1,7 @@
 <?php
 
-require('controllers/attachment.php');
+require_once(IA_ROOT.'www/controllers/attachment.php');
+require_once(IA_ROOT.'common/db/attachment.php');
 
 // download attachment as resized image
 // see resize_coordinates() from utilities.php for detailed informations about

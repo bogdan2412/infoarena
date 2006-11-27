@@ -1,5 +1,7 @@
 <?php
 
+require_once(IA_ROOT . "common/db/task.php");
+
 // Display solution submission form for a given task
 //
 // Arguments:

@@ -1,6 +1,7 @@
 <?php
 
 require_once(IA_ROOT."common/db/user.php");
+require_once(IA_ROOT."common/db/smf.php");
 require_once(IA_ROOT."www/controllers/account_validator.php");
 
 function controller_register() {

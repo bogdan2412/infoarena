@@ -1,5 +1,6 @@
 <?php
-include('views/header.php'); 
+require_once(IA_ROOT."common/task.php");
+include('views/header.php');
 ?>
 
 <h1><?= getattr($view, 'title') ?></h1>
