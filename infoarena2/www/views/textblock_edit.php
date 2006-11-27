@@ -26,12 +26,12 @@ include('views/header.php');
         <label for="form_text">Continut</label>
         <textarea name="text" id="form_text" rows="10" cols="50"><?= fval('text') ?></textarea>
         <?= ferr_span('text') ?>
-        <span class="fieldHelp"><a href="<?=  url('documentatie/wiki') ?>">Cum formatez text?</a></span>
+        <a href="<?=  url('documentatie/wiki') ?>">Cum formatez text?</a>
     </li>
 
     <?php if (array_key_exists('security', $form_values)) { ?>
     <li id="field_security">
-        <label for="form_security">Nivel de securitate al paginii: <a href="<?=  url('documentatie/securitate') ?>">(?)</a></label> 
+        <label for="form_security">Nivel de securitate al paginii <a href="<?=  url('documentatie/securitate') ?>">(?)</a></label> 
 
         <input type="text" name="security" value="<?= fval('security') ?>" id="form_security"/>
         <?= ferr_span('security') ?>

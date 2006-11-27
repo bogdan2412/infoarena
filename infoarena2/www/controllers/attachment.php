@@ -61,9 +61,9 @@ function controller_attachment_submit($page_name) {
 
     // Validate filename.
     if (!is_attachment_name($form_values['file_name'])) {
-        $form_errors['file_name'] = 'Nume de fisier invalid'.
-                                    '(va rugam sa nu folositi spatii)';
-    }                
+        $form_errors['file_name'] = 'Nume de fisier invalid. '
+                                    .'Nu se pot folosi spatii.';
+    }
 
     // Check min file size. An invalid file results in a size of 0.
     if ($form_values['file_size'] <= 0) {
@@ -73,7 +73,7 @@ function controller_attachment_submit($page_name) {
     // Check max file size.
     if ($form_values['file_size'] > IA_ATTACH_MAXSIZE) {
         $form_errors['file_size'] = 'Fisierul depaseste limita de ' .
-                                    (IA_ATTACH_MAXSIZE / 1024).' kbytes';
+                                    (IA_ATTACH_MAXSIZE/1024/1024).'MB';
     }
 
     // determine if attached file is (zip) archive and needs to be extracted
@@ -195,10 +195,10 @@ function controller_attachment_submit($page_name) {
         }
         else {
             if ($rewrite_count) {
-                $msg = "Fisierul trimis a fost atasat cu succes. Un atasamant mai vechi a fost rescris";
+                $msg = "Fisierul trimis a fost atasat cu succes. Un atasamant mai vechi a fost rescris.";
             }
             else {
-                $msg = "Fisierul trimis a fost atasat cu succes";
+                $msg = "Fisierul trimis a fost atasat cu succes.";
             }
         }
 
@@ -260,7 +260,7 @@ function serve_attachment($filename, $attachment_name, $mimetype) {
 
     // log_print_r($stat);
     // log_print("Serving $attachment_name from $filename size ".$stat['size']." mime $mimetype");
-    
+
     // HTTP headers
     header("Content-Type: {$mimetype}");
     header("Content-Disposition: inline; filename=".urlencode($attachment_name).";");

@@ -277,7 +277,7 @@ function controller_textblock_move($page_name)
 
     // -- Print form
     $view = array(
-            'title' => "Editare " . $page_name,
+            'title' => "Muta " . $page_name,
             'page_name' => $page_name,
             'action' => url($page_name, array('action' => 'move-submit')),
             'form_values' => $form_values,
