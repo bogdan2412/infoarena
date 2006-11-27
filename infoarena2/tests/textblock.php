@@ -28,7 +28,7 @@ $res = quick_curl(array(
         CURLOPT_POST => true,
         CURLOPT_POSTFIELDS => array(
                 'form_text' => urlencode("Test page\nversion 1\n"),
-                'title' => urlencode("Test page 1"),
+                'form_title' => urlencode("Test page 1"),
         ),
 ));
 log_assert($res['url'] == url_textblock_view('sandbox/test_page', true),

@@ -75,7 +75,7 @@ function url_from_args($args, $absolute = false)
     $first = true;
     foreach ($args as $k => $v) {
         if ($k != 'page') {
-            $url .= ($first ? "?" : "&amp;");
+            $url .= ($first ? "?" : "&");
             $first = false;
             $url .= $k . '=' . urlencode($v);
         }

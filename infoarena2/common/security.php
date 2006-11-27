@@ -108,6 +108,9 @@ function security_simplify_action($action)
         case 'round-delete':
         case 'textblock-delete':
         case 'textblock-move':
+        case 'grader-download':
+        case 'grader-overwrite':
+        case 'grader-delete':
             return 'simple-edit';
 
         // Admin stuff:
@@ -204,9 +207,12 @@ function security_textblock($user, $action, $textblock)
 // Jump to security_textblock.
 // FIXME: attach-grader?
 function security_attach($user, $action, $attach) {
+    //log_print_r($attach);
     // HACK: magic prefix.
-    if (preg_match('/$grader_/', $attach['name'])) {
-        $action = preg_replace('/$attach/', 'grader', $action);
+    if (preg_match('/^grader\_/', $attach['name'])) {
+        $newaction = preg_replace('/^attach/', 'grader', $action);
+        log_print("SECURITY: CONVERTING $action to $newaction");
+        $action = $newaction;
     }
     return security_textblock($user, $action, textblock_get_revision($attach['page']));
 }

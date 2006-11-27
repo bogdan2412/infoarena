@@ -41,6 +41,8 @@ function quick_curl($args)
     log_print("");
     */
 
+    /* FIXME: find something that works properly
+       In the mean time, tail -f /var/log/apache2/error.log
     $weberror = null;
 
     // Check php parser error, missing functions, etc.
@@ -60,7 +62,7 @@ function quick_curl($args)
         log_print("\nWebsite made a boo boo:");
         log_print($weberror);
         die();
-    }
+    }*/
 
     return $res;
 }
@@ -81,6 +83,21 @@ function test_prepare()
             'full_name' => 'Testing Dude 2',
             'email' => 'no@spam.com',
     )), "Failed creating test dude 2");
+
+    log_assert(user_create(array(
+            'username' => 'test_helper1',
+            'password' => 'pwd',
+            'full_name' => 'Testing Helper 1',
+            'email' => 'no@spam.com',
+            'security_level' => 'helper',
+    )), "Failed creating test helper 1");
+
+    log_assert(user_create(array(
+            'username' => 'test_helper2',
+            'password' => 'pwd',
+            'full_name' => 'Testing Helper 2',
+            'security_level' => 'helper',
+    )), "Failed creating test helper 2");
 
     log_assert(user_create(array(
             'username' => 'test_admin',
