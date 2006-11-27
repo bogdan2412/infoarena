@@ -24,6 +24,9 @@ function validate_user_data($data, $register, $user = null) {
         elseif (4 > strlen(trim($data['username']))) {
             $errors['username'] = 'Nume de utilizator este prea scurt';
         }
+        elseif (16 < strlen(trim($data['username']))) {
+            $errors['username'] = 'Nume de utilizator este prea lung';
+        }
         elseif (!preg_match('/^[a-z]+[a-z0-9_\-\.]*$/i', $data['username'])) {
             $errors['username'] = 'Numele utilizator contine caractere '
                                   .'invalide.';
