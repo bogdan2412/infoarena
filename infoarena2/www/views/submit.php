@@ -15,11 +15,6 @@ foreach ($tasks as $t) {
 
 <h1><?= htmlentities($title)  ?></h1>
 
-<div id="sidebar2">
-    Daca intampinati probleme la trimiterea solutiilor puteti sa consultati
-    <a href="<?= url('Ajutor/Trimite_Solutii') ?>">documentatia</a>.
-</div>
-
 <form enctype="multipart/form-data" action="<?= url_submit() ?>" method="post" class="submit" id="task_submit">
 
 <input type="hidden" id="output_only" value="<?= ':' . join(':', $output_only_ids) . ':' ?>" />
@@ -51,7 +46,6 @@ foreach ($tasks as $t) {
             <option value="fpc"<?= 'fpc' == fval('compiler_id') ? ' selected="selected"' : '' ?>>FreePascal</option>
         </select>
         <?= ferr_span('compiler_id') ?>
-        <span class="fieldHelp"><a href="<?= url('Compilatoare') ?>">Detalii despre compilatoare</a></span>
     </li>
 
     <li id="field_submit">
@@ -59,5 +53,7 @@ foreach ($tasks as $t) {
     </li>
 </ul>
 </form>
+
+<?php wiki_include('template/trimite-solutii') ?>
 
 <?php include('footer.php'); ?>

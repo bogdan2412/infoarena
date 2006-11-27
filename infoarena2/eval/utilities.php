@@ -24,8 +24,8 @@ function compile_file($file_name, &$compiler_message)
 {
     $compiler_message = false;
     $compiler_lines = array(
-            'c' => 'gcc -Wall -O2 -static -lm %file_name% -o %exe_name%',
-            'cpp' => 'g++ -Wall -O2 -static -lm %file_name% -o %exe_name%',
+            'c' => 'gcc -Wall -O2 -static %file_name% -o %exe_name% -lm',
+            'cpp' => 'g++ -Wall -O2 -static %file_name% -o %exe_name% -lm',
             'pas' => 'fpc -O2 -Xs %file_name%',
             'fpc' => 'fpc -O2 -Xs %file_name%',
     );

@@ -7,7 +7,7 @@ include(IA_ROOT . 'www/format/format.php');
 
 <h1><?= htmlentities($view['title']) ?></h1>
 
-<div class="job-detail">
+<div class="job-detail clear">
     <ul>
         <li class="task-id">
             <span class="desc">Problema:</span>
@@ -43,4 +43,7 @@ include(IA_ROOT . 'www/format/format.php');
         </li>
     </ul>
 </div>
+
+<?php wiki_include('template/borderou'); ?>
+
 <?php include('footer.php'); ?>

@@ -824,5 +824,9 @@ div.normal-user img {
     margin:7px;
 }
 
+/* monitor */
 
-
+table.monitor {
+    width: 95%; /* Fix IE */
+    margin: .5em 0 2em 0;
+}

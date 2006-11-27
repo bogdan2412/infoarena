@@ -52,6 +52,7 @@ ia_template_topnav($topnav_select, $smf_admin);
     <?php } ?>
 
     <ul id="nav" class="clear">
+        <li><a href="<?= url('') ?>">Home</a></li>
         <li><a href="<?= url('arhiva') ?>">Arhiva de probleme</a></li>
         <li><a href="<?= url('concursuri') ?>">Concursuri online</a></li>
         <li><a href="<?= url('articole') ?>">Articole</a></li>

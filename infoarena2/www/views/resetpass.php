@@ -27,13 +27,16 @@
             <?= ferr_span('email') ?>
             <input type="text" name="email" id="form_email" value="<?= fval('email') ?>" />
         </li>
-
-        <li>
-            <input type="submit" value="Trimite-mi instructiuni" id="form_submit" class="button important" />
-        </li>
     </ul>
 </fieldset>
+<ul class="form hollyfix">
+    <li>
+        <input type="submit" value="Trimite-mi instructiuni" id="form_submit" class="button important" />
+    </li>
+</ul>
 </form>
+
+<?php wiki_include('template/resetarea-parolei'); ?>
 
 <?php
     include('footer.php');

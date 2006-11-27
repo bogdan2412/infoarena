@@ -42,6 +42,24 @@ function macro_smflink($args) {
             $url = IA_SMF_URL.'?action=pm;sa=send;u='.$member_id;
             return "<a href=\"{$url}\">{$title}</a>";
 
+        case 'board':
+            // link to SMF board
+            $board_id = getattr($args, 'board');
+            if (!$board_id) {
+                return macro_error('Expecting argument `board`');
+            }
+            $url = IA_SMF_URL."?board={$board_id}.0";
+            return "<a href=\"{$url}\">{$title}</a>";
+
+        case 'topic':
+            // link to SMF topic 
+            $topic_id = getattr($args, 'topic');
+            if (!$topic_id) {
+                return macro_error('Expecting argument `topic`');
+            }
+            $url = IA_SMF_URL."?topic={$topic_id}.0";
+            return "<a href=\"{$url}\">{$title}</a>";
+
         default:
             return macro_error('Invalid link type');
     }

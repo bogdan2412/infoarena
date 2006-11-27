@@ -1,5 +1,8 @@
 <?php
 
+require_once(IA_ROOT.'www/wiki/wiki.php');
+require_once(IA_ROOT.'common/db/textblock.php');
+
 // Check the big view variable for consistency.
 function check_view($view) {
     // Checking $view.
@@ -56,6 +59,17 @@ function ferr_span($param_name, $escape_html = true) {
     } else {
         return null;
     }
+}
+
+// Parse and print a textblock. Use this to insert dynamic textblocks
+// inside static templates / views.
+function wiki_include($page_name) {
+    $textblock = textblock_get_revision($page_name);
+    log_assert($textblock);
+
+    echo '<div class="wiki_text_block">';
+    echo wiki_process_text($textblock['text']);
+    echo '</div>';
 }
 
 ?>

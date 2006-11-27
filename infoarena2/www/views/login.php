@@ -6,5 +6,7 @@
 
 <?php include(IA_ROOT.'www/views/form_login.php'); ?>
 
+<?php wiki_include('template/login'); ?>
+
 <?php include(IA_ROOT.'www/views/footer.php'); ?>
 
