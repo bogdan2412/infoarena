@@ -1,0 +1,65 @@
+#! /usr/bin/env php
+<?php
+
+require_once(dirname($argv[0]) . "/utilities.php");
+
+// read dependencies db
+$fd = fopen("dep-check.db", "r");
+log_assert($fd);
+$exports = array();
+while (!feof($fd)) {
+    $line = trim(fgets($fd));
+    if (!$line) {
+        break;
+    }
+    list($ident, $fname) = split("\t", $line);
+    if (!isset($exports[$fname])) {
+        $exports[$fname] = array();
+    }
+    $exports[$fname][] = $ident;
+}
+fclose($fd);
+
+// some modules are sure to be included already so we skip them for checking
+unset($exports['config.php']);
+unset($exports['common/common.php']);
+unset($exports['common/log.php']);
+unset($exports['common/security.php']);
+unset($exports['www/config.php']);
+unset($exports['www/utilities.php']);
+unset($exports['www/index.php']);
+unset($exports['www/identity.php']);
+unset($exports['www/wiki/wiki.php']);
+unset($exports['www/macros/macros.php']);
+unset($exports['www/wiki/MyTextile.php']);
+unset($exports['www/wiki/Textile.php']);
+unset($exports['www/views/utilities.php']);
+unset($exports['eval/utilities.php']);
+unset($exports['eval/config.php']);
+unset($exports['scripts/utilities.php']);
+
+// grep for all identifiers
+// this will take forever
+foreach ($exports as $module => $idents) {
+    // for starters, only check relative paths to current project
+    // FIXME: when you get bored, force checking for absolute paths
+    $gmodule = split("/", $module);
+    array_shift($gmodule);
+    $gmodule = join("/", $gmodule);
+
+    foreach ($idents as $ident) {
+        // do grep
+        $fd = popen("./_dcgrep {$ident} {$gmodule} ".IA_ROOT, "r");
+        log_assert($fd);
+        $buffer = fread($fd, 500*1024);
+        pclose($fd);
+
+        // print
+        if ($buffer) {
+            log_print("(possible) error calling {$ident} ({$module}) from these files:\n"
+                      .$buffer);
+        }
+    }
+}
+
+?>

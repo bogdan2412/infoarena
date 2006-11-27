@@ -1,0 +1,17 @@
+#! /usr/bin/env php
+<?php
+
+$pwd = dirname($argv[0]);
+require_once($pwd."/utilities.php");
+
+// pushd
+chdir(IA_ROOT);
+
+// rebuild dependecy database. requires ctags!
+log_print("Rebuilding database. (this requires ctags)");
+system("./scripts/_dcbuild >./scripts/dep-check.db");
+
+// popd
+chdir($pwd);
+
+?>

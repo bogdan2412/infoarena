@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Check dependencies
+#
+# Outputs all .php files in a given directory (recursive)
+# that use a given function name but do not link its source module.
+#
+# usage: checkdep function_name module_where_it_is_defined
+# example: checkdep user_get_by_username db/user.php ./
+egrep "\s+$1\(|^$1\(" -R $3www/ $3scripts/ $3common/ $3eval/ -c --include=*.php | grep -v :0 | cut -f1 -d ":" | xargs grep "$2" -c | grep :0 | cut -f1 -d ":" | grep -v $2
+
