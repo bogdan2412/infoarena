@@ -117,6 +117,8 @@ function test_cleanup()
     db_query("DELETE FROM ia_round WHERE `id` LIKE 'test_%'");
     db_query("DELETE FROM ia_textblock WHERE `name` LIKE 'sandbox/test_%'");
     db_query("DELETE FROM ia_textblock_revision WHERE `name` LIKE 'sandbox/test_%'");
+    db_query("DELETE FROM ia_textblock WHERE `name` LIKE 'utilizator/test_%'");
+    db_query("DELETE FROM ia_textblock_revision WHERE `name` LIKE 'utilizator/test_%'");
     db_query("DELETE FROM ia_file WHERE `page` LIKE 'soundbox/test_%'");
 }
 

@@ -25,7 +25,7 @@ function macro_smflink($args) {
         if (!$user) {
             return macro_error("No such username");
         }
-        $member_id = smf_get_member_id($username);
+        $member_id = @smf_get_member_id($username);
         if (!$member_id) {
             return macro_error('User has no SMF account! Please '
                                .'contact an administrator!');

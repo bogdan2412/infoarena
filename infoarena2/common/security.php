@@ -107,7 +107,6 @@ function security_simplify_action($action)
         case 'round-create':
         case 'round-delete':
         case 'textblock-delete':
-        case 'textblock-move':
         case 'grader-download':
         case 'grader-overwrite':
         case 'grader-delete':
@@ -141,6 +140,19 @@ function security_textblock($user, $action, $textblock)
     $usersec = getattr($user, 'security_level', 'anonymous');
 
     log_assert_valid(textblock_validate($textblock));
+
+    // HACK: Forward security to user.
+    // HACK: based on name
+    if (preg_match("/^ ".preg_quote(TB_USER_PREFIX, '/').
+                " ([a-z0-9_\-]*) \/? .* $/xi", $textblock['name'], $matches)) {
+        require_once(IA_ROOT . "common/db/user.php");
+        $ouser = user_get_by_username($matches[1]);
+        if ($ouser === null) {
+            log_warn("User page for missing user");
+            return false;
+        }
+        return security_user($user, $action, $ouser);
+    }
 
     // Forward security to task.
     if (preg_match("/^ \s* task: \s* ([a-z0-9]*) \s* $/xi", $textsec, $matches)) {
@@ -220,11 +232,23 @@ function security_attach($user, $action, $attach) {
 // FIXME: more?
 function security_user($user, $action, $target_user) {
     $usersec = getattr($user, 'security_level', 'anonymous');
+    $is_admin = $usersec == 'admin';
+    $is_self = $target_user['id'] == $user['id'];
 
-    switch (security_simplify_action($action)) {
+    $action = security_simplify_action($action);
+
+    switch ($action) {
+        case 'simple-view':
+            return true;
+
+        case 'simple-rev-edit':
+        case 'simple-edit':
         case 'user-editprofile':
             // anyone can edit their own profile. admins can edit any profile
-            return ($user['id'] == $target_user['id'] || $usersec == 'admin');
+            return $is_admin || $is_self;
+
+        case 'simple-critical':
+            return $is_admin;
 
         default:
             log_error('Invalid user action: '.$action);
