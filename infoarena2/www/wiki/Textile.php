@@ -772,8 +772,8 @@ class Textile {
     if ($this->options['trim_spaces']) { $str = preg_replace('/ +$/m', '', $str); }
 
     // preserve contents of the '==', 'pre', 'blockcode' sections
-    $str = preg_replace_callback('{(^|\n\n)==(.+?)==($|\n\n)}s',
-                                 $this->_cb('"$m[1]\n\n" . $me->_repl($me->repl[0], $me->format_block(array("text" => $m[2]))) . "\n\n$m[3]"'), $str);
+    $str = preg_replace_callback('/( (?<=\n\n)== | (?<=^)== )  (.+?)  ( ==(?=\n\n) | ==(?=$) )  /sx',
+                                 $this->_cb('$me->_repl($me->repl[0], $me->format_block(array("text" => $m[2])))'), $str);
 
     if (!$this->disable_html()) {
       // preserve style, script tag contents
