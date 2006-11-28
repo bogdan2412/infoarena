@@ -11,6 +11,7 @@ test_prepare();
 $res = quick_curl(array(
         CURLOPT_URL => url_textblock_view('problema/adunare', true),
 ));
+validate_html($res['content']);
 log_assert($res['url'] == url_textblock_view('problema/adunare', true),
         "View problema/adunare");
 

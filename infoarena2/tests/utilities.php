@@ -33,38 +33,22 @@ function quick_curl($args)
     $res['content'] = $content;
     curl_close($ch);
 
-    /*
-    log_print("Curling args:");
-    log_print_r($args);
-    log_print("Curling res:");
-    log_print_r($res);
-    log_print("");
-    */
-
-    /* FIXME: find something that works properly
-       In the mean time, tail -f /var/log/apache2/error.log
-    $weberror = null;
-
-    // Check php parser error, missing functions, etc.
-    if (!strstr($res['content'], '<html xmlns="http://www.w3.org/1999/xhtml">')) {
-        $weberror = $res['content'];
-    }
-
-    // Check error. This catches a normal www error
-    if (preg_match('/  \<pre\ class\="debug-error"\>  (.*)  \<\/pre\>  /sxi', $res['content'], $matches)) {
-        $weberror = $matches[1];
-    }
-
-    // FIXME: JSON doesn't print <html, better checks?
-    // FIXME: check valid xml? evil.
-
-    if (!is_null($weberror)) {
-        log_print("\nWebsite made a boo boo:");
-        log_print($weberror);
-        die();
-    }*/
-
     return $res;
+}
+
+// Validates a string as a html document.
+// Uses the external "validate" tool, packages wdg-html-validator in debian.
+function validate_html($content)
+{
+    $fname = IA_ROOT . 'tests/temp.html';
+    file_put_contents($fname, $content);
+
+    $result = shell_exec("validate --warn --verbose $fname");
+
+    if (strstr($result, 'Error') || strstr($result, 'Warning')) {
+        log_print($result);
+        log_error("HTML validation failed");
+    }
 }
 
 // Create test users.

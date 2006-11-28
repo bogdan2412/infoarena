@@ -127,14 +127,15 @@ function format_table($data, $column_infos = null, $options = null)
         }
         $result .= '</tr>';
     }
-    $result .= "</tbody>";
 
     // Paging.
     if (getattr($options, 'pager_style', 'none') != 'none') {
-        $result .= '<tfoot style="standard-pager"><tr><td colspan="0">';
+        $result .= '<tr><td colspan="0">';
         $result .= format_pager($options);
-        $result .= '</td></tr></tfoot>';
+        $result .= '</td></tr>';
     }
+
+    $result .= "</tbody>";
 
     $result .= "</table>";
     return $result;

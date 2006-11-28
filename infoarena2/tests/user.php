@@ -12,6 +12,7 @@ test_prepare();
 $res = quick_curl(array(
         CURLOPT_URL => url_textblock_edit('utilizator/test_dude1', true),
 ));
+validate_html($res['content']);
 log_assert($res['url'] == url_login(true));
 
 // Try to edit user page.
@@ -20,6 +21,7 @@ $res = quick_curl(array(
         CURLOPT_URL => url_textblock_edit('utilizator/test_dude1', true),
         CURLOPT_USERPWD => 'test_dude1:pwd',
 ));
+validate_html($res['content']);
 log_assert($res['url'] == url_textblock_edit('utilizator/test_dude1', true));
 
 // Modify own profile page.
@@ -32,6 +34,7 @@ $res = quick_curl(array(
             'text' => "h1. New xzx-content-xzx",
             'title' => "New xzx-title-xzx",
 )));
+validate_html($res['content']);
 log_assert($res['url'] == url_user_profile('test_dude1', true));
 
 // Anon try to view user page.
@@ -39,6 +42,7 @@ log_assert($res['url'] == url_user_profile('test_dude1', true));
 $res = quick_curl(array(
         CURLOPT_URL => url_textblock('utilizator/test_dude1', true),
 ));
+validate_html($res['content']);
 log_assert(strstr($res['content'], "xzx-content-xzx"));
 log_assert(strstr($res['content'], "xzx-title-xzx"));
 
@@ -52,6 +56,7 @@ $res = quick_curl(array(
             'text' => "h1. New yzy-content-yzy",
             'title' => "New yzy-title-yzy",
 )));
+validate_html($res['content']);
 log_assert($res['url'] != url_textblock('utilizator/text_dude1'));
 
 // Dude tries to view user page.
@@ -60,6 +65,7 @@ $res = quick_curl(array(
         CURLOPT_URL => url_textblock('utilizator/test_dude1', true),
         CURLOPT_USERPWD => 'test_dude2:pwd',
 ));
+validate_html($res['content']);
 log_assert(strstr($res['content'], "xzx-content-xzx"));
 log_assert(strstr($res['content'], "xzx-title-xzx"));
 
@@ -73,6 +79,7 @@ $res = quick_curl(array(
             'text' => "New admin-content-admin",
             'title' => "New admin-title-admin",
 )));
+validate_html($res['content']);
 log_assert($res['url'] == url_textblock('utilizator/test_dude2', true));
 log_assert(strstr($res['content'], "admin-content-admin"));
 log_assert(strstr($res['content'], "admin-title-admin"));

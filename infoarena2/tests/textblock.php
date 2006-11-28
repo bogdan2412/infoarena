@@ -11,6 +11,7 @@ test_prepare();
 $res = quick_curl(array(
         CURLOPT_URL => url_textblock('sandbox/test_page', true),
 ));
+validate_html($res['content']);
 log_assert($res['url'] == url_login(true));
 
 // New page with some user, redirect to create
@@ -18,6 +19,7 @@ $res = quick_curl(array(
         CURLOPT_URL => url_textblock('sandbox/test_page', true),
         CURLOPT_USERPWD => 'test_dude1:pwd',
 ));
+validate_html($res['content']);
 log_assert($res['url'] == url_textblock_edit('sandbox/test_page', true));
 
 // dude1 creates page
@@ -29,6 +31,7 @@ $res = quick_curl(array(
                 'text' => "Test page\nxzx-content1-xzx\n",
                 'title' => "Test xzx-title1-xzx",
 )));
+validate_html($res['content']);
 log_assert($res['url'] == url_textblock('sandbox/test_page', true));
 log_assert(strstr($res['content'], 'xzx-content1-xzx'));
 log_assert(strstr($res['content'], 'xzx-title1-xzx'));
@@ -43,6 +46,7 @@ $res = quick_curl(array(
                 'title' => "Test xzx-title2-xzx",
                 'security' => "protected",
 )));
+validate_html($res['content']);
 log_assert($res['url'] == url_textblock('sandbox/test_page', true));
 log_assert(strstr($res['content'], 'xzx-content2-xzx'));
 log_assert(strstr($res['content'], 'xzx-title2-xzx'));
@@ -56,6 +60,7 @@ $res = quick_curl(array(
                 'text' => "Test page\nxzx-contentF-xzx\n",
                 'title' => "Test xzx-titleF-xzx",
 )));
+validate_html($res['content']);
 log_assert($res['url'] != url_textblock(true));
 log_assert(!strstr($res['content'], 'xzx-content2-xzx'));
 log_assert(!strstr($res['content'], 'xzx-title2-xzx'));
@@ -64,6 +69,7 @@ log_assert(!strstr($res['content'], 'xzx-title2-xzx'));
 $res = quick_curl(array(
         CURLOPT_URL => url_textblock('sandbox/test_page', true),
 ));
+validate_html($res['content']);
 log_assert($res['url'] == url_textblock('sandbox/test_page', true));
 log_assert(strstr($res['content'], 'xzx-content2-xzx'));
 log_assert(strstr($res['content'], 'xzx-title2-xzx'));
@@ -78,6 +84,7 @@ $res = quick_curl(array(
                 'title' => "Test xzx-title3-xzx",
                 'security' => "private",
 )));
+validate_html($res['content']);
 log_assert($res['url'] == url_textblock('sandbox/test_page', true));
 log_assert(strstr($res['content'], 'xzx-content3-xzx'));
 log_assert(strstr($res['content'], 'xzx-title3-xzx'));
@@ -87,6 +94,7 @@ $res = quick_curl(array(
         CURLOPT_URL => url_textblock('sandbox/test_page', true),
         CURLOPT_USERPWD => 'test_dude1:pwd',
 ));
+validate_html($res['content']);
 log_assert($res['url'] != url_textblock('sandbox/test_page', true));
 log_assert(!strstr($res['content'], 'xzx-content3-xzx'));
 log_assert(!strstr($res['content'], 'xzx-title3-xzx'));
@@ -97,6 +105,7 @@ $res = quick_curl(array(
         CURLOPT_URL => url_textblock_diff('sandbox/test_page', 1, 2, true),
         CURLOPT_USERPWD => 'test_dude2:pwd',
 ));
+validate_html($res['content']);
 log_assert($res['url'] != url_textblock('sandbox/test_page', true));
 log_assert(!preg_match('/xzx-content[123]-xzx/', $res['content']));
 log_assert(!preg_match('/xzx-title[123]-xzx/', $res['content']));
@@ -110,7 +119,8 @@ $res = quick_curl(array(
                 'text' => "Test page\nxzx-content4-xzx\n",
                 'title' => "Test xzx-title4-xzx",
                 'security' => "public",
-            )));
+)));
+validate_html($res['content']);
 log_assert($res['url'] == url_textblock('sandbox/test_page', true));
 log_assert(strstr($res['content'], 'xzx-content4-xzx'));
 log_assert(strstr($res['content'], 'xzx-title4-xzx'));
@@ -119,6 +129,7 @@ log_assert(strstr($res['content'], 'xzx-title4-xzx'));
 $res = quick_curl(array(
         CURLOPT_URL => url_textblock_history('sandbox/test_page', true),
 ));
+validate_html($res['content']);
 log_assert($res['url'] == url_textblock_history('sandbox/test_page', true));
 log_assert(strstr($res['content'], htmlentities(
                 url_textblock_diff('sandbox/test_page', 1, 4))));
@@ -132,6 +143,7 @@ $res = quick_curl(array(
         CURLOPT_URL => url_textblock_diff('sandbox/test_page', 1, 2, true),
         CURLOPT_USERPWD => 'test_dude1:pwd',
 ));
+validate_html($res['content']);
 log_assert($res['url'] == url_textblock_diff('sandbox/test_page', 1, 2, true));
 log_assert(strstr($res['content'], 'xzx-content1-xzx'));
 log_assert(strstr($res['content'], 'xzx-title1-xzx'));

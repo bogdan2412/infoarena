@@ -4,7 +4,7 @@ require_once(IA_ROOT . "www/format/table.php");
 require_once(IA_ROOT . "www/format/format.php");
 ?>
 
-    <h1>Istoria paginii <?= href(url($page_name), htmlentities($page_name)) ?></a></h1>
+    <h1>Istoria paginii <?= href(url($page_name), htmlentities($page_name)) ?></h1>
 
 <?php
     // Format links to a certain textblock revision.
