@@ -31,7 +31,7 @@ function controller_textblock_view($page_name, $rev_num = null) {
     } else {
         // Missing page.
         // FIXME: what if the user can't create the page?
-        flash_error("Nu am gasit pagina. Te trimit sa editezi ...");
+        flash_error("Nu exista pagina, dar poti sa o creezi ...");
         redirect(url($page_name, array('action' => 'edit')));
     }
 
@@ -68,6 +68,14 @@ function controller_textblock_diff_revision($page_name) {
     $revto_id = (int)request("rev_to");
     if (is_null($revfrom_id) || is_null($revto_id)) {
         flash_error("Nu ati specificat reviziile");
+        redirect(url($page_name));
+    }
+    if ($revfrom_id == $revto_id) {
+        flash_error("Reviziile sunt identice");
+        redirect(url($page_name));
+    }
+    if ($revfrom_id < 1 || $revfrom_id < 1 || $revfrom_id > 100000 || $revfrom_id > 100000) {
+        flash_error("Reviziile sunt invalide");
         redirect(url($page_name));
     }
 

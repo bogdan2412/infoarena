@@ -41,7 +41,7 @@ function die_http_error($code = 404, $msg = "File not found") {
 function href($url, $content, $escape = true) {
     if ($escape) {
         $url = htmlentities($url);
-        $escape = htmlentities($escape);
+        $content = htmlentities($content);
     }
     return "<a href=\"$url\">$content</a>";
 }
@@ -54,7 +54,7 @@ function img($src, $alt, $escape = true) {
         $src = htmlentities($src);
         $alt = htmlentities($alt);
     }
-    return "<a href=\"$src\", alt=\"$alt\" />";
+    return "<img src=\"$src\", alt=\"$alt\" />";
 }
 
 // Compute url.
@@ -86,7 +86,7 @@ function url_from_args($args, $absolute = false)
     } else {
         $url = IA_URL_PREFIX;
     }
-    $url .= $args["page"];
+    $url .= getattr($args, "page", "home");
 
     // Actual args.
     $first = true;
@@ -163,6 +163,11 @@ function url_textblock_restore($page_name, $rev, $absolute = false) {
             'revision' => $rev,
     );
     return url($page_name, $args, $absolute);
+}
+
+// Url to user profile page
+function url_user_info($username, $absolute = false) {
+    return url('userinfo/' . $username, array(), $absolute);
 }
 
 // Url to user profile page

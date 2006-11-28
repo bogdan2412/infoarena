@@ -26,7 +26,7 @@ function macro_tasksubmit($args) {
 
     if (identity_anonymous()) {
         $url = url("login");
-        return macro_message("Trebuie sa va autentificati pentru a trimite solutii. <a href=\"{$url}\">Click aici</a>", true);
+        return macro_message("Trebuie sa te autentifici pentru a trimite solutii. <a href=\"{$url}\">Click aici</a>", true);
     }
 
     // Permission check. Should never fail right now.

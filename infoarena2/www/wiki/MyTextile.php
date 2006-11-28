@@ -58,11 +58,8 @@ class MyTextile extends Textile {
         //log_warn("$type");
         $type = strtolower($type);
         $matches = array();
-        // Raw html
-        if ($type == 'html') {
-            return $text;
-        }
-        elseif (preg_match('/code\((c|cpp|pas|java)\)/i', $type, $matches)) {
+        // Code!
+        if (preg_match('/code\((c|cpp|pas|java)\)/i', $type, $matches)) {
             // syntax highlighting
             $lang = $matches[1];
 

@@ -24,7 +24,7 @@ function controller_userinfo($pageid) {
     if (isset($split[1])) {
         $page_name = "template/userinfo/$subpageid";
     } else {
-        $page_name = "template/userinfo";
+        $page_name = "template/userinfo/main";
     }
 
     // FIXME: per-page?

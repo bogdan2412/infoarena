@@ -34,11 +34,11 @@ function macro_userinfo($args) {
             // FIXME: display e-mail only for admins
             return macro_error("E-mail address is private!");
         case 'fullname':
-            return $user['full_name'];
+            return htmlentities($user['full_name']);
         case 'username':
-            return $user['username'];
+            return htmlentities($user['username']);
         case 'security':
-            return $user['security_level'];
+            return htmlentities($user['security_level']);
         default:
             return macro_error("Invalid info paramater");
     }

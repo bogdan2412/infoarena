@@ -8,7 +8,7 @@
 <div class="section">
     <h3>De ce sa te inregistrezi?</h3>
     <ul>
-        <li>&hellip; ca sa iti putem evalua solutiile la problemele din arhiva</li>
+        <li>&hellip; ca sa iti poti evalua solutiile la problemele din arhiva</li>
         <li>&hellip; ca sa poti participa la concursuri</li>
         <li>&hellip; ca sa cunosti si alti oameni destepti ;)</li>
     </ul>
