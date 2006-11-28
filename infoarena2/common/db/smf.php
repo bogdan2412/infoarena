@@ -8,7 +8,7 @@ require_once(IA_ROOT."common/db/db.php");
 // to duplication and hard-coding.
 // These must be updated every time we switch SMF distributions.
 
-// Creates SMF user from a regular info-arena user.
+// Creates SMF user from a regular infoarena user.
 // Returns newly created user id.
 function smf_create_user($ia_user) {
     $fields = array(
@@ -56,7 +56,7 @@ function smf_create_user($ia_user) {
     return db_insert(DB_SMF_PREFIX.'members', $fields);
 }
 
-// Updates SMF user information from a regular info-arena user.
+// Updates SMF user information from a regular infoarena user.
 function smf_update_user($ia_user) {
     $fields = array(
         'memberName' => $ia_user['username'],

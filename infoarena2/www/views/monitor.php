@@ -11,21 +11,21 @@ if (!$jobs) {
 } else {
         // For the score column.
         function format_state($row) {
-            $url = url_job_detail($row['id']);
+            $url = htmlentities(url_job_detail($row['id']));
             if ($row['status'] == 'done') {
-                $msg = sprintf("%s: %s puncte",
-                        htmlentities($row['eval_message']), $row['score']);
+                $msg = htmlentities(sprintf("%s: %s puncte",
+                        $row['eval_message'], $row['score']));
                 $msg = "<span style=\"job-status-done\">$msg</span>";
-                return href($url, $msg);
+                return href($url, $msg, false);
             }
             if ($row['status'] == 'processing') {
                 // FIXME: animation? :)
                 $msg = '<span class="job-status-processing">se evalueaza</span>';
-                return href($url, $msg);
+                return href($url, $msg, false);
             }
             if ($row['status'] == 'waiting') {
                 $msg = '<span style="job-stats-waiting">in asteptare</span>';
-                return href($url, $msg);
+                return href($url, $msg, false);
             }
             log_die("Invalid job status");
         }

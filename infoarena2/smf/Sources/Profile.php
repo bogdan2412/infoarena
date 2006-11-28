@@ -126,7 +126,7 @@ function ModifyProfile($post_errors = array())
 		'trackIP' => array(array('moderate_forum'), array('moderate_forum')),
 		'showPermissions' => array(array('manage_permissions'), array('manage_permissions')),
 
-        // Features stripped for integration with info-arena
+        // Features stripped for integration with infoarena
 		// 'account' => array(array('manage_membergroups', 'profile_identity_any', 'profile_identity_own'), array('manage_membergroups', 'profile_identity_any')),
 		// 'forumProfile' => array(array('profile_extra_any', 'profile_extra_own'), array('profile_extra_any')),
 		// 'theme' => array(array('profile_extra_any', 'profile_extra_own'), array('profile_extra_any')),

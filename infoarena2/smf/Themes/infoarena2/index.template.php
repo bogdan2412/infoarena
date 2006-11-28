@@ -1,6 +1,6 @@
 <?php
 
-// Hacked template to integrate in info-arena 2 
+// Hacked template to integrate in infoarena 2 
 
 // Version: 1.1 RC3; index
 
@@ -197,7 +197,7 @@ function template_main_above()
         </form>
     </div>
 
-    <h1><a href="<?= $infoarenaurl ?>">info-arena forum</a></h1>
+    <h1><a href="<?= $infoarenaurl ?>">infoarena forum</a></h1>
 </div>
 
 <?php*/

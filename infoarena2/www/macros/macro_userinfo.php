@@ -32,7 +32,7 @@ function macro_userinfo($args) {
     switch ($info) {
         case 'email':
             // FIXME: display e-mail only for admins
-            return macro_error("E-mail address is private!");
+            return macro_error("Adresa de email este ascunsa");
         case 'fullname':
             return htmlentities($user['full_name']);
         case 'username':

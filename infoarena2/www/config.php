@@ -32,7 +32,7 @@ define('IA_PAGER_MAX_DISPLAY_ENTRIES', 200);
 define('IA_PAGER_MIN_DISPLAY_ENTRIES', 3);
 
 // mail sender
-define("IA_MAIL_SENDER_NO_REPLY", 'info-arena <no-reply@infoarena.ro>');
+define("IA_MAIL_SENDER_NO_REPLY", 'infoarena <no-reply@infoarena.ro>');
 
 // Maximum number of recursive includes in the wiki.
 define('IA_MAX_RECURSIVE_INCLUDES', 5);

@@ -1939,24 +1939,24 @@ function loadSession()
 
 function sessionOpen($save_path, $session_name)
 {
-    // Feature disabled for integration with info-arena
-    fatal_error('[info-arena] please disable database stored sessions');
+    // Feature disabled for integration with infoarena
+    fatal_error('[infoarena] please disable database stored sessions');
 
 	return true;
 }
 
 function sessionClose()
 {
-    // Feature disabled for integration with info-arena
-    fatal_error('[info-arena] please disable database stored sessions');
+    // Feature disabled for integration with infoarena
+    fatal_error('[infoarena] please disable database stored sessions');
 
 	return true;
 }
 
 function sessionRead($session_id)
 {
-    // Feature disabled for integration with info-arena
-    fatal_error('[info-arena] please disable database stored sessions');
+    // Feature disabled for integration with infoarena
+    fatal_error('[infoarena] please disable database stored sessions');
 
 	global $db_prefix;
 
@@ -1977,8 +1977,8 @@ function sessionRead($session_id)
 
 function sessionWrite($session_id, $data)
 {
-    // Feature disabled for integration with info-arena
-    fatal_error('[info-arena] please disable database stored sessions');
+    // Feature disabled for integration with infoarena
+    fatal_error('[infoarena] please disable database stored sessions');
 
 	global $db_prefix;
 
@@ -2004,8 +2004,8 @@ function sessionWrite($session_id, $data)
 
 function sessionDestroy($session_id)
 {
-    // Feature disabled for integration with info-arena
-    fatal_error('[info-arena] please disable database stored sessions');
+    // Feature disabled for integration with infoarena
+    fatal_error('[infoarena] please disable database stored sessions');
 
 	global $db_prefix;
 

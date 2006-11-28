@@ -16,15 +16,15 @@ function macro_news($args) {
         $res .= '<div class="item">';
         $res .= '<span class="date">'.htmlentities(date('d M Y', strtotime($subpage['timestamp']))).'</span>';
 
-        $url = url($subpage['name']);
+        $url = htmlentities(url($subpage['name']));
         $text = wiki_process_text_recursive(getattr($subpage, 'text'));
         // Hijack title if already there.
         if (preg_match('/^\s*<h1>(.*)<\/h1>(.*)$/sxi', $text, $matches)) {
-            $res .= '<h1>'.href($url, $matches[1]).'</h1>';
+            $res .= '<h1>'.href($url, $matches[1], false).'</h1>';
             $text = $matches[2];
         } else {
             log_print($text);
-            $res .= '<h1>'.href($url, $subpage['content']).'</h1>';
+            $res .= '<h1>'.href($url, $subpage['title'], false).'</h1>';
         }
         $res .= "<div class=\"wiki_text_block\">$text</div>";
         $res .= '</div>';

@@ -6,11 +6,11 @@ require_once(IA_ROOT."common/db/db.php");
 // FIXME: stupid hack.
 function controller_news_feed($page_name) {
     $view = array();
-    $view['channel']['title'] = 'Stiri info-arena';
+    $view['channel']['title'] = 'Stiri infoarena';
     $view['channel']['link'] = url('news', array(), true);
     $view['channel']['description'] = 'Ultimele stiri de pe http://infoarena.ro';
     $view['channel']['language'] = 'ro-ro';
-    $view['channel']['copyright'] = '&copy; 2006 -asociatia info-arena';
+    $view['channel']['copyright'] = '&copy; 2006 - Asociatia infoarena';
 
     $news = news_get_range(0, IA_MAX_FEED_ITEMS);
     for ($i = 0; $i < count($news); $i++) {

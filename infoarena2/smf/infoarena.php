@@ -19,7 +19,7 @@ require_once(IA_ROOT."www/utilities.php");
 require_once(IA_ROOT."www/identity.php");
 
 
-// init SMF hooks to integrate with info-arena
+// init SMF hooks to integrate with infoarena
 // These are native integration features built into SMF. Sweet!
 $ia_integration = array(
     'integrate_verify_user'  => 'ia_verify_user',
@@ -31,11 +31,11 @@ $ia_integration = array(
 define("SMF_INTEGRATION_SETTINGS", serialize($ia_integration));
 
 
-// restore info-arena session (if such a session exists)
+// restore infoarena session (if such a session exists)
 identity_restore();
 
 
-// Determine which SMF user is logged based on info-arena
+// Determine which SMF user is logged based on infoarena
 // identity information.
 // This is an integration hook.
 function ia_verify_user() {
@@ -43,7 +43,7 @@ function ia_verify_user() {
     global $db_prefix;
 
     if (!$identity_user) {
-        // When info-arena session is no longer active,
+        // When infoarena session is no longer active,
         // destroy any SMF session still hanging active
         global $cookiename;
         unset($_COOKIE[$cookiename]);

@@ -56,6 +56,7 @@ ia_template_topnav($topnav_select, $smf_admin);
         <li><a href="<?= url('arhiva') ?>">Arhiva de probleme</a></li>
         <li><a href="<?= url('concursuri') ?>">Concursuri online</a></li>
         <li><a href="<?= url('articole') ?>">Articole</a></li>
+        <li><a href="<?= url('documentatie') ?>">Documentatie</a></li>
         <li><a href="<?= url('downloads') ?>">Downloads</a></li>
         <li><a href="<?= url('links') ?>">Links</a></li>
         <li><a href="<?= url('stiri') ?>">Arhiva de stiri</a></li>

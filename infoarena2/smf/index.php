@@ -49,7 +49,7 @@ require_once($sourcedir . '/QueryString.php');
 require_once($sourcedir . '/Subs.php');
 require_once($sourcedir . '/Errors.php');
 
-// info-arena integration (must stay here)
+// infoarena integration (must stay here)
 require_once(dirname(__FILE__) . '/infoarena.php');
 
 require_once($sourcedir . '/Load.php');
@@ -237,7 +237,7 @@ function smf_main()
 		'featuresettings' => array('ModSettings.php', 'ModifyFeatureSettings'),
 		'featuresettings2' => array('ModSettings.php', 'ModifyFeatureSettings2'),
 
-        // Features stripped for integration with info-arena
+        // Features stripped for integration with infoarena
 		// 'findmember' => array('Subs-Auth.php', 'JSMembers'),
 		// 'mlist' => array('Memberlist.php', 'Memberlist'),
 
@@ -249,7 +249,7 @@ function smf_main()
 		'lock' => array('LockTopic.php', 'LockTopic'),
 		'lockVoting' => array('Poll.php', 'LockVoting'),
 
-        // Features stripped for integration with info-arena
+        // Features stripped for integration with infoarena
 		// 'login' => array('LogInOut.php', 'Login'),
 		// 'login2' => array('LogInOut.php', 'Login2'),
 		// 'logout' => array('LogInOut.php', 'Logout'),
@@ -281,7 +281,7 @@ function smf_main()
 		'postsettings' => array('ManagePosts.php', 'ManagePostSettings'),
 		'printpage' => array('Printpage.php', 'PrintTopic'),
 
-        // Features stripped for integration with info-arena
+        // Features stripped for integration with infoarena
 		'profile' => array('Profile.php', 'ModifyProfile'),
 		'profile2' => array('Profile.php', 'ModifyProfile2'),
 
@@ -291,7 +291,7 @@ function smf_main()
 		'recent' => array('Recent.php', 'RecentPosts'),
 		'regcenter' => array('ManageRegistration.php', 'RegCenter'),
 
-        // Features stripped for integration with info-arena
+        // Features stripped for integration with infoarena
 		// 'register' => array('Register.php', 'Register'),
 		// 'register2' => array('Register.php', 'Register2'),
 		// 'reminder' => array('Reminder.php', 'RemindMe'),
@@ -324,7 +324,7 @@ function smf_main()
 		'viewmembers' => array('ManageMembers.php', 'ViewMembers'),
 		'viewprofile' => array('Profile.php', 'ModifyProfile'),
 
-        // Feature stripped for integration with info-arena
+        // Feature stripped for integration with infoarena
 		// 'verificationcode' => array('Register.php', 'VerificationCode'),
 
 		'vote' => array('Poll.php', 'Vote'),

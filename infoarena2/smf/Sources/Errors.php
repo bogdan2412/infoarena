@@ -421,7 +421,7 @@ function db_fatal_error($loadavg = false)
 	return false;
 }
 
-// Provided to integrate with info-arena
+// Provided to integrate with infoarena
 // When $expr is false it raises fatal error
 function log_assert($expr, $msg) {
     if (!$expr) {
@@ -429,7 +429,7 @@ function log_assert($expr, $msg) {
     }
 }
 
-// Provided to integrate with info-arena
+// Provided to integrate with infoarena
 // Forwards error to log_error()
 function log_warn($error) {
     log_error($error);

@@ -26,11 +26,11 @@ function controller_changes($page_name) {
 
     if (request('format') == 'rss') {
         $view = array();
-        $view['channel']['title'] = 'Modificari pe info-arena';
+        $view['channel']['title'] = 'Modificari pe infoarena';
         $view['channel']['link'] = url('news', array(), true);
         $view['channel']['description'] = 'Ultimele modificari din wiki-ul http://infoarena.ro';
         $view['channel']['language'] = 'ro-ro'; 
-        $view['channel']['copyright'] = '&copy; 2006 -asociatia info-arena';
+        $view['channel']['copyright'] = '&copy; 2006 - asociatia infoarena';
 
         $view['item'] = array();
 
@@ -59,7 +59,7 @@ function controller_changes($page_name) {
         execute_view_die('views/rss.php', $view);
     } else {
         $view = array();
-        $view['title'] = 'Modificari pe info-arena';
+        $view['title'] = 'Modificari pe infoarena';
         $view['page_name'] = 'changes';
         $view['revisions'] = $revisions;
         execute_view_die('views/changes.php', $view);

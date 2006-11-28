@@ -54,7 +54,7 @@ function img($src, $alt, $escape = true) {
         $src = htmlentities($src);
         $alt = htmlentities($alt);
     }
-    return "<img src=\"$src\", alt=\"$alt\" />";
+    return "<img src=\"$src\" alt=\"$alt\" />";
 }
 
 // Compute url.

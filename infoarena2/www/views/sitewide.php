@@ -3,7 +3,7 @@
 // site-wide templates (templates shared with SMF / search)
 //
 // This file may be included from different environments
-// (currently SMF and info-arena website) so it can use only
+// (currently SMF and infoarena website) so it can use only
 // limited application logic.
 
 // display site header
