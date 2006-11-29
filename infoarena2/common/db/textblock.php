@@ -86,13 +86,13 @@ function textblock_complex_query($options)
         log_assert(is_whole_number($options['limit_start']));
         log_assert(is_whole_number($options['limit_count']));
         $query = sprintf("SELECT $field_list FROM ia_textblock $join %s
-                          UNION SELECT $field_list FROM ia_textblock_revision $join %s
+                          UNION ALL SELECT $field_list FROM ia_textblock_revision $join %s
                           ORDER BY `timestamp` %s LIMIT %d, %d",
                           $where, $where, $order, $options['limit_start'], $options['limit_count']);
     } else {
         $query = "SELECT $field_list FROM ia_textblock $join $where";
     }
-    // log_print("QUERY: " . $query);
+    //log_print("QUERY: " . $query);
     return db_fetch_all($query);
 }
 
@@ -164,9 +164,10 @@ function textblock_get_changes($prefix, $content = false, $username = true, $cou
 // Count revisions for a certain textblock.
 // FIXME: undefined if it doesn't exist.
 function textblock_get_revision_count($name) {
+    log_assert(is_page_name($name));
     $query = sprintf("SELECT COUNT(*) AS `cnt` FROM ia_textblock_revision
                       WHERE LCASE(`name`) = '%s'",
-                    db_escape($name));
+                    db_escape(strtolower($name)));
     $row = db_fetch($query);
     return $row['cnt'] + 1;
 }
