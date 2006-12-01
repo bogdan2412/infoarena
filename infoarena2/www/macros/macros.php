@@ -45,7 +45,7 @@ function execute_macro($macro_name, $macro_args) {
     }
     if ($macro_file !== '') {
         // FIXME: this kills log messages.
-        include_once($macro_file);
+        require_once($macro_file);
     }
     $macro_func = 'macro_'.$macro_name;
     if (!function_exists($macro_func)) {

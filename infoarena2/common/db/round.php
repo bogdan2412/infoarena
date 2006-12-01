@@ -57,23 +57,41 @@ function round_update($round) {
 // information to yield a correct answer.
 //
 // FIXME: sensible ordering.
-function round_get_task_info($round_id, $first = 0, $count = null) {
+//
+// if user_id is non-null a join is done on $score
+function round_get_task_info($round_id, $first = 0, $count = null, $user_id = null, $score_id = null) {
     if ($count === null) {
         $count = 490234;
     }
-    $query = sprintf("SELECT
-                        task_id AS id,
-                        task.`title` AS `title`,
-                        task.`page_name` AS `page_name`,
-                        task.`hidden` AS `hidden`,
-                        task.`user_id` AS `user_id`, 
-                        task.`type` AS `type`
-                      FROM ia_round_task
-                      LEFT JOIN ia_task as task ON task.id = task_id
-                      WHERE `round_id` = LCASE('%s')
-                      ORDER BY task.`title`
-                      LIMIT %d, %d",
-                     db_escape($round_id), db_escape($first), db_escape($count));
+    $fields = "round_task.task_id AS id, ".
+              "task.`title` AS `title`, ".
+              "task.`page_name` AS `page_name`, ".
+              "task.`hidden` AS `hidden`, ".
+              "task.`type` AS `type` ";
+
+    if ($score_id === null || $user_id === null) {
+        $query = sprintf("SELECT $fields
+                          FROM ia_round_task as round_task
+                          LEFT JOIN ia_task as task ON task.id = round_task.task_id
+                          WHERE `round_task`.`round_id` = LCASE('%s')
+                          ORDER BY task.`title` LIMIT %d, %d",
+                         db_escape($round_id), db_escape($first), db_escape($count));
+    } else {
+        log_assert(is_whole_number($user_id));
+        $query = sprintf("SELECT $fields, score.score as score
+                          FROM ia_round_task as round_task
+                          LEFT JOIN ia_task as task ON task.id = round_task.task_id
+                          LEFT JOIN ia_score as score ON
+                                score.user_id = %s AND
+                                score.id = '%s' AND
+                                score.round_id = LCASE('%s') AND
+                                score.task_id = round_task.task_id
+                          WHERE `round_task`.`round_id` = LCASE('%s')
+                          ORDER BY task.`title` LIMIT %d, %d",
+                         db_escape($user_id), db_escape($score_id), db_escape($round_id),
+                         db_escape($round_id), db_escape($first), db_escape($count));
+    }
+    log_print($query);
     return db_fetch_all($query);
 }
 

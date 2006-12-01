@@ -28,15 +28,25 @@ function macro_tasks($args) {
     if (!$round) {
         return macro_error('Invalid round identifier');
     }
-    /*
-    if (!identity_can('round-viewtasks', $round)) {
-        return "<b>Nu ai voie sa vezi problemele.</b>"
-        return macro_permission_error();
+
+    if (is_null(getattr($args, 'score'))) {
+        $scores = false;
+    } else {
+        $scores = true;
     }
-    */
+
+    if (identity_anonymous() || $scores == false) {
+        $user_id = null;
+    } else {
+        $user_id = identity_get_user_id();
+    }
+//    log_print("UID: $user_id");
 
     // get round tasks
-    $tasks = round_get_task_info($round_id, $options['first_entry'], $options['display_entries']);
+    $tasks = round_get_task_info($round_id,
+            $options['first_entry'],
+            $options['display_entries'],
+            $user_id, ($scores ? 'score' : null));
     $options['total_entries'] = round_get_task_count($round_id);
 
     $column_infos = array(
@@ -46,6 +56,26 @@ function macro_tasks($args) {
                         'return "<a href=\"".url($row["page_name"])."\">".$row["title"]."</a>";'),
             ),
     );
+    if ($user_id !== null) {
+        function format_score_column($val)
+        {
+            if ($val === null) {
+                $val = 0;
+            }
+            log_assert(is_whole_number($val));
+            if ($val == 100) {
+                return '100 !!!';
+            } else {
+                return $val;
+            }
+        }
+        
+        $column_infos[] = array (
+                'title' => 'Scorul tau',
+                'key' => 'score',
+                'valform' => 'format_score_column',
+        );
+    }
 
     return format_table($tasks, $column_infos, $options);
 }

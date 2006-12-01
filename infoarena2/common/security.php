@@ -303,12 +303,12 @@ function security_task($user, $action, $task) {
 function security_round($user, $action, $round) {
     $usersec = getattr($user, 'security_level', 'anonymous');
     $is_admin = $usersec == 'admin';
-    $is_owner = ($task['user_id'] == $user['id'] && $usersec == 'helper');
+    $is_owner = ($round['user_id'] == $user['id'] && $usersec == 'helper');
 
     // Log query response.
     $action = security_simplify_action($action);
     $level = ($is_admin ? 'admin' : ($is_owner ? 'owner' : 'other'));
-    $objid = $task['id'];
+    $objid = $round['id'];
     log_print("SECURITY QUERY ROUND: ".
             "($level, $action, $objid): ".
             "(level, action, object");
@@ -317,14 +317,14 @@ function security_round($user, $action, $round) {
     switch ($action) {
         // Read-only access.
         case 'simple-view':
-            return ($task['hidden'] == false) || $is_owner || $is_admin;
+            return ($round['hidden'] == false) || $is_owner || $is_admin;
 
         // Edit access.
         case 'simple-rev-edit':
             return $is_owner || $is_admin;
 
         case 'simple-edit':
-            return ($task['hidden'] == false && $is_owner) || $is_admin;
+            return ($round['hidden'] == false && $is_owner) || $is_admin;
 
         // Admin stuff:
         case 'simple-critical':
@@ -332,11 +332,11 @@ function security_round($user, $action, $round) {
 
         // Special: submit.
         // FIXME: contest logic?
-        case 'task-submit':
+        case 'round-submit':
             if ($usersec == 'anonymous') {
                 return false;
             }
-            return ($task['hidden'] == false) || $is_owner || $is_admin;
+            return ($round['hidden'] == false) || $is_owner || $is_admin;
 
         default:
             log_error('Invalid round action: '.$action);
