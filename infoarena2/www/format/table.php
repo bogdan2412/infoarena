@@ -2,6 +2,7 @@
 
 require_once(IA_ROOT."www/utilities.php");
 require_once(IA_ROOT."www/format/pager.php");
+require_once(IA_ROOT."www/format/format.php");
 
 // This builds a bunch of default $column_infos for format_table.
 // See format_table for an explanation.
@@ -72,8 +73,15 @@ function format_table($data, $column_infos = null, $options = null)
     if (!getattr($options, 'skip_header', false)) {
         $result .= "<thead><tr>";
         foreach ($column_infos as $column) {
-            $title = $column['title'];
-            $result .= "<th>" . $title . "</th>";
+            $title = htmlentities($column['title']);
+            $args = array();
+            if (isset($column['css_class'])) {
+                $args['class'] = $column['css_class'];
+            }
+            if (isset($column['css_style'])) {
+                $args['style'] = $column['css_style'];
+            }
+            $result .= format_tag('th', $args, htmlentities($column['title']));
         }
         $result .= "</tr></thead>";
     }

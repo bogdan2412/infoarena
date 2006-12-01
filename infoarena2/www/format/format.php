@@ -44,4 +44,23 @@ function format_user_normal($user_name, $user_fullname) {
     return $result;
 }
 
+// Format a html tag.
+// Tag is a tag name(img, th, etc).
+// args is an array with xml attributes. values are escaped.
+// Content is the tag content. It is NOT escaped, it's free html.
+function format_tag($tag, $args = array(), $content = "")
+{
+    log_assert(is_array($args), '$args not an array');
+    log_assert(is_string($tag), '$tag is not a string');
+    log_assert(preg_match("/[a-z][a-z0-9]*/", $tag), 'Invalid tag "'.$tag.'"');
+    $result = "<$tag";
+    foreach ($args as $k => $v) {
+        log_assert(preg_match("/[a-z][a-z_0-9]*/", $k), 'Invalid attrib "'.$k.'"');
+        $result .= " $k=\"".htmlentities($v)."\"";
+    }
+    $result .= ">$content</$tag>";
+
+    return $result;
+}
+
 ?>

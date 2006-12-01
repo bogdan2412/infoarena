@@ -4,6 +4,19 @@ require_once(IA_ROOT . "www/format/table.php");
 require_once(IA_ROOT . "www/format/pager.php");
 require_once(IA_ROOT . "common/db/round.php");
 
+function format_score_column($val)
+{
+    if ($val === null) {
+        $val = 0;
+    }
+    log_assert(is_whole_number($val));
+    if ($val == 100) {
+        return '100 !!!';
+    } else {
+        return $val;
+    }
+}
+
 // Lists all tasks attached to a given round
 // Takes into consideration user permissions.
 //
@@ -57,21 +70,10 @@ function macro_tasks($args) {
             ),
     );
     if ($user_id !== null) {
-        function format_score_column($val)
-        {
-            if ($val === null) {
-                $val = 0;
-            }
-            log_assert(is_whole_number($val));
-            if ($val == 100) {
-                return '100 !!!';
-            } else {
-                return $val;
-            }
-        }
-        
+       
         $column_infos[] = array (
                 'title' => 'Scorul tau',
+                'css_style' => 'width:10%',
                 'key' => 'score',
                 'valform' => 'format_score_column',
         );
