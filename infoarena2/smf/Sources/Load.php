@@ -983,6 +983,9 @@ function loadMemberContext($user)
 		$avatar_height = '';
 	}
 
+    // use infoarena avatars
+    $avatar_img_src = url_user_avatar($profile['memberName'], '50x50', true);
+
 	// What a monstrous array...
 	$memberContext[$user] = array(
 		'username' => &$profile['memberName'],
@@ -1039,10 +1042,18 @@ function loadMemberContext($user)
 		'real_posts' => $profile['posts'],
 		'posts' => $profile['posts'] > 100000 ? $txt[683] : ($profile['posts'] == 1337 ? 'leet' : comma_format($profile['posts'])),
 		'avatar' => array(
+            /*
 			'name' => &$profile['avatar'],
 			'image' => $profile['avatar'] == '' ? ($profile['ID_ATTACH'] > 0 ? '<img src="' . (empty($profile['attachmentType']) ? $scripturl . '?action=dlattach;attach=' . $profile['ID_ATTACH'] . ';type=avatar' : $modSettings['custom_avatar_url'] . '/' . $profile['filename']) . '" alt="" class="avatar" border="0" />' : '') : (stristr($profile['avatar'], 'http://') ? '<img src="' . $profile['avatar'] . '"' . $avatar_width . $avatar_height . ' alt="" class="avatar" border="0" />' : '<img src="' . $modSettings['avatar_url'] . '/' . htmlspecialchars($profile['avatar']) . '" alt="" class="avatar" border="0" />'),
 			'href' => $profile['avatar'] == '' ? ($profile['ID_ATTACH'] > 0 ? (empty($profile['attachmentType']) ? $scripturl . '?action=dlattach;attach=' . $profile['ID_ATTACH'] . ';type=avatar' : $modSettings['custom_avatar_url'] . '/' . $profile['filename']) : '') : (stristr($profile['avatar'], 'http://') ? $profile['avatar'] : $modSettings['avatar_url'] . '/' . $profile['avatar']),
 			'url' => $profile['avatar'] == '' ? '' : (stristr($profile['avatar'], 'http://') ? $profile['avatar'] : $modSettings['avatar_url'] . '/' . $profile['avatar'])
+            */
+
+            // infoarena avatar integration
+            'name' => &$profile['avatar'],
+            'image' => "<img src=\"{$avatar_img_src}\" />",
+            'href' => $avatar_img_src,
+            'url'=> $avatar_img_src, // ?? What's this for?
 		),
 		'last_login' => empty($profile['lastLogin']) ? $txt['never'] : timeformat($profile['lastLogin']),
 		'last_login_timestamp' => empty($profile['lastLogin']) ? 0 : forum_time(0, $profile['lastLogin']),

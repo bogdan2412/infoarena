@@ -175,7 +175,7 @@ function url_user_profile($username, $absolute = false) {
     return url(TB_USER_PREFIX . $username, array(), $absolute);
 }
 
-function url_user_avatar($username, $resize = "@50x50", $absolute = false) {
+function url_user_avatar($username, $resize = "50x50", $absolute = false) {
     return url_image_resize(TB_USER_PREFIX . $username, 'avatar', $resize, $absolute);
 }
 
