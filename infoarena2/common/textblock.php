@@ -30,10 +30,6 @@ function textblock_validate($tb) {
         $errors['title'] = 'Titlu prea lung.';
     }
 
-    if (strlen(getattr($tb, 'text', '')) < 1) {
-        $errors['text'] = 'Continut prea scurt.';
-    }
-
     if (!is_user_id(getattr($tb, 'user_id'))) {
         $errors['user_id'] = 'ID de utilizator invalid';
     }
