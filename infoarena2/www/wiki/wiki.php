@@ -5,6 +5,7 @@ require_once(IA_ROOT."www/wiki/MyTextile.php");
 
 // This processes a big chunk of wiki-formatted text and returns html.
 function wiki_process_text($content) {
+
     $options = array(
             'disable_html' => true,
             'disable_filters' => true,
@@ -12,7 +13,13 @@ function wiki_process_text($content) {
             'preserve_spaces' => true,
     );
     $weaver = new MyTextile($options);
-    return $weaver->process($content);
+    $res = $weaver->process($content);
+    if (preg_match('/(?:<|&lt;)textile#\n(?:>|&gt;)/', $res)) {
+        log_error("Crappy textile");
+    }
+    unset($weaver);
+
+    return $res;
 }
 
 // This is just like wiki_process_text, but it's meant for recursive calling.
@@ -39,9 +46,7 @@ function wiki_process_text_recursive($content) {
     }
     //echo "going in level $include_count $args[page]<br />";
 
-    //echo "calling wiki <br />";
     $res = wiki_process_text($content);
-    //echo "done calling wiki <br />";
 
     --$include_count;
     // Unwind

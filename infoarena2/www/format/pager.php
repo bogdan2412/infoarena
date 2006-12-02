@@ -38,12 +38,13 @@ function pager_init_options($args = null)
     // How many entries to display at a time.
     // FIXME: user preference.
     $display_entries = request($prefix . 'display_entries', getattr($args, 'display_entries', IA_PAGER_DEFAULT_DISPLAY_ENTRIES));
-    if (preg_match('/^[0-9]*$/', $display_entries) == false ||
-            $display_entries < IA_PAGER_MIN_DISPLAY_ENTRIES ||
-            $display_entries > IA_PAGER_MAX_DISPLAY_ENTRIES) {
+    if (preg_match('/^[0-9]*$/', $display_entries) == false) {
         $display_entries = IA_PAGER_DEFAULT_DISPLAY_ENTRIES;
         log_warn("Bad display_entries");
     }
+    $display_entries = 
+            max(IA_PAGER_MIN_DISPLAY_ENTRIES,
+            min($display_entries, IA_PAGER_MAX_DISPLAY_ENTRIES));
 
     // First entry.
     $first_entry = request($prefix . 'first_entry', getattr($args, 'first_entry', 0));
@@ -107,34 +108,34 @@ function format_standard_pager($options)
     if ($curpage < 8) {
         for ($i = 0; $i < $curpage; ++$i) {
             $url_args[$param_prefix.'first_entry'] = $i * $display_entries;
-            $result .= href(url_from_args($url_args), $i + 1)." ";
+            $result .= format_link(url_from_args($url_args), $i + 1)." ";
         }
     } else {
         for ($i = 0; $i < $surround_pages; ++$i) {
             $url_args[$param_prefix.'first_entry'] = $i * $display_entries;
-            $result .= href(url_from_args($url_args), $i + 1)." ";
+            $result .= format_link(url_from_args($url_args), $i + 1)." ";
         }
         $result .= "... ";
         for ($i = $curpage - $surround_pages; $i < $curpage; ++$i) {
             $url_args[$param_prefix.'first_entry'] = $i * $display_entries;
-            $result .= href(url_from_args($url_args), $i + 1)." ";
+            $result .= format_link(url_from_args($url_args), $i + 1)." ";
         }
     }
     $result .= ($curpage + 1)." ";
     if ($totpages - $curpage < 3 + 2 * $surround_pages) {
         for ($i = $curpage + 1; $i < $totpages; ++$i) {
             $url_args[$param_prefix.'first_entry'] = $i * $display_entries;
-            $result .= href(url_from_args($url_args), $i + 1)." ";
+            $result .= format_link(url_from_args($url_args), $i + 1)." ";
         }
     } else {
         for ($i = $curpage + 1; $i <= $curpage + $surround_pages; ++$i) {
             $url_args[$param_prefix.'first_entry'] = $i * $display_entries;
-            $result .= href(url_from_args($url_args), $i + 1)." ";
+            $result .= format_link(url_from_args($url_args), $i + 1)." ";
         }
         $result .= "... ";
         for ($i = $totpages - $surround_pages; $i < $totpages; ++$i) {
             $url_args[$param_prefix.'first_entry'] = $i * $display_entries;
-            $result .= href(url_from_args($url_args), $i + 1)." ";
+            $result .= format_link(url_from_args($url_args), $i + 1)." ";
         }
     }
 

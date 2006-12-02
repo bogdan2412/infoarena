@@ -1,6 +1,7 @@
 <?php
 
 require_once(IA_ROOT.'www/views/sitewide.php');
+require_once(IA_ROOT.'www/views/utilities.php');
 
 check_view($view);
 ?>
@@ -45,8 +46,8 @@ ia_template_topnav($topnav_select, $smf_admin);
 <div id="sidebar">
     <?php if (!identity_anonymous()) { $username = $identity_user['username']; ?>
     <div id="avatar">
-        <a href="<?= htmlentities(url_user_profile($username)) ?>"><?= img(url_user_avatar($username), "avatar") ?></a>
-        <p><strong><a href="<?= htmlentities(url_user_profile($username)) ?>"><?= $username ?></a></strong><br/>
+        <?= format_link(url_user_profile($username), format_user_avatar($username, 50, 50), false) ?>
+        <p><strong><?= format_link(url_user_profile($username), $username) ?></strong><br/>
         <?= htmlentities($identity_user['full_name']) ?></p>
     </div>
     <?php } ?>

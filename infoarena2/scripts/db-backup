@@ -9,9 +9,7 @@ require_once(dirname($argv[0]) . "/utilities.php");
 
 $cmd = sprintf("mysqldump --user=%s --password=%s --host=%s %s > %s",
         DB_USER, DB_PASS, DB_HOST, DB_NAME, IA_ROOT . "backup.sql");
-
 log_print("Running '$cmd'");
-
 system($cmd);
 
 ?>

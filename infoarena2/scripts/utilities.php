@@ -50,4 +50,36 @@ function read_bool($question, $default = null) {
     }
 }
 
+// Magically execute a $cmd.
+// $cmd takes over the entire process.
+// This is a lot harder than it sounds.
+function magic_exec($cmd)
+{
+    $argv = preg_split("/\s/", $cmd, -1, PREG_SPLIT_NO_EMPTY);
+
+    $prog = $argv[0];
+    // Only search path if no slashes.
+    if (strstr($prog, "/") === false) {
+        foreach (explode(':', getenv("PATH")) as $dir) {
+            $exe = realpath($dir . '/' . $prog);
+            //log_print("Try $exe.");
+            if ($exe !== false && is_executable($exe)) {
+                break;
+            }
+            $exe = null;
+        }
+    } else {
+        $exe = realpath($prog);
+        if (!is_executable($exe)) {
+            $exe = null;
+        }
+    }
+
+    if ($exe === null) {
+        log_error("Couldn't find '$prog' executable.");
+    } else {
+        pcntl_exec($exe, array_slice($argv, 1));
+    }
+}
+
 ?>

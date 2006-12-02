@@ -2,6 +2,7 @@
 
 require_once(IA_ROOT.'www/wiki/wiki.php');
 require_once(IA_ROOT.'common/db/textblock.php');
+require_once(IA_ROOT.'www/format/format.php');
 
 // Check the big view variable for consistency.
 function check_view($view) {

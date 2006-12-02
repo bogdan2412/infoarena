@@ -35,28 +35,6 @@ function die_http_error($code = 404, $msg = "File not found") {
     die();
 }
 
-// Build a simple href
-// By default escapes url & content
-// You can set it to false and escape by hand etc.
-function href($url, $content, $escape = true) {
-    if ($escape) {
-        $url = htmlentities($url);
-        $content = htmlentities($content);
-    }
-    return "<a href=\"$url\">$content</a>";
-}
-
-// Format img tag.
-// NOTE: html says alt is REQUIRED.
-// Escapes src/alt by default.
-function img($src, $alt, $escape = true) {
-    if ($escape) {
-        $src = htmlentities($src);
-        $alt = htmlentities($alt);
-    }
-    return "<img src=\"$src\" alt=\"$alt\" />";
-}
-
 // Compute url.
 // The params array contains http get parameter,
 // it's formatted in the end result as a series
@@ -237,7 +215,8 @@ function execute_view($view_file_name, $view) {
         $$view_hash_key = $view_hash_value;
     }
 
-    require_once('views/utilities.php');
+    // NOTE: no includes here, unless you want to get
+    // warnings about function redeclaration.
     include($view_file_name);
     //include('views/vardump.php');
 }

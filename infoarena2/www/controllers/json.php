@@ -1,6 +1,7 @@
 <?php
 
 require_once(IA_ROOT.'common/db/textblock.php');
+require_once(IA_ROOT.'www/wiki/wiki.php');
 
 // This controller serves as a data server for AJAX requests.
 // Instead of generating HTML content to be displayed in a browser,

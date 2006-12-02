@@ -69,7 +69,7 @@ function macro_smflink($args) {
             return macro_error('Invalid link type');
     }
 
-    return "<a href=\"{$url}\">{$title}</a>";
+    return format_link($url, $title);
 }
 
 ?>

@@ -1,13 +1,12 @@
 <?php
 
 include('header.php');
-include(IA_ROOT . 'www/format/format.php');
 
 ?>
 
-<h1>Diferente pentru <?= href(url($page_name), htmlentities($page_name)) ?> intre reviziile
-    <?= href(url($page_name, array('revision' => $revfrom_id)), "#$revfrom_id") ?> si
-    <?= href(url($page_name, array('revision' => $revto_id)), "#$revto_id") ?>
+<h1>Diferente pentru <?= format_link(url($page_name), $page_name) ?> intre reviziile
+    <?= format_link(url($page_name, array('revision' => $revfrom_id)), "#$revfrom_id") ?> si
+    <?= format_link(url($page_name, array('revision' => $revto_id)), "#$revto_id") ?>
 </h1>
 <?php
 

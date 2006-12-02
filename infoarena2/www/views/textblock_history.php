@@ -4,7 +4,7 @@ require_once(IA_ROOT . "www/format/table.php");
 require_once(IA_ROOT . "www/format/format.php");
 ?>
 
-    <h1>Istoria paginii <?= href(url($page_name), htmlentities($page_name)) ?></h1>
+    <h1>Istoria paginii <?= format_link(url($page_name), $page_name) ?></h1>
 
 <?php
     // Format links to a certain textblock revision.
@@ -13,7 +13,7 @@ require_once(IA_ROOT . "www/format/format.php");
         $rev_id = $row['revision_id'];
         $title = $row['title'];
         $url = url($page_name, array('revision' => $rev_id));
-        return href($url, "#$rev_id: $title");
+        return format_link($url, "#$rev_id: $title");
     }
 
     function format_operations($row)
@@ -24,8 +24,8 @@ require_once(IA_ROOT . "www/format/format.php");
         if ($row['revision_id'] == $total_entries) {
             return '<strong>Ultima versiune</strong>';
         } else {
-            return  '['. href($diffurl, "Compara") .']'.
-                    '['. href($resturl, "Incarca") .']';
+            return  '['. format_link($diffurl, "Compara") .']'.
+                    '['. format_link($resturl, "Incarca") .']';
         }
     }
 

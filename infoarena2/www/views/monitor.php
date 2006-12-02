@@ -11,33 +11,33 @@ if (!$jobs) {
 } else {
         // For the score column.
         function format_state($row) {
-            $url = htmlentities(url_job_detail($row['id']));
+            $url = url_job_detail($row['id']);
             if ($row['status'] == 'done') {
                 $msg = htmlentities(sprintf("%s: %s puncte",
                         $row['eval_message'], $row['score']));
                 $msg = "<span style=\"job-status-done\">$msg</span>";
-                return href($url, $msg, false);
+                return format_link($url, $msg, false);
             }
             if ($row['status'] == 'processing') {
                 // FIXME: animation? :)
                 $msg = '<span class="job-status-processing">se evalueaza</span>';
-                return href($url, $msg, false);
+                return format_link($url, $msg, false);
             }
             if ($row['status'] == 'waiting') {
                 $msg = '<span style="job-stats-waiting">in asteptare</span>';
-                return href($url, $msg, false);
+                return format_link($url, $msg, false);
             }
             log_die("Invalid job status");
         }
 
         // For the task column.
         function format_task_link($row) {
-            return href($row['task_page_name'], htmlentities($row['task_title']));
+            return format_link($row['task_page_name'], htmlentities($row['task_title']));
         }
 
         // For the detail column.
         function format_jobdetail_link($val) {
-            return href(url_job_detail($val), "#$val");
+            return format_link(url_job_detail($val), "#$val");
         }
 
     $column_infos = array(
@@ -81,7 +81,6 @@ if (!$jobs) {
 // intensive page.
 ?>
 
-<p><a href="<?= url("documentatie/monitorul-de-evaluare") ?>">Ce este si cum se foloseste</a> monitorul de evaluare?</p>
+<p><?=format_link("documentatie/monitorul-de-evaluare", "Ce este si cum se foloseste")?> monitorul de evaluare?</p>
     
-
 <?php include('footer.php'); ?>

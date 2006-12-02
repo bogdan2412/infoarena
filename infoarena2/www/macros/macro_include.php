@@ -40,4 +40,5 @@ function macro_include($args) {
 
     return wiki_process_text_recursive($textblock['text']);
 }
+
 ?>

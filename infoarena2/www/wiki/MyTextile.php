@@ -8,7 +8,8 @@ class MyTextile extends Textile {
     // mailto: and <proto>:// and mail adresses of sorts.
     public $external_url_exp = '/^([a-z]+:\/\/|mailto:[^@]+@[^@]+|[^@]+@[^@])/i';
 
-    private $my_error_reporting = 0x700;
+    // FIXME: If you see a pointless textile error try tweaking this value.
+    private $my_error_reporting = 0xF7F7;
 
     function MyTextile($options = array()) {
         @Textile::Textile($options);
@@ -155,9 +156,12 @@ class MyTextile extends Textile {
 
     // Save error_reporting_level.
     function process($content) {
+        //log_print("Starting textile");
         $this->error_reporting_level = error_reporting($this->my_error_reporting);
-        return parent::process($content);
+        $res = parent::process($content);
         error_reporting($this->error_reporting_level);
+        //log_print("Stopping textile");
+        return $res;
     }
 
     // Wrap around do_format_block, restore errors.
@@ -166,10 +170,14 @@ class MyTextile extends Textile {
             return do_format_block($args);
         }
         error_reporting($this->error_reporting_level);
+
         //log_print("Textile format_block");
         //log_print_r($args);
+        //log_backtrace();
         $res = $this->do_format_block($args);
         $res = getattr($args, 'pre', '').$res.getattr($args, 'post', '');
+        //log_print("DONE format_block {$args['text']}");
+
         error_reporting($this->my_error_reporting);
         return $res;
     }
@@ -180,9 +188,12 @@ class MyTextile extends Textile {
             return do_format_link($args);
         }
         error_reporting($this->error_reporting_level);
+
         //log_print("Textile format_link");
         //log_print_r($args);
         $res = $this->do_format_link($args);
+        //log_print("DONE");
+
         error_reporting($this->my_error_reporting);
         return $res;
     }
@@ -199,7 +210,12 @@ class MyTextile extends Textile {
             return do_format_image($args);
         }
         error_reporting($this->error_reporting_level);
+
+        //log_print("Textile format_image");
+        //log_print_r($args);
         $res = $this->do_format_image($args);
+        //log_print("DONE");
+
         error_reporting($this->my_error_reporting);
         return $res;
     }

@@ -3,22 +3,28 @@
 
 require_once(dirname($argv[0]) . "/utilities.php");
 
+if (read_bool("Rebuild dep-check.db?", false)) {
+    system(IA_ROOT . "scripts/dep-rebuild");
+}
+
 // read dependencies db
-$fd = fopen("dep-check.db", "r");
-log_assert($fd);
 $exports = array();
-while (!feof($fd)) {
-    $line = trim(fgets($fd));
-    if (!$line) {
-        break;
+$dep_buffer = file_get_contents(IA_ROOT."scripts/dep-check.db");
+foreach (preg_split("/[\n\r]+/", $dep_buffer, -1, PREG_SPLIT_NO_EMPTY) as $line) {
+    if (!($line = trim($line))) {
+        continue;
     }
+
     list($ident, $fname) = split("\t", $line);
+
     if (!isset($exports[$fname])) {
         $exports[$fname] = array();
     }
+
     $exports[$fname][] = $ident;
 }
-fclose($fd);
+
+//log_print_r($exports);
 
 // some modules are bound to be included anywhere so we skip them for checking
 unset($exports['config.php']);
@@ -29,10 +35,6 @@ unset($exports['www/config.php']);
 unset($exports['www/utilities.php']);
 unset($exports['www/index.php']);
 unset($exports['www/identity.php']);
-unset($exports['www/wiki/wiki.php']);
-unset($exports['www/macros/macros.php']);
-unset($exports['www/wiki/MyTextile.php']);
-unset($exports['www/wiki/Textile.php']);
 unset($exports['www/views/utilities.php']);
 unset($exports['eval/utilities.php']);
 unset($exports['eval/config.php']);
@@ -46,9 +48,10 @@ unset($exports['common/db/db_mysql.php']);
 // grep for all identifiers
 // this will take forever
 foreach ($exports as $module => $idents) {
+    // log_print_r("Processing $module");
     foreach ($idents as $ident) {
         // do grep
-        $fd = popen("./_dcgrep {$ident} {$module} ".IA_ROOT, "r");
+        $fd = popen(IA_ROOT."scripts/_dcgrep {$ident} {$module} ".IA_ROOT, "r");
         log_assert($fd);
         $buffer = fread($fd, 500*1024);
         pclose($fd);

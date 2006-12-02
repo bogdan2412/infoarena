@@ -7,26 +7,7 @@ require_once(dirname($argv[0]) . "/utilities.php");
 // Uses auth stuff from config.php.
 // FIXME: password visible in ps list. How retarded.
 
-foreach (explode(':', getenv("PATH")) as $dir) {
-    $exe = realpath($dir . '/mysql');
-    //log_print("Try $exe.");
-    if ($exe !== false && is_executable($exe)) {
-        break;
-    }
-    $exe = null;
-}
-
-if ($exe === null) {
-    log_error("Couldn't find mysql client executable.");
-} else {
-    log_print("Executing mysql client($exe).");
-    log_print("");
-    pcntl_exec($exe, array(
-            "--user=" . DB_USER,
-            "--password=" . DB_PASS,
-            "--host=" . DB_HOST,
-            DB_NAME,
-    ));
-}
+magic_exec(sprintf("  mysql   --user=%s --password=%s --host=%s %s ",
+            DB_USER, DB_PASS, DB_HOST, DB_NAME));
 
 ?>

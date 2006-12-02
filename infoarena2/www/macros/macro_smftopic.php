@@ -15,7 +15,7 @@ function macro_smftopic($args) {
     $topic_id = getattr($args, 'topic_id');
     $count = getattr($args, 'count', 5);
 
-    if (!$topic_id) {
+    if (is_null($topic_id)) {
         return macro_error('Expecting argument `topic_id`');
     }
     if (!is_numeric($count) || 0 >= $count) {

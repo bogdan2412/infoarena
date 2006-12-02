@@ -9,7 +9,6 @@ check_requirements();
 require_once(IA_ROOT."common/security.php");
 require_once(IA_ROOT."www/utilities.php");
 require_once(IA_ROOT."www/identity.php");
-require_once(IA_ROOT."www/wiki/wiki.php");
 
 // restore identity (if such a session exists)
 identity_restore();
