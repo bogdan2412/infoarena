@@ -42,7 +42,14 @@ function is_round_id($round_id) {
     return preg_match('/^[a-z0-9][a-z0-9_]*$/i', $round_id) && strlen($round_id) < 16;
 }
 
+// Check valid score names.
+function is_score_name($score_name)
+{
+    return preg_match('/^[a-z0-9][a-z0-9_]*$/i', $score_name) && strlen($score_name) < 16;
+}
+
 // Checks if $round is a valid round.
+// FIXME: move to common/round.php, proper messages.
 function is_round($round) {
     return is_array($round) &&
            isset($round['title']) && is_string($round['title']) &&

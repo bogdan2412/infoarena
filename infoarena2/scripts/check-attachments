@@ -63,7 +63,6 @@ unset($extra_atts);
 unset($extra_files);
 
 // Again, in case we changed something.
-$atts = attachment_get_all("%", "%");
 $files = glob(IA_ROOT . "attach/*");
 
 if (read_bool("Enforce permissions?", no)) {

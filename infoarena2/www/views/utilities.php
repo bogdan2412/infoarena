@@ -66,7 +66,7 @@ function ferr_span($param_name, $escape_html = true) {
 // inside static templates / views.
 function wiki_include($page_name, $template_args = null) {
     $textblock = textblock_get_revision($page_name);
-    log_assert($textblock);
+    log_assert($textblock, "Nu am gasit $page_name");
 
     if (!is_null($template_args)) {
         log_print("Replacing stuff in $page_name");

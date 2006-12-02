@@ -7,6 +7,7 @@ require_once(IA_ROOT . "common/db/task.php");
 require_once(IA_ROOT . "common/db/round.php");
 require_once(IA_ROOT . "common/db/attachment.php");
 require_once(IA_ROOT . "common/db/user.php");
+require_once(IA_ROOT . "common/db/score.php");
 require_once(IA_ROOT . "common/db/smf.php");
 
 // Attach a file(from the disk) to a certain page as attachment $attname.
@@ -246,9 +247,27 @@ if (read_bool("Import scores?", false)) {
         // FIXME: USERS.
         $user = user_get_by_username($score['userID']);
         $uid = $user['id'];
+      
+        $row = "User {$score['userID']} task $tid round $rid score {$score['score']}";
+        // Check score entry.
+        if (!is_whole_number($uid)) {
+            log_warn("Bad user {$score['userID']}");
+            log_print($row);
+            continue;
+        }
+        if (is_task_id($tid) == false || task_get($tid) == null) {
+            log_warn("Bad task $tid, ignoring");
+            log_print($row);
+            continue;
+        }
+        if (is_round_id($rid) == false || round_get($rid) == null) {
+            log_warn("Bad round $rid, ignoring");
+            log_print($row);
+            continue;
+        }
 
         score_update("score", $uid, $tid, $rid, $score['score']);
-        score_update("submit-count", $uid, $tid, $rid, $score['score']);
+        score_update("submit_count", $uid, $tid, $rid, $score['score']);
     }
 }
 
