@@ -72,8 +72,6 @@ function format_user_avatar($user_name, $width = 50, $height = 50)
     log_assert(is_whole_number($height), "Invalid height");
     return format_tag("img", array(
             "src" => url_user_avatar($user_name, "{$width}x{$height}"),
-            "width" => $width,
-            "height" => $height,
             "alt" => ":)",
     ));
 }
@@ -81,7 +79,7 @@ function format_user_avatar($user_name, $width = 50, $height = 50)
 // Format a tiny link to an user.
 // FIXME: proper styling
 function format_user_link($user_name, $user_fullname) {
-    return format_href(url_user_profile($user_name), $user_fullname);
+    return format_link(url_user_profile($user_name), $user_fullname);
 }
 
 // Format a tiny user link, with a 16x16 avatar.

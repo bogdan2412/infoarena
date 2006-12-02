@@ -81,7 +81,7 @@ function textblock_copy_replace($srcprefix, $dstprefix, $replace, $security, $us
 // Does template replacing in a textblock.
 // Replaces all occurences of %key% with value, for all key, value pairs
 // in the $replace array.
-// 
+//
 // You should mainly use this horrible painful hack on templates.
 //
 // MODIFIES $textblock

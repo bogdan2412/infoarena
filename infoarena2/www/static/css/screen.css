@@ -223,7 +223,6 @@ The basic layout of the homepage is as follows:
 
 #wikiOps ul {
     float:right;
-    border:1px solid #D3D1C5;
 }
 
 #wikiOps li {
@@ -689,8 +688,8 @@ form.round li#field_tasks select {
     padding: .2em;
 }
 
-/* wiki vertical menu */
-.wiki_text_block .vmenu {
+/* vertical menu */
+.vmenu {
     float: right;
     border: 1px solid silver;
     width: 13em;
@@ -699,34 +698,71 @@ form.round li#field_tasks select {
     background-color: #f0f0f0;
 }
 
-.wiki_text_block .vmenu li {
+.vmenu li {
     margin-left: 1em;
     list-style-type: none;
 }
 
-.wiki_text_block .vmenu li.section {
+.vmenu li.section {
     margin-left: 0;
     font-weight: bold;
 }
 
-.wiki_text_block .vmenu br {
+.vmenu br {
     display: none;
 }
 
-.wiki_text_block .vmenu li a {
+.vmenu li a {
     display: block;
     width: 95%;
     padding-left: .4em;
 }
 
-.wiki_text_block .vmenu li a:hover {
+.vmenu li a:hover {
     background-color: #006699;
     color: white;
     text-decoration: none;
 }
 
-.wiki_text_block .vmenu li a:visited {
+.vmenu li a:visited {
     border-right: 2px solid white;
+}
+
+/* horizontal tabs */
+.htabs {
+    padding: 2px 0;
+    margin: 1em 0 0 0;
+    border-bottom: 1px solid #778;
+    font-weight: bold;
+}
+
+.htabs li {
+    list-style: none;
+    margin: 0;
+    display: inline;
+}
+
+.htabs li a {
+    padding: 3px 0.5em;
+    margin-left: 3px;
+    border: 1px solid #778;
+    border-bottom: none;
+    background: #DED;
+    text-decoration: none;
+}
+
+.htabs li a:link { color: #484; }
+.htabs li a:visited { color: #676; }
+
+.htabs li a:hover {
+    color: #000;
+    background: #AEA;
+    border-color: #272;
+}
+
+.htabs li.active a {
+    background: white;
+    border-bottom: 1px solid white;
 }
 
 /* Job details */

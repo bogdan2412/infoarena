@@ -164,7 +164,13 @@ else if ('resetpass' == $urlstart) {
     controller_resetpass();
 }
 
-// textblock view
+// user profile, view personal page / statistics / rating evolution
+else if (TB_USER_PREFIX==$urlstart.'/' && ('view' == $action || 'rating' == $action || 'stats' == $action )) {
+    require_once(IA_ROOT.'www/controllers/user.php');
+    controller_user_view($page_id, $action);
+}
+
+// general textblock view
 else if ($action == 'view') {
     require_once(IA_ROOT.'www/controllers/textblock.php');
     controller_textblock_view($page, request('revision'));

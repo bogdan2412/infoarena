@@ -20,7 +20,7 @@ function macro_userinfo($args) {
     if ($last_user_id != $user_id) {
         $user = user_get_by_username($user_id);
         if (!$user) {
-            return macro_error("User inexistent.");
+            return macro_error("No such username: ".$user_id);
         }
     }
 
