@@ -33,7 +33,7 @@ function db_escape_array($array)
 // Builds a where clause for a score query.
 // Returns an array of conditions; you should do something like
 // join($where, ' AND ');
-function build_where_clauses($user, $task, $round)
+function score_build_where_clauses($user, $task, $round)
 {
     $where = array();
 
@@ -62,14 +62,24 @@ function build_where_clauses($user, $task, $round)
     return $where;
 }
 
+// Build a query for a certain score.
+// Can be used as a subquery.
+function score_build_query($score, $user, $task, $round)
+{
+    $cond = score_build_where_clauses($user, $task, $round);
+    $cond[] = "(id = '".db_escape($score['name'])."')";
+    $query = "SELECT SUM(score) FROM ia_score WHERE " . implode(" AND ", $cond);
+               
+}
+
 // Get scores.
 // $user, $task, $round can be null, string or an array.
 // If null it's ignored, otherwise only scores for those users/tasks/rounds are counted.
-function score_get($rank_id, $user, $task, $round, $start, $count, $groupby = "user_id")
+function score_get($score_id, $user, $task, $round, $start, $count, $groupby = "user_id")
 {
-    log_assert($rank_id !== null);
-    $where = build_where_clauses($user, $task, $round);
-    $where[] = sprintf("ia_score.`id` = '%s'", db_escape($rank_id));
+    log_assert($score_id !== null);
+    $where = score_build_where_clauses($user, $task, $round);
+    $where[] = sprintf("ia_score.`id` = '%s'", db_escape($score_id));
     $query = sprintf("
             SELECT SQL_CALC_FOUND_ROWS
                 ia_score.`id` as `rank_id`, `user_id`, `task_id`, `round_id`, SUM(`score`) as score, 
@@ -80,6 +90,7 @@ function score_get($rank_id, $user, $task, $round, $start, $count, $groupby = "u
             ORDER BY `score` DESC LIMIT %s, %s",
             join($where, " AND "), $groupby, $start, $count);
     $scores = db_fetch_all($query);
+    
     return array(
             'scores' => $scores,
             'total_rows' => db_query_value("SELECT FOUND_ROWS();"),

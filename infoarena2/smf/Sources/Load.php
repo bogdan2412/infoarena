@@ -983,8 +983,8 @@ function loadMemberContext($user)
 		$avatar_height = '';
 	}
 
-    // use infoarena avatars
-    $avatar_img_src = url_user_avatar($profile['memberName'], '50x50', true);
+        // use infoarena avatars
+        $avatar_img_src = url_user_avatar($profile['memberName'], '75x75', true);
 
 	// What a monstrous array...
 	$memberContext[$user] = array(

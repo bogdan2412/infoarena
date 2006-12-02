@@ -74,7 +74,7 @@ function round_get_task_info($round_id, $first = 0, $count = null, $user_id = nu
                           FROM ia_round_task as round_task
                           LEFT JOIN ia_task as task ON task.id = round_task.task_id
                           WHERE `round_task`.`round_id` = LCASE('%s')
-                          ORDER BY task.`title` LIMIT %d, %d",
+                          ORDER BY task.`order` LIMIT %d, %d",
                          db_escape($round_id), db_escape($first), db_escape($count));
     } else {
         log_assert(is_whole_number($user_id));
@@ -87,7 +87,7 @@ function round_get_task_info($round_id, $first = 0, $count = null, $user_id = nu
                                 score.round_id = LCASE('%s') AND
                                 score.task_id = round_task.task_id
                           WHERE `round_task`.`round_id` = LCASE('%s')
-                          ORDER BY task.`title` LIMIT %d, %d",
+                          ORDER BY task.`order` LIMIT %d, %d",
                          db_escape($user_id), db_escape($score_id), db_escape($round_id),
                          db_escape($round_id), db_escape($first), db_escape($count));
     }
@@ -98,8 +98,8 @@ function round_get_task_info($round_id, $first = 0, $count = null, $user_id = nu
 function round_get_task_count($round_id)
 {
     $query = sprintf("SELECT COUNT(*) FROM ia_round_task
-                    WHERE `round_id` = LCASE('%s')",
-                    db_escape($round_id));
+                      WHERE `round_id` = LCASE('%s')",
+                     db_escape($round_id));
     return db_query_value($query);
 }
 

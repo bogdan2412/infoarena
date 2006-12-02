@@ -47,8 +47,7 @@ function task_update_parameters($task_id, $param_values) {
 // information to yield a correct answer.
 function task_list_info() {
     $query = sprintf("SELECT *
-                      FROM ia_task
-                      ORDER BY ia_task.`title`");
+                      FROM ia_task ORDER BY `order`");
     $list = array();
     foreach (db_fetch_all($query) as $row) {
         $list[$row['id']] = $row;
@@ -62,7 +61,7 @@ function task_get_parent_rounds($task_id) {
         SELECT DISTINCT round_id
         FROM ia_round_task
         WHERE task_id='%s'
-       ORDER BY round_id
+        ORDER BY round_id
     ", db_escape($task_id));
 
     $rows = db_fetch_all($query);

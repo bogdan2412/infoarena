@@ -136,16 +136,15 @@ function format_table($data, $column_infos = null, $options = null)
         $result .= '</tr>';
     }
 
-    // Paging.
-    if (getattr($options, 'pager_style', 'none') != 'none') {
-        $result .= '<tr><td colspan="0">';
-        $result .= format_pager($options);
-        $result .= '</td></tr>';
-    }
-
     $result .= "</tbody>";
 
     $result .= "</table>";
+
+    // Paging.
+    if (getattr($options, 'pager_style', 'none') != 'none') {
+        $result .= format_pager($options);
+    }
+
     return $result;
 }
 

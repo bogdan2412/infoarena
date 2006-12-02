@@ -15,13 +15,13 @@ include('header.php');
 
 <?php
 $userlink = format_user_tiny($rev['user_name'], $rev['user_fullname']);
-$pagelink = href(url($rev['name'], array(), true), $rev['title']);
+$pagelink = format_link(url($rev['name'], array(), true), $rev['title']);
 $diffurl_params = array(
         'action' => 'diff',
         'rev_to' => $rev['revision_id'],
         'rev_from' => $rev['revision_id'] - 1,
 );
-$difflink = href(url($rev['name'], $diffurl_params, true), "diff");
+$difflink = format_link(url($rev['name'], $diffurl_params, true), "diff");
 $tstamp = date('j/n H:i', strtotime($rev['timestamp']));
 echo "$tstamp: $userlink a modificat $pagelink ($difflink).";
 ?>

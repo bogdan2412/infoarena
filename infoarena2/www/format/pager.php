@@ -102,9 +102,9 @@ function format_standard_pager($options)
     $totpages = (int)(($total_entries + $display_entries - 1) / $display_entries);
 
     if ($totpages == 1) {
-        return "Exista o singura pagina.";
+        return "";
     }
-    $result = "Vezi pagina ".($curpage + 1)." din $totpages: ";
+    $result = "Vezi pagina: ";
     if ($curpage < 8) {
         for ($i = 0; $i < $curpage; ++$i) {
             $url_args[$param_prefix.'first_entry'] = $i * $display_entries;
@@ -121,7 +121,7 @@ function format_standard_pager($options)
             $result .= format_link(url_from_args($url_args), $i + 1)." ";
         }
     }
-    $result .= ($curpage + 1)." ";
+    $result .= '<span class="selected"><strong>'.($curpage + 1)."</strong></span> ";
     if ($totpages - $curpage < 3 + 2 * $surround_pages) {
         for ($i = $curpage + 1; $i < $totpages; ++$i) {
             $url_args[$param_prefix.'first_entry'] = $i * $display_entries;

@@ -41,13 +41,9 @@ function controller_changes($page_name) {
                     $rev['title'] , $rev['user_name']);
 
             $userlink = format_user_tiny($rev['user_name'], $rev['user_fullname']);
-            $pagelink = href(url($rev['name'], array(), true), htmlentities($rev['title']));
-            $diffurl_params = array(
-                    'action' => 'diff',
-                    'rev_from' => $rev['revision_id'],
-                    'rev_to' => $rev['revision_id'] - 1,
-            );
-            $difflink = href(url($rev['name'], $diffurl_params, true), "modificari");
+            $pagelink = format_link(url_textblock($rev['name'], true), $rev['title']);
+            $diffurl = url_textblock_diff($rev['name'], $rev['revision_id'], $rev['revision_id'] - 1);
+            $difflink = format_link($diffurl, "modificari");
             $tstamp = $rev['timestamp'];
             $item['description'] = "La data de $tstamp pagina $pagelink a fost modificata de $userlink($difflink).";
 
