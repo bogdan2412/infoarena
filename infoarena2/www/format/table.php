@@ -99,11 +99,24 @@ function format_table($data, $column_infos = null, $options = null)
     for ($i = 0; $i < count($data); ++$i) {
         $row = $data[$i];
 
-        // Odd/even rows.
+        // row style class (you can use both row_style & css_row_parity)
+        $func = getattr($options, 'row_style', null);
+        $class = '';
+        if ($func && is_callable($func)) {
+            $class .= $func($row);
+        }
         if (getattr($options, 'css_row_parity', true)) {
-            $result .= "<tr class='" . ($i % 2 ? 'even' : 'odd') . "'>";
-        } else {
-            $result .= "<tr>";
+            if ($class) {
+                $class .= ' ';
+            }
+            $class .= ($i % 2 ? 'even' : 'odd');
+        }
+
+        if (!$class) {
+            $result .= '<tr>';
+        }
+        else {
+            $result .= '<tr class="'.htmlentities($class).'">';
         }
 
         // Dump the actual data.
@@ -131,7 +144,14 @@ function format_table($data, $column_infos = null, $options = null)
                 }
             }
 
-            $result .= "<td>$val</td>";
+            $args = array();
+            if (isset($column['css_class'])) {
+                $args['class'] = $column['css_class'];
+            }
+            if (isset($column['css_style'])) {
+                $args['style'] = $column['css_style'];
+            }
+            $result .= format_tag('td', $args, $val);
         }
         $result .= '</tr>';
     }

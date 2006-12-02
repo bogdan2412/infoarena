@@ -74,7 +74,6 @@ function score_build_query($score, $user, $task, $round)
     $cond = score_build_where_clauses($user, $task, $round);
     $cond[] = "(id = '".db_escape($score['name'])."')";
     $query = "SELECT SUM(score) FROM ia_score WHERE " . implode(" AND ", $cond);
-               
 }
 
 // Get scores.
@@ -91,11 +90,11 @@ function score_get($score_name, $user, $task, $round, $start, $count, $groupby =
                 ia_user.username as user_name, ia_user.full_name as user_full
             FROM ia_score 
                 LEFT JOIN ia_user ON ia_user.id = ia_score.user_id
-            WHERE %s GROUP BY %s 
+            WHERE %s GROUP BY %s
             ORDER BY `score` DESC LIMIT %s, %s",
             join($where, " AND "), $groupby, $start, $count);
     $scores = db_fetch_all($query);
-    
+
     return array(
             'scores' => $scores,
             'total_rows' => db_query_value("SELECT FOUND_ROWS();"),

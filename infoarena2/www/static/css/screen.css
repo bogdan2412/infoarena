@@ -61,6 +61,10 @@ div.loading img {
     border: 1px dotted silver;
 }
 
+table td.number, table th.number {
+    text-align: right;
+}
+
 /* sidebar2 (right) */
 #sidebar2 {
     float: right;
@@ -88,7 +92,6 @@ div.loading img {
 }
 
 /* block quotes */
-
 blockquote {
     text-indent: 25px;
     background: url('../images/quotes1.png');
@@ -927,8 +930,41 @@ div.normal-user img {
 }
 
 /* monitor */
-
 table.monitor {
     width: 95%; /* Fix IE */
     margin: .5em 0 2em 0;
 }
+
+/* task list */
+.tasks td.score, .tasks th.score {
+    width: 10%;
+    padding-right: 4pt;
+}
+.tasks td.score {
+    font-size: .7em;
+    color: gray;
+}
+.tasks td.task {
+    padding-left: 23px;
+    background-repeat: no-repeat;
+    background-position: 3px center;
+}
+.tasks tr.solved td.task {
+    background-image: url('../images/icons/task_solved.gif');
+}
+.tasks tr.tried td.task {
+    background-image: url('../images/icons/task_tried.gif');
+}
+.tasks tr.tried td.score, .tasks tr.solved td.score {
+    color: black;
+    font-size: 1em;
+}
+
+/* pager (paginator) */
+.pager a, .pager strong {
+    padding: .2em .5em .2em .5em;
+}
+.pager a:hover {
+    background-color: silver;
+}
+

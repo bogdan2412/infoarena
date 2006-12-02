@@ -4,16 +4,29 @@ require_once(IA_ROOT . "www/format/table.php");
 require_once(IA_ROOT . "www/format/pager.php");
 require_once(IA_ROOT . "common/db/round.php");
 
-function format_score_column($val)
-{
-    if ($val === null) {
-        $val = 0;
+function format_score_column($val) {
+    if (is_null($val)) {
+        return 'N/A';
     }
-    log_assert(is_whole_number($val));
-    if ($val == 100) {
-        return '100 !!!';
-    } else {
+    else {
         return $val;
+    }
+}
+
+function task_row_style($row) {
+    $score = getattr($row, 'score');
+    if (is_null($score)) {
+        return '';
+    }
+
+    log_assert(is_numeric($score));
+    $score = (int)$score;
+
+    if (100 == $score) {
+        return 'solved';
+    }
+    else {
+        return 'tried';
     }
 }
 
@@ -53,27 +66,28 @@ function macro_tasks($args) {
     } else {
         $user_id = identity_get_user_id();
     }
-//    log_print("UID: $user_id");
 
     // get round tasks
     $tasks = round_get_task_info($round_id,
-            $options['first_entry'],
-            $options['display_entries'],
-            $user_id, ($scores ? 'score' : null));
+                                 $options['first_entry'],
+                                 $options['display_entries'],
+                                 $user_id, ($scores ? 'score' : null));
     $options['total_entries'] = round_get_task_count($round_id);
+    $options['row_style'] = 'task_row_style';
+    $options['css_class'] = 'tasks';
 
     $column_infos = array(
             array(
                 'title' => 'Titlul problemei',
+                'css_class' => 'task',
                 'rowform' => create_function('$row',
                         'return "<a href=\"".url($row["page_name"])."\">".$row["title"]."</a>";'),
             ),
     );
     if ($user_id !== null) {
-       
         $column_infos[] = array (
                 'title' => 'Scorul tau',
-                'css_style' => 'width:10%',
+                'css_class' => 'number score',
                 'key' => 'score',
                 'valform' => 'format_score_column',
         );
