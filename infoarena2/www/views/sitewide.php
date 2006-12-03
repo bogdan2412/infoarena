@@ -1,5 +1,7 @@
 <?php
 
+require_once(IA_ROOT."www/format/format.php");
+
 // site-wide templates (templates shared with SMF / search)
 //
 // This file may be included from different environments
