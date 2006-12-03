@@ -93,7 +93,7 @@ function format_user_tiny($user_name, $user_fullname) {
     $result .= "<a href=\"$user_url\">";
     $result .= format_user_avatar($user_name, 16, 16);
     $result .= "<span class=\"fullname\">$user_fullname</span> ";
-    $result .= "<span class=\"username\">($user_name)</span> ";
+    $result .= "<span class=\"username\">".htmlentities($user_name)."</span> ";
     $result .= "</a></div>";
 
     return $result;
@@ -110,7 +110,7 @@ function format_user_normal($user_name, $user_fullname) {
     $result .= "<a href=\"$user_url\">";
     $result .= format_user_avatar($user_name, 32, 32);
     $result .= "<span class=\"fullname\">$user_fullname</span> <br />";
-    $result .= "<span class=\"username\">$user_name</span> ";
+    $result .= "<span class=\"username\">".htmlentities($user_name)."</span> ";
     $result .= "</a></div>";
 
     return $result;

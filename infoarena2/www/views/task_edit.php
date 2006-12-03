@@ -3,9 +3,9 @@ require_once(IA_ROOT."common/task.php");
 include('views/header.php');
 ?>
 
-<h1><?= getattr($view, 'title') ?></h1>
+<h1><?= htmlentities(getattr($view, 'title')) ?></h1>
 
-<form action="<?= getattr($view, 'action') ?>" method="post" class="task">
+<form action="<?= htmlentities(getattr($view, 'action')) ?>" method="post" class="task">
     <h2>Despre problema</h2>
 
     <ul class="form">
@@ -14,14 +14,13 @@ include('views/header.php');
             <input type="text" name="author" value="<?= fval('author') ?>" id="form_author"/>
             <?= ferr_span('author') ?>
         </li>
-        
+
         <li id="field_source">
             <label for="form_source">Sursa</label>
             <input type="text" name="source" value="<?= fval('source') ?>" id="form_source"/>
             <?= ferr_span('source') ?>
         </li>
-        
-
+ 
         <li id="field_hidden">
             <label for="form_hidden">Vizibilitate</label>
                 <select name="hidden" id="form_hidden">

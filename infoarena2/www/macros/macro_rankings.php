@@ -31,13 +31,13 @@ function macro_rankings($args) {
     $rankings = $res['scores'];
 
     $column_infos = array(
-            array(
-                'title' => 'Nume',
-                'key' => 'user_full',
-                'rowform' => create_function('$row',
-                        'return format_user_normal($row["user_name"], $row["user_full"]);'),
-            ),
-            array('title' => 'Scor', 'key' => 'score'),
+        array(
+            'title' => 'Nume',
+            'key' => 'user_full',
+            'rowform' => create_function('$row',
+                                         'return format_user_normal($row["user_name"], $row["user_full"]);'),
+        ),
+        array('title' => 'Scor', 'key' => 'score'),
     );
     $options['total_entries'] = $res['total_rows'];
 

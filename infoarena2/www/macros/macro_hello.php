@@ -5,7 +5,7 @@
 // There is an extra global argument called page_name.
 function macro_hello($args) {
     $target = getattr($args, 'target', 'anonim');
-    return '<strong>Hello, '.$target.'</strong>';
+    return '<strong>Hello, '.htmlentities($target).'</strong>';
 }
 
 ?>

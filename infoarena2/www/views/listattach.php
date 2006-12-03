@@ -1,25 +1,21 @@
 <?php include('header.php'); ?>
 
-    <h1>Atasamente pentru pagina <a href="<?= url($view['page_name']) ?>">
-        <?= $view['page_name'] ?></a></h1>
+    <h1>Atasamente pentru pagina <a href="<?= htmlentities(url($view['page_name'])) ?>">
+        <?= htmlentities($view['page_name']) ?></a></h1>
 
     <ul class="attach">
     <?php foreach ($view['attach_list'] as $v) { ?>
     <li>
-        <a href="<?= url($view['page_name'],array ('action' => 'download', 'file'=> $v['name'])) ?>">
-        <?= $v['name'] ?></a><span class="details"><?= ", atasat de " ?>
-        <a href="<?= url(TB_USER_PREFIX.$v['username']) ?>"><?= htmlentities($v['username']) ?></a>
-        <?= " la ".$v['timestamp'].", " ?></span>
-        <a href="<?= url($view['page_name'],array ('action' => 'attach-del', 'file'=> $v['name'])) ?>">
-        Sterge </a>
+        <?= format_link(url($view['page_name'], array('action' => 'download', 'file' => $v['name'])), $v['name']) ?>
+        atasat de
+        <?= format_link(url(TB_USER_PREFIX.$v['username']), $v['username']) ?>
+
+        <?= " la ".htmlentities($v['timestamp']).", " ?></span>
+        <?= format_link(url($view['page_name'], array('action' => 'attach-del', 'file'=> $v['name'])), 'Sterge') ?>
     </li>
     <?php } ?>
     </ul>
 
-    <?php
-    $create_link = htmlentities(url($page_name, array('action' => 'attach')));
-    ?>
-
-    <p><a href="<?php echo $create_link ?>">Ataseaza un alt fisier</a></p>
+    <p><?= format_link(url($page_name, array('action' => 'attach')), 'Ataseaza un alt fisier') ?></p>
 
 <?php include('footer.php'); ?>

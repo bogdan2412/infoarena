@@ -1,8 +1,8 @@
 <?php include('header.php'); ?>
 
-<h1><?= $title ?></h1>
+<h1><?= htmlentities($title) ?></h1>
 
-<form action="<?= url($page_name) ?>" method="post" class="hollyfix">
+<form action="<?= htmlentities(url($page_name)) ?>" method="post" class="hollyfix">
 <fieldset>
     <input type="hidden" name="action" value="move" />
 

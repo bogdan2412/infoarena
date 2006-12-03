@@ -19,7 +19,7 @@
 
 </div>
 
-<form enctype="multipart/form-data" action="<?= $action ?>" method="post" class="profile hollyfix">
+<form enctype="multipart/form-data" action="<?= htmlentities($action) ?>" method="post" class="profile hollyfix">
 <fieldset>
     <legend>Schimba parola</legend>
     <ul class="form">
@@ -50,7 +50,7 @@
             <?php
                 // display avatar
                 $avatar_url = url_user_avatar($user['username'], "150x150");
-                echo '<img class="avatar" src="'.$avatar_url.'"/>';
+                echo '<img class="avatar" src="'.htmlentities($avatar_url).'"/>';
             ?>
         </li>
         <li>

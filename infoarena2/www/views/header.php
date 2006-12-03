@@ -11,21 +11,21 @@ check_view($view);
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-2" />
     <title><?= htmlentities(getattr($view, 'title')) ?></title>
 
-    <link type="text/css" rel="stylesheet" href="<?= url('static/css/sitewide.css') ?>"/>
-    <link type="text/css" rel="stylesheet" href="<?= url('static/css/screen.css') ?>"/>
-    <link type="text/css" rel="stylesheet" href="<?= url('static/css/tabber.css') ?>"/>
-    <link type="text/css" rel="stylesheet" href="<?= url('static/css/SyntaxHighlighter.css') ?>"/>
-    <script type="text/javascript" src="<?= url('static/js/config.js.php') ?>"></script>
-    <script type="text/javascript" src="<?= url('static/js/MochiKit.js') ?>"></script>
-    <script type="text/javascript" src="<?= url('static/js/default.js') ?>"></script>
-    <script type="text/javascript" src="<?= url('static/js/tabber-minimized.js') ?>"></script>
-    <script type="text/javascript" src="<?= url('static/js/submit.js') ?>"></script>
-    <script type="text/javascript" src="<?= url('static/js/remotebox.js') ?>"></script>
-    <script type="text/javascript" src="<?= url('static/js/sh/shCore.js') ?>"></script>
-    <script type="text/javascript" src="<?= url('static/js/sh/shBrushCpp.js') ?>"></script>
-    <script type="text/javascript" src="<?= url('static/js/sh/shBrushDelphi.js') ?>"></script>
-    <script type="text/javascript" src="<?= url('static/js/sh/shBrushJava.js') ?>"></script>
-    <script type="text/javascript" src="<?= url('static/js/sh/shInit.js') ?>"></script>
+    <link type="text/css" rel="stylesheet" href="<?= htmlentities(url('static/css/sitewide.css')) ?>"/>
+    <link type="text/css" rel="stylesheet" href="<?= htmlentities(url('static/css/screen.css')) ?>"/>
+    <link type="text/css" rel="stylesheet" href="<?= htmlentities(url('static/css/tabber.css')) ?>"/>
+    <link type="text/css" rel="stylesheet" href="<?= htmlentities(url('static/css/SyntaxHighlighter.css')) ?>"/>
+    <script type="text/javascript" src="<?= htmlentities(url('static/js/config.js.php')) ?>"></script>
+    <script type="text/javascript" src="<?= htmlentities(url('static/js/MochiKit.js')) ?>"></script>
+    <script type="text/javascript" src="<?= htmlentities(url('static/js/default.js')) ?>"></script>
+    <script type="text/javascript" src="<?= htmlentities(url('static/js/tabber-minimized.js')) ?>"></script>
+    <script type="text/javascript" src="<?= htmlentities(url('static/js/submit.js')) ?>"></script>
+    <script type="text/javascript" src="<?= htmlentities(url('static/js/remotebox.js')) ?>"></script>
+    <script type="text/javascript" src="<?= htmlentities(url('static/js/sh/shCore.js')) ?>"></script>
+    <script type="text/javascript" src="<?= htmlentities(url('static/js/sh/shBrushCpp.js')) ?>"></script>
+    <script type="text/javascript" src="<?= htmlentities(url('static/js/sh/shBrushDelphi.js')) ?>"></script>
+    <script type="text/javascript" src="<?= htmlentities(url('static/js/sh/shBrushJava.js')) ?>"></script>
+    <script type="text/javascript" src="<?= htmlentities(url('static/js/sh/shInit.js')) ?>"></script>
 
     <?= getattr($view, 'head') ?>
 </head>
@@ -53,20 +53,20 @@ ia_template_topnav($topnav_select, $smf_admin);
     <?php } ?>
 
     <ul id="nav" class="clear">
-        <li><a href="<?= url('') ?>">Home</a></li>
-        <li><a href="<?= url('arhiva') ?>">Arhiva de probleme</a></li>
-        <li><a href="<?= url('concursuri') ?>">Concursuri online</a></li>
-        <li><a href="<?= url('articole') ?>">Articole</a></li>
-        <li><a href="<?= url('documentatie') ?>">Documentatie</a></li>
-        <li><a href="<?= url('downloads') ?>">Downloads</a></li>
-        <li><a href="<?= url('links') ?>">Links</a></li>
-        <li><a href="<?= url('stiri') ?>">Arhiva de stiri</a></li>
-        <li><a href="<?= url('despre-infoarena') ?>">Despre infoarena</a></li>
+        <li><a href="<?= htmlentities(url('')) ?>">Home</a></li>
+        <li><a href="<?= htmlentities(url('arhiva')) ?>">Arhiva de probleme</a></li>
+        <li><a href="<?= htmlentities(url('concursuri')) ?>">Concursuri online</a></li>
+        <li><a href="<?= htmlentities(url('articole')) ?>">Articole</a></li>
+        <li><a href="<?= htmlentities(url('documentatie')) ?>">Documentatie</a></li>
+        <li><a href="<?= htmlentities(url('downloads')) ?>">Downloads</a></li>
+        <li><a href="<?= htmlentities(url('links')) ?>">Links</a></li>
+        <li><a href="<?= htmlentities(url('stiri')) ?>">Arhiva de stiri</a></li>
+        <li><a href="<?= htmlentities(url('despre-infoarena')) ?>">Despre infoarena</a></li>
         <li class="separator"><hr/></li>
-        <li><a href="<?= url('monitor') ?>">Monitorul de evaluare</a></li>
+        <li><a href="<?= htmlentities(url('monitor')) ?>">Monitorul de evaluare</a></li>
         <?php if (!identity_anonymous()) { ?>
-        <li><a href="<?= url('submit') ?>"><strong>Trimite solutii</strong></a></li>
-        <li><a href="<?= url('account') ?>">Contul meu</a></li>
+        <li><a href="<?= htmlentities(url('submit')) ?>"><strong>Trimite solutii</strong></a></li>
+        <li><a href="<?= htmlentities(url('account')) ?>">Contul meu</a></li>
         <?php } ?>
     </ul>
 
@@ -74,8 +74,8 @@ ia_template_topnav($topnav_select, $smf_admin);
     <div id="login">
         <?php if (!isset($no_sidebar_login)) include(IA_ROOT.'www/views/form_login.php') ?>
         <p>
-        <a href="<?= url('register') ?>">Ma inregistrez!</a><br/>
-        <a href="<?= url("resetpass") ?>">Mi-am uitat parola&hellip;</a>
+        <a href="<?= htmlentities(url('register')) ?>">Ma inregistrez!</a><br/>
+        <a href="<?= htmlentities(url("resetpass")) ?>">Mi-am uitat parola&hellip;</a>
         </p>
     </div>
     <?php } ?>
@@ -111,7 +111,7 @@ if (isset($recent_pages) && (1 < count($recent_pages))) {
     // display flash message
     if (isset($_SESSION['_ia_flash'])) { ?>
 
-<div id="flash" class="flash <?= getattr($_SESSION, '_ia_flash_class') ?>"><?= $_SESSION['_ia_flash'] ?></div>
+<div id="flash" class="flash <?= htmlentities(getattr($_SESSION, '_ia_flash_class')) ?>"><?= htmlentities($_SESSION['_ia_flash']) ?></div>
 
 <?php
         // clear flash message 

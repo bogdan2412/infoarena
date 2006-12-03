@@ -35,11 +35,13 @@ function controller_user_view($username, $action) {
         case 'rating':
             // view rating evolution
             $view['template'] = 'template/userrating';
+            $view['title'] = 'Rating '.$view['title'];
             break;
 
         case 'stats':
             // view user statistics
             $view['template'] = 'template/userstats';
+            $view['title'] = 'Statistici '.$view['title'];
             break;
 
         default:

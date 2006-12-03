@@ -23,9 +23,12 @@ function textblock_validate($tb) {
         $errors['name'] = 'Nume de pagina invalid.';
     }
 
+    // FIXME: move this in textblock edit controller
     if (strlen(getattr($tb, 'title', '')) < 1) {
         $errors['title'] = 'Titlu prea scurt.';
     }
+
+    // FIXME: move this in textblock edit controller
     if (strlen(getattr($tb, 'title', '')) > 64) {
         $errors['title'] = 'Titlu prea lung.';
     }

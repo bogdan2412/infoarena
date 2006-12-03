@@ -1,8 +1,8 @@
 <?php include('header.php'); ?>
 
-<h1><?= $title ?></h1>
+<h1><?= htmlentities($title) ?></h1>
 
-<form enctype="multipart/form-data" action="<?= url($page_name) ?>" method="post" class="hollyfix">
+<form enctype="multipart/form-data" action="<?= htmlentities(url($page_name)) ?>" method="post" class="hollyfix">
 <input type="hidden" name="auto_extract" value="1" />
 
 <fieldset>

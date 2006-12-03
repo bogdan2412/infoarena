@@ -4,17 +4,17 @@
 if (!isset($view['head'])) {
     $view['head'] = "";
 }
-$view['head'] .= "<script type=\"text/javascript\" src=\"" . url("static/js/dual.js") . "\"></script>";
-$view['head'] .= "<script type=\"text/javascript\" src=\"" . url("static/js/roundedit.js") . "\"></script>";
+$view['head'] .= "<)script type=\"text/javascript\" src=\"" . htmlentities(url("static/js/dual.js") . "\"></script>";
+$view['head'] .= "<)script type=\"text/javascript\" src=\"" . htmlentities(url("static/js/roundedit.js") . "\"></script>";
 
 require_once(IA_ROOT."common/round.php");
 include('views/header.php');
 
 ?>
 
-<h1><?= getattr($view, 'title') ?></h1>
+<h1><?= htmlentities(getattr($view, 'title')) ?></h1>
 
-<form action="<?= getattr($view, 'action') ?>" method="post" class="task">
+<form action="<?= htmlentities(getattr($view, 'action')) ?>" method="post" class="task">
     <h2>Despre runda</h2>
 
     <ul class="form">
@@ -48,7 +48,7 @@ include('views/header.php');
             <label for="form_tasks">Alege task-urile acestei runde</label>
             <select name="tasks[]" id="form_tasks" multiple="multiple" size="10">
 <?php foreach ($all_tasks as $task) { ?>
-                <option value="<?= $task['id'] ?>"<?= false !== array_search($task['id'], $form_values['tasks']) ? ' selected="selected"' : ''  ?>><?= $task['title'] ?> [<?= $task['id'] ?>]</option>
+                <option value="<?= htmlentities($task['id']) ?>"<?= false !== array_search($task['id'], $form_values['tasks']) ? ' selected="selected"' : ''  ?>><?= htmlentities($task['title']) ?> [<?= htmlentities($task['id']) ?>]</option>
 <?php } ?>
             </select>
             <?= ferr_span('tasks')?>

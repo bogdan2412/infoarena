@@ -1,7 +1,7 @@
 <?php
 
-include(IA_ROOT . 'www/views/header.php');
-include(IA_ROOT . 'www/format/format.php');
+require_once(IA_ROOT . 'www/views/header.php');
+require_once(IA_ROOT . 'www/format/format.php');
 
 ?>
 
@@ -10,35 +10,35 @@ include(IA_ROOT . 'www/format/format.php');
 <div class="job-detail clear">
     <ul>
         <li class="task-id">
-            <span class="desc">Problema:</span>
-            <span class="val"><?= href(url($job['task_page_name']), $job['task_id']) ?></span>
+            <span class="desc">Problema</span>
+            <span class="val"><?= format_link(url($job['task_page_name']), $job['task_id']) ?></span>
         </li>
         <li class="user-id">
-            <span class="desc">Utilizator:</strong></span>
+            <span class="desc">Utilizator</strong></span>
             <span class="val"><?= format_user_tiny($job['user_name'], $job['user_fullname']) ?></span>
         </li>
         <li class="compiler-id">
-            <span class="desc">Compilator:</span>
-            <span class="val"><?= $job['compiler_id'] ?></span>
+            <span class="desc">Compilator</span>
+            <span class="val"><?= htmlentities($job['compiler_id']) ?></span>
         </li>
         <li class="status">
-            <span class="desc">Status:</span>
-            <span class="val"><?= $job['status'] ?></span>
+            <span class="desc">Status</span>
+            <span class="val"><?= htmlentities($job['status']) ?></span>
         </li>
         <li class="submit-time">
-            <span class="desc">Data:</span>
+            <span class="desc">Data</span>
             <span class="val"><?= htmlentities($job['submit_time']) ?></span>
         </li>
         <li class="eval-message">
-            <span class="desc">Mesaj:</span>
-            <span class="val"><?= $job['eval_message'] ?></span>
+            <span class="desc">Mesaj</span>
+            <span class="val"><?= htmlentities($job['eval_message']) ?></span>
         </li>
         <li class="score">
-            <span class="desc">Scor:</span>
-            <span class="val"><?= $job['score'] ?></span>
+            <span class="desc">Scor</span>
+            <span class="val"><?= htmlentities($job['score']) ?></span>
         </li>
         <li class="eval-log">
-            <span class="desc">Mesaje evaluare:</span>
+            <span class="desc">Mesaje evaluare</span>
             <span class="val"><?= htmlentities($job['eval_log']) ?></span>
         </li>
     </ul>

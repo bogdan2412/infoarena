@@ -5,7 +5,8 @@ require_once(IA_ROOT . 'www/format/format.php');
 
 include('header.php');
 
-print('<h1>'.htmlentities($view['title']).'</h1>');
+echo '<h1>'.htmlentities($view['title']).'</h1>';
+
 if (!$jobs) {
     print "<h3>Nici o solutie in coada de evaluare</h3>";
 } else {
@@ -82,5 +83,5 @@ if (!$jobs) {
 ?>
 
 <p><?=format_link("documentatie/monitorul-de-evaluare", "Ce este si cum se foloseste")?> monitorul de evaluare?</p>
-    
+
 <?php include('footer.php'); ?>

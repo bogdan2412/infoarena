@@ -1,14 +1,15 @@
 <?php
 
 // link JS
-$view['head'] = getattr($view, 'head') . "<script type=\"text/javascript\" src=\"" . url("static/js/wikiedit.js") . "\"></script>";
-include('views/header.php'); 
+$view['head'] = getattr($view, 'head')."<script type=\"text/javascript\" src=\"" . htmlentities(url("static/js/wikiedit.js")) . "\"></script>";
+
+include('views/header.php');
 
 ?>
 
-<form action="<?= url_textblock_edit($page_name) ?>" method="post" id="form_wikiedit">
+<form action="<?= htmlentities(url_textblock_edit($page_name)) ?>" method="post" id="form_wikiedit">
 
-<input type="hidden" id="form_page_name" value="<?= $page_name ?>" />
+<input type="hidden" id="form_page_name" value="<?= htmlentities($page_name) ?>" />
 
 <div class="wiki_text_block" id="wiki_preview" style="display: none;"></div>
 <div id="wiki_preview_toolbar" style="display: none;">
@@ -26,12 +27,12 @@ include('views/header.php');
         <label for="form_text">Continut</label>
         <textarea name="text" id="form_text" rows="10" cols="50"><?= fval('text') ?></textarea>
         <?= ferr_span('text') ?>
-        <a href="<?=  url('documentatie/wiki') ?>">Cum formatez text?</a>
+        <a href="<?= htmlentities(url('documentatie/wiki')) ?>">Cum formatez text?</a>
     </li>
 
     <?php if (array_key_exists('security', $form_values)) { ?>
     <li id="field_security">
-        <label for="form_security">Nivel de securitate al paginii <a href="<?=  url('documentatie/securitate') ?>">(?)</a></label> 
+        <label for="form_security">Nivel de securitate al paginii <a href="<?= htmlentities(url('documentatie/securitate')) ?>">(?)</a></label> 
 
         <input type="text" name="security" value="<?= fval('security') ?>" id="form_security"/>
         <?= ferr_span('security') ?>

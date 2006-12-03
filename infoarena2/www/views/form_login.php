@@ -1,4 +1,4 @@
-<form action="<?= url('login') ?>" method="post" class="login">
+<form action="<?= htmlentities(url('login')) ?>" method="post" class="login">
 <fieldset>
     <legend>Autentificare</legend>
     <ul class="form">

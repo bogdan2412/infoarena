@@ -13,7 +13,7 @@ function macro_tableofcontents($args)
     for ($i = 0; $i < count($subpages); ++$i) {
         $title = $subpages[$i]['title'];
         $link = url($subpages[$i]['name']);
-        $res .= "<li><a href=\"$link\">".htmlentities($title)."</a></li>";
+        $res .= "<li><a href=\"".htmlentities($link)."\">".htmlentities($title)."</a></li>";
     }
 
     $res .= "</ul></div>";

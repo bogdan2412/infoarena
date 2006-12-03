@@ -2,7 +2,7 @@
 
 require_once(IA_ROOT."common/db/textblock.php");
 
-// FIXME: document this macro 
+// FIXME: document this macro
 function macro_grep($args) {
     $substr = getattr($args, 'substr');
     $page = getattr($args, 'page');
@@ -26,7 +26,7 @@ function macro_grep($args) {
 <p><strong><?= count($textblocks) ?></strong> rezultate.</p>
 <ul>
 <?php foreach ($textblocks as $textblock) { ?>
-    <li><a href="<?= url($textblock['name']) ?>"><?= htmlentities($textblock['title']) ?></a></li>
+    <li><a href="<?= htmlentities(url($textblock['name'])) ?>"><?= htmlentities($textblock['title']) ?></a></li>
 <?php } ?>
 </ul>
 </div>

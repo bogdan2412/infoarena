@@ -60,7 +60,7 @@ function macro_roundparam($args) {
 
         default:
             if (!isset($params[$param])) {
-                if ($isset($args['default_value'])) {
+                if (isset($args['default_value'])) {
                     return htmlentities($args['default_value']);
                 }
                 else {

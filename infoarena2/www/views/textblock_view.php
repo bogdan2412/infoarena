@@ -3,7 +3,7 @@
 require_once(IA_ROOT.'www/wiki/wiki.php');
 
 // RSS discovery
-$view['head'] = '<link rel="alternate" href="' . url($page_name, array('action' => 'feed')) . '" title="RSS Revizii ' . $textblock['title'] . '" type="application/rss+xml" />';
+$view['head'] = '<link rel="alternate" href="' . htmlentities(url($page_name, array('action' => 'feed'))) . '" title="RSS Revizii '.htmlentities($textblock['title']).'" type="application/rss+xml" />';
 
 // site header
 include('header.php');
@@ -13,7 +13,7 @@ include('textblock_header.php');
 
 // revision warning
 if (getattr($view, 'revision')) {
-    echo "<em>Atentie, aceasta pagina nu este actuala (este varianta de la ".$textblock['timestamp'].")</em>";
+    echo "<em>Atentie, aceasta pagina nu este actuala (este varianta de la ".htmlentities($textblock['timestamp']).")</em>";
 }
 
 // textblock content

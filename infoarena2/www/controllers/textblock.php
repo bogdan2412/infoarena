@@ -21,7 +21,7 @@ function controller_textblock_view($page_name, $rev_num = null) {
             $page = textblock_get_revision($page_name, $rev_num);
 
             if (!$page) {
-                flash_error("Revizia ".htmlentities($rev_num)." nu exista.");
+                flash_error("Revizia \"{$rev_num}\" nu exista.");
                 $page = $crpage;
             }
         } else {

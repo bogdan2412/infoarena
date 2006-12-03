@@ -15,9 +15,9 @@ foreach ($tasks as $t) {
 
 <h1><?= htmlentities($title)  ?></h1>
 
-<form enctype="multipart/form-data" action="<?= url_submit() ?>" method="post" class="submit" id="task_submit">
+<form enctype="multipart/form-data" action="<?= htmlentities(url_submit()) ?>" method="post" class="submit" id="task_submit">
 
-<input type="hidden" id="output_only" value="<?= ':' . join(':', $output_only_ids) . ':' ?>" />
+<input type="hidden" id="output_only" value="<?= htmlentities(':'.join(':', $output_only_ids).':') ?>" />
 
 <ul class="form">
     <li id="field_task">

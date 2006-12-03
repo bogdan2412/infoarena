@@ -81,7 +81,7 @@ function macro_tasks($args) {
                 'title' => 'Titlul problemei',
                 'css_class' => 'task',
                 'rowform' => create_function('$row',
-                        'return "<a href=\"".url($row["page_name"])."\">".$row["title"]."</a>";'),
+                        'return "<a href=\"".htmlentities(url($row["page_name"]))."\">".htmlentities($row["title"])."</a>";'),
             ),
     );
     if ($user_id !== null) {

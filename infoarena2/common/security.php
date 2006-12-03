@@ -132,8 +132,7 @@ function security_simplify_action($action)
 }
 
 // Handles textblock security.
-function security_textblock($user, $action, $textblock)
-{
+function security_textblock($user, $action, $textblock) {
     require_once(IA_ROOT."common/textblock.php");
 
     $textsec = $textblock['security'];
@@ -144,7 +143,7 @@ function security_textblock($user, $action, $textblock)
     // HACK: Forward security to user.
     // HACK: based on name
     if (preg_match("/^ ".preg_quote(TB_USER_PREFIX, '/').
-                " ([a-z0-9_\-]*) \/? .* $/xi", $textblock['name'], $matches)) {
+                   " ([a-z0-9_\-]*) \/? .* $/xi", $textblock['name'], $matches)) {
         require_once(IA_ROOT . "common/db/user.php");
         $ouser = user_get_by_username($matches[1]);
         if ($ouser === null) {

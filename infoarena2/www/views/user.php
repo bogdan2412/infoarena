@@ -6,7 +6,7 @@ require_once(IA_ROOT.'www/format/ul.php');
 
 // RSS discovery
 if ('view' == $action) {
-    $view['head'] = '<link rel="alternate" href="' . url($page_name, array('action' => 'feed')) . '" title="RSS Revizii ' . $textblock['title'] . '" type="application/rss+xml" />';
+    $view['head'] = '<link rel="alternate" href="' . htmlentities(url($page_name, array('action' => 'feed'))) . '" title="RSS Revizii ' . htmlentities($textblock['title']) . '" type="application/rss+xml" />';
 }
 
 // site header
@@ -34,7 +34,7 @@ if ('view' == $action) {
     // revision warning
     // FIXME: duplicated code (see views/textblock_view.php)
     if (getattr($view, 'revision')) {
-        echo "<em>Atentie, aceasta pagina nu este actuala (este varianta de la ".$textblock['timestamp'].")</em>";
+        echo "<em>Atentie, aceasta pagina nu este actuala (este varianta de la ".htmlentities($textblock['timestamp']).")</em>";
     }
 
     echo '<div class="wiki_text_block">';

@@ -25,7 +25,7 @@ function macro_tasksubmit($args) {
     }
 
     if (identity_anonymous()) {
-        $url = url("login");
+        $url = htmlentities(url("login"));
         return macro_message("Trebuie sa te autentifici pentru a trimite solutii. <a href=\"{$url}\">Click aici</a>", true);
     }
 
@@ -54,12 +54,12 @@ function macro_tasksubmit($args) {
     ob_start();
 ?>
 
-<form enctype="multipart/form-data" action="<?= url('submit', array('action' => 'save')) ?>" method="post" class="inlineSubmit" id="task_submit">
+<form enctype="multipart/form-data" action="<?= htmlentities(url('submit', array('action' => 'save'))) ?>" method="post" class="inlineSubmit" id="task_submit">
 
-<input type="hidden" id="output_only" value="<?= 'output-only' == $task['type'] ? $task['id'] : '' ?>" />
+<input type="hidden" id="output_only" value="<?= 'output-only' == $task['type'] ? htmlentities($task['id']) : '' ?>" />
 
 <ul class="form">
-    <input type="hidden" name="task_id" value="<?= $task['id'] ?>" id="form_task" />
+    <input type="hidden" name="task_id" value="<?= htmlentities($task['id']) ?>" id="form_task" />
 
     <li id="field_solution">
         <label for="form_solution">Fisier solutie</label>

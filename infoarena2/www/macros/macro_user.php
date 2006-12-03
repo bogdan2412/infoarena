@@ -28,7 +28,7 @@ function macro_user($args) {
     } else if ($type == 'normal') {
         return format_user_normal($dbuser['username'], $dbuser['full_name']);
     } else {
-        return macro_error("Unknown userlink type\"$type\"");
+        return macro_error("Unknown userlink type \"$type\"");
     }
 }
 

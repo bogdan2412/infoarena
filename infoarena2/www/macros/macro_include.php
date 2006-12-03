@@ -27,8 +27,6 @@ function macro_include($args) {
         return macro_permission_error();
     }
 
-    // FIXME: OPTIMIZE: This may prove to be a bottleneck when dealing with huge content and a lot of parameters.
-    // A better algorithm would construct the resulting content in a single pass.
     $content = $textblock['text'];
     $replace = array();
     foreach ($args as $key => $val) {

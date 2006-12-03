@@ -5,12 +5,13 @@ include('header.php');
 
 ?>
 
-    <h1>Ultimele modificari de pe infoarena</h1>
+<h1>Ultimele modificari de pe infoarena</h1>
 
-<a class="feed" href="<?= url('changes', array('format' => 'rss')) ?>" title="RSS Modificari" >RSS</a>
+<a class="feed" href="<?= htmlentities(url('changes', array('format' => 'rss'))) ?>" title="RSS Modificari" >RSS</a>
 
-    <ul class="changes">
-    <?php foreach ($revisions as $rev) { ?>
+<ul class="changes">
+<?php foreach ($revisions as $rev) { ?>
+
     <li>
 
 <?php
@@ -26,7 +27,7 @@ $tstamp = date('j/n H:i', strtotime($rev['timestamp']));
 echo "$tstamp: $userlink a modificat $pagelink ($difflink).";
 ?>
     </li>
-    <?php } ?>
-    </ul>
+<?php } ?>
+</ul>
 
 <?php include('footer.php'); ?>

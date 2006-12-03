@@ -25,10 +25,9 @@ function normalize_page_name($page_name) {
 // Checks if textblock name is normalized.
 // no double slashes, no slashes at the end, no capitalizations.
 function is_normal_page_name($page_name) {
-//    log_print("Checking $page_name");
-    $res = is_page_name($page_name) &&
-        !preg_match('/(\/\/)|(\/$)|([A-Z])/', $page_name);
-//    log_print($res ? 'tru' : 'fls');
+    log_print("Checking $page_name");
+    $res = is_page_name($page_name)
+           && !preg_match('/(\/\/)|(\/$)|([A-Z])/', $page_name);
     return $res;
 }
 
