@@ -15,6 +15,23 @@ function is_whole_number($x) {
     return is_numeric($x) && $x == intval($x);
 }
 
+// Normalize a page name. Removes extra slashes and lowercases.
+// This should always be done before entering the database.
+function normalize_page_name($page_name) {
+    $path = preg_split('/\//', $page_name, -1, PREG_SPLIT_NO_EMPTY);
+    return strtolower(implode('/', $path));
+}
+
+// Checks if textblock name is normalized.
+// no double slashes, no slashes at the end, no capitalizations.
+function is_normal_page_name($page_name) {
+//    log_print("Checking $page_name");
+    $res = is_page_name($page_name) &&
+        !preg_match('/(\/\/)|(\/$)|([A-Z])/', $page_name);
+//    log_print($res ? 'tru' : 'fls');
+    return $res;
+}
+
 // Validates page name
 function is_page_name($page_name) {
     return preg_match('/^([a-z0-9][a-z0-9_\-\/\.]*)$/i', $page_name);

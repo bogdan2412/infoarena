@@ -35,6 +35,8 @@ function controller_textblock_view($page_name, $rev_num = null) {
         redirect(url($page_name, array('action' => 'edit')));
     }
 
+    log_assert_valid(textblock_validate($page));
+
     // Build view.
     $view = array();
     $view['title'] = $page['title'];
@@ -52,7 +54,7 @@ function controller_textblock_view($page_name, $rev_num = null) {
 
 // Show a textblock diff.
 // FIXME: two revisions.
-function controller_textblock_diff_revision($page_name) {
+function controller_textblock_diff($page_name) {
     global $identity_user;
     $page = textblock_get_revision($page_name);
     if ($page) {
@@ -85,6 +87,8 @@ function controller_textblock_diff_revision($page_name) {
         flash_error("Nu am gasit reviziile");
         redirect(url($page_name));
     }
+    log_assert_valid(textblock_validate($revfrom));
+    log_assert_valid(textblock_validate($revto));
 
     $diff_title = string_diff($revfrom['title'], $revto['title']);
     $diff_content = string_diff($revfrom['text'], $revto['text']);
@@ -101,7 +105,7 @@ function controller_textblock_diff_revision($page_name) {
 
 // Restore a certain revision
 // This copies the old revision on top.
-function controller_textblock_restore_revision($page_name, $rev_num) {
+function controller_textblock_restore($page_name, $rev_num) {
     global $identity_user;
     $page = textblock_get_revision($page_name);
     $rev = textblock_get_revision($page_name, $rev_num);
@@ -168,72 +172,6 @@ function controller_textblock_history($page_name) {
     $view['display_entries'] = $options['display_entries'];
 
     execute_view_die('views/textblock_history.php', $view);
-}
-
-// Initial move controller.
-function controller_textblock_move($page_name)
-{
-    // Get actual page.
-    $page = textblock_get_revision($page_name);
-    if ($page) {
-        identity_require('textblock-move', $page);
-    } else {
-        // Missing page.
-        flash_error("Pagina inexistenta.");
-        redirect(url('home'));
-    }
-
-    $form_values = array();
-    $form_values['new_name'] = "";
-
-    // -- Print form
-    $view = array(
-            'title' => "Muta " . $page_name,
-            'page_name' => $page_name,
-            'action' => url($page_name, array('action' => 'move-submit')),
-            'form_values' => $form_values,
-            'form_errors' => array(),
-    );
-    execute_view_die("views/textblock_move.php", $view);
-}
-
-// Move submit controller.
-function controller_textblock_move_submit($page_name)
-{
-    $page = textblock_get_revision($page_name);
-    if ($page) {
-        identity_require('textblock-move', $page);
-    } else {
-        // Missing page.
-        flash_error("Pagina inexistenta");
-    }
-
-    // -- Get form values.
-    $form_values = array();
-    $form_values['new_name'] = $new_name = getattr($_POST, 'new_name', "");
-
-    // -- Validate form values.
-    $form_errors = array();
-    if (textblock_get_revision($new_name)) {
-        $form_errors['new_name'] = "Pagina deja exista";
-    }
-
-    if (!$form_errors) {
-        // -- Do the monkey
-        textblock_move($page_name, $new_name);
-        flash("Pagina a fost mutata.");
-        redirect(url($new_name));
-    } else {
-        // -- Back to form.
-        $view = array(
-                'title' => "Editare " . $page_name,
-                'page_name' => $page_name,
-                'action' => url($page_name, array('action' => 'move-submit')),
-                'form_values' => $form_values,
-                'form_errors' => $form_errors,
-        );
-        execute_view_die("views/textblock_move.php", $view);
-    }
 }
 
 // Delete a certain textblock.

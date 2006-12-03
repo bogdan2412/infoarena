@@ -114,6 +114,10 @@ function url_textblock($page_name, $absolute = false) {
     return url($page_name, array(), $absolute);
 }
 
+function url_textblock_revision($page_name, $rev, $absolute = false) {
+    return url($page_name, array('revision' => $rev), $absolute);
+}
+
 function url_textblock_edit($page_name, $absolute = false) {
     return url($page_name, array('action' => 'edit'), $absolute);
 }
@@ -131,8 +135,12 @@ function url_textblock_diff($page_name, $revfrom, $revto, $absolute = false) {
     return url($page_name, $args, $absolute);
 }
 
-function url_textblock_revision($page_name, $rev, $absolute = false) {
-    return url($page_name, array('revision' => $rev), $absolute);
+function url_textblock_move($page_name, $absolute = false) {
+    return url($page_name, array('action' => 'move'), $absolute);
+}
+
+function url_textblock_delete($page_name, $absolute = false) {
+    return url($page_name, array('action' => 'delete'), $absolute);
 }
 
 function url_textblock_restore($page_name, $rev, $absolute = false) {

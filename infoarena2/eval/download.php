@@ -3,26 +3,31 @@
 require_once(IA_ROOT . 'common/common.php');
 require_once(IA_ROOT . 'common/db/attachment.php');
 
+function copy_grader_file($task, $filename, $target)
+{
+    return copy_attachment_file($pagename, "grader_".$filename, $target);
+}
+
 // Copy a grader file over to some other location.
 // This will download the file from the server and cache it.
 //
 // FIXME: Don't download if www runs locally.
-function copy_grader_file($task, $filename, $target)
+function copy_attachment_file($pagename, $filename, $target)
 {
-    $taskname = $task['id'];
-    log_assert(is_task_id($taskname));
+    log_assert(is_page_name($pagename));
+    log_assert(is_attachment_name($pagename));
 
     // Get attachment from database.
-    $att = attachment_get("grader_$filename", $task['page_name']);
+    $att = attachment_get($filename, $pagename);
     if (!$att) {
-        log_warn("Attachment ".$task['page_name']."/grader_$filename not found.");
+        log_warn("Attachment $pagename/$filename not found.");
         return false;
     }
 
     // Make grader dir, in case it doesn't exit.
-    @mkdir(IA_GRADER_CACHE_DIR . $taskname . '/', 0700, true);
+    @mkdir(IA_GRADER_CACHE_DIR . $pagename . '/', 0700, true);
     // My cached version timestamp
-    $cachefname = IA_GRADER_CACHE_DIR . $taskname . '/' . $filename;
+    $cachefname = IA_GRADER_CACHE_DIR . $pagename . '/' . $filename;
 
     clearstatcache();
     $cachemtime = @filemtime($cachefname);
@@ -34,12 +39,12 @@ function copy_grader_file($task, $filename, $target)
 
     if ($cachemtime === null || $cachemtime < $servermtime) {
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, IA_URL . $task['page_name'] . "?action=download&file=grader_$filename");
+        curl_setopt($curl, CURLOPT_URL, url_attachment($pagename, $filename, true));
         curl_setopt($curl, CURLOPT_USERPWD, IA_JUDGE_USERNAME . ":" . IA_JUDGE_PASSWD);
 
         $cachefd = fopen($cachefname, "wb");
         if (!$cachefd) {
-            log_warn("Failed to open $taskname/$filename for writing.");
+            log_warn("Failed to open $pagename/$filename for writing.");
             return false;
         }
 
@@ -48,21 +53,21 @@ function copy_grader_file($task, $filename, $target)
         //curl_setopt($curl, CURLOPT_VERBOSE, true);
 
         if (!curl_exec($curl)) {
-            log_warn("Failed curl download for $taskname/$filename.");
+            log_warn("Failed curl download for $pagename/$filename.");
             return false;
         }
         curl_close($curl);
         if (!fclose($cachefd)) {
-            log_warn("Failed closing $taskname/$filename.");
+            log_warn("Failed closing $pagename/$filename.");
             return false;
         }
 
-        log_print("Downloaded new version of $taskname/$filename.");
+        log_print("Downloaded new version of $pagename/$filename.");
     } else {
-        log_print("Using cached $taskname/$filename");
+        log_print("Using cached $pagename/$filename");
     }
     if (!copy($cachefname, $target)) {
-        log_warn("Failed copying grader file $taskname/$filename");
+        log_warn("Failed copying grader file $pagename/$filename");
         return false;
     }
     return true;

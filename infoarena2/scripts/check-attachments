@@ -5,8 +5,20 @@ require_once(dirname($argv[0]) . "/utilities.php");
 require_once(IA_ROOT . "common/db/attachment.php");
 
 log_print("Checking attachment dir...");
+log_warn("This script consumes tons of memory so errors might occur");
 
 $res = db_query("SELECT `id`, `name`, `page` FROM ia_file");
+
+if (read_bool("Lower case all attachments files?", true)) {
+    $extra_files = glob(IA_ROOT . "attach/*");
+    foreach ($extra_files as $fname) {
+        if (preg_match('/[A-Z]/', $fname)) {
+            rename($fname, strtolower($fname));
+        }
+    }
+    unset($extra_files);
+}
+
 $extra_files = array_flip(glob(IA_ROOT . "attach/*"));
 
 $extra_atts = array();

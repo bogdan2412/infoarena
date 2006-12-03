@@ -142,7 +142,7 @@ class MyTextile extends Textile {
                     log_warn("Invalid resize instructions '$extra'");
                     $extra = '';
                 }
-                $args['src'] = url_image_resize($matches[1], $matches[2], $extra); 
+                $args['src'] = htmlentities(url_image_resize($matches[1], $matches[2], $extra)); 
             }
         }
         //log_print("passing to parent::format image");

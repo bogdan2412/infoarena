@@ -19,14 +19,14 @@ function textblock_validate($tb) {
     // FIXME How to handle this?
     log_assert(is_array($tb), "You didn't even pass an array");
 
-    if (!is_page_name(getattr($tb, 'name', ''))) {
+    if (!is_normal_page_name(getattr($tb, 'name', ''))) {
         $errors['name'] = 'Nume de pagina invalid.';
     }
 
     if (strlen(getattr($tb, 'title', '')) < 1) {
         $errors['title'] = 'Titlu prea scurt.';
     }
-    if (strlen(getattr($tb, 'title', '')) > 150) {
+    if (strlen(getattr($tb, 'title', '')) > 64) {
         $errors['title'] = 'Titlu prea lung.';
     }
 

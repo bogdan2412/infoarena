@@ -30,9 +30,9 @@ if (!is_page_name($page)) {
 
 // Prepare some vars for url handler.
 // Filter empty path elements. Strips extra '/'s
+$page = normalize_page_name($page);
 $pagepath = explode('/', $page);
-$pagepath = array_filter($pagepath, create_function('$var', 'return $var != "";'));
-$page = implode('/', $pagepath);
+
 $urlstart = getattr($pagepath, 0, '');
 $page_id = implode('/', array_slice($pagepath, 1));
 $action = request('action', 'view');
@@ -81,7 +81,8 @@ else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'task') {
     }
 }*/
 
-// textblock controllers
+// textblock controllers 
+// FIXME: quick array of sorts?
 //  - edit textblock
 else if ($action == 'edit') {
     require_once(IA_ROOT.'www/controllers/textblock_edit.php');
@@ -99,23 +100,18 @@ else if ($action == 'history') {
 }
 //  - move textblock
 else if ($action == 'move') {
-    require_once(IA_ROOT.'www/controllers/textblock.php');
+    require_once(IA_ROOT.'www/controllers/textblock_move.php');
     controller_textblock_move($page);
-}
-//  - move textblock/submit
-else if ($action == 'move-submit') {
-    require_once(IA_ROOT.'www/controllers/textblock.php');
-    controller_textblock_move_submit($page);
 }
 //  - restore textblock
 else if ($action == 'restore') {
     require_once(IA_ROOT.'www/controllers/textblock.php');
-    controller_textblock_restore_revision($page, request('revision'));
+    controller_textblock_restore($page, request('revision'));
 }
 //  - view textblock differences between revisions
 else if ($action == 'diff') {
     require_once(IA_ROOT.'www/controllers/textblock.php');
-    controller_textblock_diff_revision($page);
+    controller_textblock_diff($page);
 }
 
 // attachment controllers

@@ -12,6 +12,7 @@ require_once(IA_ROOT."common/textblock.php");
 // Add a new revision
 // FIXME: hash parameter?
 function textblock_add_revision($name, $title, $content, $user_id, $security = "public", $timestamp = null) {
+    $name = normalize_page_name($name);
     $tb = array(
             'name' => $name,
             'title' => $title,
@@ -26,13 +27,13 @@ function textblock_add_revision($name, $title, $content, $user_id, $security = "
     $query = sprintf("INSERT INTO ia_textblock_revision
                         SELECT *
                         FROM ia_textblock
-                      WHERE LCASE(`name`) = '%s'",
+                      WHERE `name` = '%s'",
                      db_escape($name));
     db_query($query);
 
     // replace current version
     $query = sprintf("DELETE FROM ia_textblock
-                      WHERE LCASE(`name`) = '%s'
+                      WHERE `name` = '%s'
                       LIMIT 1",
                      db_escape($name));
     db_query($query);
@@ -70,9 +71,9 @@ function textblock_complex_query($options)
     // prefix or page_name
     if (getattr($options, 'page_name') === null) {
         log_assert(is_string($options['prefix']));
-        $where = sprintf("WHERE LCASE(`name`) LIKE '%s%%'", db_escape(strtolower($options['prefix'])));
+        $where = sprintf("WHERE `name` LIKE '%s%%'", db_escape(strtolower($options['prefix'])));
     } else {
-        $where = sprintf("WHERE LCASE(`name`) = '%s'", db_escape(strtolower($options['page_name'])));
+        $where = sprintf("WHERE `name` = '%s'", db_escape(strtolower($options['page_name'])));
     }
 
     if (strtolower(getattr($options, 'order') == 'desc')) {
@@ -101,6 +102,8 @@ function textblock_complex_query($options)
 //  $rev_num:   Revision number. Latest if null(default).
 function textblock_get_revision($name, $rev_num = null)
 {
+    $name = normalize_page_name($name);
+    log_assert(is_normal_page_name($name));
     if (is_null($rev_num)) {
         // Quick latest revision query.
         $res = textblock_complex_query(array(
@@ -127,6 +130,8 @@ function textblock_get_revision($name, $rev_num = null)
 // $username:   If true join for username. Defaults to true.
 function textblock_get_revision_list($name, $content = false, $username = true,
         $start = 1, $count = 99999999) {
+    $name = normalize_page_name($name);
+    log_assert(is_normal_page_name($name));
     return textblock_complex_query(array(
             'content' => $content,
             'username' => $username,
@@ -164,9 +169,11 @@ function textblock_get_changes($prefix, $content = false, $username = true, $cou
 // Count revisions for a certain textblock.
 // FIXME: undefined if it doesn't exist.
 function textblock_get_revision_count($name) {
-    log_assert(is_page_name($name));
+    $name = normalize_page_name($name);
+    log_assert(is_normal_page_name($name));
+
     $query = sprintf("SELECT COUNT(*) AS `cnt` FROM ia_textblock_revision
-                      WHERE LCASE(`name`) = '%s'",
+                      WHERE `name` = '%s'",
                     db_escape(strtolower($name)));
     $row = db_fetch($query);
     return $row['cnt'] + 1;
@@ -185,7 +192,9 @@ function textblock_grep($substr, $page) {
 // Delete a certain page, including all revisions.
 // WARNING: This is irreversible.
 function textblock_delete($page_name) {
-    log_assert(is_page_name($page_name));
+    $page_name = normalize_page_name($page_name);
+    log_assert(is_normal_page_name($page_name));
+
     $pageesc = db_escape($page_name);
     db_query("DELETE FROM `ia_textblock` WHERE `name` = '$pageesc'");
     db_query("DELETE FROM `ia_textblock_revision` WHERE `name` = '$pageesc'");
@@ -195,19 +204,23 @@ function textblock_delete($page_name) {
 // Also drags attachments.
 function textblock_move($old_name, $new_name)
 {
+    $old_name = normalize_page_name($old_name);
+    $new_name = normalize_page_name($new_name);
+    log_assert(is_normal_page_name($old_name));
+    log_assert(is_normal_page_name($new_name));
     log_print("Moving textblock $old_name to $new_name");
 
     // Move current version.
     $query = sprintf("UPDATE `ia_textblock`
                       SET `name` = '%s'
-                      WHERE LCASE(`name`) = LCASE('%s')",
+                      WHERE `name` = '%s'",
                       db_escape($new_name), db_escape($old_name));
     db_query($query);
 
     // Move history.
     $query = sprintf("UPDATE `ia_textblock_revision`
                       SET `name` = '%s'
-                      WHERE LCASE(`name`) = LCASE('%s')",
+                      WHERE `name` = '%s'",
                       db_escape($new_name), db_escape($old_name));
     db_query($query);
 

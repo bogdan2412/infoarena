@@ -8,10 +8,14 @@ require_once(IA_ROOT."common/db/db.php");
 
 // Get attachment by name
 function attachment_get($name, $page) {
+    log_assert(is_attachment_name($name));
+    log_assert(is_page_name($page));
+    $page = normalize_page_name($page);
+    $name = strtolower($name);
     $query = sprintf("SELECT *, DATE_FORMAT(`timestamp`, '%%Y-%%M-%%D %%h:%%i:%%s')
                       FROM ia_file
-                      WHERE LCASE(`name`) = LCASE('%s') AND
-                            LCASE(`page`) = LCASE('%s')",
+                      WHERE `name` = '%s' AND
+                            `page` = '%s'",
                      db_escape($name), db_escape($page));
     return db_fetch($query);
 }

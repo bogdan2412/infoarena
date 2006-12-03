@@ -9,10 +9,10 @@ test_prepare();
 
 // View problema/adunare
 $res = quick_curl(array(
-        CURLOPT_URL => url_textblock_view('problema/adunare', true),
+        CURLOPT_URL => url_textblock('problema/adunare', true),
 ));
 validate_html($res['content']);
-log_assert($res['url'] == url_textblock_view('problema/adunare', true),
+log_assert($res['url'] == url_textblock('problema/adunare', true),
         "View problema/adunare");
 
 // Download tests as anon user, fails
