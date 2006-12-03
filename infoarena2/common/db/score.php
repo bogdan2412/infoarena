@@ -20,9 +20,9 @@ function db_escape_array($array)
 function score_update($name, $user_id, $task_id, $round_id, $value)
 {
     log_assert(is_score_name($name), "Bad score name '$name'");
-    log_assert(is_null(user_id) || is_user_id($user_id), "Bad user id '$user_id'");
-    log_assert(is_null(task_id) || is_task_id($task_id), "Bad task id '$task_id'");
-    log_assert(is_null(round_id) || is_round_id($round_id), "Bad round id '$round_id'");
+    log_assert(is_null($user_id) || is_user_id($user_id), "Bad user id '$user_id'");
+    log_assert(is_null($task_id) || is_task_id($task_id), "Bad task id '$task_id'");
+    log_assert(is_null($round_id) || is_round_id($round_id), "Bad round id '$round_id'");
     $query = sprintf("
             INSERT INTO ia_score (`name`, `score`, `user_id`, `task_id`, `round_id`)
             VALUES ('%s', %s, %s, %s, %s) ON DUPLICATE KEY UPDATE `score`=%s",
@@ -99,6 +99,22 @@ function score_get($score_name, $user, $task, $round, $start, $count, $groupby =
             'scores' => $scores,
             'total_rows' => db_query_value("SELECT FOUND_ROWS();"),
     );
+}
+
+// Get a score value.
+// Returns 0 or null (if missing).
+function score_get_value($score_name, $user_id, $task_id, $round_id)
+{
+    log_assert(is_score_name($score_name));
+    log_assert(is_whole_number($user_id));
+    log_assert(is_task_id($task_id));
+    log_assert(is_user_id($round_id));
+
+    $query = sprintf("SELECT score FROM ia_score
+                WHERE name = '%s', task_id='%s', round_id='%s', user_id = %s",
+                $score_name, $task_id, $round_id, $user_id);
+    $res = db_fetch($query);
+    return getattr($res, 'score', null);
 }
 
 ?>

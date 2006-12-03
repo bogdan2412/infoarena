@@ -7,6 +7,8 @@ function task_grade_job_classic($task, $tparams, $job) {
             'message' => 'Evaluare incompleta',
             'log' => ''
     );
+    log_assert_valid(task_validate($task));
+    log_assert_valid(task_validate_parameters($task['type'], $tparams));
 
     // Clean jail and temp
     if (!clean_dir(IA_EVAL_TEMP_DIR)) {
@@ -86,7 +88,7 @@ function task_grade_job_classic($task, $tparams, $job) {
         }
      
         // Run user program.
-        $jrunres = jail_run('user', $tparams['time_limit'] * 1000, $tparams['memory_limit']);
+        $jrunres = jail_run('user', $tparams['timelimit'] * 1000, $tparams['memlimit']);
         log_print("JRUN user: ".$jrunres['result'].": ".$jrunres['message']);
         if ($jrunres['result'] == 'ERROR') {
             return jobresult_system_error();
@@ -100,7 +102,7 @@ function task_grade_job_classic($task, $tparams, $job) {
         }
 
         // Copy ok file, if used.
-        if ($tparams['ok_files']) {
+        if ($tparams['okfiles']) {
             if (!copy_grader_file($task , 'test' . $testno . '.ok', $okfile)) {
                 return jobresult_system_error();
             }

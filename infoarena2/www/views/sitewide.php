@@ -36,7 +36,7 @@ function ia_template_topnav($selected = 'infoarena', $smf_admin = false) {
     <li><?= getattr($pre, 'calendar') ?><a href="<?= htmlentities(IA_SMF_URL) ?>?action=calendar">calendar competitii</a><?= getattr($post, 'calendar') ?></li>
 <?php if (identity_anonymous()) { ?>
     <li><?= getattr($pre, 'login') . format_link(url('login', array(), true), "autentificare") . getattr($post, 'login') ?></li>
-    <li><?= getattr($pre, 'register') . format_link(url('login', array(), true), "inregistare") . getattr($post, 'register') ?></li>
+    <li><?= getattr($pre, 'register') . format_link(url('register', array(), true), "inregistare") . getattr($post, 'register') ?></li>
 <?php } else { ?>
     <li><?= getattr($pre, 'profile') ?><a href="<?= htmlentities(url_user_profile($identity_user['username'], true)) ?>">profilul meu</a><?= getattr($post, 'profile') ?></li>
     <li><?= getattr($pre, 'pm') ?><a href="<?= htmlentities(IA_SMF_URL) ?>?action=pm">mesaje</a><?= getattr($post, 'pm') ?></li>

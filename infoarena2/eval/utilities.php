@@ -124,6 +124,8 @@ function jrun_make_error($message)
 // If result is ERROR time, memory, stdin and stdout are never set.
 function jail_run($program, $time, $memory, $capture_std = false)
 {
+    log_assert(is_whole_number($time));
+    log_assert(is_whole_number($memory));
     $cmdline = IA_JRUN_PATH;
     $cmdline .= " --prog=./" . $program;
     $cmdline .= " --dir=" . IA_EVAL_JAIL_DIR;
@@ -144,7 +146,7 @@ function jail_run($program, $time, $memory, $capture_std = false)
         $cmdline .= " --memory-limit=" . $memory;
     }
 
-    //log_print("Running $cmdline");
+//    log_print("Running $cmdline");
     ob_start();
     @system($cmdline, $res);
     $message = ob_get_contents();

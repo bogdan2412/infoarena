@@ -5,17 +5,18 @@ require_once(IA_ROOT . 'common/db/attachment.php');
 
 function copy_grader_file($task, $filename, $target)
 {
-    return copy_attachment_file($pagename, "grader_".$filename, $target);
+    return copy_attachment_file($task['page_name'], "grader_".$filename, $target);
 }
 
 // Copy a grader file over to some other location.
 // This will download the file from the server and cache it.
 //
-// FIXME: Don't download if www runs locally.
+// FIXME: Don't cache if www runs locally.
 function copy_attachment_file($pagename, $filename, $target)
 {
-    log_assert(is_page_name($pagename));
-    log_assert(is_attachment_name($pagename));
+    $pagename = normalize_page_name($pagename);
+    log_assert(is_page_name($pagename), "Invalid page name '$pagename'");
+    log_assert(is_attachment_name($filename), "Invalid attachment name '$filename'");
 
     // Get attachment from database.
     $att = attachment_get($filename, $pagename);
@@ -39,8 +40,9 @@ function copy_attachment_file($pagename, $filename, $target)
 
     if ($cachemtime === null || $cachemtime < $servermtime) {
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, url_attachment($pagename, $filename, true));
-        curl_setopt($curl, CURLOPT_USERPWD, IA_JUDGE_USERNAME . ":" . IA_JUDGE_PASSWD);
+        // Can't use url_attachment here because it's in www.
+        curl_setopt($curl, CURLOPT_URL, IA_URL . "$pagename?action=download&file=$filename");
+        curl_setopt($curl, CURLOPT_USERPWD, IA_JUDGE_USERNAME . ":" . IA_JUDGE_PASSWORD);
 
         $cachefd = fopen($cachefname, "wb");
         if (!$cachefd) {
