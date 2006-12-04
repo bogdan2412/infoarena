@@ -58,15 +58,21 @@
     float:right;
 }
 
-#footer li a {
-    display:block;
+#footer li.separate {
+    border-left: 1px solid silver;
+    padding-left: 15px;
 }
 
-#footer p {
+#footer .cc {
     font-size:10px;
     margin-top:6px;
+    text-align: left;
 }
 
+#footer a.badge {
+    float: left;
+    margin-right: 6px;
+}
 /* top navigation bar */
 #topnav {
     float: left;
