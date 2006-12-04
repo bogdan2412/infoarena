@@ -11,7 +11,9 @@
         <?= format_link(url(TB_USER_PREFIX.$v['username']), $v['username']) ?>
 
         <?= " la ".htmlentities($v['timestamp']).", " ?></span>
-        <?= format_link(url($view['page_name'], array('action' => 'attach-del', 'file'=> $v['name'])), 'Sterge') ?>
+
+        <a href="<?= htmlentities(url($view['page_name'], array('action' => 'attach-del', 'file'=> $v['name']))) ?>" onclick="return confirm('Aceasta actiune este ireversibila! Doresti sa continui?')">Sterge</a>
+
     </li>
     <?php } ?>
     </ul>

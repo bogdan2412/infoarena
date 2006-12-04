@@ -59,6 +59,11 @@ function controller_attachment_submit($page_name) {
     // Process upload data.
     $form_values['file_name'] = basename($_FILES['file_name']['name']);
     $form_values['file_size'] = $_FILES['file_name']['size'];
+    // - determine if attached file is (zip) archive and needs to be extracted
+    $form_values['autoextract'] =
+        preg_match('/^.+\.zip$/i', $form_values['file_name'])
+        && request('autoextract', false);
+    $autoextract = $form_values['autoextract'];
 
     // Validate filename.
     if (!is_attachment_name($form_values['file_name'])) {
@@ -76,9 +81,6 @@ function controller_attachment_submit($page_name) {
         $form_errors['file_size'] = 'Fisierul depaseste limita de ' .
                                     (IA_ATTACH_MAXSIZE/1024/1024).'MB';
     }
-
-    // determine if attached file is (zip) archive and needs to be extracted
-    $autoextract = request('auto_extract') && preg_match('/^.+\.zip$/i', $form_values['file_name']);
 
     // create attachment list
     $attachments = array();

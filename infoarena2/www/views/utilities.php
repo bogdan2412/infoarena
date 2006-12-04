@@ -40,6 +40,24 @@ function fval($param_name, $escape_html = true) {
     }
 }
 
+// fval(...) for checkboxes
+// returns ' checked="checked"' when parameter value is true
+// returns '' (blank string) otherwise
+function fval_checkbox($param_name) {
+    global $view;
+
+    if (!isset($view['form_values'])) {
+        return '';
+    }
+
+    if (getattr($view['form_values'], $param_name)) {
+        return ' checked="checked"';
+    }
+    else {
+        return '';
+    }
+}
+
 // returns a form error, html-escaped by default.
 function ferr($param_name, $escape_html = true) {
     global $view;

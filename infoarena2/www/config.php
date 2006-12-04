@@ -6,7 +6,7 @@
  * Please note that the "big" configuration file (residing one directory up)
  * is meant to keep settings that are common accross all infoarena
  * applications.
- * 
+ *
  * This file has some decent defaults.
  */
 

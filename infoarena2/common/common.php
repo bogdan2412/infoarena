@@ -115,16 +115,18 @@ function format_datetime($timestamp = null) {
 }
 
 // Get a file's mime type.
-function get_mime_type($filename)
-{
+function get_mime_type($filename) {
     if (function_exists("finfo_open")) {
         // FIXME: cache.
-        $finfo = @finfo_open(FILEINFO_MIME, '/usr/share/misc/file/magic');
-        if ($finfo !== false) {
-            $res = finfo_file($finfo, $filename);
-            finfo_close($finfo);
-            return $res;
-        }
+        $finfo = finfo_open(FILEINFO_MIME);
+
+        log_assert($finfo !== false,
+                   'fileinfo is active but finfo_open() failed');
+
+        $res = finfo_file($finfo, $filename);
+        finfo_close($finfo);
+        log_print('get_mime_type('.$filename.'): finfo yields '.$res);
+        return $res;
     }
     if (function_exists("mime_content_type")) {
         $res = @mime_content_type($filename);
@@ -132,7 +134,7 @@ function get_mime_type($filename)
             return $res;
         }
     }
-    //log_warn("fileinfo extension failed, defaulting mime type to application/octet-stream.");
+    log_warn("fileinfo extension failed, defaulting mime type to application/octet-stream.");
     return "application/octet-stream";
 }
 

@@ -3,8 +3,6 @@
 <h1><?= htmlentities($title) ?></h1>
 
 <form enctype="multipart/form-data" action="<?= htmlentities(url($page_name)) ?>" method="post" class="hollyfix">
-<input type="hidden" name="auto_extract" value="1" />
-
 <fieldset>
     <legend>Alege fisier</legend>
     <ul class="form">
@@ -18,6 +16,13 @@
             <span class="fieldHelp">Dimensiunea maxima admisa este de <?= IA_ATTACH_MAXSIZE/1024/1024 ?>MB.</span>
             <span class="fieldHelp">Numele fisierului nu poate contine spatii.</span>
         </li>
+
+        <li>
+            <input type="checkbox" name="autoextract" value="1" <?= fval_checkbox('autoextract') ?> id="form_autoextract" class="checkbox" />
+            <label class="checkbox" for="form_autoextract">Expandeaza arhiva .zip</label>
+            <span class="fieldHelp">Trimite o arhiva ZIP cu unul sau mai multe fisiere. Se va crea cate un atasament pentru fiecare fisier din arhiva.</span>
+        </li>
+    </ul>
 </fieldset>
 
 <ul class="form">
