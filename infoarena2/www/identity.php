@@ -84,7 +84,7 @@ function identity_require($action, $object = null, $message = null,
             flash_error("Mai intai trebuie sa te autentifici.");
 
             // save current URL. We redirect to here right after logging in
-            $_SESSION['_ia_redirect'] = $_SERVER['REQUEST_URI'];
+            $_SESSION['_ia_redirect'] = IA_URL_HOST.$_SERVER['REQUEST_URI'];
             redirect(url('login'));
         }
         else {
@@ -94,7 +94,6 @@ function identity_require($action, $object = null, $message = null,
             redirect(url(''));
         }
     }
-
     return $can;
 }
 

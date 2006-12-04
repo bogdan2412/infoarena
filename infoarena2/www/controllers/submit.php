@@ -7,7 +7,7 @@ require_once(IA_ROOT . "common/db/job.php");
 // Big bad submit controller.
 function controller_submit() {
     if (identity_anonymous()) {
-        flash_error('Va rugam sa va autentificati mai intai');
+        flash_error('Mai intai trebuie sa te autentifici.');
         redirect(url_login());
     }
 
@@ -23,8 +23,8 @@ function controller_submit() {
         // Check task
         if ((!is_task_id($values['task_id'])) ||
             (!$task = task_get($values['task_id']))) {
-            $errors['task_id'] = 'Va rugam sa alegeti problema la care doriti sa '
-                                      . 'trimiteti solutie.';
+            $errors['task_id'] = 'Alege problema la care doresti sa trimiti '
+                                 .'solutie.';
         } else {
             // require permissions
             identity_require('task-submit', $task);
@@ -60,16 +60,17 @@ function controller_submit() {
                     }
                     else {
                         $errors['solution'] =
-                            'Fisierul atasat depaseste dimensiunea maxima admisa!';
+                            'Fisierul atasat depaseste dimensiunea maxima '.
+                            'admisa: '.((int)IA_SUBMISSION_MAXSIZE/1024).'KB!';
                     }
                 } else {
                     $errors['solution'] = '
-                        Fisierul atasat nu a putut fi citit! Incercati din nou.
-                        Daca problema persista va rugam sa <a href="' .
-                        url('Contact') . '">contactati administratorul</a>.';
+                        Fisierul atasat nu a putut fi citit! Incearca din nou.
+                        Daca problema persista te rugam sa <a href="' .
+                        htmlentities(url('contact')).'">contactezi administratorul</a>.';
                 }
             } else {
-                $errors['solution'] = 'Va rugam sa atasati fisierul solutie.';
+                $errors['solution'] = 'Ataseaza fisierul solutie.';
             }
         }
 
@@ -85,10 +86,10 @@ function controller_submit() {
         }
         // Fall through to submit form.
     }
-    
+
     // get task list.
     // FIXME: proper filter?
-    $tasks_unfiltered = task_list_info();
+    $tasks_unfiltered = task_list_info('title');
     $tasks = array();
     foreach ($tasks_unfiltered as $k => $t) {
         if (identity_can('task-submit', $t)) {

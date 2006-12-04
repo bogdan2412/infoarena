@@ -35,6 +35,13 @@ function controller_login() {
             }
         }
 
+        // obtain referer
+        $referer = getattr($_SERVER, 'HTTP_REFERER', '');
+        if ($referer == url('login', array(), true)) {
+            // we don't care about the login page
+            $referer = null;
+        }
+
         // process
         if (!$errors) {
             // persist user to session (login)
@@ -45,16 +52,27 @@ function controller_login() {
 
             // redirect
             if (isset($_SESSION['_ia_redirect'])) {
+                // redirect to where identity_require() failed
                 $url = $_SESSION['_ia_redirect'];
                 unset($_SESSION['_ia_redirect']);
-
-                redirect(IA_URL_HOST . $url);
+                redirect($url);
+            }
+            elseif ($referer) {
+                // redirect to HTTP referer if set, but not to login
+                redirect($_SERVER['HTTP_REFERER']);
             }
             else {
+                // home, sweet home
                 redirect(url(''));
             }
         }
         else {
+            // save referer so we know where to redirect when login finally
+            // succeeds.
+            if (!isset($_SESSION['_ia_redirect']) && $referer) {
+                $_SESSION['_ia_redirect'] = $_SERVER['HTTP_REFERER'];
+            }
+
             flash_error('Numele de utilizator inexistent sau parola ' .
                         'incorecta. Incearca din nou.');
         }

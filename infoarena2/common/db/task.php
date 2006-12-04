@@ -45,9 +45,12 @@ function task_update_parameters($task_id, $param_values) {
 // but rather chooses a few.
 // Make sure that calls such as identity_require() have all necessary
 // information to yield a correct answer.
-function task_list_info() {
+function task_list_info($order_by = 'order') {
+    log_assert('order' == $order_by || 'title' == $order_by);
+
     $query = sprintf("SELECT *
-                      FROM ia_task ORDER BY `order`");
+                      FROM ia_task
+                      ORDER BY `{$order_by}`");
     $list = array();
     foreach (db_fetch_all($query) as $row) {
         $list[$row['id']] = $row;
