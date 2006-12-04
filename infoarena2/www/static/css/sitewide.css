@@ -37,6 +37,7 @@
     background:#5C880B url(../images/search.jpg) no-repeat bottom left;
     width: 250px;
     font-size: 8pt;
+    line-height: 1.5em;
 }
 
 #userbox img {

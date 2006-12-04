@@ -44,11 +44,6 @@ function controller_textblock_view($page_name, $rev_num = null) {
     $view['page_name'] = $page['name'];
     $view['textblock'] = $page;
 
-    // hack to select `profile` tab in top navigation bar
-    if ($page['name'] == TB_USER_PREFIX.getattr($identity_user, 'username')) {
-        $view['topnav_select'] = 'profile';
-    }
-
     execute_view_die('views/textblock_view.php', $view);
 }
 

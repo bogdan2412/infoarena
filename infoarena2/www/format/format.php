@@ -66,12 +66,12 @@ function format_img($src, $alt) {
 }
 
 // Format avatar img.
-function format_user_avatar($user_name, $width = 50, $height = 50)
+function format_user_avatar($user_name, $width = 50, $height = 50, $absolute = false)
 {
     log_assert(is_whole_number($width), "Invalid width");
     log_assert(is_whole_number($height), "Invalid height");
     return format_tag("img", array(
-            "src" => url_user_avatar($user_name, "{$width}x{$height}"),
+            "src" => url_user_avatar($user_name, "{$width}x{$height}", $absolute),
             "alt" => ":)",
     ));
 }

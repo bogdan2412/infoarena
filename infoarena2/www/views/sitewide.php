@@ -21,11 +21,11 @@ function ia_template_header() {
     -->
     <?php if (!identity_anonymous()) { $username = $identity_user['username']; ?>
         <div id="userbox">
-        <?= format_link(url_user_profile($username), format_user_avatar($username, 50, 50), false) ?>
+        <?= format_link(url_user_profile($username, true), format_user_avatar($username, 50, 50, true), false) ?>
             <span class="user">
                 <strong><?= htmlentities($identity_user['full_name']) ?></strong><br/>
-                <?= format_link(url_user_profile($username), $username) ?><br/>
-                <a href="<?= htmlentities(url('logout')) ?>" class="logout">logout</a> | <?= format_link(url('account'), 'contul meu') ?>
+                <?= format_link(url_user_profile($username, true), $username) ?><br/>
+                <a href="<?= htmlentities(url('logout', array(), true)) ?>" class="logout">logout</a> | <?= format_link(url('account', array(), true), 'contul meu') ?>
             </span>
         </div>
     <?php } ?>
