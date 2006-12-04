@@ -137,7 +137,7 @@ function get_mime_type($filename)
 }
 
 // Checks system requirements.
-// This will fail early. Of something is missing.
+// This will fail early if something is missing.
 function check_requirements()
 {
     $extensions = get_loaded_extensions();
@@ -159,6 +159,21 @@ function check_requirements()
         if (!function_exists("mime_content_type")) {
             log_warn("mime_content_type missing, mime-types will default to application/octet-stream.");
         }
+    }
+
+    if (IA_HTTP_ENV) {
+        log_assert(!ini_get("session.auto_start"),
+                   "Please disable session.auto_start. It kills babies!");
+        log_assert(ini_get("session.use_cookies"),
+                   "Please enable session.use_cookies.");
+        log_assert(ini_get("session.use_only_cookies"),
+                   "Please enable session.use_only_cookies.");
+        log_assert(!ini_get("register_globals"),
+                   "Please disable register_globals. It makes Jesus cry!");
+        log_assert(!ini_get("magic_quotes_gpc"),
+                   "Please disable magic_quotes_gpc. Magic is for wussies!");
+        log_assert(!ini_get("magic_quotes_runtime"),
+                   "Please disable magic_quotes_runtime.");
     }
 }
 

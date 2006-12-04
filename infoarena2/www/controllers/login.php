@@ -38,9 +38,8 @@ function controller_login() {
         // process
         if (!$errors) {
             // persist user to session (login)
-            //  - session lifetime may be 5d or until browser is closed
-            $lifetime = ($data['remember'] ? 5*24*60*60 : 0);
-            identity_start_session($user, $lifetime);
+            $remember_user = ($data['remember'] ? true : false);
+            identity_start_session($user, $remember_user);
 
             flash('Bine ai venit!');
 

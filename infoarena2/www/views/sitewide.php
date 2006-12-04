@@ -68,6 +68,7 @@ function ia_template_footer() {
 </script>
 <script type="text/javascript">
 _uacct = "UA-113289-8";
+_udn = "infoarena.ro";
 urchinTracker();
 </script>
 

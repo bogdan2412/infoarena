@@ -58,10 +58,4 @@ define("IMAGE_CACHE_DIR", IA_ROOT.'cache/');
 //    image resamples are not cached any more but computed & served on-the-fly
 define("IMAGE_CACHE_QUOTA", 32 * 1024 * 1024); // (bytes please)
 
-// Secret code
-// Random string used as salt in various places where hashing is needed.
-// For better security, this should be changed when uploading to a production
-// website.
-define("IA_SECRET", "X-2#!@$#5f%faranumar%%_SA'poip7");
-
 ?>

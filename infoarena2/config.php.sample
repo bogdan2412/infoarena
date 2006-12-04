@@ -5,7 +5,10 @@
 //
 // Here is the essential configuration. You only need to modify this
 // to get it working.
-//
+
+// Determine if script is runing in an HTTP environment. Otherwise it is
+// probably running in CLI mode.
+define("IA_HTTP_ENV", isset($_SERVER['REQUEST_URI']));
 
 // This is the subversion checkout directory. include trailing slash.
 define("IA_ROOT", '--write-me--');
@@ -54,6 +57,10 @@ define("IA_ATTACH_DIR", IA_ROOT . "attach/");
 // leave null when working on localhost
 define("IA_COOKIE_DOMAIN", null);
 
+// infoarena session lifetime
+// defaults to 5days
+define("IA_SESSION_LIFETIME_SECONDS", 5*24*3600);
+
 // Fatal error mask.
 // These are the errors the scripts halts on.
 // E_ALL & ~ (E_USER_NOTICE | E_USER_WARNING)
@@ -72,5 +79,11 @@ define("TB_TASK_PREFIX", 'problema/');
 define("TB_USER_PREFIX", 'utilizator/');
 // FIXME: Do we really need this?
 define("TB_ROUND_PREFIX", 'runda/');
+
+// Secret code
+// Random string used as salt in various places where hashing is needed.
+// For better security, this should be changed when uploading to a production
+// website.
+define("IA_SECRET", "developersetup");
 
 ?>

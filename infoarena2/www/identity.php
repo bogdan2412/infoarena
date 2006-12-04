@@ -98,12 +98,26 @@ function identity_require($action, $object = null, $message = null,
     return $can;
 }
 
+// Initializes long-lived PHP session.
+// When remember user is `true`, it will persist session for
+// IA_SESSION_LIFETIME_SECONDS seconds.
+function init_php_session($remember_user = false) {
+    session_name('infoarena_session');
+    if ($remember_user) {
+        session_cache_limiter('private');
+        session_cache_expire(IA_SESSION_LIFETIME_SECONDS / 60);
+        session_set_cookie_params(IA_SESSION_LIFETIME_SECONDS, '/', IA_COOKIE_DOMAIN);
+    }
+    else {
+        session_set_cookie_params(0, '/', IA_COOKIE_DOMAIN);
+    }
+    session_start();
+}
+
 // identity information from cookie-based session
 // Returns identity (user) object instance
 function identity_from_session() {
-    // cookie lasts for 6h
-    session_name('infoarena2sessid');
-    session_start();
+    init_php_session();
 
     if (isset($_SESSION['_ia_identity'])) {
         // log_print('Restoring identity from PHP session');
@@ -154,9 +168,11 @@ function identity_restore() {
     if ($identity_user) {
         log_assert(is_array($identity_user) && getattr($identity_user, 'id'),
                    'Invalid user object found in PHP session store!');
-        //log_print('Remote user: '.$identity_user['username']);
+        //log_print('IDENTITY Remote user: '.$identity_user['username']);
+        //print_r($_COOKIE);
+        //print_r($_SESSION);
     } else {
-        //log_print('Anonymous remote user');
+        //log_print('IDENTITY Anonymous remote user');
     }
 
     return $identity_user;
@@ -164,13 +180,11 @@ function identity_restore() {
 
 
 // Persists $user to session. This is used when logging in.
-//
-// $remember_seconds specifies cookie lifetime. Leave 0 for the
-// cookie to expire when browser is closed.
-function identity_start_session($user, $remember_seconds = 0) {
+// When $remember_user is true, it will persist session for
+// IA_SESSION_LIFETIME_SECONDS seconds.
+function identity_start_session($user, $remember_user = false) {
     session_write_close();
-    session_set_cookie_params($remember_seconds, '/', IA_COOKIE_DOMAIN);
-    session_start();
+    init_php_session($remember_user);
     $_SESSION['_ia_identity'] = serialize($user);
 }
 
@@ -179,6 +193,8 @@ function identity_end_session() {
     if (isset($_SESSION['_ia_identity'])) {
         unset($_SESSION['_ia_identity']);
     }
+    session_write_close();
+    init_php_session();
 }
 
 ?>
