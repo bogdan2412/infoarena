@@ -43,7 +43,7 @@ function ia_template_topnav($selected = 'infoarena', $smf_admin = false) {
 <?php if ($smf_admin) { ?>
     <li><?= getattr($pre, 'smf_admin') ?><a href="<?= htmlentities(IA_SMF_URL) ?>?action=admin">forum admin</a><?= getattr($post, 'smf_admin') ?></li>
 <?php } ?>
-    <li><?= getattr($pre, 'logout') ?><a href="<?= htmlentities(url('logout', array(), true)) ?>">inchide sesiunea</a><?= getattr($post, 'logout') ?></li>
+    <li><?= getattr($pre, 'logout') ?><a href="<?= htmlentities(url('logout', array(), true)) ?>">logout</a><?= getattr($post, 'logout') ?></li>
 <?php } ?>
 </ul>
 </div>
