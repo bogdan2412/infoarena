@@ -21,7 +21,7 @@
 
 <form enctype="multipart/form-data" action="<?= htmlentities($action) ?>" method="post" class="profile hollyfix">
 <fieldset>
-    <legend>Schimba parola</legend>
+    <legend><img src="<?= htmlentities(url('static/images/icons/key.gif')) ?>"/> Schimba parola</legend>
     <ul class="form">
         <li>
             <label for='form_passwordold'>Parola curenta</label>

@@ -308,27 +308,6 @@ The basic layout of the homepage is as follows:
     font-weight: normal;
 }
 
-/* sidebar :: avatar */
-#avatar {
-    width: 165px;
-    height: 80px;
-}
-
-#avatar img {
-    border:1px solid #D8D6CB;
-    padding:5px;
-    background:#fff;
-    display:block;
-    float:left;
-    margin-right:5px;
-}
-
-#avatar p {
-    font-size:11px;
-    margin:0;
-    padding:6px 0 8px;
-}
-
 /* Main (content) */
 #main h1 {
     font-family: Georgia, "Times New Roman", Times, serif;

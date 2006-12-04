@@ -44,14 +44,6 @@ ia_template_topnav($topnav_select, $smf_admin);
 
 <div id="content_small" class="clear">
 <div id="sidebar">
-    <?php if (!identity_anonymous()) { $username = $identity_user['username']; ?>
-    <div id="avatar">
-        <?= format_link(url_user_profile($username), format_user_avatar($username, 50, 50), false) ?>
-        <p><strong><?= format_link(url_user_profile($username), $username) ?></strong><br/>
-        <?= htmlentities($identity_user['full_name']) ?></p>
-    </div>
-    <?php } ?>
-
     <ul id="nav" class="clear">
         <li><a href="<?= htmlentities(url('')) ?>">Home</a></li>
         <li><a href="<?= htmlentities(url('arhiva')) ?>">Arhiva de probleme</a></li>

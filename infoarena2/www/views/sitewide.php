@@ -10,12 +10,26 @@ require_once(IA_ROOT."www/format/format.php");
 
 // display site header
 function ia_template_header() {
+    global $identity_user;
 ?>
 <div id="header" class="clear">
+    <!-- Search feature not ready yet
     <form id="search" action="get">
         <input type="text" id="inputbox" />
         <input type="submit" value="Cauta &raquo;"/>
     </form>
+    -->
+    <?php if (!identity_anonymous()) { $username = $identity_user['username']; ?>
+        <div id="userbox">
+        <?= format_link(url_user_profile($username), format_user_avatar($username, 50, 50), false) ?>
+            <span class="user">
+                <strong><?= htmlentities($identity_user['full_name']) ?></strong><br/>
+                <?= format_link(url_user_profile($username), $username) ?><br/>
+                <a href="<?= htmlentities(url('logout')) ?>" class="logout">logout</a> | <?= format_link(url('account'), 'contul meu') ?>
+            </span>
+        </div>
+    <?php } ?>
+
     <h1><a title="informatica de performanta" href="<?= htmlentities(url('', array(), true)) ?>">infoarena,
         informatica de performanta</a></h1>
 </div>
@@ -43,7 +57,6 @@ function ia_template_topnav($selected = 'infoarena', $smf_admin = false) {
 <?php if ($smf_admin) { ?>
     <li><?= getattr($pre, 'smf_admin') ?><a href="<?= htmlentities(IA_SMF_URL) ?>?action=admin">forum admin</a><?= getattr($post, 'smf_admin') ?></li>
 <?php } ?>
-    <li><?= getattr($pre, 'logout') ?><a href="<?= htmlentities(url('logout', array(), true)) ?>">logout</a><?= getattr($post, 'logout') ?></li>
 <?php } ?>
 </ul>
 </div>

@@ -26,7 +26,7 @@
 
 <form enctype="multipart" action="<?= htmlentities($action) ?>" method="post" class="profile hollyfix">
 <fieldset>
-    <legend>Utilizator infoarena</legend>
+    <legend><img src="<?= htmlentities(url('static/images/icons/key.gif')) ?>"/> Utilizator infoarena</legend>
     <ul class="form">
         <li>
             <label for='form_username'>Nume cont utilizator</label>
