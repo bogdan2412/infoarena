@@ -754,7 +754,7 @@ form.round li#field_tasks select {
 }
 
 .job td, .job th {
-    padding: 0;
+    padding: .2em;
     margin: 0;
     vertical-align: middle;
     height: 2em;
