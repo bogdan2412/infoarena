@@ -322,6 +322,7 @@ The basic layout of the homepage is as follows:
     font-size: 14pt;
     font-weight: normal;
     margin: .2em 0 0 0;
+    border-bottom: 1px solid #eee;
 }
 
 /* News */
@@ -748,28 +749,26 @@ form.round li#field_tasks select {
 }
 
 /* Job details */
-.job-detail ul {
-    list-style-type: none;
+.job {
+    width: 100%;
+}
+
+.job td, .job th {
     padding: 0;
     margin: 0;
+    vertical-align: middle;
 }
 
-.job-detail li {
-    display: block;
-    float: none;
-}
-
-.job-detail li span.desc {
-    width: 10em;
+.job th {
+    width: 7em;
     font-weight: bold;
-    float: left;
+    background-color: lightgray;
 }
 
-.job-detail li.eval-log span.val {
+.job-eval-log {
     display: block;
     font-family: monospace;
-    float: none;
-    width: auto;
+    font-size: 1.1em;
     white-space: pre;
 }
 
@@ -789,7 +788,6 @@ tr.odd td {
 }
 
 tr.even td {
-    background: #f5f5f5;
 }
 
 th {

@@ -178,7 +178,10 @@ function controller_attachment_submit($page_name) {
                 continue;
             }
             $disk_name = attachment_get_filepath($file_att['attach_obj']);
-            rename($file_att['disk_name'], $disk_name);
+            if (!@rename($file_att['disk_name'], $disk_name)) {
+                log_error("Failed moving attachment to final storage ".
+                    "(from {$file_att['disk_name']} to $diskname)");
+            }
         }
     }
 
