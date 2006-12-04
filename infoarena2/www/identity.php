@@ -100,8 +100,11 @@ function identity_require($action, $object = null, $message = null,
 // Initializes long-lived PHP session.
 // When remember user is `true`, it will persist session for
 // IA_SESSION_LIFETIME_SECONDS seconds.
+//
+// Here's a good example why PHP sucks.
 function init_php_session($remember_user = false) {
     session_name('infoarena_session');
+    ini_set('session.gc_maxlifetime', IA_SESSION_LIFETIME_SECONDS);
     if ($remember_user) {
         session_cache_limiter('private');
         session_cache_expire(IA_SESSION_LIFETIME_SECONDS / 60);
