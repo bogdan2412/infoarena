@@ -16,7 +16,10 @@ define("IA_EVAL_DIR", IA_ROOT . 'eval/');
 define("IA_GRADER_CACHE_DIR", IA_EVAL_DIR . 'grader_cache/');
 
 // Path to the jrun executable
-define("IA_JRUN_PATH", IA_ROOT . 'jrun/jrun');
+define("IA_JRUN_DIR", IA_ROOT . 'jrun/');
+
+// Path to the jrun executable
+define("IA_JRUN_EXE", IA_JRUN_DIR . 'jrun');
 
 // The directory used as the jail.
 define("IA_EVAL_TEMP_DIR", IA_EVAL_DIR . 'temp/');

@@ -56,13 +56,17 @@ function job_mark_done($job_id, $eval_log, $eval_message, $score) {
     return db_query($query);
 }
 
-function job_get_by_id($job_id) {
+function job_get_by_id($job_id, $contents = false) {
     log_assert(is_whole_number($job_id));
+    $field_list = "job.`id`, job.`user_id`, `task_id`, `compiler_id`, `status`,
+                   `submit_time`, `eval_message`, `score`, `eval_log`,
+                   task.`page_name` as task_page_name, task.`title` as task_title,
+                   user.`username` as user_name, user.`full_name` as user_fullname";
+    if ($contents) {
+        $field_list .= ", job.file_contents";
+    }
     $query = sprintf("
-              SELECT job.`id`, job.`user_id`, `task_id`, `compiler_id`, `status`,
-                    `submit_time`, `eval_message`, `score`, `eval_log`,
-                    task.`page_name` as task_page_name, task.`title` as task_title,
-                    user.`username` as user_name, user.`full_name` as user_fullname
+              SELECT $field_list 
               FROM ia_job AS job
               LEFT JOIN ia_task AS task ON job.`task_id` = `task`.`id`
               LEFT JOIN ia_user AS user ON job.`user_id` = `user`.`id`

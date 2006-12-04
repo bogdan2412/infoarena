@@ -29,19 +29,24 @@ require_once(IA_ROOT . 'www/format/format.php');
             <span class="desc">Data</span>
             <span class="val"><?= htmlentities($job['submit_time']) ?></span>
         </li>
-        <li class="eval-message">
-            <span class="desc">Mesaj</span>
-            <span class="val"><?= htmlentities($job['eval_message']) ?></span>
-        </li>
         <li class="score">
             <span class="desc">Scor</span>
             <span class="val"><?= htmlentities($job['score']) ?></span>
+        </li>
+        <li class="eval-message">
+            <span class="desc">Mesaj</span>
+            <span class="val"><?= htmlentities($job['eval_message']) ?></span>
         </li>
         <li class="eval-log">
             <span class="desc">Mesaje evaluare</span>
             <span class="val"><?= htmlentities($job['eval_log']) ?></span>
         </li>
     </ul>
+<?php
+if (identity_can('job-download', $job)) {
+    echo format_link(url_job_download($job['id']), "Vezi sursa");
+}
+?>
 </div>
 
 <?php wiki_include('template/borderou'); ?>

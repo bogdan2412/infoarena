@@ -77,7 +77,7 @@ unset($extra_files);
 // Again, in case we changed something.
 $files = glob(IA_ROOT . "attach/*");
 
-if (read_bool("Enforce permissions?", no)) {
+if (read_bool("Enforce permissions?", false)) {
     $defowner = null;
     if (preg_match('/\/home\/([^\/]*)/', IA_ROOT, $matches)) {
         $defowner = $matches[1];

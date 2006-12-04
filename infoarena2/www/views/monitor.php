@@ -28,7 +28,7 @@ if (!$jobs) {
                 $msg = '<span style="job-stats-waiting">in asteptare</span>';
                 return format_link($url, $msg, false);
             }
-            log_die("Invalid job status");
+            log_error("Invalid job status");
         }
 
         // For the task column.
@@ -51,7 +51,7 @@ if (!$jobs) {
                     'title' => 'Utilizator',
                     'key' => 'username',
                     'rowform' => create_function('$row',
-                            'return format_user_tiny($row["user_name"], $row["user_fullname"]);'),
+                            'return format_user_normal($row["user_name"], $row["user_fullname"]);'),
             ),
             array(
                     'title' => 'Problema',

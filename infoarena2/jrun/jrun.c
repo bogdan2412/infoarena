@@ -345,14 +345,6 @@ void child_main(void)
         setrlimit(RLIMIT_DATA, &rl);
     }
 
-    // chroot to jail dir
-    if (opt_chroot) {
-        if (chroot("./")) {
-            perror("ERROR: Failed to chroot to jail dir");
-            exit(-1);
-        }
-    }
-
     // Change user and group.
     if (opt_gid != -1 && setgid(opt_gid)) {
         perror("ERROR: Failed to setgid");
@@ -398,6 +390,14 @@ void child_main(void)
     if (execve(opt_prog, 0, 0)) {
         perror("ERROR: Failed to execute program");
         exit(-1);
+    }
+
+    // chroot to jail dir
+    if (opt_chroot) {
+        if (chroot("./")) {
+            perror("ERROR: Failed to chroot to jail dir");
+            exit(-1);
+        }
     }
 }
 

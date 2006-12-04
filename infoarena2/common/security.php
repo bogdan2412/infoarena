@@ -365,8 +365,16 @@ function security_macro($user, $action, $args) {
 // There is no job-eval, jobs are evaluated on the spot, we check job-view instead.
 function security_job($user, $action, $job) {
     $usersec = getattr($user, 'security_level', 'anonymous');
+    $is_admin = $usersec == 'admin';
+    $is_owner = ($job['user_id'] == $user['id'] && $usersec == 'helper');
 
     switch ($action) {
+        case 'job-download':
+            return $is_admin || $is_owner;
+
+        case 'job-view':
+            return true;
+            
         default:
             log_error('Invalid job action: '.$action);
     }

@@ -170,6 +170,11 @@ function url_job_detail($job_id, $absolute = false) {
     return url("job_detail", array('id' => $job_id), $absolute);
 }
 
+// Url to job download
+function url_job_download($job_id, $absolute = false) {
+    return url("job_detail", array('id' => $job_id, 'action' => 'download'), $absolute);
+}
+
 // Use flash() to display a message right after redirecting the user.
 // Message is displayed only once.
 function flash($message, $style_class = null) {

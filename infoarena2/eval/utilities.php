@@ -126,13 +126,18 @@ function jail_run($program, $time, $memory, $capture_std = false)
 {
     log_assert(is_whole_number($time));
     log_assert(is_whole_number($memory));
-    $cmdline = IA_JRUN_PATH;
+    $cmdline = IA_JRUN_EXE;
     $cmdline .= " --prog=./" . $program;
     $cmdline .= " --dir=" . IA_EVAL_JAIL_DIR;
-    if (defined(IA_EVAL_JAIL_UID)) {
+    $cmdline .= " --chroot";
+    $cmdline .= " --block-syscalls-file=" . IA_JRUN_DIR . 'bad_syscalls';
+    if (defined('IA_EVAL_JAIL_NICE') && IA_EVAL_JAIL_NICE != 0) {
+        $cmdline .= " --nice=" . IA_EVAL_JAIL_NICE;
+    }
+    if (defined('IA_EVAL_JAIL_UID')) {
         $cmdline .= " --uid=" . IA_EVAL_JAIL_UID;
     }
-    if (defined(IA_EVAL_JAIL_GID)) {
+    if (defined('IA_EVAL_JAIL_GID')) {
         $cmdline .= " --gid=" . IA_EVAL_JAIL_GID;
     }
     if ($capture_std) {
@@ -146,7 +151,7 @@ function jail_run($program, $time, $memory, $capture_std = false)
         $cmdline .= " --memory-limit=" . $memory;
     }
 
-//    log_print("Running $cmdline");
+    log_print("Running $cmdline");
     ob_start();
     @system($cmdline, $res);
     $message = ob_get_contents();

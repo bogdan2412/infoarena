@@ -72,6 +72,9 @@ function format_user_avatar($user_name, $width = 50, $height = 50, $absolute = f
     log_assert(is_whole_number($height), "Invalid height");
     return format_tag("img", array(
             "src" => url_user_avatar($user_name, "{$width}x{$height}", $absolute),
+//            "style" => "width: $width; height: $height;",
+//            "width" => $width,
+//            "height" => $height,
             "alt" => ":)",
     ));
 }

@@ -93,7 +93,7 @@ function task_grade_job_classic($task, $tparams, $job) {
         if ($jrunres['result'] == 'ERROR') {
             return jobresult_system_error();
         } else if ($jrunres['result'] == 'FAIL') {
-            $result['log'] = "eroare: ".$jrunres['message'].": 0 puncte";
+            $result['log'] .= "eroare: ".$jrunres['message'].": 0 puncte";
             log_print("");
             continue;
         } else {
@@ -109,16 +109,17 @@ function task_grade_job_classic($task, $tparams, $job) {
         }
 
         if ($tparams['unique_output']) {
-            if (!is_readable($outfile)) {
-                $result['log'] += "Fisier de iesire lipsa: 0 puncte";
-            }
-            @system("diff -BbEa $infile $outfile &> /dev/null", $res);
-            if ($res) {
-                $score = 100 / $tparams['tests'];
-                $result['score'] += $score;
-                $result['log'] += "OK: $score puncte";
+            if (is_readable($outfile)) {
+                @system("diff -BbEa $infile $outfile &> /dev/null", $res);
+                if ($res) {
+                    $score = 100 / $tparams['tests'];
+                    $result['score'] += $score;
+                    $result['log'] .= "OK: $score puncte";
+                } else {
+                    $result['log'] .= "Incorect: 0 puncte";
+                }
             } else {
-                $result['log'] += "Incorect: 0 puncte";
+                $result['log'] .= "Fisier de iesire lipsa: 0 puncte";
             }
         } else {
             // Custom grader.
