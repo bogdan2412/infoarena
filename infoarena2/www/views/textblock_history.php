@@ -21,11 +21,13 @@ function format_operations($row)
     global $page_name, $total_entries;
     $diffurl = url_textblock_diff($page_name, $row['revision_id'], $total_entries);
     $resturl = url_textblock_restore($page_name, $row['revision_id']);
+    $delurl = url_textblock_delete_revision($page_name, $row['revision_id']);
     if ($row['revision_id'] == $total_entries) {
         return '<strong>Ultima versiune</strong>';
     } else {
-        return  '['. format_link($diffurl, "Compara") .']'.
-                '['. format_link($resturl, "Incarca") .']';
+        return  '['. format_link($diffurl, "Compara") .'] '.
+                '['. format_link($resturl, "Incarca") .'] '.
+                '['. format_link($delurl, "Sterge") .']';
     }
 }
 

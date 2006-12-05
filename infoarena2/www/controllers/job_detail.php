@@ -2,21 +2,20 @@
 
 require_once(IA_ROOT . "common/db/job.php");
 
-function controller_job_detail($suburl) {
+function controller_job_detail($job_id) {
     $action = request('action', 'view');
     if ($action == 'view') {
-        controller_job_view($suburl);
+        controller_job_view($job_id);
     } else if ($action == 'download') {
-        controller_job_download($suburl);
+        controller_job_download($job_id);
     } else {
         flash_error("Actiune invalida.");
         redirect(url('monitor'));
     }
 }
 
-function controller_job_view($suburl) {
+function controller_job_view($job_id) {
     // Get job id.
-    $job_id = request("id"); 
     if (!is_whole_number($job_id)) {
         flash_error("Numar de job invalid.");
         redirect(url('monitor'));
@@ -41,9 +40,7 @@ function controller_job_view($suburl) {
     execute_view('views/job_detail.php', $view);
 }
 
-function controller_job_download($suburl) {
-    // Get job id.
-    $job_id = request("id"); 
+function controller_job_download($job_id) {
     if (!is_whole_number($job_id)) {
         flash_error("Numar de job invalid.");
         redirect(url('monitor'));

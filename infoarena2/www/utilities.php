@@ -151,6 +151,14 @@ function url_textblock_restore($page_name, $rev, $absolute = false) {
     return url($page_name, $args, $absolute);
 }
 
+function url_textblock_delete_revision($page_name, $rev, $absolute = false) {
+    $args = array(
+            'action' => 'delete-revision',
+            'revision' => $rev,
+    );
+    return url($page_name, $args, $absolute);
+}
+
 // Url to user profile page
 function url_user_info($username, $absolute = false) {
     return url('userinfo/' . $username, array(), $absolute);
@@ -167,12 +175,13 @@ function url_user_avatar($username, $resize = "50x50", $absolute = false) {
 
 // Url to job detail page
 function url_job_detail($job_id, $absolute = false) {
-    return url("job_detail", array('id' => $job_id), $absolute);
+    log_assert(is_numeric($job_id));
+    return url("job_detail/".$job_id, array(), $absolute);
 }
 
 // Url to job download
 function url_job_download($job_id, $absolute = false) {
-    return url("job_detail", array('id' => $job_id, 'action' => 'download'), $absolute);
+    return url("job_detail/".$job_id, array('action' => 'download'), $absolute);
 }
 
 // Use flash() to display a message right after redirecting the user.

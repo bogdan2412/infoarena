@@ -170,8 +170,7 @@ function controller_textblock_history($page_name) {
 }
 
 // Delete a certain textblock.
-function controller_textblock_delete($page_name)
-{
+function controller_textblock_delete($page_name) {
     // Get actual page.
     $page = textblock_get_revision($page_name);
 
