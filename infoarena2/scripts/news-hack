@@ -4,7 +4,7 @@
 require_once(dirname($argv[0]) . "/utilities.php");
 require_once(IA_ROOT . "common/db/textblock.php");
 
-$page_list = textblock_get_by_prefix('stiri', true, false);
+$page_list = textblock_get_by_prefix('stiri/', true, false);
 
 if (count($page_list) == 0) {
     log_error("No pages found.");

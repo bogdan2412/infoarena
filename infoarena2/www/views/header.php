@@ -71,6 +71,7 @@ ia_template_topnav($topnav_select, $smf_admin);
         </p>
     </div>
     <?php } ?>
+    <p class="user-count"><?php echo user_count(); ?> membri inregistrati</p>
 </div>
 
 <div id="main">

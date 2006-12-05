@@ -15,6 +15,15 @@ foreach ($tasks as $t) {
 
 <h1><?= htmlentities($title)  ?></h1>
 
+<div id="sidebar2">
+<div class="section">
+<h3> Ce se intampla cu sursa mea? </h3>
+<ul>
+    <li>Sursa ta se evalueaza <a href="/documentatie/evaluator">automat</a>, iar rezultatul evaluarii se poate vedea in <a href="/monitor">monitor</a></li>
+</ul>
+</div>
+</div>
+
 <form enctype="multipart/form-data" action="<?= htmlentities(url_submit()) ?>" method="post" class="submit" id="task_submit">
 
 <input type="hidden" id="output_only" value="<?= htmlentities(':'.join(':', $output_only_ids).':') ?>" />

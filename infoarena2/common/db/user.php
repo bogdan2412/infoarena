@@ -131,4 +131,10 @@ function user_get_list() {
     return $users;
 }
 
+// Counts number of uers
+function user_count() {
+    $result = db_fetch("SELECT COUNT(*) FROM ia_user");
+    return $result["COUNT(*)"];
+}
+
 ?>

@@ -133,7 +133,10 @@ function task_grade_job_classic($task, $tparams, $job) {
                 return jobresult_system_error();
             }
 
-            $jrunres = jail_run('eval', 1000, 64000, true);
+            $jrunres = jail_run('eval',
+                IA_EVAL_TASK_GRADER_TIMELIMIT,
+                IA_EVAL_TASK_GRADER_MEMLIMIT,
+                true);
             log_print("JRUN grader: ".$jrunres['result'].": ".$jrunres['message']);
             if ($jrunres['result'] != 'OK') {
                 log_warn("Failed running grader!");

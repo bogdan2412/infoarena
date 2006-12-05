@@ -957,3 +957,11 @@ table.monitor {
     background-color: silver;
 }
 
+/* user count */
+.user-count {
+    margin-top: 1em;
+    margin-left: 1.2em;
+    text-align: left;
+    color:#6A6A6B;
+
+}

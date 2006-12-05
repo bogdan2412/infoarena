@@ -183,9 +183,10 @@ function textblock_get_revision_count($name) {
 function textblock_grep($substr, $page) {
     $query = sprintf("SELECT `name`, `title`, `timestamp`, `user_id`, `security`
                       FROM ia_textblock
-                      WHERE `name` LIKE '%s' AND `text` LIKE '%s'
+                      WHERE `name` LIKE '%s' AND
+                            (`text` LIKE '%s' OR `title` LIKE '%s')
                       ORDER BY `name`",
-                      db_escape($page), db_escape($substr));
+                      db_escape($page), db_escape($substr), db_escape($substr));
     return db_fetch_all($query);
 }
 
