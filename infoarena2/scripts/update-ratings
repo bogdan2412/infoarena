@@ -33,6 +33,8 @@ log_assert(isset($params['rating_update']),
 log_assert(parameter_decode('rating_update', $params['rating_update']),
            "Round is not marked as rating_update");
 
+log_print("Updating ratings for round ".$round_id."\n");
+
 // read all registered user names
 log_print("Reading whole user list");
 $user_list = user_get_list();

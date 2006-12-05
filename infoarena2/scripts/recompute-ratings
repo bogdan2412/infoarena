@@ -1,0 +1,39 @@
+#! /usr/bin/env php
+<?php
+
+// recomputes ratings *FROM SCRATCH*
+// (deletes existing ratings)
+//
+// FIXME: It now relies on the `update-ratings` tool. This isn't
+// very efficient since `update-ratings` always starts from scratch.
+
+require_once(dirname($argv[0]) . "/utilities.php");
+
+// first, delete all ratings
+// FIXME: Turn this into db API call
+log_print("Deleting all current ratings");
+db_query("DELETE FROM ia_score WHERE `name` IN ('rating', 'rating_deviation', 'rating_timestamp')");
+
+// No time for fancy database calls.
+// Make sure these are written in chronological order!
+$rounds = array(
+    'preoji1', 'preoji2', 'preoni1', 'preoni2', 'preoni3',
+    'preoni4', 'filip1', 'filip2', 'preoni51a', 'preoni51b',
+    'preoni52b', 'preoni52a', 'preoni53a', 'preoni53b',
+    'ba6', 'happy', 'hc2', 'preoni61a', 'preoni61c', 'preoni61b',
+    'preoni62c', 'preoni62b', 'preoni62a', 'preoni63b', 'preoni63a',
+    'preoni63c', 'preoni64b', 'preoni64a', 'preoni64c', 'preoni65a',
+    'preoni65b', 'preoni65c', 'moisil3', 'moisil4', 'moisil2',
+    'moisil1', 'summer06', 'summer2', 'summer3', 'autumn06', 'happy2006'
+);
+
+log_print("Recomputing ratings for ".count($rounds)." rounds...");
+$i = 1;
+$cnt = count($rounds);
+foreach ($rounds as $round_id) {
+    echo "\n\n\nRound {$i}/{$cnt}\n";
+    system("./update-ratings {$round_id}");
+    $i++;
+}
+
+?>
