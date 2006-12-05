@@ -10,7 +10,7 @@ require_once(IA_ROOT . 'www/format/format.php');
 <table class="job">
 <tr>
     <th class="task-id">Problema</th>
-    <td class="task-id"><?= format_link("problema/".$job['task_id'], $job['task_id']) ?></td>
+    <td class="task-id"><?= format_link(url_task($job['task_id']), $job['task_id']) ?></td>
     <th class="compiler-id">Compilator</th>
     <td class="compiler-id"><?= htmlentities($job['compiler_id']) ?></td>
 </tr>
@@ -18,7 +18,7 @@ require_once(IA_ROOT . 'www/format/format.php');
     <th class="user-id">Utilizator</th>
     <td class="user-id"><?= format_user_tiny($job['user_name'], $job['user_fullname']) ?></td>
     <th class="submit-time">Data</th>
-    <td class="submit-time"><?= htmlentities($job['submit_time']) ?></td>    
+    <td class="submit-time"><?= htmlentities($job['submit_time']) ?></td>
 </tr>
 <tr>
     <th class="score">Scor</th>

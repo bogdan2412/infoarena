@@ -16,7 +16,7 @@ function job_create($task_id, $user_id, $compiler_id, $file_contents) {
     $query = sprintf($query, db_escape($task_id),
                      db_escape($user_id), db_escape($compiler_id),
                      db_escape($file_contents));
-    return db_query($query);      
+    return db_query($query);
 }
 
 // Get something for the evaluator to do.

@@ -366,7 +366,7 @@ function security_macro($user, $action, $args) {
 function security_job($user, $action, $job) {
     $usersec = getattr($user, 'security_level', 'anonymous');
     $is_admin = $usersec == 'admin';
-    $is_owner = ($job['user_id'] == $user['id'] && $usersec == 'helper');
+    $is_owner = ($job['user_id'] == $user['id']);
 
     switch ($action) {
         case 'job-download':
@@ -374,7 +374,7 @@ function security_job($user, $action, $job) {
 
         case 'job-view':
             return true;
-            
+
         default:
             log_error('Invalid job action: '.$action);
     }

@@ -7,6 +7,7 @@ require_once(IA_ROOT . "www/format/format.php");
 function macro_news($args) {
     $prefix = getattr($args, 'prefix');
     $args['display_entries'] = getattr($args, 'display_entries', 5);
+    $args['param_prefix'] = 'news_';
     $options = pager_init_options($args);
     $subpages = news_get_range($options['first_entry'], $options['display_entries'], $prefix);
     $options['total_entries'] = news_count($prefix);

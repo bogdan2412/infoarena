@@ -184,6 +184,11 @@ function url_job_download($job_id, $absolute = false) {
     return url("job_detail/".$job_id, array('action' => 'download'), $absolute);
 }
 
+// Url to task view
+function url_task($task_id, $absolute = false) {
+    return url(TB_TASK_PREFIX . $task_id, array(), $absolute);
+}
+
 // Use flash() to display a message right after redirecting the user.
 // Message is displayed only once.
 function flash($message, $style_class = null) {

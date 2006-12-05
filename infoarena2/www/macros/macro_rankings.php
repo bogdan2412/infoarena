@@ -16,6 +16,7 @@ require_once(IA_ROOT . "common/db/score.php");
 //      Rankings(rounds="preONI2007/1/a | preONI2007/2/a")
 //      Rankings(rounds="preONI2007/1/a | preONI2007/2/a" count="10")
 function macro_rankings($args) {
+    $args['param_prefix'] = 'rankings_';
     $options = pager_init_options($args);
 
     // Rounds parameters
@@ -41,7 +42,12 @@ function macro_rankings($args) {
     );
     $options['total_entries'] = $res['total_rows'];
 
-    return format_table($rankings, $column_infos, $options);
+    if (0 >= count($rankings)) {
+        return macro_message('Nici un rezultat inregistrat pentru aceasta runda.');
+    }
+    else {
+        return format_table($rankings, $column_infos, $options);
+    }
 }
 
 ?>
