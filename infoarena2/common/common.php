@@ -61,7 +61,7 @@ function is_round_id($round_id) {
 // Check valid score names.
 function is_score_name($score_name)
 {
-    return preg_match('/^[a-z0-9][a-z0-9_]*$/i', $score_name) && strlen($score_name) < 16;
+    return preg_match('/^[a-z0-9][a-z0-9_]*$/i', $score_name) && strlen($score_name) < 32;
 }
 
 // Checks if $round is a valid round.

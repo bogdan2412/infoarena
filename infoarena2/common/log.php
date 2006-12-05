@@ -256,7 +256,7 @@ function logging_error_handler($errno, $errstr, $errfile, $errline) {
 
     // The behaviour of this function is defined with error_log in php.ini
     if (LOG_FATAL_ERRORS & $errno) {
-        $errstr = "Fatal: " . $errstr;
+        $errstr = "Fatal:\t>>>" . $errstr . "<<<\t";
     }
     error_log($errstr);
 

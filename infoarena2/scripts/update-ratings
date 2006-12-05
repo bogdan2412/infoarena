@@ -1,0 +1,84 @@
+#! /usr/bin/env php
+<?php
+
+// update infoarena ratings FOR A SINGLE round
+// expects round_id as argv 1
+//
+// WARNING: Ratings should be updated in chronological order!
+
+require_once(dirname($argv[0]) . "/utilities.php");
+
+require_once(IA_ROOT."common/db/round.php");
+require_once(IA_ROOT."common/db/score.php");
+require_once(IA_ROOT."common/db/parameter.php");
+require_once(IA_ROOT."common/db/user.php");
+require_once(IA_ROOT."common/round.php");
+require_once(IA_ROOT."common/score.php");
+require_once(IA_ROOT."common/rating.php");
+require_once(IA_ROOT."common/parameter.php");
+
+// validate argv
+log_assert(2 == $argc, "Expecting a single argument: round_id");
+$round_id = $argv[1];
+
+// validate round id
+$round = round_get($round_id);
+log_assert($round, "Invalid round identifier");
+$params = round_get_parameters($round_id);
+log_assert(isset($params['rating_timestamp']),
+           "Round does not have parameter rating_timestamp");
+$timestamp = parameter_decode('rating_timestamp', $params['rating_timestamp']);
+log_assert(isset($params['rating_update']),
+           "Round does not have parameter rating_update");
+log_assert(parameter_decode('rating_update', $params['rating_update']),
+           "Round is not marked as rating_update");
+
+// read all registered user names
+log_print("Reading whole user list");
+$user_list = user_get_list();
+$usercount = count($user_list);
+log_print(count($user_list) . " registered users");
+
+// read all user ratings, deviations & timestamps
+log_print("Reading current user ratings");
+$ratings = score_get("rating", null, null, null, 0, $usercount);
+$ratings = $ratings['scores'];
+log_print("Reading current user deviations");
+$deviations = score_get("rating_deviation", null, null, null, 0, $usercount);
+$deviations = $deviations['scores'];
+log_print("Reading current user timestamps");
+$timestamps = score_get("rating_timestamp", null, null, null, 0, $usercount);
+$timestamps = $timestamps['scores'];
+
+// merge data
+log_print("Merging data");
+$users = rating_init($user_list, $ratings, $deviations, $timestamps);
+
+// read round scores
+log_print("Reading round scores");
+$round_rows = score_get("score", null, null, $round_id, 0, $usercount);
+$round_rows = $round_rows['scores'];
+log_print(count($round_rows) . " users were scored in this round");
+$scores = array();
+foreach ($round_rows as $row) {
+    log_assert(isset($row['user_name']) && isset($row['score']));
+    $scores[$row['user_name']] = $row['score'];
+}
+
+// Computing new ratings
+rating_update($users, $scores, $timestamp);
+
+// update database 
+log_print("Updating database");
+foreach ($round_rows as $row) {
+    $username = $row['user_name'];
+    $user_id = $row['user_id'];
+    score_update("rating_timestamp", $user_id, null, null,
+                 $users[$username]['rating']);
+    score_update("rating_deviation", $user_id, null, null,
+                 $users[$username]['deviation']);
+    score_update("rating_timestamp", $user_id, null, null,
+                 $users[$username]['timestamp']);
+}
+
+?>

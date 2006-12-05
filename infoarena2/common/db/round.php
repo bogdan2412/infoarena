@@ -1,6 +1,7 @@
 <?php
 
 require_once(IA_ROOT."common/db/db.php");
+require_once(IA_ROOT."common/db/parameter.php");
 
 // Get round
 function round_get($round_id) {
