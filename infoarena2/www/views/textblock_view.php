@@ -13,7 +13,7 @@ include('textblock_header.php');
 
 // revision warning
 if (getattr($view, 'revision')) {
-    echo "<em>Atentie, aceasta pagina nu este actuala (este varianta de la ".htmlentities($textblock['timestamp']).")</em>";
+    include('revision_warning.php');
 }
 
 // textblock content

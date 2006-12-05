@@ -34,7 +34,7 @@ if ('view' == $action) {
     // revision warning
     // FIXME: duplicated code (see views/textblock_view.php)
     if (getattr($view, 'revision')) {
-        echo "<em>Atentie, aceasta pagina nu este actuala (este varianta de la ".htmlentities($textblock['timestamp']).")</em>";
+	include('revision_warning.php');
     }
 
     echo '<div class="wiki_text_block">';

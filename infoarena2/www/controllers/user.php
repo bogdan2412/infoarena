@@ -6,7 +6,7 @@ require_once(IA_ROOT."common/db/user.php");
 
 // View user profile (personal page, rating evolution, statistics)
 // $action is one of (view | rating | stats)
-function controller_user_view($username, $action) {
+function controller_user_view($username, $action, $revision = null) {
     // validate username
     $user = user_get_by_username($username);
     if (!$user) {
@@ -19,6 +19,7 @@ function controller_user_view($username, $action) {
     $view = array(
         'title' => $user['full_name'].' ('.$user['username'].')',
         'page_name' => $page_name,
+	'revision' => $revision,
         'action' => $action,
         'user' => $user,
         'topnav_select' => 'profile',
@@ -28,7 +29,7 @@ function controller_user_view($username, $action) {
     switch ($action) {
         case 'view':
             // view personal page
-            $textblock = textblock_get_revision($page_name);
+            $textblock = textblock_get_revision($page_name, $revision);
             log_assert($textblock);
             $view['textblock'] = $textblock;
             break;

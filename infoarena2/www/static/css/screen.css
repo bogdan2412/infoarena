@@ -442,6 +442,17 @@ div.flashError {
     background-image: url('../images/icons/error.gif');
 }
 
+div.warning {
+    color: black;
+    margin: 0em 0em 0em 0em;
+    padding: .2em .2em .2em 20px;
+    border: 1px solid olive;
+    background-image: url('../images/icons/notice.gif');
+    background-position: 2px 50%;
+    background-repeat: no-repeat;
+    width: 55%;
+}
+
 /* Forms */
 form {
     margin: 0;
