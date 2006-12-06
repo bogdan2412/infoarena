@@ -26,8 +26,6 @@ function controller_plot($suburl) {
             $view = array(
                 'history' => $history,
                 'user' => $user,
-                'width' => 512,
-                'height' => 200,
             );
 
             // output gnuplot

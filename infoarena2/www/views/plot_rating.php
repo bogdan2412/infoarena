@@ -23,14 +23,14 @@ set format x \"%m/%y\"
 
 set grid
 
-set rmargin 0
-set lmargin 1
+set rmargin 2
+set lmargin 5
 set tmargin 12
-set bmargin 1
+set bmargin 2
 set xtics nomirror
 set ytics nomirror
 
-set title \"Evolutie rating pentru {$user['username']}\" 0,-.5
+set title \"Evolutie rating pentru {$user['username']} (".IA_URL.")\" 0,-.5
 
 set style line 1 lt 1 lw 4 pt 3 ps 0.5
 set style line 2 lt 3 lw 4 pt 7 ps 1.
@@ -38,7 +38,6 @@ set style line 3 lt 11 lw 3
 set xrange [\"{$range_start}\":\"{$range_end}\"]
 
 set yrange [150:1000]
-set ylabel \"rating http://infoarena.ro/\" 1.3,0
 
 set clip
 ";
