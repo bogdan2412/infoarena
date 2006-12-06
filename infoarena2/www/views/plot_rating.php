@@ -5,20 +5,36 @@ require_once(IA_ROOT."common/rating.php");
 // date range
 if (2 <= count($history)) {
     $keys = array_keys($history);
-    $range_start = date("Y-m-d", $history[$keys[0]]['timestamp'] - 30*24*3600);
-    $range_end = date("Y-m-d", $history[$keys[count($history)-1]]['timestamp']
-                               + 30*24*3600);
+    $range_start = $history[$keys[0]]['timestamp'] - 30*24*3600;
+    $range_end = $history[$keys[count($history)-1]]['timestamp'] + 30*24*3600;
 }
 else {
-    $range_start = "2004-01-01";
-    $range_end = date("Y-m-d");
+    // 2004-01-01
+    $range_start = mktime(1, 0, 0, 1, 1, 2004);
+    $range_end = time();
 }
+// compute months between date range to show as xtics
+list($dy, $dm, $dd) = split('-', date('Y-m-d', $range_start));
+$i = 0;
+$xtics = array();
+while (true) {
+    $dx = mktime(1, 0, 0, $dm + $i, $dd, $dy); 
+    $xtics[] = date('Y-m-d', $dx);
+    if ($dx > $range_end) {
+        break;
+    }
+    $i += 2;
+}
+
+// format date ranges for gnuplot
+$range_start = date('Y-m-d', $range_start);
+$range_end = date('Y-m-d', $range_end);
 
 // gnuplot script
 $script = "
 set xdata time
 set timefmt \"%Y-%m-%d\"
-set format x \"%m/%y\"
+set format x \"%b %y\"
 
 
 set grid
@@ -36,6 +52,9 @@ set style line 1 lt 1 lw 4 pt 3 ps 0.5
 set style line 2 lt 3 lw 4 pt 7 ps 1.
 set style line 3 lt 11 lw 3
 set xrange [\"{$range_start}\":\"{$range_end}\"]
+
+set xtics ('".join("', '", $xtics)."')
+set xtic rotate by -20
 
 set yrange [150:1000]
 

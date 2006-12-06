@@ -40,6 +40,10 @@ function controller_plot($suburl) {
             $username = request('user');
             $user = user_get_by_username($username);
 
+            if (!$user && $username) {
+                die_http_error();
+            }
+
             if ($user) {
                 log_print("Plotting rating distribution for ".$username);
             }
