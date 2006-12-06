@@ -216,8 +216,10 @@ function rating_update(&$users, $user_scores, $timestamp) {
 // Represent rating in a human-friendly scale from 0 to 1000
 // NOTE: This is used only when displaying ratings to users!
 function rating_scale($rating) {
+    // FIXME: Fix ratings and then fix scale!
+    // NOTE: Current ratings span from ~1100 to ~1850
     log_assert(is_numeric($rating));
-    return (int)round($rating / 3);
+    return (int)round(($rating - 1000));
 }
 
 ?>

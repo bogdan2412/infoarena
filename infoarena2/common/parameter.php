@@ -9,7 +9,7 @@ function parameter_decode($parameter_id, $value) {
     $booleans = array('unique_output', 'okfiles', 'rating_update');
     $ints = array('memlimit', 'tests', 'rating_timestamp');
     $floats = array('timelimit');
-    $strings = array('eval');
+    $strings = array('evaluator');
 
     if (in_array($parameter_id, $booleans)) {
         if ("1" == $value) {

@@ -5,10 +5,19 @@
 // Expected view variables:
 // $script  gnuplot script without `set terminal` declaration
 // $data    gnuplot auxiliary data
+// $width, $height
+
+log_assert(isset($script) && isset($data) && isset($width)
+           && isset($height));
 
 // compute gnuplot script
-$plot_script = "set terminal png notransparent small\n";
-$plot_script .= "set size .85,.5\n\n";
+//  - gnuplot accepts image size as a ratio of hard-coded image size 640x480
+$ratio = number_format((float)$height/($width+60), 4, '.', '');
+$plot_script = "
+set terminal postscript eps color enhanced 'Arial' 20
+set size ratio {$ratio}
+set size 1,1
+";
 $plot_script .= $script;
 
 // store auxiliary data in a temporary file
@@ -29,7 +38,10 @@ $descriptorspec = array(
     0 => array("pipe", "r"),
     1 => array("pipe", "w"),
 );
-$process = proc_open('gnuplot', $descriptorspec, $pipes);
+$density = 92;
+#$width = (72/$density) * $width;
+#$height = (72/$density) * $height;
+$process = proc_open("gnuplot | convert -density {$density} -page {$width}x{$height} -crop {$width}x{$height}+20+0 ps:- png:-", $descriptorspec, $pipes);
 
 log_assert(is_resource($process), "Could not create gnuplot process");
 

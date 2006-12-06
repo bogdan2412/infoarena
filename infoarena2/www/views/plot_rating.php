@@ -2,33 +2,70 @@
 
 require_once(IA_ROOT."common/rating.php");
 
-// where to start plot from?
-$range_start = "2004-01-01";
-// today
-$range_end = date("Y-m-d");
+// date range
+if (2 <= count($history)) {
+    $keys = array_keys($history);
+    $range_start = date("Y-m-d", $history[$keys[0]]['timestamp'] - 30*24*3600);
+    $range_end = date("Y-m-d", $history[$keys[count($history)-1]]['timestamp']
+                               + 30*24*3600);
+}
+else {
+    $range_start = "2004-01-01";
+    $range_end = date("Y-m-d");
+}
 
 // gnuplot script
 $script = "
 set xdata time
 set timefmt \"%Y-%m-%d\"
 set format x \"%m/%y\"
-set key right nobox
+
+
 set grid
 
-set title \"Evolutie rating pentru {$user['username']}\"
+set rmargin 0
+set lmargin 1
+set tmargin 12
+set bmargin 1
+set xtics nomirror
+set ytics nomirror
 
-set style line 1 lt 1 lw 2 pt 3 ps 0.5
-set style line 2 lt 3 lw 1 pt 5 ps 1.4
+set title \"Evolutie rating pentru {$user['username']}\" 0,-.5
+
+set style line 1 lt 1 lw 4 pt 3 ps 0.5
+set style line 2 lt 3 lw 4 pt 7 ps 1.
+set style line 3 lt 11 lw 3
 set xrange [\"{$range_start}\":\"{$range_end}\"]
 
-set ylabel \"Rating\"
 set yrange [150:1000]
+set ylabel \"rating http://infoarena.ro/\" 1.3,0
+
+set clip
+";
+
+// display round_id labels
+$i = 1;
+foreach ($history as $round_id => $round) {
+    $date = date("Y-m-d", $round['timestamp']);
+    $rating = rating_scale($round['rating']) + ($i % 2 ? 100 : -100);
+    $align = ($i % 2 ? "left" : "right");
+    $align = "left";
+    $script .= "set label {$i} \"{$i}\" at \"{$date}\",{$rating} {$align} font \"Helvetica,17\" back tc lt 9\n";
+    $i++;
+}
+
+// legend
+$script .= "
+set key right bottom box 3
+set key width -1.5
 ";
 
 if (1 <= count($history)) {
+    // plot ratings, deviations & median
     $script .= "
 plot \\
     \"%data%\" using 1:2 title \"Rating\" with lines ls 1, \\
+    \"%data%\" using 1:2 smooth bezier title \"Medie\" with lines ls 3, \\
     \"%data%\" using 1:2:3 title \"Deviatie\" with errorbars ls 2
 ";
 }
@@ -36,7 +73,8 @@ else {
     // when nothing to plot, use a bogus (non-visible) function plot so that
     // gnuplot doesn't fail
     $script .= "
-plot 0 title \"\" with lines ls 1
+set label \"(date insuficiente pentru a desena graficul)\" at graph 0.5,0.5 center
+plot 0 notitle with lines ls 1
 ";
 }
 
