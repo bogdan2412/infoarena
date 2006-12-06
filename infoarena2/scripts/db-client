@@ -7,7 +7,18 @@ require_once(dirname($argv[0]) . "/utilities.php");
 // Uses auth stuff from config.php.
 // FIXME: password visible in ps list. How retarded.
 
-magic_exec(sprintf("  mysql   --user=%s --password=%s --host=%s %s ",
-            DB_USER, DB_PASS, DB_HOST, DB_NAME));
+$cmdline = "mysql";
+$cmdline .= " --user=".DB_USER;
+$cmdline .= " --password=".DB_PASS;
+if (strstr(DB_HOST, ":")) {
+    list($host, $port) = explode(':', DB_HOST);
+    $cmdline .= " --host=".$host;
+    $cmdline .= " --port=".$port;
+} else {
+    $cmdline .= " --host=".DB_HOST;
+}
+$cmdline .= " ".DB_NAME;
+
+magic_exec($cmdline);
 
 ?>

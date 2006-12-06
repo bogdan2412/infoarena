@@ -4,7 +4,8 @@
 // Config options.
 $jail_dir = "jail";
 $exe_name = "prog";
-$extra_args = "--uid 1005 --gid 1005 --copy-libs --nice -5 --block-syscalls-file=bad_syscalls";
+#$extra_args = "--uid 1005 --gid 1005 --copy-libs --nice -5 --block-syscalls-file=bad_syscalls";
+$extra_args = "--nice -5 --block-syscalls-file=bad_syscalls";
 
 // Exit with an error message.
 function error($message)

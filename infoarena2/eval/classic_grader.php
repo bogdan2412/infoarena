@@ -93,12 +93,11 @@ function task_grade_job_classic($task, $tparams, $job) {
         if ($jrunres['result'] == 'ERROR') {
             return jobresult_system_error();
         } else if ($jrunres['result'] == 'FAIL') {
-            $result['log'] .= "eroare: ".$jrunres['message'].": 0 puncte";
+            $result['log'] .= "eroare: timp {$jrunres['time']}ms: mem {$jrunres['memory']}kb: {$jrunres['message']}: 0 puncte";
             log_print("");
             continue;
         } else {
-            $result['log'] .= "ok: timp ".$jrunres['time']."ms ".
-                    $jrunres['memory']."kb: ";
+            $result['log'] .= "ok: timp {$jrunres['time']}ms: mem {$jrunres['memory']}kb: ";
         }
 
         // Copy ok file, if used.
@@ -109,6 +108,7 @@ function task_grade_job_classic($task, $tparams, $job) {
         }
 
         if ($tparams['unique_output']) {
+            // Diff grading, trivial.
             if (is_readable($outfile)) {
                 @system("diff -BbEa $infile $outfile &> /dev/null", $res);
                 if ($res) {
@@ -133,6 +133,7 @@ function task_grade_job_classic($task, $tparams, $job) {
                 return jobresult_system_error();
             }
 
+            // Run grader.
             $jrunres = jail_run('eval',
                 IA_EVAL_TASK_GRADER_TIMELIMIT,
                 IA_EVAL_TASK_GRADER_MEMLIMIT,
@@ -143,23 +144,29 @@ function task_grade_job_classic($task, $tparams, $job) {
                 return jobresult_system_error();
             }
 
+            // Get score.
             $jrunres['stdout'] = trim($jrunres['stdout']);
-            $score = (int)$jrunres['stdout'];
-            if ((string)$score !== $jrunres['stdout']) {
-                log_warn("Grader didn't return a score in stdout");
+            if ($jrunres['stdout'] === '') {
+                log_warn("Grader didn't return stdout, assuming 0 points");
+            } else if (!is_whole_number($jrunres['stdout'])) {
+                log_warn("Grader didn't return number in stdout.");
                 return jobresult_system_error();
             }
+            $score = (int)$jrunres['stdout'];
 
+            // Get message.
             $message = $jrunres['stderr'];
-            $message = preg_replace("/\s*\.?\n?^/i", "", $message);
+            if (!preg_match("/^([^\n]*)$/i", $message, $match)) {
+                log_error("Broken grader message?");
+            }
+            $message = $match[1];
             if (strpos("\n", $message) || strlen($message) > 100) {
                 log_warn("Grader returned a malformed message");
                 return jobresult_system_error();
             }
 
+            // log.
             log_print("Grader gave $score points and said $message");
-
-            // FIXME: Run grader here.
             $result['score'] += $score;
             $result['log'] .= "$message: $score puncte";
         }

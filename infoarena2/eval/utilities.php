@@ -173,6 +173,11 @@ function jail_run($program, $time, $memory, $capture_std = false)
         }
     }
 
+    if ($result['message'] == 'ok') {
+        log_assert($result['time'] < $time, "JRun says ok, but reports time > timelimit");
+        log_assert($result['memory'] < $memory, "JRun says ok, but reports memory > memlimit");
+    }
+
     return $result;
 }
 

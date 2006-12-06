@@ -3,20 +3,40 @@
  */
 
 /*
- * Parameters.
+ * Parameters:
  *
- * parameters are:
- *      -u --uid: UID for impersonation
- *      -g --gid: UID for impersonation
+ *          Execution settings:
+ *
  *      -p --prog: File to execute
  *      -d --dir: Directory to run in. It's assumed all dependencies are inside that dir.
- *      -t --time-limit: Time limit, in miliseconds.
+ *      -v --verbose: Show debug information.
+ *      --copy-libs: Try to find used libraries and copy in jail dir.
+ *              Uses ldd, not very reliable. It will probably work for simple C libs,
+ *              but don't expect much from it.
+ *      --capture-stdout: Redirect jailed stdout to a file (/dev/null by default).
+ *      --capture-stderr: Redirect jailed stderr to a file (/dev/null by default).
+ *
+ *          Limits:
+ *
  *      -m --memory-limit: memory limit, in kilobytes.
- *      -n --nice: Niceness to run with. Equivalent to nice -n arg ./jrun (...)
- *      --copy-libs: Determine libs with ldd and copies them over.
+ *      -t --time-limit: Program "used" time limit, in miliseconds.
+ *      -w --wall-time-limit: Global "wall" time limit, in miliseconds.
+ *              Wall time measures actual real-world time and should be a bigger limit.
+ *              This is required to avoid stalling on sleep(), etc.
  *               
+ *          Security stuff:
+ *
+ *      -u --uid: UID for impersonation
+ *      -g --gid: GID for impersonation
+ *      -n --nice: Niceness factor. This can control user process priority, man nice.
+ *      --chroot: To use chroot. Generally a good idea
+ *      --no-ptrace: Disable ptrace and system call interception. Bad idea.
+ *      --block-syscalls: Blocked system call list. Separate with ",", needs ptrace
+ *      --block-syscalls-file: A file with blocked system calls. Better than the above.
+ *
+ 
  *      Returns 0
- *      See stdout
+ *      See stdout for information.
  */
 
 #include <stdio.h>
@@ -65,6 +85,7 @@ char opt_dir[500];
 char opt_prog[500];
 
 int opt_time_limit;
+int opt_wall_time_limit;
 int opt_memory_limit;
 
 int opt_nice_val;
@@ -104,6 +125,7 @@ int syscall_getid(char* name)
 #define OPT_DIR                         2
 #define OPT_PROG                        3
 #define OPT_TIME_LIMIT                  4
+#define OPT_WALL_TIME_LIMIT             15
 #define OPT_MEMORY_LIMIT                5
 #define OPT_NICE                        6
 #define OPT_NO_PTRACE                   7
@@ -123,6 +145,7 @@ void parse_options(int argc, char *argv[])
         {"dir",                 1, 0, OPT_DIR},
         {"prog",                1, 0, OPT_PROG},
         {"time-limit",          1, 0, OPT_TIME_LIMIT},
+        {"wall-time-limit",     1, 0, OPT_WALL_TIME_LIMIT},
         {"memory-limit",        1, 0, OPT_MEMORY_LIMIT},
         {"nice",                1, 0, OPT_NICE},
         {"no-ptrace",           0, 0, OPT_NO_PTRACE},
@@ -146,6 +169,7 @@ void parse_options(int argc, char *argv[])
     getcwd(opt_dir, sizeof(opt_dir));
    
     opt_time_limit = 0;
+    opt_wall_time_limit = -1;
     opt_memory_limit = 0;
 
     opt_nice_val = -1000;
@@ -189,6 +213,11 @@ void parse_options(int argc, char *argv[])
             case 't': case OPT_TIME_LIMIT:
                 if (sscanf(optarg, "%d", &opt_time_limit) != 1) {
                     die("ERROR: --time-limit needs an int parameter.");
+                }
+                break;
+            case 'w': case OPT_WALL_TIME_LIMIT:
+                if (sscanf(optarg, "%d", &opt_wall_time_limit) != 1) {
+                    die("ERROR: --wall-time-limit needs an int parameter.");
                 }
                 break;
             case 'm': case OPT_MEMORY_LIMIT:
@@ -264,6 +293,14 @@ void parse_options(int argc, char *argv[])
     }
     if (opt_prog[0] == 0) {
         die("ERROR: You must give the file to execute.");
+    }
+
+    if (opt_wall_time_limit == -1) {
+        if (5 * opt_time_limit > 1000) {
+            opt_wall_time_limit = 5 * opt_time_limit;
+        } else {
+            opt_wall_time_limit = 1000;
+        }
     }
 }
 
@@ -473,6 +510,7 @@ void fail_kill(const char* message)
     wait4(child_pid, 0, 0, &usage);
     used_time = get_rusage_time(&usage);
     printf("FAIL: time %dms memory %dkb: %s\n", used_time, memory, message);
+//    printf("FAIL: wall %dms time %dms memory %dkb: %s\n", wall_time, used_time, memory, message);
     exit(0);
 }
 
@@ -483,10 +521,10 @@ void check_proc_status(void)
     if (opt_memory_limit && memory > opt_memory_limit) {
         fail_kill("Memory limit exceeded.");
     }
-    if (opt_time_limit && used_time > 1.5 * opt_time_limit) {
+    if (opt_time_limit && used_time > opt_time_limit) {
         fail_kill("Time limit exceeded.");
     }
-    if (opt_time_limit && wall_time > 5 * opt_time_limit && wall_time > 1000) {
+    if (opt_time_limit && wall_time > opt_wall_time_limit) {
         fail_kill("Wall time limit exceeded.");
     }
 }

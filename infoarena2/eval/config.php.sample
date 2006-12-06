@@ -6,7 +6,7 @@ require_once(dirname($argv[0]) . '/../config.php');
 // Judge username/password, used via HTTP AUTH basic to download tests and
 // graders. Judge has to have admin access.
 // Set a strong & secret password when putting this into production.
-define("IA_JUDGE_USERNAME", '!judge');
+define("IA_JUDGE_USERNAME", 'judge');
 define("IA_JUDGE_PASSWORD", '--edit-me--');
 
 // The directory used as the jail.
@@ -35,6 +35,12 @@ define("IA_EVAL_JAIL_GID", 65534);
 
 // Niceness to run the unsafe code. 0 disables.
 define("IA_EVAL_JAIL_NICE", 0);
+
+// Time limit for graders.
+define("IA_EVAL_TASK_GRADER_TIMELIMIT", 5000);
+
+// Memory limit for graders.
+define("IA_EVAL_TASK_GRADER_MEMLIMIT", 64000);
 
 // Add log timestamps.
 define("LOG_TIMESTAMP_FORMAT", "Y-m-d H:i:s");

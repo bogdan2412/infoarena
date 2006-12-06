@@ -56,6 +56,7 @@ function copy_attachment_file($pagename, $filename, $target)
 
         if (!curl_exec($curl)) {
             log_warn("Failed curl download for $pagename/$filename.");
+            log_warn("Curl says: ".curl_error($curl));
             return false;
         }
         curl_close($curl);

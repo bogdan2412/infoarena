@@ -26,7 +26,7 @@ define("DB_USER", '--write-me--');
 define("DB_PASS", '--write-me--');
 
 // SMF database prefix (required!)
-define("DB_SMF_PREFIX", '--write-me--');
+define("DB_SMF_PREFIX", 'ia_smf_');
 
 // Web host. This is probably localhost. no trailing slash here
 define("IA_URL_HOST", "http://localhost");

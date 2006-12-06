@@ -4,7 +4,9 @@
 // Repetitive include guard. Is this really needed?
 log_assert(!isset($dbLink));
 log_print("connecting to database");
-$dbLink = mysql_connect(DB_HOST, DB_USER, DB_PASS) or log_error('Cannot connect to database.');
+if (!$dbLink = mysql_connect(DB_HOST, DB_USER, DB_PASS)) {
+    log_error('Cannot connect to database: '.mysql_error());
+}
 mysql_select_db(DB_NAME, $dbLink) or log_error('Cannot select database.');
 
 // Escapes a string to be safely included in a query.
