@@ -137,6 +137,8 @@ function score_get_value($score_name, $user_id, $task_id, $round_id)
 function rating_history($user_id) {
     log_assert(is_whole_number($user_id));
 
+    log_print("Fetching rating history for {$user_id}\n");
+
     // get round list, chronologically ordered
     $history = rating_rounds();
 
