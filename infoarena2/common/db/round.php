@@ -136,6 +136,19 @@ function round_update_task_list($round_id, $tasks) {
     }
 }
 
+// Return list of round ids
+function round_get_list() {
+    $query = "SELECT id FROM ia_round";
+    $rows = db_fetch_all($query);
+
+    $list = array();
+    foreach ($rows as $row) {
+        $list[] = $row['id'];
+    }
+
+    return $list;
+}
+
 /* FIXME: round registration disabled.
 // Returns boolean whether given user is registered to round $round_id
 function round_is_registered($round_id, $user_id) {

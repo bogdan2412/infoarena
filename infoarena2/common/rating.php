@@ -50,24 +50,7 @@ function sqr($number) {
 //      username,
 //      ...
 //  );
-// $ratings array format is (as returned by score_get):
-//  array(
-//      array(username, ..., score, ...),
-//      ...
-//  );
-//
-// $deviations array format is (as returned by score_get):
-//  array(
-//      array(username, ..., score, ...),
-//      ...
-//  );
-//
-// $timestamps array format is (as returned by score_get):
-//  array(
-//      array(username, ..., score, ...),
-//      ...
-//  );
-//
+// $ratings array is as returned by rating_last_scores()
 // Output array format is:
 //  array(
 //      username => array(
@@ -76,43 +59,21 @@ function sqr($number) {
 //                      timestamp => (int)
 //                  )
 //      ...
-//  )
-function rating_init($whole_user_list, $ratings, $deviations, $timestamps) {
-    $users = array();
+//  );
+function rating_init($whole_user_list, $last_scores) {
+    $users = $last_scores;
     foreach ($whole_user_list as $username) {
+        if (isset($users[$username])) {
+            continue;
+        }
+
         $user = array(
             'rating' => IA_RATING_INITIAL,
             'deviation' => IA_RATING_DEVIATION,
             'timestamp' => 0,
         );
-        log_assert(!isset($users[$username]));
         $users[$username] = $user;
     }
-
-    // parse ratings
-    foreach ($ratings as $row) {
-        log_assert(isset($row['user_name']) && isset($row['score']));
-        $username = $row['user_name'];
-        $value = $row['score'];
-        $users[$username]['rating'] = $value;
-    }
-
-    // parse deviations
-    foreach ($deviations as $row) {
-        log_assert(isset($row['user_name']) && isset($row['score']));
-        $username = $row['user_name'];
-        $value = $row['score'];
-        $users[$username]['deviation'] = $value;
-    }
-
-    // parse timestamps 
-    foreach ($timestamps as $row) {
-        log_assert(isset($row['user_name']) && isset($row['score']));
-        $username = $row['user_name'];
-        $value = $row['score'];
-        $users[$username]['timestamp'] = $value;
-    }
-
     return $users;
 }
 
@@ -250,6 +211,13 @@ function rating_update(&$users, $user_scores, $timestamp) {
         $user['deviation'] = max(IA_RATING_MIN_DEVIATION,
                                  round(sqrt(1.0 / (1.0 / sqr($deviation_i) + $D))));
     }
+}
+
+// Represent rating in a human-friendly scale from 0 to 1000
+// NOTE: This is used only when displaying ratings to users!
+function rating_scale($rating) {
+    log_assert(is_numeric($rating));
+    return (int)round($rating / 3);
 }
 
 ?>

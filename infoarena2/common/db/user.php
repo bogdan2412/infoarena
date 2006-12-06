@@ -120,10 +120,10 @@ function user_update($data, $id) {
     return db_query($query);
 }
 
-// Returns array with all registered usernames.
+// Returns array with *all* registered usernames.
 // Please use this wisely.
 function user_get_list() {
-    $rows = db_fetch_all("SELECT username FROM ia_user");
+    $rows = db_fetch_all("SELECT * FROM ia_user");
     $users = array();
     foreach ($rows as $row) {
         $users[] = $row['username'];

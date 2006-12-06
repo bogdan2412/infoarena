@@ -41,7 +41,7 @@ $action = request('action', 'view');
 // Note: array_flip() flips keys with values in a dictionary.
 $directmaps = array_flip(array('register', 'account', 'news_feed', 'changes',
                                'login', 'logout', 'json', 'job_detail',
-                               'monitor', 'submit', 'userinfo',
+                               'monitor', 'submit', 'userinfo', 'plot'
                                ));
 //
 // Here comes the big url mapper.

@@ -41,20 +41,13 @@ $user_list = user_get_list();
 $usercount = count($user_list);
 log_print(count($user_list) . " registered users");
 
-// read all user ratings, deviations & timestamps
-log_print("Reading current user ratings");
-$ratings = score_get("rating", null, null, null, 0, $usercount);
-$ratings = $ratings['scores'];
-log_print("Reading current user deviations");
-$deviations = score_get("rating_deviation", null, null, null, 0, $usercount);
-$deviations = $deviations['scores'];
-log_print("Reading current user timestamps");
-$timestamps = score_get("rating_timestamp", null, null, null, 0, $usercount);
-$timestamps = $timestamps['scores'];
+// read last user ratings, deviations & timestamps
+log_print("Reading last user ratings, deviations and timestamps");
+$current_scores = rating_last_scores();
 
 // merge data
 log_print("Merging data");
-$users = rating_init($user_list, $ratings, $deviations, $timestamps);
+$users = rating_init($user_list, $current_scores);
 
 // read round scores
 log_print("Reading round scores");
@@ -75,12 +68,11 @@ log_print("Updating database");
 foreach ($round_rows as $row) {
     $username = $row['user_name'];
     $user_id = $row['user_id'];
-    score_update("rating_timestamp", $user_id, null, null,
+    // for this round (history)
+    score_update("rating", $user_id, null, $round_id,
                  $users[$username]['rating']);
-    score_update("rating_deviation", $user_id, null, null,
+    score_update("deviation", $user_id, null, $round_id,
                  $users[$username]['deviation']);
-    score_update("rating_timestamp", $user_id, null, null,
-                 $users[$username]['timestamp']);
 }
 
 ?>
