@@ -31,6 +31,38 @@ function controller_plot($suburl) {
             // output gnuplot
             execute_view_die('views/plot_rating.php', $view);
 
+        case 'distribution':
+            // Display rating distribution
+            // If there is a username specified, plot given user in rating
+            // distribution.
+
+            // validate user
+            $username = request('user');
+            $user = user_get_by_username($username);
+
+            if ($user) {
+                log_print("Plotting rating distribution for ".$username);
+            }
+            else {
+                log_print("Plotting global rating distribution");
+            }
+
+            // get rating history
+            //
+            // Note: This bucket size is relative to the absolute ratings
+            // ranging from ~1000 to ~2500
+            $bucket_size = 25;
+            $distribution = rating_distribution($bucket_size);
+
+            // view
+            $view = array(
+                'distribution' => $distribution,
+                'bucket_size' => $bucket_size,
+                'user' => $user,
+            );
+
+            // output gnuplot
+            execute_view_die('views/plot_distribution.php', $view);
         default:
             flash('Actiunea nu este valida.');
             redirect(url(''));

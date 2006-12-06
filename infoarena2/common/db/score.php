@@ -290,4 +290,38 @@ function rating_last_scores() {
     return $users;
 }
 
+// Return current rating distribution based on cached ratings.
+// NOTE: $bucket_size refers to the absolute rating stored in database
+// (ranging to around ~2500).
+//
+// Output array format:
+//  array(
+//      13 => <count>,
+//      14 => <count>,
+//      20 => <count>,
+//      ...
+//  );
+// Key X corresponds to rating bucket [ x*$bucket_size; $bucket_size )
+// NOTE: Some buckets may be missing completely
+function rating_distribution($bucket_size) {
+    log_assert(is_numeric($bucket_size));
+    $query = "
+        SELECT
+            COUNT(*) AS `count`,
+            FLOOR(rating_cache/{$bucket_size}) AS `bucket`
+        FROM ia_user
+        WHERE 0 < rating_cache
+        GROUP BY `bucket`
+        ORDER BY rating_cache
+    ";
+    $rows = db_fetch_all($query);
+
+    $buckets = array();
+    foreach ($rows as $row) {
+        $buckets[$row['bucket']] = $row['count'];
+    }
+
+    return $buckets;
+}
+
 ?>

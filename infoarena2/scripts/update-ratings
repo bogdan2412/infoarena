@@ -73,6 +73,8 @@ foreach ($round_rows as $row) {
                  $users[$username]['rating']);
     score_update("deviation", $user_id, null, $round_id,
                  $users[$username]['deviation']);
+    // cache rating
+    user_update(array("rating_cache" => $users[$username]['rating']), $user_id);
 }
 
 ?>
