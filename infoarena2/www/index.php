@@ -7,6 +7,7 @@ log_print("- -- --- ---- ----- Request: ".$_SERVER['QUERY_STRING']);
 check_requirements();
 
 require_once(IA_ROOT."common/security.php");
+require_once(IA_ROOT."www/url.php");
 require_once(IA_ROOT."www/utilities.php");
 require_once(IA_ROOT."www/identity.php");
 
@@ -41,7 +42,8 @@ $action = request('action', 'view');
 // Note: array_flip() flips keys with values in a dictionary.
 $directmaps = array_flip(array('register', 'account', 'news_feed', 'changes',
                                'login', 'logout', 'json', 'job_detail',
-                               'monitor', 'submit', 'userinfo', 'plot'
+                               'monitor', 'submit', 'userinfo', 'plot',
+                               'unsubscribe', 'resetpass'
                                ));
 //
 // Here comes the big url mapper.
@@ -151,13 +153,9 @@ else if ($action == 'download') {
 
 // reset password
 else if ('confirm' == $urlstart) {
-    // confirm reset code
+    // confirm reset password
     require_once(IA_ROOT.'www/controllers/resetpass.php');
-    controller_resetpass_confirm();
-}
-else if ('resetpass' == $urlstart) {
-    require_once(IA_ROOT.'www/controllers/resetpass.php');
-    controller_resetpass();
+    controller_resetpass_confirm($page_id);
 }
 
 // user profile, view personal page / statistics / rating evolution

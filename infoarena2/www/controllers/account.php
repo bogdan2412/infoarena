@@ -137,7 +137,7 @@ function controller_account() {
             // if changing own profile, reload identity information
             if ($ownprofile) {
                 $identity_user = $new_user;
-                identity_start_session($identity_user);
+                identity_update_session($identity_user);
             }
 
             // done. redirect to same page so user has a strong confirmation

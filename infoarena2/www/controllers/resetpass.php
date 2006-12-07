@@ -2,13 +2,7 @@
 
 require_once(IA_ROOT."common/db/smf.php");
 require_once(IA_ROOT."common/db/user.php");
-
-// hash user info in password reset code
-// Note: we keep the code short enough so it does not wrap on several lines
-// in bad e-mail clients.
-function resetpass_code($user) {
-    return substr(sha1($user['password'].IA_SECRET), 0, 24);
-}
+require_once(IA_ROOT."common/user.php");
 
 // displays form to identify user. On submit it sends e-mail with confirmation
 // link.
@@ -47,10 +41,10 @@ function controller_resetpass() {
             // user was found
 
             // confirmation code
-            $cpass = $user['username'].'-'.resetpass_code($user);
+            $cpass = user_resetpass_key($user);
 
             // confirmation link
-            $clink = url('confirm', array('c' => $cpass), true);
+            $clink = url_resetpass_confirm($user['username'], $cpass, true);
 
             // email user
             $to = $user['email'];
@@ -98,12 +92,8 @@ Echipa infoarena
 }
 
 // checks confirmation code and resets password
-function controller_resetpass_confirm() {
-    $code = getattr($_GET, 'c');
-    $pair = split('-', $code);
-
-    $username = getattr($pair, 0);
-    $cpass = getattr($pair, 1);
+function controller_resetpass_confirm($username) {
+    $cpass = request('c');
 
     // validate username
     if ($username) {
@@ -115,7 +105,7 @@ function controller_resetpass_confirm() {
     }
 
     // validate confirmation code
-    if ($cpass != resetpass_code($user)) {
+    if ($cpass != user_resetpass_key($user)) {
         flash_error('Codul de confirmare nu este corect!');
         redirect(url(''));
     }
@@ -153,7 +143,7 @@ Echipa infoarena
     // notify yser
     flash('Parola a fost resetata si trimisa pe e-mail. Verifica-ti '
           .'e-mail-ul ca sa afli noua parola.');
-    redirect(url('login'));
+    redirect(url_login());
 }
 
 ?>

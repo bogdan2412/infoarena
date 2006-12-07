@@ -190,6 +190,12 @@ function identity_start_session($user, $remember_user = false) {
     $_SESSION['_ia_identity'] = serialize($user);
 }
 
+// Update session information. Use this if you change data of current
+// remote user.
+function identity_update_session($user) {
+    $_SESSION['_ia_identity'] = serialize($user);
+}
+
 // Terminate session for current user.
 function identity_end_session() {
     if (isset($_SESSION['_ia_identity'])) {

@@ -4,6 +4,43 @@ require_once(IA_ROOT . "www/format/pager.php");
 require_once(IA_ROOT . "common/db/textblock.php");
 require_once(IA_ROOT . "common/textblock.php");
 
+// smart ass diff
+function string_diff($string1, $string2) {
+    $name1 = tempnam(IA_ATTACH_DIR, "ia");
+    $name2 = tempnam(IA_ATTACH_DIR, "ia");
+    $fp1 = fopen($name1, "w");
+    if (!$fp1) {
+        flash_error("Eroare la comparare!");
+        request(url(''));
+    }
+    $string1 .= "\n";
+    fputs($fp1, $string1);
+    fclose($fp1);
+
+    $fp2 = fopen($name2, "w");
+    if (!$fp2) {
+        flash_error("Eroare la comparare!");
+        request(url(''));
+    }
+    $string2 .= "\n";
+    fputs($fp2, $string2);
+    fclose($fp2);
+
+    ob_start();
+    system("diff -au ".$name1." ".$name2);
+    $ret = ob_get_contents();
+    ob_end_clean();
+    if (!unlink($name1)) {
+        flash_error("Eroare la comparare!");
+        request(url(''));
+    }
+    if (!unlink($name2)) {
+        flash_error("Eroare la comparare!");
+        request(url(''));
+    }
+    return $ret;
+}
+
 // View a plain textblock.
 // That textblock can be owned by something else.
 function controller_textblock_view($page_name, $rev_num = null) {

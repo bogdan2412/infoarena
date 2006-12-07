@@ -1,0 +1,165 @@
+#! /usr/bin/env php
+<?php
+
+// dependencies
+require_once(dirname($argv[0]) . "/utilities.php");
+require_once(IA_ROOT."common/db/user.php");
+require_once(IA_ROOT."common/db/textblock.php");
+require_once(IA_ROOT."common/user.php");
+require_once(IA_ROOT."common/rating.php");
+require_once(IA_ROOT."www/url.php");
+
+// config
+define("IA_NEWSLETTER_FROM", "Cristian George Strat <cristian@infoarena.ro>");
+
+// Preview email for a given recipient
+// When recipient is null, no tags are replaced
+function preview_email($textblock, $recipient = null, $short = false) {
+    log_assert(is_null($recipient) || valid_recipient($recipient));
+
+    echo "\n\n===  e-mail ========================================\n";
+    echo "From   : ".IA_NEWSLETTER_FROM."\n";
+    if ($recipient) {
+        echo "To     : ".$recipient['email']."\n";
+        echo "Subject: ".email_tags($textblock['title'], $recipient)."\n";
+    }
+    else {
+        echo "To     : %email%\n";
+        echo "Subject: ".$textblock['title']."\n";
+    }
+    if (!$short) {
+        echo "---  body ------------------------------------------\n";
+        if ($recipient) {
+            echo email_tags($textblock['text'], $recipient);
+        }
+        else {
+            echo $textblock['text'];
+        }
+        echo "--- /body ------------------------------------------\n";
+    }
+    echo "=== /e-mail ========================================\n\n";
+}
+
+// Replace special email tags (placeholders) with real content
+function email_tags($content, $recipient) {
+    log_assert(valid_recipient($recipient));
+
+    global $_et_callback_hack;
+    $_et_callback_hack = $recipient;
+
+    $content = preg_replace_callback('/%([a-z_0-9]+)%/', 'email_tags_callback',
+                                     $content);
+
+    return $content;
+}
+
+// Callback for email_tags
+function email_tags_callback($matches) {
+    global $_et_callback_hack;
+    log_assert(valid_recipient($_et_callback_hack));
+    log_assert(2 == count($matches));
+
+    $recipient = $_et_callback_hack;
+    $tag = $matches[1];
+
+    switch ($tag) {
+        case 'rating':
+            return rating_scale($recipient['rating_cache']);
+        case 'full_name':
+            return $recipient['full_name'];
+        case 'username':
+            return $recipient['username'];
+        case 'email':
+            return $recipient['email'];
+        case 'url_profile':
+            return url_user_profile($recipient['username'], true);
+        case 'url_infoarena':
+            return IA_URL;
+        case 'url_forum':
+            return IA_SMF_URL;
+        case 'url_unsubscribe':
+            // unsubscribe link
+            $key = user_unsubscribe_key($recipient);
+            return url_unsubscribe($recipient['username'], $key, true);
+        default:
+            log_error("Invalid email tag: ".$tag);
+    }
+}
+
+// Make sure $recipient is a valid... recipient :)
+// Keep these checks very light. Performance bottleneck ahead.
+function valid_recipient($recipient) {
+    $valid = !is_null($recipient) && isset($recipient['username']);
+    if (!$valid) {
+        log_print("Invalid recipient: ".print_r($recipient, true));
+    }
+    return $valid;
+}
+
+// read page name
+if (2 != $argc) {
+    log_error("usage: ./send-newsletter wiki-page-name");
+}
+$page_name = $argv[1];
+
+// validate $page_name
+$textblock = textblock_get_revision($page_name);
+if (!$textblock) {
+    log_error("Invalid page name!");
+}
+
+// small preview before entering main menu
+preview_email($textblock, null, true);
+
+// main menu
+while (true) {
+    $cmd = read_line("newsletter>");
+    $elems = split(" ", $cmd);
+    if (1 < count($elems)) {
+        $cmd = $elems[0];
+        array_shift($elems);
+        $param = join(" ", $elems);
+    }
+    else {
+        $param = null;
+    }
+
+    switch ($cmd) {
+        case "quit":
+            log_print("Bye!");
+            die();
+            break;
+
+        case "preview":
+            if ($param) {
+                $user = user_get_by_username($param);
+                if (!$user) {
+                    log_print("No such user!");
+                    break;
+                }
+            }
+            else {
+                $user = null;
+            }
+            preview_email($textblock, $user);
+            break;
+
+        case "send":
+            break;
+
+        default:
+            log_print("Invalid command");
+            echo <<<EOS
+
+Valid commands:
+quit
+preview [<username>]
+send
+
+
+EOS;
+
+    }
+}
+
+?>

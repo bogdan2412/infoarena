@@ -1,18 +1,11 @@
 <?php
 
 require_once(IA_ROOT."common/db/db.php");
+require_once(IA_ROOT."common/user.php");
 
 /**
  * User-related functions.
  */
-
-// Password hash function. Must be compatible with SMF.
-//
-// Also takes into account user name so that users
-// sharing the same password can't be detected
-function user_hash_password($password, $username) {
-    return sha1(strtolower($username).$password);
-}
 
 // Test password in IA1 format.
 function user_test_ia1_password($username, $password) {
@@ -133,8 +126,8 @@ function user_get_list() {
 
 // Counts number of uers
 function user_count() {
-    $result = db_fetch("SELECT COUNT(*) FROM ia_user");
-    return $result["COUNT(*)"];
+    $result = db_query_value("SELECT COUNT(*) FROM ia_user");
+    return $result;
 }
 
 ?>
