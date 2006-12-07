@@ -23,7 +23,7 @@ set bmargin 2
 set xtics nomirror
 set ytics nomirror
 
-set title \"Distributie ratings (".IA_URL.")\" 0,-.5
+set title \"Distributie rating (".IA_URL.")\" 0,-.5
 
 set style line 1 lt 1 lw 4 pt 3 ps 0.5
 set style line 2 lt 7 lw 6 pt 7 ps 1.0
