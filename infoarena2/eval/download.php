@@ -54,6 +54,7 @@ function copy_attachment_file($pagename, $filename, $target)
         curl_setopt($curl, CURLOPT_FAILONERROR, true);
         //curl_setopt($curl, CURLOPT_VERBOSE, true);
 
+        log_print("Downloading new version of $pagename/$filename...");
         if (!curl_exec($curl)) {
             log_warn("Failed curl download for $pagename/$filename.");
             log_warn("Curl says: ".curl_error($curl));
@@ -67,7 +68,7 @@ function copy_attachment_file($pagename, $filename, $target)
 
         log_print("Downloaded new version of $pagename/$filename.");
     } else {
-        log_print("Using cached $pagename/$filename");
+        //log_print("Using cached $pagename/$filename");
     }
     if (!copy($cachefname, $target)) {
         log_warn("Failed copying grader file $pagename/$filename");

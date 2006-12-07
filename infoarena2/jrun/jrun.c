@@ -188,12 +188,12 @@ void parse_options(int argc, char *argv[])
         switch (opt) {
             case 'u': case OPT_UID:
                 if (sscanf(optarg, "%d", &opt_uid) != 1) {
-                    die("ERROR: --uid needs an int parameter.");
+                    die("ERROR: --uid needs an int parameter");
                 }
                 break;
             case 'g': case OPT_GID:
                 if (sscanf(optarg, "%d", &opt_gid) != 1) {
-                    die("ERROR: --gid needs an int parameter.");
+                    die("ERROR: --gid needs an int parameter");
                 }
                 break;
             case 'd': case OPT_DIR:
@@ -204,7 +204,7 @@ void parse_options(int argc, char *argv[])
                 break;
             case 'n': case OPT_NICE:
                 if (sscanf(optarg, "%d", &opt_nice_val) != 1) {
-                    die("ERROR: --nice needs an int parameter.");
+                    die("ERROR: --nice needs an int parameter");
                 }
                 if (opt_nice_val < -20 || opt_nice_val > 19) {
                     die("ERROR: nice value has to be in -20..19 range, inclusive\n");
@@ -212,17 +212,17 @@ void parse_options(int argc, char *argv[])
                 break;
             case 't': case OPT_TIME_LIMIT:
                 if (sscanf(optarg, "%d", &opt_time_limit) != 1) {
-                    die("ERROR: --time-limit needs an int parameter.");
+                    die("ERROR: --time-limit needs an int parameter");
                 }
                 break;
             case 'w': case OPT_WALL_TIME_LIMIT:
                 if (sscanf(optarg, "%d", &opt_wall_time_limit) != 1) {
-                    die("ERROR: --wall-time-limit needs an int parameter.");
+                    die("ERROR: --wall-time-limit needs an int parameter");
                 }
                 break;
             case 'm': case OPT_MEMORY_LIMIT:
                 if (sscanf(optarg, "%d", &opt_memory_limit) != 1) {
-                    die("ERROR: --memory-limit needs an int parameter.");
+                    die("ERROR: --memory-limit needs an int parameter");
                 }
                 break;
             case 'v': case OPT_VERBOSE:
@@ -266,14 +266,14 @@ void parse_options(int argc, char *argv[])
                 FILE* f;
                 f = fopen(optarg, "rt");
                 if (f == NULL) {
-                    die("Failed to open blocked syscalls file.\n");
+                    die("Failed to open blocked syscalls file\n");
                 }
                 while (fscanf(f, "%150s", buf) == 1) {
                     int id;
                     id = syscall_getid(buf);
                     if (id < 0) {
                         //fprintf(stderr, "Unknown system call %s, skipping\n", buf);
-                        printf("ERROR: Unknown system call %s.\n", buf);
+                        printf("ERROR: Unknown system call %s\n", buf);
                         exit(0);
                     } else {
                         //fprintf(stderr, "Blocking %s\n", buf);
@@ -288,19 +288,15 @@ void parse_options(int argc, char *argv[])
                 break;
             }
             default:
-                die("ERROR: Bad command line arguments.");
+                die("ERROR: Bad command line arguments");
         }
     }
     if (opt_prog[0] == 0) {
-        die("ERROR: You must give the file to execute.");
+        die("ERROR: You must give the file to execute");
     }
 
-    if (opt_wall_time_limit == -1) {
-        if (5 * opt_time_limit > 1000) {
-            opt_wall_time_limit = 5 * opt_time_limit;
-        } else {
-            opt_wall_time_limit = 1000;
-        }
+    if (opt_wall_time_limit == -1 && opt_time_limit) {
+        opt_wall_time_limit = opt_time_limit + 1000;
     }
 }
 
@@ -314,7 +310,7 @@ void copy_libs(void)
     sprintf(path, "ldd %s", opt_prog);
     p = popen(path, "r");
     if (!p) {
-        die("ERROR: failed ldd.\n");
+        die("ERROR: failed ldd\n");
     }
 
     path[k = 0] = 0;
@@ -441,6 +437,7 @@ void child_main(void)
 // Child pid.
 struct timeval start_time;
 int memory, used_time, wall_time;
+int stopped_in_ptrace;
 pid_t child_pid;
 
 // Get syscall number. MAGIC!!!
@@ -472,7 +469,7 @@ void update_proc_status(void)
     // Used time, from /proc/$pid/stat
     sprintf(path, "/proc/%d/stat", child_pid);
     if (!(f = fopen(path, "rt"))) {
-        die("ERROR: failed to read from /proc.");
+        die("ERROR: failed to read from /proc");
     }
     fscanf(f, "%*d %*s %*c %*d%*d%*d%*d%*d%*u%*u%*u%*u%*u%lu%lu", &utime, &stime);
     used_time = (utime + stime) * get_jiffie_duration();
@@ -481,7 +478,7 @@ void update_proc_status(void)
     // Memory, from /proc/$pid/stat
     sprintf(path, "/proc/%d/statm", child_pid);
     if (!(f = fopen(path, "rt"))) {
-        die("ERROR: failed to read from /proc.");
+        die("ERROR: failed to read from /proc");
     }
     // I'm not completely sure this is the right field to use.
     fscanf(f, "%*d%d%*d%*d%*d%*d", &cmem);
@@ -496,18 +493,56 @@ void update_proc_status(void)
     wall_time = (tv.tv_sec - start_time.tv_sec) * 1000 + (tv.tv_usec - start_time.tv_usec) / 1000;
 
     if (opt_verbose) {
-        fprintf(stderr, "Running, time = %d wtime = %d mem = %d\n", used_time, wall_time, cmem);
+        //fprintf(stderr, "Running, time = %d wtime = %d mem = %d\n", used_time, wall_time, cmem);
     }
 }
 
 // Report failure of the child process.
 // It will also kill the child process.
+//
+// DIE MOTHERFUCKER!!!
 void fail_kill(const char* message)
 {
     struct rusage usage;
+    int status;
 
-    kill(child_pid, 9);
-    wait4(child_pid, 0, 0, &usage);
+    if (opt_verbose) {
+        fprintf(stderr, "Trying to kill with msg %s\n", message);
+    }
+    if (stopped_in_ptrace) {
+        if (opt_verbose) {
+            fprintf(stderr, "Detaching ptrace before kill\n");
+        }
+        if (ptrace(PTRACE_DETACH, child_pid, 0, 0)) {
+            perror("ERROR: failed ptrace detach.");
+            exit(-1);
+        }
+    }
+
+    if (kill(child_pid, SIGKILL)) {
+        perror("ERROR: failed kill -SIGKILL");
+        exit(-1);
+    }
+
+    while (1) {
+        wait4(child_pid, &status, 0, &usage);
+        if (WIFSIGNALED(status) || WIFEXITED(status)) {
+            break;
+        }
+        if (WIFSTOPPED(status)) {
+            /*if (kill(child_pid, SIGCONT)) {
+                perror("ERROR: failed kill -SIGCONT");
+                exit(-1);
+            }*/
+            if (ptrace(PTRACE_DETACH, child_pid, 0, 0)) {
+                perror("ERROR: failed ptrace detach.");
+                exit(-1);
+            }
+            if (opt_verbose) {
+                fprintf(stderr, "Process stopped, not killed, wait again, msg: %s\n", message);
+            }
+        }
+    }
     used_time = get_rusage_time(&usage);
     printf("FAIL: time %dms memory %dkb: %s\n", used_time, memory, message);
 //    printf("FAIL: wall %dms time %dms memory %dkb: %s\n", wall_time, used_time, memory, message);
@@ -515,17 +550,17 @@ void fail_kill(const char* message)
 }
 
 // Does a couple of standard checks on the process.
-void check_proc_status(void)
+void check_proc_status()
 {
     // Standard check: memory, time, wall time.
     if (opt_memory_limit && memory > opt_memory_limit) {
-        fail_kill("Memory limit exceeded.");
+        fail_kill("Memory limit exceeded");
     }
     if (opt_time_limit && used_time > opt_time_limit) {
-        fail_kill("Time limit exceeded.");
+        fail_kill("Time limit exceeded");
     }
     if (opt_time_limit && wall_time > opt_wall_time_limit) {
-        fail_kill("Wall time limit exceeded.");
+        fail_kill("Wall time limit exceeded");
     }
 }
 
@@ -597,16 +632,22 @@ int main(int argc, char *argv[], char *envp[])
         pid_t wres;
         struct rusage usage;
 
-        wres = wait4(child_pid, &status, WUNTRACED, &usage);
+        wres = wait4(child_pid, &status, 0, &usage);
 
         if (wres == -1 && errno == EINTR) {
             // SIGALARM, hopefully.
+            if (opt_verbose) {
+                fprintf(stderr, "SIGALARM\n");
+            }
+
             update_proc_status();
             check_proc_status();
         } else if (wres == child_pid) {
             if (WIFSTOPPED(status)) {
                 int sig, scno;
 
+                // We need to PTRACE_DETACH if we close while in here.
+                stopped_in_ptrace = 1;
                 sig = WSTOPSIG(status);
                 // This might cause a slowdown.
                 update_proc_status();
@@ -634,8 +675,11 @@ int main(int argc, char *argv[], char *envp[])
                 if (ptrace(PTRACE_SYSCALL, child_pid, 0, sig) == -1) {
                     perror("ERROR: failed ptrace continue");
                 }
+                stopped_in_ptrace = 0;
             } else {
-                //fprintf(stderr, "Process exitted\n");
+                if (opt_verbose) {
+                    fprintf(stderr, "Process exitted\n");
+                }
 
                 // Time spent is better measured with getrusage.
                 used_time = get_rusage_time(&usage);

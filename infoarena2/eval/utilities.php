@@ -150,18 +150,16 @@ function jail_run($program, $time, $memory, $capture_std = false)
     if (isset($memory)) {
         $cmdline .= " --memory-limit=" . $memory;
     }
+    //$cmdline .= " --verbose";
 
     log_print("Running $cmdline");
-    ob_start();
-    @system($cmdline, $res);
-    $message = ob_get_contents();
-    ob_end_clean();
+    $message = exec($cmdline);
 
-    if ($res) {
+    $result = jrun_parse_message($message);
+    if ($result == false) {
         return jrun_make_error('Failed executing jail');
     }
 
-    $result = jrun_parse_message($message);
     if ($capture_std) {
         $result['stdout'] = file_get_contents(IA_EVAL_JAIL_DIR . 'jailed_stdout');
         if ($result['stdout'] === false) {
