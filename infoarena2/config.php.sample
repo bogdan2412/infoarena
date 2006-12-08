@@ -2,12 +2,12 @@
 
 // Global configuration file.
 // This is just a sample file. Copy this over to config.php and edit.
-//
+
 // Here is the essential configuration. You only need to modify this
 // to get it working.
 
 // Determine if script is runing in an HTTP environment. Otherwise it is
-// probably running in CLI mode.
+// probably running in CLI mode. Don't change it.
 define("IA_HTTP_ENV", isset($_SERVER['REQUEST_URI']));
 
 // This is the subversion checkout directory. include trailing slash.
@@ -36,16 +36,20 @@ define("IA_URL_HOST", "http://localhost");
 // Slashes at both ends.
 define("IA_URL_PREFIX", "--write-me--");
 
-//
-// Additional configuration goes here.
-//
-
-// "The" url. You don't have to change this.
-define("IA_URL", IA_URL_HOST . IA_URL_PREFIX);
-
 // URL to SMF. No trailing slash
 // Example: http://localhost/infoarena_smf
 define("IA_SMF_URL", "--write-me--");
+
+
+
+// Congratulations! You're done with the essential configuration.
+// --------------------------------------------------------------
+// There are some more settings to adjust but they are optional.
+
+
+
+// "The" url to infoarena home page.
+define("IA_URL", IA_URL_HOST . IA_URL_PREFIX);
 
 // Website root.
 define("IA_ROOT_WWW", IA_ROOT . "www/");
@@ -73,8 +77,9 @@ define("IA_DEBUG_MODE", true);
 
 // This aren't really settings.
 // FIXME: Couldn't find a better place to put this in.
-//  - NOTE: it can't reside in common/db/*.php files since SMF cannot link db api.
-//  - NOTE: it can't reside in www/format/* since judge needs it too
+//  - NOTE: it can't reside in common/db/*.php files since SMF
+//    cannot link db api.
+//  - NOTE: it can't reside in www/* since judge needs it too
 define("TB_TASK_PREFIX", 'problema/');
 define("TB_USER_PREFIX", 'utilizator/');
 // FIXME: Do we really need this?
@@ -82,8 +87,19 @@ define("TB_ROUND_PREFIX", 'runda/');
 
 // Secret code
 // Random string used as salt in various places where hashing is needed.
-// For better security, this should be changed when uploading to a production
+// For security reasons, this should be changed when uploading to a production
 // website.
 define("IA_SECRET", "developersetup");
+
+// Mail setup
+
+// Enable this only if you have a SMTP server around
+define("IA_SMTP_ENABLED", false);
+
+if (defined(IA_SMTP_ENABLED) && IA_SMTP_ENABLED) {
+    // only if SMTP is enabled, you can configure these
+    define("IA_SMTP_HOST", "localhost");
+    define("IA_SMTP_PORT", "25");
+}
 
 ?>

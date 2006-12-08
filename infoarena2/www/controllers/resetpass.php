@@ -3,6 +3,7 @@
 require_once(IA_ROOT."common/db/smf.php");
 require_once(IA_ROOT."common/db/user.php");
 require_once(IA_ROOT."common/user.php");
+require_once(IA_ROOT."common/email.php");
 
 // displays form to identify user. On submit it sends e-mail with confirmation
 // link.

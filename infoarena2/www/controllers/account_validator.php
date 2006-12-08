@@ -41,7 +41,7 @@ function validate_user_data($data, $register, $user = null) {
     if (!$data['email']) {
         $errors['email'] = 'Nu ati introdus adresa de e-mail.';
     }
-    elseif (!preg_match('/[^@]+@.+\..+/', $data['email'])) {
+    elseif (!is_valid_email($data['email'])) {
         $errors['email'] = 'Adresa de e-mail introdusa este invalida.';
     }
 

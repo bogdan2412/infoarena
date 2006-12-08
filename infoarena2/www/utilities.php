@@ -103,34 +103,6 @@ function execute_view_die($view_file_name, $view) {
     die();
 }
 
-// send mail function, does it need a description?
-function send_email($to, $subject, $message,
-                    $from = IA_MAIL_SENDER_NO_REPLY, $reply = 0)
-{
-    // if we don't specify reply-to, should be the same as the from
-    if ($reply === 0) {
-        $reply = $from;
-    }
-
-    // put [infoarena] tag in mail subject
-    $subject = '[infoarena] '.$subject;
-
-    // word-wrap message, some mail-clients are stupid
-    $message = wordwrap($message, 70);
-
-    // headers
-    $headers = 'From: ' . $from . "\r\n" .
-               'Reply-To: ' . $reply . "\r\n" .
-               'X-Mailer: PHP/' . phpversion();
-
-    // log
-    log_print("Sending mail to: {$to}, subject: {$subject}, message length: "
-              .strlen($message));
-
-    // send e-mail
-    mail($to, $subject, $message, $headers);
-}
-
 // Resize 2D coordinates according to 'textual' instructions
 // Given a (width, height) pair, resize it (compute new pair) according to
 // resize instructions.

@@ -40,13 +40,13 @@ function read_bool($question, $default = null) {
         } else {
             $answer = read_line($question, "no");
         }
-        if (preg_match("/t|true|y|yes|d|da/i", $answer)) {
+        if (preg_match("/^(true|y|yes|da)$/i", $answer)) {
             return true;
         }
-        if (preg_match("/f|false|n|no|nu/i", $answer)) {
+        if (preg_match("/^(false|n|no|nu)$/i", $answer)) {
             return false;
         }
-        echo "Raspunde da/nu/true/false/etc. Ceva sa inteleg si eu.";
+        echo "Answer with true/false/yes/no/etc.\n";
     }
 }
 

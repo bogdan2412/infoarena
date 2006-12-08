@@ -15,6 +15,16 @@ function is_whole_number($x) {
     return is_numeric($x) && $x == intval($x);
 }
 
+// tell if email address seems to be valid
+function is_valid_email($email) {
+    // email validation is trickier than it seems!
+    // if you think you have a better regexp, beat this:
+    // http://www.regular-expressions.info/email.html
+    //
+    // let's keep it simple
+    return preg_match('/[^@]+@.+\..+/', $email);
+}
+
 // Normalize a page name. Removes extra slashes and lowercases.
 // This should always be done before entering the database.
 function normalize_page_name($page_name) {

@@ -33,6 +33,7 @@ unset($exports['common/log.php']);
 unset($exports['common/security.php']);
 unset($exports['www/config.php']);
 unset($exports['www/utilities.php']);
+unset($exports['www/url.php']);
 unset($exports['www/index.php']);
 unset($exports['www/identity.php']);
 unset($exports['www/views/utilities.php']);
