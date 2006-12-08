@@ -130,4 +130,51 @@ function user_count() {
     return $result;
 }
 
+// Returns array with user submitted tasks. Filter tasks by choosing whether
+// to select failed and solved tasks.
+function user_submitted_tasks($user_id, $solved = true, $failed = true) {
+    // construct where
+    if ($solved && $failed) {
+        // no condition
+        $where = '';
+    }
+    elseif ($solved) {
+        $where = 'AND ia_score.score = 100';
+    }
+    elseif ($failed) {
+        $where = 'AND ia_score.score < 100';
+    }
+    else {
+        // This shouldn't happen
+        log_error('You can\'t select nothing.');
+    }
+
+    $query = "
+        SELECT *
+        FROM ia_score
+        LEFT JOIN ia_task ON ia_task.id = ia_score.task_id
+        WHERE ia_score.`name` = 'score' AND ia_score.user_id = '%s'
+              AND NOT ia_task.id IS NULL %s
+        GROUP BY ia_task.id
+        ORDER BY ia_task.`order`";
+    $query = sprintf($query, $user_id, $where);
+
+    return db_fetch_all($query);
+}
+
+// Returns array with rounds that user has submitted to tasks.
+function user_submitted_rounds($user_id) {
+    // FIXME: Find a way to remove the hard-coded "<> 'arhiva'"
+    $query = "
+        SELECT *
+        FROM ia_score
+        LEFT JOIN ia_round ON ia_round.id = ia_score.round_id
+        WHERE ia_score.`name` = 'score' AND ia_score.user_id = '%s'
+              AND NOT ia_round.id IS NULL AND ia_round.id <> 'arhiva'
+        GROUP BY ia_round.id";
+    $query = sprintf($query, $user_id);
+
+    return db_fetch_all($query);
+}
+
 ?>

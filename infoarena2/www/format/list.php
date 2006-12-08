@@ -2,18 +2,28 @@
 
 require_once(IA_ROOT."www/format/format.php");
 
-// Formats HTML <UL> (unordered list)
+// Wrapper for format_ulol
+function format_ul($items, $class = null) {
+    return format_ulol('ul', $items, $class);
+}
+
+// Wrapper for format_ulol
+function format_ol($items, $class = null) {
+    return format_ulol('ol', $items, $class);
+}
+
+// Formats HTML <UL>/<OL> (unordered/ordered list)
 // $items contains <LI> items. Any item must be one of:
 //  - string containing raw HTML
-//  - array(<raw HTML>, <array of LI attributes>)
-function format_ul($items, $class = null) {
+//  - array(<raw HTML>, <dictionary of LI attributes>)
+function format_ulol($tag, $items, $class) {
     $buffer = '';
 
     if (is_null($class)) {
-        $buffer .= "<ul>\n";
+        $buffer .= "<{$tag}>\n";
     }
     else {
-        $buffer .= "<ul class=\"{$class}\">\n";
+        $buffer .= "<{$tag} class=\"{$class}\">\n";
     }
 
     foreach ($items as $item) {
@@ -29,7 +39,7 @@ function format_ul($items, $class = null) {
         $buffer .= "\t".format_tag("li", $attrib, $text);
     }
 
-    $buffer .= "</ul>\n";
+    $buffer .= "</{$tag}>\n";
 
     return $buffer;
 }

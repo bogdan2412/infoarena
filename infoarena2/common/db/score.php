@@ -192,10 +192,9 @@ function rating_rounds() {
     $query = "
         SELECT object_id AS round_id, `value` AS `timestamp`,
                ia_round.page_name AS round_page_name,
-               tb.title AS round_title
+               ia_round.title AS round_title
         FROM `ia_parameter_value`
         LEFT JOIN ia_round ON ia_round.id = ia_parameter_value.object_id
-        LEFT JOIN ia_textblock AS tb ON tb.name = ia_round.page_name
         WHERE parameter_id = 'rating_timestamp' AND object_type = 'round'
               AND NOT ia_round.id IS NULL
         ORDER BY `timestamp`

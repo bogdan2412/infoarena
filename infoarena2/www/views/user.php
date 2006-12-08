@@ -2,7 +2,7 @@
 
 require_once(IA_ROOT.'www/wiki/wiki.php');
 require_once(IA_ROOT.'www/format/format.php');
-require_once(IA_ROOT.'www/format/ul.php');
+require_once(IA_ROOT.'www/format/list.php');
 
 // RSS discovery
 if ('view' == $action) {

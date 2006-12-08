@@ -965,3 +965,9 @@ table.monitor {
     color:#6A6A6B;
 
 }
+
+/* task enumeration */
+.task_enum {
+    font-size: .9em;
+}
+
