@@ -13,8 +13,10 @@
  *      --copy-libs: Try to find used libraries and copy in jail dir.
  *              Uses ldd, not very reliable. It will probably work for simple C libs,
  *              but don't expect much from it.
- *      --capture-stdout: Redirect jailed stdout to a file (/dev/null by default).
- *      --capture-stderr: Redirect jailed stderr to a file (/dev/null by default).
+ *      --redirect-stdin: Redirect jailed stdin to a file (/dev/null by default).
+ *              Behaves just like an empty file but avoid nasty problems.
+ *      --redirect-stdout: Redirect jailed stdout to a file (/dev/null by default).
+ *      --redirect-stderr: Redirect jailed stderr to a file (/dev/null by default).
  *
  *          Limits:
  *
@@ -96,11 +98,9 @@ int opt_verbose;
 int opt_chroot;
 
 // File to redirect program stdout to.
-// Can be null
+// Empty is /dev/null
+char opt_stdin_file[500];
 char opt_stdout_file[500];
-
-// File to redirect stderr to
-// Can be null.
 char opt_stderr_file[500];
 
 // 0 or 1 if a syscall is blocked.
@@ -133,8 +133,9 @@ int syscall_getid(char* name)
 #define OPT_VERBOSE                     9
 #define OPT_BLOCK_SYSCALLS              10
 #define OPT_BLOCK_SYSCALLS_FILE         11
-#define OPT_CAPTURE_STDOUT              12
-#define OPT_CAPTURE_STDERR              13
+#define OPT_REDIRECT_STDIN               17
+#define OPT_REDIRECT_STDOUT              12
+#define OPT_REDIRECT_STDERR              13
 #define OPT_CHROOT                      14
 
 void parse_options(int argc, char *argv[])
@@ -153,8 +154,9 @@ void parse_options(int argc, char *argv[])
         {"verbose",             0, 0, OPT_VERBOSE},
         {"block-syscalls",      1, 0, OPT_BLOCK_SYSCALLS},
         {"block-syscalls-file", 1, 0, OPT_BLOCK_SYSCALLS_FILE},
-        {"capture-stdout",      1, 0, OPT_CAPTURE_STDOUT},
-        {"capture-stderr",      1, 0, OPT_CAPTURE_STDERR},
+        {"redirect-stdin",       1, 0, OPT_REDIRECT_STDIN},
+        {"redirect-stdout",      1, 0, OPT_REDIRECT_STDOUT},
+        {"redirect-stderr",      1, 0, OPT_REDIRECT_STDERR},
         {"chroot",              0, 0, OPT_CHROOT},
         {0, 0, 0, 0},
     };
@@ -178,7 +180,7 @@ void parse_options(int argc, char *argv[])
 
     opt_verbose = 0;
     opt_chroot = 0;
-    opt_stdout_file[0] = opt_stderr_file[0] = 0;
+    opt_stdout_file[0] = opt_stderr_file[0] = opt_stdin_file[0] = 0;
 
     while (1) {
         int opt = getopt_long(argc, argv, "u:g:d:p:t:m:n:v", long_options, &option_index);
@@ -234,11 +236,15 @@ void parse_options(int argc, char *argv[])
             case OPT_COPY_LIBS:
                 opt_copy_libs = 1;
                 break;
-            case OPT_CAPTURE_STDOUT: {
+            case OPT_REDIRECT_STDIN: {
+                strcpy(opt_stdin_file, optarg);
+                break;
+            }
+            case OPT_REDIRECT_STDOUT: {
                 strcpy(opt_stdout_file, optarg);
                 break;
             }
-            case OPT_CAPTURE_STDERR: {
+            case OPT_REDIRECT_STDERR: {
                 strcpy(opt_stderr_file, optarg);
                 break;
             }
@@ -358,11 +364,25 @@ int get_rusage_time(struct rusage *usage)
     return r;
 }
 
+// Redirect a file descriptor to file.
+// if file is empty redirects to /dev/null
+void redirect_fd(int fd, char* file, char* od)
+{
+    FILE *fp = fopen(strlen(file) ? file : "/dev/null", od);
+    if (!fp) {
+        perror("ERROR: Failed openning redirect file");
+        exit(-1);
+    }
+    if (dup2(fileno(fp), fd) == -1) {
+        perror("ERROR: Failed redirect (dup2)");
+        exit(-1);
+    }
+}
+
 void child_main(void)
 {
     // child process here
     struct rlimit rl;
-    FILE* fp;
 
     // Enable ptracing.
     if (opt_ptrace) {
@@ -378,6 +398,28 @@ void child_main(void)
         setrlimit(RLIMIT_DATA, &rl);
     }
 
+    // limit number of processes
+    rl.rlim_cur = rl.rlim_max = 50;
+    setrlimit(RLIMIT_NPROC, &rl);
+
+    //
+    // FIXME: since we redirect stdin/stdout we probably lose these messages.
+    // What to do.
+    //
+
+    // Redirect standard file descriptors.
+    redirect_fd(0, opt_stdin_file, "rb");
+    redirect_fd(1, opt_stdout_file, "wb");
+    redirect_fd(2, opt_stderr_file, "wb");
+
+    // chroot to jail dir
+    if (opt_chroot) {
+        if (chroot("./")) {
+            perror("ERROR: Failed to chroot to jail dir");
+            exit(-1);
+        }
+    }
+
     // Change user and group.
     if (opt_gid != -1 && setgid(opt_gid)) {
         perror("ERROR: Failed to setgid");
@@ -388,49 +430,10 @@ void child_main(void)
         exit(-1);
     }
 
-    // limit number of processes
-    rl.rlim_cur = rl.rlim_max = 50;
-    setrlimit(RLIMIT_NPROC, &rl);
-
-    //
-    // FIXME: since we redirect stdin/stdout we probably lose these messages.
-    // What to do.
-    //
-
-    // Redirect stderr.
-    fp = fopen(strlen(opt_stderr_file) ? opt_stderr_file : "/dev/null", "wb");
-    if (!fp) {
-        perror("ERROR: Failed openning stderr redirect file");
-        exit(-1);
-    }
-    if (dup2(fileno(fp), 2) == -1) {
-        perror("ERROR: Failed stderr redirect");
-        exit(-1);
-    }
-
-    // Redirect stdout.
-    fp = fopen(strlen(opt_stdout_file) ? opt_stdout_file : "/dev/null", "wb");
-    if (!fp) {
-        perror("ERROR: Failed openning stdout redirect file");
-        exit(-1);
-    }
-    if (dup2(fileno(fp), 1) == -1) {
-        perror("ERROR: Failed stdout redirect");
-        exit(-1);
-    }
-
     // Does not return.
     if (execve(opt_prog, 0, 0)) {
         perror("ERROR: Failed to execute program");
         exit(-1);
-    }
-
-    // chroot to jail dir
-    if (opt_chroot) {
-        if (chroot("./")) {
-            perror("ERROR: Failed to chroot to jail dir");
-            exit(-1);
-        }
     }
 }
 
@@ -520,8 +523,9 @@ void fail_kill(const char* message)
     }
 
     if (kill(child_pid, SIGKILL)) {
-        perror("ERROR: failed kill -SIGKILL");
-        exit(-1);
+        if (opt_verbose) {
+            perror("Failed kill -SIGKILL");
+        }
     }
 
     while (1) {

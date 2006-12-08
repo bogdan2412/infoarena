@@ -141,8 +141,8 @@ function jail_run($program, $time, $memory, $capture_std = false)
         $cmdline .= " --gid=" . IA_EVAL_JAIL_GID;
     }
     if ($capture_std) {
-        $cmdline .= " --capture-stdout=jailed_stdout";
-        $cmdline .= " --capture-stderr=jailed_stderr";
+        $cmdline .= " --redirect-stdout=jailed_stdout";
+        $cmdline .= " --redirect-stderr=jailed_stderr";
     }
     if (isset($time)) {
         $cmdline .= " --time-limit=" . $time;
