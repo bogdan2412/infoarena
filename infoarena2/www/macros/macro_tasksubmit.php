@@ -34,22 +34,6 @@ function macro_tasksubmit($args) {
         return macro_message("Nu se (mai) pot trimite solutii la aceasta problema.", true);
     }
 
-    /* FIXME: round registration disabled
-    // make sure user is already registered to at least one round that includes this task
-    $rounds = task_get_parent_rounds($task['id']);
-    $registered = false;
-    foreach ($rounds as $round_id) {
-        if (round_is_registered($round_id, $identity_user['id']))  {
-            $registered = true;
-            break;
-        }
-    }
-
-    if (!$registered) {
-        return macro_message('Inscrie-te intr-o runda pentru a putea trimite solutii.');
-    }
-    */
-
     // display form
     ob_start();
 ?>

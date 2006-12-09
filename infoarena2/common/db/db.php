@@ -12,8 +12,6 @@ if (defined("IA_FROM_SMF")) {
 // This also connects to mysql server
 require_once(IA_ROOT."common/db/db_mysql.php");
 
-
-
 // Executes query, fetches the all result rows
 function db_fetch_all($query) {
     $result = db_query($query);

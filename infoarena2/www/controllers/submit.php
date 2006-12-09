@@ -29,26 +29,10 @@ function controller_submit() {
             // require permissions
             identity_require('task-submit', $task);
 
-            // make sure user is already registered to at least one round that includes this task
-            // FIXME: registration features disabled.
-            /* $rounds = task_get_parent_rounds($task['id']);
-            $registered = false;
-            foreach ($rounds as $round_id) {
-                if (round_is_registered($round_id, $identity_user['id']))  {
-                    $registered = true;
-                    break;
-                }
-            }
-            if (!$registered) {
-                $form_errors['task_id'] = 'Inscrie-te mai intai intr-o runda '
-                                          .'pentru a trimite solutii la aceasta problema';
-            }*/
-
-            $valid_compilers = array('c', 'cpp', 'fpc');
             // Check compiler.
-            if ('output-only' != $task['type'] &&
-                (false === array_search($values['compiler_id'], $valid_compilers))) {
-                $form_errors['compiler_id'] = 'Compilator invalid!';
+            $valid_compilers = array('c', 'cpp', 'fpc');
+            if (array_search($values['compiler_id'], $valid_compilers) === false) {
+                $errors['compiler_id'] = 'Compilator invalid!';
             }
 
             // Check uploaded solution

@@ -6,7 +6,7 @@ RewriteBase /live/
 
 RewriteCond %{REQUEST_URI}  !index.php
 RewriteCond %{REQUEST_URI}  !static
-RewriteCond %{REQUEST_URI}  !sdhack
+RewriteCond %{REQUEST_URI}  !forum
 RewriteRule ^(.*) index.php?page=$1 [QSA]
 
 php_value magic_quotes_gpc 0

@@ -10,8 +10,8 @@ require_once(IA_ROOT."common/db/db.php");
 function job_create($task_id, $user_id, $compiler_id, $file_contents) {
     $query = "
         INSERT INTO ia_job
-            (task_id, user_id, compiler_id, file_contents, `submit_time`, `next_eval`)
-        VALUES ('%s', '%s', '%s', '%s', NOW(), NOW())
+            (task_id, user_id, compiler_id, file_contents, `submit_time`)
+        VALUES ('%s', '%s', '%s', '%s', NOW())
     ";
     $query = sprintf($query, db_escape($task_id),
                      db_escape($user_id), db_escape($compiler_id),
@@ -23,23 +23,22 @@ function job_create($task_id, $user_id, $compiler_id, $file_contents) {
 function job_get_next_job() {
     $query = "
         SELECT * FROM ia_job
-        WHERE `status` != 'done' AND `next_eval` < NOW()
+        WHERE `status` != 'done'
         ORDER BY `submit_time` ASC LIMIT 1
     ";
     return db_fetch($query);
 }
 
-// Mark job status and next_eval.
-// Delay is the delay in seconds, defaults to 300(5 minutes)
-function job_mark_delay($job_id, $status, $delay = 300) {
-    log_assert($status == 'processing' || $status == 'waiting');
-    log_assert($delay >= 0);
-    $query = sprintf(
-            "UPDATE `ia_job`
-            SET `status` = '%s', `next_eval` = DATE_ADD(NOW(), INTERVAL %s SECOND)
-            WHERE `id` = %s",
-            db_escape($status), db_escape($delay), db_escape($job_id));
-    return db_query($query);
+// Change job status.
+function job_set_status($job_id, $status) {
+    log_assert($status == 'processing' ||
+            $status == 'waiting' ||
+            $status == 'done', "Invalid status");
+    log_assert(is_whole_number($job_id));
+    $query = sprintf("UPDATE ia_job SET status= '%s' WHERE id = %s",
+            $status, $job_id);
+    db_query($query);
+    return db_affected_rows();
 }
 
 // Mark a certain job as 'done'

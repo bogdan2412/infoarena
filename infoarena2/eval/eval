@@ -84,18 +84,9 @@ function job_eval($job)
 // This is the main job function.
 function job_handle($job) {
     log_print("- -- --- ---- ----- Handling job " . $job['id']);
-    // FIXME: do this in query.
-    job_mark_delay($job['id'], 'waiting');
-
-    $user = user_get_by_id($job['user_id']);
-    if (!$user) {
-        log_print("Nu am gasit utilizatorul " . $job['user_id']);
-        job_send_result($job, jobresult_system_error());
-        return;
-    }
-
     // Evaluating, mark as processing.
-    job_mark_delay($job['id'], 'processing');
+    // FIXME: do it in query.
+    job_set_status($job['id'], 'processing');
     $job_result = job_eval($job);
     if ($job_result == null) {
         log_print("Bug in get_job_result");
