@@ -112,12 +112,15 @@ function task_grade_job_classic($task, $tparams, $job) {
         if ($tparams['unique_output']) {
             // Diff grading, trivial.
             if (is_readable($outfile)) {
-                @system("diff -BbEa $infile $outfile &> /dev/null", $res);
-                if ($res) {
+                $diff_output = shell_exec("diff -qBbEa $outfile $okfile");
+                if ($diff_output == '') {
+                    log_print("output and okfile match");
                     $score = 100 / $tparams['tests'];
                     $result['score'] += $score;
                     $result['log'] .= "OK: $score puncte";
                 } else {
+                    log_print("output and okfile don't match");
+                    log_print(file_get_contents($outfile)." != ".file_get_contents($okfile));
                     $result['log'] .= "Incorect: 0 puncte";
                 }
             } else {

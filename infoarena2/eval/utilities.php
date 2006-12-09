@@ -153,7 +153,7 @@ function jail_run($program, $time, $memory, $capture_std = false)
     //$cmdline .= " --verbose";
 
     log_print("Running $cmdline");
-    $message = exec($cmdline);
+    $message = shell_exec($cmdline);
 
     $result = jrun_parse_message($message);
     if ($result == false) {
