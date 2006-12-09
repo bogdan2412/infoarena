@@ -1,4 +1,4 @@
-# Makefile, for the lazy retards among you.
+# Makefile, for the lazy among you.
 all: jrun
 
 .PHONY: all test clean

@@ -152,6 +152,9 @@
 }
 
 /* misc */
+.clear {
+    height: 1%;
+}
 .clear:after {
     content:".";
     height:0;
@@ -159,7 +162,7 @@
     visibility:hidden;
     clear:both;
 }
-.clear {
+.hollyfix {
     height: 1%;
 }
 

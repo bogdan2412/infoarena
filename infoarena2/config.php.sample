@@ -96,7 +96,7 @@ define("IA_SECRET", "developersetup");
 // Enable this only if you have a SMTP server around
 define("IA_SMTP_ENABLED", false);
 
-if (defined(IA_SMTP_ENABLED) && IA_SMTP_ENABLED) {
+if (IA_SMTP_ENABLED) {
     // only if SMTP is enabled, you can configure these
     define("IA_SMTP_HOST", "localhost");
     define("IA_SMTP_PORT", "25");

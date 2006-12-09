@@ -191,7 +191,7 @@ function check_requirements()
 
 error_reporting(0xFFFF);
 if (function_exists("date_default_timezone_set")) {
-    date_default_timezone_set("UTC");
+    date_default_timezone_set("EET");
 }
 
 ?>
