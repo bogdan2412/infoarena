@@ -90,23 +90,31 @@ function format_user_link($user_name, $user_fullname, $rating = null) {
     else {
         $attr = array('class' => 'user_'.rating_group($rating));
     }
-    return format_link(url_user_profile($user_name), $user_fullname, true,
-                       $attr);
+
+    $rbadge = format_user_ratingbadge($user_name, $rating);
+
+    return format_link(url_user_profile($user_name), $rbadge.$user_fullname,
+                       true, $attr);
 }
 
 // Format a tiny user link, with a 16x16 avatar.
 // FIXME: proper styling
-function format_user_tiny($user_name, $user_fullname) {
+function format_user_tiny($user_name, $user_fullname, $rating = null) {
     $user_url = htmlentities(url_user_profile($user_name));
     $user_fullname = htmlentities($user_fullname);
 
+    $rbadge = format_user_ratingbadge($user_name, $rating);
+
     $result = "";
     $result .= "<div class=\"tiny-user\">";
-    $result .= "<a href=\"$user_url\">";
-    $result .= format_user_avatar($user_name, 16, 16);
-    $result .= "<span class=\"fullname\">$user_fullname</span> ";
-    $result .= "<span class=\"username\">".htmlentities($user_name)."</span> ";
-    $result .= "</a></div>";
+    $result .= format_link($user_url,
+                           format_user_avatar($user_name, 16, 16, false).$user_fullname,
+                           false);
+    $result .= ' '.$rbadge;
+    $result .= "<span class=\"username\">"
+               .format_link($user_url, $user_name)
+               ."</span> ";
+    $result .= "</div>";
 
     return $result;
 }
@@ -117,23 +125,39 @@ function format_user_normal($user_name, $user_fullname, $rating = null) {
     $user_url = htmlentities(url_user_profile($user_name));
     $user_fullname = htmlentities($user_fullname);
 
-    if (is_null($rating)) {
-        $class = "";
-    }
-    else {
-        $class = 'user_'.rating_group($rating);
-    }
+    $rbadge = format_user_ratingbadge($user_name, $rating);
 
     $result = "";
     $result .= "<div class=\"normal-user\">";
-    $result .= "<a href=\"$user_url\">";
-    $result .= format_user_avatar($user_name, 32, 32);
-    $result .= "<span class=\"fullname $class\">$user_fullname</span> <br />";
-    $result .= "<span class=\"username $class\">"
-               .htmlentities($user_name)."</span> ";
-    $result .= "</a></div>";
+    $result .= format_link($user_url,
+                           format_user_avatar($user_name, 32, 32, false),
+                           false);
+    $result .= "<span class=\"fullname\">$user_fullname</span><br />";
+    $result .= $rbadge;
+    $result .= "<span class=\"username\">"
+               .format_link($user_url, $user_name)
+               ."</span> ";
+    $result .= "</div>";
 
     return $result;
+}
+
+// Formats user rating badge. Rating badges are displayed before username
+// and indicate the user's rating.
+function format_user_ratingbadge($username, $rating) {
+    if ($rating) {
+        $class = rating_group($rating);
+        $rating = rating_scale($rating);
+        $att = array(
+            'title' => 'Rating '.htmlentities($username).': '.$rating,
+            'class' => 'user_'.$class,
+        );
+        return format_link(url_user_rating($username), '&bull;', false, $att);
+    }
+    else {
+        // un-rated users have no badge
+        return '';
+    }
 }
 
 ?>

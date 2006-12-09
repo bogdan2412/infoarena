@@ -62,7 +62,7 @@ function textblock_complex_query($options)
 
     // Add a join for username.
     if (getattr($options, 'username', false) == true) {
-        $field_list .= ", `username` as `user_name`, `full_name` as `user_fullname`";
+        $field_list .= ", `username` as `user_name`, `full_name` as `user_fullname`, rating_cache";
         $join = "LEFT JOIN ia_user ON `user_id` = `ia_user`.`id`";
     } else {
         $join = "";

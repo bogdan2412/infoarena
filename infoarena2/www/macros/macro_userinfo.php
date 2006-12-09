@@ -39,6 +39,13 @@ function macro_userinfo($args) {
             return htmlentities($user['username']);
         case 'security':
             return htmlentities($user['security_level']);
+        case 'rating':
+            if ($user['rating_cache']) {
+                return htmlentities($user['rating_cache']);
+            }
+            else {
+                return 'n/a';
+            }
         default:
             return macro_error("Invalid info paramater");
     }

@@ -24,7 +24,7 @@ function ia_template_header() {
         <?= format_link(url_user_profile($username, true), format_user_avatar($username, 50, 50, true), false) ?>
             <span class="user">
                 <strong><?= htmlentities($identity_user['full_name']) ?></strong><br/>
-                <?= format_link(url_user_profile($username, true), $username) ?><br/>
+                <?= format_user_ratingbadge($username, $identity_user['rating_cache']).format_link(url_user_profile($username, true), $username) ?><br/>
                 <a href="<?= htmlentities(url('logout', array(), true)) ?>" class="logout">logout</a> | <?= format_link(url('account', array(), true), 'contul meu') ?>
             </span>
         </div>

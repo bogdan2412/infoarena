@@ -12,8 +12,6 @@
 // See development documentation on ratings:
 // http://hackers.devnet.ro/wiki/Rating
 
-require_once(IA_ROOT.'common/log.php');
-
 // Glicko parameters
 // These may be tweaked until they yield decent ratings
 

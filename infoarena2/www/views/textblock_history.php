@@ -41,7 +41,7 @@ $column_infos = array(
         'title' => 'Utilizator',
         'key' => 'username',
         'rowform' => create_function('$row',
-                                     'return format_user_tiny($row["user_name"], $row["user_fullname"]);'),
+                                     'return format_user_tiny($row["user_name"], $row["user_fullname"], $row["rating_cache"]);'),
     ),
     array(
         'title' => 'Data',
