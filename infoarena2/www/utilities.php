@@ -14,7 +14,7 @@ function request_is_post() {
 
 // Call this function for a http-level redirect.
 // NOTE: this function DOES NOT RETURN.
-// 
+//
 // NOTE: this must be called before any other output.
 // If output started before issuing a redirect means you're either
 // printing stuff too early or you're trying to redirect too late (view?).
@@ -101,51 +101,6 @@ function execute_view_die($view_file_name, $view) {
     execute_view($view_file_name, $view);
     session_write_close();
     die();
-}
-
-// Resize 2D coordinates according to 'textual' instructions
-// Given a (width, height) pair, resize it (compute new pair) according to
-// resize instructions.
-//
-// Resize instructions are in WxH format, where W and/or H can be a
-// percentage (with %). By default it keeps the original aspect ratio,
-// prefix with @ to avoid this.
-//
-// Alternatively you can just use X% to resize both dimensions.
-//
-// Returns 2-element array: (width, height) or null if invalid format
-// FIXME: Does not belong here.
-function resize_coordinates($width, $height, $resize) {
-    // log_print("Parsing resize '$resize'");
-    // Both with and height.
-    if (preg_match('/^(\@?)([0-9]+\%?)x([0-9]+\%?)$/', $resize, $matches)) {
-        $flags = $matches[1];
-        $targetw = (float)$matches[2];
-        $targeth = (float)$matches[3];
-
-        if (preg_match("/\%/", $targetw)) {
-            $targetw = $width * preg_match("/[0-9]+/", $targetw) / 100.0;
-        }
-        if (preg_match("/\%/", $targeth)) {
-            $targeth = $height * preg_match("/[0-9]+/", $targeth) / 100.0;
-        }
-
-        // log_print("$targetw x $targeth with flags $flags");
-
-        if ($flags != '@') {
-            $targetw = min($targeth * $width / $height, $width);
-            $targeth = min($targetw * $height / $width, $height);
-            $targetw = min($targeth * $width / $height, $width);
-        }
-    } else if (preg_match('/^([0-9]+)\%$/', $resize, $matches)) {
-        //log_print("Scaling at ".$matches[1]."%.");
-        $targetw = $width * $matches[1] / 100.0;
-        $targeth = $height * $matches[1] / 100.0;
-    } else {
-        return null;
-    }
-
-    return array(floor($targetw), floor($targeth));
 }
 
 ?>

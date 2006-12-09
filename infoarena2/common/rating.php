@@ -215,11 +215,31 @@ function rating_update(&$users, $user_scores, $timestamp) {
 
 // Represent rating in a human-friendly scale from 0 to 1000
 // NOTE: This is used only when displaying ratings to users!
-function rating_scale($rating) {
+function rating_scale($absolute_rating) {
     // FIXME: Fix ratings and then fix scale!
-    // NOTE: Current ratings span from ~1100 to ~1850
-    log_assert(is_numeric($rating));
-    return (int)round(($rating - 1000));
+    log_assert(is_numeric($absolute_rating));
+    return (int)round(($absolute_rating - 1000));
+}
+
+// Return rating group based on user's absolute rating.
+// Rating groups (from highest to lowest ranking): 1, 2, 3, 0
+// NOTE: It outputs 0 when user is not rated
+function rating_group($absolute_rating) {
+    if (!$absolute_rating) {
+        return 0;
+    }
+
+    $rating = rating_scale($absolute_rating);
+
+    if ($rating < 400) {
+        return 3;
+    }
+    else if ($rating < 700) {
+        return 2;
+    }
+    else {
+        return 1;
+    }
 }
 
 ?>

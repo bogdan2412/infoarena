@@ -166,3 +166,12 @@
     height: 1%;
 }
 
+/* color-coded user ratings */
+.user_3 .user_2. .user_1, .user_0 {
+    font-weight: bold;
+}
+.user_3 { color: #00a900; }
+.user_2 { color: #ddcc00; }
+.user_1 { color: #ee0000; }
+.user_0 { }
+

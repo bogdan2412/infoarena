@@ -1,5 +1,7 @@
 <?php
 
+require(IA_ROOT."common/rating.php");
+
 // Format an array of xml attributes.
 // Return '' or 'k1="v1" k2="v2"'.
 // Escapes values, checks keys.
@@ -51,11 +53,12 @@ function format_tag($tag, $attribs = array(), $content = null)
 // By default escapes url & content
 //
 // You can set escape_content to false.
-function format_link($url, $content, $escape_content = true) {
+function format_link($url, $content, $escape_content = true, $attr = array()) {
     if ($escape_content) {
         $content = htmlentities($content);
     }
-    return format_tag("a", array("href" => $url), $content);
+    $attr['href'] = $url;
+    return format_tag("a", $attr, $content);
 }
 
 // Format img tag.
@@ -66,23 +69,29 @@ function format_img($src, $alt) {
 }
 
 // Format avatar img.
-function format_user_avatar($user_name, $width = 50, $height = 50, $absolute = false)
+function format_user_avatar($user_name, $width = 50, $height = 50,
+                            $absolute = false)
 {
     log_assert(is_whole_number($width), "Invalid width");
     log_assert(is_whole_number($height), "Invalid height");
     return format_tag("img", array(
-            "src" => url_user_avatar($user_name, "{$width}x{$height}", $absolute),
-//            "style" => "width: $width; height: $height;",
-//            "width" => $width,
-//            "height" => $height,
-            "alt" => ":)",
+            "src" => url_user_avatar($user_name, "L{$width}x{$height}",
+                                     $absolute),
+            "alt" => $user_name,
     ));
 }
 
 // Format a tiny link to an user.
 // FIXME: proper styling
-function format_user_link($user_name, $user_fullname) {
-    return format_link(url_user_profile($user_name), $user_fullname);
+function format_user_link($user_name, $user_fullname, $rating = null) {
+    if (is_null($rating)) {
+        $attr = array();
+    }
+    else {
+        $attr = array('class' => 'user_'.rating_group($rating));
+    }
+    return format_link(url_user_profile($user_name), $user_fullname, true,
+                       $attr);
 }
 
 // Format a tiny user link, with a 16x16 avatar.
@@ -104,16 +113,24 @@ function format_user_tiny($user_name, $user_fullname) {
 
 // Format a tiny user link, with a 32x32 avatar.
 // FIXME: proper styling
-function format_user_normal($user_name, $user_fullname) {
+function format_user_normal($user_name, $user_fullname, $rating = null) {
     $user_url = htmlentities(url_user_profile($user_name));
     $user_fullname = htmlentities($user_fullname);
+
+    if (is_null($rating)) {
+        $class = "";
+    }
+    else {
+        $class = 'user_'.rating_group($rating);
+    }
 
     $result = "";
     $result .= "<div class=\"normal-user\">";
     $result .= "<a href=\"$user_url\">";
     $result .= format_user_avatar($user_name, 32, 32);
-    $result .= "<span class=\"fullname\">$user_fullname</span> <br />";
-    $result .= "<span class=\"username\">".htmlentities($user_name)."</span> ";
+    $result .= "<span class=\"fullname $class\">$user_fullname</span> <br />";
+    $result .= "<span class=\"username $class\">"
+               .htmlentities($user_name)."</span> ";
     $result .= "</a></div>";
 
     return $result;

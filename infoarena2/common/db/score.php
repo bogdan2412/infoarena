@@ -90,7 +90,8 @@ function score_get($score_name, $user, $task, $round, $start, $count, $groupby =
     $query = sprintf("
             SELECT SQL_CALC_FOUND_ROWS
                 ia_score.`name` as `score_name`, `user_id`, `task_id`, `round_id`, SUM(`score`) as score, 
-                ia_user.username as user_name, ia_user.full_name as user_full
+                ia_user.username as user_name, ia_user.full_name as user_full,
+                ia_user.rating_cache AS user_rating
             FROM ia_score
                 LEFT JOIN ia_user ON ia_user.id = ia_score.user_id
             WHERE %s GROUP BY %s

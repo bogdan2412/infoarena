@@ -36,7 +36,7 @@ function macro_rankings($args) {
             'title' => 'Nume',
             'key' => 'user_full',
             'rowform' => create_function('$row',
-                                         'return format_user_normal($row["user_name"], $row["user_full"]);'),
+                                         'return format_user_normal($row["user_name"], $row["user_full"], $row["user_rating"]);'),
         ),
         array('title' => 'Scor', 'key' => 'score'),
     );
