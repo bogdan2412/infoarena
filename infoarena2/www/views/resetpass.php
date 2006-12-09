@@ -7,7 +7,7 @@
 <p>Introdu numele de utilizator sau adresa de e-mail cu care te-ai inregistrat pe site.</p>
 <p>Iti vom trimite pe e-mail instructiuni pentru a-ti reseta parola.</p>
 
-<form action="<?= htmlentities(url('resetpass')) ?>" method="post" class="login">
+<form action="<?= htmlentities(url('resetpass')) ?>" method="post" class="login clear">
 <fieldset>
     <legend>Date de identificare</legend>
     <ul class="form">
@@ -29,7 +29,7 @@
         </li>
     </ul>
 </fieldset>
-<ul class="form hollyfix">
+<ul class="form clear">
     <li>
         <input type="submit" value="Trimite-mi instructiuni" id="form_submit" class="button important" />
     </li>

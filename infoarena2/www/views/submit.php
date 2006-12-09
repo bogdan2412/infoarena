@@ -24,11 +24,11 @@ foreach ($tasks as $t) {
 </div>
 </div>
 
-<form enctype="multipart/form-data" action="<?= htmlentities(url_submit()) ?>" method="post" class="submit" id="task_submit">
+<form enctype="multipart/form-data" action="<?= htmlentities(url_submit()) ?>" method="post" class="submit clear" id="task_submit">
 
 <input type="hidden" id="output_only" value="<?= htmlentities(':'.join(':', $output_only_ids).':') ?>" />
 
-<ul class="form">
+<ul class="form clear">
     <li id="field_task">
         <label for="form_task">Problema</label>
         <select name="task_id" id="form_task">

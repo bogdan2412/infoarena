@@ -217,7 +217,7 @@ The basic layout of the homepage is as follows:
 
 /* Wikipage options (actions) */
 #wikiOps {
-    font-size:10px;
+    font-size:8pt;
 }
 
 #wikiOps ul {

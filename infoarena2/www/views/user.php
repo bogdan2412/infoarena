@@ -18,7 +18,7 @@ echo wiki_include($template_userheader, array('user' => $user['username']));
 // show profile tabs
 $options = array(
     'view' => format_link(url($page_name), 'Pagina personala'),
-    'rating' => format_link(url($page_name, array('action' => 'rating')), 'Evolutie rating'),
+    'rating' => format_link(url($page_name, array('action' => 'rating')), 'Rating'),
     'stats' => format_link(url($page_name, array('action' => 'stats')), 'Statistici'),
 );
 // mark selected action with class 'active'

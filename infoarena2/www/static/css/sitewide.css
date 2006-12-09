@@ -65,11 +65,6 @@
     padding-left: 22px;
 }
 
-/* Don't ask. (harmless) CSS hack */
-/* \*/
-* html .hollyfix {height: 1%;}
-*/* */
-
 /* site footer */
 #footer {
     border-top:1px solid #B7D285;
@@ -164,8 +159,7 @@
     visibility:hidden;
     clear:both;
 }
-
-* html .clear {
+.clear {
     height: 1%;
 }
 

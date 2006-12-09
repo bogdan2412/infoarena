@@ -24,7 +24,7 @@
 
 </div>
 
-<form enctype="multipart" action="<?= htmlentities($action) ?>" method="post" class="profile hollyfix">
+<form enctype="multipart" action="<?= htmlentities($action) ?>" method="post" class="profile clear">
 <fieldset>
     <legend><img src="<?= htmlentities(url('static/images/icons/key.gif')) ?>"/> Utilizator infoarena</legend>
     <ul class="form">
@@ -66,7 +66,7 @@
     </ul>
 </fieldset>
 
-<ul class="form hollyfix">
+<ul class="form clear">
     <li>
         <input type="checkbox" <?php if (fval('newsletter'))
             echo 'checked="checked"'; ?> name="newsletter" id="form_newsletter"/>

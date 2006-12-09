@@ -2,7 +2,7 @@
 
 <h1><?= htmlentities($title) ?></h1>
 
-<form enctype="multipart/form-data" action="<?= htmlentities(url($page_name)) ?>" method="post" class="hollyfix">
+<form enctype="multipart/form-data" action="<?= htmlentities(url($page_name)) ?>" method="post" class="clear">
 <fieldset>
     <legend>Alege fisier</legend>
     <ul class="form">
@@ -25,7 +25,7 @@
     </ul>
 </fieldset>
 
-<ul class="form">
+<ul class="form clear">
     <li>
         <input type="submit" class="button important" value="Ataseaza" id="form_submit" />
     </li>

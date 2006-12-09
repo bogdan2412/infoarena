@@ -47,7 +47,7 @@ function ia_template_topnav($selected = 'infoarena', $smf_admin = false) {
 <ul>
     <li><?= getattr($pre, 'infoarena') ?><a href="<?= htmlentities(url('', array(), true)) ?>">info<em>arena</em></a><?= getattr($post, 'infoarena') ?></li>
     <li><?= getattr($pre, 'forum') ?><a href="<?= htmlentities(IA_SMF_URL) ?>">forum</a><?= getattr($post, 'forum') ?></li>
-    <li><?= getattr($pre, 'calendar') ?><a href="<?= htmlentities(IA_SMF_URL) ?>?action=calendar">calendar competitii</a><?= getattr($post, 'calendar') ?></li>
+    <li><?= getattr($pre, 'calendar') ?><a href="<?= htmlentities(IA_SMF_URL) ?>?action=calendar">calendar</a><?= getattr($post, 'calendar') ?></li>
 <?php if (identity_anonymous()) { ?>
     <li><?= getattr($pre, 'login') . format_link(url('login', array(), true), "autentificare") . getattr($post, 'login') ?></li>
     <li><?= getattr($pre, 'register') . format_link(url('register', array(), true), "inregistare") . getattr($post, 'register') ?></li>

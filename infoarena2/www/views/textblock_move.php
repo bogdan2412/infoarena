@@ -2,7 +2,7 @@
 
 <h1><?= htmlentities($title) ?></h1>
 
-<form action="<?= htmlentities(url($page_name)) ?>" method="post" class="hollyfix">
+<form action="<?= htmlentities(url($page_name)) ?>" method="post" class="move clear">
 <fieldset>
     <input type="hidden" name="action" value="move" />
 
@@ -14,7 +14,7 @@
         </li>
     </ul>
 </fieldset>
-<ul class="form">
+<ul class="form clear">
     <li>
         <input type="submit" class="button important" value="Muta pagina" id="form_submit" />
     </li>

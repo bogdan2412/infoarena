@@ -19,7 +19,7 @@
 
 </div>
 
-<form enctype="multipart/form-data" action="<?= htmlentities($action) ?>" method="post" class="profile hollyfix">
+<form enctype="multipart/form-data" action="<?= htmlentities($action) ?>" method="post" class="profile clear">
 <fieldset>
     <legend><img src="<?= htmlentities(url('static/images/icons/key.gif')) ?>"/> Schimba parola</legend>
     <ul class="form">
@@ -80,7 +80,7 @@
     </ul>
 </fieldset>
 
-<ul class="form hollyfix">
+<ul class="form clear">
     <li>
         <input type="checkbox" <?php if (fval('newsletter'))
             echo 'checked="checked"'; ?> name="newsletter" id="form_newsletter"/>
