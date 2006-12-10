@@ -120,7 +120,7 @@ function task_grade_job_classic($task, $tparams, $job) {
                     $result['log'] .= "OK: $score puncte";
                 } else {
                     log_print("output and okfile don't match");
-                    log_print(file_get_contents($outfile)." != ".file_get_contents($okfile));
+                    //log_print(file_get_contents($outfile)." != ".file_get_contents($okfile));
                     $result['log'] .= "Incorect: 0 puncte";
                 }
             } else {

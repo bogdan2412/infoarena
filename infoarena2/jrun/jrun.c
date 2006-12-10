@@ -41,269 +41,17 @@
  *      See stdout for information.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "jrun.h"
 
-#include <getopt.h>
-
-#include <sys/time.h>
-#include <sys/types.h>
-#include <sys/resource.h>
-#include <sys/ptrace.h>
-#include <sys/syscall.h>
-#include <time.h>
-#include <unistd.h>
-#include <errno.h>
-#include <signal.h>
-#include <wait.h>
-#include "tables.h"
-
-#define CHECK_INTERVAL 50
-
-void die(char *msg)
-{
-    printf("%s\n", msg);
-    exit(0);
-}
-
-// Sleep in miliseconds.
-void milisleep(int ms)
-{
-    struct timespec req;
-    struct timespec rem;
-    req.tv_sec = ms / 1000;
-    req.tv_nsec = ms % 1000 * 1000000;
-
-    while (nanosleep(&req, &rem)) {
-        req = rem;
-    }
-}
-
-// Global variables, command line options.
-int opt_uid;
-int opt_gid;
-char opt_dir[500];
-char opt_prog[500];
-
-int opt_time_limit;
-int opt_wall_time_limit;
-int opt_memory_limit;
-
-int opt_nice_val;
-int opt_ptrace;
-int opt_copy_libs;
-
-int opt_verbose;
-int opt_chroot;
-
-// File to redirect program stdout to.
-// Empty is /dev/null
-char opt_stdin_file[500];
-char opt_stdout_file[500];
-char opt_stderr_file[500];
-
-// 0 or 1 if a syscall is blocked.
-// Blocking means killing the process.
-int syscall_block[SYSCALL_COUNT];
-
-// Get syscall id from name.
-// Returns -1 if not found.
 int syscall_getid(char* name)
 {
     int i;
-    for (i = 0; i < SYSCALL_COUNT; ++i) {
+    for (i = 0; syscall_name[i]; ++i) {
         if (!strcmp(name, syscall_name[i])) {
             return i;
         }
     }
     return -1;
-}
-
-#define OPT_UID                         0
-#define OPT_GID                         1
-#define OPT_DIR                         2
-#define OPT_PROG                        3
-#define OPT_TIME_LIMIT                  4
-#define OPT_WALL_TIME_LIMIT             15
-#define OPT_MEMORY_LIMIT                5
-#define OPT_NICE                        6
-#define OPT_NO_PTRACE                   7
-#define OPT_COPY_LIBS                   8
-#define OPT_VERBOSE                     9
-#define OPT_BLOCK_SYSCALLS              10
-#define OPT_BLOCK_SYSCALLS_FILE         11
-#define OPT_REDIRECT_STDIN               17
-#define OPT_REDIRECT_STDOUT              12
-#define OPT_REDIRECT_STDERR              13
-#define OPT_CHROOT                      14
-
-void parse_options(int argc, char *argv[])
-{
-    struct option long_options[] = {
-        {"uid",                 1, 0, OPT_UID},
-        {"gid",                 1, 0, OPT_GID},
-        {"dir",                 1, 0, OPT_DIR},
-        {"prog",                1, 0, OPT_PROG},
-        {"time-limit",          1, 0, OPT_TIME_LIMIT},
-        {"wall-time-limit",     1, 0, OPT_WALL_TIME_LIMIT},
-        {"memory-limit",        1, 0, OPT_MEMORY_LIMIT},
-        {"nice",                1, 0, OPT_NICE},
-        {"no-ptrace",           0, 0, OPT_NO_PTRACE},
-        {"copy-libs",           0, 0, OPT_COPY_LIBS},
-        {"verbose",             0, 0, OPT_VERBOSE},
-        {"block-syscalls",      1, 0, OPT_BLOCK_SYSCALLS},
-        {"block-syscalls-file", 1, 0, OPT_BLOCK_SYSCALLS_FILE},
-        {"redirect-stdin",       1, 0, OPT_REDIRECT_STDIN},
-        {"redirect-stdout",      1, 0, OPT_REDIRECT_STDOUT},
-        {"redirect-stderr",      1, 0, OPT_REDIRECT_STDERR},
-        {"chroot",              0, 0, OPT_CHROOT},
-        {0, 0, 0, 0},
-    };
-    int option_index = 0;
-
-    memset(syscall_block, 0, sizeof(syscall_block));
-
-    opt_uid = -1;
-    opt_gid = -1;
-
-    opt_prog[0] = 0;
-    getcwd(opt_dir, sizeof(opt_dir));
-   
-    opt_time_limit = 0;
-    opt_wall_time_limit = -1;
-    opt_memory_limit = 0;
-
-    opt_nice_val = -1000;
-    opt_ptrace = 1;
-    opt_copy_libs = 0;
-
-    opt_verbose = 0;
-    opt_chroot = 0;
-    opt_stdout_file[0] = opt_stderr_file[0] = opt_stdin_file[0] = 0;
-
-    while (1) {
-        int opt = getopt_long(argc, argv, "u:g:d:p:t:m:n:v", long_options, &option_index);
-        if (opt == -1) {
-            break;
-        }
-        switch (opt) {
-            case 'u': case OPT_UID:
-                if (sscanf(optarg, "%d", &opt_uid) != 1) {
-                    die("ERROR: --uid needs an int parameter");
-                }
-                break;
-            case 'g': case OPT_GID:
-                if (sscanf(optarg, "%d", &opt_gid) != 1) {
-                    die("ERROR: --gid needs an int parameter");
-                }
-                break;
-            case 'd': case OPT_DIR:
-                strcpy(opt_dir, optarg);
-                break;
-            case 'p': case OPT_PROG:
-                strcpy(opt_prog, optarg);
-                break;
-            case 'n': case OPT_NICE:
-                if (sscanf(optarg, "%d", &opt_nice_val) != 1) {
-                    die("ERROR: --nice needs an int parameter");
-                }
-                if (opt_nice_val < -20 || opt_nice_val > 19) {
-                    die("ERROR: nice value has to be in -20..19 range, inclusive\n");
-                }
-                break;
-            case 't': case OPT_TIME_LIMIT:
-                if (sscanf(optarg, "%d", &opt_time_limit) != 1) {
-                    die("ERROR: --time-limit needs an int parameter");
-                }
-                break;
-            case 'w': case OPT_WALL_TIME_LIMIT:
-                if (sscanf(optarg, "%d", &opt_wall_time_limit) != 1) {
-                    die("ERROR: --wall-time-limit needs an int parameter");
-                }
-                break;
-            case 'm': case OPT_MEMORY_LIMIT:
-                if (sscanf(optarg, "%d", &opt_memory_limit) != 1) {
-                    die("ERROR: --memory-limit needs an int parameter");
-                }
-                break;
-            case 'v': case OPT_VERBOSE:
-                opt_verbose = 1;
-                break;
-            case OPT_NO_PTRACE:
-                opt_ptrace = 0;
-                break;
-            case OPT_COPY_LIBS:
-                opt_copy_libs = 1;
-                break;
-            case OPT_REDIRECT_STDIN: {
-                strcpy(opt_stdin_file, optarg);
-                break;
-            }
-            case OPT_REDIRECT_STDOUT: {
-                strcpy(opt_stdout_file, optarg);
-                break;
-            }
-            case OPT_REDIRECT_STDERR: {
-                strcpy(opt_stderr_file, optarg);
-                break;
-            }
-            case OPT_BLOCK_SYSCALLS: {
-                // Yes, I use strtok.
-                // Yes, I know it's a horrible horrible hack.
-                char* str = strdup(optarg);
-                char* s;
-                int id;
-               
-                s = strtok(str, ",");
-                while (s) {
-                    id = syscall_getid(s);
-                    if (id < 0) {
-                        printf("ERROR: Unknown system call %s\n", s);
-                        exit(0);
-                    }
-                    syscall_block[id] = 1;
-                    s = strtok(0, ",");
-                }
-                break;
-            }
-            case OPT_BLOCK_SYSCALLS_FILE: {
-                char buf[200];
-                FILE* f;
-                f = fopen(optarg, "rt");
-                if (f == NULL) {
-                    die("Failed to open blocked syscalls file\n");
-                }
-                while (fscanf(f, "%150s", buf) == 1) {
-                    int id;
-                    id = syscall_getid(buf);
-                    if (id < 0) {
-                        //fprintf(stderr, "Unknown system call %s, skipping\n", buf);
-                        printf("ERROR: Unknown system call %s\n", buf);
-                        exit(0);
-                    } else {
-                        //fprintf(stderr, "Blocking %s\n", buf);
-                        syscall_block[id] = 1;
-                    }
-                }
-                fclose(f);
-                break;
-            }
-            case OPT_CHROOT: {
-                opt_chroot = 1;
-                break;
-            }
-            default:
-                die("ERROR: Bad command line arguments");
-        }
-    }
-    if (opt_prog[0] == 0) {
-        die("ERROR: You must give the file to execute");
-    }
-
-    if (opt_wall_time_limit == -1 && opt_time_limit) {
-        opt_wall_time_limit = opt_time_limit + 1000;
-    }
 }
 
 // Copy libraries for the program in the jail dir.
@@ -313,10 +61,11 @@ void copy_libs(void)
     int i, k;
     FILE *p;
 
-    sprintf(path, "ldd %s", opt_prog);
+    sprintf(path, "ldd %s", jopt.prog);
     p = popen(path, "r");
     if (!p) {
-        die("ERROR: failed ldd\n");
+        perror("ERROR: failed ldd");
+        exit(-1);
     }
 
     path[k = 0] = 0;
@@ -346,24 +95,6 @@ void copy_libs(void)
     pclose(p);
 }
 
-// This should work just fine for single-cpu i386 linux
-// FIXME: this is not correct on every machine
-int get_jiffie_duration(void)
-{
-    return 10;
-}
-
-// gets actual time used in miliseconds from a rusage struct
-int get_rusage_time(struct rusage *usage)
-{
-    int r;
-
-    r = usage->ru_utime.tv_sec * 1000 + usage->ru_utime.tv_usec / 1000;
-    r += usage->ru_stime.tv_sec * 1000 + usage->ru_stime.tv_usec / 1000;
-
-    return r;
-}
-
 // Redirect a file descriptor to file.
 // if file is empty redirects to /dev/null
 void redirect_fd(int fd, char* file, char* od)
@@ -385,7 +116,7 @@ void child_main(void)
     struct rlimit rl;
 
     // Enable ptracing.
-    if (opt_ptrace) {
+    if (jopt.ptrace) {
         if (ptrace(PTRACE_TRACEME, 0, 0, 0) == -1) {
             perror("ERROR: failed to request tracing by the parent");
             exit(-1);
@@ -393,8 +124,8 @@ void child_main(void)
     }
 
     // limit memory
-    if (opt_memory_limit) {
-        rl.rlim_cur = rl.rlim_max = opt_memory_limit * 1024;
+    if (jopt.memory_limit) {
+        rl.rlim_cur = rl.rlim_max = jopt.memory_limit * 1024;
         setrlimit(RLIMIT_DATA, &rl);
     }
 
@@ -408,12 +139,12 @@ void child_main(void)
     //
 
     // Redirect standard file descriptors.
-    redirect_fd(0, opt_stdin_file, "rb");
-    redirect_fd(1, opt_stdout_file, "wb");
-    redirect_fd(2, opt_stderr_file, "wb");
+    redirect_fd(0, jopt.stdin_file, "rb");
+    redirect_fd(1, jopt.stdout_file, "wb");
+    redirect_fd(2, jopt.stderr_file, "wb");
 
     // chroot to jail dir
-    if (opt_chroot) {
+    if (jopt.chroot) {
         if (chroot("./")) {
             perror("ERROR: Failed to chroot to jail dir");
             exit(-1);
@@ -421,27 +152,78 @@ void child_main(void)
     }
 
     // Change user and group.
-    if (opt_gid != -1 && setgid(opt_gid)) {
+    if (jopt.gid != -1 && setgid(jopt.gid)) {
         perror("ERROR: Failed to setgid");
         exit(-1);
     }
-    if (opt_uid != -1 && setuid(opt_uid)) {
+    if (jopt.uid != -1 && setuid(jopt.uid)) {
         perror("ERROR: Failed to setuid");
         exit(-1);
     }
 
     // Does not return.
-    if (execve(opt_prog, 0, 0)) {
+    if (execve(jopt.prog, 0, 0)) {
         perror("ERROR: Failed to execute program");
         exit(-1);
     }
 }
 
 // Child pid.
-struct timeval start_time;
-int memory, used_time, wall_time;
-int stopped_in_ptrace;
 pid_t child_pid;
+
+// Child stats.
+int child_memory, child_time;
+
+// If child failed for whatever reason.
+int child_failed;
+
+// Result message.
+char message[500];
+
+// Wall time. FIXME: function
+int wall_time;
+
+// Starting time.
+struct timeval start_time;
+
+// Terminate gracefully, printing memory, time and message.
+// Only call after child is dead and reaped.
+// Does not return.
+void exit_gracefully()
+{
+    if (child_failed) {
+        printf("FAIL: time %dms memory %dkb: %s\n",
+                child_time, child_memory, message);
+    } else {
+        printf("OK: time %dms memory %dkb: %s\n",
+                child_time, child_memory, message);
+    }
+    exit(0);
+}
+
+// Kills child_pid.
+void fail_kill(void)
+{
+    if (jopt.verbose) {
+        fprintf(stderr, "Trying to kill with msg %s\n", message);
+    }
+    if (kill(child_pid, SIGKILL)) {
+        if (jopt.verbose) {
+            perror("Failed kill -SIGKILL");
+        }
+    }
+}
+
+void ptrace_detach(void)
+{
+    if (jopt.verbose) {
+        fprintf(stderr, "Detaching ptrace before kill.\n");
+    }
+    if (ptrace(PTRACE_DETACH, child_pid, 0, 0)) {
+        perror("ERROR: failed ptrace detach.");
+        exit(-1);
+    }
+}
 
 // Get syscall number. MAGIC!!!
 int get_syscall_number(void)
@@ -460,8 +242,8 @@ int get_syscall_number(void)
 }
 
 // Updates child process status
-// it updates used_time, wall_time and memory usage.
-void update_proc_status(void)
+// it updates child_time, child_memory and wall_time.
+void update_from_proc(void)
 {
     char path[250];
     unsigned long int utime, stime;
@@ -472,22 +254,24 @@ void update_proc_status(void)
     // Used time, from /proc/$pid/stat
     sprintf(path, "/proc/%d/stat", child_pid);
     if (!(f = fopen(path, "rt"))) {
-        die("ERROR: failed to read from /proc");
+        perror("ERROR: failed to read from /proc");
+        exit(-1);
     }
     fscanf(f, "%*d %*s %*c %*d%*d%*d%*d%*d%*u%*u%*u%*u%*u%lu%lu", &utime, &stime);
-    used_time = (utime + stime) * get_jiffie_duration();
+    child_time = (utime + stime) * JRUN_JIFFIE_DURATION;
     fclose(f);
 
     // Memory, from /proc/$pid/stat
     sprintf(path, "/proc/%d/statm", child_pid);
     if (!(f = fopen(path, "rt"))) {
-        die("ERROR: failed to read from /proc");
+        perror("ERROR: failed to read from /proc");
+        exit(-1);
     }
     // I'm not completely sure this is the right field to use.
     fscanf(f, "%*d%d%*d%*d%*d%*d", &cmem);
     cmem = (cmem * getpagesize()) / 1024;
-    if (memory < cmem) {
-        memory = cmem;
+    if (child_memory < cmem) {
+        child_memory = cmem;
     }
     fclose(f);
 
@@ -495,119 +279,197 @@ void update_proc_status(void)
     gettimeofday(&tv, 0);
     wall_time = (tv.tv_sec - start_time.tv_sec) * 1000 + (tv.tv_usec - start_time.tv_usec) / 1000;
 
-    if (opt_verbose) {
+    if (jopt.verbose) {
         //fprintf(stderr, "Running, time = %d wtime = %d mem = %d\n", used_time, wall_time, cmem);
     }
 }
 
-// Report failure of the child process.
-// It will also kill the child process.
-//
-// DIE MOTHERFUCKER!!!
-void fail_kill(const char* message)
+// gets actual time used in miliseconds from a rusage struct
+void update_from_rusage(struct rusage *usage)
 {
-    struct rusage usage;
-    int status;
-
-    if (opt_verbose) {
-        fprintf(stderr, "Trying to kill with msg %s\n", message);
-    }
-    if (stopped_in_ptrace) {
-        if (opt_verbose) {
-            fprintf(stderr, "Detaching ptrace before kill\n");
-        }
-        if (ptrace(PTRACE_DETACH, child_pid, 0, 0)) {
-            perror("ERROR: failed ptrace detach.");
-            exit(-1);
-        }
+    if (jopt.verbose) {
+        fprintf(stderr, "utime: %ld %ld stime: %ld %ld\n",
+                usage->ru_utime.tv_sec, usage->ru_utime.tv_usec,
+                usage->ru_stime.tv_sec, usage->ru_stime.tv_usec);
     }
 
-    if (kill(child_pid, SIGKILL)) {
-        if (opt_verbose) {
-            perror("Failed kill -SIGKILL");
-        }
-    }
-
-    while (1) {
-        wait4(child_pid, &status, 0, &usage);
-        if (WIFSIGNALED(status) || WIFEXITED(status)) {
-            break;
-        }
-        if (WIFSTOPPED(status)) {
-            /*if (kill(child_pid, SIGCONT)) {
-                perror("ERROR: failed kill -SIGCONT");
-                exit(-1);
-            }*/
-            if (ptrace(PTRACE_DETACH, child_pid, 0, 0)) {
-                perror("ERROR: failed ptrace detach.");
-                exit(-1);
-            }
-            if (opt_verbose) {
-                fprintf(stderr, "Process stopped, not killed, wait again, msg: %s\n", message);
-            }
-        }
-    }
-    used_time = get_rusage_time(&usage);
-    printf("FAIL: time %dms memory %dkb: %s\n", used_time, memory, message);
-//    printf("FAIL: wall %dms time %dms memory %dkb: %s\n", wall_time, used_time, memory, message);
-    exit(0);
+    child_time = usage->ru_utime.tv_sec * 1000 + usage->ru_utime.tv_usec / 1000;
+    child_time += usage->ru_stime.tv_sec * 1000 + usage->ru_stime.tv_usec / 1000;
 }
 
 // Does a couple of standard checks on the process.
-void check_proc_status()
+// It sets message and child_failed if something is wrong.
+// Doesn't actually kill the program.
+void check_child_limits(void)
 {
     // Standard check: memory, time, wall time.
-    if (opt_memory_limit && memory > opt_memory_limit) {
-        fail_kill("Memory limit exceeded");
+    if (jopt.memory_limit && child_memory > jopt.memory_limit) {
+        strcpy(message, "Memory limit exceeded.");
+        child_failed = 1;
     }
-    if (opt_time_limit && used_time > opt_time_limit) {
-        fail_kill("Time limit exceeded");
+    if (jopt.time_limit && child_time > jopt.time_limit) {
+        strcpy(message, "Time limit exceeded.");
+        child_failed = 1;
     }
-    if (opt_time_limit && wall_time > opt_wall_time_limit) {
-        fail_kill("Wall time limit exceeded");
+    if (jopt.time_limit && wall_time > jopt.wall_time_limit) {
+        strcpy(message, "Wall time limit exceeded.");
+        child_failed = 1;
     }
 }
 
 // Empty signal handler.
 void empty_handler(int signal)
 {
-    struct timeval tv;
-    int q;
+    if (jopt.verbose) {
+        struct timeval tv;
+        int q;
+        gettimeofday(&tv, 0);
+        q = (tv.tv_sec - start_time.tv_sec) * 1000 + (tv.tv_usec - start_time.tv_usec) / 1000;
+        fprintf(stderr, "SIGALRM empty handler fired at %d ms\n", q);
+    }
+}
 
-    gettimeofday(&tv, 0);
-    q = (tv.tv_sec - start_time.tv_sec) * 1000 + (tv.tv_usec - start_time.tv_usec) / 1000;
+// Do the monkey.
+void main_loop()
+{
+    int first_syscall = 1;
 
-    //fprintf(stderr, "SIGALRM at %d ms\n", q);
+    while (1) {
+        int status;
+        pid_t wres;
+        struct rusage usage;
+
+        wres = wait4(child_pid, &status, 0, &usage);
+
+        if (wres == -1 && errno == EINTR) {
+            // SIGALARM, hopefully.
+            if (jopt.verbose) {
+                fprintf(stderr, "SIGALRM\n");
+            }
+
+            update_from_proc();
+            check_child_limits();
+            if (child_failed) {
+                fail_kill();
+            }
+        } else if (wres == child_pid && WIFSTOPPED(status)) {
+            // Process was stopped.
+
+            int sig, syscall_number;
+
+            sig = WSTOPSIG(status);
+            // This might cause a slowdown.
+            update_from_proc();
+            check_child_limits();
+            if (child_failed) {
+                ptrace_detach();
+                fail_kill();
+                continue;
+            }
+
+            if (sig != SIGTRAP) {
+                if (jopt.verbose) {
+                    fprintf(stderr, "Halt on stop by signal %d(%s)\n", sig, signal_name[sig]);
+                }
+            } else {
+                // System calls, yay!
+                syscall_number = get_syscall_number();
+                sig = 0;
+
+                if (jopt.verbose) {
+                    fprintf(stderr, "Halt on syscall %d(%s)\n", 
+                            syscall_number, syscall_name[syscall_number]);
+                }
+                if (jopt.syscall_block[syscall_number] && !first_syscall) {
+                    sprintf(message, "Blocked system call: %s.",
+                            syscall_name[syscall_number]);
+                    child_failed = 1;
+                    ptrace_detach();
+                    fail_kill();
+                    continue;
+                } else {
+                    if (jopt.verbose) {
+                        fprintf(stderr, "Syscall %s allowed.\n", 
+                                syscall_name[syscall_number]);
+                    }
+                }
+                first_syscall = 0;
+            }
+
+            if (ptrace(PTRACE_SYSCALL, child_pid, 0, sig) == -1) {
+                perror("ERROR: failed ptrace continue");
+                exit(-1);
+            }
+        } else if (wres == child_pid && WIFEXITED(status)) {
+            // Process exited normally.
+            if (jopt.verbose) {
+                fprintf(stderr, "Halt on process exit\n");
+            }
+
+            // I can't update_proc_status here, since the process is gone
+            // reading from proc would fail.
+            // Time spent is better measured with getrusage.???
+            update_from_rusage(&usage);
+            check_child_limits();
+
+            // Limits are more important.
+            if (child_failed == 0 && WEXITSTATUS(status) != 0) {
+                child_failed = 1;
+                strcpy(message, "Non-zero exit status.");
+            }
+
+            exit_gracefully();
+        } else if (wres == child_pid && WIFSIGNALED(status)) {
+            if (jopt.verbose) {
+                fprintf(stderr, "Halt on kill by signal %d(%s).\n", 
+                        WTERMSIG(status), signal_name[WTERMSIG(status)]);
+            }
+
+            // Process killed by signal.
+            update_from_rusage(&usage);
+            check_child_limits();
+            if (child_failed == 0) {
+                child_failed = 1;
+                sprintf(message, "Killed by signal %d(%s).",
+                        WTERMSIG(status), signal_name[WTERMSIG(status)]);
+            }
+            exit_gracefully();
+        } else {
+            perror("ERROR: waitpid failed");
+            exit(-1);
+        }
+    }
+
 }
 
 int main(int argc, char *argv[], char *envp[])
 {
-    int first_syscall = 1;
-    memory = used_time = wall_time = 0;
+    child_memory = 0;
+    child_time = 0;
+    wall_time = 0;
+    child_failed = 0;
+    strcpy(message, "Execution successful.");
 
     // Parse options
-    parse_options(argc, argv);
-    syscall_block[syscall_getid("fork")] = 1;
-    syscall_block[syscall_getid("vfork")] = 1;
-    syscall_block[syscall_getid("clone")] = 1;
-    syscall_block[syscall_getid("system")] = 1;
+    jrun_parse_options(argc, argv);
 
-    // chdir
-    if (chdir(opt_dir)) {
+    // We do everything in --dir
+    if (chdir(jopt.dir)) {
         perror("ERROR: Failed to chdir to jail dir");
         exit(-1);
     }
 
     // Copy libraries.
-    if (opt_copy_libs) {
+    if (jopt.copy_libs) {
         copy_libs();
     }
 
-    // Priority.
-    if (opt_nice_val >= -20 && opt_nice_val <= -19) {
-        setpriority(PRIO_PROCESS, 0, opt_nice_val);
+    // Set nice values.
+    if (jopt.nice_val >= -20 && jopt.nice_val <= -19) {
+        setpriority(PRIO_PROCESS, 0, jopt.nice_val);
     }
 
+    // Get starting time. Required for tracking wall time.
     gettimeofday(&start_time, 0);
 
     // Spawn child.
@@ -623,91 +485,15 @@ int main(int argc, char *argv[], char *envp[])
 
     // Timer.
     struct itimerval timer;
-    timer.it_interval.tv_sec = CHECK_INTERVAL / 1000;
-    timer.it_interval.tv_usec = (CHECK_INTERVAL % 1000) * 1000;
+    timer.it_interval.tv_sec = JRUN_CHECK_INTERVAL / 1000;
+    timer.it_interval.tv_usec = (JRUN_CHECK_INTERVAL % 1000) * 1000;
     timer.it_value = timer.it_interval;
     if (setitimer(ITIMER_REAL, &timer, NULL) != 0) {
         perror("ERROR: setitimer failed");
         exit(-1);
     }
 
-    while (1) {
-        int status;
-        pid_t wres;
-        struct rusage usage;
+    main_loop();
 
-        wres = wait4(child_pid, &status, 0, &usage);
-
-        if (wres == -1 && errno == EINTR) {
-            // SIGALARM, hopefully.
-            if (opt_verbose) {
-                fprintf(stderr, "SIGALARM\n");
-            }
-
-            update_proc_status();
-            check_proc_status();
-        } else if (wres == child_pid) {
-            if (WIFSTOPPED(status)) {
-                int sig, scno;
-
-                // We need to PTRACE_DETACH if we close while in here.
-                stopped_in_ptrace = 1;
-                sig = WSTOPSIG(status);
-                // This might cause a slowdown.
-                update_proc_status();
-                check_proc_status();
-
-                if (sig != SIGTRAP) {
-                    if (opt_verbose) {
-                        fprintf(stderr, "Process stopped by signal %d(%s)\n", sig, signal_name[sig]);
-                    }
-                } else {
-                    // System calls, yay!
-                    scno = get_syscall_number();
-                    if (opt_verbose) {
-                        fprintf(stderr, "Process syscall %d(%s)\n", scno, syscall_name[scno]);
-                    }
-                    if (syscall_block[scno] && !first_syscall) {
-                        char buffer[300];
-                        sprintf(buffer, "Blocked system call: %s.", syscall_name[scno]);
-                        fail_kill(buffer);
-                    }
-                    first_syscall = 0;
-                    sig = 0;
-                }
-
-                if (ptrace(PTRACE_SYSCALL, child_pid, 0, sig) == -1) {
-                    perror("ERROR: failed ptrace continue");
-                }
-                stopped_in_ptrace = 0;
-            } else {
-                if (opt_verbose) {
-                    fprintf(stderr, "Process exitted\n");
-                }
-
-                // Time spent is better measured with getrusage.
-                used_time = get_rusage_time(&usage);
-                // I can't update_proc_status here, since the process is gone
-                // reading from proc would fail.
-                check_proc_status();
-
-                if (WIFEXITED(status)) {
-                    if (WEXITSTATUS(status) != 0) {
-                        printf("FAIL: time %dms memory %dkb: Non-zero exit status.\n", used_time, memory);
-                    } else {
-                        printf("OK: time %dms memory %dkb: Execution successful.\n", used_time, memory);
-                    }
-                } else if (WIFSIGNALED(status)) {
-                    printf("FAIL: time %dms memory %dkb: Killed by signal %d(%s).\n",
-                            used_time, memory, WTERMSIG(status), signal_name[WTERMSIG(status)]);
-                } else {
-                    printf("ERROR: Unknown reason for process termination.\n");
-                }
-
-                exit(0);
-            }
-        } else {
-            die("ERROR: waitpid failed.\n");
-        }
-    }
+    return 0;
 }

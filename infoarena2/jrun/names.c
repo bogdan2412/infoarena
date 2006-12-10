@@ -1,6 +1,8 @@
 // Include file with signal and syscall names
 // They are placed here so they won't clutter the source.
 
+#include "jrun.h"
+
 // Signal names.
 const char* signal_name[] = {
     "SIG_0",        /* 0 */
@@ -36,9 +38,8 @@ const char* signal_name[] = {
     "SIGPWR",       /* 30 */
     "SIGSYS",       /* 31 */
     "SIGRTMIN",     /* 32 */
+    0,
 };
-
-#define SIGNAL_COUNT (sizeof(syscall_name) / sizeof(*syscall_name))
 
 // System call names.
 // TODO: numbers? WTF for?
@@ -389,6 +390,5 @@ const char* syscall_name[] = {
     "shmdt",
     "shmget",
     "shmctl",
+    NULL,
 };
-
-#define SYSCALL_COUNT (sizeof(syscall_name) / sizeof(*syscall_name))

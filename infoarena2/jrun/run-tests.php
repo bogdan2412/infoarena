@@ -6,6 +6,7 @@ $jail_dir = "jail";
 $exe_name = "prog";
 #$extra_args = "--uid 1005 --gid 1005 --copy-libs --nice -5 --block-syscalls-file=bad_syscalls";
 $extra_args = "--nice -5 --block-syscalls-file=bad_syscalls";
+$extra_args = "--nice -5 --block-syscalls-file=bad_syscalls --verbose";
 
 // Exit with an error message.
 function error($message)
@@ -84,7 +85,7 @@ function run_test($filename)
     parse_source($filename, &$test_args, &$test_exp_res);
     $test_res = jail_run($filename, "$test_args $extra_args");
 
-    if (!ereg($test_exp_res, $test_res)) {
+    if (!preg_match("/^$test_exp_res$/", $test_res)) {
         $result = false;
         print("FAIL: $filename\n");
     } else {
@@ -101,16 +102,19 @@ function run_test($filename)
 function run_all()
 {
     $tests_total = $tests_failed = 0;
+    $failed_names = array();
 
     foreach (glob("tests/*") as $filename) {
         ++$tests_total;
         if (run_test($filename) == false) {
             ++$tests_failed;
+            $failed_names[] = $filename;
         }
     }
     if ($tests_failed) {
         printf("Failed $tests_failed out of $tests_total (%.2lf%%)\n",
                 100.0 * $tests_failed / $tests_total);
+        printf("Tests that failed: ".implode(', ', $failed_names).".\n");
     } else {
         print("All $tests_total tests OK.\n");
     }

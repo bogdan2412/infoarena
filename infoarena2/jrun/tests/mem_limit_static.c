@@ -1,7 +1,7 @@
 // Automated test for jrun.
 // The following are parsed by test.php
 // JRUN_ARGS = --time-limit 500 --memory-limit 4000
-// JRUN_RES = FAIL: time [0-9]+ms memory 5[0-9]{3}kb: Memory limit exceeded.
+// JRUN_RES = FAIL: time [0-9]+ms memory [45][0-9]{3}kb: Memory limit exceeded.
 
 #include <stdio.h>
 #include <string.h>
