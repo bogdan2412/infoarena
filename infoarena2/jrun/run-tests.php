@@ -4,9 +4,10 @@
 // Config options.
 $jail_dir = "jail";
 $exe_name = "prog";
-#$extra_args = "--uid 1005 --gid 1005 --copy-libs --nice -5 --block-syscalls-file=bad_syscalls";
 $extra_args = "--nice -5 --block-syscalls-file=bad_syscalls";
 $extra_args = "--nice -5 --block-syscalls-file=bad_syscalls --verbose";
+$extra_args = "--uid 65534 --gid 65534 --block-syscalls-file=bad_syscalls --verbose";
+$extra_args = "--uid 65534 --gid 65534 --block-syscalls-file=bad_syscalls";
 
 // Exit with an error message.
 function error($message)
@@ -127,12 +128,14 @@ if ($ret) {
     exit(-1);
 }
 
-if ($argc == 1) {
-    run_all();
-} else if ($argc == 2) {
-    run_test($argv[1]);
-} else {
-    print("Invalid arguments\n");
-}
+do {
+    if ($argc == 1) {
+        run_all();
+    } else if ($argc == 2) {
+        run_test($argv[1]);
+    } else {
+        print("Invalid arguments\n");
+    }
+} while (true);
 
 ?>

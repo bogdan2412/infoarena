@@ -175,6 +175,9 @@ pid_t child_pid;
 int child_memory, child_time;
 
 // If child failed for whatever reason.
+// When something goes wrong this is set to 1 and message
+// is set to the error message.
+// The first failure message should be displayed.
 int child_failed;
 
 // Result message.
@@ -211,6 +214,17 @@ void fail_kill(void)
         if (jopt.verbose) {
             perror("Failed kill -SIGKILL");
         }
+    }
+}
+
+void ptrace_kill(void)
+{
+    if (jopt.verbose) {
+        fprintf(stderr, "Killing with ptrace???\n");
+    }
+    if (ptrace(PTRACE_KILL, child_pid, 0, 0)) {
+        perror("ERROR: failed ptrace kill.");
+        exit(-1);
     }
 }
 
@@ -302,6 +316,9 @@ void update_from_rusage(struct rusage *usage)
 // Doesn't actually kill the program.
 void check_child_limits(void)
 {
+    if (child_failed) {
+        return;
+    }
     // Standard check: memory, time, wall time.
     if (jopt.memory_limit && child_memory > jopt.memory_limit) {
         strcpy(message, "Memory limit exceeded.");
@@ -347,14 +364,27 @@ void main_loop()
                 fprintf(stderr, "SIGALRM\n");
             }
 
+            if (child_failed) {
+                continue;
+            }
             update_from_proc();
             check_child_limits();
             if (child_failed) {
                 fail_kill();
             }
         } else if (wres == child_pid && WIFSTOPPED(status)) {
-            // Process was stopped.
+            if (child_failed) {
+                if (jopt.verbose) {
+                    fprintf(stderr, "Child failed but stopped in ptrace\n");
+                    fprintf(stderr, "Detaching ptrace.\n");
+                }
+                // Child already failed, so it shouldn't stop anymore.
+                ptrace_detach();
+                //fail_kill();
+                continue;
+            }
 
+            // Process was stopped.
             int sig, syscall_number;
 
             sig = WSTOPSIG(status);
@@ -381,11 +411,12 @@ void main_loop()
                             syscall_number, syscall_name[syscall_number]);
                 }
                 if (jopt.syscall_block[syscall_number] && !first_syscall) {
+                    child_failed = 1;
                     sprintf(message, "Blocked system call: %s.",
                             syscall_name[syscall_number]);
-                    child_failed = 1;
                     ptrace_detach();
                     fail_kill();
+                    //ptrace_kill();
                     continue;
                 } else {
                     if (jopt.verbose) {
@@ -439,7 +470,6 @@ void main_loop()
             exit(-1);
         }
     }
-
 }
 
 int main(int argc, char *argv[], char *envp[])
@@ -452,6 +482,10 @@ int main(int argc, char *argv[], char *envp[])
 
     // Parse options
     jrun_parse_options(argc, argv);
+
+    if (jopt.verbose) {
+        setbuf(stderr, NULL);
+    }
 
     // We do everything in --dir
     if (chdir(jopt.dir)) {
