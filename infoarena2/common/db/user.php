@@ -115,8 +115,11 @@ function user_update($data, $id) {
 
 // Returns array with *all* registered usernames.
 // Please use this wisely.
-function user_get_list() {
+function user_get_list($all_fields = false) {
     $rows = db_fetch_all("SELECT * FROM ia_user");
+    if ($all_fields) {
+        return $rows;
+    }
     $users = array();
     foreach ($rows as $row) {
         $users[] = $row['username'];

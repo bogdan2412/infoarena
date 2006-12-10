@@ -14,6 +14,7 @@ require_once(IA_ROOT."common/db/score.php");
 // FIXME: Turn this into db API call
 log_print("Deleting all current ratings");
 db_query("DELETE FROM ia_score WHERE `name` IN ('rating', 'deviation')");
+db_query("UPDATE ia_user SET rating_cache = NULL");
 
 $rounds = rating_rounds();
 

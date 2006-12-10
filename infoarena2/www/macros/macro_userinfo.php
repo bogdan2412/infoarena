@@ -1,6 +1,7 @@
 <?php
 
 require_once(IA_ROOT."common/db/user.php");
+require_once(IA_ROOT."common/rating.php");
 
 // Displays user information.
 // Includes avatar, etc.
@@ -41,7 +42,7 @@ function macro_userinfo($args) {
             return htmlentities($user['security_level']);
         case 'rating':
             if ($user['rating_cache']) {
-                return htmlentities($user['rating_cache']);
+                return htmlentities(rating_scale($user['rating_cache']));
             }
             else {
                 return 'n/a';

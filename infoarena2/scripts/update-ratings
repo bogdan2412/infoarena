@@ -45,6 +45,23 @@ log_print(count($user_list) . " registered users");
 log_print("Reading last user ratings, deviations and timestamps");
 $current_scores = rating_last_scores();
 
+// do some quick testing: check if current rating cache corresponds
+// with what rating_last_scores() says
+$ucheck = user_get_list(true);
+foreach ($ucheck as $row) {
+    if (!$row['rating_cache']) {
+        continue;
+    }
+    log_assert(isset($current_scores[$row['username']]));
+    if ($current_scores[$row['username']]['rating'] != $row['rating_cache']) {
+        print_r($current_scores[$row['username']]);
+        print_r($row);
+        log_print('rating_last_scores() fails to match rating_cache');
+        read_bool('This is serious. Have you seen the warning?');
+        log_error('rating_last_scores() fails to match rating_cache');
+    }
+}
+
 // merge data
 log_print("Merging data");
 $users = rating_init($user_list, $current_scores);

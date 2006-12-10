@@ -202,7 +202,7 @@ function rating_update(&$users, $user_scores, $timestamp) {
             $D = $D * sqr(IA_RATING_Q);
 
             $R = 0.0;
-             for ($i = $pos; $i < $pos+IA_RATING_MAX_CHUNK && $i < $user_count; $i++) {
+            for ($i = $pos; $i < $pos+IA_RATING_MAX_CHUNK && $i < $user_count; $i++) {
                 $username2 = $keys[$i];
                 $score2 = $user_scores[$username2];
                 log_assert(isset($users[$username2]));

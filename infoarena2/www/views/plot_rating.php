@@ -56,7 +56,6 @@ set xrange [\"{$range_start}\":\"{$range_end}\"]
 set xtics ('".join("', '", $xtics)."')
 set xtic rotate by -20
 
-set yrange [150:1000]
 
 set clip
 ";
@@ -103,7 +102,7 @@ foreach ($history as $round_id => $round) {
     $timestamp = (int)$round['timestamp'];
     $data .= date("Y-m-d", $timestamp)
              ." ".rating_scale($round['rating'])." "
-             .$round['deviation']."\n";
+             .rating_scale($round['deviation'])."\n";
 }
 
 // render PNG

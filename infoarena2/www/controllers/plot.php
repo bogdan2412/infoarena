@@ -55,7 +55,7 @@ function controller_plot($suburl) {
             //
             // Note: This bucket size is relative to the absolute ratings
             // ranging from ~1000 to ~2500
-            $bucket_size = 25;
+            $bucket_size = 20;
             $distribution = rating_distribution($bucket_size);
 
             // view

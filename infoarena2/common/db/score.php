@@ -252,17 +252,17 @@ function rating_rounds() {
 // Last user ratings (but no deviation / timestamp) is stored directly in
 // table ia_user.
 function rating_last_scores() {
-    // FIXME: horrible query :( makes me sad
+    // FIXME: horrible query
     $query = "
         SELECT ia_score.name AS `name`, ia_score.score AS score,
                ia_score.user_id, ia_score.round_id,
-               pv.`value` AS `timestamp`
+               pv.`value` AS `timestamp`, ia_user.username
         FROM ia_score
         LEFT JOIN ia_parameter_value AS pv
             ON pv.object_type = 'round' AND pv.object_id = ia_score.round_id
             AND pv.parameter_id = 'rating_timestamp'
+        LEFT JOIN ia_user ON ia_user.id = ia_score.user_id
         WHERE ia_score.name IN ('rating', 'deviation')
-        GROUP BY name, user_id
         ORDER BY `timestamp` DESC
     ";
     $rows = db_fetch_all($query);
@@ -273,13 +273,20 @@ function rating_last_scores() {
     // parse rows 
     $users = array();
     foreach ($rows as $row) {
-        $user_id = $row['user_id'];
+        $username = $row['username'];
         $field = $row['name'];
-        if (isset($users[$user_id])) {
-            $users[$user_id][$field] = $row['score'];
+        if (isset($users[$username])) {
+            if (isset($users[$username][$field])) {
+                // FIXME: This is currently a hack.
+                // Query shouldn't return more then one rating for each user
+                continue;
+            }
+            else {
+                $users[$username][$field] = $row['score'];
+            }
         }
         else {
-            $users[$user_id] = array(
+            $users[$username] = array(
                 $field => $row['score'],
                 'timestamp' => parameter_decode('rating_timestamp',
                                                 $row['timestamp'])
