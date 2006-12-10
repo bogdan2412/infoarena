@@ -19,14 +19,14 @@
 // Note that we're using standard ELO ratings (spanning 3000 and beyond)
 define("IA_RATING_INITIAL", 1500);
 // Initial deviation
-define("IA_RATING_DEVIATION", 100);
+define("IA_RATING_DEVIATION", 99);
 // Deviation boundaries and median
-define("IA_RATING_MAX_DEVIATION", 350);
-define("IA_RATING_MIN_DEVIATION", 20);
-define("IA_RATING_MED_DEVIATION", 50);
+define("IA_RATING_MAX_DEVIATION", 360);
+define("IA_RATING_MIN_DEVIATION", 15);
+define("IA_RATING_MED_DEVIATION", 45);
 // threshold value to normalize results
 // FIXME: Ratings don't change more than this
-define("IA_RATING_MAX_DIFF", 270);
+define("IA_RATING_MAX_DIFF", 300);
 // number of seconds in a time period
 define("IA_RATING_TIME_PERIOD", 2628000);
 // number of months before you reach maximum unreliability
@@ -36,6 +36,10 @@ define("IA_RATING_CHAOS", 48);
 // FIXME: But I do! What do these mean?
 define("IA_RATING_C", sqrt((IA_RATING_MAX_DEVIATION * IA_RATING_MAX_DEVIATION - IA_RATING_MED_DEVIATION * IA_RATING_MED_DEVIATION) / IA_RATING_CHAOS));
 define("IA_RATING_Q", log(10.0) / 400.0);
+// we're feeding games into chunks and periodically updating ratings
+define("IA_RATING_MAX_CHUNK", 10);
+// tweak rating increases to avoid unusual behavior for huge contents 
+define("IA_RATING_TWEAK_PERIOD", 3);
 
 // number square
 function sqr($number) {
@@ -91,20 +95,20 @@ function rating_update_deviation(&$users, $username, $timestamp) {
     }
     else {
         // compute elapsed time from the last rating to current timestamp
-        $elapsed = (int)floor(($timestamp - $user['timestamp']) / IA_RATING_TIME_PERIOD);
+        $elapsed = (int)ceil(($timestamp - $user['timestamp']) / IA_RATING_TIME_PERIOD);
     }
     $user['deviation'] = min(IA_RATING_MAX_DEVIATION,
                              round(sqrt(sqr($old_deviation) + sqr(IA_RATING_C) * $elapsed)));
     $user['timestamp'] = $timestamp;
 }
 
-// FIXME: Throw in some comments
+// G Spot baby :)
 function rating_gspot($deviation) {
     $deviation = 1.0 / sqrt(1.0 + 3.0 * sqr(IA_RATING_Q) * sqr($deviation) / sqr(M_PI));
     return $deviation;
 }
 
-// FIXME: Throw in some comments
+// Expected score for a pair of contestants
 function rating_expected_score($rating1, $rating2, $deviation2) {
     $diff = max(-IA_RATING_MAX_DIFF, min(IA_RATING_MAX_DIFF, $rating1 - $rating2));
     $score = 1.0 / (1.0 + pow(10, -rating_gspot($deviation2) * $diff / 400.0));
@@ -161,8 +165,9 @@ function rating_update(&$users, $user_scores, $timestamp) {
     }
     $score_variance = sqrt($score_variance / count($user_scores));
 
-    // Voodoo
+    // Voodoo Magic
     // FIXME: Throw in some comments if you understand anything about this
+    $user_count = count($user_scores);
     foreach ($user_scores as $username => $score) {
         log_assert(isset($users[$username]));
         $user =& $users[$username];
@@ -170,53 +175,63 @@ function rating_update(&$users, $user_scores, $timestamp) {
         log_assert(isset($user['rating']) && isset($user['deviation'])
                    && isset($user['timestamp']));
 
-        $rating_i = $user['rating'];
-        $deviation_i = $user['deviation'];
 
-        $D = 0.0;
-        foreach ($user_scores as $username2 => $score2) {
-            log_assert(isset($users[$username2]));
-            $user2 = $users[$username2];
-            if ($username2 == $username) {
-                continue;
+        $rating1 = $user['rating'];
+        $deviation1 = $user['deviation'];
+        $pos = 0;
+        $keys = array_keys($user_scores);
+        $chunk_count = ceil(($user_count-1) / IA_RATING_MAX_CHUNK);
+        $tweak = $chunk_count / IA_RATING_TWEAK_PERIOD;
+
+        for ($chunk = 0; $chunk < $chunk_count; $chunk++, $pos += IA_RATING_MAX_CHUNK) {
+            $D = 0.0;
+            for ($i = $pos; $i < $pos+IA_RATING_MAX_CHUNK && $i < $user_count; $i++) {
+                $username2 = $keys[$i];
+                $score2 = $user_scores[$username2];
+                log_assert(isset($users[$username2]));
+                $user2 = $users[$username2];
+                if ($username2 == $username) {
+                    continue;
+                }
+                $rating2 = $user2['rating'];
+                $deviation2 = $user2['deviation'];
+
+                $temp = rating_expected_score($rating1, $rating2, $deviation2);
+                $D = $D + sqr(rating_gspot($deviation2)) * $temp * (1.0 - $temp);
             }
-            $rating_j = $user2['rating'];
-            $deviation_j = $user2['deviation'];
+            $D = $D * sqr(IA_RATING_Q);
 
-            $temp = rating_expected_score($rating_i, $rating_j, $deviation_j);
-            $D = $D + sqr(rating_gspot($deviation_j)) * $temp * (1.0 - $temp);
-        }
-        $D = $D * sqr(IA_RATING_Q);
+            $R = 0.0;
+             for ($i = $pos; $i < $pos+IA_RATING_MAX_CHUNK && $i < $user_count; $i++) {
+                $username2 = $keys[$i];
+                $score2 = $user_scores[$username2];
+                log_assert(isset($users[$username2]));
+                $user2 = $users[$username2]; 
+                if ($username2 == $username) {
+                    continue;
+                }
+                $rating2 = $user2['rating'];
+                $deviation2 = $user2['deviation'];
 
-        $R = 0.0;
-        foreach ($user_scores as $username2 => $score2) {
-            log_assert(isset($users[$username2]));
-            $user2 = $users[$username2];
-            if ($username2 == $username) {
-                continue;
+                $temp = rating_expected_score($rating1, $rating2, $deviation2);
+                $weight = max(IA_RATING_Q * rating_gspot($deviation2) * sqr(IA_RATING_MIN_DEVIATION),
+                              IA_RATING_Q * rating_gspot($deviation2) / (1.0 / sqr($deviation1) + $D));
+                $R = $R + $weight * (rating_score($score, $score2, $score_variance) - $temp);
             }
-            $rating_j = $user2['rating'];
-            $deviation_j = $user2['deviation'];
-
-            $temp = rating_expected_score($rating_i, $rating_j, $deviation_j);
-            $weight = max(IA_RATING_Q * rating_gspot($deviation_j) * sqr(IA_RATING_MIN_DEVIATION),
-                          IA_RATING_Q * rating_gspot($deviation_j) / (1.0 / sqr($deviation_i) + $D));
-            $R = $R + $weight * (rating_score($score, $score2, $score_variance) - $temp);
         }
 
         // update rating and deviation
-        $user['rating'] = max(0, round($rating_i + $R));
+        $user['rating'] = max(0, round($rating1 + $R / $tweak));
         $user['deviation'] = max(IA_RATING_MIN_DEVIATION,
-                                 round(sqrt(1.0 / (1.0 / sqr($deviation_i) + $D))));
+                                 round(sqrt(1.0 / (1.0 / sqr($deviation1) + $D))));
     }
 }
 
 // Represent rating in a human-friendly scale from 0 to 1000
 // NOTE: This is used only when displaying ratings to users!
 function rating_scale($absolute_rating) {
-    // FIXME: Fix ratings and then fix scale!
     log_assert(is_numeric($absolute_rating));
-    return (int)round(($absolute_rating - 1000));
+    return round($absolute_rating / 3.0);
 }
 
 // Return rating group based on user's absolute rating.
