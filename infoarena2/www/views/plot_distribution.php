@@ -54,7 +54,7 @@ set trange [0:100]
 $script .= "
 plot \\
     \"%data%\" using 1:2 title \"Concurenti\" with histeps ls 3, \\
-    \"%data%\" using 1:2 smooth csplines title \"Aproximare\" with lines ls 1";
+    \"%data%\" using 1:2 smooth bezier title \"Aproximare\" with lines ls 1";
 
 // plot user
 if ($user && $user_rating) {

@@ -40,6 +40,11 @@ function macro_smflink($args) {
         case 'pm':
             // send private message
             $url = IA_SMF_URL.'?action=pm;sa=send;u='.$member_id;
+            // FIXME: Un-hack this. SMF should never display its login screen
+            // See #202 for mor details.
+            if (identity_anonymous()) {
+                $url = url_login();
+            }
             break;
 
         case 'board':
