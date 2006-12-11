@@ -49,7 +49,7 @@ $current_scores = rating_last_scores();
 // with what rating_last_scores() says
 $ucheck = user_get_list(true);
 foreach ($ucheck as $row) {
-    if (!$row['rating_cache']) {
+    if (!(float)$row['rating_cache']) {
         continue;
     }
     log_assert(isset($current_scores[$row['username']]));
@@ -80,7 +80,7 @@ foreach ($round_rows as $row) {
 // Computing new ratings
 rating_update($users, $scores, $timestamp);
 
-// update database 
+// update database
 log_print("Updating database");
 foreach ($round_rows as $row) {
     $username = $row['user_name'];
@@ -92,6 +92,8 @@ foreach ($round_rows as $row) {
                  $users[$username]['deviation']);
     // cache rating
     user_update(array("rating_cache" => $users[$username]['rating']), $user_id);
+
+    // log_print($username.' => '.$users[$username]['rating']);
 }
 
 ?>

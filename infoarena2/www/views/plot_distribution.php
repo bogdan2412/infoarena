@@ -28,7 +28,7 @@ set title \"Distributie rating (".IA_URL.")\" 0,-.5
 set style line 1 lt 1 lw 4 pt 3 ps 0.5
 set style line 2 lt 7 lw 6 pt 7 ps 1.0
 set style line 3 lt 11 lw 3
-set xrange [350:900]
+set xrange [350:750]
 
 set xtics 50
 set xtic rotate by -35
@@ -53,8 +53,8 @@ set trange [0:100]
 // plot distribution & median
 $script .= "
 plot \\
-    \"%data%\" using 1:2 title \"Concurenti\" with histeps ls 1, \\
-    \"%data%\" using 1:2 smooth bezier title \"Aproximare\" with lines ls 3";
+    \"%data%\" using 1:2 title \"Concurenti\" with histeps ls 3, \\
+    \"%data%\" using 1:2 smooth csplines title \"Aproximare\" with lines ls 1";
 
 // plot user
 if ($user && $user_rating) {
