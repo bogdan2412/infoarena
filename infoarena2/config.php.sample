@@ -10,6 +10,11 @@
 // probably running in CLI mode. Don't change it.
 define("IA_HTTP_ENV", isset($_SERVER['REQUEST_URI']));
 
+// Enable this when working on your own local copy. It gives you a few
+// debugging & profiling tools. Additionally, it disables Google Analytics
+// or other external resources.
+define("IA_DEVELOPMENT_MODE", true);
+
 // This is the subversion checkout directory. include trailing slash.
 define("IA_ROOT", '--write-me--');
 

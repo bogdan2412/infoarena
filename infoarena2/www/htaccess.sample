@@ -4,9 +4,11 @@ RewriteEngine On
 # Slashes at both ends
 RewriteBase /live/
 
-RewriteCond %{REQUEST_URI}  !index.php
-RewriteCond %{REQUEST_URI}  !static
-RewriteCond %{REQUEST_URI}  !forum
+RewriteCond %{REQUEST_URI}  !^.*/index\.php$
+RewriteCond %{REQUEST_URI}  !^.*/static/.*$
+RewriteCond %{REQUEST_URI}  !^.*/forum/.*$
+RewriteCond %{REQUEST_URI}  !^.*/robots\.txt$
+RewriteCond %{REQUEST_URI}  !^.*/favicon\.ico$
 RewriteRule ^(.*) index.php?page=$1 [QSA]
 
 php_value magic_quotes_gpc 0
