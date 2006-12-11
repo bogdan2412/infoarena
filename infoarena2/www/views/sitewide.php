@@ -30,6 +30,12 @@ function ia_template_header() {
         </div>
     <?php } ?>
 
+    <?php if (IA_DEVELOPMENT_MODE) { ?>
+        <div id="dev_warning">
+            Bravely working in development mode&hellip;<br/>Keep it up!
+        </div>
+    <?php } ?>
+
     <h1><a title="informatica de performanta" href="<?= htmlentities(url('', array(), true)) ?>">infoarena,
         informatica de performanta</a></h1>
 </div>
@@ -75,12 +81,13 @@ function ia_template_footer() {
         <li><a href="<?= htmlentities(url('Contact', array(), true)) ?>">Contact</a></li>
         <li class="top"><a href="#header">Sari la inceputul paginii &uarr;</a></li>
     </ul>
+<?php if (!IA_DEVELOPMENT_MODE) { ?>
     <p class="cc">
     <!--Creative Commons License-->
     <a class="badge" rel="license" href="http://creativecommons.org/licenses/by-nc/2.5/"><img alt="Creative Commons License" src="http://i.creativecommons.org/l/by-nc/2.5/88x31.png"/></a>
     Cu exceptia cazurilor in care se specifica altfel, continutul site-ului infoarena<br/>este publicat sub licenta <a rel="license" href="http://creativecommons.org/licenses/by-nc/2.5/">Creative Commons Attribution-NonCommercial 2.5</a>.
     <!--/Creative Commons License-->
-    <!-- <rdf:RDF xmlns="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    <rdf:RDF xmlns="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
         <Work rdf:about="">
             <license rdf:resource="http://creativecommons.org/licenses/by-nc/2.5/" />
         </Work>
@@ -92,18 +99,34 @@ function ia_template_footer() {
             <prohibits rdf:resource="http://web.resource.org/cc/CommercialUse"/>
             <permits rdf:resource="http://web.resource.org/cc/DerivativeWorks"/>
         </License>
-    </rdf:RDF> -->    
-    
+    </rdf:RDF>
     </p>
+<?php
+    }
+    else {
+        // Development mode: display current page's log in site footer
+        if (defined("IA_FROM_SMF")) {
+            // too bad SMF cannot link infoarena log API :(
+        }
+        else {
+            global $execution_stats;
+            log_execution_stats();
+            $buffer = $execution_stats['log_copy'];
+            echo '<textarea id="log">'.htmlentities($buffer).'</textarea>';
+        }
+    }
+?>
 </div>
 
-<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
-</script>
-<script type="text/javascript">
-_uacct = "UA-113289-8";
-_udn = "infoarena.ro";
-urchinTracker();
-</script>
+<?php if (!IA_DEVELOPMENT_MODE) { ?>
+    <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+    </script>
+    <script type="text/javascript">
+    _uacct = "UA-113289-8";
+    _udn = "infoarena.ro";
+    urchinTracker();
+    </script>
+<?php } ?>
 
 <?php
 }

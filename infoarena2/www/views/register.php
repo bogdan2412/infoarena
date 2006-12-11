@@ -37,13 +37,13 @@
         <li>
             <label for='form_password'>Parola</label>
             <?= ferr_span('password') ?>
-            <input type="password" name='password' id="form_password" />
+            <input autocomplete="off" type="password" name='password' id="form_password" />
             <span class="fieldHelp">Cel putin 4 caractere</span>
         </li>
         <li>
             <label for='form_password2'>Confirmare parola</label>
             <?= ferr_span('password2') ?>
-            <input type="password" name='password2' id="form_password2" />
+            <input autocomplete="off" type="password" name='password2' id="form_password2" />
         </li>
     <ul>
 </fieldset>

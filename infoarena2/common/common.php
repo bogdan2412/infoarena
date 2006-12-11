@@ -1,5 +1,13 @@
 <?php
 
+if (IA_DEVELOPMENT_MODE) {
+    $execution_stats = array(
+        'timestamp' => microtime(true),
+        'queries' => 0,
+        'log_copy' => '',
+    );
+}
+
 // Nicer way to get an element from an array. It returns a default value
 // (defaulting to null) instead of throwing an error.
 function getattr($dict, $attribute, $default = null) {

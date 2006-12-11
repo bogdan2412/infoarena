@@ -44,6 +44,12 @@ function db_query($query) {
         log_print("Query: '$query'");
         log_error("MYSQL error: ".mysql_error($dbLink));
     }
+
+    if (IA_DEVELOPMENT_MODE) {
+        global $execution_stats;
+        $execution_stats['queries']++;
+    }
+
     return $result;
 }
 

@@ -5,7 +5,6 @@ require_once(IA_ROOT."common/log.php");
 require_once(IA_ROOT."common/common.php");
 log_print("- -- --- ---- ----- Request: ".$_SERVER['QUERY_STRING']);
 check_requirements();
-
 require_once(IA_ROOT."common/security.php");
 require_once(IA_ROOT."www/url.php");
 require_once(IA_ROOT."www/utilities.php");

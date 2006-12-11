@@ -26,19 +26,19 @@
         <li>
             <label for='form_passwordold'>Parola curenta</label>
             <?= ferr_span('passwordold') ?>
-            <input type="password" name='passwordold' id="form_passwordold" />
+            <input autocomplete="off" type="password" name='passwordold' id="form_passwordold" />
             <span class="fieldHelp">Completeaza doar daca vrei sa schimbi parola sau adresa de e-mail</span>
         </li>
         <li>
             <label for='form_password'>Parola noua</label>
             <?= ferr_span('password') ?>
-            <input type="password" name='password' id="form_password" />
+            <input autocomplete="off" type="password" name='password' id="form_password" />
             <span class="fieldHelp">Cel putin 4 caractere</span>
         </li>
         <li>
             <label for='form_password2'>Confirmare parola noua</label>
             <?= ferr_span('password2') ?>
-            <input type="password" name='password2' id="form_password2" />
+            <input autocomplete="off" type="password" name='password2' id="form_password2" />
         </li>
     <ul>
 </fieldset>

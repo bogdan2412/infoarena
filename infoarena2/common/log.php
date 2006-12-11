@@ -90,6 +90,15 @@ function format_message_backtrace($message, $backtrace_level = 0) {
 // trigger_error which split multi-line strings.
 function trigger_error_split($error_msg, $error_type)
 {
+    if (IA_DEVELOPMENT_MODE) {
+        // FIXME: Un-hack this
+        // when in development mode, also save mesage in log buffer
+        // so it can be displayed to user inside rendering page
+        global $execution_stats;
+        log_assert($execution_stats);
+        $execution_stats['log_copy'] .= $error_msg."\n";
+    }
+
     $error_msg = (string)$error_msg;
     $error_lines = explode("\n", $error_msg);
     foreach ($error_lines as $error_line) {
@@ -277,6 +286,21 @@ function logging_error_handler($errno, $errstr, $errfile, $errline) {
         }
         die();
     }
+}
+
+// Put execution stats into log
+function log_execution_stats() {
+    global $execution_stats;
+    log_assert($execution_stats);
+    log_assert(IA_DEVELOPMENT_MODE);
+
+    $msg = 'Time='
+           .(round((microtime(true)-$execution_stats['timestamp'])*100)/100)
+           .'s';
+    $msg .= '; Queries='.$execution_stats['queries'];
+    $msg .= '; Memory='.number_format(memory_get_usage()/1024/1024, 2).'MB';
+
+    log_print("Execution stats: ".$msg);
 }
 
 // Change the default error handler.

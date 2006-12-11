@@ -77,6 +77,12 @@ function execute_view($view_file_name, $view) {
     $view['current_url_key'] = strtolower($query);
     $view['recent_pages'] = $recent_pages;
 
+    // give access to request statistics
+    if (IA_DEVELOPMENT_MODE) {
+        global $execution_stats;
+        $view['execution_stats'] = $execution_stats;
+    }
+
     // expand $view members into global scope
     $GLOBALS['view'] = $view;
 
@@ -99,6 +105,9 @@ function execute_view($view_file_name, $view) {
 // Execute view and then die.
 function execute_view_die($view_file_name, $view) {
     execute_view($view_file_name, $view);
+    if (IA_DEVELOPMENT_MODE) {
+        log_execution_stats();
+    }
     session_write_close();
     die();
 }
