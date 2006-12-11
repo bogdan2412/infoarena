@@ -74,8 +74,9 @@ class MyTextile extends Textile {
             }
 
             // put javascript dp.SyntaxHighlighter at work
-            return "\n<textarea name=\"code\" class=\"{$lang}\" cols=\"60\" rows=\"10\">"
-                   . htmlentities($text) . "</textarea>\n";
+            return "\n<div class=\"code\">"
+                   ."<textarea name=\"code\" class=\"{$lang}\" cols=\"60\" rows=\"10\">"
+                   .htmlentities($text) . "</textarea></div>\n";
         }
         else {
             return macro_error("Can't handle ==$type| block.");

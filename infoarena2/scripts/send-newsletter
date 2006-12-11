@@ -88,7 +88,7 @@ function preview_email($textblock, $recipient = null, $short = false) {
     echo "Subject: {$subject}\n";
     if (!$short) {
         echo "---  body ------------------------------------------\n";
-        echo wordwrap($body, IA_EMAIL_WORDRAP);
+        echo wordwrap($body, IA_EMAIL_WORDRAP)."\n";
         echo "--- /body ------------------------------------------\n";
     }
     echo "=== /e-mail ========================================\n\n";

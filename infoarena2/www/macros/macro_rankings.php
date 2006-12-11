@@ -38,7 +38,12 @@ function macro_rankings($args) {
             'rowform' => create_function('$row',
                                          'return format_user_normal($row["user_name"], $row["user_full"], $row["user_rating"]);'),
         ),
-        array('title' => 'Scor', 'key' => 'score'),
+        array(
+            'title' => 'Scor',
+            'key' => 'score',
+            'rowform' => create_function('$row', 'return round($row[\'score\']);'),
+            'css_class' => 'number score'
+        ),
     );
     $options['total_entries'] = $res['total_rows'];
 

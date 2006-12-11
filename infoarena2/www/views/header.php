@@ -48,12 +48,13 @@ ia_template_topnav($topnav_select, $smf_admin);
         <li><a href="<?= htmlentities(url('')) ?>">Home</a></li>
         <li><a href="<?= htmlentities(url('arhiva')) ?>">Arhiva de probleme</a></li>
         <li><a href="<?= htmlentities(url('concursuri')) ?>">Concursuri online</a></li>
+        <li><a href="<?= htmlentities(url('clasament-rating')) ?>">Clasament</a></li>
         <li><a href="<?= htmlentities(url('articole')) ?>">Articole</a></li>
-        <li><a href="<?= htmlentities(url('documentatie')) ?>">Documentatie</a></li>
         <li><a href="<?= htmlentities(url('downloads')) ?>">Downloads</a></li>
         <li><a href="<?= htmlentities(url('links')) ?>">Links</a></li>
         <li><a href="<?= htmlentities(url('stiri')) ?>">Arhiva de stiri</a></li>
         <li><a href="<?= htmlentities(url('despre-infoarena')) ?>">Despre infoarena</a></li>
+        <li><a href="<?= htmlentities(url('documentatie')) ?>">Documentatie</a></li>
         <li class="separator"><hr/></li>
         <li><a href="<?= htmlentities(url('monitor')) ?>">Monitorul de evaluare</a></li>
         <?php if (!identity_anonymous()) { ?>

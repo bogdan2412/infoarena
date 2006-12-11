@@ -331,4 +331,24 @@ function rating_distribution($bucket_size) {
     return $buckets;
 }
 
+// Get top rated users list.
+function rating_toprated($start, $count)
+{
+    $query = "
+        SELECT SQL_CALC_FOUND_ROWS
+            *
+        FROM ia_user
+        WHERE rating_cache > 0
+        ORDER BY rating_cache DESC
+        LIMIT %s, %s
+    ";
+    $query = sprintf($query, $start, $count);
+    $ratings = db_fetch_all($query);
+
+    return array(
+        'scores' => $ratings,
+        'total_rows' => db_query_value("SELECT FOUND_ROWS();"),
+    );
+}
+
 ?>

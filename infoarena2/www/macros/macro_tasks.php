@@ -9,7 +9,7 @@ function format_score_column($val) {
         return 'N/A';
     }
     else {
-        return $val;
+        return round($val);
     }
 }
 

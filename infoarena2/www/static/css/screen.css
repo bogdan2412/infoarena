@@ -659,6 +659,7 @@ form.round li#field_tasks select {
     width: 95%; /* IE FIX */
 }
 
+/* layout table */
 .wiki_text_block table.layout th, .wiki_text_block table.layout td {
     width: 50%;
     vertical-align: top;
@@ -675,12 +676,39 @@ form.round li#field_tasks select {
     background-color: white;    
 }
 
+/* layout table with 3 columns */
+.wiki_text_block table.layout3 th, .wiki_text_block table.layout3 td {
+    width: 30%;
+    vertical-align: top;
+    border: none;
+    padding: 1em;
+    text-align: left;
+}
+
+.wiki_text_block table.layout3 th, .wiki_text_block table.layout3 p.title {
+    font-family: Arial, Tahoma, sans-serif;
+    font-size: 1.3em;
+    font-weight: normal;
+    background-color: white;    
+}
+
 .wiki_text_block .compact {
     width: auto;
 }
 
 .wiki_text_block .compact td, .wiki_text_block .compact th {
     padding: .2em;
+}
+
+/* syntax highlighted code block */
+.code textarea {
+    font-family: "Courier New" , Courier, mono;
+    font-size: 8pt;
+    border: 1px solid #2B91AF;
+    background-color: #fff;
+    width: 99%;
+    overflow: auto;
+    margin: 18px 0px 18px 0px;
 }
 
 /* vertical menu */
@@ -724,9 +752,9 @@ form.round li#field_tasks select {
 }
 
 /* horizontal tabs */
-.htabs {
+ul.htabs {
     padding: 2px 0;
-    margin: 1em 0 0 0;
+    margin: 1.5em 0 1em 0;
     border-bottom: 1px solid #778;
     font-weight: bold;
 }
@@ -948,6 +976,14 @@ table.monitor {
 .tasks tr.tried td.score, .tasks tr.solved td.score {
     color: black;
     font-size: 1em;
+}
+
+/* rankings */
+td.rank, th.rank {
+    width: 2em;
+}
+td.rating, th.rating {
+    width: 2em;
 }
 
 /* pager (paginator) */

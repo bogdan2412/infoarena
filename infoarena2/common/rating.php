@@ -246,13 +246,16 @@ function rating_group($absolute_rating) {
 
     $rating = rating_scale($absolute_rating);
 
-    if ($rating < 400) {
+    if ($rating < 520) {
+        // green
         return 3;
     }
-    else if ($rating < 700) {
+    else if ($rating < 600) {
+        // yellow
         return 2;
     }
     else {
+        // red
         return 1;
     }
 }
