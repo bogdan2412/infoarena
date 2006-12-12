@@ -57,15 +57,38 @@ db_query("UPDATE `{$tempdb}`.ia_user
           SET email = CONCAT(username, '@example.com')");
 db_query("UPDATE `{$tempdb}`.{$smfprefix}members
           SET emailAddress = CONCAT(memberName, '@example.com')");
+//  - other SMF data
+db_query("UPDATE `{$tempdb}`.{$smfprefix}members
+          SET secretQuestion = '', secretAnswer='', memberIP='',
+              memberIP2=''");
 //  - attachments
 db_query("DELETE FROM `{$tempdb}`.ia_file
           WHERE name <> 'noimage'");
-// - personal and public messages on forum (we have some private threads)
+// - personal and public SMF messages (we have some private threads)
 db_query("DELETE FROM `{$tempdb}`.`{$smfprefix}messages`");
 db_query("DELETE FROM `{$tempdb}`.`{$smfprefix}personal_messages`");
 db_query("DELETE FROM `{$tempdb}`.`{$smfprefix}polls`");
 db_query("DELETE FROM `{$tempdb}`.`{$smfprefix}poll_choices`");
 db_query("DELETE FROM `{$tempdb}`.`{$smfprefix}sessions`");
+//  - SMF logs
+db_query("DELETE FROM `{$tempdb}`.`{$smfprefix}log_actions`");
+db_query("DELETE FROM `{$tempdb}`.`{$smfprefix}log_activity`");
+db_query("DELETE FROM `{$tempdb}`.`{$smfprefix}log_banned`");
+db_query("DELETE FROM `{$tempdb}`.`{$smfprefix}log_errors`");
+db_query("DELETE FROM `{$tempdb}`.`{$smfprefix}log_karma`");
+db_query("DELETE FROM `{$tempdb}`.`{$smfprefix}log_online`");
+db_query("DELETE FROM `{$tempdb}`.`{$smfprefix}log_polls`");
+db_query("DELETE FROM `{$tempdb}`.`{$smfprefix}log_search_messages`");
+db_query("DELETE FROM `{$tempdb}`.`{$smfprefix}log_search_results`");
+db_query("DELETE FROM `{$tempdb}`.`{$smfprefix}log_search_subjects`");
+db_query("DELETE FROM `{$tempdb}`.`{$smfprefix}log_search_topics`");
+db_query("DELETE FROM `{$tempdb}`.`{$smfprefix}log_topics`");
+// - delete private pages
+db_query("DELETE FROM `{$tempdb}`.`ia_textblock` WHERE security='private'");
+db_query("DELETE FROM `{$tempdb}`.`ia_textblock_revision` WHERE security='private'");
+// - only keep a few sample jobs
+db_query("DELETE FROM `{$tempdb}`.`ia_job` WHERE id > 10");
+
 
 // now dump it all in versioned file
 
