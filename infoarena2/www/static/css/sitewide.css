@@ -194,3 +194,24 @@ a.user_1 { color: #ee0000; }
 #header a.user_2 { color: #ddcc00; }
 #header a.user_1 { color: #ee0000; }
 
+/* stuff displayed in development mode */
+#log, #log_active {
+    clear: both;
+    width: 98%;
+    font-family: monospace;
+    font-size: 9pt;
+    border: 1px solid silver;
+    height: 100px;
+    color: gray;
+}
+#log_active {
+    color: black;
+    background-color: white;
+    border-color: black;
+}
+#dev_warning {
+    float: right;
+    color: yellow;
+    font-weight: bold;
+    margin-right: 1.5em;
+}

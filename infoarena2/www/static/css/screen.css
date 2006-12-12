@@ -1008,24 +1008,3 @@ td.rating, th.rating {
     font-size: .9em;
 }
 
-/* stuff displayed in development mode */
-#log, #log_active {
-    clear: both;
-    width: 98%;
-    font-family: monospace;
-    font-size: 9pt;
-    border: 1px solid silver;
-    height: 100px;
-    color: gray;
-}
-#log_active {
-    color: black;
-    background-color: white;
-    border-color: black;
-}
-#dev_warning {
-    float: right;
-    color: yellow;
-    font-weight: bold;
-    margin-right: 1.5em;
-}
