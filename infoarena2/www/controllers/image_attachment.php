@@ -79,7 +79,14 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
             // Seems like a good thing anyway
             $im = imagecreatefromgif($real_name);
             $im_resized = imagecreatetruecolor($new_width, $new_height);
+            // turn off the alpha blending to keep the alpha channel
+            imagealphablending($im_resized, false);
+            // allocate transparent color
+            $col = imagecolorallocatealpha($im_resized, 0, 0, 0, 127);
+            // fill the image with the new color
+            imagefilledrectangle($im_resized, 0, 0, $new_width, $new_height, $col);
             imagecopyresampled($im_resized, $im, 0, 0, 0, 0, $new_width, $new_height, $img_width, $img_height);
+            imagesavealpha($im_resized, true);
             imagegif($im_resized);
             break;
 
@@ -93,7 +100,14 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
         case IMAGETYPE_PNG:
             $im = imagecreatefrompng($real_name);
             $im_resized = imagecreatetruecolor($new_width, $new_height);
+            // turn off the alpha blending to keep the alpha channel
+            imagealphablending($im_resized, false);
+            // allocate transparent color
+            $col = imagecolorallocatealpha($im_resized, 0, 0, 0, 127);
+            // fill the image with the new color
+            imagefilledrectangle($im_resized, 0, 0, $new_width, $new_height, $col);
             imagecopyresampled($im_resized, $im, 0, 0, 0, 0, $new_width, $new_height, $img_width, $img_height);
+            imagesavealpha($im_resized, true);
             imagepng($im_resized);
             break;
 
