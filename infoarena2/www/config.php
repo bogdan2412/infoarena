@@ -56,6 +56,6 @@ define("IMAGE_CACHE_ENABLE", true);
 define("IMAGE_CACHE_DIR", IA_ROOT.'cache/');
 //  - maximum directory size for image cache (bytes). When directory exceeds quota,
 //    image resamples are not cached any more but computed & served on-the-fly
-define("IMAGE_CACHE_QUOTA", 32 * 1024 * 1024); // (bytes please)
+define("IMAGE_CACHE_QUOTA", 256 * 1024 * 1024); // (bytes please)
 
 ?>

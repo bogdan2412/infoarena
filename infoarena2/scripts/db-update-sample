@@ -9,7 +9,7 @@
 
 // name of temporary database where we transfer the tables and trim them down
 // configured sql user must have full privileges on this database.
-define("IA_DB_TEMP_NAME", "infoarena2_temp");
+define("IA_DB_TEMP_NAME", "infoarena_temp");
 
 require_once(dirname($argv[0]) . "/utilities.php");
 require_once(IA_ROOT."common/db/db.php");
@@ -35,7 +35,6 @@ $tables = array_values($tables);
 // duplicate each table
 log_print("Duplicating database ...");
 foreach ($tables as $table) {
-    break;
     log_print($table);
 
     // drop
