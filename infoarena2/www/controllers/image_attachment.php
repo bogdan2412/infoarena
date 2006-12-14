@@ -78,15 +78,13 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
             // NOTE: animated GIFs become static. Only the first frame is saved
             // Seems like a good thing anyway
             $im = imagecreatefromgif($real_name);
-            $im_resized = imagecreatetruecolor($new_width, $new_height);
-            // turn off the alpha blending to keep the alpha channel
-            imagealphablending($im_resized, false);
-            // allocate transparent color
-            $col = imagecolorallocatealpha($im_resized, 0, 0, 0, 127);
-            // fill the image with the new color
-            imagefilledrectangle($im_resized, 0, 0, $new_width, $new_height, $col);
+            $im_resized = imagecreate($new_width, $new_height);
+            // reset palette and transparent color to that of the original file
+            $trans_col = imagecolortransparent($im);
+            imagepalettecopy($im_resized, $im);
+            imagefill($im_resized, 0, 0, $trans_col);
+            imagecolortransparent($im_resized, $trans_col);
             imagecopyresampled($im_resized, $im, 0, 0, 0, 0, $new_width, $new_height, $img_width, $img_height);
-            imagesavealpha($im_resized, true);
             imagegif($im_resized);
             break;
 
