@@ -25,7 +25,10 @@ define("IA_JRUN_EXE", IA_JRUN_DIR . 'jrun');
 define("IA_EVAL_TEMP_DIR", IA_EVAL_DIR . 'temp/');
 
 // The directory used as the jail.
-define("IA_EVAL_JAIL_DIR", IA_EVAL_DIR . 'jail/');
+//define("IA_EVAL_JAIL_DIR", IA_EVAL_DIR . 'jail/');
+
+// Saved jails go here.
+define("IA_EVAL_JAILS_DIR", IA_EVAL_DIR . 'jails/');
 
 // The user to run unsafe code as. This defaults to nobody.
 define("IA_EVAL_JAIL_UID", 65534);

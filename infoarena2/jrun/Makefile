@@ -9,7 +9,7 @@ test: jrun force
 	./run-tests.php
 
 clean: force
-	rm -rf jrun jrun.o options.o
+	rm -rf jrun jrun.o options.o names.o
 
 jrun: jrun.c jrun.h options.c names.c
 	gcc -Wall -O2 jrun.c -c -o jrun.o

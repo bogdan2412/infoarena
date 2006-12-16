@@ -65,6 +65,7 @@ void jrun_parse_options(int argc, char *argv[])
     jopt.nice_val = -1000;
     jopt.ptrace = 1;
     jopt.copy_libs = 0;
+    jopt.min_proc_update_interval = 5;
 
     jopt.verbose = 0;
     jopt.chroot = 0;

@@ -264,6 +264,19 @@ void update_from_proc(void)
     int cmem;
     struct timeval tv;
     FILE* f;
+    static int last_update = -100;
+
+    // Wall time is trivial.
+    gettimeofday(&tv, 0);
+    wall_time = (tv.tv_sec - start_time.tv_sec) * 1000 + (tv.tv_usec - start_time.tv_usec) / 1000;
+
+    if (wall_time - last_update < jopt.min_proc_update_interval) {
+        if (jopt.verbose) {
+            fprintf(stderr, "Skipping proc update");
+        }
+        return;
+    }
+    last_update = wall_time;
 
     // Used time, from /proc/$pid/stat
     sprintf(path, "/proc/%d/stat", child_pid);
@@ -288,10 +301,6 @@ void update_from_proc(void)
         child_memory = cmem;
     }
     fclose(f);
-
-    // Wall time is trivial.
-    gettimeofday(&tv, 0);
-    wall_time = (tv.tv_sec - start_time.tv_sec) * 1000 + (tv.tv_usec - start_time.tv_usec) / 1000;
 
     if (jopt.verbose) {
         //fprintf(stderr, "Running, time = %d wtime = %d mem = %d\n", used_time, wall_time, cmem);

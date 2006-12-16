@@ -50,6 +50,8 @@ typedef struct {
     int verbose;
     int chroot;
 
+    int min_proc_update_interval;
+
     // File to redirect program stdout to.
     // Empty is /dev/null
     char stdin_file[500];

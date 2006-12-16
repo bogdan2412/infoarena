@@ -122,13 +122,13 @@ function jrun_make_error($message)
 // All timings are in miliseconds and memory is in kilobytes
 //
 // If result is ERROR time, memory, stdin and stdout are never set.
-function jail_run($program, $time, $memory, $capture_std = false)
+function jail_run($program, $jaildir, $time, $memory, $capture_std = false)
 {
     log_assert(is_whole_number($time));
     log_assert(is_whole_number($memory));
     $cmdline = IA_JRUN_EXE;
     $cmdline .= " --prog=./" . $program;
-    $cmdline .= " --dir=" . IA_EVAL_JAIL_DIR;
+    $cmdline .= " --dir=" . $jaildir;
     $cmdline .= " --chroot";
     $cmdline .= " --block-syscalls-file=" . IA_JRUN_DIR . 'bad_syscalls';
     if (defined('IA_EVAL_JAIL_NICE') && IA_EVAL_JAIL_NICE != 0) {
@@ -161,11 +161,11 @@ function jail_run($program, $time, $memory, $capture_std = false)
     }
 
     if ($capture_std) {
-        $result['stdout'] = file_get_contents(IA_EVAL_JAIL_DIR . 'jailed_stdout');
+        $result['stdout'] = file_get_contents($jaildir.'jailed_stdout');
         if ($result['stdout'] === false) {
             return jrun_make_error('Failed reading captured stdout');
         }
-        $result['stderr'] = file_get_contents(IA_EVAL_JAIL_DIR . 'jailed_stderr');
+        $result['stderr'] = file_get_contents($jaildir.'jailed_stderr');
         if ($result['stderr'] === false) {
             return jrun_make_error('Failed reading captured stderr');
         }

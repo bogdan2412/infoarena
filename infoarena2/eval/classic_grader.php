@@ -10,7 +10,7 @@ function task_grade_job_classic($task, $tparams, $job) {
     log_assert_valid(task_validate($task));
     log_assert_valid(task_validate_parameters($task['type'], $tparams));
 
-    // Clean jail and temp
+    // Clean temp dir
     if (!clean_dir(IA_EVAL_TEMP_DIR)) {
         log_warn("Can't clean to temp dir.");
         return jobresult_system_error();
@@ -56,10 +56,11 @@ function task_grade_job_classic($task, $tparams, $job) {
     // Running tests.
     for ($testno = 1; $testno <= $tparams['tests']; ++$testno) {
         $result['log'] .= "\nRulez testul $testno: ";
+        $jaildir = IA_EVAL_JAILS_DIR.$job['id'].'_'.$testno.'/';
 
-        $infile = IA_EVAL_JAIL_DIR . $task['id'] . '.in';
-        $outfile = IA_EVAL_JAIL_DIR . $task['id'] . '.out';
-        $okfile = IA_EVAL_JAIL_DIR . $task['id'] . '.ok';
+        $infile = $jaildir.$task['id'].'.in';
+        $outfile = $jaildir.$task['id'].'.out';
+        $okfile = $jaildir.$task['id'].'.ok';
 
         $userfile = "user_{$job['id']}_{$testno}";
 
@@ -67,10 +68,10 @@ function task_grade_job_classic($task, $tparams, $job) {
             log_warn("Can't chdir to eval dir.");
             return jobresult_system_error();
         }
-        if (!clean_dir(IA_EVAL_JAIL_DIR)) {
+        if (!clean_dir($jaildir)) {
             return jobresult_system_error();
         }
-        if (!@chdir(IA_EVAL_JAIL_DIR)) {
+        if (!@chdir($jaildir)) {
             log_warn("Can't chdir to jail dir.");
             return jobresult_system_error();
         }
@@ -79,7 +80,7 @@ function task_grade_job_classic($task, $tparams, $job) {
             return jobresult_system_error();
         }
 
-        if (!@copy(IA_EVAL_TEMP_DIR . 'user', IA_EVAL_JAIL_DIR . $userfile)) {
+        if (!@copy(IA_EVAL_TEMP_DIR . 'user', $jaildir . $userfile)) {
             log_warn("Failed copying user program");
             return jobresult_system_error();
         }
@@ -90,7 +91,7 @@ function task_grade_job_classic($task, $tparams, $job) {
         }
      
         // Run user program.
-        $jrunres = jail_run($userfile, $tparams['timelimit'] * 1000, $tparams['memlimit']);
+        $jrunres = jail_run($userfile, $jaildir, $tparams['timelimit'] * 1000, $tparams['memlimit']);
         log_print("JRUN user: ".$jrunres['result'].": ".$jrunres['message']);
         if ($jrunres['result'] == 'ERROR') {
             return jobresult_system_error();
@@ -128,7 +129,7 @@ function task_grade_job_classic($task, $tparams, $job) {
             }
         } else {
             // Custom grader.
-            if (!@copy(IA_EVAL_TEMP_DIR . 'eval', IA_EVAL_JAIL_DIR . 'eval')) {
+            if (!@copy(IA_EVAL_TEMP_DIR . 'eval', $jaildir . 'eval')) {
                 log_warn("Failed copying custom grader");
                 return jobresult_system_error();
             }
@@ -137,9 +138,8 @@ function task_grade_job_classic($task, $tparams, $job) {
                 log_warn("Failed to chmod a+x custom grader");
                 return jobresult_system_error();
             }
-
             // Run grader.
-            $jrunres = jail_run('eval',
+            $jrunres = jail_run('eval', $jaildir,
                 IA_EVAL_TASK_GRADER_TIMELIMIT,
                 IA_EVAL_TASK_GRADER_MEMLIMIT,
                 true);
