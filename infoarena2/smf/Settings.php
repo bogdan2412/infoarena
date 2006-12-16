@@ -5,26 +5,16 @@
 
 // ATTENTION !!!
 //
-// SMF MUST also be configured from its administration panel (settings
-// are stored in database).
-// Configure the settings from this file and then login using
-//      user: SMFAdmin;  pass: faranumar
-// and finish the configuration.
-
-// info-arena
-// Configure your SMF installation by editing ALL --edit-me-- fields
+// SMF stores some settings in the database. Use the setup script.
+// This thing gets all it's settings from the main config.php,
+// There's no need for a .sample
 
 // open main info-arena config
 require_once("../config.php");
 
-
 // Webmaster email (e-mail where it sends reports in case shit)
 // Also serves as address to send emails from
-$webmaster_email = '--edit-me--';
-
-
-
-
+$webmaster_email = 'strat.cristian@gmail.com';
 
 // Decent defaults below (edit only if you get bored)
 // ---------------------------------------------------------------
