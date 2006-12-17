@@ -101,6 +101,9 @@ if (running_as_root()) {
 print("I'm going to ask you a couple of questions. Just press enter if you like ".
       "the default value. I'm pretty good at guessing ;).\n\n");
 
+// FIXME: Check dependencies? pecl nonsense is no longer mandatory.
+// It should be done it setup.sh anyway, since we can't relie on php-cli.
+
 // Initialize config vars.
 $config_vars = array();
 $config_vars['IA_ROOT'] = realpath(dirname($argv[0]) . '/../') . '/';

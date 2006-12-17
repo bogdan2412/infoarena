@@ -169,10 +169,10 @@ function check_requirements()
         log_error("mysql extension required.");
     }
     if (array_search('gd', $extensions) === false) {
-        log_warn("gd extension required.");
+        log_warn("gd extension missing.");
     }
     if (array_search('zip', $extensions) === false) {
-        log_error("zip extension required.");
+        log_warn("zip extension missing.");
     }
     if (!function_exists("finfo_open")) {
         log_warn("finfo_open missing, falling back to mime_content_type.");
@@ -189,7 +189,7 @@ function check_requirements()
         log_assert(ini_get("session.use_only_cookies"),
                    "Please enable session.use_only_cookies.");
         log_assert(!ini_get("register_globals"),
-                   "Please disable register_globals. It makes Jesus cry!");
+                   "Please disable register_globals. It makes baby Jesus cry!");
         log_assert(!ini_get("magic_quotes_gpc"),
                    "Please disable magic_quotes_gpc. Magic is for wussies!");
         log_assert(!ini_get("magic_quotes_runtime"),
