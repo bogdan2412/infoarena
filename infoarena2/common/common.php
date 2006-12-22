@@ -18,6 +18,13 @@ function getattr($dict, $attribute, $default = null) {
     }
 }
 
+// Checks if the referer is the same as the host
+function http_referer_check() {
+    $HTTP_REFERER = getattr($_SERVER, 'HTTP_REFERER');
+    $HTTP_HOST = getattr($_SERVER, 'HTTP_HOST');
+    return $HTTP_REFERER==null || substr($HTTP_REFERER, 0, (strlen($HTTP_HOST)+7)) == "http://".$HTTP_HOST;
+}
+
 // Check if a a variable is a whole number.
 function is_whole_number($x) {
     return is_numeric($x) && $x == intval($x);

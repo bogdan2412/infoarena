@@ -308,10 +308,17 @@ function try_attachment_get($page_name, $file_name) {
 
 // download an attachment
 function controller_attachment_download($page_name, $file_name) {
-    $attach = try_attachment_get($page_name, $file_name);
+    // referer check
+    if (http_referer_check())
+    {
+        $attach = try_attachment_get($page_name, $file_name);
 
-    // serve attachment with proper mime types
-    serve_attachment(attachment_get_filepath($attach), $file_name, $attach['mime_type']);
+        // serve attachment with proper mime types
+        serve_attachment(attachment_get_filepath($attach), $file_name, $attach['mime_type']);
+    } else {
+        // redirect to main page
+        header("Location: " . IA_URL);
+    }
 }
 
 ?>
