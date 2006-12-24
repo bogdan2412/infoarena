@@ -127,38 +127,45 @@ $config_vars['IA_URL_PREFIX'] = read_line("Prefix part of url?",
 $config_vars['IA_URL_PREFIX'] = slash_string(
         $config_vars['IA_URL_PREFIX'], true, true);
 
-$config_vars['DB_HOST'] = read_line("Database host?",
-        $config_vars['DB_HOST']);
-$config_vars['DB_USER'] = read_line("Database connection username?",
-        $config_vars['DB_USER']);
-$config_vars['DB_PASS'] = read_line("Database password?",
-        $config_vars['DB_PASS']);
-$config_vars['DB_NAME'] = read_line("Database name?",
-        $config_vars['DB_NAME']);
-// FIXME: check database connection.
+// Database configuration here.
+while (true) {
+    $config_vars['DB_HOST'] = read_line("Database host?",
+            $config_vars['DB_HOST']);
+    $config_vars['DB_USER'] = read_line("Database connection username?",
+            $config_vars['DB_USER']);
+    $config_vars['DB_PASS'] = read_line("Database password?",
+            $config_vars['DB_PASS']);
+    $config_vars['DB_NAME'] = read_line("Database name?",
+            $config_vars['DB_NAME']);
+    // FIXME: check database connection.
 
-$dblink = mysql_connect(
-        $config_vars['DB_HOST'],
-        $config_vars['DB_USER'],
-        $config_vars['DB_PASS']);
+    $dblink = mysql_connect(
+            $config_vars['DB_HOST'],
+            $config_vars['DB_USER'],
+            $config_vars['DB_PASS']);
 
-if (!$dblink) {
-    die("Can't connect to database.\n");
-}
-if (!mysql_select_db($config_vars['DB_NAME'], $dblink)) {
-    print("Can't select database.\n");
-    if (read_bool("Should I try to create the database?", true)) {
-        if (!mysql_query("CREATE DATABASE {$config_vars['DB_NAME']}")) {
-            die("Failed creating database, sorry.");
+    if (!$dblink) {
+        print("Can't connect to database, something must be wrong.\n");
+        if (read_bool("Try again or ignore (CTRL-C to abort)?", true)) {
+            continue;
+        } else {
+            break;
         }
-        if (!mysql_select_db($config_vars['DB_NAME'], $dblink)) {
-            die("Still can't select database.\n");
-        }
-    } else {
-        die("Database broken.");
     }
+
+    if (!mysql_select_db($config_vars['DB_NAME'], $dblink)) {
+        print("Can't select database.\n");
+        if (read_bool("Should I try to create the database?", true)) {
+            if (!mysql_query("CREATE DATABASE {$config_vars['DB_NAME']}")) {
+                die("Failed creating database, sorry.");
+            }
+            if (!mysql_select_db($config_vars['DB_NAME'], $dblink)) {
+                die("Still can't select database.\n");
+            }
+        }
+    }
+    break;
 }
-print("Database connection seems to be ok.\n");
 
 // Do the config monkey.
 $ia_root = $config_vars['IA_ROOT'];
@@ -172,7 +179,7 @@ handle_config_file($config_vars,
 handle_config_file($config_vars,
         $ia_root.'apache.conf.sample', $ia_root.'apache.conf');
 
-if (read_bool("Should I try to import the sample database?", true)) {
+if ($dblink && read_bool("Should I try to import the sample database?", true)) {
     $cmd = sprintf("mysql --user=%s --password=%s --host=%s %s < %s",
             $config_vars['DB_USER'],
             $config_vars['DB_PASS'],
@@ -225,5 +232,5 @@ if (read_bool("Should I try to configure the forum (ugly db stuff)?", true)) {
             mysql_real_escape_string("{$ia_url}forum/Themes/infoarena2/images"));
     mysql_query($query) || die("Query failed");
 }
-print("FIXME: forum won't work\n");
+print("FIXME: forum is not completely functional\n");
 print("FIXME: eval won't work, but it doesn't matter.\n");

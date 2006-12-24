@@ -1,0 +1,53 @@
+#! /usr/bin/env php
+<?php
+
+require_once(dirname($argv[0]) . "/utilities.php");
+
+$smfprefix = DB_SMF_PREFIX;
+
+// censoring sensitive data
+//  - passwords
+db_query("UPDATE ia_user
+          SET `password` = SHA1(CONCAT(LCASE(username), LCASE(username)))");
+db_query("UPDATE {$smfprefix}members
+          SET `passwd` = SHA1(CONCAT(LCASE(memberName), LCASE(memberName)))");
+//  - email
+db_query("UPDATE ia_user
+          SET email = CONCAT(username, '@example.com')");
+db_query("UPDATE {$smfprefix}members
+          SET emailAddress = CONCAT(memberName, '@example.com')");
+//  - other SMF data
+db_query("UPDATE {$smfprefix}members
+          SET secretQuestion = '', secretAnswer='', memberIP='',
+              memberIP2=''");
+//  - attachments
+db_query("DELETE FROM ia_file
+          WHERE name <> 'noimage'");
+//  - delete private pages
+db_query("DELETE FROM `ia_textblock_revision` WHERE `name` IN ".
+         "(SELECT `name` FROM `ia_textblock` WHERE security='private')");
+db_query("DELETE FROM `ia_textblock` WHERE security='private'");
+//  - Remove user sources
+db_query("UPDATE ia_job SET file_contents='--gone--'");
+
+// Censor forum. FIXME: only censor private stuff. eeek.
+//  - personal and public SMF messages (we have some private threads)
+db_query("DELETE FROM `{$smfprefix}messages`");
+db_query("DELETE FROM `{$smfprefix}personal_messages`");
+db_query("DELETE FROM `{$smfprefix}polls`");
+db_query("DELETE FROM `{$smfprefix}poll_choices`");
+db_query("DELETE FROM `{$smfprefix}sessions`");
+//   - SMF logs
+db_query("DELETE FROM `{$smfprefix}log_actions`");
+db_query("DELETE FROM `{$smfprefix}log_activity`");
+db_query("DELETE FROM `{$smfprefix}log_banned`");
+db_query("DELETE FROM `{$smfprefix}log_errors`");
+db_query("DELETE FROM `{$smfprefix}log_karma`");
+db_query("DELETE FROM `{$smfprefix}log_online`");
+db_query("DELETE FROM `{$smfprefix}log_polls`");
+db_query("DELETE FROM `{$smfprefix}log_search_messages`");
+db_query("DELETE FROM `{$smfprefix}log_search_results`");
+db_query("DELETE FROM `{$smfprefix}log_search_subjects`");
+db_query("DELETE FROM `{$smfprefix}log_search_topics`");
+db_query("DELETE FROM `{$smfprefix}log_topics`");
+?>
