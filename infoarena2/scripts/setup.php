@@ -196,21 +196,23 @@ if (!running_as_root()) {
 }
 if (running_as_root() &&
         read_bool("Should I try to configure apache for you?", true)) {
+    $sitename = slash_string($config_vars['IA_URL_PREFIX'], false, false);
+    $sitename = read_line("Site name?", $sitename);
     // Debian/Ubuntu
     if (is_dir('/etc/apache2/sites-available/') &&
         is_dir('/etc/apache2/sites-enabled/')) {
         print("You seem to have a debian-ish apache2 setup.\n");
-        system("rm -rf /etc/apache2/sites-available/infoarena2-dev");
-        system("rm -rf /etc/apache2/sites-enabled/infoarena2-dev");
+        system("rm -rf /etc/apache2/sites-available/$sitename");
+        system("rm -rf /etc/apache2/sites-enabled/$sitename");
         system("ln -sf {$ia_root}apache.conf ".
-                "/etc/apache2/sites-available/infoarena2-dev");
-        system("a2ensite infoarena2-dev");
+                "/etc/apache2/sites-available/$sitename");
+        system("a2ensite $sitename");
         system("/etc/init.d/apache2 reload");
     // Fedora/Redhat/others?
     } else if (is_dir('/etc/httpd/conf.d/')) {
         print('You seem to have a redhat-ish apache2 setup.\n');
         system("rm -rf /etc/httpd/infoarena2-dev");
-        system("ln -sf {$ia_root}apache.conf /etc/httpd/conf.d/infoarena2-dev");
+        system("ln -sf {$ia_root}apache.conf /etc/httpd/conf.d/$sitename");
         system("service httpd restart");
     } else {
         print("I can't figure out your system. I'm scared.\n");
