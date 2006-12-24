@@ -64,8 +64,10 @@ function format_link($url, $content, $escape_content = true, $attr = array()) {
 // Format img tag.
 // NOTE: html says alt is REQUIRED.
 // Escapes both args.
-function format_img($src, $alt) {
-    return format_tag("img", array("src" => $src, "alt" => $alt));
+function format_img($src, $alt, $attr) {
+    $attr['src'] = $src;
+    $attr['alt'] = $alt;
+    return format_tag("img", $attr);
 }
 
 // Format avatar img.

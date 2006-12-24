@@ -111,10 +111,7 @@ class MyTextile extends Textile {
         $url = getattr($args, 'url', '');
         if ($this->is_wiki_link($url)) {
             if (preg_match("/^ ([^\?]+) \? ([a-z0-9_\.\-]+) $/sxi", $url, $matches)) {
-                $args['url'] = url($matches[1], array(
-                        'action' => 'download',
-                        'file' => $matches[2],
-                ));
+                $args['url'] = url_attachment($matches[1], $matches[2]);
             } else {
                 $args['url'] = IA_URL . $url;
             }

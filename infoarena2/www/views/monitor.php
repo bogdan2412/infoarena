@@ -33,7 +33,9 @@ if (!$jobs) {
 
         // For the task column.
         function format_task_link($row) {
-            return format_link(url($row['task_page_name']), $row['task_title']);
+            return format_link(
+                    url_textblock($row['task_page_name']),
+                    $row['task_title']);
         }
 
         // For the detail column.

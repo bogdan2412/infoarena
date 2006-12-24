@@ -26,7 +26,7 @@ function macro_grep($args) {
 <p><strong><?= count($textblocks) ?></strong> rezultate.</p>
 <ul>
 <?php foreach ($textblocks as $textblock) { ?>
-    <li><a href="<?= htmlentities(url($textblock['name'])) ?>"><?= htmlentities($textblock['title']) ?></a></li>
+    <li><?= format_link(url_textblock($textblock['name']), $textblock['title']) ?></li>
 <?php } ?>
 </ul>
 </div>

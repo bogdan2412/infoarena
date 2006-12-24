@@ -54,7 +54,7 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
     // put some constraints here for security
     if ($new_width > IMAGE_MAX_WIDTH || $new_height > IMAGE_MAX_HEIGHT) {
         die_http_error(500, "Bad image size.");
-        redirect(url($page_name));
+        redirect(url_textblock($page_name));
     }
 
     // query image cache for existing resampled image

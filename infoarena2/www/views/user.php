@@ -4,22 +4,19 @@ require_once(IA_ROOT.'www/wiki/wiki.php');
 require_once(IA_ROOT.'www/format/format.php');
 require_once(IA_ROOT.'www/format/list.php');
 
-// RSS discovery
-if ('view' == $action) {
-    $view['head'] = '<link rel="alternate" href="' . htmlentities(url($page_name, array('action' => 'feed'))) . '" title="RSS Revizii ' . htmlentities($textblock['title']) . '" type="application/rss+xml" />';
-}
+$username = $user['username'];
 
 // site header
 include('header.php');
 
 // display user info accross all user profile pages
-echo wiki_include($template_userheader, array('user' => $user['username']));
+echo wiki_include($template_userheader, array('user' => $username));
 
 // show profile tabs
 $options = array(
-    'view' => format_link(url($page_name), 'Pagina personala'),
-    'rating' => format_link(url($page_name, array('action' => 'rating')), 'Rating'),
-    'stats' => format_link(url($page_name, array('action' => 'stats')), 'Statistici'),
+    'view' => format_link(url_user_profile($username), 'Pagina personala'),
+    'rating' => format_link(url_user_rating($username), 'Rating'),
+    'stats' => format_link(url_user_stats($username), 'Statistici'),
 );
 // mark selected action with class 'active'
 $options[$action] = array($options[$action], array('class' => 'active'));

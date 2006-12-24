@@ -45,7 +45,7 @@ function controller_register() {
                 // redirect to login
                 flash("Felicitari! Contul a fost creat. Acum te poti "
                       ."autentifica.");
-                redirect(url("login"));
+                redirect(url_login());
             }
         }
         else {

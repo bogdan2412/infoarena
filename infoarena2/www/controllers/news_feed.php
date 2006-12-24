@@ -7,7 +7,7 @@ require_once(IA_ROOT."common/db/db.php");
 function controller_news_feed($page_name) {
     $view = array();
     $view['channel']['title'] = 'Stiri infoarena';
-    $view['channel']['link'] = url('news', array(), true);
+    $view['channel']['link'] = url_absolute(url_textblock('news'));
     $view['channel']['description'] = 'Ultimele stiri de pe http://infoarena.ro';
     $view['channel']['language'] = 'ro-ro';
     $view['channel']['copyright'] = '&copy; 2006 - Asociatia infoarena';
@@ -25,8 +25,9 @@ function controller_news_feed($page_name) {
         // since *some* RSS readers mark items as read according to LINK
         // rather than GUID, make sure every change to a news article yields
         // a unique link
-        $view['item'][$i]['link'] = url($news[$i]['name'], array(), true) .
-                                    '#' . $view['item'][$i]['guid'];
+        $view['item'][$i]['link'] = url_absolute(
+                url_textblock($news[$i]['name'])).
+                '#'.$view['item'][$i]['guid'];
     }
 
     execute_view_die('views/rss.php', $view);

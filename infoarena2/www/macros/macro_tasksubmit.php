@@ -25,7 +25,7 @@ function macro_tasksubmit($args) {
     }
 
     if (identity_anonymous()) {
-        $url = htmlentities(url("login"));
+        $url = htmlentities(url_login());
         return macro_message("Trebuie sa te autentifici pentru a trimite solutii. <a href=\"{$url}\">Click aici</a>", true);
     }
 
@@ -38,7 +38,7 @@ function macro_tasksubmit($args) {
     ob_start();
 ?>
 
-<form enctype="multipart/form-data" action="<?= htmlentities(url('submit', array('action' => 'save'))) ?>" method="post" class="inlineSubmit" id="task_submit">
+<form enctype="multipart/form-data" action="<?= htmlentities(url_submit()) ?>" method="post" class="inlineSubmit" id="task_submit">
 
 <input type="hidden" id="output_only" value="<?= 'output-only' == $task['type'] ? htmlentities($task['id']) : '' ?>" />
 

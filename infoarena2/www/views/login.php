@@ -2,7 +2,9 @@
 
 <h1><?= htmlentities($title) ?></h1>
 
-<p>Daca nu esti inregistrat deja, te poti <a href="<?= htmlentities(url('register')) ?>">inregistra aici</a>; daca ti-ai uitat parola, o poti <a href="<?= htmlentities(url('resetpass')) ?>">reseta aici</a>.</p>
+<p>Daca nu esti inregistrat deja, te poti
+<?= format_link(url_register(), "inregistra aici") ?>;
+daca ti-ai uitat parola, o poti <a href="<?= htmlentities(url_resetpass()) ?>">reseta aici</a>.</p>
 
 <?php include(IA_ROOT.'www/views/form_login.php'); ?>
 

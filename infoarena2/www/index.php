@@ -25,7 +25,7 @@ if ($page == "") {
 // Check page name.
 if (!is_page_name($page)) {
     flash_error('invalid URL');
-    redirect(url(''));
+    redirect(url_home());
 }
 
 // Prepare some vars for url handler.
@@ -121,11 +121,6 @@ else if ($action == 'attach') {
     require_once(IA_ROOT.'www/controllers/attachment.php');
     controller_attachment_create($page);
 }
-//  - save attachment
-else if ($action == 'attach-submit') {
-    require_once(IA_ROOT.'www/controllers/attachment.php');
-    controller_attachment_submit($page);
-}
 //  - print attachment list
 else if ($action == 'attach-list') {
     require_once(IA_ROOT.'www/controllers/attachment.php');
@@ -172,7 +167,7 @@ else if ($action == 'view') {
 // invalid URL
 else {
     flash_error('URL invalid');
-    redirect(url(''));
+    redirect(url_home());
 }
 
 ?>

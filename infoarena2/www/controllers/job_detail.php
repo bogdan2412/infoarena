@@ -10,7 +10,7 @@ function controller_job_detail($job_id) {
         controller_job_download($job_id);
     } else {
         flash_error("Actiune invalida.");
-        redirect(url('monitor'));
+        redirect(url_monitor());
     }
 }
 
@@ -18,14 +18,14 @@ function controller_job_view($job_id) {
     // Get job id.
     if (!is_whole_number($job_id)) {
         flash_error("Numar de job invalid.");
-        redirect(url('monitor'));
+        redirect(url_monitor());
     }
 
     // Get job.
     $job = job_get_by_id($job_id);
     if (!$job) {
         flash_error("Nu exista job-ul #$job_id");
-        redirect(url('monitor'));
+        redirect(url_monitor());
     }
 
     // Check security.
@@ -43,14 +43,14 @@ function controller_job_view($job_id) {
 function controller_job_download($job_id) {
     if (!is_whole_number($job_id)) {
         flash_error("Numar de job invalid.");
-        redirect(url('monitor'));
+        redirect(url_monitor());
     }
 
     // Get job.
     $job = job_get_by_id($job_id, true);
     if (!$job) {
         flash_error("Nu exista job-ul #$job_id");
-        redirect(url('monitor'));
+        redirect(url_monitor());
     }
 
     identity_require('job-download', $job);

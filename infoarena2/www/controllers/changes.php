@@ -27,7 +27,7 @@ function controller_changes($page_name) {
     if (request('format') == 'rss') {
         $view = array();
         $view['channel']['title'] = 'Modificari pe infoarena';
-        $view['channel']['link'] = url('news', array(), true);
+        $view['channel']['link'] = url_changes();
         $view['channel']['description'] = 'Ultimele modificari din wiki-ul http://infoarena.ro';
         $view['channel']['language'] = 'ro-ro'; 
         $view['channel']['copyright'] = '&copy; 2006 - asociatia infoarena';
@@ -48,7 +48,7 @@ function controller_changes($page_name) {
             $item['description'] = "La data de $tstamp pagina $pagelink a fost modificata de $userlink($difflink).";
 
             $item['guid'] = sha1($rev['name'] . $rev['timestamp']);
-            $item['link'] = url($rev['name'], array(), true);
+            $item['link'] = url_absolute(url_textblock($rev['name']));
 
             $view['item'][] = $item;
         }

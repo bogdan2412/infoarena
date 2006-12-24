@@ -10,7 +10,7 @@ function try_textblock_get($page_name) {
     $page = textblock_get_revision($page_name);
     if (!$page) {
         flash_error('Cerere invalida');
-        redirect(url(''));
+        redirect(url_home());
     }
 
     return $page;
@@ -31,6 +31,11 @@ function controller_attachment_list($page_name) {
 
 // Create a new attachment to a textblock.
 function controller_attachment_create($page_name) {
+    log_print("ATT CREATE");
+    if (request_is_post()) {
+        controller_attachment_submit($page_name);
+        die();
+    }
     $page = try_textblock_get($page_name);
     identity_require('textblock-attach', $page);
 
@@ -48,6 +53,8 @@ function controller_attachment_submit($page_name) {
     identity_require('textblock-attach', $page);
 
     global $identity_user;
+
+    log_print("ATT SUBMIT");
 
     // Create view objects.
     $view = array();
@@ -180,7 +187,7 @@ function controller_attachment_submit($page_name) {
             $disk_name = attachment_get_filepath($file_att['attach_obj']);
             if (!@rename($file_att['disk_name'], $disk_name)) {
                 log_error("Failed moving attachment to final storage ".
-                    "(from {$file_att['disk_name']} to $diskname)");
+                    "(from {$file_att['disk_name']} to $disk_name)");
             }
         }
     }
@@ -210,7 +217,7 @@ function controller_attachment_submit($page_name) {
         log_print("Auto-extracted {$extract_okcount} files; {$attach_okcount} successful attachment uploads");
 
         flash($msg);
-        redirect(url($page_name));
+        redirect(url_textblock($page_name));
     }
 
     // Errors, print view template.
@@ -226,32 +233,32 @@ function controller_attachment_delete($page_name) {
     $file_name = request('file');
     if (!$file_name) {
         flash_error('Cerere malformata');
-        redirect(url($page_name));
+        redirect(url_textblock($page_name));
     }
 
     $attach = attachment_get($file_name, $page_name);
     identity_require('attach-delete', $attach);
     if (!$attach) {
         flash_error('Fisierul nu exista.');
-        redirect(url($page_name));
+        redirect(url_textblock($page_name));
     }
 
     // Delete from data base.
     if (!attachment_delete($attach['id'])) {
         flash_error('Nu am reusit sa sterg din baza de date.');
-        redirect(url($page_name));
+        redirect(url_textblock($page_name));
     }
 
     // Delete from disk.
     $real_name = attachment_get_filepath($attach);
     if (!unlink($real_name)) {
         flash_error('Nu am reusit sa sterg fisierul de pe disc.');
-        redirect(url($page_name));
+        redirect(url_textblock($page_name));
     }
 
     // We've got big balls.
     flash('Fisierul '.$file_name.' a fost sters cu succes.');
-    redirect(url($page_name));
+    redirect(url_textblock($page_name));
 }
 
 // serve file through HTTP

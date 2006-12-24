@@ -4,7 +4,7 @@ require_once(IA_ROOT . "www/format/table.php");
 require_once(IA_ROOT . "www/format/format.php");
 ?>
 
-<h1>Istoria paginii <?= format_link(url($page_name), $page_name) ?></h1>
+<h1>Istoria paginii <?= format_link(url_textblock($page_name), $page_name) ?></h1>
 
 <?php
 // Format links to a certain textblock revision.
@@ -12,7 +12,7 @@ function format_textblock_revision($row) {
     global $page_name;
     $rev_id = $row['revision_id'];
     $title = $row['title'];
-    $url = url($page_name, array('revision' => $rev_id));
+    $url = url_textblock_revision($page_name, $rev_id);
     return format_link($url, "#$rev_id: $title");
 }
 

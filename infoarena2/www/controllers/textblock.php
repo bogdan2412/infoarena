@@ -11,7 +11,7 @@ function string_diff($string1, $string2) {
     $fp1 = fopen($name1, "w");
     if (!$fp1) {
         flash_error("Eroare la comparare!");
-        request(url(''));
+        request(url_home());
     }
     $string1 .= "\n";
     fputs($fp1, $string1);
@@ -20,7 +20,7 @@ function string_diff($string1, $string2) {
     $fp2 = fopen($name2, "w");
     if (!$fp2) {
         flash_error("Eroare la comparare!");
-        request(url(''));
+        request(url_home());
     }
     $string2 .= "\n";
     fputs($fp2, $string2);
@@ -32,11 +32,11 @@ function string_diff($string1, $string2) {
     ob_end_clean();
     if (!unlink($name1)) {
         flash_error("Eroare la comparare!");
-        request(url(''));
+        request(url_home());
     }
     if (!unlink($name2)) {
         flash_error("Eroare la comparare!");
-        request(url(''));
+        request(url_home());
     }
     return $ret;
 }
@@ -69,7 +69,7 @@ function controller_textblock_view($page_name, $rev_num = null) {
         // Missing page.
         // FIXME: what if the user can't create the page?
         flash_error("Nu exista pagina, dar poti sa o creezi ...");
-        redirect(url($page_name, array('action' => 'edit')));
+        redirect(url_textblock_edit($page_name));
     }
 
     log_assert_valid(textblock_validate($page));
@@ -93,7 +93,7 @@ function controller_textblock_diff($page_name) {
         identity_require('textblock-history', $page);
     } else {
         flash_error("Aceasta pagina nu exista!");
-        redirect(url(''));
+        redirect(url_home());
     }
 
     // Get revisions.
@@ -102,22 +102,22 @@ function controller_textblock_diff($page_name) {
     $revto_id = (int)request("rev_to");
     if (is_null($revfrom_id) || is_null($revto_id)) {
         flash_error("Nu ati specificat reviziile");
-        redirect(url($page_name));
+        redirect(url_textblock($page_name));
     }
     if ($revfrom_id == $revto_id) {
         flash_error("Reviziile sunt identice");
-        redirect(url($page_name));
+        redirect(url_textblock($page_name));
     }
     if ($revfrom_id < 1 || $revfrom_id < 1 || $revfrom_id > 100000 || $revfrom_id > 100000) {
         flash_error("Reviziile sunt invalide");
-        redirect(url($page_name));
+        redirect(url_textblock($page_name));
     }
 
     $revfrom = textblock_get_revision($page_name, $revfrom_id);
     $revto = textblock_get_revision($page_name, $revto_id);
     if (is_null($revfrom) || is_null($revto)) {
         flash_error("Nu am gasit reviziile");
-        redirect(url($page_name));
+        redirect(url_textblock($page_name));
     }
     log_assert_valid(textblock_validate($revfrom));
     log_assert_valid(textblock_validate($revto));
@@ -146,21 +146,21 @@ function controller_textblock_restore($page_name, $rev_num) {
         identity_require('textblock-restore', $page);
     } else {
         flash_error("Pagina nu exista");
-        redirect(url(''));
+        redirect(url_home());
     }
 
     if (is_null($rev_num)) {
         flash_error("Nu ati specificat revizia");
-        redirect(url($page_name));
+        redirect(url_textblock($page_name));
     }
     if (!$rev) {
         flash_error("Revizia nu exista!");
-        redirect(url($page_name));
+        redirect(url_textblock($page_name));
     }
 
     textblock_add_revision($rev['name'], $rev['title'], $rev['text'],
                            getattr($identity_user, 'id'), $rev['security']);
-    redirect(url($page_name));
+    redirect(url_textblock($page_name));
 }
 
 // Display revisions
@@ -170,7 +170,7 @@ function controller_textblock_history($page_name) {
         identity_require('textblock-history', $page);
     } else {
         flash_error("Pagina nu exista");
-        redirect(url(''));
+        redirect(url_home());
     }
 
     $options = pager_init_options();
@@ -220,7 +220,7 @@ function controller_textblock_delete($page_name) {
     }
     textblock_delete($page_name);
     flash("Pagina a fost stearsa.");
-    redirect(url('home'));
+    redirect(url_home());
 }
 
 ?>

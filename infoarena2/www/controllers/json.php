@@ -41,7 +41,7 @@ function controller_json($suburl) {
 
         default:
             flash('Actiunea nu este valida.');
-            redirect(url(''));
+            redirect(url_home());
     }
 }
 

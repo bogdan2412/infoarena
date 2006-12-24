@@ -24,8 +24,10 @@ function ia_template_header() {
         <?= format_link(url_user_profile($username, true), format_user_avatar($username, 50, 50, true), false) ?>
             <span class="user">
                 <strong><?= htmlentities($identity_user['full_name']) ?></strong><br/>
-                <?= format_user_ratingbadge($username, $identity_user['rating_cache']).format_link(url_user_profile($username, true), $username) ?><br/>
-                <a href="<?= htmlentities(url('logout', array(), true)) ?>" class="logout">logout</a> | <?= format_link(url('account', array(), true), 'contul meu') ?>
+                <?= format_user_ratingbadge($username, $identity_user['rating_cache']) ?>
+                <?= format_link(url_user_profile($username, true), $username) ?><br/>
+                <?= format_link(url_logout(), "logout", true, array('class' => 'logout')) ?> |
+                <?= format_link(url_account(), 'contul meu') ?>
             </span>
         </div>
     <?php } ?>
@@ -36,8 +38,7 @@ function ia_template_header() {
         </div>
     <?php } ?>
 
-    <h1><a title="informatica de performanta" href="<?= htmlentities(url('', array(), true)) ?>">infoarena,
-        informatica de performanta</a></h1>
+    <h1><?= format_link(url_home(), "infoarena informatica de performanta") ?></h1>
 </div>
 <?php
 }
@@ -51,17 +52,48 @@ function ia_template_topnav($selected = 'infoarena', $smf_admin = false) {
 ?>
 <div id="topnav">
 <ul>
-    <li><?= getattr($pre, 'infoarena') ?><a href="<?= htmlentities(url('', array(), true)) ?>">info<em>arena</em></a><?= getattr($post, 'infoarena') ?></li>
-    <li><?= getattr($pre, 'forum') ?><a href="<?= htmlentities(IA_SMF_URL) ?>">forum</a><?= getattr($post, 'forum') ?></li>
-    <li><?= getattr($pre, 'calendar') ?><a href="<?= htmlentities(IA_SMF_URL) ?>?action=calendar">calendar</a><?= getattr($post, 'calendar') ?></li>
+    <li>
+        <?= getattr($pre, 'infoarena') ?>
+        <?= format_link(url_home(), 'info<em>arena</em>', false) ?>
+        <?= getattr($post, 'infoarena') ?>
+    </li>
+    <li>
+        <?= getattr($pre, 'forum') ?>
+        <?= format_link(url_forum(), "forum") ?>
+        <?= getattr($post, 'forum') ?>
+    </li>
+    <li>
+        <?= getattr($pre, 'calendar') ?>
+        <?= format_link(url_forum() . "?action=calendar", "calendar") ?>
+        <?= getattr($post, 'calendar') ?>
+    </li>
 <?php if (identity_anonymous()) { ?>
-    <li><?= getattr($pre, 'login') . format_link(url('login', array(), true), "autentificare") . getattr($post, 'login') ?></li>
-    <li><?= getattr($pre, 'register') . format_link(url('register', array(), true), "inregistare") . getattr($post, 'register') ?></li>
+    <li>
+        <?= getattr($pre, 'login')?>
+        <?= format_link(url_login(), "autentificare") ?>
+        <?= getattr($post, 'login') ?>
+    </li>
+    <li>
+        <?= getattr($pre, 'register')?>
+        <?= format_link(url_login(), "inregistare") ?>
+        <?= getattr($post, 'register') ?>
+    </li>
 <?php } else { ?>
-    <li><?= getattr($pre, 'profile') ?><a href="<?= htmlentities(url_user_profile($identity_user['username'], true)) ?>">profilul meu</a><?= getattr($post, 'profile') ?></li>
-    <li><?= getattr($pre, 'pm') ?><a href="<?= htmlentities(IA_SMF_URL) ?>?action=pm">mesaje</a><?= getattr($post, 'pm') ?></li>
+    <li>
+        <?= getattr($pre, 'profile') ?>
+        <?= format_link(url_user_profile($identity_user['username']), 'profilul meu') ?>
+        <?= getattr($post, 'profile') ?></li>
+    <li>
+        <?= getattr($pre, 'pm') ?>
+        <?= format_link(url_forum() . "?action=pm", "mesaje") ?>
+        <?= getattr($post, 'pm') ?>
+    </li>
 <?php if ($smf_admin) { ?>
-    <li><?= getattr($pre, 'smf_admin') ?><a href="<?= htmlentities(IA_SMF_URL) ?>?action=admin">forum admin</a><?= getattr($post, 'smf_admin') ?></li>
+    <li>
+        <?= getattr($pre, 'smf_admin') ?>
+        <?= format_link(url_forum() . "?action=admin", "forum admin") ?>
+        <?= getattr($post, 'smf_admin') ?>
+    </li>
 <?php } ?>
 <?php } ?>
 </ul>
@@ -74,11 +106,11 @@ function ia_template_footer() {
 ?>
 <div id="footer">
     <ul class="clear">
-        <li>&copy;&nbsp;2006&nbsp;-&nbsp;<a href="<?= htmlentities(url('Asociatia-infoarena', array(), true)) ?>">Asociatia infoarena</a></li>
-        <li class="separate"><a href="<?= htmlentities(url('', array(), true)) ?>">Prima pagina</a></li>
-        <li><a href="<?= htmlentities(url('Despre-infoarena', array(), true)) ?>">Despre infoarena</a></li>
-        <li><a href="<?= htmlentities(url('Termeni-si-conditii', array(), true)) ?>">Termeni si conditii</a></li>
-        <li><a href="<?= htmlentities(url('Contact', array(), true)) ?>">Contact</a></li>
+        <li>&copy;&nbsp;2006&nbsp;-&nbsp;<?= format_link(url_textblock('Asociatia-infoarena'), "Asociatia infoarena") ?></li>
+        <li class="separate"><?= format_link(url_home(), "Prima pagina") ?></li>
+        <li><?= format_link(url_textblock("despre-infoarena"), "Despre infoarena") ?></li>
+        <li><?= format_link(url_textblock("termeni-si-conditii"), "Termeni si conditii") ?></li>
+        <li><?= format_link(url_textblock("contact"), "Contact") ?></li>
         <li class="top"><a href="#header">Sari la inceputul paginii &uarr;</a></li>
     </ul>
 <?php if (!IA_DEVELOPMENT_MODE) { ?>
@@ -112,7 +144,9 @@ function ia_template_footer() {
             global $execution_stats;
             log_execution_stats();
             $buffer = $execution_stats['log_copy'];
-            echo '<textarea id="log">'.htmlentities($buffer).'</textarea>';
+            echo '<textarea id="log" rows="30" cols="60">';
+            echo htmlentities($buffer);
+            echo '</textarea>';
         }
     }
 ?>

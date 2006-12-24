@@ -11,21 +11,21 @@ check_view($view);
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-2" />
     <title><?= htmlentities(getattr($view, 'title')) ?></title>
 
-    <link type="text/css" rel="stylesheet" href="<?= htmlentities(url('static/css/sitewide.css')) ?>"/>
-    <link type="text/css" rel="stylesheet" href="<?= htmlentities(url('static/css/screen.css')) ?>"/>
-    <link type="text/css" rel="stylesheet" href="<?= htmlentities(url('static/css/tabber.css')) ?>"/>
-    <link type="text/css" rel="stylesheet" href="<?= htmlentities(url('static/css/SyntaxHighlighter.css')) ?>"/>
-    <script type="text/javascript" src="<?= htmlentities(url('static/js/config.js.php')) ?>"></script>
-    <script type="text/javascript" src="<?= htmlentities(url('static/js/MochiKit.js')) ?>"></script>
-    <script type="text/javascript" src="<?= htmlentities(url('static/js/default.js')) ?>"></script>
-    <script type="text/javascript" src="<?= htmlentities(url('static/js/tabber-minimized.js')) ?>"></script>
-    <script type="text/javascript" src="<?= htmlentities(url('static/js/submit.js')) ?>"></script>
-    <script type="text/javascript" src="<?= htmlentities(url('static/js/remotebox.js')) ?>"></script>
-    <script type="text/javascript" src="<?= htmlentities(url('static/js/sh/shCore.js')) ?>"></script>
-    <script type="text/javascript" src="<?= htmlentities(url('static/js/sh/shBrushCpp.js')) ?>"></script>
-    <script type="text/javascript" src="<?= htmlentities(url('static/js/sh/shBrushDelphi.js')) ?>"></script>
-    <script type="text/javascript" src="<?= htmlentities(url('static/js/sh/shBrushJava.js')) ?>"></script>
-    <script type="text/javascript" src="<?= htmlentities(url('static/js/sh/shInit.js')) ?>"></script>
+    <link type="text/css" rel="stylesheet" href="<?= htmlentities(url_static('css/sitewide.css')) ?>"/>
+    <link type="text/css" rel="stylesheet" href="<?= htmlentities(url_static('css/screen.css')) ?>"/>
+    <link type="text/css" rel="stylesheet" href="<?= htmlentities(url_static('css/tabber.css')) ?>"/>
+    <link type="text/css" rel="stylesheet" href="<?= htmlentities(url_static('css/SyntaxHighlighter.css')) ?>"/>
+    <script type="text/javascript" src="<?= htmlentities(url_static('js/config.js.php')) ?>"></script>
+    <script type="text/javascript" src="<?= htmlentities(url_static('js/MochiKit.js')) ?>"></script>
+    <script type="text/javascript" src="<?= htmlentities(url_static('js/default.js')) ?>"></script>
+    <script type="text/javascript" src="<?= htmlentities(url_static('js/tabber-minimized.js')) ?>"></script>
+    <script type="text/javascript" src="<?= htmlentities(url_static('js/submit.js')) ?>"></script>
+    <script type="text/javascript" src="<?= htmlentities(url_static('js/remotebox.js')) ?>"></script>
+    <script type="text/javascript" src="<?= htmlentities(url_static('js/sh/shCore.js')) ?>"></script>
+    <script type="text/javascript" src="<?= htmlentities(url_static('js/sh/shBrushCpp.js')) ?>"></script>
+    <script type="text/javascript" src="<?= htmlentities(url_static('js/sh/shBrushDelphi.js')) ?>"></script>
+    <script type="text/javascript" src="<?= htmlentities(url_static('js/sh/shBrushJava.js')) ?>"></script>
+    <script type="text/javascript" src="<?= htmlentities(url_static('js/sh/shInit.js')) ?>"></script>
 
     <?= getattr($view, 'head') ?>
 </head>
@@ -45,21 +45,21 @@ ia_template_topnav($topnav_select, $smf_admin);
 <div id="content_small" class="clear">
 <div id="sidebar">
     <ul id="nav" class="clear">
-        <li><a href="<?= htmlentities(url('')) ?>">Home</a></li>
-        <li><a href="<?= htmlentities(url('arhiva')) ?>">Arhiva de probleme</a></li>
-        <li><a href="<?= htmlentities(url('concursuri')) ?>">Concursuri online</a></li>
-        <li><a href="<?= htmlentities(url('clasament-rating')) ?>">Clasament</a></li>
-        <li><a href="<?= htmlentities(url('articole')) ?>">Articole</a></li>
-        <li><a href="<?= htmlentities(url('downloads')) ?>">Downloads</a></li>
-        <li><a href="<?= htmlentities(url('links')) ?>">Links</a></li>
-        <li><a href="<?= htmlentities(url('stiri')) ?>">Arhiva de stiri</a></li>
-        <li><a href="<?= htmlentities(url('despre-infoarena')) ?>">Despre infoarena</a></li>
-        <li><a href="<?= htmlentities(url('documentatie')) ?>">Documentatie</a></li>
+        <li><a href="<?= htmlentities(url_home()) ?>">Home</a></li>
+        <li><a href="<?= htmlentities(url_textblock('arhiva')) ?>">Arhiva de probleme</a></li>
+        <li><a href="<?= htmlentities(url_textblock('concursuri')) ?>">Concursuri online</a></li>
+        <li><a href="<?= htmlentities(url_textblock('clasament-rating')) ?>">Clasament</a></li>
+        <li><a href="<?= htmlentities(url_textblock('articole')) ?>">Articole</a></li>
+        <li><a href="<?= htmlentities(url_textblock('downloads')) ?>">Downloads</a></li>
+        <li><a href="<?= htmlentities(url_textblock('links')) ?>">Links</a></li>
+        <li><a href="<?= htmlentities(url_textblock('stiri')) ?>">Arhiva de stiri</a></li>
+        <li><a href="<?= htmlentities(url_textblock('despre-infoarena')) ?>">Despre infoarena</a></li>
+        <li><a href="<?= htmlentities(url_textblock('documentatie')) ?>">Documentatie</a></li>
         <li class="separator"><hr/></li>
-        <li><a href="<?= htmlentities(url('monitor')) ?>">Monitorul de evaluare</a></li>
+        <li><a href="<?= htmlentities(url_textblock('monitor')) ?>">Monitorul de evaluare</a></li>
         <?php if (!identity_anonymous()) { ?>
-        <li><a href="<?= htmlentities(url('submit')) ?>"><strong>Trimite solutii</strong></a></li>
-        <li><a href="<?= htmlentities(url('account')) ?>">Contul meu</a></li>
+        <li><a href="<?= htmlentities(url_submit()) ?>"><strong>Trimite solutii</strong></a></li>
+        <li><a href="<?= htmlentities(url_account()) ?>">Contul meu</a></li>
         <?php } ?>
     </ul>
 
@@ -67,8 +67,8 @@ ia_template_topnav($topnav_select, $smf_admin);
     <div id="login">
         <?php if (!isset($no_sidebar_login)) include(IA_ROOT.'www/views/form_login.php') ?>
         <p>
-        <a href="<?= htmlentities(url('register')) ?>">Ma inregistrez!</a><br/>
-        <a href="<?= htmlentities(url("resetpass")) ?>">Mi-am uitat parola&hellip;</a>
+        <?= format_link(url_register(), "Ma inregistrez!" ) ?><br/>
+        <?= format_link(url_resetpass(), "Mi-am uitat parola..." ) ?>
         </p>
     </div>
     <?php } ?>

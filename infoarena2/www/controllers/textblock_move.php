@@ -13,7 +13,7 @@ function controller_textblock_move($page_name) {
     } else {
         // Missing page.
         flash_error("Pagina inexistenta.");
-        redirect(url('home'));
+        redirect(url_home());
     }
 
     $values = array();
@@ -32,7 +32,7 @@ function controller_textblock_move($page_name) {
         if (!$errors) {
             textblock_move($page_name, $new_name);
             flash("Pagina a fost mutata.");
-            redirect(url($new_name));
+            redirect(url_textblock($new_name));
         }
     }
 

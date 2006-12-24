@@ -6,26 +6,27 @@
 <div id="wikiOps">
     <ul>
         <?php if (identity_can('textblock-edit', $textblock)) { ?>
-        <li><?= format_link(url($textblock['name'], array('action' => 'edit')), 'Editeaza') ?></li>
+        <li><?= format_link(url_textblock_edit($textblock['name']), 'Editeaza') ?></li>
         <?php } ?>
         <?php if (identity_can('textblock-history', $textblock)) { ?>
-        <li><?= format_link(url($textblock['name'], array('action' => 'history')), 'Vezi istoria') ?></li>
+        <li><?= format_link(url_textblock_history($textblock['name']), 'Vezi istoria') ?></li>
         <?php } ?>
         <?php if (identity_can('textblock-move', $textblock)) { ?>
-        <li><?= format_link(url($textblock['name'], array('action' => 'move')), 'Muta') ?></li>
+        <li><?= format_link(url_textblock_move($textblock['name']), 'Muta') ?></li>
         <?php } ?>
         <?php if (identity_can('textblock-delete', $textblock)) { ?>
         <li>
 
-<a href="<?= htmlentities(url($textblock['name'], array('action' => 'delete'))) ?>" onclick="return confirm('Aceasta actiune este ireversibila! Doresti sa continui?')">Sterge</a>
+<a href="<?= htmlentities(url_textblock_delete($textblock['name'])) ?>"
+    onclick="return confirm('Aceasta actiune este ireversibila! Doresti sa continui?')">Sterge</a>
 
         </li>
         <?php } ?>
         <?php if (identity_can('textblock-attach', $textblock)) { ?>
-        <li><?= format_link(url($textblock['name'], array('action' => 'attach')), 'Ataseaza fisier') ?></li>
+        <li><?= format_link(url_attachment_new($textblock['name']), 'Ataseaza fisier') ?></li>
         <?php } ?>
         <?php if (identity_can('textblock-list-attach', $textblock)) { ?>
-        <li><?= format_link(url($textblock['name'], array('action' => 'attach-list')), 'Listeaza atasamente') ?></li>
+        <li><?= format_link(url_attachment_list($textblock['name']), 'Listeaza atasamente') ?></li>
         <?php } ?>
      </ul>
 </div>

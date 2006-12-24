@@ -73,7 +73,7 @@ Echipa infoarena
 
             // notify user
             flash('Am trimis instructiuni pe e-mail.');
-            redirect(url('login'));
+            redirect(url_login());
         }
         else {
             flash_error('Trebuie sa completezi cel putin unul din campuri!');
@@ -102,13 +102,13 @@ function controller_resetpass_confirm($username) {
     }
     if (!$user) {
         flash_error('Numele de utilizator este invalid.');
-        redirect(url(''));
+        redirect(url_home());
     }
 
     // validate confirmation code
     if ($cpass != user_resetpass_key($user)) {
         flash_error('Codul de confirmare nu este corect!');
-        redirect(url(''));
+        redirect(url_home());
     }
 
     // reset password
@@ -133,7 +133,7 @@ Parola noua: {$new_password}
 Numele contului: {$user['username']}
 
 Te poti autentifica aici:
-".url('login', array(), true)."
+".url_absolute(url_login())."
 
 Echipa infoarena
 ".IA_URL."\n";

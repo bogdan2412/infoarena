@@ -17,12 +17,12 @@ function format_ol($items, $class = null) {
 //  - string containing raw HTML
 //  - array(<raw HTML>, <dictionary of LI attributes>)
 function format_ulol($tag, $items, $class) {
+    log_assert($tag == 'ul' || $tag == 'ol', "Invalid tag");
     $buffer = '';
 
     if (is_null($class)) {
         $buffer .= "<{$tag}>\n";
-    }
-    else {
+    } else {
         $buffer .= "<{$tag} class=\"{$class}\">\n";
     }
 
@@ -30,8 +30,7 @@ function format_ulol($tag, $items, $class) {
         if (is_array($item)) {
             $text = $item[0];
             $attrib = $item[1];
-        }
-        else {
+        } else {
             $text = $item;
             $attrib = array();
         }

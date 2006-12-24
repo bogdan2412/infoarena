@@ -15,13 +15,13 @@ function controller_unsubscribe($username) {
     }
     if (!$user) {
         flash_error('Numele de utilizator este invalid.');
-        redirect(url(''));
+        redirect(url_home());
     }
 
     // validate confirmation code
     if ($cpass != user_unsubscribe_key($user)) {
         flash_error('Codul de confirmare nu este corect!');
-        redirect(url(''));
+        redirect(url_home());
     }
 
     // check if user is already unsubscribed

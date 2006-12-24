@@ -23,7 +23,7 @@ function account_validate_user() {
     // validate user
     if (!$user) {
         flash_error('Cont de utilizator inexistent');
-        redirect(url(''));
+        redirect(url_home());
     }
 
     // permission check
@@ -143,7 +143,7 @@ function controller_account() {
             // done. redirect to same page so user has a strong confirmation
             // of data being saved
             flash("Modificarile au fost salvate! ".getattr($errors, 'avatar'));
-            redirect(url('account', array('username' => $user['username'])));
+            redirect(url_account($user['username']));
         }
         else {
             flash_error('Am intalnit probleme. Verifica datele introduse.');
@@ -171,7 +171,7 @@ function controller_account() {
     $view['user'] = $user;
     $view['form_errors'] = $errors;
     $view['form_values'] = $data;
-    $view['action'] = url('account', array('username' => $user['username']));
+    $view['action'] = url_account($user['username']);
     if ($ownprofile) {
         $view['topnav_select'] = 'profile';
     }

@@ -8,8 +8,12 @@ function request($param, $default = null) {
 
 // Returns boolean whether current request method is POST
 function request_is_post() {
-    $post = ('post' == strtolower(getattr($_SERVER, 'REQUEST_METHOD')));
-    return $post;
+    return ('post' == strtolower(getattr($_SERVER, 'REQUEST_METHOD')));
+}
+
+// Returns boolean whether current request method is PUT
+function request_is_put() {
+    return ('put' == strtolower(getattr($_SERVER, 'REQUEST_METHOD')));
 }
 
 // Call this function for a http-level redirect.

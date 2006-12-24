@@ -60,7 +60,7 @@ function identity_require_login()
 
         // save current URL. We redirect to here right after logging in
         $_SESSION['_ia_redirect'] = $_SERVER['REQUEST_URI'];
-        redirect(url('login'));
+        redirect(url_login());
     }
 }
 
@@ -85,13 +85,13 @@ function identity_require($action, $object = null, $message = null,
 
             // save current URL. We redirect to here right after logging in
             $_SESSION['_ia_redirect'] = IA_URL_HOST.$_SERVER['REQUEST_URI'];
-            redirect(url('login'));
+            redirect(url_login());
         }
         else {
             // User doesn't have enough priviledges, tell him to fuck off.
             flash_error('Nu ai permisiuni suficiente pentru a executa aceasta '
                         .'actiune! Te redirectez ...');
-            redirect(url(''));
+            redirect(url_home());
         }
     }
     return $can;

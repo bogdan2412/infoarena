@@ -4,36 +4,44 @@
 // Please avoid hard-coding URLs throughout the code. 
 
 
-// Compute url.
+// Compute complex url. Avoid using thing function directly, prefer more
+// specific url_ functions.
+//
 // The params array contains http get parameter,
 // it's formatted in the end result as a series
 // of key1=value1&key2=value2.
 //
-// NOTE: Only use this function for urls.
-// NOTE: don't add ?x=y stuff in document.
+// NOTE: don't add ?x=y stuff in $document
 //
-// If $absolute is true(default false) then the server will be
-// included in the url.
-function url($document = '', $args = array(), $absolute = false) {
+// If $absolute is true(default false) then IA_URL_HOST will be included in
+// the url.
+function url_complex($document = '', $args = array(), $absolute = false) {
     log_assert(false === strpos($document, '?'), 'Page name contains ?');
     log_assert(is_array($args), "Argument list must be an array");
     log_assert(!array_key_exists("page", $args), "Argument list contains page");
 
     $args['page'] = $document;
-    return url_from_args($args, $absolute);
+    $url = url_from_args($args, $absolute);
+    if ($absolute) {
+        return url_absolute($url);
+    } else  {
+        return $url;
+    }
+}
+
+// Makes an url absolute. It just prepends IA_URL_HOST
+function url_absolute($url)
+{
+    log_assert(strpos($url, 'http') !== 0, "Url begins with http");
+    return IA_URL_HOST . $url;
 }
 
 // Construct an URL from an argument list.
 // These are the exact $args you will receive in $_GET
-function url_from_args($args, $absolute = false)
+function url_from_args($args)
 {
     // First part.
-    if ($absolute) {
-        $url = IA_URL;
-    } else {
-        $url = IA_URL_PREFIX;
-    }
-    $url .= getattr($args, "page", "home");
+    $url = IA_URL_PREFIX . getattr($args, "page", "home");
 
     // Actual args.
     $first = true;
@@ -48,150 +56,206 @@ function url_from_args($args, $absolute = false)
     return $url;
 }
 
-// Get an url for an attachement
-function url_attachment($page, $file, $absolute = false) {
+// Here are the specific url functions you should use.
+// Names should should be more or less obvious.
+
+// First: textblocks(wiki pages).
+
+function url_textblock($page_name) {
+    return url_complex($page_name, array());
+}
+
+function url_textblock_revision($page_name, $rev) {
+    return url_complex($page_name, array('revision' => $rev));
+}
+
+function url_textblock_edit($page_name) {
+    return url_complex($page_name, array('action' => 'edit'));
+}
+
+function url_textblock_history($page_name) {
+    return url_complex($page_name, array('action' => 'history'));
+}
+
+function url_textblock_diff($page_name, $revfrom, $revto) {
+    return url_complex($page_name, array(
+            'action' => 'diff',
+            'rev_from' => $revfrom,
+            'rev_to' => $revto,
+    ));
+}
+
+function url_textblock_move($page_name) {
+    return url_complex($page_name, array(
+            'action' => 'move'
+    ));
+}
+
+function url_textblock_delete($page_name) {
+    return url_complex($page_name, array(
+            'action' => 'delete'
+    ));
+}
+
+function url_textblock_restore($page_name, $rev) {
+    return url_complex($page_name, array(
+            'action' => 'restore',
+            'revision' => $rev,
+    ));
+}
+
+function url_textblock_delete_revision($page_name, $rev) {
+    return url_complex($page_name, array(
+            'action' => 'delete-revision',
+            'revision' => $rev,
+    ));
+}
+
+// Textblock attachments:
+
+function url_attachment($page, $file) {
     log_assert(is_page_name($page));
     log_assert(is_attachment_name($file));
-    return url($page, array('action' => 'download', 'file' => $file), $absolute);
+    return url_complex($page, array(
+            'action' => 'download',
+            'file' => $file,
+    ));
 }
 
-// URL to homepage
-function url_home($absolute = false) {
-    return url('', array(), $absolute);
+function url_attachment_new($page_name) {
+    log_assert(is_page_name($page_name));
+    return url_complex($page_name, array('action' => 'attach'));
 }
 
-// Get an url for a resized image.
-function url_image_resize($page, $file, $resize, $absolute = false)
+function url_attachment_list($page_name) {
+    log_assert(is_page_name($page_name));
+    return url_complex($page_name, array('action' => 'attach-list'));
+}
+
+function url_attachment_delete($page_name, $file_name) {
+    log_assert(is_page_name($page_name));
+    return url_complex($page_name, array(
+                'action' => 'attach-del',
+                'file' => $file_name,
+    ));
+}
+
+// Images
+
+function url_image_resize($page, $file, $resize)
 {
     if ($resize) {
-        return url($page, array(
+        return url_complex($page, array(
                 'action' => 'download',
                 'file' => $file,
                 'resize' => $resize,
-        ), $absolute);
+        ));
     } else {
-        return url_attachment($page, $file, $absolute);
+        return url_attachment($page, $file);
     }
 }
 
-// Url to the login page
-function url_login($absolute = false) {
-    return url("login", array(), $absolute);
+// User stuff
+
+function url_login() {
+    return url_complex("login");
 }
 
-// Url to the submit page
-function url_submit($absolute = false) {
-    return url("submit", array(), $absolute);
+function url_logout() {
+    return url_complex("logout");
 }
 
-function url_textblock($page_name, $absolute = false) {
-    return url($page_name, array(), $absolute);
+function url_account($user = false) {
+    if ($user === false) {
+        return url_complex("account");
+    } else {
+        return url_complex("account/$user");
+    }
 }
 
-function url_textblock_revision($page_name, $rev, $absolute = false) {
-    return url($page_name, array('revision' => $rev), $absolute);
+function url_register() {
+    return url_complex("register");
 }
 
-function url_textblock_edit($page_name, $absolute = false) {
-    return url($page_name, array('action' => 'edit'), $absolute);
+function url_resetpass($username = false) {
+    if ($username === false) {
+        return url_complex('resetpass');
+    } else {
+        return url_complex('resetpass/'.$username);
+    }
 }
 
-function url_textblock_history($page_name, $absolute = false) {
-    return url($page_name, array('action' => 'history'), $absolute);
+function url_resetpass_confirm($username, $key) {
+    log_assert($key);
+    return url_complex('confirm/'.$username, array('c' => $key));
 }
 
-function url_textblock_diff($page_name, $revfrom, $revto, $absolute = false) {
-    $args = array(
-            'action' => 'diff',
-            'rev_from' => $revfrom,
-            'rev_to' => $revto
-    );
-    return url($page_name, $args, $absolute);
+function url_user_info($username) {
+    return url_complex('userinfo/' . $username, array());
 }
 
-function url_textblock_move($page_name, $absolute = false) {
-    return url($page_name, array('action' => 'move'), $absolute);
+function url_user_profile($username) {
+    return url_complex(TB_USER_PREFIX . $username, array());
 }
 
-function url_textblock_delete($page_name, $absolute = false) {
-    return url($page_name, array('action' => 'delete'), $absolute);
+function url_user_rating($username) {
+    return url_complex(TB_USER_PREFIX . $username, array(
+            'action' => 'rating'
+    ));
 }
 
-function url_textblock_restore($page_name, $rev, $absolute = false) {
-    $args = array(
-            'action' => 'restore',
-            'revision' => $rev,
-    );
-    return url($page_name, $args, $absolute);
+function url_user_stats($username) {
+    return url_complex(TB_USER_PREFIX . $username, array(
+            'action' => 'stats'
+    ));
 }
 
-function url_textblock_delete_revision($page_name, $rev, $absolute = false) {
-    $args = array(
-            'action' => 'delete-revision',
-            'revision' => $rev,
-    );
-    return url($page_name, $args, $absolute);
+function url_user_avatar($username, $resize = "50x50") {
+    return url_image_resize(TB_USER_PREFIX . $username, 'avatar', $resize);
 }
 
-// Url to user profile page
-// FIXME: DELETE THIS function and make sure no one uses it
-function url_user_info($username, $absolute = false) {
-    return url('userinfo/' . $username, array(), $absolute);
+function url_unsubscribe($username, $key) {
+    log_assert($key);
+    return url_complex('unsubscribe/'.$username, array('c' => $key));
 }
 
-// Url to user profile page
-function url_user_profile($username, $absolute = false) {
-    return url(TB_USER_PREFIX . $username, array(), $absolute);
+// Misc urls
+
+function url_home() {
+    return url_complex('', array());
 }
 
-// Url to user profile :: rating evolution
-function url_user_rating($username, $absolute = false) {
-    return url(TB_USER_PREFIX . $username, array('action' => 'rating'),
-               $absolute);
+function url_static($path) {
+    return url_complex("static/$path", array());
 }
 
-// Url to user profile :: statistics
-function url_user_stats($username, $absolute = false) {
-    return url(TB_USER_PREFIX . $username, array('action' => 'stats'),
-               $absolute);
+function url_changes() {
+    return url_complex("changes", array());
 }
 
-function url_user_avatar($username, $resize = "50x50", $absolute = false) {
-    return url_image_resize(TB_USER_PREFIX . $username, 'avatar', $resize, $absolute);
+function url_changes_rss() {
+    return url_complex("changes", array('format' => 'rss'));
 }
 
-// Url to job detail page
-function url_job_detail($job_id, $absolute = false) {
+function url_submit() {
+    return url_complex("submit", array());
+}
+
+function url_monitor() {
+    return url_complex("monitor");
+}
+
+function url_job_detail($job_id) {
     log_assert(is_numeric($job_id));
-    return url("job_detail/".$job_id, array(), $absolute);
+    return url_complex("job_detail/".$job_id, array());
 }
 
-// Url to job download
-function url_job_download($job_id, $absolute = false) {
-    return url("job_detail/".$job_id, array('action' => 'download'), $absolute);
+function url_job_download($job_id) {
+    return url_complex("job_detail/".$job_id, array('action' => 'download'));
 }
 
-// Url to task view
-function url_task($task_id, $absolute = false) {
-    return url(TB_TASK_PREFIX . $task_id, array(), $absolute);
+function url_forum() {
+    return IA_SMF_URL;
 }
-
-// Create link to unsubscribe user from mailing list
-function url_unsubscribe($username, $key, $absolute = false) {
-    log_assert($key);
-    return url('unsubscribe/'.$username, array('c' => $key), $absolute);
-}
-
-// Create link to password reset controller
-function url_resetpass($username, $absolute = false) {
-    return url('resetpass/'.$username, array(), $absolute);
-}
-
-// Create link to confirm password reset
-function url_resetpass_confirm($username, $key, $absolute = false) {
-    log_assert($key);
-    return url('confirm/'.$username, array('c' => $key), $absolute);
-}
-
 
 ?>

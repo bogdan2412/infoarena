@@ -5,7 +5,7 @@ function controller_logout() {
     identity_end_session();
 
     flash('Sesiunea a fost inchisa!');
-    redirect(url(''));
+    redirect(url_home());
 }
 
 ?>

@@ -36,14 +36,15 @@ function macro_rounds($args) {
         $urls = array();
         if ($only_rated) {
             foreach ($rounds as $row) {
-                $urls[] = format_link(url($row['round_page_name']),
-                                      $row['round_title']);
+                $urls[] = format_link(
+                        url_textblock($row['round_page_name']),
+                        $row['round_title']);
             }
             return format_ol($urls);
         }
         else {
             foreach ($rounds as $row) {
-                $urls[] = format_link(url($row['page_name']), $row['title']);
+                $urls[] = format_link(url_textblock($row['page_name']), $row['title']);
             }
             return format_ul($urls);
         }

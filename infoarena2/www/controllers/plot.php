@@ -69,7 +69,7 @@ function controller_plot($suburl) {
             execute_view_die('views/plot_distribution.php', $view);
         default:
             flash('Actiunea nu este valida.');
-            redirect(url(''));
+            redirect(url_home());
     }
 }
 

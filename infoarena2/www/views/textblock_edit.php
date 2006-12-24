@@ -1,7 +1,7 @@
 <?php
 
 // link JS
-$view['head'] = getattr($view, 'head')."<script type=\"text/javascript\" src=\"" . htmlentities(url("static/js/wikiedit.js")) . "\"></script>";
+$view['head'] = getattr($view, 'head')."<script type=\"text/javascript\" src=\"" . htmlentities(url_static("js/wikiedit.js")) . "\"></script>";
 
 include('views/header.php');
 
@@ -27,12 +27,13 @@ include('views/header.php');
         <label for="form_text">Continut</label>
         <textarea name="text" id="form_text" rows="10" cols="50"><?= fval('text') ?></textarea>
         <?= ferr_span('text') ?>
-        <a href="<?= htmlentities(url('documentatie/wiki')) ?>">Cum formatez text?</a>
+        <?= format_link(url_textblock('documentatie/wiki'), "Cum formatez text?") ?>
     </li>
 
     <?php if (array_key_exists('security', $form_values)) { ?>
     <li id="field_security">
-        <label for="form_security">Nivel de securitate al paginii <a href="<?= htmlentities(url('documentatie/securitate')) ?>">(?)</a></label> 
+        <label for="form_security">Nivel de securitate al paginii
+        <a href="<?= htmlentities(url_textblock('documentatie/securitate')) ?>">(?)</a></label> 
 
         <input type="text" name="security" value="<?= fval('security') ?>" id="form_security"/>
         <?= ferr_span('security') ?>

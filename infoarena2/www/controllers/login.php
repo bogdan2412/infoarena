@@ -37,7 +37,7 @@ function controller_login() {
 
         // obtain referer
         $referer = getattr($_SERVER, 'HTTP_REFERER', '');
-        if ($referer == url('login', array(), true)) {
+        if ($referer == url_absolute(url_login())) {
             // we don't care about the login page
             $referer = null;
         }
@@ -63,7 +63,7 @@ function controller_login() {
             }
             else {
                 // home, sweet home
-                redirect(url(''));
+                redirect(url_home());
             }
         }
         else {

@@ -62,7 +62,7 @@ function attachment_delete($id) {
 function attachment_get_all($page, $name='%', $start = 0, $count = 999999) {
     assert(is_whole_number($start));
     assert(is_whole_number($count));
-    $query = sprintf("SELECT ia_file.*, ia_user.username, ia_user.full_name
+    $query = sprintf("SELECT ia_file.*, ia_user.username, ia_user.full_name as user_fullname
                       FROM ia_file
                       LEFT JOIN ia_user ON ia_user.id = ia_file.user_id
                       WHERE ia_file.page LIKE '%s' AND ia_file.`name` LIKE '%s'

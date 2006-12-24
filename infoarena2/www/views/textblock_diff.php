@@ -4,9 +4,10 @@ include('header.php');
 
 ?>
 
-<h1>Diferente pentru <?= format_link(url($page_name), $page_name) ?> intre reviziile
-    <?= format_link(url($page_name, array('revision' => $revfrom_id)), "#$revfrom_id") ?> si
-    <?= format_link(url($page_name, array('revision' => $revto_id)), "#$revto_id") ?>
+<h1>Diferente pentru
+<?= format_link(url_textblock($page_name), $page_name) ?> intre reviziile
+    <?= format_link(url_textblock_revision($page_name, $revfrom_id), "#$revfrom_id") ?> si
+    <?= format_link(url_textblock_revision($page_name, $revto_id), "#$revto_id") ?>
 </h1>
 <?php
 

@@ -30,7 +30,7 @@ function controller_task_edit_details($task_id, $form_data = null, $form_errors 
     // validate task_id
     if (!is_task_id($task_id)) {
         flash_error('Identificatorul de task este invalid');
-        redirect(url(''));
+        redirect(url_home());
     }
 
     // get parameter list for tasks (in general, not for this specific task)
@@ -87,10 +87,10 @@ function controller_task_edit_details($task_id, $form_data = null, $form_errors 
     else {
         $view['title'] = "Modifica task: ".$task_id;
     }
-    $view['action'] = url('admin/task/' . $task_id, array('action' => 'save'));
+    $view['action'] = url_task_admin($task_id);
     $view['form_values'] = $form_data;
     $view['form_errors'] = $form_errors;
-    $view['page_name'] = url('admin/task' . $task_id);
+    $view['page_name'] = url_task_admin($task_id);
     $view['param_list'] = $param_list;
     $view['param_values'] = $param_values;
     execute_view_die("views/task_edit.php", $view);
@@ -116,7 +116,7 @@ function controller_task_save_details($task_id) {
     // validate task_id
     if (!$task && !task_is_valid_id($task_id)) {
         flash_error('Identificatorul de task este invalid');
-        redirect(url(''));
+        redirect(url_home());
     }
 
     // get parameter list for tasks (in general, not for this specific task)
@@ -189,11 +189,11 @@ function controller_task_save_details($task_id) {
         // - done
         if ($task) {
             flash('Informatiile despre task au fost actualizate.');
-            redirect(url($task['page_name']));
+            redirect(url_textblock($task['page_name']));
         }
         else {
             flash('Un nou task a fost creat. Acum trebuie sa editezi continutul ...');
-            redirect(url($task['page_name'], array('action'=>'edit')));
+            redirect(url_textblock_edit($task['page_name']));
         }
     }
     else {

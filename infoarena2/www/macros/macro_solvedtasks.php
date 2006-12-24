@@ -24,7 +24,7 @@ function macro_solvedtasks($args, $failed_tasks_hack = false) {
     if (1 <= count($tasks)) {
         $urls = array();
         foreach ($tasks as $task) {
-            $urls[] = format_link(url($task['page_name']), $task['id']);
+            $urls[] = format_link(url_textblock($task['page_name']), $task['id']);
         }
         if (1 == count($urls)) {
             $number = 'o problema';

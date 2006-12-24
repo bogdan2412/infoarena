@@ -14,7 +14,7 @@ function controller_submit() {
     $values = array();
     $errors = array();
 
-    if (request_is_post()){
+    if (request_is_post()) {
         $values = array(
             'task_id' => getattr($_POST, 'task_id'),
             'compiler_id' => getattr($_POST, 'compiler_id')
@@ -51,7 +51,7 @@ function controller_submit() {
                     $errors['solution'] = '
                         Fisierul atasat nu a putut fi citit! Incearca din nou.
                         Daca problema persista te rugam sa <a href="' .
-                        htmlentities(url('contact')).'">contactezi administratorul</a>.';
+                        htmlentities(url_textblock('contact')).'">contactezi administratorul</a>.';
                 }
             } else {
                 $errors['solution'] = 'Ataseaza fisierul solutie.';

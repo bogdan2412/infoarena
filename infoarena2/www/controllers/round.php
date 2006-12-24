@@ -34,7 +34,7 @@ function controller_round_edit_details($round_id, $form_data = null,
     // validate round id
     if (!round_is_valid_id($round_id) && !$round) {
         flash_error('Identificatorul de runda este invalid');
-        redirect(url(''));
+        redirect(url_home());
     }
 
     // get parameter list for rounds (in general, not for this specific round)
@@ -99,8 +99,7 @@ function controller_round_edit_details($round_id, $form_data = null,
         $view['title'] = "Modificare runda: ".$round_id;
     }
     //  - feed view values
-    $view['action'] = url('admin/round/' . $round_id,
-                          array('action' => 'save'));
+    $view['action'] = url_round_admin($round_id);
     $view['form_values'] = $form_data;
     $view['form_errors'] = $form_errors;
     $view['param_list'] = $param_list;
@@ -131,7 +130,7 @@ function controller_round_save_details($round_id) {
     // validate round id
     if (!round_is_valid_id($round_id) && !$round) {
         flash_error('Identificatorul de runda este invalid!');
-        redirect(url(''));
+        redirect(url_home());
     }
 
     // get parameter list for rounds (in general, not for this specific round)
@@ -206,11 +205,11 @@ function controller_round_save_details($round_id) {
         // - done
         if ($round) {
             flash('Informatiile despre runda au fost salvate.');
-            redirect(url($round['page_name']));
+            redirect(url_textblock($round['page_name']));
         }
         else {
             flash('O noua runda a fost creata. Acum trebuie sa editezi continutul...');
-            redirect(url($round['page_name'], array('action'=>'edit')));
+            redirect(url_textblock_edit($round['page_name'], array('action'=>'edit')));
         }
     }
     else {

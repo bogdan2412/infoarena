@@ -16,14 +16,14 @@ function controller_round_register($round_id) {
     }
     else {
         flash_error('Runda specificata nu exista in baza de date!');
-        redirect(url());
+        redirect(url_home());
     }
 
     // check whether user is already registered
     log_assert($identity_user);
     if (round_is_registered($round['id'], $identity_user['id'])) {
         flash_error('Sunteti deja inregistrat in runda "'.$round['title'].'"!');
-        redirect(url($round['page_name']));
+        redirect(url_textblock($round['page_name']));
     }
 
     if ($submit) {
@@ -31,14 +31,14 @@ function controller_round_register($round_id) {
         round_register_user($round['id'], $identity_user['id']);
         // FIXME: should redirect to referrer
         flash('Ati fost inregistrat la "'.$round['title'].'"!');
-        redirect(url($round['page_name']));
+        redirect(url_textblock($round['page_name']));
     }
     else {
         // display form
         $view = array(
             'round' => $round,
             'title' => 'Inregistrare la "'.$round['title'].'"',
-            'action' => url('round_register/'.$round['id'], array('action'=>'submit'))
+            'action' => url_round_register($round['id']),
         );
         execute_view_die('views/round_register.php', $view);
     }

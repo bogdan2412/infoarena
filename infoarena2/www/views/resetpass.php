@@ -7,7 +7,7 @@
 <p>Introdu numele de utilizator sau adresa de e-mail cu care te-ai inregistrat pe site.</p>
 <p>Iti vom trimite pe e-mail instructiuni pentru a-ti reseta parola.</p>
 
-<form action="<?= htmlentities(url('resetpass')) ?>" method="post" class="login clear">
+<form action="<?= htmlentities(url_resetpass()) ?>" method="post" class="login clear">
 <fieldset>
     <legend>Date de identificare</legend>
     <ul class="form">

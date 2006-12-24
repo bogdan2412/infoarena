@@ -2,7 +2,7 @@
 
 <h1><?= htmlentities($view['title']) ?></h1>
 
-<p>Daca esti deja inregistrat te poti <a href="<?= htmlentities(url('login')) ?>">autentifica aici</a>; daca ti-ai uitat parola, o poti <a href="<?= htmlentities(url('resetpass')) ?>">reseta aici</a>.</p>
+<p>Daca esti deja inregistrat te poti <a href="<?= htmlentities(url_login()) ?>">autentifica aici</a>; daca ti-ai uitat parola, o poti <a href="<?= htmlentities(url_resetpass()) ?>">reseta aici</a>.</p>
 
 <div id="sidebar2">
 <div class="section">
@@ -26,7 +26,7 @@
 
 <form enctype="multipart" action="<?= htmlentities($action) ?>" method="post" class="profile clear">
 <fieldset>
-    <legend><img src="<?= htmlentities(url('static/images/icons/key.gif')) ?>"/> Utilizator infoarena</legend>
+    <legend><img src="<?= htmlentities(url_static('images/icons/key.gif')) ?>"/> Utilizator infoarena</legend>
     <ul class="form">
         <li>
             <label for='form_username'>Nume cont utilizator</label>
@@ -76,7 +76,7 @@
         <?= ferr_span('tnc') ?>
         <input type="checkbox" <?php if (fval('tnc'))
             echo 'checked="checked"'; ?> name="tnc" id="form_tnc"/>
-        <label for="form_tnc" class="checkbox">Sunt de acord cu <a href="<?= htmlentities(url('termeni-si-conditii')) ?>">termenii si conditiile de utilizare</a> ale site-ului infoarena</label>
+        <label for="form_tnc" class="checkbox">Sunt de acord cu <a href="<?= htmlentities(url_textblock('termeni-si-conditii')) ?>">termenii si conditiile de utilizare</a> ale site-ului infoarena</label>
     </li>
     <li>
         <input type="submit" value="Inregistreaza-ma" id="form_submit" class="button important" />

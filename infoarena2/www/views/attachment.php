@@ -2,12 +2,11 @@
 
 <h1><?= htmlentities($title) ?></h1>
 
-<form enctype="multipart/form-data" action="<?= htmlentities(url($page_name)) ?>" method="post" class="clear">
+<form enctype="multipart/form-data" action="<?= htmlentities(url_textblock($page_name)) ?>" method="post" class="clear">
 <fieldset>
     <legend>Alege fisier</legend>
     <ul class="form">
         <li>
-            <input type="hidden" name="action" value="attach-submit" />
             <label for="form_filename">Fisier</label>
             <?= ferr_span('file_name') ?>
             <?= ferr_span('file_size') ?>

@@ -4,8 +4,8 @@
 if (!isset($view['head'])) {
     $view['head'] = "";
 }
-$view['head'] .= "<)script type=\"text/javascript\" src=\"" . htmlentities(url("static/js/dual.js") . "\"></script>";
-$view['head'] .= "<)script type=\"text/javascript\" src=\"" . htmlentities(url("static/js/roundedit.js") . "\"></script>";
+$view['head'] .= "<)script type=\"text/javascript\" src=\"" . htmlentities(url_static("js/dual.js") . "\"></script>";
+$view['head'] .= "<)script type=\"text/javascript\" src=\"" . htmlentities(url_static("js/roundedit.js") . "\"></script>";
 
 require_once(IA_ROOT."common/round.php");
 include('views/header.php');

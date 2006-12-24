@@ -11,7 +11,7 @@ function controller_user_view($username, $action, $revision = null) {
     $user = user_get_by_username($username);
     if (!$user) {
         flash_error("Utilizator inexistent");
-        redirect(url('home'));
+        redirect(url_home());
     }
 
     // Build view.
@@ -32,6 +32,7 @@ function controller_user_view($username, $action, $revision = null) {
             $textblock = textblock_get_revision($page_name, $revision);
             log_assert($textblock);
             $view['textblock'] = $textblock;
+            $view['title'] = $textblock['title'];
             break;
 
         case 'rating':
