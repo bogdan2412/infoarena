@@ -73,6 +73,9 @@ ia_template_topnav($topnav_select, $smf_admin);
     </div>
     <?php } ?>
     <p class="user-count"><?php echo user_count(); ?> membri inregistrati</p>
+    <div id="srv_time" class="user-count" align="center"></div>
+    <script type="text/javascript" src="<?= htmlentities(url_static('js/time.js')) ?>"></script>
+    <script type="text/javascript">loadTime(<?php echo date("H, i, s");?>);</script>
 </div>
 
 <div id="main">
