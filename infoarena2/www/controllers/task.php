@@ -133,7 +133,7 @@ function controller_task_create()
     // Security check. FIXME: sort of a hack.
     identity_require_login();
     identity_require("task-create",
-            task_init_object('new_task', 'classic', $identity_user));
+            task_init('new_task', 'classic', $identity_user));
 
     // Form stuff.
     $values = array();
@@ -154,7 +154,7 @@ function controller_task_create()
         }
 
         if (!$errors) {
-            $task = task_init_object(
+            $task = task_init(
                     $values['id'],
                     $values['type'],
                     $identity_user);

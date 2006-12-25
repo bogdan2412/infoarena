@@ -44,7 +44,7 @@ $directmaps = array_flip(array('register', 'account', 'news_feed', 'changes',
                                'login', 'logout', 'json', 'job_detail',
                                'monitor', 'submit', 'userinfo', 'plot',
                                'unsubscribe', 'resetpass'
-                               ));
+));
 //
 // Here comes the big url mapper.
 // We include in the if statement to avoid an extra parsing load.
@@ -57,6 +57,7 @@ if (isset($directmaps[$urlstart])) {
     $fname($page_id);
 }
 
+// Task creator
 else if ($page == 'admin/new-task') {
     require_once(IA_ROOT.'www/controllers/task.php');
     controller_task_create();
@@ -69,19 +70,18 @@ else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'task') {
     controller_task_details($obj_id);
 }
 
+// Round creator
+else if ($page == 'admin/new-round') {
+    require_once(IA_ROOT.'www/controllers/round.php');
+    controller_round_create();
+}
+
 // Round detail editor.
-// FIXME: doesn't work, fix later.
-/*else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'round') {
+else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'round') {
     $obj_id = implode("/", array_slice($pagepath, 2));
-    if (getattr($pagepath, 1) == 'round') {
-        require_once(IA_ROOT.'www/controllers/round.php');
-        if ($action == 'save') {
-            controller_round_edit_details($obj_id);
-        } else {
-            controller_round_save_details($obj_id);
-        }
-    }
-}*/
+    require_once(IA_ROOT.'www/controllers/round.php');
+    controller_round_details($obj_id);
+}
 
 // textblock controllers
 // FIXME: quick array of sorts?

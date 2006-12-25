@@ -58,6 +58,30 @@ function task_get_parameter_infos() {
     );
 }
 
+// Initialize a task object
+function task_init($task_id, $task_type, $user = null) {
+    $task = array(
+            'id' => $task_id,
+            'type' => $task_type,
+            'title' => $task_id,
+            'hidden' => 1,
+            'source' => 'ad-hoc',
+            'page_name' => TB_TASK_PREFIX . $task_id,
+    );
+
+    // User stuff. ugly
+    if (is_null($user)) {
+        $task['author'] = 'Unknown';
+        $task['user_id'] = 0;
+    } else {
+        $task['author'] = $user['full_name'];
+        $task['user_id'] = $user['id'];
+    }
+
+    log_assert_valid(task_validate($task));
+    return $task;
+}
+
 // Validates a task.
 // NOTE: this might be incomplete, so don't rely on it exclusively.
 // Use this to check for a valid model. It's also usefull in controllers.

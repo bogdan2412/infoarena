@@ -12,13 +12,13 @@ function round_get_parameter_infos() {
             'classic' => array(
                     'starttime' => array(
                             'description' => "Momentul la care incepe concursul (in format YYYY-MM-DD HH:MM:SS)",
-                            'default' => '',
+                            'default' => '2000-10-10 07:00:00',
                             'type' => 'datetime',
                             'name' => 'Incepe la',
                     ),
                     'endtime' => array(
                             'description' => "Momentul la care se termina concursul (in format YYYY-MM-DD HH:MM:SS)",
-                            'default' => '',
+                            'default' => '2000-10-10 10:00:00',
                             'type' => 'datetime',
                             'name' => 'Se termina',
                     )
@@ -48,7 +48,8 @@ function round_validate_parameters($round_type, $parameters) {
         }
 
         // Check start time < end time.
-        if ($start_tstamp && $end_tstamp && ($tstamp < $tstamp0)) {
+        if ($start_tstamp !== false && $end_tstamp !== false &&
+                ($start_tstamp > $end_tstamp)) {
             $errors['endtime'] = 'Sfarsitul trebuie sa fie dupa inceput.';
         }
     } else {
@@ -56,6 +57,19 @@ function round_validate_parameters($round_type, $parameters) {
     }
 
     return $errors;
+}
+
+// Initialize a round object
+function round_init($round_id, $round_type, $user = null) {
+    $round = array(
+            'id' => $round_id,
+            'type' => $round_type,
+            'title' => $round_id,
+            'page_name' => TB_ROUND_PREFIX . $round_id,
+    );
+
+    log_assert_valid(round_validate($round));
+    return $round;
 }
 
 // Validates a round.
@@ -73,15 +87,6 @@ function round_validate($round) {
 
     if (!is_page_name($round['page_name'])) {
         $errors['page_name'] = "Homepage invalid";
-    }
-
-    if (!is_user_id(getattr($round, 'user_id'))) {
-        $errors['user_id'] = 'ID de utilizator invalid';
-    }
-
-    $hidden = getattr($round, 'hidden', 'FAIL');
-    if ($hidden != '0' && $hidden != '1') {
-        $errors['hidden'] = 'Se accepta doar 0/1';
     }
 
     if (!in_array(getattr($round, 'type', ''), round_get_types())) {

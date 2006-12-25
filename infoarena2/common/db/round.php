@@ -33,23 +33,35 @@ function round_get_info() {
 }
 
 // Create new round
-function round_create($round) {
-    log_error("Not implemented");
-    assert(is_round($round));
-    return db_insert('ia_round', $round);
+// Return success.
+function round_create($round, $round_params, $user_id) {
+    log_assert(is_user_id($user_id));
+    log_assert_valid(round_validate($round));
+    log_assert_valid(round_validate_parameters($round['type'], $round_params));
 
-/*    // FIXME: move in controller
-      // FIXME: controller broken
-    require_once(IA_ROOT . "common/textblock.php");
-    $replace = array("round_id" => $round['id']);
-    textblock_copy_replace("template/newround", $round['page_name'],
-            $replace, "public", $round['user_id']);
-*/
+    db_insert('ia_round', $round);
+    $new_round = round_get($round['id']);
+
+    if ($new_round) {
+        round_update_parameters($round['id'], $round_params);
+
+        // Copy templates.
+        require_once(IA_ROOT . "common/textblock.php");
+        $replace = array("round_id" => $round['id']);
+        textblock_copy_replace("template/newround", $round['page_name'],
+                $replace, "round: {$round['id']}", $user_id);
+
+        return true;
+    } else {
+        return false;
+    }
 }
 
+// Update a round.
 function round_update($round) {
-    log_error("Not implemented");
-    return db_update('ia_round', $round);
+    log_assert_valid(round_validate($round));
+    return db_update('ia_round', $round,
+            "`id` = '".db_escape($round['id'])."'");
 }
 
 // Returns array with all tasks attached to the specified round
@@ -123,13 +135,15 @@ function round_update_parameters($round_id, $param_values) {
 //
 // $tasks is array of task id's
 function round_update_task_list($round_id, $tasks) {
+    log_assert(is_round_id($round_id));
     // delete all round-task relations
     $query = sprintf("DELETE FROM ia_round_task
-                      WHERE round_id = LCASE('%s')",
+                      WHERE round_id = '%s'",
                      db_escape($round_id));
     db_query($query);
 
     // insert new relations
+    // FIXME: sql in a loop. WHAT THE FUCK?
     foreach ($tasks as $task_id) {
         $query = sprintf("INSERT INTO ia_round_task
                             (round_id, task_id)

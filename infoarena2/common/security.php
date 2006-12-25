@@ -16,7 +16,7 @@
 // go down the list.
 //  - anonymous     non-authenticated visitors.
 //  - normal        registered & authenticated users.
-//  - helper        Trusted users. They can make their own tasks/rounds, but
+//  - helper        Trusted users. They can make their own tasks, but
 //                  can't publish them. For teachers or high ratings.
 //  - admin         Can do anything. For core team members.
 
@@ -119,7 +119,6 @@ function security_simplify_action($action)
 
         // Admin stuff:
         case 'task-change-security':
-        case 'round-change-security':
         case 'textblock-change-security':
         case 'simple-critical':
             return 'simple-critical';
@@ -275,7 +274,7 @@ function security_user($user, $action, $target_user) {
     }
 }
 
-// FIXME: round logic.
+// FIXME: contest logic.
 function security_task($user, $action, $task) {
     $usersec = getattr($user, 'security_level', 'anonymous');
     $is_admin = $usersec == 'admin';
@@ -322,11 +321,10 @@ function security_task($user, $action, $task) {
 function security_round($user, $action, $round) {
     $usersec = getattr($user, 'security_level', 'anonymous');
     $is_admin = $usersec == 'admin';
-    $is_owner = ($round['user_id'] == $user['id'] && $usersec == 'helper');
 
     // Log query response.
     $action = security_simplify_action($action);
-    $level = ($is_admin ? 'admin' : ($is_owner ? 'owner' : 'other'));
+    $level = ($is_admin ? 'admin' : 'other');
     $objid = $round['id'];
     log_print("SECURITY QUERY ROUND: ".
             "($level, $action, $objid): ".
@@ -334,28 +332,12 @@ function security_round($user, $action, $round) {
 
 
     switch ($action) {
-        // Read-only access.
+        // Admin only.
         case 'simple-view':
-            return ($round['hidden'] == false) || $is_owner || $is_admin;
-
-        // Edit access.
         case 'simple-rev-edit':
-            return $is_owner || $is_admin;
-
         case 'simple-edit':
-            return ($round['hidden'] && $is_owner) || $is_admin;
-
-        // Admin stuff:
         case 'simple-critical':
             return $is_admin;
-
-        // Special: submit.
-        // FIXME: contest logic?
-        case 'round-submit':
-            if ($usersec == 'anonymous') {
-                return false;
-            }
-            return ($round['hidden'] == false) || $is_owner || $is_admin;
 
         default:
             log_error('Invalid round action: '.$action);

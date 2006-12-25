@@ -49,11 +49,10 @@ log_assert_valid(task_validate($task));
 ?>
 
         <li id="field_type">
-            <label for="form_type">Tip task</label>
+            <label for="form_type">Tipul rundei</label>
                 <select name="type" id="form_type">
                     <option value=""<?= '' == fval('type') ? ' selected="selected"' : '' ?>>[ Alege ]</option>
                     <option value="classic"<?= 'classic' == fval('type') ? ' selected="selected"' : '' ?>>Clasic</option>
-                    <option value="output-only"<?= 'output-only' == fval('type') ? ' selected="selected"' : '' ?>>Output Only</option>
                 </select>
             <?= ferr_span('type')?>
         </li>

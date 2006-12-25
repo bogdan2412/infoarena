@@ -19,14 +19,14 @@ require_once(IA_ROOT."common/round.php");
 function controller_round_details($round_id) {
     // validate round_id
     if (!is_round_id($round_id)) {
-        flash_error('Identificatorul de round este invalid');
+        flash_error('Identificatorul rundei este invalid');
         redirect(url_home());
     }
 
     // Get round
     $round = round_get($round_id);
     if (!$round) {
-        flash_error("Problema nu exista");
+        flash_error("Runda nu exista");
         redirect(url_home());
     }
 
@@ -35,19 +35,28 @@ function controller_round_details($round_id) {
 
     // get parameter list for rounds (in general, not for this specific round)
     $param_infos = round_get_parameter_infos();
+    $all_tasks_by_id = task_get_all_assoc();
+    $all_tasks = array_values($all_tasks_by_id);
+
+    // Get parameters and task list.
     $round_params = round_get_parameters($round['id']);
+    $round_tasks = array();
+    foreach (round_get_task_info($round_id) as $task) {
+        $round_tasks[] = $task['id'];
+    }
 
     // Form stuff.
     $values = array();
     $errors = array();
 
     // Fill in form values from request, defaults in $round
-    $values['author'] = request('author', $round['author']);
     $values['type'] = request('type', $round['type']);
-    $values['source'] = request('source', $round['source']);
-    $values['hidden'] = request('hidden', $round['hidden']);
     $values['title'] = request('title', $round['title']);
     $values['page_name'] = request('page_name', $round['page_name']);
+    // Get tasks. WTF, this works? wicked!
+    $values['tasks'] = request('tasks', $round_tasks);
+
+    log_print_r($values['tasks']);
 
     // Parameter values, for all possible types of rounds.
     // Yucky, but functional.
@@ -66,23 +75,27 @@ function controller_round_details($round_id) {
     if (request_is_post()) {
         // Build new round
         $new_round = $round;
+        $new_round['type'] = $values['type'];
         $new_round['title'] = $values['title'];
         $new_round['page_name'] = $values['page_name'];
-        $new_round['author'] = $values['author'];
-        $new_round['source'] = $values['source'];
-        $new_round['type'] = $values['type'];
-        $new_round['hidden'] = $values['hidden'];
 
         $round_errors = round_validate($new_round);
         $errors = $round_errors;
 
-        // Check security.
-        if ($new_round['hidden'] != $round['hidden']) {
-            identity_require('round-change-security', $round);
+        // Validate task list.
+        $new_round_tasks = $values['tasks'];
+        if (!is_array($new_round_tasks)) {
+            $errors['tasks'] = 'Valori invalide.';
+        } else foreach ($new_round_tasks as $tid) {
+            if (!array_key_exists($tid, $all_tasks_by_id)) {
+                $errors['tasks'] = "Nu exista task-ul $tid.";
+                break;
+            }
         }
 
         // Handle round parameters. Only for current type, and only if
         // properly selected.
+        // FIXME: refactor
         $new_round_params = $round_params;
         if (!array_key_exists('type', $round_errors)) {
             $round_type = $new_round['type'];
@@ -104,10 +117,11 @@ function controller_round_details($round_id) {
         // If no errors then do the db monkey
         if (!$errors) {
             // FIXME: error handling? Is that even remotely possible in php?
-            round_update_parameters($round_id, $new_round_params);
             round_update($new_round);
+            round_update_parameters($round_id, $new_round_params);
+            round_update_task_list($round_id, $new_round_tasks);
 
-            flash("Task-ul a fost modificat cu succes.");
+            flash("Runda a fost modificata cu succes.");
             redirect(url_round_edit($round_id));
         }
     }
@@ -122,6 +136,7 @@ function controller_round_details($round_id) {
     $view['form_errors'] = $errors;
     $view['entity_types'] = round_get_types();
     $view['param_infos'] = $param_infos;
+    $view['all_tasks'] = $all_tasks;
 
     execute_view_die("views/round_edit.php", $view);
 }
@@ -134,7 +149,7 @@ function controller_round_create()
     // Security check. FIXME: sort of a hack.
     identity_require_login();
     identity_require("round-create",
-            round_init_object('new_round', 'classic', $identity_user));
+            round_init('new_round', 'classic', $identity_user));
 
     // Form stuff.
     $values = array();
@@ -142,20 +157,21 @@ function controller_round_create()
 
     // Get form values
     $values['id'] = request('id', '');
+    // FIXME: type hidden
     $values['type'] = request('type', 'classic');
 
     if (request_is_post()) {
         if (!is_round_id($values['id'])) {
-            $errors['id'] = "Id de round invalid";
+            $errors['id'] = "Id-ul rundei este invalid";
         } else if (round_get($values['id'])) {
-            $errors['id'] = "Exista deja un round cu acest id";
+            $errors['id'] = "Exista deja o runda cu acest id";
         }
         if (!in_array($values['type'], round_get_types())) {
-            $errors['type'] = "Tip de round invalid";
+            $errors['type'] = "Tip de runda invalid";
         }
 
         if (!$errors) {
-            $round = round_init_object(
+            $round = round_init(
                     $values['id'],
                     $values['type'],
                     $identity_user);
@@ -167,8 +183,12 @@ function controller_round_create()
             }
 
             // This should never fail.
-            log_assert(round_create($round, $round_params));
-            flash("O noua runda a fost creata, acum poti sa-l editezi");
+            log_assert(round_create(
+                        $round,
+                        $round_params,
+                        identity_get_user_id()
+            ));
+            flash("O noua runda a fost creata, acum poti sa editezi detalii.");
             redirect(url_round_edit($round['id']));
         }
     }
@@ -182,7 +202,5 @@ function controller_round_create()
 
     execute_view_die("views/round_create.php", $view);
 }
-
-?>
 
 ?>
