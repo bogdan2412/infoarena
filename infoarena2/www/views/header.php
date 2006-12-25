@@ -3,7 +3,26 @@
 require_once(IA_ROOT.'www/views/sitewide.php');
 require_once(IA_ROOT.'www/views/utilities.php');
 
-check_view($view);
+// Basic view checks.
+log_assert(is_array($view));
+log_assert(is_string($view['title']));
+
+// Check forms.
+if (isset($form_errors) || isset($form_values)) {
+    log_assert(is_array($view['form_errors']));
+    log_assert(is_array($view['form_values']));
+    foreach ($form_errors as $k => $v) {
+        if (!array_key_exists($k, $form_values)) {
+            log_error("Form error $k with no form value.");
+        }
+    }
+    foreach ($form_values as $k => $v) {
+        if (htmlentities($k) != $k) {
+            log_error("Form field $k contains special html chars.");
+        }
+    }
+}
+ 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

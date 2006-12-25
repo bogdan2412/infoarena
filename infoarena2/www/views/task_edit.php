@@ -2,7 +2,11 @@
 require_once(IA_ROOT."common/task.php");
 $view['head'] = getattr($view, 'head').
     "<script type=\"text/javascript\" src=\"" . htmlentities(url_static("js/parameditor.js")) . "\"></script>";
+
 include('views/header.php');
+
+// Validate task.
+log_assert_valid(task_validate($task));
 ?>
 
 <h1><?= htmlentities(getattr($view, 'title')) ?></h1>
@@ -26,18 +30,19 @@ include('views/header.php');
         </li>
 
         <li id="field_source">
-            <label for="form_source">Sursa</label>
             <?= format_form_text_field('source', 'Sursa') ?>
         </li>
- 
+
+<? if (identity_can('task-change-security', $task)) { ?>
         <li id="field_hidden">
             <label for="form_hidden">Vizibilitate</label>
-                <select name="hidden" id="form_hidden">
-                    <option value="1"<?= '1' == fval('hidden') ? ' selected="selected"' : '' ?>>Task ascuns</option>
-                    <option value="0"<?= '0' == fval('hidden') ? ' selected="selected"' : '' ?>>Task public (vizibil)</option>
-                </select>
+            <select name="hidden" id="form_hidden">
+                <option value="1"<?= '1' == fval('hidden') ? ' selected="selected"' : '' ?>>Task ascuns</option>
+                <option value="0"<?= '0' == fval('hidden') ? ' selected="selected"' : '' ?>>Task public (vizibil)</option>
+            </select>
             <?= ferr_span('hidden')?><br />
         </li>
+<? } ?>
 
 <?php
 // FIXME: Field should be generated from task_get_types()

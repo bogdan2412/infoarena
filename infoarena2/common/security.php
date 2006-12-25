@@ -299,7 +299,7 @@ function security_task($user, $action, $task) {
             return $is_owner || $is_admin;
 
         case 'simple-edit':
-            return ($task['hidden'] && $is_owner) || $is_admin;
+            return (/*$task['hidden'] &&*/ $is_owner) || $is_admin;
 
         // Admin stuff:
         case 'simple-critical':

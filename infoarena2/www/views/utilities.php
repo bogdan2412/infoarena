@@ -4,28 +4,6 @@ require_once(IA_ROOT.'www/wiki/wiki.php');
 require_once(IA_ROOT.'common/db/textblock.php');
 require_once(IA_ROOT.'www/format/format.php');
 
-// Check the big view variable for consistency.
-// FIXME: sux, assertions in views instead?
-function check_view($view) {
-    // Checking $view.
-    log_assert(is_array($view));
-    log_assert(is_string($view['title']));
-    if (isset($view['form_errors']) || isset($view['form_values'])) {
-        log_assert(is_array($view['form_errors']));
-        log_assert(is_array($view['form_values']));
-    }
-    if (isset($view['textblock'])) {
-        require_once(IA_ROOT . "common/textblock.php");
-        log_assert(is_string($view['page_name']));
-        log_assert_valid(textblock_validate($view['textblock']));
-    }
-    if (isset($view['task'])) {
-        log_assert(is_array($view['task']));
-        log_assert(is_array($view['task_parameters']));
-        //.. more here.
-    }
-}
-
 // returns a form value, html-escaped by default.
 function fval($param_name, $escape_html = true) {
     global $view;

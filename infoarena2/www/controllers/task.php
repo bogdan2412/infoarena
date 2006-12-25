@@ -116,6 +116,7 @@ function controller_task_details($task_id) {
     $view['title'] = "Editare $task_id";
     $view['page_name'] = url_task_edit($task_id);
     $view['task_id'] = $task_id;
+    $view['task'] = $task;
     $view['form_values'] = $values;
     $view['form_errors'] = $errors;
     $view['entity_types'] = task_get_types();

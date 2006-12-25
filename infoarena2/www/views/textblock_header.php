@@ -1,8 +1,12 @@
 <?php
 // Show wiki operations.
 // Only show operations the current user can do.
-?>
 
+// Check view parameters.
+require_once(IA_ROOT . "common/textblock.php");
+log_assert_valid(textblock_validate($textblock));
+ 
+?>
 <div id="wikiOps">
     <ul>
         <?php if (identity_can('textblock-edit', $textblock)) { ?>
