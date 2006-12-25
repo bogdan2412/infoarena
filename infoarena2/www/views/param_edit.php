@@ -22,13 +22,32 @@ foreach ($entity_types as $etype) {
         $label_tag = format_tag('label', $info['name'], array(
                 'for' => "form_$form_name",
         ));
-        $input_tag = format_tag('input', null, array(
-                'type' => 'text',
-                'class' => 'parameter',
-                'value' => fval($form_name),
-                'id' => "form_$form_name",
-                'name' => $form_name,
-        ));
+
+        // Handle booleans.
+        if ($info['type'] == 'boolean') {
+            $input_tag = format_open_tag('select', array(
+                    'name' => $form_name,
+                    'id' => "form_$form_name",
+            ));
+            if (fval($form_name)) {
+                $input_tag .= '<option value="1" selected="selected">'.
+                    'Da</option>';
+                $input_tag .= '<option value="0">Nu</option>';
+            } else {
+                $input_tag .= '<option value="1">Da</option>';
+                $input_tag .= '<option value="0" selected="selected">'.
+                    'Nu</option>';
+            }
+            $input_tag .= "</select>";
+        } else {
+            $input_tag = format_tag('input', null, array(
+                    'type' => 'text',
+                    'class' => 'parameter',
+                    'value' => fval($form_name),
+                    'id' => "form_$form_name",
+                    'name' => $form_name,
+            ));
+        }
     ?>
         <tr>
             <td><?= $label_tag ?></td>

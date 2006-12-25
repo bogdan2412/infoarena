@@ -77,7 +77,7 @@ function controller_task_details($task_id) {
 
         // Check security.
         if ($new_task['hidden'] != $task['hidden']) {
-            identity_require('textblock-change-security', $page);
+            identity_require('task-change-security', $task);
         }
 
         // Handle task parameters. Only for current type, and only if
@@ -129,9 +129,10 @@ function controller_task_create()
 {
     global $identity_user;
 
-    // Security check
+    // Security check. FIXME: sort of a hack.
     identity_require_login();
-    identity_require('task-create', null);
+    identity_require("task-create",
+            task_init_object('new_task', 'classic', $identity_user));
 
     // Form stuff.
     $values = array();
@@ -152,16 +153,10 @@ function controller_task_create()
         }
 
         if (!$errors) {
-            $task = array(
-                    'id' => $values['id'],
-                    'type' => $values['type'],
-                    'title' => $values['id'],
-                    'hidden' => 1,
-                    'source' => 'ad-hoc',
-                    'author' => $identity_user['full_name'],
-                    'user_id' => $identity_user['id'],
-                    'page_name' => TB_TASK_PREFIX . $values['id'],
-            );
+            $task = task_init_object(
+                    $values['id'],
+                    $values['type'],
+                    $identity_user);
             $task_params = array();
             // FIXME: array_ magic?
             $param_infos = task_get_parameter_infos();

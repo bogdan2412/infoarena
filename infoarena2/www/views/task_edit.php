@@ -53,14 +53,14 @@ include('views/header.php');
             <?= ferr_span('type')?>
         </li>
 
-        <li id="field_type">
+        <li id="field_params">
             <label>Parametri</label>
             <? include('views/param_edit.php') ?>
         </li>
     </ul>
     <div class="submit">
         <ul class="form">
-            <li id="form_submit">
+            <li id="field_submit">
                 <input type="submit" value="Salveaza" id="form_submit" class="button important" />
             </li>
         </ul>

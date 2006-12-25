@@ -41,9 +41,9 @@ function macro_tasksubmit($args) {
 <form enctype="multipart/form-data" action="<?= htmlentities(url_submit()) ?>" method="post" class="inlineSubmit" id="task_submit">
 
 <input type="hidden" id="output_only" value="<?= 'output-only' == $task['type'] ? htmlentities($task['id']) : '' ?>" />
+<input type="hidden" name="task_id" value="<?= htmlentities($task['id']) ?>" id="form_task" />
 
 <ul class="form">
-    <input type="hidden" name="task_id" value="<?= htmlentities($task['id']) ?>" id="form_task" />
 
     <li id="field_solution">
         <label for="form_solution">Fisier solutie</label>

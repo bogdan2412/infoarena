@@ -98,6 +98,16 @@ function wiki_include($page_name, $template_args = null) {
     echo '</div>';
 }
 
+// Format a simple form input tag.
+function format_form_text_input($field) {
+    return format_tag('input', null, array(
+            'type' => 'text',
+            'name' => $field,
+            'id' => 'form_' . $field,
+            'value' => fval($field),
+    ));
+}
+
 // Formats a simple form text field
 function format_form_text_field($field, $info) {
     $res = '';
@@ -105,13 +115,7 @@ function format_form_text_field($field, $info) {
             'for' => 'form_' . $field,
     ));
     $res .= ferr_span($field);
-    $res .= format_tag('input', null, array(
-            'type' => 'text',
-            'name' => $field,
-            'id' => 'form_' . $field,
-            'value' => fval($field),
-    ));
-
+    $res .= format_form_text_input($field);
     return $res;
 }
 

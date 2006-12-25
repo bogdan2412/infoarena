@@ -197,7 +197,10 @@ function log_assert_valid($errors)
 // Check if two values are equal.
 // Prints arguments if it fails, so it's generally a good idea.
 function log_assert_equal($v1, $v2) {
-    log_assert($v1 == $v2, "$v1 != $v2");
+    if ($v1 != $v2) {
+        $message = format_message_backtrace("$v1 != $v2");
+        log_error($message, false);
+    }
 }
 
 // Custom error_handler.

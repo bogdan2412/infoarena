@@ -125,16 +125,22 @@ function test_prepare()
 
 // Cleanup for testing.
 // Warning: bugs might fuck the db.
+// However, tests are only run on a local copy anyway.
 function test_cleanup()
 {
     db_query("DELETE FROM ia_user WHERE `username` LIKE 'test_%'");
     db_query("DELETE FROM ia_task WHERE `id` LIKE 'test_%'");
     db_query("DELETE FROM ia_round WHERE `id` LIKE 'test_%'");
-    db_query("DELETE FROM ia_textblock WHERE `name` LIKE 'sandbox/test_%'");
-    db_query("DELETE FROM ia_textblock_revision WHERE `name` LIKE 'sandbox/test_%'");
-    db_query("DELETE FROM ia_textblock WHERE `name` LIKE 'utilizator/test_%'");
-    db_query("DELETE FROM ia_textblock_revision WHERE `name` LIKE 'utilizator/test_%'");
-    db_query("DELETE FROM ia_file WHERE `page` LIKE 'sandbox/test_%'");
+    // Remove various stuff from the wiki.
+    $prefixes = array('sandbox', 'utilizator', 'runda', 'problema');
+    foreach ($prefixes as $prefix) {
+        db_query("DELETE FROM `ia_textblock` ".
+                 "WHERE `name` LIKE '$prefix/test_%'");
+        db_query("DELETE FROM `ia_textblock_revision` ".
+                 "WHERE `name` LIKE '$prefix/test_%'");
+        db_query("DELETE FROM `ia_file` ".
+                 "WHERE `page` LIKE '$prefix/test_%'");
+    }
 }
 
 ?>

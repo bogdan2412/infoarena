@@ -24,6 +24,7 @@
 function security_query($user, $action, $object) {
     list($group, $subaction) = explode('-', $action, 2);
 
+    log_assert(is_array($object), '$object must be an array');
     // Log security checking.
     $username = getattr($user, 'username', 'null');
     $usersec = getattr($user, 'security_level', 'anonymous');
@@ -104,7 +105,7 @@ function security_simplify_action($action)
         case 'attach-overwrite':
         case 'attach-delete':
         case 'task-edit':
-        case 'task-ceate':
+        case 'task-create':
         case 'task-delete':
         case 'round-edit':
         case 'round-create':
@@ -117,10 +118,8 @@ function security_simplify_action($action)
             return 'simple-edit';
 
         // Admin stuff:
-        case 'task-hide':
-        case 'task-publish':
-        case 'round-hide':
-        case 'round-publish':
+        case 'task-change-security':
+        case 'round-change-security':
         case 'textblock-change-security':
         case 'simple-critical':
             return 'simple-critical';
@@ -167,7 +166,7 @@ function security_textblock($user, $action, $textblock) {
     }
 
     // Forward security to task.
-    if (preg_match("/^ \s* task: \s* ([a-z0-9]*) \s* $/xi", $textsec, $matches)) {
+    if (preg_match("/^ \s* task: \s* ([a-z_0-9]*) \s* $/xi", $textsec, $matches)) {
         require_once(IA_ROOT . "common/db/task.php");
         $task = task_get($matches[1]);
         if ($task === null) {
@@ -178,7 +177,7 @@ function security_textblock($user, $action, $textblock) {
     }
 
     // Forward security to round.
-    if (preg_match("/^ \s* round: \s* ([a-z0-9]*) \s* $/xi", $textsec, $matches)) {
+    if (preg_match("/^ \s* round: \s* ([a-z_0-9]*) \s* $/xi", $textsec, $matches)) {
         require_once(IA_ROOT . "common/db/round.php");
         $round = round_get($matches[1]);
         if ($round === null) {
@@ -300,7 +299,7 @@ function security_task($user, $action, $task) {
             return $is_owner || $is_admin;
 
         case 'simple-edit':
-            return ($task['hidden'] == false && $is_owner) || $is_admin;
+            return ($task['hidden'] && $is_owner) || $is_admin;
 
         // Admin stuff:
         case 'simple-critical':
@@ -344,7 +343,7 @@ function security_round($user, $action, $round) {
             return $is_owner || $is_admin;
 
         case 'simple-edit':
-            return ($round['hidden'] == false && $is_owner) || $is_admin;
+            return ($round['hidden'] && $is_owner) || $is_admin;
 
         // Admin stuff:
         case 'simple-critical':
