@@ -78,6 +78,11 @@ function macro_tasks($args) {
 
     $column_infos = array(
             array(
+                'title' => 'Numar',
+                'css_class' => 'number',
+                'rowform' => create_function('$row', 'return $row["order"];'),
+            ),
+            array(
                 'title' => 'Titlul problemei',
                 'css_class' => 'task',
                 'rowform' => create_function('$row',

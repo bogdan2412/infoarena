@@ -967,6 +967,9 @@ table.monitor {
     background-repeat: no-repeat;
     background-position: 3px center;
 }
+.tasks td.number {
+    Width: 5%;
+}
 .tasks tr.solved td.task {
     background-image: url('../images/icons/task_solved.gif');
 }

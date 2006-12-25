@@ -67,6 +67,7 @@ function round_get_task_info($round_id, $first = 0, $count = null, $user_id = nu
         $count = 490234;
     }
     $fields = "round_task.task_id AS id, ".
+              "task.`order` AS `order`, ".
               "task.`title` AS `title`, ".
               "task.`page_name` AS `page_name`, ".
               "task.`hidden` AS `hidden`, ".
