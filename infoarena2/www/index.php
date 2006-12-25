@@ -153,7 +153,8 @@ else if ('confirm' == $urlstart) {
 }
 
 // user profile, view personal page / statistics / rating evolution
-else if (TB_USER_PREFIX==$urlstart.'/' && ('view' == $action || 'rating' == $action || 'stats' == $action )) {
+else if (TB_USER_PREFIX==$urlstart.'/' &&
+        ('view' == $action || 'rating' == $action || 'stats' == $action )) {
     require_once(IA_ROOT.'www/controllers/user.php');
     controller_user_view($page_id, $action, request('revision'));
 }

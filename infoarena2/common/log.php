@@ -194,6 +194,12 @@ function log_assert_valid($errors)
     }
 }
 
+// Check if two values are equal.
+// Prints arguments if it fails, so it's generally a good idea.
+function log_assert_equal($v1, $v2) {
+    log_assert($v1 == $v2, "$v1 != $v2");
+}
+
 // Custom error_handler.
 // This behaves as close standard error handler as possible, it uses
 // error_log and all. file/line information is not printed for messages

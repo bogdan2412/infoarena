@@ -76,6 +76,7 @@ function security_query($user, $action, $object) {
 }
 
 // This function simplifies $action.
+// It's not an error to pass an already simplified action.
 function security_simplify_action($action)
 {
     switch ($action) {
@@ -87,6 +88,7 @@ function security_simplify_action($action)
         case 'user-viewinfo':
         case 'task-view':
         case 'round-view':
+        case 'simple-view':
             return 'simple-view';
 
         // Reversible edits access.
@@ -94,6 +96,7 @@ function security_simplify_action($action)
         case 'textblock-restore':
         case 'textblock-attach':
         case 'textblock-create':
+        case 'simple-rev-edit':
             return 'simple-rev-edit';
 
         // Irreversible edits.
@@ -110,6 +113,7 @@ function security_simplify_action($action)
         case 'grader-download':
         case 'grader-overwrite':
         case 'grader-delete':
+        case 'simple-edit':
             return 'simple-edit';
 
         // Admin stuff:
@@ -118,6 +122,7 @@ function security_simplify_action($action)
         case 'round-hide':
         case 'round-publish':
         case 'textblock-change-security':
+        case 'simple-critical':
             return 'simple-critical';
 
         // Special actions fall through
@@ -143,12 +148,20 @@ function security_textblock($user, $action, $textblock) {
     // HACK: Forward security to user.
     // HACK: based on name
     if (preg_match("/^ ".preg_quote(TB_USER_PREFIX, '/').
-                   " ([a-z0-9_\-]*) \/? .* $/xi", $textblock['name'], $matches)) {
+                   " ([a-z0-9_\-]*) (\/?.*) $/xi", $textblock['name'], $matches)) {
         require_once(IA_ROOT . "common/db/user.php");
         $ouser = user_get_by_username($matches[1]);
         if ($ouser === null) {
             log_warn("User page for missing user");
             return false;
+        }
+        // This is a horrible hack to prevent deleting or moving an user page.
+        // This is pure evil.
+        if ($matches[2] != '') {
+            return false;
+        }
+        if ($action == 'textblock-delete' || $action == 'textblock-move') {
+            $action = 'simple-critical';
         }
         return security_user($user, $action, $ouser);
     }
@@ -234,7 +247,13 @@ function security_user($user, $action, $target_user) {
     $is_admin = $usersec == 'admin';
     $is_self = $target_user['id'] == $user['id'];
 
+    // Log query response.
     $action = security_simplify_action($action);
+    $level = ($is_admin ? 'admin' : ($is_self ? 'self' : 'other'));
+    $objid = $target_user['username'];
+    log_print("SECURITY QUERY USER: ".
+            "($level, $action, $objid): ".
+            "(level, action, object");
 
     switch ($action) {
         case 'simple-view':
@@ -246,8 +265,10 @@ function security_user($user, $action, $target_user) {
             // anyone can edit their own profile. admins can edit any profile
             return $is_admin || $is_self;
 
+        // Nobody is allowed here. This includes moving/deleting user's own
+        // page and changing security descriptors in user pages.
         case 'simple-critical':
-            return $is_admin;
+            return false;
 
         default:
             log_error('Invalid user action: '.$action);
