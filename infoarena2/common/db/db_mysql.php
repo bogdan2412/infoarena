@@ -37,9 +37,15 @@ function db_affected_rows() {
 
 // Executes query. Outputs error messages
 // Returns native PHP mysql resource handle
-function db_query($query) {
+function db_query($query, $unbuffered = false) {
     global $dbLink;
-    $result = mysql_query($query, $dbLink);
+    if ($unbuffered) {
+        $result = mysql_unbuffered_query($query, $dbLink);
+    } else {
+        //log_print("BUFFERED QUERY!");
+        //log_backtrace();
+        $result = mysql_query($query, $dbLink);
+    }
     if (!$result) {
         log_print("Query: '$query'");
         log_error("MYSQL error: ".mysql_error($dbLink));
@@ -55,17 +61,24 @@ function db_query($query) {
 
 // Executes query, fetches only FIRST result row
 function db_fetch($query) {
-    $result = db_query($query);
+    $result = db_query($query, true);
     if ($result) {
         $row = db_next_row($result);
         if ($row === false) {
+            db_free($result);
             return null;
         }
+        db_free($result);
         return $row;
-    }
-    else {
+    } else {
         return null;
     }
+}
+
+// Frees mysql result
+function db_free($result) {
+    log_assert(is_resource($result));
+    mysql_free_result($result);
 }
 
 // Fetches next result row

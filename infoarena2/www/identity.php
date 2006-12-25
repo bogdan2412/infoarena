@@ -42,7 +42,7 @@ function identity_get_user_id() {
 // a given action (onto an object)
 // This is a wrapper for the more-generic, session-independent permission
 // module.
-function identity_can($action, $object = null, $identity = null) {
+function identity_can($action, $object, $identity = null) {
     if (is_null($identity)) {
         global $identity_user;
         $identity = $identity_user;

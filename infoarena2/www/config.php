@@ -10,9 +10,6 @@
  * This file has some decent defaults.
  */
 
-// Include main config.
-require_once("../config.php");
-
 // maximum attachment size for wiki pages
 define("IA_ATTACH_MAXSIZE", 20*1024*1024);
 
@@ -36,14 +33,6 @@ define("IA_MAIL_SENDER_NO_REPLY", 'infoarena <no-reply@infoarena.ro>');
 
 // Maximum number of recursive includes in the wiki.
 define('IA_MAX_RECURSIVE_INCLUDES', 5);
-
-// Boolean whether to display SQL queries and helpful debug messages
-// when encountering a SQL error.
-//
-// :WARNING: Disable this option when uploading the website to a production
-// environment! Telling poeple too much about your database is rarely a good
-// thing.
-define("IA_SQL_TRACE", true);
 
 // Image resampling
 //  - constraints for image resampling

@@ -90,7 +90,7 @@ function format_message_backtrace($message, $backtrace_level = 0) {
 // trigger_error which split multi-line strings.
 function trigger_error_split($error_msg, $error_type)
 {
-    if (IA_DEVELOPMENT_MODE) {
+    if (IA_DEVELOPMENT_MODE && IA_HTTP_ENV) {
         // FIXME: Un-hack this
         // when in development mode, also save mesage in log buffer
         // so it can be displayed to user inside rendering page
@@ -284,7 +284,7 @@ function logging_error_handler($errno, $errstr, $errfile, $errline) {
         error_log("Caught a fatal error, printing a full backtrace");
         log_backtrace(2, false, true);
 
-        if (IA_DEBUG_MODE && IA_HTTP_ENV) {
+        if (IA_DEVELOPMENT_MODE && IA_HTTP_ENV) {
             //echo '<html><head><title>Info-arena2 made a booboo</title></head><body>';
             echo '<pre class="debug-error">'.$errstr."\nPrinting full backtrace:\n";
             $backtrace = debug_backtrace();
@@ -308,6 +308,7 @@ function log_execution_stats() {
            .'s';
     $msg .= '; Queries='.$execution_stats['queries'];
     $msg .= '; Memory='.number_format(memory_get_usage()/1024/1024, 2).'MB';
+    $msg .= '; Memory='.memory_get_usage().'bytes';
 
     log_print("Execution stats: ".$msg);
 }

@@ -3252,8 +3252,16 @@ class Textile {
    * @private
    */
   function _cb($function) {
+    static $callback_cache = array();
     $current =& Textile::_current_store($this);
-    return create_function('$m', '$me =& Textile::_current(); return ' . $function . ';');
+    if (array_key_exists($function, $callback_cache)) {
+        return $callback_cache[$function];
+    } else {
+        $func = create_function('$m',
+                '$me =& Textile::_current(); return '.$function .';');
+        $callback_cache[$function] = $func;
+        return $func;
+    }
   } // function _cb
 
   /**

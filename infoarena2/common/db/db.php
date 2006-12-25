@@ -14,15 +14,15 @@ require_once(IA_ROOT."common/db/db_mysql.php");
 
 // Executes query, fetches the all result rows
 function db_fetch_all($query) {
-    $result = db_query($query);
+    $result = db_query($query, true);
     if ($result) {
         $buffer = array();
         while ($row = db_next_row($result)) {
             $buffer[] = $row;
         }
+        db_free($result);
         return $buffer;
-    }
-    else {
+    } else {
         return null;
     }
 }

@@ -4,8 +4,7 @@ require_once(IA_ROOT."common/db/round.php");
 require_once(IA_ROOT."common/db/task.php");
 require_once(IA_ROOT."common/round.php");
 
-/* FIXME: disabled
-// Displays a form to either create a new round or edit an existing one.
+// Displays form to either create a new round or edit an existing one.
 // This form does not edit round content (its associated textblock)
 // (textblock editor does that)
 //
@@ -15,209 +14,175 @@ require_once(IA_ROOT."common/round.php");
 //
 // Form submits to controller_round_save_details().
 // When a validation error occurs in controller_round_save_details() it calls
-// this controller (controller_round_edit_details) as an error handler
-// in order to display the form with the user-submitted data and their
-// corresponding errors.
-function controller_round_edit_details($round_id, $form_data = null,
-                                       $form_errors = null) {
-    global $identity_user;
-
-    // ask for permissions
-    $round = round_get($round_id);
-    if ($round) {
-        identity_require('round-edit', $round);
-    }
-    else {
-        identity_require('round-create');
-    }
-
-    // validate round id
-    if (!round_is_valid_id($round_id) && !$round) {
-        flash_error('Identificatorul de runda este invalid');
+// this controller as an error handler in order to display the form
+// with the user-submitted data and their corresponding errors.
+function controller_round_details($round_id) {
+    // validate round_id
+    if (!is_round_id($round_id)) {
+        flash_error('Identificatorul de round este invalid');
         redirect(url_home());
     }
 
-    // get parameter list for rounds (in general, not for this specific round)
-    $param_list = round_get_parameter_infos_hack();
-    // here we store parameter values
-    $param_values = array();
-
-    
-    if (is_null($form_data)) {
-        // initial form data (when displaying the form for the first time)
-        $form_data = array();
-        $form_errors = array();
-        if (!$round) {
-            // - default values (when creating a new round)
-            $form_data['type'] = '';
-            $form_data['active'] = '0';
-            $form_data['tasks'] = array();
-
-            // - default parameter values
-            foreach ($param_list as $k => $v) {
-                $param_values[$k] = $v['default'];
-                $form_data['p_' . $k] = $v['default'];
-            }
-        }
-        else {
-            // - values from existing round
-            $form_data['type'] = $round['type'];
-            $form_data['active'] = $round['active'];
-
-            // get round parameter values
-            $param_values = round_get_parameters($round_id);
-            foreach ($param_values as $k => $v) {
-                $form_data['p_' . $k] = $v;
-            }
-
-            // get attached task list
-            $tasks = round_get_task_info($round_id);
-            $form_data['tasks'] = array_keys($tasks);
-        }
-    }
-    else {
-        // form was submitted. there was an error with the input
-        // - $form_data already contains input data
-        // - $form_errors already contains input errors
-
-        // - extract parameter values from form_data.
-        //   the `save` controller does a nice thing and extracts these values
-        //   for convenience
-        $param_values = $form_data['_param_values'];
-    }
-
-    // obtain task list
-    $all_tasks = task_list_info();
-
-    // view form
-    $view = array();
-    //  - choose title
+    // Get round
+    $round = round_get($round_id);
     if (!$round) {
-        $view['title'] = "Creaza runda: ".$round_id;
+        flash_error("Problema nu exista");
+        redirect(url_home());
     }
-    else {
-        $view['title'] = "Modificare runda: ".$round_id;
+
+    // Security check
+    identity_require('round-edit', $round);
+
+    // get parameter list for rounds (in general, not for this specific round)
+    $param_infos = round_get_parameter_infos();
+    $round_params = round_get_parameters($round['id']);
+
+    // Form stuff.
+    $values = array();
+    $errors = array();
+
+    // Fill in form values from request, defaults in $round
+    $values['author'] = request('author', $round['author']);
+    $values['type'] = request('type', $round['type']);
+    $values['source'] = request('source', $round['source']);
+    $values['hidden'] = request('hidden', $round['hidden']);
+    $values['title'] = request('title', $round['title']);
+    $values['page_name'] = request('page_name', $round['page_name']);
+
+    // Parameter values, for all possible types of rounds.
+    // Yucky, but functional.
+    foreach (round_get_types() as $round_type) {
+        foreach ($param_infos[$round_type] as $name => $info) {
+            $form_name = "param_{$round_type}_{$name}";
+            $def = $info['default'];
+            if ($round_type == $round['type']) {
+                $def = getattr($round_params, $name, $def);
+            }
+            $values[$form_name] = request($form_name, $def);
+        }
     }
-    //  - feed view values
-    $view['action'] = url_round_admin($round_id);
-    $view['form_values'] = $form_data;
-    $view['form_errors'] = $form_errors;
-    $view['param_list'] = $param_list;
-    $view['param_values'] = $param_values;
-    $view['all_tasks'] = $all_tasks;
-    $view['page_name'] = 'admin/round/'.$round_id;
+
+    // Validate the monkey.
+    if (request_is_post()) {
+        // Build new round
+        $new_round = $round;
+        $new_round['title'] = $values['title'];
+        $new_round['page_name'] = $values['page_name'];
+        $new_round['author'] = $values['author'];
+        $new_round['source'] = $values['source'];
+        $new_round['type'] = $values['type'];
+        $new_round['hidden'] = $values['hidden'];
+
+        $round_errors = round_validate($new_round);
+        $errors = $round_errors;
+
+        // Check security.
+        if ($new_round['hidden'] != $round['hidden']) {
+            identity_require('round-change-security', $round);
+        }
+
+        // Handle round parameters. Only for current type, and only if
+        // properly selected.
+        $new_round_params = $round_params;
+        if (!array_key_exists('type', $round_errors)) {
+            $round_type = $new_round['type'];
+            foreach ($param_infos[$round_type] as $name => $info) {
+                $form_name = "param_{$round_type}_{$name}";
+                $new_round_params[$name] = $values[$form_name];
+            }
+            $round_params_errors = round_validate_parameters(
+                    $round_type, $new_round_params);
+            // Properly copy errors. Sucky
+            foreach ($param_infos[$round_type] as $name => $info) {
+                $form_name = "param_{$round_type}_{$name}";
+                if (array_key_exists($name, $round_params_errors)) {
+                    $errors[$form_name] = $round_params_errors[$name];
+                }
+            }
+        }
+
+        // If no errors then do the db monkey
+        if (!$errors) {
+            // FIXME: error handling? Is that even remotely possible in php?
+            round_update_parameters($round_id, $new_round_params);
+            round_update($new_round);
+
+            flash("Task-ul a fost modificat cu succes.");
+            redirect(url_round_edit($round_id));
+        }
+    }
+
+    // Create view.
+    $view = array();
+    $view['title'] = "Editare $round_id";
+    $view['page_name'] = url_round_edit($round_id);
+    $view['round_id'] = $round_id;
+    $view['round'] = $round;
+    $view['form_values'] = $values;
+    $view['form_errors'] = $errors;
+    $view['entity_types'] = round_get_types();
+    $view['param_infos'] = $param_infos;
+
     execute_view_die("views/round_edit.php", $view);
 }
 
-// save controller
-// Workflow is:
-//      * controller_round_edit_details() displays form
-//      * form submits to controller_round_save_details()
-//      * controller_round_save_details() validates and uses
-//        controller_round_edit_details() as error handler
-function controller_round_save_details($round_id) {
+// Creates a round. Minimalist
+function controller_round_create()
+{
     global $identity_user;
 
-    // ask for permissions
-    $round = round_get($round_id);
-    if ($round) {
-        identity_require('round-edit', $round);
-    }
-    else {
-        identity_require('round-create');
-    }
+    // Security check. FIXME: sort of a hack.
+    identity_require_login();
+    identity_require("round-create",
+            round_init_object('new_round', 'classic', $identity_user));
 
-    // validate round id
-    if (!round_is_valid_id($round_id) && !$round) {
-        flash_error('Identificatorul de runda este invalid!');
-        redirect(url_home());
-    }
-
-    // get parameter list for rounds (in general, not for this specific round)
-    $param_list = round_get_parameter_infos_hack();
-
-    // Validate data. Put incoming data in `data` and errors in `errors`
-    $data = array();
+    // Form stuff.
+    $values = array();
     $errors = array();
-    $data['type'] = getattr($_POST, 'type');
-    $data['active'] = getattr($_POST, 'active');
-    // get parameter values (all incoming POST variables that start with 'p_')
-    $param_values = array();
-    foreach ($_POST as $k => $v) {
-        if ('p_' != substr($k, 0, 2)) continue;
-        $id = substr($k, 2);
-        if (!isset($param_list[$id])) continue;
-        $param_values[substr($k, 2)] = $v;
-        $data[$k] = $v;
-    }
-    $data['_param_values'] = $param_values;
-    // validate round values
-    log_print("Task type is {$data['type']}");
-    if (!in_array($data['type'], round_get_types())) {
-        $errors['type'] = "Alegeti tipul rundei.";
-    }
-    // validate visibility
-    if ('0' != $data['active'] && '1' != $data['active']) {
-        $errors['active'] = "Valoare invalida";
-    }
-    if ('1' == $data['active'] && !identity_can('round-publish', $round)) {
-        $errors['active'] = "Nu aveti permisiunea sa publicati runde.";
-    }
 
-    // validate parameter values
-    if (in_array($data['type'], round_get_types())) {
-        $p_errors = round_validate_parameters($data['type'], $param_values);
-        if ($p_errors) {
-            foreach ($p_errors as $k => $v) {
-                $errors['p_' . $k] = $v;
+    // Get form values
+    $values['id'] = request('id', '');
+    $values['type'] = request('type', 'classic');
+
+    if (request_is_post()) {
+        if (!is_round_id($values['id'])) {
+            $errors['id'] = "Id de round invalid";
+        } else if (round_get($values['id'])) {
+            $errors['id'] = "Exista deja un round cu acest id";
+        }
+        if (!in_array($values['type'], round_get_types())) {
+            $errors['type'] = "Tip de round invalid";
+        }
+
+        if (!$errors) {
+            $round = round_init_object(
+                    $values['id'],
+                    $values['type'],
+                    $identity_user);
+            $round_params = array();
+            // FIXME: array_ magic?
+            $param_infos = round_get_parameter_infos();
+            foreach ($param_infos[$values['type']] as $name => $info) {
+                $round_params[$name] = $info['default'];
             }
+
+            // This should never fail.
+            log_assert(round_create($round, $round_params));
+            flash("O noua runda a fost creata, acum poti sa-l editezi");
+            redirect(url_round_edit($round['id']));
         }
     }
 
-    // validate attached task list
-    $all_tasks = task_list_info();
-    $tasks = getattr($_POST, 'tasks', array());
-    $data['tasks'] = $tasks;
-    foreach ($tasks as $task_id) {
-        if (!isset($all_tasks[$task_id])) {
-            $errors['tasks'] = 'Valori invalide! Hacking?';
-            break;
-        }
-    }
+    // Create view.
+    $view = array();
+    $view['title'] = "Creare runda";
+    $view['page_name'] = url_round_create();
+    $view['form_values'] = $values;
+    $view['form_errors'] = $errors;
 
-    // process data
-    if (!$errors) {
-        // no errors => do stuff
-
-        // - create/update round
-        if ($round) {
-            round_update($round_id, $data['type'], $data['active']);
-            // note: updating a round does not change its owner (user_id)
-        }
-        else {
-            round_create($round_id, $data['type'], $data['active'],
-                         getattr($identity_user, 'id'));
-        }
-        // - update parameter values
-        round_update_parameters($round_id, $param_values);
-        // - update attached task list
-        round_update_task_list($round_id, $tasks);
-        // - done
-        if ($round) {
-            flash('Informatiile despre runda au fost salvate.');
-            redirect(url_textblock($round['page_name']));
-        }
-        else {
-            flash('O noua runda a fost creata. Acum trebuie sa editezi continutul...');
-            redirect(url_textblock_edit($round['page_name'], array('action'=>'edit')));
-        }
-    }
-    else {
-        // errors occured => call on error handler
-        flash_error('Unul sau mai multe campuri au fost completate incorect!');
-        controller_round_edit_details($round_id, $data, $errors);
-    }
+    execute_view_die("views/round_create.php", $view);
 }
-*/
+
+?>
 
 ?>

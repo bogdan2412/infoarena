@@ -14,7 +14,7 @@ function macro_grep($args) {
         return macro_error('Expecting parameter `page`');
     }
 
-    if (!identity_can('macro-grep')) {
+    if (!identity_can('macro-grep', $args)) {
         return macro_permission_error();
     }
 

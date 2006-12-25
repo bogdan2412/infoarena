@@ -1,6 +1,8 @@
 <?php
 
 require_once(IA_ROOT."www/macros/macros.php");
+require_once(IA_ROOT."www/identity.php");
+require_once(IA_ROOT."www/url.php");
 require_once(IA_ROOT."www/wiki/MyTextile.php");
 
 // This processes a big chunk of wiki-formatted text and returns html.

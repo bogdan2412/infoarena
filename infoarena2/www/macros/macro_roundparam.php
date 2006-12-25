@@ -33,6 +33,9 @@ function macro_roundparam($args) {
 
     // fetch round, parameters & textblock
     if ($last_round_id != $round_id) {
+        if (!is_round_id($round_id)) {
+            return macro_error("Invalid round id");
+        }
         $round = round_get($round_id);
         if ($round) {
             $params = round_get_parameters($round_id);

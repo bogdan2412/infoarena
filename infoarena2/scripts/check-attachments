@@ -26,7 +26,7 @@ $total_files = count($extra_files);
 $total_atts = 0;
 
 // Check attachments.
-while ($att = mysql_fetch_assoc($res)) {
+while ($att = db_next_row($res)) {
     ++$total_atts;
     $fname = attachment_get_filepath($att);
     if (array_key_exists($fname, $extra_files)) {

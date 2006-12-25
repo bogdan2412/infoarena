@@ -59,7 +59,8 @@ function task_get_parameter_infos() {
 }
 
 // Validates a task.
-// NOTE: this might be incomplete, so don't rely on it exclusively
+// NOTE: this might be incomplete, so don't rely on it exclusively.
+// Use this to check for a valid model. It's also usefull in controllers.
 function task_validate($task) {
     $errors = array();
 

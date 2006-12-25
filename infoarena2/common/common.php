@@ -88,18 +88,6 @@ function is_score_name($score_name)
     return preg_match('/^[a-z0-9][a-z0-9_]*$/i', $score_name) && strlen($score_name) < 32;
 }
 
-// Checks if $round is a valid round.
-// FIXME: move to common/round.php, proper messages.
-function is_round($round) {
-    return is_array($round) &&
-           isset($round['title']) && is_string($round['title']) &&
-           isset($round['page_name']) && is_page_name($round['page_name']) &&
-           isset($round['user_id']) && is_whole_number($round['user_id']) &&
-           isset($round['hidden']) && // How the fuck do I check this?
-           isset($round['type']) && $round['type'] == 'classic' &&
-           isset($round['id']) && is_round_id($round['id']);
-}
-
 // Tells whether $task_id is a valid task identifier
 // Does not check existence.
 function is_task_id($task_id) {

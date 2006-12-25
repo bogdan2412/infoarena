@@ -26,12 +26,6 @@ function round_get_parameter_infos() {
     );
 }
 
-function round_get_parameter_infos_hack() {
-    $infos = round_get_parameter_infos();
-    $ret = array_merge($infos['classic']);
-    return $ret;
-}
-
 // Valideaza parametrii. Returneaza errorile sub conventie de $form_errors.
 function round_validate_parameters($round_type, $parameters) {
     $errors = array();
@@ -59,6 +53,39 @@ function round_validate_parameters($round_type, $parameters) {
         }
     } else {
         log_error("Bad round_type");
+    }
+
+    return $errors;
+}
+
+// Validates a round.
+// NOTE: this might be incomplete, so don't rely on it exclusively.
+// Use this to check for a valid model. It's also usefull in controllers.
+function round_validate($round) {
+    $errors = array();
+
+    // If you can't pass a fucking array you don't deserve to live.
+    log_assert(is_array($round), "You didn't even pass an array");
+
+    if (!is_round_id(getattr($round, 'id', ''))) {
+        $errors['id'] = 'ID de runda invalid';
+    }
+
+    if (!is_page_name($round['page_name'])) {
+        $errors['page_name'] = "Homepage invalid";
+    }
+
+    if (!is_user_id(getattr($round, 'user_id'))) {
+        $errors['user_id'] = 'ID de utilizator invalid';
+    }
+
+    $hidden = getattr($round, 'hidden', 'FAIL');
+    if ($hidden != '0' && $hidden != '1') {
+        $errors['hidden'] = 'Se accepta doar 0/1';
+    }
+
+    if (!in_array(getattr($round, 'type', ''), round_get_types())) {
+        $errors['type'] = "Tipul rundei este invalid";
     }
 
     return $errors;

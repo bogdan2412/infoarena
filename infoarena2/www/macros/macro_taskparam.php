@@ -18,7 +18,6 @@ function macro_taskparam($args) {
     static $last_task_id = null;
     static $task;
     static $params;
-    static $textblock;
 
     $task_id = getattr($args, 'task_id');
     $param = getattr($args, 'param');
@@ -33,6 +32,9 @@ function macro_taskparam($args) {
 
     // fetch task, parameters & textblock
     if ($last_task_id != $task_id) {
+        if (!is_task_id($task_id)) {
+            return macro_error("Invalid task id");
+        }
         $task = task_get($task_id);
         if ($task) {
             $params = task_get_parameters($task_id);

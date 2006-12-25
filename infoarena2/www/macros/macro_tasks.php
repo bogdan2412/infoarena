@@ -3,6 +3,7 @@
 require_once(IA_ROOT . "www/format/table.php");
 require_once(IA_ROOT . "www/format/pager.php");
 require_once(IA_ROOT . "common/db/round.php");
+require_once(IA_ROOT . "common/round.php");
 
 function format_score_column($val) {
     if (is_null($val)) {
@@ -50,10 +51,14 @@ function macro_tasks($args) {
     }
 
     // fetch round info
-    $round = round_get($round_id);
-    if (!$round) {
+    if (!is_round_id($round_id)) {
         return macro_error('Invalid round identifier');
     }
+    $round = round_get($round_id);
+    if (is_null($round)) {
+        return macro_error('Round not found');
+    }
+    log_assert_valid(round_validate($round));
 
     if (is_null(getattr($args, 'score'))) {
         $scores = false;

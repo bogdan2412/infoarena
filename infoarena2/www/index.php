@@ -1,6 +1,7 @@
 <?php
 
-require_once("config.php");
+require_once("../config.php");
+require_once(IA_ROOT."www/config.php");
 require_once(IA_ROOT."common/log.php");
 require_once(IA_ROOT."common/common.php");
 log_print("- -- --- ---- ----- Request: ".$_SERVER['QUERY_STRING']);
