@@ -25,7 +25,7 @@ $res = curl_test(array(
         'post' => array(
                 'file_name' => '@/tmp/test_file'),
 ));
-log_assert($res['url'] == url_absolute(
+log_assert_equal($res['url'],  url_absolute(
             url_textblock('sandbox/test_page')));
 
 log_print("Anon looks at file");
@@ -33,7 +33,7 @@ $res = curl_test(array(
         'url' => url_attachment('sandbox/test_page', 'test_file'),
         'validate_html' => false,
 ));
-log_assert($res['content'] == 'xzx-file-xzx');
+log_assert_equal($res['content'],  'xzx-file-xzx');
 
 log_print("Anon looks at attachment list");
 $res = curl_test(array(
@@ -49,7 +49,7 @@ log_print("Anon tries to delete attachment, fails");
 $res = curl_test(array(
         'url' => url_attachment_delete('sandbox/test_page', 'test_file'),
 ));
-log_assert($res['url'] == url_absolute(url_login()));
+log_assert_equal($res['url'],  url_absolute(url_login()));
 
 log_print("Admin looks in list and sees attachment");
 $res = curl_test(array(
@@ -63,7 +63,7 @@ $res = curl_test(array(
         'url' => url_attachment_delete('sandbox/test_page', 'test_file'),
         'user' => 'test_admin',
 ));
-log_assert($res['url'] == url_absolute(url_textblock('sandbox/test_page')));
+log_assert_equal($res['url'],  url_absolute(url_textblock('sandbox/test_page')));
 
 log_print("Admin looks in list and attachment is gone");
 $res = curl_test(array(

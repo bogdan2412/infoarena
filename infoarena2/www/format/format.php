@@ -36,15 +36,18 @@ function format_open_tag($tag, $attribs = array())
 // Format a html tag.
 // Tag is a tag name(img, th, etc).
 //
-// Attrib values are escaped. Content is NOT escaped.
+// Attrib values are escaped. Content is escaped by default.
 // Tag and attrib keys are checked.
-function format_tag($tag, $attribs = array(), $content = null)
-{
+function format_tag($tag, $content = null, $attribs = array(), $escape = true) {
+    log_assert(is_array($attribs), 'attribs is not an array');
     log_assert(preg_match("/[a-z][a-z0-9]*/", $tag), "Invalid tag '$tag'");
 
     if (is_null($content)) {
         return "<$tag ".format_attribs($attribs)." />";
     } else {
+        if ($escape) {
+            $content = htmlentities($content);
+        }
         return "<$tag ".format_attribs($attribs).">$content</$tag>";
     }
 }
@@ -53,21 +56,19 @@ function format_tag($tag, $attribs = array(), $content = null)
 // By default escapes url & content
 //
 // You can set escape_content to false.
-function format_link($url, $content, $escape_content = true, $attr = array()) {
-    if ($escape_content) {
-        $content = htmlentities($content);
-    }
+function format_link($url, $content, $escape = true, $attr = array()) {
+    log_assert(is_array($attr), '$attr is not an array');
     $attr['href'] = $url;
-    return format_tag("a", $attr, $content);
+    return format_tag("a", $content, $attr, $escape);
 }
 
 // Format img tag.
 // NOTE: html says alt is REQUIRED.
 // Escapes both args.
-function format_img($src, $alt, $attr) {
+function format_img($src, $alt, $attr = array()) {
     $attr['src'] = $src;
     $attr['alt'] = $alt;
-    return format_tag("img", $attr);
+    return format_tag("img", null, $attr);
 }
 
 // Format avatar img.
@@ -76,11 +77,11 @@ function format_user_avatar($user_name, $width = 50, $height = 50,
 {
     log_assert(is_whole_number($width), "Invalid width");
     log_assert(is_whole_number($height), "Invalid height");
-    return format_tag("img", array(
-            "src" => url_user_avatar($user_name, "L{$width}x{$height}",
-                                     $absolute),
-            "alt" => $user_name,
-    ));
+    $url = url_user_avatar($user_name, "L{$width}x{$height}");
+    if ($absolute) {
+        $url = url_absolute($url);
+    }
+    return format_img($url, $user_name);
 }
 
 // Format a tiny link to an user.
@@ -88,13 +89,11 @@ function format_user_avatar($user_name, $width = 50, $height = 50,
 function format_user_link($user_name, $user_fullname, $rating = null) {
     if (is_null($rating)) {
         $attr = array();
-    }
-    else {
+    } else {
         $attr = array('class' => 'user_'.rating_group($rating));
     }
 
     $rbadge = format_user_ratingbadge($user_name, $rating);
-
     return format_link(url_user_profile($user_name), $rbadge.$user_fullname,
                        true, $attr);
 }

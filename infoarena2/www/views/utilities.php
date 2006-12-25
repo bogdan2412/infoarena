@@ -5,6 +5,7 @@ require_once(IA_ROOT.'common/db/textblock.php');
 require_once(IA_ROOT.'www/format/format.php');
 
 // Check the big view variable for consistency.
+// FIXME: sux, assertions in views instead?
 function check_view($view) {
     // Checking $view.
     log_assert(is_array($view));
@@ -82,6 +83,7 @@ function ferr_span($param_name, $escape_html = true) {
 
 // Parse and print a textblock. Use this to insert dynamic textblocks
 // inside static templates / views.
+// FIXME: printing from functions is sort of retarded.
 function wiki_include($page_name, $template_args = null) {
     $textblock = textblock_get_revision($page_name);
     log_assert($textblock, "Nu am gasit $page_name");
@@ -94,6 +96,23 @@ function wiki_include($page_name, $template_args = null) {
     echo '<div class="wiki_text_block">';
     echo wiki_process_text($textblock['text']);
     echo '</div>';
+}
+
+// Formats a simple form text field
+function format_form_text_field($field, $info) {
+    $res = '';
+    $res .= format_tag('label', $info, array(
+            'for' => 'form_' . $field,
+    ));
+    $res .= ferr_span($field);
+    $res .= format_tag('input', null, array(
+            'type' => 'text',
+            'name' => $field,
+            'id' => 'form_' . $field,
+            'value' => fval($field),
+    ));
+
+    return $res;
 }
 
 ?>

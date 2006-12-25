@@ -7,6 +7,7 @@ require_once(IA_ROOT."common/db/db.php");
  */
 
 // Creates new eval job
+// FIXME: check args.
 function job_create($task_id, $user_id, $compiler_id, $file_contents) {
     $query = "
         INSERT INTO ia_job

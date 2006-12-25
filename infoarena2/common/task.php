@@ -58,14 +58,7 @@ function task_get_parameter_infos() {
     );
 }
 
-function task_get_parameter_infos_hack() {
-    $infos = task_get_parameter_infos();
-    $ret = array_merge($infos['classic'], $infos['output-only']);
-    return $ret;
-}
-
-
-// Validates a textblock.
+// Validates a task.
 // NOTE: this might be incomplete, so don't rely on it exclusively
 function task_validate($task) {
     $errors = array();
@@ -84,9 +77,6 @@ function task_validate($task) {
     if (!is_user_id(getattr($task, 'user_id'))) {
         $errors['user_id'] = 'ID de utilizator invalid';
     }
-    /*if (!get_user_by_id(getattr($tb, 'user_id'))) {
-        $errors['user_id'] = 'Utilizator inexistent';
-    }*/
 
     $hidden = getattr($task, 'hidden');
     if ($hidden != '0' && $hidden != '1') {
@@ -100,6 +90,8 @@ function task_validate($task) {
     if (!is_task_id(getattr($task, 'id', ''))) {
         $errors['id'] = 'ID de task invalid';
     }
+
+    return $errors;
 }
 
 // Valideaza parametrii. Returneaza errorile sub conventie de $form_errors.

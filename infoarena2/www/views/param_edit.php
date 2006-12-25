@@ -1,35 +1,42 @@
-<table class="parameters">
-    <thead>
+<?php
+// Display a parameter table.
+// FIXME: format_table?
+?>
+<?php
+log_assert(is_array($entity_types), "entity_types missing from view");
+log_assert(is_array($param_infos), "param_infos missing from view");
+foreach ($entity_types as $etype) {
+?>
+    <table class="parameters" id="<?= "params_$etype" ?>">
+        <thead>
+            <tr>
+                <th>Parametru</th>
+                <th>Valoare</th>
+                <th>Descriere</th>
+            </tr>
+        </thead>
+        <tbody>
+    <?php
+    foreach ($param_infos[$etype] as $name => $info) {
+        $form_name = "param_{$etype}_{$name}";
+        $label_tag = format_tag('label', $info['name'], array(
+                'for' => "form_$form_name",
+        ));
+        $input_tag = format_tag('input', null, array(
+                'type' => 'text',
+                'class' => 'parameter',
+                'value' => fval($form_name),
+                'id' => "form_$form_name",
+                'name' => $form_name,
+        ));
+    ?>
         <tr>
-            <th>Parametru</th>
-            <th>Valoare</th>
-            <th>Descriere</th>
+            <td><?= $label_tag ?></td>
+            <td><?= $input_tag ?> <?= ferr_span($form_name) ?> </td>
+            <td><?= $info['description'] ?></td>
         </tr>
-    </thead>
-    <tbody>
-
-<?php
-
-$display_time = false;
-
-foreach ($param_list as $key => $param) {
-    $pid = "p_" . $key;
-    if ('datetime' == $param['type']) {
-        $display_time = true;
-    }
-
-?>
-<tr>
-    <td><label for="form_p_<?= htmlentities($key) ?>"><?= htmlentities($param['name']) ?></label></td>
-    <td><input type="text" class="parameter" value="<?= fval($pid) ?>" id="form_<?= htmlentities($pid) ?>" name="<?= htmlentities($pid) ?>"/> <?= ferr_span($pid) ?></td>
-    <td><?= htmlentities($param['description']) ?></td>
-</tr>
-<?php
-}
-?>
-        <?php if ($display_time) { ?>
-            <p><strong>Ora curenta pe server: <?= htmlentities(format_datetime(time())) ?></strong></p>
-        <?php } ?>
-    </tbody>
-</table>
+    <?php } ?>
+        </tbody>
+    </table>
+<?php } ?>
 

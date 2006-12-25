@@ -104,7 +104,7 @@ function security_simplify_action($action)
         case 'attach-overwrite':
         case 'attach-delete':
         case 'task-edit':
-        case 'task-create':
+        case 'task-ceate':
         case 'task-delete':
         case 'round-edit':
         case 'round-create':

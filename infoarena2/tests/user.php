@@ -11,14 +11,14 @@ log_print("Anonymous tries to edit user page, fails");
 $res = curl_test(array(
         'url' => url_textblock_edit('utilizator/test_dude1'),
 ));
-log_assert($res['url'] == url_absolute(url_login()));
+log_assert_equal($res['url'],  url_absolute(url_login()));
 
 log_print("Dude1 tries to edit user page, works");
 $res = curl_test(array(
         'url' => url_textblock_edit('utilizator/test_dude1'),
         'user' => 'test_dude1',
 ));
-log_assert($res['url'] == url_absolute(
+log_assert_equal($res['url'],  url_absolute(
             url_textblock_edit('utilizator/test_dude1')));
 
 log_print("Dude1 changes his user page");
@@ -29,7 +29,7 @@ $res = curl_test(array(
             'text' => "h1. New xzx-content-xzx",
             'title' => "New xzx-title-xzx",
 )));
-log_assert($res['url'] == url_absolute(
+log_assert_equal($res['url'],  url_absolute(
             url_user_profile('test_dude1', true)));
 
 log_print("Anonymous looks at user page and sees changes");
@@ -66,7 +66,7 @@ $res = curl_test(array(
             'text' => "New admin-content-admin",
             'title' => "New admin-title-admin",
 )));
-log_assert($res['url'] == url_absolute(
+log_assert_equal($res['url'],  url_absolute(
             url_textblock('utilizator/test_dude2')));
 log_assert(strstr($res['content'], "admin-content-admin"));
 log_assert(strstr($res['content'], "admin-title-admin"));
@@ -82,7 +82,7 @@ log_print("Anon looks at dude2's page and it's still there.");
 $res = curl_test(array(
         'url' => url_textblock('utilizator/test_dude2'),
 ));
-log_assert($res['url'] == url_absolute(
+log_assert_equal($res['url'],  url_absolute(
             url_textblock('utilizator/test_dude2')));
 log_assert(strstr($res['content'], "admin-content-admin"));
 log_assert(strstr($res['content'], "admin-title-admin"));

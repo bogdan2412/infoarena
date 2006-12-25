@@ -8,6 +8,7 @@ require_once(IA_ROOT . "common/db/parameter.php");
 
 // Get task by id. No params.
 function task_get($task_id) {
+    log_assert(is_task_id($task_id));
     $query = sprintf("SELECT * FROM ia_task WHERE `id` = LCASE('%s')",
                      db_escape($task_id));
     $res = db_fetch($query);
@@ -18,14 +19,28 @@ function task_get($task_id) {
 }
 
 // create new task
-function task_create($task) {
+function task_create($task, $task_params) {
     log_assert_valid(task_validate($task));
-    return db_insert('ia_task', $task);
+    log_assert_valid(task_validate_parameters($task['type'], $task_params));
+
+    $res = db_insert('ia_task', $task);
+    if ($res) {
+        // Insert parameters.
+        task_update_parameters($task['id'], $task_params);
+
+        // Copy templates.
+        require_once(IA_ROOT . "common/textblock.php");
+        $replace = array("task_id" => $task['id']);
+        textblock_copy_replace("template/newtask", $task['page_name'],
+                $replace, "task: {$task['id']}", $task['user_id']);
+    }
+    return $res;
 }
 
 function task_update($task) {
     log_assert_valid(task_validate($task));
-    return db_update('ia_task', $task);
+    return db_update('ia_task', $task,
+            "`id` = '".db_escape($task['id'])."'");
 }
 
 // binding for parameter_get_values
@@ -61,6 +76,7 @@ function task_list_info($order_by = 'order') {
 
 // Returns list of round ids that include this task
 function task_get_parent_rounds($task_id) {
+    log_assert(is_task_id($task_id));
     $query = sprintf("
         SELECT DISTINCT round_id
         FROM ia_round_task

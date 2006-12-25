@@ -11,7 +11,7 @@ log_print("New page with no user, redirect to login.");
 $res = curl_test(array(
         'url' => url_textblock('sandbox/test_page'),
 ));
-log_assert($res['redirect_count'] == 2);
+log_assert_equal($res['redirect_count'],  2);
 
 
 log_print("New page with some user, redirect to create.");
@@ -19,7 +19,7 @@ $res = curl_test(array(
         'url' => url_textblock('sandbox/test_page'),
         'user' => 'test_dude1',
 ));
-log_assert($res['redirect_count'] == 1);
+log_assert_equal($res['redirect_count'],  1);
 
 
 log_print("Dude1 creates page.");
@@ -30,7 +30,7 @@ $res = curl_test(array(
                 'text' => "Test page\nxzx-content1-xzx\n",
                 'title' => "Test xzx-title1-xzx",
 )));
-log_assert($res['url'] == url_absolute(
+log_assert_equal($res['url'],  url_absolute(
             url_textblock('sandbox/test_page')));
 log_assert(strstr($res['content'], 'xzx-content1-xzx'));
 log_assert(strstr($res['content'], 'xzx-title1-xzx'));
@@ -45,7 +45,7 @@ $res = curl_test(array(
                 'title' => "Test xzx-title2-xzx",
                 'security' => "protected",
 )));
-log_assert($res['url'] == url_absolute(
+log_assert_equal($res['url'],  url_absolute(
             url_textblock('sandbox/test_page')));
 log_assert(strstr($res['content'], 'xzx-content2-xzx'));
 log_assert(strstr($res['content'], 'xzx-title2-xzx'));
@@ -60,7 +60,7 @@ $res = curl_test(array(
                 'title' => "Test xzx-titleF-xzx",
 )));
 log_print($res['url']);
-log_assert($res['url'] == url_absolute(url_home()));
+log_assert_equal($res['url'],  url_absolute(url_home()));
 log_assert(!strstr($res['content'], 'xzx-content2-xzx'));
 log_assert(!strstr($res['content'], 'xzx-title2-xzx'));
 
@@ -69,7 +69,7 @@ log_print("Anon sees admin version.");
 $res = curl_test(array(
         'url' => url_textblock('sandbox/test_page'),
 ));
-log_assert($res['url'] == url_absolute(
+log_assert_equal($res['url'],  url_absolute(
         url_textblock('sandbox/test_page')));
 log_assert(strstr($res['content'], 'xzx-content2-xzx'));
 log_assert(strstr($res['content'], 'xzx-title2-xzx'));
@@ -84,7 +84,7 @@ $res = curl_test(array(
                 'title' => "Test xzx-title3-xzx",
                 'security' => "private",
 )));
-log_assert($res['url'] == url_absolute(
+log_assert_equal($res['url'],  url_absolute(
             url_textblock('sandbox/test_page')));
 log_assert(strstr($res['content'], 'xzx-content3-xzx'));
 log_assert(strstr($res['content'], 'xzx-title3-xzx'));
@@ -121,7 +121,7 @@ $res = curl_test(array(
                 'title' => "Test xzx-title4-xzx",
                 'security' => "public",
 )));
-log_assert($res['url'] == url_absolute(
+log_assert_equal($res['url'],  url_absolute(
             url_textblock('sandbox/test_page')));
 log_assert(strstr($res['content'], 'xzx-content4-xzx'));
 log_assert(strstr($res['content'], 'xzx-title4-xzx'));
@@ -131,7 +131,7 @@ log_print("Anon looks at history, sees various links");
 $res = curl_test(array(
         'url' => url_textblock_history('sandbox/test_page'),
 ));
-log_assert($res['url'] == url_absolute(
+log_assert_equal($res['url'],  url_absolute(
             url_textblock_history('sandbox/test_page')));
 log_assert(strstr($res['content'], htmlentities(
                 url_textblock_diff('sandbox/test_page', 1, 4))));
@@ -146,7 +146,7 @@ $res = curl_test(array(
         'url' => url_textblock_diff('sandbox/test_page', 1, 2),
         'user' => 'test_dude1',
 ));
-log_assert($res['url'] == url_absolute(
+log_assert_equal($res['url'],  url_absolute(
             url_textblock_diff('sandbox/test_page', 1, 2)));
 log_assert(strstr($res['content'], 'xzx-content1-xzx'));
 log_assert(strstr($res['content'], 'xzx-title1-xzx'));
@@ -161,7 +161,7 @@ $res = curl_test(array(
         'post' => array(
             'new_page' => 'sAnDbox//test_page_2',
 )));
-log_assert($res['redirect_count'] == 1);
+log_assert_equal($res['redirect_count'],  1);
 
 
 log_print("Dude 2 tries to delete test_page, redirect to home.");
@@ -170,7 +170,7 @@ $res = curl_test(array(
         'user' => 'test_dude2',
         'post' => array(),
 ));
-log_assert($res['redirect_count'] == 1);
+log_assert_equal($res['redirect_count'],  1);
 
 
 log_print("Admin looks at move page");
@@ -178,7 +178,7 @@ $res = curl_test(array(
         'url' => url_textblock_move('sandbox/tesT_page'),
         'user' => 'test_admin',
 ));
-log_assert($res['redirect_count'] == 0);
+log_assert_equal($res['redirect_count'],  0);
 
 
 log_print("Admin moves page");
@@ -188,16 +188,16 @@ $res = curl_test(array(
         'post' => array(
             'new_name' => 'sandboX/test_page_2//',
 )));
-log_assert($res['url'] == url_absolute(
+log_assert_equal($res['url'],  url_absolute(
             url_textblock('sandbox/test_page_2')));
-log_assert($res['redirect_count'] == 1);
+log_assert_equal($res['redirect_count'],  1);
 
 log_print("DUDE1 looks at test_page_2 history and views everything moved");
 $res = curl_test(array(
         'url' => url_textblock_history('sandbox/test_page_2'),
         'user' => 'test_dude1',
 ));
-log_assert($res['url'] == url_absolute(
+log_assert_equal($res['url'],  url_absolute(
             url_textblock_history('sandbox/test_page_2', true)));
 log_assert(strstr($res['content'], htmlentities(
                 url_textblock_diff('sandbox/test_page_2', 1, 4))));
@@ -212,7 +212,7 @@ $res = curl_test(array(
         'url' => url_textblock('sandbox///tesT_page'),
         'user' => 'test_dude2',
 ));
-log_assert($res['url'] == url_absolute(
+log_assert_equal($res['url'],  url_absolute(
             url_textblock_edit('sandbox/test_page', true)));
 
 log_print("Admin creates protected test_page again.");
@@ -224,7 +224,7 @@ $res = curl_test(array(
                 'title' => "Test xzx-private-xzx",
                 'security' => "protected",
 )));
-log_assert($res['url'] == url_absolute(
+log_assert_equal($res['url'],  url_absolute(
             url_textblock('sandbox/test_page')));
 log_assert(strstr($res['content'], 'xzx-private-xzx'));
 log_assert(strstr($res['content'], 'xzx-private-xzx'));
@@ -253,7 +253,7 @@ log_print("Anon looks at changes page and validates html.");
 $res = curl_test(array(
         'url' => url_changes(),
 ));
-log_assert($res['redirect_count'] == 0);
+log_assert_equal($res['redirect_count'],  0);
 
 log_print("Textblock tests all passed");
 test_cleanup();

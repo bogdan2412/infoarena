@@ -3,7 +3,6 @@
 // Creates URLs to various parts of the infoarena website.
 // Please avoid hard-coding URLs throughout the code. 
 
-
 // Compute complex url. Avoid using thing function directly, prefer more
 // specific url_ functions.
 //
@@ -140,8 +139,6 @@ function url_attachment_delete($page_name, $file_name) {
     ));
 }
 
-// Images
-
 function url_image_resize($page, $file, $resize)
 {
     if ($resize) {
@@ -219,23 +216,27 @@ function url_unsubscribe($username, $key) {
     return url_complex('unsubscribe/'.$username, array('c' => $key));
 }
 
-// Misc urls
+// Task/round stuff.
 
-function url_home() {
-    return url_complex('', array());
+function url_task_edit($task_id) {
+    log_assert(is_task_id($task_id));
+    return url_complex("admin/task/$task_id");
 }
 
-function url_static($path) {
-    return url_complex("static/$path", array());
+function url_task_create() {
+    return url_complex("admin/new-task");
 }
 
-function url_changes() {
-    return url_complex("changes", array());
+function url_round_edit($round_id) {
+    log_assert(is_round_id($round_id));
+    return url_complex("admin/round/$round_id");
 }
 
-function url_changes_rss() {
-    return url_complex("changes", array('format' => 'rss'));
+function url_round_create() {
+    return url_complex("admin/new-round");
 }
+
+// Job/monitor stuff.
 
 function url_submit() {
     return url_complex("submit", array());
@@ -252,6 +253,24 @@ function url_job_detail($job_id) {
 
 function url_job_download($job_id) {
     return url_complex("job_detail/".$job_id, array('action' => 'download'));
+}
+
+// Misc urls
+
+function url_home() {
+    return url_complex('', array());
+}
+
+function url_static($path) {
+    return url_complex("static/$path", array());
+}
+
+function url_changes() {
+    return url_complex("changes", array());
+}
+
+function url_changes_rss() {
+    return url_complex("changes", array('format' => 'rss'));
 }
 
 function url_forum() {

@@ -56,17 +56,17 @@ if (isset($directmaps[$urlstart])) {
     $fname($page_id);
 }
 
+else if ($page == 'admin/new-task') {
+    require_once(IA_ROOT.'www/controllers/task.php');
+    controller_task_create();
+}
+
 // Task detail editor.
-/* FIXME: disabled
 else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'task') {
     $obj_id = implode("/", array_slice($pagepath, 2));
     require_once(IA_ROOT.'www/controllers/task.php');
-    if ($action == 'save') {
-        controller_task_save_details($obj_id);
-    } else {
-        controller_task_edit_details($obj_id);
-    }
-}*/
+    controller_task_details($obj_id);
+}
 
 // Round detail editor.
 // FIXME: doesn't work, fix later.

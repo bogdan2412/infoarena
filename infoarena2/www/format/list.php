@@ -35,7 +35,7 @@ function format_ulol($tag, $items, $class) {
             $attrib = array();
         }
 
-        $buffer .= "\t".format_tag("li", $attrib, $text);
+        $buffer .= "\t".format_tag("li", $text, $attrib);
     }
 
     $buffer .= "</{$tag}>\n";

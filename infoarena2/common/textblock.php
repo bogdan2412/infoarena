@@ -6,8 +6,8 @@ require_once(IA_ROOT . "common/db/textblock.php");
 // FIXME: check task/round existence?
 function is_textblock_security_descriptor($descriptor)
 {
-    return  preg_match("/^ \s* task: \s* ([a-z0-9]*) \s* $/xi", $descriptor) ||
-            preg_match("/^ \s* round: \s* ([a-z0-9]*) \s* $/xi", $descriptor) ||
+    return  preg_match("/^ \s* task: \s* ([a-z0-9][a-z0-9_]*) \s* $/xi", $descriptor) ||
+            preg_match("/^ \s* round: \s* ([a-z0-9][a-z0-9_]*) \s* $/xi", $descriptor) ||
             preg_match('/^ \s* (private|protected|public) \s* $/xi', $descriptor);
 }
 
@@ -71,7 +71,7 @@ function textblock_copy_replace($srcprefix, $dstprefix, $replace, $security, $us
             $textblock['security'] = $security;
         }
         $textblock['name'] = preg_replace('/^'.preg_quote($srcprefix, '/').'/i', $dstprefix, $textblock['name']);
-        log_print("Adding {$textblock['name']}");
+        //log_print("Adding {$textblock['name']}");
         textblock_add_revision($textblock['name'], $textblock['title'],
                 $textblock['text'], $user_id, $textblock['security']);
     }

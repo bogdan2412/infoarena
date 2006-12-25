@@ -64,7 +64,6 @@ function user_get_by_id($id) {
 }
 
 // Create a new user.
-// FIXME: Expand $data into specific fields just like task_create ()!
 function user_create($data) {
     $query = "INSERT INTO ia_user (";
     foreach ($data as $key => $val) {
@@ -83,7 +82,7 @@ function user_create($data) {
     $query .= ')';
 
     // create user
-    log_print('Creating database entry for user: '.$data['username']);
+    //log_print('Creating database entry for user: '.$data['username']);
     db_query($query);
     $new_user = user_get_by_username($data['username']);
     log_assert($new_user, 'Registration input data was validated OK but no database entry was created');
@@ -98,7 +97,6 @@ function user_create($data) {
 
 // Update user information.
 // NOTE: When updating password, it is mandatory that you also specify username
-// FIXME: Expand $data into specific fields just like task_create ()!
 function user_update($data, $id) {
     $query = "UPDATE ia_user SET ";
     foreach ($data as $key => $val) {

@@ -209,7 +209,7 @@ function textblock_move($old_name, $new_name)
     $new_name = normalize_page_name($new_name);
     log_assert(is_normal_page_name($old_name));
     log_assert(is_normal_page_name($new_name));
-    log_print("Moving textblock $old_name to $new_name");
+    //log_print("Moving textblock $old_name to $new_name");
 
     // Move current version.
     $query = sprintf("UPDATE `ia_textblock`

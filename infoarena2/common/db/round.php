@@ -34,6 +34,7 @@ function round_get_info() {
 
 // Create new round
 function round_create($round) {
+    log_error("Not implemented");
     assert(is_round($round));
     return db_insert('ia_round', $round);
 
@@ -47,6 +48,7 @@ function round_create($round) {
 }
 
 function round_update($round) {
+    log_error("Not implemented");
     return db_update('ia_round', $round);
 }
 

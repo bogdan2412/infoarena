@@ -73,7 +73,6 @@ function format_table($data, $column_infos = null, $options = null)
     if (!getattr($options, 'skip_header', false)) {
         $result .= "<thead><tr>";
         foreach ($column_infos as $column) {
-            $title = htmlentities($column['title']);
             $args = array();
             if (isset($column['css_class'])) {
                 $args['class'] = $column['css_class'];
@@ -81,7 +80,7 @@ function format_table($data, $column_infos = null, $options = null)
             if (isset($column['css_style'])) {
                 $args['style'] = $column['css_style'];
             }
-            $result .= format_tag('th', $args, htmlentities($column['title']));
+            $result .= format_tag('th', $column['title'], $args);
         }
         $result .= "</tr></thead>";
     }
@@ -151,7 +150,7 @@ function format_table($data, $column_infos = null, $options = null)
             if (isset($column['css_style'])) {
                 $args['style'] = $column['css_style'];
             }
-            $result .= format_tag('td', $args, $val);
+            $result .= format_tag('td', $val, $args, false);
         }
         $result .= '</tr>';
     }

@@ -52,7 +52,6 @@ function controller_textblock_edit($page_name) {
             textblock_add_revision($new_page['name'], $new_page['title'],
                                    $new_page['text'], $new_page['user_id'],
                                    $new_page['security']);
-            log_print("TEXTBLOCK_ADD_REVISION");
             flash('Am actualizat continutul');
             redirect(url_textblock($page_name));
         }
