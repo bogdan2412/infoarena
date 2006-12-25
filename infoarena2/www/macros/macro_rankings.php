@@ -28,10 +28,15 @@ function macro_rankings($args) {
 
     // FIXME: user/ task parameters.
 
-    $res = score_get("score", null, null, $rounds, $options['first_entry'], $options['display_entries']);
+    $res = score_get("score", null, null, $rounds, $options['first_entry'], $options['display_entries'], "user_id", true);
     $rankings = $res['scores'];
 
     $column_infos = array(
+        array(
+            'title' => 'Pozitie',
+            'key' => 'pos',
+            'rowform' => create_function('$row', 'return $row["position"];')
+        ),
         array(
             'title' => 'Nume',
             'key' => 'user_full',

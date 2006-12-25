@@ -82,13 +82,17 @@ function score_build_query($score, $user, $task, $round)
 // $user, $task, $round can be null, string or an array.
 // If null it's ignored, otherwise only scores for those users/tasks/rounds
 // are counted.
-function score_get($score_name, $user, $task, $round, $start, $count, $groupby = "user_id")
+function score_get($score_name, $user, $task, $round, $start, $count, $groupby = "user_id", $numbered = false)
 {
     log_assert(is_score_name($score_name));
     $where = score_build_where_clauses($user, $task, $round);
     $where[] = sprintf("ia_score.`name` = '%s'", db_escape($score_name));
+    if ($numbered) {
+        db_query("SET @counter = " . $start); // reset counter
+    }
     $query = sprintf("
             SELECT SQL_CALC_FOUND_ROWS
+                %s
                 ia_score.`name` as `score_name`, `user_id`, `task_id`, `round_id`, SUM(`score`) as score, 
                 ia_user.username as user_name, ia_user.full_name as user_full,
                 ia_user.rating_cache AS user_rating
@@ -96,6 +100,7 @@ function score_get($score_name, $user, $task, $round, $start, $count, $groupby =
                 LEFT JOIN ia_user ON ia_user.id = ia_score.user_id
             WHERE %s GROUP BY %s
             ORDER BY `score` DESC LIMIT %s, %s",
+            ($numbered ? "(@counter := @counter + 1) as position," : ""),
             join($where, " AND "), $groupby, $start, $count);
     $scores = db_fetch_all($query);
 
