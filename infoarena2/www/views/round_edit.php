@@ -25,7 +25,7 @@ foreach ($form_values['tasks'] as $tid) {
 
 <h1><?= htmlentities(getattr($view, 'title')) ?></h1>
 
-<form action="<?= htmlentities(getattr($view, 'action')) ?>" method="post" class="task">
+<form action="<?= htmlentities(getattr($view, 'action')) ?>" method="get" class="task">
     <ul class="form">
         <li id="field_title">
             <?= format_form_text_field('title', 'Titlu') ?>
@@ -36,11 +36,10 @@ foreach ($form_values['tasks'] as $tid) {
         </li>
  
         <li id="field_type">
-            <label for="form_type">Tip task</label>
+            <label for="form_type">Tipul rundei</label>
                 <select name="type" id="form_type">
                     <option value=""<?= '' == fval('type') ? ' selected="selected"' : '' ?>>[ Alege ]</option>
                     <option value="classic"<?= 'classic' == fval('type') ? ' selected="selected"' : '' ?>>Clasic</option>
-                    <option value="output-only"<?= 'output-only' == fval('type') ? ' selected="selected"' : '' ?>>Output Only</option>
                 </select>
             <?= ferr_span('type')?>
         </li>
@@ -72,7 +71,7 @@ foreach ($all_tasks as $task) {
 
     <div class="submit">
         <ul class="form">
-            <li id="form_submit">
+            <li id="field_submit">
                 <input type="submit" value="Salveaza" id="form_submit" class="button important" />
             </li>
         </ul>

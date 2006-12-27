@@ -334,6 +334,8 @@ function security_round($user, $action, $round) {
     switch ($action) {
         // Admin only.
         case 'simple-view':
+            return true;
+
         case 'simple-rev-edit':
         case 'simple-edit':
         case 'simple-critical':

@@ -107,7 +107,6 @@ function round_get_task_info($round_id, $first = 0, $count = null, $user_id = nu
                          db_escape($user_id), db_escape($score_name), db_escape($round_id),
                          db_escape($round_id), db_escape($first), db_escape($count));
     }
-    log_print($query);
     return db_fetch_all($query);
 }
 
@@ -136,6 +135,7 @@ function round_update_parameters($round_id, $param_values) {
 // $tasks is array of task id's
 function round_update_task_list($round_id, $tasks) {
     log_assert(is_round_id($round_id));
+
     // delete all round-task relations
     $query = sprintf("DELETE FROM ia_round_task
                       WHERE round_id = '%s'",
@@ -143,14 +143,12 @@ function round_update_task_list($round_id, $tasks) {
     db_query($query);
 
     // insert new relations
-    // FIXME: sql in a loop. WHAT THE FUCK?
     foreach ($tasks as $task_id) {
-        $query = sprintf("INSERT INTO ia_round_task
-                            (round_id, task_id)
-                          VALUES ('%s', '%s')",
-                         db_escape($round_id), db_escape($task_id));
-        db_query($query);
+        $values[] = "('".db_escape($round_id)."', '".db_escape($task_id)."')";
     }
+    $query = "INSERT INTO ia_round_task (round_id, task_id) 
+              VALUES ". implode(', ', $values);
+    db_query($query);
 }
 
 // Return list of round ids

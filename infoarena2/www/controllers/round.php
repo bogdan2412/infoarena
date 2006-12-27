@@ -53,10 +53,9 @@ function controller_round_details($round_id) {
     $values['type'] = request('type', $round['type']);
     $values['title'] = request('title', $round['title']);
     $values['page_name'] = request('page_name', $round['page_name']);
+
     // Get tasks. WTF, this works? wicked!
     $values['tasks'] = request('tasks', $round_tasks);
-
-    log_print_r($values['tasks']);
 
     // Parameter values, for all possible types of rounds.
     // Yucky, but functional.
@@ -72,58 +71,65 @@ function controller_round_details($round_id) {
     }
 
     // Validate the monkey.
-    if (request_is_post()) {
-        // Build new round
-        $new_round = $round;
-        $new_round['type'] = $values['type'];
-        $new_round['title'] = $values['title'];
-        $new_round['page_name'] = $values['page_name'];
 
-        $round_errors = round_validate($new_round);
-        $errors = $round_errors;
+    // Build new round
+    $new_round = $round;
+    $new_round['type'] = $values['type'];
+    $new_round['title'] = $values['title'];
+    $new_round['page_name'] = $values['page_name'];
 
-        // Validate task list.
-        $new_round_tasks = $values['tasks'];
-        if (!is_array($new_round_tasks)) {
-            $errors['tasks'] = 'Valori invalide.';
-        } else foreach ($new_round_tasks as $tid) {
+    $errors = round_validate($new_round);
+
+    // Validate task list.
+    $new_round_tasks = $values['tasks'];
+    if (!is_array($new_round_tasks)) {
+        $errors['tasks'] = 'Valori invalide.';
+    } else {
+        foreach ($new_round_tasks as $tid) {
+            if (!is_string($tid)) {
+                $errors['tasks'] = 'Valori invalide.';
+                break;
+            }
             if (!array_key_exists($tid, $all_tasks_by_id)) {
                 $errors['tasks'] = "Nu exista task-ul $tid.";
                 break;
             }
         }
+    }
+    if (array_key_exists('tasks', $errors)) {
+        $values['tasks'] = array();
+    }
 
-        // Handle round parameters. Only for current type, and only if
-        // properly selected.
-        // FIXME: refactor
-        $new_round_params = $round_params;
-        if (!array_key_exists('type', $round_errors)) {
-            $round_type = $new_round['type'];
-            foreach ($param_infos[$round_type] as $name => $info) {
-                $form_name = "param_{$round_type}_{$name}";
-                $new_round_params[$name] = $values[$form_name];
-            }
-            $round_params_errors = round_validate_parameters(
-                    $round_type, $new_round_params);
-            // Properly copy errors. Sucky
-            foreach ($param_infos[$round_type] as $name => $info) {
-                $form_name = "param_{$round_type}_{$name}";
-                if (array_key_exists($name, $round_params_errors)) {
-                    $errors[$form_name] = $round_params_errors[$name];
-                }
+    // Validate round parameters. Only for current type, and only if
+    // properly selected.
+    // FIXME: refactor
+    $new_round_params = $round_params;
+    if (!array_key_exists('type', $errors)) {
+        $round_type = $new_round['type'];
+        foreach ($param_infos[$round_type] as $name => $info) {
+            $form_name = "param_{$round_type}_{$name}";
+            $new_round_params[$name] = $values[$form_name];
+        }
+        $round_params_errors = round_validate_parameters(
+                $round_type, $new_round_params);
+        // Properly copy errors. Sucky
+        foreach ($param_infos[$round_type] as $name => $info) {
+            $form_name = "param_{$round_type}_{$name}";
+            if (array_key_exists($name, $round_params_errors)) {
+                $errors[$form_name] = $round_params_errors[$name];
             }
         }
+    }
 
-        // If no errors then do the db monkey
-        if (!$errors) {
-            // FIXME: error handling? Is that even remotely possible in php?
-            round_update($new_round);
-            round_update_parameters($round_id, $new_round_params);
-            round_update_task_list($round_id, $new_round_tasks);
+    // If posting with no errors then do the db monkey
+    if (request_is_post() && !$errors) {
+        // FIXME: error handling? Is that even remotely possible in php?
+        round_update($new_round);
+        round_update_parameters($round_id, $new_round_params);
+        round_update_task_list($round_id, $new_round_tasks);
 
-            flash("Runda a fost modificata cu succes.");
-            redirect(url_round_edit($round_id));
-        }
+        flash("Runda a fost modificata cu succes.");
+        redirect(url_round_edit($round_id));
     }
 
     // Create view.

@@ -29,19 +29,22 @@ function curl_test($args)
 
     // Properly encode POSTFIELDS
     if (isset($args['post'])) {
-/*        $encval = '';
-        foreach ($args['post'] as $k => $v) {
-            $args[$k] = urlencode($v);
-            // Hack for @, used for files. It shouldn't get encoded.
-            if (strlen($v) < 1 || $v[0] != '@') {
-                $v = urlencode($v);
+        $post_args = array();
+        // Properly encode array args. Fucking awesome
+        // FIXME: does not properly handle multiple levels.
+        // FIXTHEM: people who use that deserve to die.
+        foreach ($args['post'] as $name => $val) {
+            if (is_array($val)) {
+                // Oh yeah, pure evil baby.
+                foreach ($val as $k => $v) {
+                    $post_args["{$name}[{$k}]"] = $v;
+                }
+            } else {
+                $post_args[$name] = $val;
             }
-            $encval .= "$k=" . $v ."&";
         }
-        $curl_args[CURLOPT_POSTFIELDS] = substr($encval, 0, -1); */
-        $curl_args[CURLOPT_POSTFIELDS] = $args['post'];
-        //$curl_args[CURLOPT_POST] = true;
-   }
+        $curl_args[CURLOPT_POSTFIELDS] = $post_args;
+    }
 
     if (isset($args['user'])) {
         $curl_args[CURLOPT_USERPWD] = $args['user'].':pwd';

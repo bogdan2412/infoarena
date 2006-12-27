@@ -43,7 +43,7 @@ $res = curl_test(array(
 )));
 log_assert_equal($res['url'], url_absolute(url_task_edit('test_task1')));
 // Evil
-log_assert(!strstr($res['content'], '<span class="fieldError">'));
+log_assert(!strstr($res['content'], '<span class="fieldError"'));
 log_assert(strstr($res['content'], 'xzx-task1-title-xzx'));
 log_assert(strstr($res['content'], 'xzx-task1-author-xzx'));
 log_assert(strstr($res['content'], 'xzx-task1-source-xzx'));

@@ -65,8 +65,7 @@ function macro_roundparam($args) {
             if (!isset($params[$param])) {
                 if (isset($args['default_value'])) {
                     return htmlentities($args['default_value']);
-                }
-                else {
+                } else {
                     return macro_error("Round doesn't have parameter '$param'");
                 }
             }

@@ -285,12 +285,14 @@ function logging_error_handler($errno, $errstr, $errfile, $errline) {
         log_backtrace(2, false, true);
 
         if (IA_DEVELOPMENT_MODE && IA_HTTP_ENV) {
-            //echo '<html><head><title>Info-arena2 made a booboo</title></head><body>';
-            echo '<pre class="debug-error">'.$errstr."\nPrinting full backtrace:\n";
+            echo '<pre>'.$errstr."\nPrinting full backtrace:\n";
             $backtrace = debug_backtrace();
             for ($i = 1; $i < count($backtrace); ++$i) {
                 echo "Backtrace Level $i: ".format_backtrace($i, $backtrace) . "\n";
             }
+            echo "Full server log:\n";
+            global $execution_stats;
+            echo htmlentities($execution_stats['log_copy']);
             echo '</pre>';
         }
         die();
