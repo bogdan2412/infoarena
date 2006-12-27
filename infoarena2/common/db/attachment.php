@@ -1,6 +1,7 @@
 <?php
 
 require_once(IA_ROOT."common/db/db.php");
+require_once(IA_ROOT."common/attachment.php");
 
 /**
  * Attachment functions.
@@ -38,6 +39,7 @@ function attachment_update($id, $name, $size, $mime_type, $page, $user_id) {
     return db_query($query);
 }
 
+// Inserts an attachment in the db
 function attachment_insert($name, $size, $mime_type, $page, $user_id) {
     $query = sprintf("INSERT INTO ia_file
                         (`name`, page, `size`, mime_type, user_id, `timestamp`)
@@ -49,10 +51,24 @@ function attachment_insert($name, $size, $mime_type, $page, $user_id) {
     return db_insert_id();
 }
 
-function attachment_delete($id) {
-    assert(is_whole_number($id));
-    $query = sprintf("DELETE FROM ia_file WHERE `id` = %s", db_escape($id));
-    return db_query($query);
+// Delete an attachment, from both the db and the disk.
+// Returns success value.
+function attachment_delete($attach) {
+    log_assert_valid(attachment_validate($attach));
+    db_query(sprintf("DELETE FROM ia_file WHERE `id` = %s",
+            db_escape($attach['id'])));
+    if (db_affected_rows() != 1) {
+        return false;
+    }
+    if (!@unlink(attachment_get_filepath($attach))) {
+        return false;
+    }
+    return true;
+}
+
+// Delete by id. Just in case you want an extra query.
+function attachment_delete_by_id($attid) {
+    attachment_delete(attachment_get_by_id($attid));
 }
 
 // Obtain list with all attachments matching name $name and belonging

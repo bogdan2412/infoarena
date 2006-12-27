@@ -199,6 +199,12 @@ function log_assert_valid($errors)
 function log_assert_equal($v1, $v2) {
     if ($v1 != $v2) {
         $message = format_message_backtrace("$v1 != $v2");
+        if (is_array($v1)) {
+            log_print_r($v1);
+        }
+        if (is_array($v2)) {
+            log_print_r($v2);
+        }
         log_error($message, false);
     }
 }
@@ -285,15 +291,16 @@ function logging_error_handler($errno, $errstr, $errfile, $errline) {
         log_backtrace(2, false, true);
 
         if (IA_DEVELOPMENT_MODE && IA_HTTP_ENV) {
-            echo '<pre>'.$errstr."\nPrinting full backtrace:\n";
+            $msg = $errstr."\nPrinting full backtrace:\n";
             $backtrace = debug_backtrace();
             for ($i = 1; $i < count($backtrace); ++$i) {
-                echo "Backtrace Level $i: ".format_backtrace($i, $backtrace) . "\n";
+                $msg .= "Backtrace Level $i: ";
+                $msg .= format_backtrace($i, $backtrace) . "\n";
             }
-            echo "Full server log:\n";
+            $msg .= "Full server log:\n";
             global $execution_stats;
-            echo htmlentities($execution_stats['log_copy']);
-            echo '</pre>';
+            $msg .= $execution_stats['log_copy'];
+            print("<pre>".htmlentities($msg)."</pre>");
         }
         die();
     }

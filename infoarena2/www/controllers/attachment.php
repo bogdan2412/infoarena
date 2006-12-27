@@ -231,7 +231,7 @@ function controller_attachment_submit($page_name) {
 function controller_attachment_delete($page_name) {
     // FIXME: parameter.
     $file_name = request('file');
-    if (!$file_name) {
+    if (!is_attachment_name($file_name)) {
         flash_error('Cerere malformata');
         redirect(url_textblock($page_name));
     }
@@ -244,15 +244,8 @@ function controller_attachment_delete($page_name) {
     }
 
     // Delete from data base.
-    if (!attachment_delete($attach['id'])) {
-        flash_error('Nu am reusit sa sterg din baza de date.');
-        redirect(url_textblock($page_name));
-    }
-
-    // Delete from disk.
-    $real_name = attachment_get_filepath($attach);
-    if (!unlink($real_name)) {
-        flash_error('Nu am reusit sa sterg fisierul de pe disc.');
+    if (!attachment_delete($attach)) {
+        flash_error('Nu am reusit sa sterg fisierul.');
         redirect(url_textblock($page_name));
     }
 
@@ -316,15 +309,14 @@ function try_attachment_get($page_name, $file_name) {
 // download an attachment
 function controller_attachment_download($page_name, $file_name) {
     // referer check
-    if (http_referer_check())
-    {
+    if (http_referer_check()) {
         $attach = try_attachment_get($page_name, $file_name);
 
         // serve attachment with proper mime types
         serve_attachment(attachment_get_filepath($attach), $file_name, $attach['mime_type']);
     } else {
         // redirect to main page
-        header("Location: " . IA_URL);
+        header("Location: " . url_absolute(url_home()));
     }
 }
 

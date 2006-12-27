@@ -190,21 +190,29 @@ function textblock_grep($substr, $page) {
     return db_fetch_all($query);
 }
 
-// Delete a certain page, including all revisions.
+// Delete a certain page, including all revisions and attachments.
 // WARNING: This is irreversible.
 function textblock_delete($page_name) {
     $page_name = normalize_page_name($page_name);
     log_assert(is_normal_page_name($page_name));
 
     $pageesc = db_escape($page_name);
-    db_query("DELETE FROM `ia_textblock` WHERE `name` = '$pageesc'");
+    $atts = attachment_get_all($page_name);
+    foreach ($atts as $att) {
+        if (!attachment_delete($att)) {
+            return false;
+        }
+    }
     db_query("DELETE FROM `ia_textblock_revision` WHERE `name` = '$pageesc'");
+    db_query("DELETE FROM `ia_textblock` WHERE `name` = '$pageesc'");
+    if (db_affected_rows() != 1) {
+        return true;
+    }
 }
 
 // Move a page from old_name to new_name.
 // Also drags attachments.
-function textblock_move($old_name, $new_name)
-{
+function textblock_move($old_name, $new_name) {
     $old_name = normalize_page_name($old_name);
     $new_name = normalize_page_name($new_name);
     log_assert(is_normal_page_name($old_name));

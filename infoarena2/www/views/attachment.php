@@ -2,15 +2,18 @@
 
 <h1><?= htmlentities($title) ?></h1>
 
-<form enctype="multipart/form-data" action="<?= htmlentities(url_textblock($page_name)) ?>" method="post" class="clear">
+<form enctype="multipart/form-data"
+      action="<?= htmlentities(url_attachment_new($page_name)) ?>"
+      method="post"
+      class="clear">
 <fieldset>
     <legend>Alege fisier</legend>
     <ul class="form">
         <li>
-            <label for="form_filename">Fisier</label>
+            <label for="form_file_name">Fisier</label>
             <?= ferr_span('file_name') ?>
             <?= ferr_span('file_size') ?>
-            <input type="file" name="file_name" value="<?= fval('file_name') ?>" id="form_filename" />
+            <input type="file" name="file_name" value="<?= fval('file_name') ?>" id="form_file_name" />
 
             <span class="fieldHelp">Dimensiunea maxima admisa este de <?= IA_ATTACH_MAXSIZE/1024/1024 ?>MB.</span>
             <span class="fieldHelp">Numele fisierului nu poate contine spatii.</span>

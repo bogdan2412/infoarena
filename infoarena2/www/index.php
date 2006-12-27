@@ -138,8 +138,7 @@ else if ($action == 'download') {
         require_once(IA_ROOT.'www/controllers/image_attachment.php');
         // download resized image
         controller_attachment_resized_img($page, request('file'), request('resize'));
-    }
-    else {
+    } else {
         require_once(IA_ROOT.'www/controllers/attachment.php');
         // regular file download
         controller_attachment_download($page, request('file'));

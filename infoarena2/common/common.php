@@ -71,9 +71,13 @@ function is_attachment_name($attach_name) {
 }
 
 // FIXME: crappy check
-function is_user_id($user_id)
-{
+function is_user_id($user_id) {
     return is_whole_number($user_id);
+}
+
+// FIXME: crappy check
+function is_attachment_id($id) {
+    return is_whole_number($id);
 }
 
 // tells whether $round_id is a valid round identifier

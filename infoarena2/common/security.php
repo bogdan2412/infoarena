@@ -236,7 +236,9 @@ function security_attach($user, $action, $attach) {
         log_print("SECURITY: CONVERTING $action to $newaction");
         $action = $newaction;
     }
-    return security_textblock($user, $action, textblock_get_revision($attach['page']));
+    $tb = textblock_get_revision($attach['page']);
+    log_assert($tb, "Orphan attachment");
+    return security_textblock($user, $action, $tb);
 }
 
 // FIXME: more?

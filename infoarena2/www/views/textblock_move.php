@@ -2,10 +2,8 @@
 
 <h1><?= htmlentities($title) ?></h1>
 
-<form action="<?= htmlentities(url_textblock($page_name)) ?>" method="post" class="move clear">
+<form action="<?= htmlentities(url_textblock_move($page_name)) ?>" method="post" class="move clear">
 <fieldset>
-    <input type="hidden" name="action" value="move" />
-
     <ul class="form">
         <li>
             <label for="form_new_name">Noul nume</label>
