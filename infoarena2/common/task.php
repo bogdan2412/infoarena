@@ -31,7 +31,7 @@ function task_get_parameter_infos() {
                     'okfiles' => array(
                             'description' => "Daca evaluator-ul foloseste fisiere .ok",
                             'default' => '0',
-                            'type' => 'boolean',
+                            'type' => 'bool',
                             'name' => "Foloseste .ok",
                     ),
                     'evaluator' => array(
@@ -45,7 +45,7 @@ function task_get_parameter_infos() {
                     'okfiles' => array(
                             'description' => "Daca evaluator-ul foloseste fisiere .ok",
                             'default' => '0',
-                            'type' => 'boolean',
+                            'type' => 'bool',
                             'name' => "Foloseste .ok",
                     ),
                     'evaluator' => array(

@@ -13,13 +13,13 @@ function round_get_parameter_infos() {
                     'starttime' => array(
                             'description' => "Momentul la care incepe concursul (in format YYYY-MM-DD HH:MM:SS)",
                             'default' => '2000-10-10 07:00:00',
-                            'type' => 'datetime',
+                            'type' => 'string',
                             'name' => 'Incepe la',
                     ),
                     'endtime' => array(
                             'description' => "Momentul la care se termina concursul (in format YYYY-MM-DD HH:MM:SS)",
                             'default' => '2000-10-10 10:00:00',
-                            'type' => 'datetime',
+                            'type' => 'string',
                             'name' => 'Se termina',
                     )
             )

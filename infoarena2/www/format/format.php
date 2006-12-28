@@ -32,7 +32,7 @@ function format_open_tag($tag, $attribs = array())
 {
     log_assert(preg_match("/[a-z][a-z0-9]*/", $tag), "Invalid tag '$tag'");
 
-    return "<$tag " . format_attribs($attribs) . '>';
+    return "<$tag " . format_attribs($attribs) . ">\n";
 }
 
 // Format a html tag.
@@ -45,12 +45,12 @@ function format_tag($tag, $content = null, $attribs = array(), $escape = true) {
     log_assert(preg_match("/[a-z][a-z0-9]*/", $tag), "Invalid tag '$tag'");
 
     if (is_null($content)) {
-        return "<$tag ".format_attribs($attribs)." />";
+        return "<$tag ".format_attribs($attribs)." />\n";
     } else {
         if ($escape) {
             $content = htmlentities($content);
         }
-        return "<$tag ".format_attribs($attribs).">$content</$tag>";
+        return "<$tag ".format_attribs($attribs).">\n$content</$tag>\n";
     }
 }
 

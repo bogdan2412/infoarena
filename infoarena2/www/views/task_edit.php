@@ -1,5 +1,7 @@
 <?php
 require_once(IA_ROOT."common/task.php");
+require_once(IA_ROOT."www/format/form.php");
+
 $view['head'] = getattr($view, 'head').
     "<script type=\"text/javascript\" src=\"" . htmlentities(url_static("js/parameditor.js")) . "\"></script>";
 
@@ -14,8 +16,8 @@ log_assert_valid(task_validate($task));
 <form action="<?= htmlentities(url_task_edit($task_id)) ?>"
       method="post"
       class="task">
-    <h2>Despre problema</h2>
-
+    <fieldset>
+    <legend>Despre problema</legend>
     <ul class="form">
         <li id="field_title">
             <?= format_form_text_field('title', 'Titlu') ?>
@@ -43,11 +45,16 @@ log_assert_valid(task_validate($task));
             <?= ferr_span('hidden')?><br />
         </li>
 <? } ?>
+    </ul>
+    </fieldset>
 
 <?php
 // FIXME: Field should be generated from task_get_types()
 ?>
 
+    <fieldset>
+    <legend>Detalii despre evaluare</legend>
+    <ul class="form">
         <li id="field_type">
             <label for="form_type">Tipul problemei</label>
                 <select name="type" id="form_type">
@@ -57,12 +64,16 @@ log_assert_valid(task_validate($task));
                 </select>
             <?= ferr_span('type')?>
         </li>
+        <li>
+            <hr />
+        </li>
 
         <li id="field_params">
-            <label>Parametri</label>
-            <? include('views/param_edit.php') ?>
+            <?= format_param_editor_list(
+                    $param_infos, $form_values, $form_errors); ?>
         </li>
     </ul>
+    </fieldset>
     <div class="submit">
         <ul class="form">
             <li id="field_submit">

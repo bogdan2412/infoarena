@@ -465,6 +465,14 @@ input, select, textarea {
     padding: .2em;
 }
 
+input[type='text'], input[type='password'], select {
+    width: 15em;
+}
+
+#sidebar input[type='text'], input[type='password'], select {
+    width: 150px;
+}
+
 select {
     cursor: pointer;
 }
@@ -499,7 +507,7 @@ input.button:active {
     display: block;
     color: red;
     font-weight: bold;
-    font-family: Trebuchet MS, Tahoma, Arial;
+    font-family: Trebuchet MS, Tahoma, Arial, sans-serif;
 }
 
 .fieldHelp {
@@ -556,14 +564,14 @@ form.profile fieldset input {
 }
 
 /* textblock editor */
-textarea#form_text {
+form#form_wikiedit textarea#form_text {
     width: 100%;
     height: 25em;
     font-family: monospace;
     font-size: 1em;
 }
 
-input#form_title {
+form#form_wikiedit input#form_title {
     width: 100%;
     font-size: 1.2em;
     padding: .2em;
@@ -908,6 +916,7 @@ table.numbers td, table.numbers th {
     text-align: right;
 }
 
+/* User badges */
 div.tiny-user {
     height: 24px;
     display:inline;
