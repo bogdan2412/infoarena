@@ -25,7 +25,7 @@ foreach ($form_values['tasks'] as $tid) {
 
 <h1><?= htmlentities(getattr($view, 'title')) ?></h1>
 
-<form action="<?= htmlentities(getattr($view, 'action')) ?>" method="get" class="task">
+<form action="<?= htmlentities(getattr($view, 'action')) ?>" method="post" class="task">
     <ul class="form">
         <li id="field_title">
             <?= format_form_text_field('title', 'Titlu') ?>

@@ -82,7 +82,7 @@ function format_form_text_input($field) {
             'type' => 'text',
             'name' => $field,
             'id' => 'form_' . $field,
-            'value' => fval($field),
+            'value' => fval($field, false),
     ));
 }
 
