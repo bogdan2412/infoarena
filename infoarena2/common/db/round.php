@@ -21,8 +21,6 @@ function round_get($round_id) {
 function round_get_info() {
     $query = sprintf("SELECT `ia_round`.`id` AS `id`, `ia_round`.`type` AS `type`,
                              `ia_round`.`title` AS `title`,
-                             `ia_round`.`hidden` AS `hidden`,
-                             `ia_round`.`user_id` AS `user_id`
                       FROM `ia_round`
                       ORDER BY `ia_round`.`title`");
     $list = array();
