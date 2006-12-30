@@ -73,8 +73,8 @@ function controller_submit() {
 
     // get task list.
     // FIXME: proper filter?
-    $tasks = task_get_all();
-    foreach ($tasks_unfiltered as $t) {
+    $tasks = array();
+    foreach (task_get_all() as $t) {
         if (identity_can('task-submit', $t)) {
             $tasks[$t['id']] = $t;
         }

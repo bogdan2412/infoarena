@@ -10,6 +10,7 @@ body {
     line-height:1.5;
     text-align:center;
     color:#222;
+    background-color:white;
 }
 
 a {
@@ -466,7 +467,7 @@ input, select, textarea {
 }
 
 input[type='text'], input[type='password'], select {
-    width: 15em;
+    width: 200px;
 }
 
 #sidebar input[type='text'], input[type='password'], select {
