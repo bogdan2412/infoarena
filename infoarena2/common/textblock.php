@@ -39,7 +39,7 @@ function textblock_validate($tb) {
 
     // NOTE: missing timestamp is OK!!!
     // It stands for 'current moment'.
-    if (!is_datetime(getattr($tb, 'timestamp', format_datetime()))) {
+    if (!is_db_date(getattr($tb, 'timestamp', db_date_format()))) {
         $errors['timestamp'] = 'Timestamp invalid.';
     }
 

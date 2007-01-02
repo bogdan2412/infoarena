@@ -16,6 +16,7 @@ require_once(IA_ROOT."common/round.php");
 require_once(IA_ROOT."common/score.php");
 require_once(IA_ROOT."common/rating.php");
 require_once(IA_ROOT."common/parameter.php");
+db_connect();
 
 // validate argv
 log_assert(2 == $argc, "Expecting a single argument: round_id");

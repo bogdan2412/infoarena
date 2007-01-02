@@ -70,7 +70,7 @@ function format_form_field_inner_editor(
         return format_tag('input', null, array(
                 'type' => 'text',
                 'name' => $field_name,
-                'id' => "field_$field_name",
+                'id' => "form_$field_name",
                 'value' => htmlentities($field_value),
         ));
     } else if ($type == 'bool' || $type == 'enum' || $type == 'set') {
@@ -167,14 +167,12 @@ function format_param_editor_list($param_infos, $form_values, $form_errors) {
             $fname = "param_{$type}_{$name}";
             $row = format_form_field($field_info, $fname,
                     getattr($form_values, $fname),
-                    getattr($form_errors, $fname), true);
+                    getattr($form_errors, $fname), false);
             $res .= "<li id=\"field_$fname\">\n$row</li>\n";
         }
         $res .= "</ul>\n";
     }
     return $res;
 }
-
-
 
 ?>

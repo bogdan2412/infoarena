@@ -27,6 +27,47 @@ function db_fetch_all($query) {
     }
 }
 
+// tells whether given string is a valid datetime value
+// see parse_datetime()
+function is_db_date($string) {
+    $timestamp = db_date_parse($string);
+    return (false !== $timestamp);
+}
+
+// parse value of a datetime parameter in SQL format.
+// i.e.: 2006-11-27 23:59:59
+//
+// returns unix timestamp or FALSE upon error
+function db_date_parse($string) {
+    $res = strptime($string, '%Y-%m-%d %T');
+
+    if (!$res) {
+        return false;
+    }
+
+    return mktime($res['tm_hour'], $res['tm_min'], $res['tm_sec'],
+                  1, $res['tm_yday']+1, $res['tm_year']+1900);
+}
+
+// formats unix timestamp as a datetime parameter value, suitable for SQL.
+// i.e.: 2006-11-27 23:59:59
+//
+// NOTE: prefer db_date_format() to NOW().
+// NOW returns the current time in the database server's timezone.
+//
+// All times in the database are UTC!!!
+function db_date_format($timestamp = null) {
+    if ($timestamp === null) {
+        $res = strftime('%Y-%m-%d %T');
+    } else {
+        $res = strftime('%Y-%m-%d %T', $timestamp);
+    }
+
+    /*log_print("Timestamp $timestamp is $res");
+    log_backtrace();*/
+    return $res;
+}
+
 // Executes SQL query and returns value of the first column in the first
 // result row.
 // When query yields no results, it returns $default_value

@@ -221,18 +221,8 @@ if (running_as_root() &&
 
 // FIXME: configure forum
 if (read_bool("Should I try to configure the forum (ugly db stuff)?", true)) {
-    $query = sprintf("UPDATE ia_smf_themes ".
-            "SET `value` = '%s' WHERE `variable` = 'theme_dir'",
-            mysql_real_escape_string("{$ia_root}smf/Themes/infoarena2"));
-    mysql_query($query) || die("Query failed");
-    $query = sprintf("UPDATE ia_smf_themes ".
-            "SET `value` = '%s' WHERE `variable` = 'theme_url'",
-            mysql_real_escape_string("{$ia_url}forum/Themes/infoarena2"));
-    mysql_query($query) || die("Query failed");
-    $query = sprintf("UPDATE ia_smf_themes ".
-            "SET `value` = '%s' WHERE `variable` = 'images_url'",
-            mysql_real_escape_string("{$ia_url}forum/Themes/infoarena2/images"));
-    mysql_query($query) || die("Query failed");
+    system("{$ia_root}scripts/forum-fix");
 }
+
 print("FIXME: forum is not completely functional\n");
 print("FIXME: eval won't work, but it doesn't matter.\n");

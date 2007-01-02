@@ -28,6 +28,12 @@ define('IA_PAGER_DEFAULT_DISPLAY_ENTRIES', 50);
 define('IA_PAGER_MAX_DISPLAY_ENTRIES', 200);
 define('IA_PAGER_MIN_DISPLAY_ENTRIES', 3);
 
+// User date formatting.
+// Everything in the database is UTC.
+// Date formatting for the user is done in www/format/format.php
+define('IA_DATE_DEFAULT_TIMEZONE', 'Europe/Bucharest');
+define('IA_DATE_DEFAULT_FORMAT', '%A %e %B %Y %H:%M:%S');
+
 // mail sender
 define("IA_MAIL_SENDER_NO_REPLY", 'infoarena <no-reply@infoarena.ro>');
 

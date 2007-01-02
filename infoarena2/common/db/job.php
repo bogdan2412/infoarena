@@ -12,11 +12,12 @@ function job_create($task_id, $user_id, $compiler_id, $file_contents) {
     $query = "
         INSERT INTO ia_job
             (task_id, user_id, compiler_id, file_contents, `submit_time`)
-        VALUES ('%s', '%s', '%s', '%s', NOW())
+        VALUES ('%s', '%s', '%s', '%s', '%s')
     ";
     $query = sprintf($query, db_escape($task_id),
                      db_escape($user_id), db_escape($compiler_id),
-                     db_escape($file_contents));
+                     db_escape($file_contents),
+                     db_escape(db_format_date()));
     return db_query($query);
 }
 

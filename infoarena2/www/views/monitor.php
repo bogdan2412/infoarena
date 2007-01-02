@@ -53,7 +53,7 @@ if (!$jobs) {
             'title' => 'Utilizator',
             'key' => 'username',
             'rowform' => create_function('$row',
-                                         'return format_user_tiny($row["user_name"], $row["user_fullname"]);'),
+                 'return format_user_tiny($row["user_name"], $row["user_fullname"]);'),
         ),
         array(
             'title' => 'Problema',
@@ -62,6 +62,7 @@ if (!$jobs) {
         array(
             'title' => 'Data',
             'key' => 'submit_time',
+            'valform' => 'format_date',
         ),
         array(
             'title' => 'Stare (click pentru detalii)',

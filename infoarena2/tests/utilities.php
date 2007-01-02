@@ -146,4 +146,7 @@ function test_cleanup()
     }
 }
 
+db_connect();
+check_requirements();
+
 ?>

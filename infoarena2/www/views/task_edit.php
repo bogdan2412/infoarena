@@ -51,7 +51,6 @@ log_assert_valid(task_validate($task));
 <?php
 // FIXME: Field should be generated from task_get_types()
 ?>
-
     <fieldset>
     <legend>Detalii despre evaluare</legend>
     <ul class="form">

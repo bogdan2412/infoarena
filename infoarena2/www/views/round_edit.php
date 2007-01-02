@@ -37,7 +37,7 @@ foreach ($form_values['tasks'] as $tid) {
         <li id="field_page_name">
             <?= format_form_text_field('page_name', 'Pagina de prezentare') ?>
         </li>
-    <ul>
+    </ul>
 </fieldset>
 
             <label for="form_tasks">Alege task-urile acestei runde</label>

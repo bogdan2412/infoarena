@@ -18,7 +18,7 @@ require_once(IA_ROOT . 'www/url.php');
     <th class="user-id">Utilizator</th>
     <td class="user-id"><?= format_user_tiny($job['user_name'], $job['user_fullname']) ?></td>
     <th class="submit-time">Data</th>
-    <td class="submit-time"><?= htmlentities($job['submit_time']) ?></td>
+    <td class="submit-time"><?= format_date($job['submit_time']) ?></td>
 </tr>
 <tr>
     <th class="score">Scor</th>

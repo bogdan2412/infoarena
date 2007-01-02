@@ -163,4 +163,46 @@ function format_user_ratingbadge($username, $rating) {
     }
 }
 
+// Format a date for display.
+// Can take *both* unix timestamps and utc strings(db_date stuff).
+//
+// FIXME: user timezone, user format, etc.
+// global identityUser;
+//
+// HTML safe(don't pass through htmlentities.
+function format_date($date, $format = null) {
+    if (is_db_date($date)) {
+        $timestamp = db_date_parse($date);
+    } elseif (is_whole_number($date)) {
+        $timestamp = $date;
+    } elseif (is_null($date)) {
+        $timestamp = time();
+    } else {
+        log_error("Invalid date argument");
+    }
+
+    // Romanian locale. This is very usefull for dates, etc.
+    // FIXME: only set this in format_date, etc?
+    if (!setlocale(LC_TIME, "ro_RO.utf8")) {
+        log_warn("Romanian locale missing, this tends to suck for formatting");
+    }
+
+    // FIXME: user prefs.
+    $timezone = IA_DATE_DEFAULT_TIMEZONE;
+    if (is_null($format)) {
+        $format = IA_DATE_DEFAULT_FORMAT;
+    }
+
+    // PHP 5.1+
+    if (function_exists('date_default_timezone_set')) {
+        date_default_timezone_set($timezone);
+        $res = strftime($format, $timestamp);
+        date_default_timezone_set('UTC');
+    } else {
+        // Probably won't work, whatever.
+        $res = strftime($format, $timestamp);
+    }
+    return $res;
+}
+
 ?>

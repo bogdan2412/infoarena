@@ -10,6 +10,8 @@ require_once(IA_ROOT."common/security.php");
 require_once(IA_ROOT."www/url.php");
 require_once(IA_ROOT."www/utilities.php");
 require_once(IA_ROOT."www/identity.php");
+require_once(IA_ROOT."common/db/db.php");
+db_connect();
 
 // restore identity (if such a session exists)
 identity_restore();

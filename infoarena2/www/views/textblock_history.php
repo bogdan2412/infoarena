@@ -46,6 +46,7 @@ $column_infos = array(
     array(
         'title' => 'Data',
         'key' => 'timestamp',
+        'valform' => 'format_date',
     ),
 
     array(

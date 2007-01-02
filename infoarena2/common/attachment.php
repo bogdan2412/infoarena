@@ -26,7 +26,7 @@ function attachment_validate($att) {
 
     // NOTE: missing timestamp is OK!!!
     // It stands for 'current moment'.
-    if (!is_datetime(getattr($att, 'timestamp', format_datetime()))) {
+    if (!is_db_date(getattr($att, 'timestamp', db_date_format()))) {
         $errors['timestamp'] = 'Timestamp invalid.';
     }
 

@@ -2,6 +2,7 @@
 <?php
 
 require_once(dirname($argv[0]) . "/utilities.php");
+db_connect();
 
 $smfprefix = DB_SMF_PREFIX;
 

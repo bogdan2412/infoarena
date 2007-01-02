@@ -187,9 +187,11 @@ function imagecache_save($attach_id, $resize, $buffer) {
     }
 
     $filename = imagecache_filename($attach_id, $resize);
-    $ret = file_put_contents($filename, $buffer, LOCK_EX);
+    $ret = @file_put_contents($filename, $buffer, LOCK_EX);
+    // A broken cacke is fairly harmless, especially in debug.
+    // Throwing up here results in no visible images, which tends to suck.
     if (false === $ret) {
-        log_error('IMAGE_CACHE: Could not create file ' . $filename);
+        log_warn('IMAGE_CACHE: Could not create file ' . $filename);
         return false;
     }
 

@@ -2,7 +2,7 @@
 
 // When including infoarena API from SMF, it is required to skip this
 // module as it clashes with SMF's log_* functions.
-// FIXME: Find a better hack
+// FIXME: Find a better hack, this is retarded.
 if (defined("IA_FROM_SMF")) {
     return;
 }
@@ -21,6 +21,9 @@ if (defined("IA_FROM_SMF")) {
 // NOTE: this is for development messages only. Users should never get to
 // see them. There are other functions to deal with bad form values, or
 // insufficient permissions or other usual errors.
+//
+// WARNING: when included this file will change the default error handler.
+// This is good, we never want to run without logging support anyway.
 
 // Private function.
 // Formats a backtrace level as a string.

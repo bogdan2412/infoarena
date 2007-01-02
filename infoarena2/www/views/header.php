@@ -27,7 +27,7 @@ if (isset($form_errors) || isset($form_values)) {
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-2" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title><?= htmlentities(getattr($view, 'title')) ?></title>
 
     <link type="text/css" rel="stylesheet" href="<?= htmlentities(url_static('css/sitewide.css')) ?>"/>
@@ -94,7 +94,7 @@ ia_template_topnav($topnav_select, $smf_admin);
     <p class="user-count"><?php echo user_count(); ?> membri inregistrati</p>
     <div id="srv_time" class="user-count" align="center"></div>
     <script type="text/javascript" src="<?= htmlentities(url_static('js/time.js')) ?>"></script>
-    <script type="text/javascript">loadTime(<?php echo date("H, i, s");?>);</script>
+    <script type="text/javascript">loadTime(<?= format_date(null, "%H, %M, %S");?>);</script>
 </div>
 
 <div id="main">

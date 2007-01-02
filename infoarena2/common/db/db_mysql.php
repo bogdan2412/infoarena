@@ -1,15 +1,22 @@
 <?php
 
-// Establish database connection
-// Repetitive include guard. Is this really needed?
-log_assert(!isset($dbLink));
-log_print("connecting to database");
-if (!$dbLink = mysql_connect(DB_HOST, DB_USER, DB_PASS)) {
-    log_error('Cannot connect to database: '.mysql_error());
+// Connects to the database. Call this function if you need the database.
+// It's better than connecting when the file is included. Side-effects are bad.
+function db_connect() {
+    global $dbLink;
+    // Repetitive include guard. Is this really needed?
+    log_assert(!isset($dbLink), "Already connected to the database.");
+    // log_print("connecting to database");
+    if (!$dbLink = mysql_connect(DB_HOST, DB_USER, DB_PASS)) {
+        log_error('Cannot connect to database: '.mysql_error());
+    }
+    if (!mysql_select_db(DB_NAME, $dbLink)) {
+        log_error('Cannot select database.');
+    }
 }
-mysql_select_db(DB_NAME, $dbLink) or log_error('Cannot select database.');
 
 // Escapes a string to be safely included in a query.
+// Pure evil.
 function db_escape($str) {
     return mysql_escape_string($str);
 }

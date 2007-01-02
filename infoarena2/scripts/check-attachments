@@ -3,6 +3,7 @@
 
 require_once(dirname($argv[0]) . "/utilities.php");
 require_once(IA_ROOT . "common/db/attachment.php");
+db_connect();
 
 log_print("Checking attachment dir...");
 log_warn("This script consumes tons of memory so errors might occur");

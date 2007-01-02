@@ -10,9 +10,9 @@
             <?= format_link(url_attachment($page_name, $v['name']), $v['name']) ?>
             atasat de
             <?= format_user_tiny($v['username'], $v['user_fullname']) ?>
-
-            <?= " la ".htmlentities($v['timestamp']).", " ?>
-
+            la data de
+            <?= format_date($v['timestamp']) ?>
+            , 
             <a href="<?= htmlentities(url_attachment_delete($page_name, $v['name'])) ?>" onclick="return confirm('Aceasta actiune este ireversibila! Doresti sa continui?')">Sterge</a>
         </li>
         <?php } ?>

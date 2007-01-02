@@ -9,6 +9,7 @@ require_once(IA_ROOT."common/user.php");
 require_once(IA_ROOT."common/rating.php");
 require_once(IA_ROOT."common/email.php");
 require_once(IA_ROOT."www/url.php");
+db_connect();
 
 // config
 define("IA_NEWSLETTER_FROM", "Cristian George Strat <cristian@infoarena.ro>");

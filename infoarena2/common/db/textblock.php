@@ -11,7 +11,9 @@ require_once(IA_ROOT."common/textblock.php");
 
 // Add a new revision
 // FIXME: hash parameter?
-function textblock_add_revision($name, $title, $content, $user_id, $security = "public", $timestamp = null) {
+function textblock_add_revision(
+        $name, $title, $content, $user_id,
+        $security = "public", $timestamp = null) {
     $name = normalize_page_name($name);
     $tb = array(
             'name' => $name,
@@ -38,12 +40,17 @@ function textblock_add_revision($name, $title, $content, $user_id, $security = "
                      db_escape($name));
     db_query($query);
 
-    $timestampVal = is_null($timestamp) ? "NOW()" : "'".db_escape($timestamp)."'";
+    // Evil.
+    if ($timestamp === null) {
+        $timestamp = db_date_format();
+    } else {
+        log_assert(is_db_date($timestamp), "Invalid timestamp");
+    }
     $query = sprintf("INSERT INTO ia_textblock
                         (name, `text`, `title`, `timestamp`, `user_id`, `security`)
-                      VALUES ('%s', '%s', '%s', %s, '%s', '%s')",
+                      VALUES ('%s', '%s', '%s', '%s', '%s', '%s')",
                      db_escape($name), db_escape($content),
-                     db_escape($title), $timestampVal,
+                     db_escape($title), db_escape($timestamp),
                      db_escape($user_id), db_escape($security));
     return db_query($query);
 }

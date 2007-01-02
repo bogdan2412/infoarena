@@ -98,38 +98,6 @@ function is_task_id($task_id) {
     return preg_match('/^[a-z0-9][a-z0-9_]*$/i', $task_id) && strlen($task_id) < 16;
 }
 
-// tells whether given string is a valid datetime value
-// see parse_datetime()
-function is_datetime($string) {
-    $timestamp = parse_datetime($string);
-    return (false !== $timestamp);
-}
-
-// parse value of a datetime parameter
-// i.e.: 2006-11-27 23:59:59
-//
-// returns unix timestamp or FALSE upon error
-function parse_datetime($string) {
-    $res = strptime($string, '%Y-%m-%d %T');
-
-    if (!$res) {
-        return false;
-    }
-
-    return mktime($res['tm_hour'], $res['tm_min'], $res['tm_sec'],
-                  1, $res['tm_yday']+1, $res['tm_year']+1900);
-}
-
-// formats unix timestamp as a datetime parameter value
-// i.e.: 2006-11-27 23:59:59
-function format_datetime($timestamp = null) {
-    if ($timestamp === null) {
-        return strftime('%Y-%m-%d %T');
-    } else {
-        return strftime('%Y-%m-%d %T', $timestamp);
-    }
-}
-
 // Get a file's mime type.
 function get_mime_type($filename) {
     if (function_exists("finfo_open")) {
@@ -179,6 +147,7 @@ function check_requirements()
         }
     }
 
+    // Check for retarded php.ini settings.
     if (IA_HTTP_ENV) {
         log_assert(!ini_get("session.auto_start"),
                    "Please disable session.auto_start. It kills babies!");
@@ -249,9 +218,9 @@ function resize_coordinates($width, $height, $resize) {
 
 error_reporting(0xFFFF);
 
-// init timezone to avoid Strict warnings
+// All our logic is done in UTC, the sensible way.
 if (function_exists("date_default_timezone_set")) {
-    date_default_timezone_set("EET");
+    date_default_timezone_set("UTC");
 }
 
 ?>

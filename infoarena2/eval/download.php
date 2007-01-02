@@ -32,11 +32,7 @@ function copy_attachment_file($pagename, $filename, $target)
 
     clearstatcache();
     $cachemtime = @filemtime($cachefname);
-    $servermtime = strtotime($att['timestamp']);
-
-    //$date_format = "Y-m-d H:i:s";
-    //log_print("cached stamp $cachemtime(" . date($date_format, $cachemtime) . ") ".
-    //          "server stamp $servermtime(" . date($date_format, $servermtime) . ")");
+    $servermtime = db_date_parse($att['timestamp']);
 
     if ($cachemtime === null || $cachemtime < $servermtime) {
         $curl = curl_init();

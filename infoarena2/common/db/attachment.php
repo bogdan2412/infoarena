@@ -31,10 +31,11 @@ function attachment_get_by_id($id) {
 
 function attachment_update($id, $name, $size, $mime_type, $page, $user_id) {
     $query = sprintf("UPDATE ia_file
-                      SET size = '%s', user_id ='%s', `timestamp` = NOW(),
+                      SET size = '%s', user_id ='%s', `timestamp` = '%s',
                           mime_type = '%s'
                       WHERE id = %s",
                      db_escape($size), db_escape($user_id),
+                     db_escape(db_date_format()),
                      db_escape($mime_type), db_escape($id));
     return db_query($query);
 }
@@ -43,10 +44,10 @@ function attachment_update($id, $name, $size, $mime_type, $page, $user_id) {
 function attachment_insert($name, $size, $mime_type, $page, $user_id) {
     $query = sprintf("INSERT INTO ia_file
                         (`name`, page, `size`, mime_type, user_id, `timestamp`)
-                      VALUES ('%s', '%s', '%s', '%s', '%s', NOW())",
+                      VALUES ('%s', '%s', '%s', '%s', '%s', '%s')",
                      db_escape($name), db_escape($page),
                      db_escape($size), db_escape($mime_type),
-                     db_escape($user_id));
+                     db_escape($user_id), db_escape(db_date_format()));
     db_query($query);
     return db_insert_id();
 }

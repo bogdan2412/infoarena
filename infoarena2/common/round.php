@@ -32,19 +32,19 @@ function round_validate_parameters($round_type, $parameters) {
     if ($round_type == 'classic') {
 
         // Check start time.
-        if (!is_datetime($parameters['starttime'])) {
+        if (!is_db_date($parameters['starttime'])) {
             $errors['starttime'] = "Momentul de inceput trebuie specificat in format YYYY-MM-DD HH:MM:SS.";
             $start_tstamp = false;
         } else {
-            $start_tstamp = parse_datetime($parameters['starttime']);
+            $start_tstamp = db_date_parse($parameters['starttime']);
         }
 
         // Check end time.
-        if (!is_datetime($parameters['endtime'])) {
+        if (!is_db_date($parameters['endtime'])) {
             $errors['endtime'] = "Momentul de sfarsit trebuie specificat in format YYYY-MM-DD HH:MM:SS.";
             $end_tstamp = false;
         } else {
-            $end_tstamp = parse_datetime($parameters['endtime']);
+            $end_tstamp = db_date_parse($parameters['endtime']);
         }
 
         // Check start time < end time.
