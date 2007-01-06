@@ -63,8 +63,6 @@ function db_date_format($timestamp = null) {
         $res = strftime('%Y-%m-%d %T', $timestamp);
     }
 
-    /*log_print("Timestamp $timestamp is $res");
-    log_backtrace();*/
     return $res;
 }
 

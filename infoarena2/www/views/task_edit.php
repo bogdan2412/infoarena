@@ -9,6 +9,47 @@ include('views/header.php');
 
 // Validate task.
 log_assert_valid(task_validate($task));
+
+$form_fields = array(
+        'title' => array(
+                'name' => "Titlul problemei",
+                'description' => "Nume sub care apare problema pentru utilizator",
+                'type' => 'string',
+        ),
+        'page_name' => array(
+                'name' => "Pagina cu enuntul",
+                'description' => "Aceasta este pagina la care este trimis utilizatorul ".
+                                 "cand da click pe o problema",
+                'type' => 'string',
+        ),
+        'author' => array(
+                'name' => "Autor(i)",
+                'type' => 'string',
+        ),
+        'source' => array(
+                'name' => "Sursa",
+                'type' => 'string',
+        ),
+        'hidden' => array(
+                'name' => 'Vizibilitate',
+                'description' => 'Daca problema este vizibila pentru utilizatorii '.
+                                 'de rand. Cand o runda incepe probleme devin automat '.
+                                 'vizibile',
+                'type' => 'enum',
+                'values' => array(
+                        '1' => 'Task ascuns',
+                        '0' => 'Task vizibil',
+                ),
+                'default' => '1',
+        ),
+        'type' => array(
+                'name' => 'Tipul problemei',
+                'type' => 'enum',
+                'values' => task_get_types(),
+                'default' => 'classic',
+        ),
+);
+
 ?>
 
 <h1><?= htmlentities(getattr($view, 'title')) ?></h1>
@@ -19,32 +60,13 @@ log_assert_valid(task_validate($task));
     <fieldset>
     <legend>Despre problema</legend>
     <ul class="form">
-        <li id="field_title">
-            <?= format_form_text_field('title', 'Titlu') ?>
-        </li>
-
-        <li id="field_page_name">
-            <?= format_form_text_field('page_name', 'Pagina cu enuntul') ?>
-        </li>
- 
-        <li id="field_author">
-            <?= format_form_text_field('author', 'Autor(i)') ?>
-        </li>
-
-        <li id="field_source">
-            <?= format_form_text_field('source', 'Sursa') ?>
-        </li>
-
-<? if (identity_can('task-change-security', $task)) { ?>
-        <li id="field_hidden">
-            <label for="form_hidden">Vizibilitate</label>
-            <select name="hidden" id="form_hidden">
-                <option value="1"<?= '1' == fval('hidden') ? ' selected="selected"' : '' ?>>Task ascuns</option>
-                <option value="0"<?= '0' == fval('hidden') ? ' selected="selected"' : '' ?>>Task public (vizibil)</option>
-            </select>
-            <?= ferr_span('hidden')?><br />
-        </li>
-<? } ?>
+        <?= view_form_field_li($form_fields['title'], 'title') ?>
+        <?= view_form_field_li($form_fields['page_name'], 'page_name') ?>
+        <?= view_form_field_li($form_fields['author'], 'author') ?>
+        <?= view_form_field_li($form_fields['source'], 'source') ?>
+        <? if (identity_can('task-change-security', $task)) { ?> 
+        <?= view_form_field_li($form_fields['hidden'], 'hidden') ?>
+        <? } ?>
     </ul>
     </fieldset>
 
@@ -54,19 +76,8 @@ log_assert_valid(task_validate($task));
     <fieldset>
     <legend>Detalii despre evaluare</legend>
     <ul class="form">
-        <li id="field_type">
-            <label for="form_type">Tipul problemei</label>
-                <select name="type" id="form_type">
-                    <option value=""<?= '' == fval('type') ? ' selected="selected"' : '' ?>>[ Alege ]</option>
-                    <option value="classic"<?= 'classic' == fval('type') ? ' selected="selected"' : '' ?>>Clasic</option>
-                    <option value="output-only"<?= 'output-only' == fval('type') ? ' selected="selected"' : '' ?>>Output unic</option>
-                </select>
-            <?= ferr_span('type')?>
-        </li>
-        <li>
-            <hr />
-        </li>
-
+        <?= view_form_field_li($form_fields['type'], 'type') ?>
+        <li><hr /></li>
         <li id="field_params">
             <?= format_param_editor_list(
                     $param_infos, $form_values, $form_errors); ?>

@@ -3,7 +3,10 @@
 
 // Get valid task types.
 function task_get_types() {
-    return array('classic', 'output-only');
+    return array(
+            'classic' => 'Clasic',
+            'output-only' => 'Doar de output',
+    );
 }
 
 // Get parameter infos.
@@ -108,7 +111,7 @@ function task_validate($task) {
         $errors['hidden'] = 'Se accepta doar 0/1';
     }
 
-    if (!in_array(getattr($task, 'type', ''), task_get_types())) {
+    if (!array_key_exists(getattr($task, 'type'), task_get_types())) {
         $errors['type'] = "Tipul task-ului este invalid";
     }
 

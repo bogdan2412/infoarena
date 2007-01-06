@@ -58,6 +58,9 @@ function macro_roundparam($args) {
         case 'title':
             return htmlentities($round['title']);
 
+        case 'start_time':
+            return format_date($round['start_time']);
+
         case 'id':
             return htmlentities($round['id']);
 
@@ -68,6 +71,8 @@ function macro_roundparam($args) {
                 } else {
                     return macro_error("Round doesn't have parameter '$param'");
                 }
+            } else {
+                return htmlentities($params[$param]);
             }
     }
 }

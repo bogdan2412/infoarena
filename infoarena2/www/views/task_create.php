@@ -1,28 +1,41 @@
-<?php include('header.php'); ?>
+<?php include('header.php');
+
+// FIXME: copy/paste is stupid. Centralize field infos
+$form_fields = array (
+        'type' => array(
+                'name' => 'Tipul problemei',
+                'description' => 'Tipul problemei determina modul de evaluare',
+                'type' => 'enum',
+                'values' => task_get_types(),
+                'default' => 'classic',
+        ), 
+        'id' => array(
+                'name' => 'Id-ul problemei',
+                'description' => 'Identificatorul unic si permanent al problemei.',
+                'type' => 'string',
+                'default' => '',
+        ),
+);
+
+?>
 
 <h1><?= htmlentities($title) ?></h1>
 
 <form action="<?= htmlentities(url_task_create()) ?>" method="post" class="task create clear">
+<fieldset>
+<legend>Informatii initiale</legend>
     <ul class="form">
-        <li id="field_id">
-            <?= format_form_text_field('id', 'Id-ul problemei'); ?>
-        </li>
-<? /* FIXME: copy/paste eats babies. */ ?>
-        <li id="field_type">
-            <label for="form_type">Tip task</label>
-                <select name="type" id="form_type">
-                    <option value=""<?= '' == fval('type') ? ' selected="selected"' : '' ?>>[ Alege ]</option>
-                    <option value="classic"<?= 'classic' == fval('type') ? ' selected="selected"' : '' ?>>Clasic</option>
-                    <option value="output-only"<?= 'output-only' == fval('type') ? ' selected="selected"' : '' ?>>Output Only</option>
-                </select>
-            <?= ferr_span('type')?>
-        </li>
+        <?= view_form_field_li($form_fields['id'], 'id') ?>
+        <?= view_form_field_li($form_fields['type'], 'type') ?>
     </ul>
-    <ul class="form clear">
-        <li>
-            <input type="submit" class="button important" value="Creaza task" id="form_submit" />
-        </li>
-    </ul>
+</fieldset>
+    <div class="submit">
+        <ul class="form">
+            <li id="field_submit">
+                <input type="submit" value="Creeaza task" id="form_submit" class="button important" />
+            </li>
+        </ul>
+    </div>
 </form>
 
 <?php include('footer.php'); ?>

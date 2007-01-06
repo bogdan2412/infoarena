@@ -6,6 +6,11 @@ db_connect();
 
 $smfprefix = DB_SMF_PREFIX;
 
+/*$remaining_user_ids = array_values(db_fetch_all("SELECT `id` from `ia_user` LIMIT 300"));
+$ruids = '(' . implode(', ', $remaining_user_ids) . ')';
+db_query("DELETE FROM `ia_user` WHERE id NOT IN $ruids");
+db_query("DELETE FROM `ia_score` WHERE user_id NOT IN $rids");*/
+
 // censoring sensitive data
 //  - passwords
 db_query("UPDATE ia_user

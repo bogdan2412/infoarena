@@ -3,26 +3,32 @@
 
 // Get valid round types.
 function round_get_types() {
-    return array('classic');
+    return array(
+            'classic' => 'Concurs clasic',
+            'archive' => 'Arhiva de pregatire',
+    );
 }
 
 // Get parameter infos.
 function round_get_parameter_infos() {
     return array(
             'classic' => array(
-                    'starttime' => array(
-                            'description' => "Momentul la care incepe concursul (in format YYYY-MM-DD HH:MM:SS)",
-                            'default' => '2000-10-10 07:00:00',
-                            'type' => 'string',
-                            'name' => 'Incepe la',
+                    'duration' => array(
+                            'name' => 'Durata',
+                            'description' => "Durata concursului, in ore",
+                            'default' => '4.5',
+                            'type' => 'float',
                     ),
-                    'endtime' => array(
-                            'description' => "Momentul la care se termina concursul (in format YYYY-MM-DD HH:MM:SS)",
-                            'default' => '2000-10-10 10:00:00',
-                            'type' => 'string',
-                            'name' => 'Se termina',
-                    )
-            )
+                    'rating_update' => array(
+                            'name' => 'Afecteaza rating-urile',
+                            'description' => "Daca rezultatele din acest concurs ".
+                                "afecteaza rating-urile concurentilor",
+                            'default' => '1',
+                            'type' => 'bool',
+                    ),
+            ),
+            'archive' => array(
+            ),
     );
 }
 
@@ -30,28 +36,16 @@ function round_get_parameter_infos() {
 function round_validate_parameters($round_type, $parameters) {
     $errors = array();
     if ($round_type == 'classic') {
-
-        // Check start time.
-        if (!is_db_date($parameters['starttime'])) {
-            $errors['starttime'] = "Momentul de inceput trebuie specificat in format YYYY-MM-DD HH:MM:SS.";
-            $start_tstamp = false;
-        } else {
-            $start_tstamp = db_date_parse($parameters['starttime']);
+        // Check duration
+        $duration = getattr($parameters, 'duration');
+        if (is_null($duration)) {
+            $errors['duration'] = "Durata trebuie specificata";
         }
-
-        // Check end time.
-        if (!is_db_date($parameters['endtime'])) {
-            $errors['endtime'] = "Momentul de sfarsit trebuie specificat in format YYYY-MM-DD HH:MM:SS.";
-            $end_tstamp = false;
-        } else {
-            $end_tstamp = db_date_parse($parameters['endtime']);
+        if (!is_numeric($duration) || $duration < 0) {
+            $errors['duration'] = "Durata trebuie sa fie un numar pozitiv";
         }
-
-        // Check start time < end time.
-        if ($start_tstamp !== false && $end_tstamp !== false &&
-                ($start_tstamp > $end_tstamp)) {
-            $errors['endtime'] = 'Sfarsitul trebuie sa fie dupa inceput.';
-        }
+    } elseif ($round_type == 'archive') {
+        // Empty...
     } else {
         log_error("Bad round_type");
     }
@@ -66,6 +60,8 @@ function round_init($round_id, $round_type, $user = null) {
             'type' => $round_type,
             'title' => $round_id,
             'page_name' => TB_ROUND_PREFIX . $round_id,
+            'state' => 'waiting',
+            'start_time' => NULL
     );
 
     log_assert_valid(round_validate($round));
@@ -89,11 +85,34 @@ function round_validate($round) {
         $errors['page_name'] = "Homepage invalid";
     }
 
-    if (!in_array(getattr($round, 'type', ''), round_get_types())) {
+    if (!array_key_exists(getattr($round, 'type'), round_get_types())) {
         $errors['type'] = "Tipul rundei este invalid";
     }
 
+    if (!in_array(getattr($round, 'state'),
+            array('running', 'waiting', 'complete'))) {
+        $errors['state'] = "Starea rundei este invalida";
+    }
+
+    // NULL is ok here.
+    if (!is_db_date(getattr($round, 'start_time', db_date_format()))) {
+        $errors['start_time'] = "Timpul trebuie specificat caYYYY-MM-DD HH:MM:SS";
+    }
+
     return $errors;
+}
+
+// Called by the eval when a round starts.
+function round_event_start($round) {
+    log_assert_valid(round_validate($round));
+    log_print("CONTEST LOGIC: Starting round {$round['id']}.");
+    round_unhide_all_tasks($round['id']);
+}
+
+// Called when a round is stopped.
+function round_event_stop($round) {
+    log_assert_valid(round_validate($round));
+    log_print("CONTEST LOGIC: Stopping round {$round['id']}.");
 }
 
 ?>

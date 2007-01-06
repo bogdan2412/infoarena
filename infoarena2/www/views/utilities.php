@@ -76,26 +76,42 @@ function wiki_include($page_name, $template_args = null) {
     echo '</div>';
 }
 
-// Format a simple form input tag.
-function format_form_text_input($field) {
-    return format_tag('input', null, array(
-            'type' => 'text',
-            'name' => $field,
-            'id' => 'form_' . $field,
-            'value' => fval($field, false),
+// Format a field as a li. Uses global form_values/errors.
+function view_form_field_li($field_info, $field_name) {
+    require_once(IA_ROOT.'www/format/form.php');
+    global $form_values, $form_errors;
 
-    ));
+    $row = format_form_field($field_info, $field_name,
+            getattr($form_values, $field_name),
+            getattr($form_errors, $field_name), false);
+    return "<li id=\"field_$field_name\">\n$row</li>\n";
+ 
+}
+
+// Format a field as a tr. Uses global form_values/errors.
+function view_form_field_tr($field_info, $field_name) {
+    require_once(IA_ROOT.'www/format/form.php');
+    global $form_values, $form_errors;
+
+    $row = format_form_field($field_info, $field_name,
+            getattr($form_values, $field_name),
+            getattr($form_errors, $field_name), true);
+    $return .= "<tr id=\"field_$field_name\">\n$row</tr>\n";
 }
 
 // Formats a simple form text field
-function format_form_text_field($field, $info) {
-    $res = '';
-    $res .= format_tag('label', $info, array(
-            'for' => 'form_' . $field,
-    ));
-    $res .= ferr_span($field);
-    $res .= format_form_text_input($field);
-    return $res;
+// FIXME: obliterate
+function view_form_text_field($field, $info) {
+    global $form_values;
+    global $form_errors;
+    return format_form_field(array(
+            'type' => 'string',
+            'default' => '',
+            'name' => $info
+        ), $field,
+        getattr($form_values, $field),
+        getattr($form_errors, $field)
+    );
 }
 
 ?>

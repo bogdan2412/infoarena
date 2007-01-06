@@ -3,6 +3,9 @@
  * (c) 2006 infoarena
  */
 
+// Note: this code sucks, everything is hardcoded.
+
+// Initialize paramter editor
 function ParamEditor_Init() {
     connect($('form_type'), 'onchange', ParamEditor_TypeChange);
     ParamEditor_TypeChange();

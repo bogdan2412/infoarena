@@ -6,7 +6,7 @@ if (!isset($view['head'])) {
 }
 $view['head'] .= "<script type=\"text/javascript\" src=\"" . htmlentities(url_static("js/dual.js")) . "\" ></script>";
 $view['head'] .= "<script type=\"text/javascript\" src=\"" . htmlentities(url_static("js/roundedit.js")) . "\" ></script>";
-$view['head'] .= "<script type=\"text/javascript\" src=\"" . htmlentities(url_static("js/paramedit.js")) . "\" ></script>";
+$view['head'] .= "<script type=\"text/javascript\" src=\"" . htmlentities(url_static("js/parameditor.js")) . "\" ></script>";
 
 require_once(IA_ROOT."common/round.php");
 require_once(IA_ROOT."www/format/form.php");
@@ -22,69 +22,88 @@ foreach ($form_values['tasks'] as $tid) {
     log_assert(is_task_id($tid));
 }
 
+$tasks_field_values = array();
+foreach ($all_tasks as $task) {
+    $tasks_field_values[$task['id']] = "{$task['title']} [{$task['id']}]";
+}
+
+// Init form field definitions.
+$form_fields = array(
+        'title' => array(
+                'name' => 'Titlu',
+                'default' => $round['id'],
+                'type' => 'string',
+        ),
+        'page_name' => array(
+                'name' => "Pagina de prezentare",
+                'description' => "Aceasta este pagina la care este trimis utilizatorul ".
+                                 "cand da click pe o runda",
+                'type' => 'string',
+        ),
+        'start_time' => array(
+                'name' => "Timpul de start",
+                'description' => "Timpul la care incepe automat runda.",
+                'type' => 'datetime',
+        ),
+        'tasks' => array(
+                'name' => "Lista de probleme",
+                'type' => 'set',
+                'values' => $tasks_field_values,
+        ),
+        'type' => array(
+                'name' => 'Tipul rundei',
+                'type' => 'enum',
+                'values' => round_get_types(),
+                'default' => 'classic',
+        ),
+);
 ?>
 
-<h1><?= htmlentities(getattr($view, 'title')) ?></h1>
+<h1>Editare runda '<?= htmlentities($round['title']) ?></h1>
+
+<?php if ($round['state'] == 'running') { ?>
+    <div class="warning">
+     Atentie! Runda este activa chiar acum. Orice modificare poate avea urmari neplacute.
+    </div>
+<?php } elseif ($round['state'] == 'waiting') { ?>
+    Aceasta runda nu a rulat inca.
+<?php } elseif ($round['state'] == 'complete') { ?>
+    <div class="warning">
+     Atentie! Aceasta runda s-a terminat, orice modificare este descurajata.
+    </div>
+<?php } ?>
 
 <form action="<?= htmlentities(getattr($view, 'action')) ?>" method="post" class="task">
-<fieldset>
-<legend>Despre runda</legend>
-    <ul class="form">
-        <li id="field_title">
-            <?= format_form_text_field('title', 'Titlu') ?>
-        </li>
-
-        <li id="field_page_name">
-            <?= format_form_text_field('page_name', 'Pagina de prezentare') ?>
-        </li>
-    </ul>
-</fieldset>
-
-            <label for="form_tasks">Alege task-urile acestei runde</label>
-            <select name="tasks[]" id="form_tasks" multiple="multiple" size="10">
-<?php
-// Show an option tag for every task
-foreach ($all_tasks as $task) { 
-    $attribs = array();
-    $attribs['value'] = $task['id'];
-    if (array_search($task['id'], $form_values['tasks']) !== false) {
-        $attribs['selected'] = 'selected';
-    }
-    $content = "{$task['title']} [{$task['id']}]";
-    echo format_tag('option', $content, $attribs);
-}
-?>
-            </select>
-            <?= ferr_span('tasks')?>
-
-<fieldset>
-<legend>Parametri</legend>
-    <ul class="form">
-        <li id="field_type">
-            <label for="form_type">Tipul rundei</label>
-                <select name="type" id="form_type">
-                    <option value=""<?= '' == fval('type') ? ' selected="selected"' : '' ?>>[ Alege ]</option>
-                    <option value="classic"<?= 'classic' == fval('type') ? ' selected="selected"' : '' ?>>Clasic</option>
-                </select>
-            <?= ferr_span('type')?>
-        </li>
-
-        <li><hr /></li>
-
-        <li id="field_params">
-            <?= format_param_editor_list(
-                    $param_infos, $form_values, $form_errors); ?>
-        </li>
-    </ul>
-</fieldset>
-
-    <div class="submit">
-        <ul class="form">
-            <li id="field_submit">
-                <input type="submit" value="Salveaza" id="form_submit" class="button important" />
-            </li>
-        </ul>
-    </div>
+ <fieldset>
+  <legend>Informatii generale</legend>
+  <ul class="form">
+   <?= view_form_field_li($form_fields['title'], 'title') ?>
+   <?= view_form_field_li($form_fields['page_name'], 'page_name') ?>
+   <?= view_form_field_li($form_fields['start_time'], 'start_time') ?>
+   <?= view_form_field_li($form_fields['tasks'], 'tasks') ?>
+  </ul>
+ </fieldset>
+ <fieldset>
+  <legend>Parametri</legend>
+  <ul class="form">
+   <?= view_form_field_li($form_fields['type'], 'type') ?>
+   <li><hr /></li>
+   <li id="field_params">
+    <?= format_param_editor_list(
+        $param_infos, $form_values, $form_errors); ?>
+   </li>
+  </ul>
+ </fieldset>
+ <div class="submit">
+  <ul class="form">
+   <li id="field_submit">
+    <input type="submit"
+           value="Salveaza"
+           id="form_submit"
+           class="button important" />
+   </li>
+  </ul>
+ </div>
 </form>
 
 <?php include('footer.php'); ?>

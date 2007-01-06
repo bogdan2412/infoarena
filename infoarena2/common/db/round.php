@@ -19,8 +19,7 @@ function round_get($round_id) {
 // Make sure that calls such as identity_require() have all necessary
 // information to yield a correct answer.
 function round_get_info() {
-    $query = sprintf("SELECT `ia_round`.`id` AS `id`, `ia_round`.`type` AS `type`,
-                             `ia_round`.`title` AS `title`,
+    $query = sprintf("SELECT *
                       FROM `ia_round`
                       ORDER BY `ia_round`.`title`");
     $list = array();
@@ -160,6 +159,20 @@ function round_get_list() {
     }
 
     return $list;
+}
+
+// Makes all tasks visible
+// No error handling.
+// FIXME: task.hidden is stupid, we need proper security
+function round_unhide_all_tasks($round_id) {
+    log_assert(is_round_id($round_id));
+    $query = sprintf("
+UPDATE ia_task
+    JOIN ia_round_task ON ia_round_task.task_id = ia_task.id
+    WHERE ia_round_task.round_id = '%s'
+    SET `hidden` = 0
+", db_escape($round_id));
+    db_query($query);
 }
 
 /* FIXME: round registration disabled.

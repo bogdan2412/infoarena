@@ -59,7 +59,7 @@ function controller_round_details($round_id) {
 
     // Parameter values, for all possible types of rounds.
     // Yucky, but functional.
-    foreach (round_get_types() as $round_type) {
+    foreach (round_get_types() as $round_type => $pretty_name) {
         foreach ($param_infos[$round_type] as $name => $info) {
             $form_name = "param_{$round_type}_{$name}";
             $def = $info['default'];
@@ -140,7 +140,6 @@ function controller_round_details($round_id) {
     $view['round'] = $round;
     $view['form_values'] = $values;
     $view['form_errors'] = $errors;
-    $view['entity_types'] = round_get_types();
     $view['param_infos'] = $param_infos;
     $view['all_tasks'] = $all_tasks;
 
@@ -172,7 +171,7 @@ function controller_round_create()
         } else if (round_get($values['id'])) {
             $errors['id'] = "Exista deja o runda cu acest id";
         }
-        if (!in_array($values['type'], round_get_types())) {
+        if (!array_key_exists($values['type'], round_get_types())) {
             $errors['type'] = "Tip de runda invalid";
         }
 

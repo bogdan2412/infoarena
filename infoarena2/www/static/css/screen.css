@@ -461,17 +461,17 @@ form {
     font-size: 1em;
 }
 
-input, select, textarea {
-    font-family: Trebuchet MS, Tahoma, Helvetica, Arial;
-    padding: .2em;
-}
-
 input[type='text'], input[type='password'], select {
     width: 200px;
 }
 
-#sidebar input[type='text'], input[type='password'], select {
+#sidebar input[type='text'], #sidebar input[type='password'], #sidebar select {
     width: 150px;
+}
+
+input, select, textarea {
+    font-family: Trebuchet MS, Tahoma, Helvetica, Arial, sans-serif;
+    padding: .2em;
 }
 
 select {

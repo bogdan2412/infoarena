@@ -50,7 +50,7 @@ function controller_task_details($task_id) {
 
     // Parameter values, for all possible types of tasks.
     // Yucky, but functional.
-    foreach (task_get_types() as $task_type) {
+    foreach (task_get_types() as $task_type => $pretty_name) {
         foreach ($param_infos[$task_type] as $name => $info) {
             $form_name = "param_{$task_type}_{$name}";
             $def = $info['default'];
@@ -119,7 +119,6 @@ function controller_task_details($task_id) {
     $view['task'] = $task;
     $view['form_values'] = $values;
     $view['form_errors'] = $errors;
-    $view['entity_types'] = task_get_types();
     $view['param_infos'] = $param_infos;
 
     execute_view_die("views/task_edit.php", $view);
@@ -149,7 +148,7 @@ function controller_task_create()
         } else if (task_get($values['id'])) {
             $errors['id'] = "Exista deja un task cu acest id";
         }
-        if (!in_array($values['type'], task_get_types())) {
+        if (!array_key_exists($values['type'], task_get_types())) {
             $errors['type'] = "Tip de task invalid";
         }
 
