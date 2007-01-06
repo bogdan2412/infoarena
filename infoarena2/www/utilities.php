@@ -11,11 +11,6 @@ function request_is_post() {
     return ('post' == strtolower(getattr($_SERVER, 'REQUEST_METHOD')));
 }
 
-// Returns boolean whether current request method is PUT
-function request_is_put() {
-    return ('put' == strtolower(getattr($_SERVER, 'REQUEST_METHOD')));
-}
-
 // Call this function for a http-level redirect.
 // NOTE: this function DOES NOT RETURN.
 //
@@ -30,6 +25,13 @@ function redirect($absolute_url) {
     header("Location: {$absolute_url}\n\n");
     session_write_close();
     die();
+}
+
+// Checks if the referer is the same as the host
+function http_referer_check() {
+    $HTTP_REFERER = getattr($_SERVER, 'HTTP_REFERER');
+    $HTTP_HOST = getattr($_SERVER, 'HTTP_HOST');
+    return $HTTP_REFERER==null || substr($HTTP_REFERER, 0, (strlen($HTTP_HOST)+7)) == "http://".$HTTP_HOST;
 }
 
 // Die with a http error.

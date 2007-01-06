@@ -2,6 +2,8 @@
 
 require_once(IA_ROOT . "common/db/db.php");
 
+// FIXME: obliterate?
+//
 // Parses parameter value as stored in database and returns native PHP value
 // $parameter_id    parameter type (id)
 // $value           raw value string stored in database
@@ -21,7 +23,7 @@ function parameter_decode($parameter_id, $value) {
         log_error("Invalid boolean value: ".$value);
     }
     elseif (in_array($parameter_id, $ints)) {
-        if (is_numeric($value) && preg_match('/^[0-9]+$/', $value)) {
+        if (is_whole_number($value)) {
             return (int)$value;
         }
         log_error("Invalid integer value: ".$value);

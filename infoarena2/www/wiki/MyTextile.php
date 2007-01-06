@@ -2,12 +2,9 @@
 
 @require_once(IA_ROOT."www/wiki/Textile.php");
 require_once(IA_ROOT."www/macros/macros.php");
+require_once(IA_ROOT."common/attachment.php");
 
 class MyTextile extends Textile {
-    // url for external urls.
-    // mailto: and <proto>:// and mail adresses of sorts.
-    public $external_url_exp = '/^([a-z]+:\/\/|mailto:[^@]+@[^@]+|[^@]+@[^@])/i';
-
     // FIXME: If you see a pointless textile error try tweaking this value.
     private $my_error_reporting = 0xF7F7;
 
@@ -97,7 +94,7 @@ class MyTextile extends Textile {
     }
 
     function is_wiki_link($link) {
-        if (preg_match($this->external_url_exp, $link) ||
+        if (preg_match('/^'.IA_RE_EXTERNAL_URL.'$/xi', $link) ||
                 (isset($this->links) && isset($this->links[$link]))) {
             return false;
         }
@@ -110,7 +107,7 @@ class MyTextile extends Textile {
     function do_format_link($args) {
         $url = getattr($args, 'url', '');
         if ($this->is_wiki_link($url)) {
-            if (preg_match("/^ ([^\?]+) \? ([a-z0-9_\.\-]+) $/sxi", $url, $matches)) {
+            if (preg_match("/^ ([^\?]+) \? (".IA_RE_ATTACHMENT_NAME.") $/sxi", $url, $matches)) {
                 $args['url'] = url_attachment($matches[1], $matches[2]);
             } else {
                 $args['url'] = IA_URL . $url;
@@ -130,9 +127,11 @@ class MyTextile extends Textile {
         $extra = $args['extra'];
         $alt = (preg_match("/\([^\)]+\)/", $extra, $match) ? $match[0] : '');
         $args['extra'] = $alt;
-        if (!preg_match($this->external_url_exp, $srcpath)) {
+        if (!preg_match('/^'.IA_RE_EXTERNAL_URL.'$/xi', $srcpath)) {
             // Catch internal images.
-            if (preg_match('/^ ([a-z0-9_\-\/]+) \? ([a-z0-9\.\-_]+)   $/ix', $srcpath, $matches)) {
+            if (preg_match('/^ ('.IA_RE_PAGE_NAME.') \? '.
+                           '('.IA_RE_ATTACHMENT_NAME.')'.
+                           '$/ix', $srcpath, $matches)) {
                 $extra = preg_replace('/\([^\)]+\)/', '', $extra, 1);
                 $extra = preg_replace('/\s/', '', $extra);
                 // FIXME: sometimes we can determine width/height.

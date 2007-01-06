@@ -145,8 +145,10 @@ function security_textblock($user, $action, $textblock) {
 
     // HACK: Forward security to user.
     // HACK: based on name
-    if (preg_match("/^ ".preg_quote(TB_USER_PREFIX, '/').
-                   " ([a-z0-9_\-]*) (\/?.*) $/xi", $textblock['name'], $matches)) {
+    if (preg_match("/^ ".
+                preg_quote(TB_USER_PREFIX, '/').
+                '('.IA_RE_USER_NAME.") (\/?.*) $/xi",
+                $textblock['name'], $matches)) {
         require_once(IA_ROOT . "common/db/user.php");
         $ouser = user_get_by_username($matches[1]);
         if ($ouser === null) {
@@ -165,7 +167,7 @@ function security_textblock($user, $action, $textblock) {
     }
 
     // Forward security to task.
-    if (preg_match("/^ \s* task: \s* ([a-z_0-9]*) \s* $/xi", $textsec, $matches)) {
+    if (preg_match("/^ \s* task: \s* (".IA_RE_TASK_ID.") \s* $/xi", $textsec, $matches)) {
         require_once(IA_ROOT . "common/db/task.php");
         $task = task_get($matches[1]);
         if ($task === null) {
@@ -176,7 +178,7 @@ function security_textblock($user, $action, $textblock) {
     }
 
     // Forward security to round.
-    if (preg_match("/^ \s* round: \s* ([a-z_0-9]*) \s* $/xi", $textsec, $matches)) {
+    if (preg_match("/^ \s* round: \s* (".IA_RE_ROUND_ID.") \s* $/xi", $textsec, $matches)) {
         require_once(IA_ROOT . "common/db/round.php");
         $round = round_get($matches[1]);
         if ($round === null) {

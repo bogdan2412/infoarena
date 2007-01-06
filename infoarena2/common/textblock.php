@@ -6,9 +6,9 @@ require_once(IA_ROOT . "common/db/textblock.php");
 // FIXME: check task/round existence?
 function is_textblock_security_descriptor($descriptor)
 {
-    return  preg_match("/^ \s* task: \s* ([a-z0-9][a-z0-9_]*) \s* $/xi", $descriptor) ||
-            preg_match("/^ \s* round: \s* ([a-z0-9][a-z0-9_]*) \s* $/xi", $descriptor) ||
-            preg_match('/^ \s* (private|protected|public) \s* $/xi', $descriptor);
+    return preg_match("/^ \s* task: \s* (".IA_RE_TASK_ID.") \s* $/xi", $descriptor) ||
+           preg_match("/^ \s* round: \s* (".IA_RE_ROUND_ID.") \s* $/xi", $descriptor) ||
+           preg_match('/^ \s* (private|protected|public) \s* $/xi', $descriptor);
 }
 
 // Validates a textblock.

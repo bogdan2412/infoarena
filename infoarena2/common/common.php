@@ -1,13 +1,5 @@
 <?php
 
-if (IA_DEVELOPMENT_MODE) {
-    $execution_stats = array(
-        'timestamp' => microtime(true),
-        'queries' => 0,
-        'log_copy' => '',
-    );
-}
-
 // Nicer way to get an element from an array. It returns a default value
 // (defaulting to null) instead of throwing an error.
 function getattr($dict, $attribute, $default = null) {
@@ -18,12 +10,47 @@ function getattr($dict, $attribute, $default = null) {
     }
 }
 
-// Checks if the referer is the same as the host
-function http_referer_check() {
-    $HTTP_REFERER = getattr($_SERVER, 'HTTP_REFERER');
-    $HTTP_HOST = getattr($_SERVER, 'HTTP_HOST');
-    return $HTTP_REFERER==null || substr($HTTP_REFERER, 0, (strlen($HTTP_HOST)+7)) == "http://".$HTTP_HOST;
-}
+// This is a bunch of common regular expressions.
+// NOTE: centralize all regular expressions here, don't copy paste
+// This way we can avoid issues with one regexp allowing a dot in username
+// and another not allowing it.
+//
+// Do not include // stuff, we should be able to nest them.
+// Do not capture. use (?: lalala ) instead of ( lalala )
+// Case insensitive unless specially mentioned. Assume /xi
+// Prefix with IA_RE
+
+// Valid page names. This allows //SanNdBox/ stuff
+define("IA_RE_PAGE_NAME", '[a-z0-9][a-z0-9_\-\.\@\/]*');
+
+// Valid normal page names. This only allows sand/box stuff
+// Lowercase, words are separated by only one /(no trailing).
+// CASE sensitive!!
+define("IA_RE_NORMAL_PAGE_NAME", '
+        (?: [a-z0-9] [a-z0-9_\-\.\@]* )
+        (?: \/ [a-z0-9] [a-z0-9_\-\.\@]* )*');
+
+// Short identifiers. FIXME: limit length here too?
+define("IA_RE_ROUND_ID", '[a-z0-9][a-z0-9_\-\.]*');
+define("IA_RE_TASK_ID", '[a-z0-9][a-z0-9_\-\.]*');
+define("IA_RE_SCORE_NAME", '[a-z0-9][a-z0-9_\-\.]*');
+
+define("IA_RE_USER_NAME", '[a-z0-9][a-z0-9_\-\.\@]*');
+
+// Valid email. A complete check is not possible, see
+// http://www.regular-expressions.info/email.html
+define("IA_RE_EMAIL", '[^@]+@.+\..+');
+
+// User full name. Your name can't be %$!
+define("IA_RE_USER_FULL_NAME", '[a-z][a-z0-9\-\.\ ]+');
+
+// Attachment names.
+// Starts with letter or number, can also contain .-_
+// No funky stuff.
+define("IA_RE_ATTACHMENT_NAME", '[a-z0-9][a-z0-9\.\-_]*');
+
+// External urls. Used by textile.
+define("IA_RE_EXTERNAL_URL", '[a-z]+:\/\/|mailto:[^@]+@[^@]+|[^@]+@[^@]');
 
 // Check if a a variable is a whole number.
 function is_whole_number($x) {
@@ -32,12 +59,7 @@ function is_whole_number($x) {
 
 // tell if email address seems to be valid
 function is_valid_email($email) {
-    // email validation is trickier than it seems!
-    // if you think you have a better regexp, beat this:
-    // http://www.regular-expressions.info/email.html
-    //
-    // let's keep it simple
-    return preg_match('/[^@]+@.+\..+/', $email);
+    return preg_match('/^'.IA_RE_EMAIL.'$/xi', $email);
 }
 
 // Normalize a page name. Removes extra slashes and lowercases.
@@ -50,14 +72,12 @@ function normalize_page_name($page_name) {
 // Checks if textblock name is normalized.
 // no double slashes, no slashes at the end, no capitalizations.
 function is_normal_page_name($page_name) {
-    $res = is_page_name($page_name)
-           && !preg_match('/(\/\/)|(\/$)|([A-Z])/', $page_name);
-    return $res;
+    return preg_match('/^'.IA_RE_NORMAL_PAGE_NAME.'$/xi', $page_name);
 }
 
 // Validates page name
 function is_page_name($page_name) {
-    return preg_match('/^([a-z0-9][a-z0-9_\-\/\.]*)$/i', $page_name);
+    return preg_match('/^'.IA_RE_PAGE_NAME.'$/xi', $page_name);
 }
 
 // returns boolean whether specified attach name is valid
@@ -67,7 +87,7 @@ function is_page_name($page_name) {
 // such file names, mostly due to URLs word-wrapping when inserted in texts,
 // unless, of course, one knows how to properly escape spaces with %20 or +
 function is_attachment_name($attach_name) {
-    return preg_match('/^[a-z0-9][a-z0-9\.\-_]*$/i', $attach_name);
+    return preg_match('/^'.IA_RE_ATTACHMENT_NAME.'$/xi', $attach_name);
 }
 
 // FIXME: crappy check
@@ -83,43 +103,32 @@ function is_attachment_id($id) {
 // tells whether $round_id is a valid round identifier
 // Does not check existence.
 function is_round_id($round_id) {
-    return preg_match('/^[a-z0-9][a-z0-9_]*$/i', $round_id) && strlen($round_id) < 16;
+    return preg_match('/^'.IA_RE_ROUND_ID.'$/xi', $round_id) &&
+        strlen($round_id) < 16;
 }
 
 // Check valid score names.
-function is_score_name($score_name)
-{
-    return preg_match('/^[a-z0-9][a-z0-9_]*$/i', $score_name) && strlen($score_name) < 32;
+// Does not check existence. 
+function is_score_name($score_name) {
+    return preg_match('/^'.IA_RE_SCORE_NAME.'$/xi', $score_name) &&
+        strlen($score_name) < 32;
 }
 
 // Tells whether $task_id is a valid task identifier
 // Does not check existence.
 function is_task_id($task_id) {
-    return preg_match('/^[a-z0-9][a-z0-9_]*$/i', $task_id) && strlen($task_id) < 16;
+    return preg_match('/^'.IA_RE_TASK_ID.'$/xi', $task_id) &&
+           strlen($task_id) < 16;
 }
 
-// Get a file's mime type.
-function get_mime_type($filename) {
-    if (function_exists("finfo_open")) {
-        // FIXME: cache.
-        $finfo = finfo_open(FILEINFO_MIME);
+// Check user name
+function is_user_name($user_name) {
+    return preg_match('/^'.IA_RE_USER_NAME.'$/xi', $user_name);
+}
 
-        log_assert($finfo !== false,
-                   'fileinfo is active but finfo_open() failed');
-
-        $res = finfo_file($finfo, $filename);
-        finfo_close($finfo);
-        log_print('get_mime_type('.$filename.'): finfo yields '.$res);
-        return $res;
-    }
-    if (function_exists("mime_content_type")) {
-        $res = @mime_content_type($filename);
-        if ($res !== false) {
-            return $res;
-        }
-    }
-    log_warn("fileinfo extension failed, defaulting mime type to application/octet-stream.");
-    return "application/octet-stream";
+// Check user full name (John Smith sr.)
+function is_user_full_name($user_full_name) {
+    return preg_match('/^'.IA_RE_USER_FULL_NAME.'$/xi', $user_full_name);
 }
 
 // Checks system requirements.
@@ -164,61 +173,24 @@ function check_requirements()
     }
 }
 
-// Resize 2D coordinates according to 'textual' instructions
-// Given a (width, height) pair, resize it (compute new pair) according to
-// resize instructions.
-//
-// Resize instructions may be:
-// # example    # description
-// 100x100      Keep aspect ratio, resize as to fit a 100x100 box.
-//              Coordinates are not enlarged if they already fit the given box.
-// @50x86       Ignore aspect ratio, resize to exactly 50x86.
-// 50%          Scale dimensions; only integer percentages allowed.
-// L100x100     Layout resize: same as 100x100 only it will enlarge coordinates
-//              if coordinates already fit target box. Use this where layout
-//              matters.
-//
-// Returns 2-element array: (width, height) or null if invalid format
-function resize_coordinates($width, $height, $resize) {
-    // 100x100 or @100x100 or L100x100
-    if (preg_match('/^([\@L]?)([0-9]+)x([0-9]+)$/i', $resize, $matches)) {
-        $flag = strtolower($matches[1]);
-        $boxw = (float)$matches[2];
-        $boxh = (float)$matches[3];
+// Various initialization
+// FIXME: it's WRONG for an include or require to execute code.
+// FIXME: I have no idea on where to move these things.
 
-        if ('@' == $flag) {
-            // exact fit, ignore aspect ratio
-            return array($boxw, $boxh);
-        }
-        else {
-            // keep aspect ratio
-
-            $layout = ('l' == $flag);
-            $ratio = 1.0;
-            if ($width > $boxw || $layout) {
-                $ratio = $boxw / $width;
-            }
-            if ($height * $ratio > $boxh) {
-                $ratio = $boxh / $height;
-            }
-
-            return array(floor($ratio * $width), floor($ratio * $height));
-        }
-    }
-    // zoom: 50%
-    elseif (preg_match('/^([0-9]+)%$/', $resize, $matches)) {
-        $ratio = (float)$matches[1] / 100;
-        return array(floor($ratio * $width), floor($ratio * $height));
-    }
-    // invalid format
-    else {
-        return null;
-    }
-}
-
+// Force max error reporting.
 error_reporting(0xFFFF);
 
-// All our logic is done in UTC, the sensible way.
+// Initialize execution stats.
+if (IA_DEVELOPMENT_MODE) {
+    $execution_stats = array(
+        'timestamp' => microtime(true),
+        'queries' => 0,
+        'log_copy' => '',
+    );
+}
+
+// All timing our logic is done in UTC, the sensible way.
+// FORCE default timezone.
 if (function_exists("date_default_timezone_set")) {
     date_default_timezone_set("UTC");
 }

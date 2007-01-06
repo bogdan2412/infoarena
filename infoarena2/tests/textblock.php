@@ -59,7 +59,6 @@ $res = curl_test(array(
                 'text' => "Test page\nxzx-contentF-xzx\n",
                 'title' => "Test xzx-titleF-xzx",
 )));
-log_print($res['url']);
 log_assert_equal($res['url'],  url_absolute(url_home()));
 log_assert(!strstr($res['content'], 'xzx-content2-xzx'));
 log_assert(!strstr($res['content'], 'xzx-title2-xzx'));

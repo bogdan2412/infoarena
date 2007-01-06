@@ -33,4 +33,80 @@ function attachment_validate($att) {
     return $errors;
 }
 
+// Get a file's mime type.
+function get_mime_type($filename) {
+    if (function_exists("finfo_open")) {
+        // FIXME: cache.
+        $finfo = finfo_open(FILEINFO_MIME);
+
+        log_assert($finfo !== false,
+                   'fileinfo is active but finfo_open() failed');
+
+        $res = finfo_file($finfo, $filename);
+        finfo_close($finfo);
+        log_print('get_mime_type('.$filename.'): finfo yields '.$res);
+        return $res;
+    }
+    if (function_exists("mime_content_type")) {
+        $res = @mime_content_type($filename);
+        if ($res !== false) {
+            return $res;
+        }
+    }
+    log_warn("fileinfo extension failed, defaulting mime type to application/octet-stream.");
+    return "application/octet-stream";
+}
+
+// Resize 2D coordinates according to 'textual' instructions
+// Given a (width, height) pair, resize it (compute new pair) according to
+// resize instructions.
+//
+// Resize instructions may be:
+// # example    # description
+// 100x100      Keep aspect ratio, resize as to fit a 100x100 box.
+//              Coordinates are not enlarged if they already fit the given box.
+// @50x86       Ignore aspect ratio, resize to exactly 50x86.
+// 50%          Scale dimensions; only integer percentages allowed.
+// L100x100     Layout resize: same as 100x100 only it will enlarge coordinates
+//              if coordinates already fit target box. Use this where layout
+//              matters.
+//
+// Returns 2-element array: (width, height) or null if invalid format
+function resize_coordinates($width, $height, $resize) {
+    // 100x100 or @100x100 or L100x100
+    if (preg_match('/^([\@L]?)([0-9]+)x([0-9]+)$/i', $resize, $matches)) {
+        $flag = strtolower($matches[1]);
+        $boxw = (float)$matches[2];
+        $boxh = (float)$matches[3];
+
+        if ('@' == $flag) {
+            // exact fit, ignore aspect ratio
+            return array($boxw, $boxh);
+        }
+        else {
+            // keep aspect ratio
+
+            $layout = ('l' == $flag);
+            $ratio = 1.0;
+            if ($width > $boxw || $layout) {
+                $ratio = $boxw / $width;
+            }
+            if ($height * $ratio > $boxh) {
+                $ratio = $boxh / $height;
+            }
+
+            return array(floor($ratio * $width), floor($ratio * $height));
+        }
+    }
+    // zoom: 50%
+    elseif (preg_match('/^([0-9]+)%$/', $resize, $matches)) {
+        $ratio = (float)$matches[1] / 100;
+        return array(floor($ratio * $width), floor($ratio * $height));
+    }
+    // invalid format
+    else {
+        return null;
+    }
+}
+
 ?>
