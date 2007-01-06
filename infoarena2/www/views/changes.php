@@ -27,7 +27,7 @@ $difflink = format_link(url_textblock_diff(
             $rev['revision_id'] - 1,
             $rev['revision_id']),
             "diff");
-$tstamp = date('j/n H:i', strtotime($rev['timestamp']));
+$tstamp = format_date($rev['timestamp']);
 echo "$tstamp: $userlink a modificat $pagelink ($difflink).";
 ?>
     </li>

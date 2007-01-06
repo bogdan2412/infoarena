@@ -44,7 +44,7 @@ function controller_changes($page_name) {
             $pagelink = format_link(url_textblock($rev['name'], true), $rev['title']);
             $diffurl = url_textblock_diff($rev['name'], $rev['revision_id'], $rev['revision_id'] - 1);
             $difflink = format_link($diffurl, "modificari");
-            $tstamp = $rev['timestamp'];
+            $tstamp = format_date($rev['timestamp']);
             $item['description'] = "La data de $tstamp pagina $pagelink a fost modificata de $userlink($difflink).";
 
             $item['guid'] = sha1($rev['name'] . $rev['timestamp']);

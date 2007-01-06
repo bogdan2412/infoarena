@@ -17,7 +17,7 @@ function job_create($task_id, $user_id, $compiler_id, $file_contents) {
     $query = sprintf($query, db_escape($task_id),
                      db_escape($user_id), db_escape($compiler_id),
                      db_escape($file_contents),
-                     db_escape(db_format_date()));
+                     db_escape(db_date_format()));
     return db_query($query);
 }
 
