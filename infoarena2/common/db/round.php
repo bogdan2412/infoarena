@@ -13,11 +13,7 @@ function round_get($round_id) {
 }
 
 // Returns array with all open rounds
-//
-// :WARNING: This does not select all fields related to each round,
-// but rather chooses a few.
-// Make sure that calls such as identity_require() have all necessary
-// information to yield a correct answer.
+// FIXME: obliterate
 function round_get_info() {
     $query = sprintf("SELECT *
                       FROM `ia_round`
@@ -55,6 +51,7 @@ function round_create($round, $round_params, $user_id) {
 }
 
 // Update a round.
+// FIXME: crap code.
 function round_update($round) {
     log_assert_valid(round_validate($round));
     return db_update('ia_round', $round,
@@ -71,7 +68,7 @@ function round_update($round) {
 // FIXME: sensible ordering.
 //
 // if user_id is non-null a join is done on $score
-function round_get_task_info($round_id, $first = 0, $count = null, $user_id = null, $score_name = null) {
+function round_get_tasks($round_id, $first = 0, $count = null, $user_id = null, $score_name = null) {
     if ($count === null) {
         $count = 490234;
     }
@@ -166,13 +163,49 @@ function round_get_list() {
 // FIXME: task.hidden is stupid, we need proper security
 function round_unhide_all_tasks($round_id) {
     log_assert(is_round_id($round_id));
-    $query = sprintf("
-UPDATE ia_task
-    JOIN ia_round_task ON ia_round_task.task_id = ia_task.id
-    WHERE ia_round_task.round_id = '%s'
+    $query = <<<SQL
+UPDATE `ia_task`
+    JOIN `ia_round_task` ON `ia_round_task`.`task_id` = `ia_task`.`id`
     SET `hidden` = 0
-", db_escape($round_id));
-    db_query($query);
+    WHERE `ia_round_task`.`round_id` = '%s'
+SQL;
+    db_query(sprintf($query, db_escape($round_id)));
+}
+
+// FIXME: horrible evil hack, for the eval.
+// FIXME: replace with eval queue
+// Gets the round to start, or null.
+function round_get_round_to_start() {
+    $query = <<<SQL
+SELECT * FROM `ia_round`
+    WHERE `state` = 'waiting' AND `start_time` < '%s'
+    LIMIT 1
+SQL;
+    return db_fetch(sprintf($query, db_date_format()));
+}
+
+// FIXME: horrible evil hack, for the eval.
+// FIXME: replace with eval queue
+// Gets the round to stop, or null.
+// Duration is in the params, so we join. FUCK YEAH!!!
+function round_get_round_to_stop() {
+    // Build duration subquery.
+    $duration_subquery = <<<SQL
+SELECT `value` FROM `ia_parameter_value`
+    WHERE `object_type` = 'round' AND
+          `object_id` = `id` AND
+          `parameter_id` = 'duration'
+    LIMIT 1
+SQL;
+
+    // Build the main query.
+    $query = <<<SQL
+SELECT *
+    FROM `ia_round`
+    WHERE DATE_ADD(`start_time`, INTERVAL ($duration_subquery) HOUR) <= '%s'
+    LIMIT 1
+SQL;
+    return db_fetch(sprintf($query, db_date_format()));
 }
 
 /* FIXME: round registration disabled.

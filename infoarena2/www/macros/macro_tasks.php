@@ -60,12 +60,12 @@ function macro_tasks($args) {
     }
     log_assert_valid(round_validate($round));
 
-    if (is_null(getattr($args, 'score'))) {
-        $scores = false;
-    } else {
-        $scores = true;
+    // Check if user can see round tasks
+    if (!identity_can('round-view-tasks', $round)) {
+        return macro_permission_error();
     }
 
+    $scores = !is_null(getattr($args, 'score'));
     if (identity_anonymous() || $scores == false) {
         $user_id = null;
     } else {
@@ -73,28 +73,27 @@ function macro_tasks($args) {
     }
 
     // get round tasks
-    $tasks = round_get_task_info($round_id,
-                                 $options['first_entry'],
-                                 $options['display_entries'],
-                                 $user_id, ($scores ? 'score' : null));
+    $tasks = round_get_tasks($round_id,
+             $options['first_entry'],
+             $options['display_entries'],
+             $user_id, ($scores ? 'score' : null));
     $options['total_entries'] = round_get_task_count($round_id);
     $options['row_style'] = 'task_row_style';
     $options['css_class'] = 'tasks';
 
-    $column_infos = array(
-            array(
-                'title' => 'Numar',
-                'css_class' => 'number',
-                'rowform' => create_function('$row', 'return $row["order"];'),
-            ),
-            array(
-                'title' => 'Titlul problemei',
-                'css_class' => 'task',
-                'rowform' => create_function('$row',
-                        'return format_link(url_textblock($row["page_name"]), $row["title"]);'),
-            ),
+    $column_infos = array();
+    $column_infos[] = array(
+            'title' => 'Numar',
+            'css_class' => 'number',
+            'rowform' => create_function('$row', 'return $row["order"];'),
     );
-    if ($user_id !== null) {
+    $column_infos[] = array(
+            'title' => 'Titlul problemei',
+            'css_class' => 'task',
+            'rowform' => create_function('$row',
+                    'return format_link(url_textblock($row["page_name"]), $row["title"]);'),
+    );
+    if (!is_null($user_id)) {
         $column_infos[] = array (
                 'title' => 'Scorul tau',
                 'css_class' => 'number score',

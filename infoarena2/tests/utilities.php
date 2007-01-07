@@ -149,4 +149,7 @@ function test_cleanup()
 db_connect();
 check_requirements();
 
+// Add log timestamps.
+define("LOG_TIMESTAMP_FORMAT", "Y-m-d H:i:s");
+
 ?>

@@ -41,7 +41,7 @@ function controller_round_details($round_id) {
     // Get parameters and task list.
     $round_params = round_get_parameters($round['id']);
     $round_tasks = array();
-    foreach (round_get_task_info($round_id) as $task) {
+    foreach (round_get_tasks($round_id) as $task) {
         $round_tasks[] = $task['id'];
     }
 
@@ -53,6 +53,7 @@ function controller_round_details($round_id) {
     $values['type'] = request('type', $round['type']);
     $values['title'] = request('title', $round['title']);
     $values['page_name'] = request('page_name', $round['page_name']);
+    $values['start_time'] = request('start_time', $round['start_time']);
 
     // Get tasks. WTF, this works? wicked!
     $values['tasks'] = request('tasks', $round_tasks);
@@ -77,6 +78,7 @@ function controller_round_details($round_id) {
     $new_round['type'] = $values['type'];
     $new_round['title'] = $values['title'];
     $new_round['page_name'] = $values['page_name'];
+    $new_round['start_time'] = $values['start_time'];
 
     $errors = round_validate($new_round);
 

@@ -106,6 +106,8 @@ function round_validate($round) {
 function round_event_start($round) {
     log_assert_valid(round_validate($round));
     log_print("CONTEST LOGIC: Starting round {$round['id']}.");
+    $round['state'] = 'running';
+    round_update($round);
     round_unhide_all_tasks($round['id']);
 }
 
@@ -113,6 +115,8 @@ function round_event_start($round) {
 function round_event_stop($round) {
     log_assert_valid(round_validate($round));
     log_print("CONTEST LOGIC: Stopping round {$round['id']}.");
+    $round['state'] = 'complete';
+    round_update($round);
 }
 
 ?>

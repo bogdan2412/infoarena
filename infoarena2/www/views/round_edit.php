@@ -42,7 +42,7 @@ $form_fields = array(
         ),
         'start_time' => array(
                 'name' => "Timpul de start",
-                'description' => "Timpul la care incepe automat runda.",
+                'description' => "Timpul trebuie sa fie UTC in format YYYY-MM-DD HH:MM:SS",
                 'type' => 'datetime',
         ),
         'tasks' => array(

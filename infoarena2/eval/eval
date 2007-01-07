@@ -8,6 +8,7 @@ require_once(IA_ROOT.'common/common.php');
 
 require_once(IA_ROOT.'common/score.php');
 require_once(IA_ROOT.'common/task.php');
+require_once(IA_ROOT.'common/round.php');
 require_once(IA_ROOT.'common/security.php');
 require_once(IA_ROOT.'common/db/task.php');
 require_once(IA_ROOT.'common/db/job.php');
@@ -98,11 +99,21 @@ function job_handle($job) {
     score_update_for_job($job_result['score'], $job['submit_time'], $job['user_id'], $job['task_id']);
 }
 
+db_connect();
 while (1) {
-    while ($job = job_get_next_job()) {
-        job_handle($job);
+    if ($round = round_get_round_to_stop()) {
+        round_event_stop($round);
+        continue;
     }
-    milisleep(10);
+    if ($round = round_get_round_to_start()) {
+        round_event_start($round);
+        continue;
+    }
+    if ($job = job_get_next_job()) {
+        job_handle($job);
+        continue;
+    }
+    milisleep(IA_EVAL_POLL_INTERVAL);
 }
 
 ?>

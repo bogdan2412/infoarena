@@ -126,6 +126,7 @@ function security_simplify_action($action)
         // Special actions fall through
         // FIXME: As few as possible.
         case 'task-submit':
+        case 'round-view-tasks':
         case 'user-editprofile':
             return $action;
 
@@ -336,9 +337,11 @@ function security_round($user, $action, $round) {
 
 
     switch ($action) {
-        // Admin only.
         case 'simple-view':
             return true;
+        
+        case 'round-view-tasks':
+            return $round['state'] != 'waiting' || $is_admin;
 
         case 'simple-rev-edit':
         case 'simple-edit':
