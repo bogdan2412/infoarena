@@ -23,7 +23,7 @@ function task_grade_job_classic($task, $tparams, $job) {
     }
 
     // Compile custom evaluator.
-    if (!$tparams['unique_output']) {
+    if ($tparams['evaluator'] !== '') {
         if (!copy_grader_file($task, $tparams['evaluator'],
                 IA_EVAL_TEMP_DIR . $tparams['evaluator'])) {
             return jobresult_system_error();
@@ -56,7 +56,8 @@ function task_grade_job_classic($task, $tparams, $job) {
     // Running tests.
     for ($testno = 1; $testno <= $tparams['tests']; ++$testno) {
         $result['log'] .= "\nRulez testul $testno: ";
-        $jaildir = IA_EVAL_JAILS_DIR.$job['id'].'_'.$testno.'/';
+        //$jaildir = IA_EVAL_JAILS_DIR.$job['id'].'/'.$testno.'/';
+        $jaildir = IA_EVAL_JAIL_DIR;
 
         $infile = $jaildir.$task['id'].'.in';
         $outfile = $jaildir.$task['id'].'.out';
@@ -110,7 +111,7 @@ function task_grade_job_classic($task, $tparams, $job) {
             }
         }
 
-        if ($tparams['unique_output']) {
+        if ($tparams['evaluator'] === '') {
             // Diff grading, trivial.
             if (is_readable($outfile)) {
                 $diff_output = shell_exec("diff -qBbEa $outfile $okfile");

@@ -71,6 +71,16 @@ function job_eval($job)
         return jobresult_system_error();
     }
 
+    // Check task and task parameters
+    if (task_validate($task)) {
+        log_print("Task invalid");
+        return jobresult_system_error();
+    }
+    if (task_validate_parameters($task['type'], $task_parameters)) {
+        log_print("Parametri de task invalid");
+        return jobresult_system_error();
+    }
+
     // Make the grader and execute it.
     if ($task['type'] == 'classic') {
         log_print("Grading {$task['id']}, type {$task['type']}");
