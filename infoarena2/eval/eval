@@ -43,7 +43,7 @@ function job_send_result($jobid, $jobresult)
         log_warn("System error on job $jobid");
     }
     log_print("Sending job $jobid msg {$jobresult['message']} score {$jobresult['score']}");
-    job_mark_done($jobid, $jobresult['log'], $jobresult['message'], $jobresult['score']);
+    job_update($jobid, 'done', $jobresult['log'], $jobresult['message'], $jobresult['score']);
 
     log_print("");
     log_print("");
@@ -87,7 +87,7 @@ function job_handle($job) {
     log_print("- -- --- ---- ----- Handling job " . $job['id']);
     // Evaluating, mark as processing.
     // FIXME: do it in query.
-    job_set_status($job['id'], 'processing');
+    job_update($job['id'], 'processing');
     $job_result = job_eval($job);
     if ($job_result == null) {
         log_print("Bug in get_job_result");
