@@ -43,7 +43,7 @@ function job_send_result($jobid, $jobresult)
         log_warn("System error on job $jobid");
     }
     log_print("Sending job $jobid msg {$jobresult['message']} score {$jobresult['score']}");
-    job_update($jobid, 'done', $jobresult['log'], $jobresult['message'], $jobresult['score']);
+    job_update($jobid, 'done', $jobresult['message'], $jobresult['log'], $jobresult['score']);
 
     log_print("");
     log_print("");

@@ -64,7 +64,7 @@ function copy_attachment_file($pagename, $filename, $target)
 
         log_print("Downloaded new version of $pagename/$filename.");
     } else {
-        //log_print("Using cached $pagename/$filename");
+        log_print("Using cached $pagename/$filename");
     }
     if (!copy($cachefname, $target)) {
         log_warn("Failed copying grader file $pagename/$filename");
