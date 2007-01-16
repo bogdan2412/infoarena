@@ -222,20 +222,30 @@ function url_unsubscribe($username, $key) {
 
 function url_task_edit($task_id) {
     log_assert(is_task_id($task_id));
-    return url_complex("admin/task/$task_id");
+    return url_complex("admin/problema/$task_id");
 }
 
 function url_task_create() {
-    return url_complex("admin/new-task");
+    return url_complex("admin/problema-noua");
 }
 
 function url_round_edit($round_id) {
     log_assert(is_round_id($round_id));
-    return url_complex("admin/round/$round_id");
+    return url_complex("admin/runda/$round_id");
 }
 
 function url_round_create() {
-    return url_complex("admin/new-round");
+    return url_complex("admin/runda-noua");
+}
+
+function url_round_register($round_id) {
+    log_assert(is_round_id($round_id));
+    return url_complex("inregistrare-runda/$round_id");
+}
+
+function url_round_register_view($round_id) {
+    log_assert(is_round_id($round_id));
+    return url_complex("lista-inregistrare/$round_id");
 }
 
 // Job/monitor stuff.

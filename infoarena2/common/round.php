@@ -28,6 +28,12 @@ function round_get_parameter_infos() {
                     ),
             ),
             'archive' => array(
+                    'duration' => array(
+                            'name' => 'Durata',
+                            'description' => "Infinit. Nu schimba.",
+                            'default' => '10000000',
+                            'type' => 'float',
+                    ),
             ),
     );
 }
@@ -117,6 +123,15 @@ function round_event_stop($round) {
     log_print("CONTEST LOGIC: Stopping round {$round['id']}.");
     $round['state'] = 'complete';
     round_update($round);
+}
+
+// Called when a round should be in waiting.
+function round_event_wait($round) {
+    log_assert_valid(round_validate($round));
+    log_print("CONTEST LOGIC: Stand-by for round {$round['id']}.");
+    $round['state'] = 'waiting';
+    round_update($round);
+    round_hide_all_tasks($round['id']);
 }
 
 ?>

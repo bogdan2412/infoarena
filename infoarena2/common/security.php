@@ -1,5 +1,7 @@
 <?php
 
+require_once(IA_ROOT."common/db/round.php");
+
 
 // This module implements everything related to security.
 //
@@ -90,6 +92,7 @@ function security_simplify_action($action)
         case 'task-view':
         case 'round-view':
         case 'simple-view':
+        case 'round-register-view':
             return 'simple-view';
 
         // Reversible edits access.
@@ -127,7 +130,10 @@ function security_simplify_action($action)
         // FIXME: As few as possible.
         case 'task-submit':
         case 'round-view-tasks':
+        case 'round-register':
         case 'user-editprofile':
+        case 'job-view':
+        case 'job-download': 
             return $action;
 
         default:
@@ -291,7 +297,7 @@ function security_task($user, $action, $task) {
     $objid = $task['id'];
     log_print("SECURITY QUERY TASK: ".
             "($level, $action, $objid): ".
-            "(level, action, object");
+            "(level, action, object)");
 
     switch ($action) {
         // Read-only access.
@@ -310,13 +316,21 @@ function security_task($user, $action, $task) {
         case 'simple-critical':
             return $is_admin;
 
-        // Special: submit.
+        // Special: submit. Check for at least one registered contest for the task.
         // FIXME: contest logic?
         case 'task-submit':
             if ($usersec == 'anonymous') {
                 return false;
             }
-            return ($task['hidden'] == false) || $is_owner || $is_admin;
+            $registered = false;
+            $rounds = task_get_parent_rounds($task['id']);
+            foreach ($rounds as $round_id) {
+                if (round_is_registered($round_id, $user['id'])) {
+                    $registered = true;
+                    break;
+                } 
+            }
+            return ($task['hidden'] == false && $registered) || $is_owner || $is_admin;
 
         default:
             log_error('Invalid task action: '.$action);
@@ -334,7 +348,7 @@ function security_round($user, $action, $round) {
     $objid = $round['id'];
     log_print("SECURITY QUERY ROUND: ".
             "($level, $action, $objid): ".
-            "(level, action, object");
+            "(level, action, object)");
 
 
     switch ($action) {
@@ -348,6 +362,14 @@ function security_round($user, $action, $round) {
         case 'simple-edit':
         case 'simple-critical':
             return $is_admin;
+
+        case 'round-register':
+            if ($usersec == 'anonymous') {
+                return false;
+            }
+            // FIXME: improve round registration logic
+            $is_waiting = $round['state'] == 'waiting';
+            return $is_waiting || $is_admin;
 
         default:
             log_error('Invalid round action: '.$action);
@@ -380,8 +402,16 @@ function security_job($user, $action, $job) {
     $is_admin = $usersec == 'admin';
     $is_owner = ($job['user_id'] == $user['id']);
     //FIXME: I'm not sure this belongs here, but it's an easy way out :|
-    $is_task_owner = ($job['task_author'] == $user['id'] && $usersec == 'helper');
+    $is_task_owner = ($job['task_owner_id'] == $user['id'] && $usersec == 'helper');
     $can_view_job = ($job['task_hidden'] == false) || $is_task_owner || $is_admin;
+
+    // Log query response.
+    $action = security_simplify_action($action);
+    $level = ($is_admin ? 'admin' : ($is_owner ? 'owner' : ($is_task_owner ? 'task-owner' : 'other')));
+    $objid = $job['id'];
+    log_print("SECURITY QUERY JOB: ".
+            "($level, $action, $objid): ".
+            "(level, action, object)");
 
     switch ($action) {
         case 'job-view':

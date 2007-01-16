@@ -59,7 +59,7 @@ $form_fields = array(
 );
 ?>
 
-<h1>Editare runda '<?= htmlentities($round['title']) ?></h1>
+<h1>Editare runda '<?= htmlentities($round['title']) ?>'</h1>
 
 <?php if ($round['state'] == 'running') { ?>
     <div class="warning">

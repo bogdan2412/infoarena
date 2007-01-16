@@ -10,20 +10,14 @@ require_once(IA_ROOT."www/macros/macro_include.php");
 // Arguments:
 //      round_id (required)
 //          - valid round id
-//      page_invitation (optional)
-//          - Textblock to include when user needs to register.
-//          - default value is template/roundinvitation
-//      page_registered (optional)
-//          - Textblock to include when user is already registered 
-//          - default value is null (nothing to include)
 //
 // Examples:
 //      RoundRegister(page_invitation="template/roundinvitation")
-/*function macro_roundregister($args) {
-    $page_invitation = getattr($args, 'page_invitation', 'template/roundinvitation');
-    $page_registered = getattr($args, 'page_registered');
+function macro_roundregister($args) {
     $round_id = getattr($args, 'round_id');
-
+    if (!is_round_id($round_id)) {
+        return macro_error('Invalid round identifier');
+    }
     // validate round id
     $round = round_get($round_id);
     if (!$round) {
@@ -34,19 +28,17 @@ require_once(IA_ROOT."www/macros/macro_include.php");
     global $identity_user;
     $is_registered = $identity_user && round_is_registered($round['id'], $identity_user['id']);
 
-    // include proper template
-    $include_page = (!$is_registered ? $page_invitation : $page_registered);
-    if (!is_null($include_page)) {
-        require_once('macros/macro_include.php');
-        $args = array(
-            'page' => $include_page,
-            'round_id' => $round['id']
-        );
-        return macro_include($args);
+    if ($is_registered) {
+        return "Esti inregistrat in runda '".$round['title']."'. ".
+               "<a href= ".htmlentities(url_round_register_view($round['id'])).">".
+               "Vezi cine mai este inregistrat!</a>";
     }
     else {
-        return '';
+        return "Nu esti inregistrat in runda '".$round['title']."'. ".
+               "<a href= ".htmlentities(url_round_register($round['id'])).">".
+               "Inregistreaza-te!</a>";
     }
-}*/
+
+}
 
 ?>

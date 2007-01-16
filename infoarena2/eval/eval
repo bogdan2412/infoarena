@@ -119,6 +119,9 @@ while (1) {
         round_event_start($round);
         continue;
     }
+    if ($round = round_get_round_to_wait()) {
+        round_event_wait($round);
+    }
     if ($job = job_get_next_job()) {
         job_handle($job);
         continue;

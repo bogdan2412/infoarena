@@ -69,7 +69,7 @@ function job_get_by_id($job_id, $contents = false) {
     $field_list = "job.`id`, job.`user_id`, `task_id`, `compiler_id`, `status`,
                    `submit_time`, `eval_message`, `score`, `eval_log`,
                    task.`page_name` as task_page_name, task.`title` as task_title,
-                   task.`hidden` as task_hidden, task.`user_id` as task_author,  
+                   task.`hidden` as task_hidden, task.`user_id` as task_owner_id,  
                    user.`username` as user_name, user.`full_name` as user_fullname";
     if ($contents) {
         $field_list .= ", job.file_contents";
@@ -93,7 +93,7 @@ function job_get_range($start, $range) {
               SELECT job.`id`, job.`user_id`, `task_id`, `compiler_id`, `status`,
                     `submit_time`, `eval_message`, `score`,
                     task.`page_name` as task_page_name, task.`title` as task_title,
-                    task.`hidden` as task_hidden, task.`user_id` as task_author,  
+                    task.`hidden` as task_hidden, task.`user_id` as task_owner_id,  
                     user.`username` as user_name, user.`full_name` as user_fullname
               FROM ia_job AS job
               LEFT JOIN ia_task AS task ON job.`task_id` = `task`.`id`

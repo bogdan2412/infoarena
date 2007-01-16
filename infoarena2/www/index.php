@@ -60,29 +60,44 @@ if (isset($directmaps[$urlstart])) {
 }
 
 // Task creator
-else if ($page == 'admin/new-task') {
+else if ($page == url_task_create()) {
     require_once(IA_ROOT.'www/controllers/task.php');
     controller_task_create();
 }
 
 // Task detail editor.
-else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'task') {
+else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'problema') {
     $obj_id = implode("/", array_slice($pagepath, 2));
     require_once(IA_ROOT.'www/controllers/task.php');
     controller_task_details($obj_id);
 }
 
 // Round creator
-else if ($page == 'admin/new-round') {
+else if ($page == url_round_create()) {
     require_once(IA_ROOT.'www/controllers/round.php');
     controller_round_create();
 }
 
 // Round detail editor.
-else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'round') {
+else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'runda') {
     $obj_id = implode("/", array_slice($pagepath, 2));
     require_once(IA_ROOT.'www/controllers/round.php');
     controller_round_details($obj_id);
+}
+
+// Round registration. 
+// FIXME: This should not be hardcoded.
+else if ($urlstart == 'inregistrare-runda') {
+    $obj_id = implode("/", array_slice($pagepath, 1));
+    require_once(IA_ROOT.'www/controllers/round_register.php');
+    controller_round_register($obj_id);
+}
+
+// FIXME: This should not be hardcoded.
+else if ($urlstart == 'lista-inregistrare') {
+    $obj_id = implode("/", array_slice($pagepath, 1));
+    require_once(IA_ROOT.'www/controllers/round_register.php');
+    controller_round_register_view($obj_id);
 }
 
 // textblock controllers
