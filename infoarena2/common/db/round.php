@@ -176,12 +176,23 @@ SQL;
 // FIXME: replace with eval queue
 // Gets the round to start, or null.
 function round_get_round_to_start() {
-    $query = <<<SQL
-SELECT * FROM `ia_round`
-    WHERE `state` = 'waiting' AND `start_time` < '%s'
+    // Build duration subquery.
+    $duration_subquery = <<<SQL
+SELECT `value` FROM `ia_parameter_value`
+    WHERE `object_type` = 'round' AND
+          `object_id` = `id` AND
+          `parameter_id` = 'duration'
     LIMIT 1
 SQL;
-    return db_fetch(sprintf($query, db_date_format()));
+
+    $query = <<<SQL
+SELECT * FROM `ia_round`
+    WHERE `state` != 'running' AND 
+    `start_time` < '%s' AND 
+    DATE_ADD(`start_time`, INTERVAL ($duration_subquery) HOUR) > '%s'
+    LIMIT 1
+SQL;
+    return db_fetch(sprintf($query, db_date_format(), db_date_format()));
 }
 
 // FIXME: horrible evil hack, for the eval.
@@ -202,7 +213,8 @@ SQL;
     $query = <<<SQL
 SELECT *
     FROM `ia_round`
-    WHERE DATE_ADD(`start_time`, INTERVAL ($duration_subquery) HOUR) <= '%s'
+    WHERE DATE_ADD(`start_time`, INTERVAL ($duration_subquery) HOUR) <= '%s' AND
+          `state` != 'complete'
     LIMIT 1
 SQL;
     return db_fetch(sprintf($query, db_date_format()));

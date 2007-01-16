@@ -160,8 +160,8 @@ log_assert(strstr($res['content'], '<a href="'.
 
 
 // Yuck
-log_print("Waiting for 3 seconds...");
-usleep(3 * 1000000);
+log_print("Waiting for 4 seconds...");
+usleep(4 * 1000000);
 
 
 log_print("Anon looks at round page, sees that round started");

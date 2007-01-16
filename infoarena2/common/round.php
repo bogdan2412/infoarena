@@ -32,7 +32,7 @@ function round_get_parameter_infos() {
     );
 }
 
-// Valideaza parametrii. Returneaza errorile sub conventie de $form_errors.
+// Validate parameters. Return erros as $form_errors convention.
 function round_validate_parameters($round_type, $parameters) {
     $errors = array();
     if ($round_type == 'classic') {
