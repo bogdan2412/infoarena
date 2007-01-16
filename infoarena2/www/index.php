@@ -31,6 +31,7 @@ if (!is_page_name($page)) {
     redirect(url_home());
 }
 
+
 // Prepare some vars for url handler.
 // Filter empty path elements. Strips extra '/'s
 $page = normalize_page_name($page);
@@ -60,7 +61,7 @@ if (isset($directmaps[$urlstart])) {
 }
 
 // Task creator
-else if ($page == url_task_create()) {
+else if ($page == 'admin/problema-noua') {
     require_once(IA_ROOT.'www/controllers/task.php');
     controller_task_create();
 }
@@ -73,7 +74,7 @@ else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'problema') {
 }
 
 // Round creator
-else if ($page == url_round_create()) {
+else if ($page == 'admin/runda-noua') {
     require_once(IA_ROOT.'www/controllers/round.php');
     controller_round_create();
 }
