@@ -6,8 +6,9 @@ require_once(dirname($argv[0]) . '/../config.php');
 // Judge username/password, used via HTTP AUTH basic to download tests and
 // graders. Judge has to have admin access.
 // Set a strong & secret password when putting this into production.
-define("IA_JUDGE_USERNAME", 'judge');
-define("IA_JUDGE_PASSWORD", '--edit-me--');
+// Default works with svn.
+define("IA_JUDGE_USERNAME", 'eval');
+define("IA_JUDGE_PASSWORD", 'eval');
 
 // The directory used as the jail.
 define("IA_EVAL_DIR", IA_ROOT . 'eval/');
@@ -30,7 +31,7 @@ define("IA_JRUN_EXE", IA_JRUN_DIR . 'jrun');
 define("IA_EVAL_TEMP_DIR", IA_EVAL_DIR . 'temp/');
 
 // The directory used as the jail.
-//define("IA_EVAL_JAIL_DIR", IA_EVAL_DIR . 'jail/');
+define("IA_EVAL_JAIL_DIR", IA_EVAL_DIR . 'jail/');
 
 // Saved jails go here.
 define("IA_EVAL_JAILS_DIR", IA_EVAL_DIR . 'jails/');
