@@ -111,9 +111,9 @@ function security_simplify_action($action)
         case 'round-create':
         case 'round-delete':
         case 'textblock-delete':
-        case 'grader-download':
         case 'grader-overwrite':
         case 'grader-delete':
+        case 'grader-download':
         case 'simple-edit':
             return 'simple-edit';
 
@@ -304,6 +304,7 @@ function security_task($user, $action, $task) {
 
         case 'simple-edit':
             return (/*$task['hidden'] &&*/ $is_owner) || $is_admin;
+            //FIXME: Why not uncomment that? 
 
         // Admin stuff:
         case 'simple-critical':
@@ -378,13 +379,16 @@ function security_job($user, $action, $job) {
     $usersec = getattr($user, 'security_level', 'anonymous');
     $is_admin = $usersec == 'admin';
     $is_owner = ($job['user_id'] == $user['id']);
+    //FIXME: I'm not sure this belongs here, but it's an easy way out :|
+    $is_task_owner = ($job['task_author'] == $user['id'] && $usersec == 'helper');
+    $can_view_job = ($job['task_hidden'] == false) || $is_task_owner || $is_admin;
 
     switch ($action) {
-        case 'job-download':
-            return $is_admin || $is_owner;
-
         case 'job-view':
-            return true;
+            return $can_view_job;
+
+        case 'job-download': //FIXME: this should be job-view-source, job-download is too confusing
+            return $can_view_job && ($is_admin || $is_owner);
 
         default:
             log_error('Invalid job action: '.$action);

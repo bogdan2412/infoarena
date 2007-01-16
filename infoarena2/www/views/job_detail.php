@@ -3,7 +3,9 @@
 require_once(IA_ROOT . 'www/views/header.php');
 require_once(IA_ROOT . 'www/format/format.php');
 require_once(IA_ROOT . 'www/url.php');
+
 ?>
+
 
 <h1><?= htmlentities($view['title']) ?></h1>
 
