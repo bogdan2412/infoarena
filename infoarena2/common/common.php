@@ -104,26 +104,27 @@ function is_attachment_id($id) {
 // Does not check existence.
 function is_round_id($round_id) {
     return preg_match('/^'.IA_RE_ROUND_ID.'$/xi', $round_id) &&
-        strlen($round_id) < 16;
+        strlen($round_id) < 64;
 }
 
 // Check valid score names.
 // Does not check existence. 
 function is_score_name($score_name) {
     return preg_match('/^'.IA_RE_SCORE_NAME.'$/xi', $score_name) &&
-        strlen($score_name) < 32;
+        strlen($score_name) < 64;
 }
 
 // Tells whether $task_id is a valid task identifier
 // Does not check existence.
 function is_task_id($task_id) {
     return preg_match('/^'.IA_RE_TASK_ID.'$/xi', $task_id) &&
-           strlen($task_id) < 16;
+           strlen($task_id) < 64;
 }
 
 // Check user name
 function is_user_name($user_name) {
-    return preg_match('/^'.IA_RE_USER_NAME.'$/xi', $user_name);
+    return preg_match('/^'.IA_RE_USER_NAME.'$/xi', $user_name) &&
+           strlen($task_id) < 64;
 }
 
 // Check user full name (John Smith sr.)

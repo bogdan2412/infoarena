@@ -27,10 +27,10 @@ function controller_changes($page_name) {
     if (request('format') == 'rss') {
         $view = array();
         $view['channel']['title'] = 'Modificari pe infoarena';
-        $view['channel']['link'] = url_changes();
+        $view['channel']['link'] = url_absolute(url_changes());
         $view['channel']['description'] = 'Ultimele modificari din wiki-ul http://infoarena.ro';
         $view['channel']['language'] = 'ro-ro'; 
-        $view['channel']['copyright'] = '&copy; 2006 - asociatia infoarena';
+        $view['channel']['copyright'] = '2006 - asociatia infoarena';
 
         $view['item'] = array();
 

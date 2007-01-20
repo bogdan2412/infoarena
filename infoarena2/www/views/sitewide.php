@@ -106,7 +106,7 @@ function ia_template_footer() {
 ?>
 <div id="footer">
     <ul class="clear">
-        <li>&copy;&nbsp;2006&nbsp;-&nbsp;<?= format_link(url_textblock('Asociatia-infoarena'), "Asociatia infoarena") ?></li>
+        <li>&copy;&nbsp;2004-<?= date("Y") ?>&nbsp;<?= format_link(url_textblock('Asociatia-infoarena'), "Asociatia infoarena") ?></li>
         <li class="separate"><?= format_link(url_home(), "Prima pagina") ?></li>
         <li><?= format_link(url_textblock("despre-infoarena"), "Despre infoarena") ?></li>
         <li><?= format_link(url_textblock("termeni-si-conditii"), "Termeni si conditii") ?></li>

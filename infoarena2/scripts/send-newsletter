@@ -150,9 +150,9 @@ function email_tags_callback($matches) {
         case 'your_rating_is':
             // nice sentence telling user what her rating is.
             // when user is not rated, expand tag to nothing
-            if ($recipient['rating_cache']) {
-                return 'Rating-ul tau este: '
-                       .rating_scale($recipient['rating_cache']);
+            if ((int)$recipient['rating_cache']) {
+                return 'Rating-ul tau este '
+                       .rating_scale($recipient['rating_cache']).".\n";
             }
             else {
                 return '';
