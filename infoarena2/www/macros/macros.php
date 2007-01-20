@@ -21,7 +21,7 @@ function macro_message($text, $raw_html = false) {
 
 // Preset error message for insufficient privileges.
 function macro_permission_error() {
-    return macro_error('Nu ai destul permisiuni pentru acest macro.');
+    return macro_error('Nu ai destule permisiuni pentru acest macro.');
 }
 
 function execute_macro($macro_name, $macro_args) {

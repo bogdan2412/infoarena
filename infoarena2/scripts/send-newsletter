@@ -146,7 +146,7 @@ function email_tags_callback($matches) {
         case 'url_unsubscribe':
             // unsubscribe link
             $key = user_unsubscribe_key($recipient);
-            return url_unsubscribe($recipient['username'], $key, true);
+            return url_absolute(url_unsubscribe($recipient['username'], $key));
         case 'your_rating_is':
             // nice sentence telling user what her rating is.
             // when user is not rated, expand tag to nothing

@@ -3,9 +3,9 @@
 require_once(IA_ROOT.'www/config.php');
 
 // Creates URLs to various parts of the infoarena website.
-// Please avoid hard-coding URLs throughout the code. 
+// Please avoid hard-coding URLs throughout the code.
 
-// Compute complex url. Avoid using thing function directly, prefer more
+// Compute complex url. Avoid using this function directly, prefer more
 // specific url_ functions.
 //
 // The params array contains http get parameter,
