@@ -71,7 +71,7 @@ function wiki_include($page_name, $template_args = null) {
     }
 
     echo '<div class="wiki_text_block">';
-    echo wiki_process_text($textblock['text']);
+    echo wiki_process_text($textblock);
     echo '</div>';
 }
 

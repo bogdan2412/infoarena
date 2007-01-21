@@ -15,8 +15,7 @@ function controller_news_feed($page_name) {
     $news = news_get_range(0, IA_MAX_FEED_ITEMS);
     for ($i = 0; $i < count($news); $i++) {
         $view['item'][$i]['title'] = $news[$i]['title'];
-        $view['item'][$i]['description'] = wiki_process_text_recursive(
-                                           $news[$i]['text']);
+        $view['item'][$i]['description'] = wiki_process_text_recursive($news[$i]);
         $view['item'][$i]['pubDate'] = date('r',
                                             strtotime($news[$i]['timestamp']));
         $view['item'][$i]['guid'] = sha1($news[$i]['name'] . 

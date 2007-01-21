@@ -15,7 +15,7 @@ if (getattr($view, 'revision')) {
 
 // textblock content
 echo '<div class="wiki_text_block">';
-echo wiki_process_text(getattr($textblock, 'text'));
+echo wiki_process_text($textblock);
 echo '</div>';
 
 // site footer

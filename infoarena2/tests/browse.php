@@ -15,7 +15,7 @@ $res = db_query("SELECT $field_list FROM ia_textblock ".
                 "WHERE `name` NOT LIKE 'utilizator/%'");
 while ($tb = db_next_row($res)) {
     log_print("Processing {$tb['name']} ({$tb['title']})");
-    wiki_process_text($tb['text']);
+    wiki_do_process_text($tb['text']);
 }
 
 log_execution_stats();

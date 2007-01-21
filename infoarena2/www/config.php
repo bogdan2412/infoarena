@@ -40,17 +40,17 @@ define("IA_MAIL_SENDER_NO_REPLY", 'infoarena <no-reply@infoarena.ro>');
 // Maximum number of recursive includes in the wiki.
 define('IA_MAX_RECURSIVE_INCLUDES', 5);
 
+// Cache directory
+define('IA_CACHE_DIR', IA_ROOT . 'cache/');
+define('IA_CACHE_ENABLE', true);
+define('IA_IMAGE_CACHE_ENABLE', true);
+define('IA_TEXTILE_CACHE_ENABLE', true);
+// FIXME: proper cleaning mechanism.
+define('IA_CACHE_SIZE', 256 * 1024 * 1024);
+
 // Image resampling
 //  - constraints for image resampling
-define("IMAGE_MAX_WIDTH", 800);
-define("IMAGE_MAX_HEIGHT", 800);
-//  - whether to enable the image cache (avoid resizing the same image twice)
-define("IMAGE_CACHE_ENABLE", true);
-//  - where to store image cache (resampled versions of the normal image attachments)
-//    Feel free to empty the cache directory at any time
-define("IMAGE_CACHE_DIR", IA_ROOT.'cache/');
-//  - maximum directory size for image cache (bytes). When directory exceeds quota,
-//    image resamples are not cached any more but computed & served on-the-fly
-define("IMAGE_CACHE_QUOTA", 256 * 1024 * 1024); // (bytes please)
+define("IA_IMAGE_RESIZE_MAX_WIDTH", 800);
+define("IA_IMAGE_RESIZE_MAX_HEIGHT", 800);
 
 ?>

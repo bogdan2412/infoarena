@@ -3,11 +3,11 @@
 require_once(IA_ROOT."www/macros/macros.php");
 require_once(IA_ROOT."www/identity.php");
 require_once(IA_ROOT."www/url.php");
-require_once(IA_ROOT."www/wiki/MyTextile.php");
+require_once(IA_ROOT."common/textblock.php");
 
-// This processes a big chunk of wiki-formatted text and returns html.
-function wiki_process_text($content) {
-
+// Process textile and returns html with special macro tags.
+function wiki_process_textile($content) {
+    require_once(IA_ROOT."www/wiki/MyTextile.php");
     $options = array(
             'disable_html' => true,
             'disable_filters' => true,
@@ -16,19 +16,29 @@ function wiki_process_text($content) {
     );
     $weaver = new MyTextile($options);
     $res = $weaver->process($content);
-    if (preg_match('/(?:<|&lt;)textile#\n(?:>|&gt;)/', $res)) {
-        log_error("Crappy textile");
-    }
     unset($weaver);
 
     return $res;
+}
+
+// No caching, used by JSON.
+function wiki_do_process_text($content) {
+    return wiki_process_textile($content);
+}
+
+// This processes a big chunk of wiki-formatted text and returns html.
+function wiki_process_text($tb) {
+    log_assert_valid(textblock_validate($tb));
+    return wiki_process_textile($tb['text']);
 }
 
 // This is just like wiki_process_text, but it's meant for recursive calling.
 // You should use this from macros that include other text blocks.
 //
 // This returns a html block. That html block can be an error div.
-function wiki_process_text_recursive($content) {
+function wiki_process_text_recursive($textblock) {
+    log_assert_valid(textblock_validate($textblock));
+
     // This uses some black static magic.
     // include_count is the number of recursions in this function.
     // When include_count reaches the maximum level then we set
@@ -48,7 +58,7 @@ function wiki_process_text_recursive($content) {
     }
     //echo "going in level $include_count $args[page]<br />";
 
-    $res = wiki_process_text($content);
+    $res = wiki_process_text($textblock);
 
     --$include_count;
     // Unwind

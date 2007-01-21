@@ -2,6 +2,7 @@
 
 require_once(IA_ROOT.'www/controllers/attachment.php');
 require_once(IA_ROOT.'common/db/attachment.php');
+require_once(IA_ROOT.'common/cache.php');
 
 // download attachment as resized image
 // see resize_coordinates() from utilities.php for detailed informations about
@@ -52,13 +53,13 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
     $new_height = $newcoords[1];
 
     // put some constraints here for security
-    if ($new_width > IMAGE_MAX_WIDTH || $new_height > IMAGE_MAX_HEIGHT) {
+    if ($new_width > IA_IMAGE_RESIZE_MAX_WIDTH || $new_height > IA_IMAGE_RESIZE_MAX_HEIGHT) {
         die_http_error(500, "Bad image size.");
         redirect(url_textblock($page_name));
     }
 
     // query image cache for existing resampled image
-    if (IMAGE_CACHE_ENABLE) {
+    if (IA_IMAGE_CACHE_ENABLE) {
         $cache_fn = imagecache_query($attach, $resize);
 
         if (null !== $cache_fn) {
@@ -118,7 +119,7 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
     ob_end_clean();
 
     // cache resample
-    if (IMAGE_CACHE_ENABLE) {
+    if (IA_IMAGE_CACHE_ENABLE) {
         imagecache_save($attach['id'], $resize, $buffer);
     }
 
@@ -141,37 +142,9 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
 //  - disk file name of the resampled image so it can be served via serve_attachment()
 //  - null if no such cached version exists
 function imagecache_query($attach, $resize) {
-    // get disk file paths
-    $fn_cache = imagecache_filename($attach['id'], $resize);
-    $fn_source = attachment_get_filepath($attach);
-
-    // open files
-    $fp_cache = @fopen($fn_cache, 'rb');
-    if (!$fp_cache) {
-        return null;
-    }
-    $fp_source = @fopen($fn_source, 'rb');
-    if (!$fp_source) {
-        return null;
-    }
-
-    // stat
-    $stat_source = @fstat($fp_source);
-    $stat_cache = @fstat($fp_cache);
-
-    // close files
-    fclose($fp_cache);
-    fclose($fp_source);
-
-    // decide
-    if ($stat_source['mtime'] > $stat_cache['mtime']) {
-        // cache is older than source
-        return null;
-    }
-    else {
-        // cache is up-to-date
-        return $fn_cache;
-    }
+    $cacheid = imagecache_ident($attach['id'], $resize);
+    $attname = attachment_get_filepath($attach);
+    return cache_query($cacheid, @filemtime($attname));
 }
 
 // Inserts resampled version of attachment $attach_id into image cache.
@@ -180,53 +153,12 @@ function imagecache_query($attach, $resize) {
 // Returns boolean whether caching succeeded. File will not be cached if
 // image cache exceeds allowed quota.
 function imagecache_save($attach_id, $resize, $buffer) {
-    if (imagecache_usage() > IMAGE_CACHE_QUOTA) {
-        // cache is full
-        log_warn('Image cache is full.');
-        return false;
-    }
-
-    $filename = imagecache_filename($attach_id, $resize);
-    $ret = @file_put_contents($filename, $buffer, LOCK_EX);
-    // A broken cacke is fairly harmless, especially in debug.
-    // Throwing up here results in no visible images, which tends to suck.
-    if (false === $ret) {
-        log_warn('IMAGE_CACHE: Could not create file ' . $filename);
-        return false;
-    }
-
-    log_print("Saved resampled image {$filename} {$resize} in image cache");
-
-    return true;
+    cache_save(imagecache_ident($attach_id, $resize), $buffer);
 }
 
-// Returns current disk size of image cache.
-function imagecache_usage() {
-    // scan all files in image cache directory
-    $nodes = scandir(IMAGE_CACHE_DIR);
-    $files = array();
-    foreach ($nodes as $node) {
-        if (!is_dir($node)) {
-            $files[] = $node;
-        }
-    }
-
-    // sum up file size
-    $total = 0;
-    foreach ($files as $file) {
-        $fsize = filesize(IMAGE_CACHE_DIR . $file);
-        if (false === $fsize) {
-            log_warn('IMAGE_CACHE: Could not determine file size of resampled image ' . IMAGE_CACHE_DIR . $file);
-        }
-        $total += $fsize;
-    }
-
-    return $total;
-}
-
-// Returns absolute file path for a (possibly inexistent) cached resampled image.
-function imagecache_filename($attach_id, $resize) {
-    return IMAGE_CACHE_DIR . $attach_id . '_' . $resize;
+// Return cache identifier for image.
+function imagecache_ident($attach_id, $resize) {
+    return $attach_id . '_' . $resize;
 }
 
 ?>

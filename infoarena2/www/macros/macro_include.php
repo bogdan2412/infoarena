@@ -36,7 +36,7 @@ function macro_include($args) {
     }
     textblock_template_replace($textblock, $replace);
 
-    return wiki_process_text_recursive($textblock['text']);
+    return wiki_process_text_recursive($textblock);
 }
 
 ?>
