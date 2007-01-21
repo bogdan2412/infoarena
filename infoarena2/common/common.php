@@ -124,7 +124,7 @@ function is_task_id($task_id) {
 // Check user name
 function is_user_name($user_name) {
     return preg_match('/^'.IA_RE_USER_NAME.'$/xi', $user_name) &&
-           strlen($task_id) < 64;
+           strlen($user_name) < 64;
 }
 
 // Check user full name (John Smith sr.)
