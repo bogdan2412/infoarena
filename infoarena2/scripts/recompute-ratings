@@ -9,6 +9,7 @@
 
 require_once(dirname($argv[0]) . "/utilities.php");
 require_once(IA_ROOT."common/db/score.php");
+db_connect();
 
 // first, delete all ratings
 // FIXME: Turn this into db API call

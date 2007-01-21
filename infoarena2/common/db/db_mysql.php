@@ -46,6 +46,7 @@ function db_affected_rows() {
 // Returns native PHP mysql resource handle
 function db_query($query, $unbuffered = false) {
     global $dbLink;
+
     if ($unbuffered) {
         $result = mysql_unbuffered_query($query, $dbLink);
     } else {
