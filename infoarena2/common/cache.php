@@ -1,22 +1,44 @@
 <?php
 
-// Looks for a cache file with specific identifier newer than $date.
-//
-// $date is unix timestamp.
-//
-// Returns disk file name or null if not cached.
-function cache_query($cache_id, $date) {
-    // get disk file paths
-    $cache_file = IA_CACHE_DIR . $cache_id;
-    $mtime = @filemtime($cache_file);
-
-    if ($mtime === false || $mtime < $date) {
-        // cache is older, delete cache.
-        @unlink($cache_file);
+function cache_query($cache_id, $date = null) {
+    $fname = IA_CACHE_DIR . $cache_id;
+    if (!file_exists($fname)) {
         return null;
     } else {
-        // cache is up-to-date, return
-        return $cache_file;
+        $mtime = @filemtime($fname);
+        // Ignore old stuff.
+        if ($date !== null && ($mtime === false || $mtime < $date)) {
+            @unlink($fname);
+            return null;
+        } else {
+            return $fname;
+        }
+    }
+}
+
+// Loads blob from cache, or returns null if not found.
+// if $date(unix timestamp) is not null it will fail if the file is older.
+//
+// FIXME: this code is retarded.
+// FIxME: properly check stuff.
+function cache_load($cache_id, $date = null) {
+    $fname = cache_query($cache_id, $date);
+    if (!is_null($fname)) {
+        $res = file_get_contents($fname);
+        if ($res === false) {
+            $res = null;
+        }
+    } else {
+        $res = null;
+    }
+
+    // Yay, return
+    if ($res === null) {
+        log_print("CACHE: miss on $cache_id(from $fname)");
+        return null;
+    } else {
+        log_print("CACHE: hit on $cache_id");
+        return $res;
     }
 }
 

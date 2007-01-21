@@ -4,10 +4,12 @@ require_once(IA_ROOT."www/macros/macros.php");
 require_once(IA_ROOT."www/identity.php");
 require_once(IA_ROOT."www/url.php");
 require_once(IA_ROOT."common/textblock.php");
+require_once(IA_ROOT."common/cache.php");
 
 // Process textile and returns html with special macro tags.
 function wiki_process_textile($content) {
     require_once(IA_ROOT."www/wiki/MyTextile.php");
+    log_print_r("PROCESS TEXTILE");
     $options = array(
             'disable_html' => true,
             'disable_filters' => true,
@@ -21,15 +23,63 @@ function wiki_process_textile($content) {
     return $res;
 }
 
+// Used in wiki_process_macros.
+function wiki_macro_callback($matches) {
+    // We need to parse args again.
+    // We can't separate args in the main preg_replace_callback.
+    if (!preg_match_all('/
+                        ([a-z][a-z0-9_]*)
+                        \s* = \s*
+                        "((?:[^"]*(?:"")*)*)"
+                        /xi', $matches[2], $args, PREG_SET_ORDER)) {
+        $args = array();
+    }
+
+    $macro_name = $matches[1];
+    $macro_args = array();
+    for ($i = 0; $i < count($args); ++$i) {
+        $argname = strtolower($args[$i][1]);
+        $argval = $args[$i][2];
+        $macro_args[$argname] = str_replace('""', '"', $argval);
+    }
+/*    log_print("Exec macro $macro_name");
+    log_print_r($macro_args);
+    log_print_r($matches);*/
+    return execute_macro($macro_name, $macro_args);
+}
+
+// Proces macros in content.
+function wiki_process_macros($content) {
+    require_once(IA_ROOT."www/macros/macros.php");
+    return preg_replace_callback(
+            '/ <div \s* macro_name="([a-z][a-z0-9_]*)" \s* runas="macro" \s*
+                ((?: (?:[a-z][a-z0-9_]*) \s* = \s*
+                    "(?:(?:[^"]*(?:"")*)*)" \s* )* \s*)
+                ><\/div>/xi', 'wiki_macro_callback', $content);
+/*    return preg_replace_callback(
+            '/ <?([a-z][a-z0-9_]*) \s*
+                ((?: (?:[a-z][a-z0-9_]*) \s* = \s*
+                    "(?:(?:[^"]*(?:"")*)*)" \s* )* \s*)
+                \?>/xi', 'wiki_macro_callback', $content);*/
+}
+
 // No caching, used by JSON.
+// Transforms textile into full html with no cache.
 function wiki_do_process_text($content) {
-    return wiki_process_textile($content);
+    return wiki_process_macros(wiki_process_textile($content));
 }
 
 // This processes a big chunk of wiki-formatted text and returns html.
 function wiki_process_text($tb) {
     log_assert_valid(textblock_validate($tb));
-    return wiki_process_textile($tb['text']);
+    $cacheid = preg_replace('/[^a-z0-9\.\-_]/i', '_', $tb['name']) . '_' .
+               preg_replace('/[^a-z0-9\.\-_]/i', '_', $tb['timestamp']);
+    $cache_ret = cache_load($cacheid, null);
+    if (is_null($cache_ret)) {
+        $cache_ret = wiki_process_textile($tb['text']);
+        cache_save($cacheid, $cache_ret);
+    }
+    return wiki_process_macros($cache_ret);
 }
 
 // This is just like wiki_process_text, but it's meant for recursive calling.

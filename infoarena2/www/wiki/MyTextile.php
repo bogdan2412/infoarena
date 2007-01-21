@@ -1,7 +1,6 @@
 <?php
 
 @require_once(IA_ROOT."www/wiki/Textile.php");
-require_once(IA_ROOT."www/macros/macros.php");
 require_once(IA_ROOT."common/attachment.php");
 
 class MyTextile extends Textile {
@@ -35,17 +34,17 @@ class MyTextile extends Textile {
                     return macro_error("Duplicate argument '$argname' ".
                             "for macro $macro_name.");
                 }
-                $macro_args[$argname] = str_replace('""', '"', $argval);
+                $macro_args[$argname] = $argval;
             }
 
-            // Black magic here.
-            // this function is called from a callback that uses a static variable.
-            // Callbacks use static variables because php is retarded.
-            // Anyway, execute_macro can use textile for itself, therefore I 
-            // have to restore that static variable after execute_macro.
-            // This very scary, but it works.
-            $res = execute_macro($macro_name, $macro_args);
-            @Textile::_current_store($this);
+            //$res = "<?$macro_name";
+            $res = "<div macro_name=\"$macro_name\" runas=\"macro\"";
+            foreach ($macro_args as $k => $v) {
+                $res .= " $k=\"".$v."\"";
+            }
+            $res .= "></div>";
+            //$res .= " ?".">";
+            //log_print("Packed macro: ".$res);
             return $res;
         }
         return macro_error('Bad macro "'.$str.'"');

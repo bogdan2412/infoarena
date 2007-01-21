@@ -60,13 +60,8 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
 
     // query image cache for existing resampled image
     if (IA_IMAGE_CACHE_ENABLE) {
-        $cache_fn = imagecache_query($attach, $resize);
-
-        if (null !== $cache_fn) {
-            // cache has it
-            serve_attachment($cache_fn, $file_name, image_type_to_mime_type($img_type));
-            // function doesn't return
-        }
+        // Does not return
+        imagecache_query($attach, $resize);
     }
 
     // actual image resizing
@@ -138,9 +133,7 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
 // Tells whether there is a resampled (resized according to $resize instructions) and
 // up-to-date version of image attachment $attach_id.
 //
-// Returns
-//  - disk file name of the resampled image so it can be served via serve_attachment()
-//  - null if no such cached version exists
+// Returns if not found, otherwise request is served.
 function imagecache_query($attach, $resize) {
     $cacheid = imagecache_ident($attach['id'], $resize);
     $attname = attachment_get_filepath($attach);
