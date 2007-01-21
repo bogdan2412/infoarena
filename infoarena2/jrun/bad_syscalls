@@ -15,8 +15,8 @@ getgid
 setgid
 setresuid
 setregid
-getegid
 getpid
+getegid
 getppid
 kill
 signal

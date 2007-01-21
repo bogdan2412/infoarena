@@ -8,13 +8,21 @@ function score_update_for_job($score, $time, $user_id, $task_id)
 {
     $rounds = task_get_parent_rounds($task_id);
     foreach ($rounds as $round_id) {
-        //FIXME: Improve this
-        if (round_is_registered($round_id, $user_id)) {
-            $round = round_get($round_id);
-            if ($round['state'] == 'running') {
-                score_update('score', $user_id, $task_id, $round_id, $score);
-            }
-        }
+        $round = round_get($round_id);
+        round_event_job_score($round, $score, $time, $user_id, $task_id);
+    }
+}
+
+function round_event_job_score($round, $score, $time, $user_id, $task_id) {
+    if (!round_is_registered($round['id'], $user_id)) {
+        return;
+    }
+    $rparams = round_get_parameters($round['id']);
+    $time = db_date_parse($time);
+    $rstart = db_date_parse($round['start_time']);
+    $rduration = getattr($rparams, 'duration', 10000) * 60 * 60;
+    if ($time >= $rstart && $time <= $rstart + $rduration) {
+        score_update('score', $user_id, $task_id, $round['id'], $score);
     }
 }
 
