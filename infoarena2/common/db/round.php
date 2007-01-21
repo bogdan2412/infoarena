@@ -212,8 +212,7 @@ function round_get_registered_users_range($round_id, $start, $range)
                           ORDER BY rating DESC
                           LIMIT %s, %s", $start, $range);
     }
-    else 
-    {
+    else {
         $query = sprintf("SELECT user_id, user.rating_cache AS rating,
                           user.username AS username, user.full_name AS fullname,
                           (@counter := @counter + 1) AS position

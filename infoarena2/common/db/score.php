@@ -225,8 +225,8 @@ function rating_rounds() {
     foreach ($rows as $row) {
         $round_id = $row['round_id'];
         log_assert(isset($rounds[$round_id]),
-                   "Round {$round_id} has round_timestamp but no "
-                   ."round_update parameter!");
+                   "Round {$round_id} has rating_timestamp but no "
+                   ."rating_update parameter!");
         $value = parameter_decode($row['parameter_id'], $row['value']);
         if ($value) {
             continue;

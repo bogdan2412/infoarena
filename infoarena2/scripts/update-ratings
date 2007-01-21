@@ -67,12 +67,21 @@ foreach ($ucheck as $row) {
 log_print("Merging data");
 $users = rating_init($user_list, $current_scores);
 
+// read registered users
+$scores = array();
+log_print("Reading registered users");
+$round_users = round_get_registered_users_range($round['id'], 0, 100000);
+log_print(count($round_users) . " users registered for this his round");
+foreach ($round_users as $row) {
+    assert(isset($row['username']));
+    $scores[$row['username']] = 0;
+}
+
 // read round scores
 log_print("Reading round scores");
 $round_rows = score_get("score", null, null, $round_id, 0, $usercount);
 $round_rows = $round_rows['scores'];
 log_print(count($round_rows) . " users were scored in this round");
-$scores = array();
 foreach ($round_rows as $row) {
     log_assert(isset($row['user_name']) && isset($row['score']));
     $scores[$row['user_name']] = $row['score'];
