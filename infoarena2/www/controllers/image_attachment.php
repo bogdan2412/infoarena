@@ -60,8 +60,14 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
 
     // query image cache for existing resampled image
     if (IA_IMAGE_CACHE_ENABLE) {
-        // Does not return
-        imagecache_query($attach, $resize);
+        $cache_fn = imagecache_query($attach, $resize);
+
+        if (null !== $cache_fn) {
+            log_print_r("IMAGE CACHE hit");
+            // cache has it
+            serve_attachment($cache_fn, $file_name, image_type_to_mime_type($img_type));
+            // function doesn't return
+        }
     }
 
     // actual image resizing
