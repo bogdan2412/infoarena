@@ -1021,3 +1021,29 @@ td.rating, th.rating {
     font-size: .9em;
 }
 
+/* round registration */
+.round-register, .round-registered, .round-expired {
+    width: 50%;
+    padding: .2em .5em .2em .5em;
+    background-color: #fff;
+}
+
+.round-registered {
+}
+
+.round-register {
+    border: 2px dashed red;
+}
+
+.round-expired {
+    border: 2px dashed silver;
+}
+
+.round-register a {
+    margin: 0 .5em 0 .5em;
+}
+
+table.registered-users {
+    width: 95%;
+}
+

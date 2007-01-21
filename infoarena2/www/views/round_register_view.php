@@ -8,7 +8,7 @@ include('header.php');
 echo '<h1>'.htmlentities($view['title']).'</h1>';
 
 if (count($view['users']) < 1) {
-    print "<h3>Nici un utilizator inregistrat in aceasta runda</h3>";    
+    echo "<p><strong>Nici un utilizator inscris la aceasta runda&hellip;</strong></p>";
 }
 else {
     $column_infos = array(
@@ -29,8 +29,11 @@ else {
         ),
     );
 
-    $view['pager_style'] = 'standard';
-    print format_table($view['users'], $column_infos, $view);
+    $options = array(
+        'pager_style' => 'standard',
+        'css_class'   => 'registered-users'
+    );
+    print format_table($view['users'], $column_infos, $options + $view);
 }
 
 ?>

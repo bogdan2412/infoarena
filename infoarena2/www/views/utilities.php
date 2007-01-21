@@ -61,7 +61,6 @@ function ferr_span($param_name, $escape_html = true) {
 
 // Parse and print a textblock. Use this to insert dynamic textblocks
 // inside static templates / views.
-// FIXME: printing from functions is sort of retarded.
 function wiki_include($page_name, $template_args = null) {
     $textblock = textblock_get_revision($page_name);
     log_assert($textblock, "Nu am gasit $page_name");

@@ -70,7 +70,7 @@ function round_update($round) {
 // if user_id is non-null a join is done on $score
 function round_get_tasks($round_id, $first = 0, $count = null, $user_id = null, $score_name = null) {
     if ($count === null) {
-        $count = 666013;
+        $count = 667013;
     }
     $fields = "round_task.task_id AS id, ".
               "task.`order` AS `order`, ".

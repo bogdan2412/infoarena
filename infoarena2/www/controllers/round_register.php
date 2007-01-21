@@ -26,7 +26,7 @@ function controller_round_register($round_id) {
 
     // check whether user is already registered
     if (round_is_registered($round['id'], $identity_user['id'])) {
-        flash_error('Sunteti deja inregistrat in runda "'.$round['title'].'"!');
+        flash_error('Esti deja inregistrat in runda "'.$round['title'].'"!');
         redirect(url_textblock($round['page_name']));
     }
 
@@ -34,13 +34,13 @@ function controller_round_register($round_id) {
         // process input
         round_register_user($round['id'], $identity_user['id']);
         // FIXME: should redirect to referrer
-        flash('Ati fost inregistrat la "'.$round['title'].'"!');
+        flash('Ai fost inregistrat la "'.$round['title'].'"!');
         redirect(url_textblock($round['page_name']));
     }
     else {
         // display form
         $view = array(
-            'round_id' => $round,
+            'round' => $round,
             'title' => "Inregistrare la '".$round['title']."'",
             'action' => url_round_register($round['id']),
         );
@@ -67,7 +67,7 @@ function controller_round_register_view($round_id) {
 
     $options = pager_init_options();
     $view = array();
-    $view['title'] = "Lista de inregistrare la '".$round['title']."'";
+    $view['title'] = "Utilizatori inregistrati la '".$round['title']."'";
     $view['users'] = round_get_registered_users_range($round['id'], 
                      $options['first_entry'], $options['display_entries']);
     $view['first_entry'] = $options['first_entry'];
@@ -76,7 +76,5 @@ function controller_round_register_view($round_id) {
 
     execute_view_die('views/round_register_view.php', $view);
 }
-
-
 
 ?>

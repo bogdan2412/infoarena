@@ -169,7 +169,7 @@ function format_user_ratingbadge($username, $rating) {
 // FIXME: user timezone, user format, etc.
 // global identityUser;
 //
-// HTML safe(don't pass through htmlentities.
+// HTML safe(don't pass through htmlentities.)
 function format_date($date, $format = null) {
     if (is_db_date($date)) {
         $timestamp = db_date_parse($date);
