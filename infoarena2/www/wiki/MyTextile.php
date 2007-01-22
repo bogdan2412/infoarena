@@ -38,11 +38,13 @@ class MyTextile extends Textile {
             }
 
             //$res = "<?$macro_name";
-            $res = "<div macro_name=\"$macro_name\" runas=\"macro\"";
+            // DIVs don't work alyways; probably because textile treats DIVs as
+            // block-level elements rather than arbitrary HTML tags
+            $res = "<span macro_name=\"$macro_name\" runas=\"macro\"";
             foreach ($macro_args as $k => $v) {
                 $res .= " $k=\"".$v."\"";
             }
-            $res .= "></div>";
+            $res .= "></span>";
             //$res .= " ?".">";
             //log_print("Packed macro: ".$res);
             return $res;

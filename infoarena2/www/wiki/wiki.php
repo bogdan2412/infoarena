@@ -52,10 +52,10 @@ function wiki_macro_callback($matches) {
 function wiki_process_macros($content) {
     require_once(IA_ROOT."www/macros/macros.php");
     return preg_replace_callback(
-            '/ <div \s* macro_name="([a-z][a-z0-9_]*)" \s* runas="macro" \s*
+            '/ <span \s* macro_name="([a-z][a-z0-9_]*)" \s* runas="macro" \s*
                 ((?: (?:[a-z][a-z0-9_]*) \s* = \s*
                     "(?:(?:[^"]*(?:"")*)*)" \s* )* \s*)
-                ><\/div>/xi', 'wiki_macro_callback', $content);
+                ><\/span>/xi', 'wiki_macro_callback', $content);
 /*    return preg_replace_callback(
             '/ <?([a-z][a-z0-9_]*) \s*
                 ((?: (?:[a-z][a-z0-9_]*) \s* = \s*
@@ -70,8 +70,13 @@ function wiki_do_process_text($content) {
 }
 
 // This processes a big chunk of wiki-formatted text and returns html.
+// FIXME: This code is a steaming pile of sticky retarted shit.
 function wiki_process_text($tb) {
     log_assert_valid(textblock_validate($tb));
+    return wiki_do_process_text($tb['text']);
+
+    // FIXME: Cache doesn't work like this. There seems to be a problem
+    // with argumented template pages
     $cacheid = preg_replace('/[^a-z0-9\.\-_]/i', '_', $tb['name']) . '_' .
                preg_replace('/[^a-z0-9\.\-_]/i', '_', $tb['timestamp']);
     // don't cache templates

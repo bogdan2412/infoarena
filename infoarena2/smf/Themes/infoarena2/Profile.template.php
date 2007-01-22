@@ -245,7 +245,6 @@ function template_summary()
 		<td class="windowbg" valign="middle" align="center" width="150">
 			', $context['member']['avatar']['image'], '<br /><br />
 			', $context['member']['blurb'], '
-
             <p><strong><a href="', url_complex(TB_USER_PREFIX.$context['member']['username'], array(), true)  ,'">Vezi pagina de profil</a></strong></p>
 		</td>
 	</tr>';

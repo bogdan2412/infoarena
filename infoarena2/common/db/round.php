@@ -164,8 +164,7 @@ function round_is_registered($round_id, $user_id) {
     log_assert(is_user_id($user_id));
 
     //FIXME: this should not be here
-    $round = round_get($round_id);
-    if ($round['type'] == 'archive') {
+    if ('arhiva' == $round_id) {
         return true;
     }
 

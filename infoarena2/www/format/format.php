@@ -149,10 +149,8 @@ function format_user_normal($user_name, $user_fullname, $rating = null) {
 // Formats user rating badge. Rating badges are displayed before username
 // and indicate the user's rating.
 function format_user_ratingbadge($username, $rating) {
-    $user = user_get_by_username($username);
-    $is_admin = $user['security_level'] == 'admin';
     if ($rating) {
-        $class = rating_group($rating, $is_admin);
+        $class = rating_group($rating);
         $rating = rating_scale($rating);
         $att = array(
             'title' => 'Rating '.htmlentities($username).': '.$rating,

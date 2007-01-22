@@ -41,7 +41,7 @@ log_print("Updating ratings for round ".$round_id."\n");
 log_print("Reading whole user list");
 $user_list = user_get_list();
 $usercount = count($user_list);
-log_print(count($user_list) . " registered users");
+log_print(count($user_list) . " infoarena users");
 
 // read last user ratings, deviations & timestamps
 log_print("Reading last user ratings, deviations and timestamps");
@@ -70,8 +70,8 @@ $users = rating_init($user_list, $current_scores);
 
 // read registered users
 $scores = array();
-log_print("Reading registered users");
-$round_users = round_get_registered_users_range($round['id'], 0, 100000);
+log_print("Reading round registered users");
+$round_users = round_get_registered_users_range($round['id'], 0, $usercount);
 log_print(count($round_users) . " users registered for this his round");
 foreach ($round_users as $row) {
     assert(isset($row['username']));
@@ -95,11 +95,12 @@ rating_update($users, $scores, $timestamp);
 
 // update database
 log_print("Updating database");
-foreach ($round_rows as $row) {
-    if (!isset($row['user_name']) || !isset($row['score'])) {
-        continue;
-    }
-    $username = $row['user_name'];
+foreach (($round_rows + $round_users) as $row) {
+    // FIXME: Why in the world we have 2 ways of calling user names?
+    // FIXME: Do a grep throughout the source code. Replace 'user_name'
+    // with 'username'.
+    $username = isset($row['username']) ? $row['username']
+                                        : $row['user_name'];
     $user_id = $row['user_id'];
     // for this round (history)
     score_update("rating", $user_id, null, $round_id,

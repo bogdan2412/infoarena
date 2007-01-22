@@ -95,6 +95,8 @@ ia_template_topnav($topnav_select, $smf_admin);
     <div id="srv_time" class="user-count" align="center"></div>
     <script type="text/javascript" src="<?= htmlentities(url_static('js/time.js')) ?>"></script>
     <script type="text/javascript">loadTime(<?= format_date(null, "%H, %M, %S");?>);</script>
+
+    <?php include(IA_ROOT.'www/views/sidebar_ad.php'); ?>
 </div>
 
 <div id="main">
