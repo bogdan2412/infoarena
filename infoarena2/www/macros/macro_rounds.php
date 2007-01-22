@@ -3,6 +3,7 @@
 require_once(IA_ROOT."common/db/score.php");
 require_once(IA_ROOT."common/db/user.php");
 require_once(IA_ROOT."www/format/list.php");
+require_once(IA_ROOT."common/db/round.php");
 
 // Display rounds that user has participated in.
 //

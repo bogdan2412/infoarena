@@ -74,10 +74,19 @@ function wiki_process_text($tb) {
     log_assert_valid(textblock_validate($tb));
     $cacheid = preg_replace('/[^a-z0-9\.\-_]/i', '_', $tb['name']) . '_' .
                preg_replace('/[^a-z0-9\.\-_]/i', '_', $tb['timestamp']);
-    $cache_ret = cache_load($cacheid, null);
+    // don't cache templates
+    $is_cacheable = strpos($tb['name'], "template") !== 0;
+    if ($is_cacheable) {
+        $cache_ret = cache_load($cacheid, null);
+    } 
+    else {
+        $cache_ret = null;
+    }
     if (is_null($cache_ret)) {
         $cache_ret = wiki_process_textile($tb['text']);
-        cache_save($cacheid, $cache_ret);
+        if ($is_cacheable) {
+            cache_save($cacheid, $cache_ret);
+        }
     }
     return wiki_process_macros($cache_ret);
 }

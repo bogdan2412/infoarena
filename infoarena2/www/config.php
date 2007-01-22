@@ -10,6 +10,9 @@
  * This file has some decent defaults.
  */
 
+// timestamp to determine when rounds started having registrations
+define("INFOARENA2_TIMESTAMP", 1160000000); 
+
 // maximum attachment size for wiki pages
 define("IA_ATTACH_MAXSIZE", 20*1024*1024);
 

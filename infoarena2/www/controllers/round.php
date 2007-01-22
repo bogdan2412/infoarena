@@ -1,5 +1,6 @@
 <?php
 
+require_once(IA_ROOT."common/db/db.php");
 require_once(IA_ROOT."common/db/round.php");
 require_once(IA_ROOT."common/db/task.php");
 require_once(IA_ROOT."common/round.php");
@@ -122,6 +123,8 @@ function controller_round_details($round_id) {
             }
         }
     }
+    // Always copy timestamp for ratings
+    $new_round_params['rating_timestamp'] = db_date_parse($new_round['start_time']);
 
     // If posting with no errors then do the db monkey
     if (request_is_post() && !$errors) {

@@ -16,7 +16,6 @@ function controller_plot($suburl) {
             if (!$user) {
                 die_http_error();
             }
-
             log_print("Plotting rating history of user ".$username);
 
             // get rating history

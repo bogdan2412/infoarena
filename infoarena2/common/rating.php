@@ -143,8 +143,10 @@ function rating_score($score1, $score2, $variance) {
 //      ...
 //  )
 function rating_update(&$users, $user_scores, $timestamp) {
-    log_assert(1 < count($user_scores), "Need more than 1 contestant to "
-                                        ."update ratings!");
+    if (count($user_scores) < 1) {
+        log_warn("Need more than 1 contestant to update ratings! Nothing to do!");
+        return;
+    }
     log_print("Updating ratings for ".count($user_scores)." users");
 
     $new_rating = array();
@@ -239,13 +241,15 @@ function rating_scale($absolute_rating) {
 // Return rating group based on user's absolute rating.
 // Rating groups (from highest to lowest ranking): 1, 2, 3, 0
 // NOTE: It outputs 0 when user is not rated
-function rating_group($absolute_rating) {
+function rating_group($absolute_rating, $is_admin = false) {
+    if ($is_admin) {
+        // all mighty admin
+        return 4;
+    }
     if (!$absolute_rating) {
         return 0;
     }
-
     $rating = rating_scale($absolute_rating);
-
     if ($rating < 520) {
         // green
         return 3;

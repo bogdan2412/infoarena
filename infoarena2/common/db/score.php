@@ -160,6 +160,12 @@ function rating_history($user_id) {
         $round_id = $row['round_id'];
         log_assert(isset($history[$round_id]));
 
+        $params = round_get_parameters($round_id);
+        if (!round_is_registered($round_id, $user_id) && 
+            $params['rating_timestamp'] >= INFOARENA2_TIMESTAMP) {
+            continue;
+        }
+
         switch ($row['name']) {
             case 'rating':
                 $history[$round_id]['rating'] = $row['score'];
@@ -224,9 +230,11 @@ function rating_rounds() {
     $rows = db_fetch_all($query);
     foreach ($rows as $row) {
         $round_id = $row['round_id'];
-        log_assert(isset($rounds[$round_id]),
-                   "Round {$round_id} has rating_timestamp but no "
-                   ."rating_update parameter!");
+        if (!isset($rounds[$round_id])) {
+            log_warn("Round {$round_id} has rating_update but no "
+                      ."rating_timestamp parameter!");
+            continue;
+        }
         $value = parameter_decode($row['parameter_id'], $row['value']);
         if ($value) {
             continue;
@@ -344,6 +352,7 @@ function rating_toprated($start, $count)
             *
         FROM ia_user
         WHERE rating_cache > 0
+        AND security_level != 'admin'
         ORDER BY rating_cache DESC
         LIMIT %s, %s
     ";

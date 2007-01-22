@@ -35,7 +35,8 @@ function macro_rankings($args) {
         array(
             'title' => 'Pozitie',
             'key' => 'pos',
-            'rowform' => create_function('$row', 'return $row["position"];')
+            'rowform' => create_function('$row', 'return $row["position"];'),
+            'css_class' => 'number rank'
         ),
         array(
             'title' => 'Nume',

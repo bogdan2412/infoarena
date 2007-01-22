@@ -319,18 +319,21 @@ function security_task($user, $action, $task) {
         // Special: submit. Check for at least one registered contest for the task.
         // FIXME: contest logic?
         case 'task-submit':
+            //FIXME: this is ugly
             if ($usersec == 'anonymous') {
                 return false;
             }
-            $registered = false;
+            $is_running = false;
             $rounds = task_get_parent_rounds($task['id']);
             foreach ($rounds as $round_id) {
-                if (round_is_registered($round_id, $user['id'])) {
-                    $registered = true;
-                    break;
-                } 
+                $round = round_get($round_id);
+                if ($round['state'] != 'running') {
+                    continue;
+                }
+                $is_running = true;
+                break;
             }
-            return ($task['hidden'] == false && $registered) || $is_owner || $is_admin;
+            return ($task['hidden'] == false && $is_running) || $is_owner || $is_admin;
 
         default:
             log_error('Invalid task action: '.$action);
