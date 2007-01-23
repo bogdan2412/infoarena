@@ -65,14 +65,17 @@ function wiki_include($page_name, $template_args = null) {
     $textblock = textblock_get_revision($page_name);
     log_assert($textblock, "Nu am gasit $page_name");
 
+    echo '<div class="wiki_text_block">';
     if (!is_null($template_args)) {
         log_print("Replacing stuff in $page_name");
         textblock_template_replace($textblock, $template_args);
+        // No caching, we're using template magic.
+        echo wiki_do_process_text($textblock['text']);
+    } else {
+        echo wiki_process_textblock($textblock);
     }
-
-    echo '<div class="wiki_text_block">';
-    echo wiki_process_text($textblock);
     echo '</div>';
+
 }
 
 // Format a field as a li. Uses global form_values/errors.

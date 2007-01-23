@@ -65,42 +65,37 @@ function wiki_process_macros($content) {
 
 // No caching, used by JSON.
 // Transforms textile into full html with no cache.
+// There is no $tb object in JSON, so we're sort of fucked.
 function wiki_do_process_text($content) {
     return wiki_process_macros(wiki_process_textile($content));
 }
 
 // This processes a big chunk of wiki-formatted text and returns html.
-// FIXME: This code is a steaming pile of sticky retarted shit.
-function wiki_process_text($tb) {
+// Note: receives full textblock, not only $text.
+// NOTE: Caching does not work with templated textblocks. They suck.
+function wiki_process_textblock($tb) {
     log_assert_valid(textblock_validate($tb));
-    return wiki_do_process_text($tb['text']);
 
-    // FIXME: Cache doesn't work like this. There seems to be a problem
-    // with argumented template pages
-    $cacheid = preg_replace('/[^a-z0-9\.\-_]/i', '_', $tb['name']) . '_' .
-               preg_replace('/[^a-z0-9\.\-_]/i', '_', $tb['timestamp']);
-    // don't cache templates
-    $is_cacheable = strpos($tb['name'], "template") !== 0;
-    if ($is_cacheable) {
+    if (!IA_TEXTILE_CACHE_ENABLE) {
+        return wiki_process_macros(wiki_process_textile($tb['text']));
+    } else {
+        $cacheid = preg_replace('/[^a-z0-9\.\-_]/i', '_', $tb['name']) . '_' .
+                   preg_replace('/[^a-z0-9\.\-_]/i', '_', $tb['timestamp']);
         $cache_ret = cache_load($cacheid, null);
-    } 
-    else {
-        $cache_ret = null;
-    }
-    if (is_null($cache_ret)) {
-        $cache_ret = wiki_process_textile($tb['text']);
-        if ($is_cacheable) {
+        if (is_null($cache_ret)) {
+            $cache_ret = wiki_process_textile($tb['text']);
             cache_save($cacheid, $cache_ret);
         }
+        return wiki_process_macros($cache_ret);
     }
-    return wiki_process_macros($cache_ret);
 }
 
 // This is just like wiki_process_text, but it's meant for recursive calling.
 // You should use this from macros that include other text blocks.
 //
 // This returns a html block. That html block can be an error div.
-function wiki_process_text_recursive($textblock) {
+// You can set $cache to false to disable caching, mainly for templates.
+function wiki_process_text_recursive($textblock, $cache = true) {
     log_assert_valid(textblock_validate($textblock));
 
     // This uses some black static magic.
@@ -122,7 +117,11 @@ function wiki_process_text_recursive($textblock) {
     }
     //echo "going in level $include_count $args[page]<br />";
 
-    $res = wiki_process_text($textblock);
+    if ($cache) {
+        $res = wiki_process_textblock($textblock);
+    } else {
+        $res = wiki_do_process_text($textblock['text']);
+    }
 
     --$include_count;
     // Unwind
