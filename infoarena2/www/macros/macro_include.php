@@ -34,9 +34,12 @@ function macro_include($args) {
             $replace[$key] = $val;
         }
     }
-    textblock_template_replace($textblock, $replace);
-
-    return wiki_process_text_recursive($textblock);
+    if (count($replace) == 0) {
+        return wiki_process_text_recursive($textblock);
+    } else {
+        textblock_template_replace($textblock, $replace);
+        return wiki_process_text_recursive($textblock);
+    }
 }
 
 ?>

@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT."common/rating.php");
+require_once(IA_ROOT."www/format/format.php");
 
 if ($user) {
     $user_rating = $user['rating_cache'];

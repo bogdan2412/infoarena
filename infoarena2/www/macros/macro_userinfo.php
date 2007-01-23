@@ -1,7 +1,7 @@
 <?php
 
 require_once(IA_ROOT."common/db/user.php");
-require_once(IA_ROOT."common/rating.php");
+require_once(IA_ROOT."www/format/format.php");
 
 // Displays user information.
 // Includes avatar, etc.

@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT."common/rating.php");
+require_once(IA_ROOT."www/format/format.php");
 
 // date range
 if (2 <= count($history)) {

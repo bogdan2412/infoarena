@@ -231,37 +231,4 @@ function rating_update(&$users, $user_scores, $timestamp) {
     }
 }
 
-// Represent rating in a human-friendly scale from 0 to 1000
-// NOTE: This is used only when displaying ratings to users!
-function rating_scale($absolute_rating) {
-    log_assert(is_numeric($absolute_rating));
-    return round($absolute_rating / 3.0);
-}
-
-// Return rating group based on user's absolute rating.
-// Rating groups (from highest to lowest ranking): 1, 2, 3, 0
-// NOTE: It outputs 0 when user is not rated
-function rating_group($absolute_rating, $is_admin = false) {
-    if ($is_admin) {
-        // all mighty admin
-        return 4;
-    }
-    if (!$absolute_rating) {
-        return 0;
-    }
-    $rating = rating_scale($absolute_rating);
-    if ($rating < 520) {
-        // green
-        return 3;
-    }
-    else if ($rating < 600) {
-        // yellow
-        return 2;
-    }
-    else {
-        // red
-        return 1;
-    }
-}
-
 ?>
