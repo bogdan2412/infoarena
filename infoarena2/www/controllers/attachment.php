@@ -273,12 +273,12 @@ function serve_attachment($filename, $attachment_name, $mimetype) {
     $last_modified = filemtime($filename);
 
     //FIXME: Hardcoded 1 week expiration date
-    header("Cache-Control: max-age: 604800 , public, must-revalidate");
+    header("Cache-Control: max-age: ".IA_CLIENT_CACHE_AGE." , public, must-revalidate");
     // This is obsolete in browsers that support HTTP 1.1 
-    header('Expires: '. gmdate('D, d M Y H:i:s', $last_modified + 604800) .' GMT');
+    header('Expires: '. gmdate('D, d M Y H:i:s', $last_modified + IA_CLIENT_CACHE_AGE) .' GMT');
 
     // Client's cache is current, yey!
-    if ($modified_since >= $last_modified) {
+    if ($modified_since >= $last_modified && IA_CLIENT_CACHE_ENABLE) {
         header('Last-Modified: '. gmdate('D, d M Y H:i:s', $last_modified) .' GMT', true, 304);
         die();
     }

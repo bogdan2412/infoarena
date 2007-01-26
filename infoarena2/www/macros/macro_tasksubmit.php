@@ -38,6 +38,8 @@ function macro_tasksubmit($args) {
     ob_start();
 ?>
 
+<a href="<?= htmlentities(url_monitor()."?task=".$task['id']."&user=".$identity_user['username']) ?>">Vezi sursele trimise</a>
+
 <form enctype="multipart/form-data" action="<?= htmlentities(url_submit()) ?>" method="post" class="inlineSubmit" id="task_submit">
 
 <input type="hidden" id="output_only" value="<?= 'output-only' == $task['type'] ? htmlentities($task['id']) : '' ?>" />

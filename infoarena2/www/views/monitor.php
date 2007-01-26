@@ -2,10 +2,19 @@
 
 require_once(IA_ROOT . 'www/format/table.php');
 require_once(IA_ROOT . 'www/format/format.php');
+require_once(IA_ROOT."www/format/form.php");
 
 include('header.php');
 
 echo '<h1>'.htmlentities($view['title']).'</h1>';
+
+if (is_null($view['user_filter'])) {
+    echo '<a href = "'.url_monitor().'?user='.htmlentities($view['user_name']).
+         '">Afiseaza doar joburile proprii.</a>';
+}
+else {
+    echo '<a href = "'.url_monitor().'">Afiseaza toate joburile.</a>';
+}
 
 if (!$jobs) {
     print "<h3>Nici o solutie in coada de evaluare</h3>";
@@ -33,6 +42,7 @@ if (!$jobs) {
 
         // For the task column.
         function format_task_link($row) {
+            //FIXME: horrible hack
             if (!identity_can('job-view', $row)) {
                 return "???";
             }

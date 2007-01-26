@@ -84,30 +84,57 @@ function job_get_by_id($job_id, $contents = false) {
 }
 
 // Get a range of jobs, ordered by submit time.
-function job_get_range($start, $range) {
+function job_get_range($start, $range, $task = null, $user = null) {
     log_assert(is_whole_number($start));
     log_assert(is_whole_number($range));
     log_assert($start >= 0);
     log_assert($range >= 0);
-    $query = sprintf("
-              SELECT job.`id`, job.`user_id`, `task_id`, `compiler_id`, `status`,
+    $query = "SELECT job.`id`, job.`user_id`, `task_id`, `compiler_id`, `status`,
                     `submit_time`, `eval_message`, `score`,
                     task.`page_name` as task_page_name, task.`title` as task_title,
                     task.`hidden` as task_hidden, task.`user_id` as task_owner_id,  
                     user.`username` as user_name, user.`full_name` as user_fullname
               FROM ia_job AS job
               LEFT JOIN ia_task AS task ON job.`task_id` = `task`.`id`
-              LEFT JOIN ia_user AS user ON job.`user_id` = `user`.`id`
-              ORDER BY job.`submit_time` DESC LIMIT %s, %s",
-              $start, $range);
+              LEFT JOIN ia_user AS user ON job.`user_id` = `user`.`id`";
+    if (!is_null($task)) {
+        $query .= sprintf(" WHERE job.`task_id` = '%s'", db_escape($task));
+    }
+    if (!is_null($user)) {
+        if (is_null($task)) {         
+            $query .= " WHERE ";
+        } 
+        else {
+            $query .= " AND ";
+        }
+        $query .= sprintf("user.`username` = '%s'", db_escape($user));
+    }
+    $query .= sprintf(" ORDER BY job.`submit_time` DESC LIMIT %s, %s", $start, $range);
+
     return db_fetch_all($query);
 }
 
 // Get total job count
-function job_get_count() {
-    $query = "SELECT COUNT(*) AS `cnt` FROM ia_job";
-    $res = db_fetch($query);
-    return $res['cnt'];
+function job_get_count($task = null, $user = null) {
+    $query = "SELECT SQL_CALC_FOUND_ROWS 
+                    job.`user_id`, `task_id`, 
+                    user.`username` as user_name
+              FROM ia_job AS job
+              LEFT JOIN ia_user AS user ON job.`user_id` = `user`.`id`";
+    if (!is_null($task)) {
+        $query .= sprintf(" WHERE job.`task_id` = '%s'", db_escape($task));
+    }
+    if (!is_null($user)) {
+        if (is_null($task)) {         
+            $query .= " WHERE ";
+        } 
+        else {
+            $query .= " AND ";
+        }
+        $query .= sprintf("user.`username` = '%s'", db_escape($user));
+    }
+    $res = db_fetch_all($query);
+    return db_query_value("SELECT FOUND_ROWS();");
 }
 
 ?>
