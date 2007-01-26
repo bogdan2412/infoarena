@@ -56,7 +56,6 @@ fwrite($plot_in, $plot_script);
 fclose($plot_in);
 
 // render PNG
-log_print("X");
 header("Content-type: image/png");
 fpassthru($plot_out);
 fclose($plot_out);
