@@ -8,7 +8,7 @@ include('header.php');
 
 echo '<h1>'.htmlentities($view['title']).'</h1>';
 
-if (is_null($view['user_filter'])) {
+if (is_null($view['user_filter']) && $view['user_security'] != 'anonymous') {
     echo '<a href = "'.url_monitor().'?user='.htmlentities($view['user_name']).
          '">Afiseaza doar joburile proprii.</a>';
 }

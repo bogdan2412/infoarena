@@ -10,8 +10,8 @@ function controller_monitor() {
     $view = array();
     $view['task_filter'] = request('task', null);
     $view['user_filter'] = request('user', null);
+    $view['user_security'] = getattr($identity_user, 'security_level', 'anonymous');
     $view['user_name'] = $identity_user['username'];
-
     // First row.
     $options = pager_init_options();
 

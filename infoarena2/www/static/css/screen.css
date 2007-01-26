@@ -821,12 +821,29 @@ ul.htabs {
     background-color: lightgray;
 }
 
+.job_eval_log td, .job_eval_log th {
+    margin: 0;
+    border: 0px;
+    vertical-align: middle;
+    padding: .0em 1em .0em .0em;
+}
+
+.job_eval_log th {
+    font-weight: bold;
+    background-color: white;
+}
+
+.total_score {
+    font-weight: bold;
+}
+
 .job-eval-log {
     display: block;
     font-family: monospace;
     font-size: 1.1em;
     white-space: pre;
 }
+
 
 /* Basic table css */
 table {

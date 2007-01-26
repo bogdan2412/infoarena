@@ -178,21 +178,18 @@
     border: 1px solid gray;
     text-decoration: none;
 }
-a.user_4 { color: #003d70; }
 a.user_3 { color: #00a900; }
 a.user_2 { color: #ddcc00; }
 a.user_1 { color: #ee0000; }
-#main a.user_4:hover { border-color: #003d70; }
 #main a.user_3:hover { border-color: #00a900; }
 #main a.user_2:hover { border-color: #ddcc00; }
 #main a.user_1:hover { border-color: #ee0000; }
-#header a.user_1, #header a.user_2, #header a.user_3, #header a.user_4 {
+#header a.user_1, #header a.user_2, #header a.user_3 {
     padding-right: .1em;
     margin-right: .1em;
     border: 0;
     font-size: 12pt;
 }
-#header a.user_4 { color: #003d70; }
 #header a.user_3 { color: #00a900; }
 #header a.user_2 { color: #ddcc00; }
 #header a.user_1 { color: #ee0000; }

@@ -98,7 +98,7 @@ function job_get_range($start, $range, $task = null, $user = null) {
               LEFT JOIN ia_task AS task ON job.`task_id` = `task`.`id`
               LEFT JOIN ia_user AS user ON job.`user_id` = `user`.`id`";
     if (!is_null($task)) {
-        $query .= sprintf(" WHERE job.`task_id` = '%s'", db_escape($task));
+        $query .= sprintf(" WHERE job.`task_id` = LCASE('%s')", db_escape($task));
     }
     if (!is_null($user)) {
         if (is_null($task)) {         
@@ -107,7 +107,7 @@ function job_get_range($start, $range, $task = null, $user = null) {
         else {
             $query .= " AND ";
         }
-        $query .= sprintf("user.`username` = '%s'", db_escape($user));
+        $query .= sprintf("user.`username` = LCASE('%s')", db_escape($user));
     }
     $query .= sprintf(" ORDER BY job.`submit_time` DESC LIMIT %s, %s", $start, $range);
 
@@ -122,7 +122,7 @@ function job_get_count($task = null, $user = null) {
               FROM ia_job AS job
               LEFT JOIN ia_user AS user ON job.`user_id` = `user`.`id`";
     if (!is_null($task)) {
-        $query .= sprintf(" WHERE job.`task_id` = '%s'", db_escape($task));
+        $query .= sprintf(" WHERE job.`task_id` = LCASE('%s')", db_escape($task));
     }
     if (!is_null($user)) {
         if (is_null($task)) {         
@@ -131,10 +131,10 @@ function job_get_count($task = null, $user = null) {
         else {
             $query .= " AND ";
         }
-        $query .= sprintf("user.`username` = '%s'", db_escape($user));
+        $query .= sprintf("user.`username` = LCASE('%s')", db_escape($user));
     }
     $res = db_fetch_all($query);
-    return db_query_value("SELECT FOUND_ROWS();");
+    return db_query_value("SELECT FOUND_ROWS()");
 }
 
 ?>
