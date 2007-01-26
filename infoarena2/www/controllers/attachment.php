@@ -232,7 +232,7 @@ function controller_attachment_delete($page_name) {
     // FIXME: parameter.
     $file_name = request('file');
     if (!is_attachment_name($file_name)) {
-        flash_error('Cerere malformata');
+        flash_error('Nume invalid.');
         redirect(url_textblock($page_name));
     }
 
@@ -257,8 +257,36 @@ function controller_attachment_delete($page_name) {
 // serve file through HTTP
 // WARNING: this function does not return
 function serve_attachment($filename, $attachment_name, $mimetype) {
+    
+    // Client side caching... let's save some bandwidth
+    $headers = apache_request_headers();
+    if (isset($headers['If-Modified-Since'])) {
+        // we split it due to some bug in Mozilla < v6
+        $modified_since = explode(';', $headers['If-Modified-Since']);
+        $modified_since = strtotime($modified_since[0]);
+    } else {
+        $modified_since = 0;
+    }
 
-    // open file
+    // Get file time
+    log_assert(file_exists($filename));
+    $last_modified = filemtime($filename);
+
+    //FIXME: Hardcoded 1 week expiration date
+    header("Cache-Control: max-age: 604800 , public, must-revalidate");
+    // This is obsolete in browsers that support HTTP 1.1 
+    header('Expires: '. gmdate('D, d M Y H:i:s', $last_modified + 604800) .' GMT');
+
+    // Client's cache is current, yey!
+    if ($modified_since >= $last_modified) {
+        header('Last-Modified: '. gmdate('D, d M Y H:i:s', $last_modified) .' GMT', true, 304);
+        die();
+    }
+    else {
+        header('Last-Modified: '. gmdate('D, d M Y H:i:s', $last_modified) . ' GMT', true, 200);
+    }
+    
+    // Open file
     $fp = fopen($filename, "rb");
     log_assert($fp);
     $stat = fstat($fp);
@@ -266,12 +294,12 @@ function serve_attachment($filename, $attachment_name, $mimetype) {
     // log_print_r($stat);
     // log_print("Serving $attachment_name from $filename size ".$stat['size']." mime $mimetype");
 
-    // HTTP headers
+    // More HTTP headers
     header("Content-Type: {$mimetype}");
     header("Content-Disposition: inline; filename=".urlencode($attachment_name).";");
-    header('Content-Length: ' . $stat['size']);
+    header("Content-Length: " . $stat['size']);
 
-    // serve file
+    // Serve file
     $written = fpassthru($fp);
     if ($written != $stat['size']) {
         log_error("fpassthru failed somehow.");

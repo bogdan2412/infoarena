@@ -3,6 +3,7 @@
 require_once(IA_ROOT."common/db/user.php");
 require_once(IA_ROOT."common/db/score.php");
 
+log_print("HERE!!!!");
 // This controller serves real time plots (graphs) rendered
 // with gnuplot.
 function controller_plot($suburl) {
