@@ -261,8 +261,8 @@ function security_user($user, $action, $target_user) {
     $level = ($is_admin ? 'admin' : ($is_self ? 'self' : 'other'));
     $objid = $target_user['username'];
     log_print("SECURITY QUERY USER: ".
-            "($level, $action, $objid): ".
-            "(level, action, object");
+              "($level, $action, $objid): ".
+              "(level, action, object)");
 
     switch ($action) {
         case 'simple-view':

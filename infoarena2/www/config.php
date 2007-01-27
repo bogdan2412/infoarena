@@ -13,7 +13,7 @@
 // timestamp to determine when rounds started having registrations
 define("INFOARENA2_TIMESTAMP", 1160000000);
 
-// 
+// client-side HTTP cache
 define("IA_CLIENT_CACHE_ENABLE", true);
 define("IA_CLIENT_CACHE_AGE", 604800);
 

@@ -460,6 +460,14 @@ div.warning {
     width: 55%;
 }
 
+div.notice {
+    color: black;
+    margin: 1em 0em 1em 0em;
+    padding: .2em .2em .2em 20px;
+    border: 1px dashed olive;
+    width: 55%;
+}
+
 /* Forms */
 form {
     margin: 0;

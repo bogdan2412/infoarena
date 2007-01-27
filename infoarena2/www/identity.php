@@ -206,4 +206,15 @@ function identity_end_session() {
     init_php_session();
 }
 
+// Returns remote user's username or NULL if anonymous
+function identity_username() {
+    global $identity_user;
+    if (is_null($identity_user)) {
+        return null;
+    }
+    else {
+        return $identity_user['username'];
+    }
+}
+
 ?>

@@ -26,8 +26,8 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
 
     // if image was not found we display a placeholder image
     if (!$found) {
-    $page_name = 'template/infoarena';
-    $file_name = 'noimage';
+        $page_name = 'template/infoarena';
+        $file_name = 'noimage';
         $attach = attachment_get($file_name, $page_name);
         log_assert($attach);
         $real_name = attachment_get_filepath($attach);
@@ -64,7 +64,8 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
 
         if (null !== $cache_fn) {
             // cache has it
-            serve_attachment($cache_fn, $file_name, image_type_to_mime_type($img_type));
+            serve_file($cache_fn, $file_name,
+                       image_type_to_mime_type($img_type));
             // function doesn't return
         }
     }
@@ -121,13 +122,24 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
     // cache resample
     if (IA_IMAGE_CACHE_ENABLE) {
         imagecache_save($attach['id'], $resize, $buffer);
+        $cache_fn = imagecache_query($attach, $resize);
+
+        if (null !== $cache_fn) {
+            // Image was cached. Serve through serve_file in order to issue
+            // correct client-side cache HTTP headers.
+            serve_file($cache_fn, $file_name,
+                       image_type_to_mime_type($img_type));
+            // function doesn't return
+        }
     }
 
     // HTTP headers
     header("Content-Type: " . image_type_to_mime_type($img_type));
     header("Content-Disposition: inline; filename=" . urlencode($file_name) . ";");
-    // FIXME: strlen() is supposed to be binary safe but some say it will be shadowed
-    // by mb_strlen() and treat strings as unicode by default. What is the alternative?
+    // WARNING: strlen() is supposed to be binary safe but some say it may 
+    // be shadowed by mb_strlen() and treat strings as unicode by default,
+    // thus reporting invalid lengths for random binary buffers.
+    // What is the alternative?
     header('Content-Length: ', strlen($buffer));
 
     // serve content
@@ -135,8 +147,8 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
     die();
 }
 
-// Tells whether there is a resampled (resized according to $resize instructions) and
-// up-to-date version of image attachment $attach_id.
+// Tells whether there is a resampled (resized according to $resize
+// instructions) and up-to-date version of image attachment $attach_id.
 //
 // Returns if not found, otherwise request is served.
 function imagecache_query($attach, $resize) {
@@ -151,7 +163,7 @@ function imagecache_query($attach, $resize) {
 // Returns boolean whether caching succeeded. File will not be cached if
 // image cache exceeds allowed quota.
 function imagecache_save($attach_id, $resize, $buffer) {
-    cache_save(imagecache_ident($attach_id, $resize), $buffer);
+    return cache_save(imagecache_ident($attach_id, $resize), $buffer);
 }
 
 // Return cache identifier for image.

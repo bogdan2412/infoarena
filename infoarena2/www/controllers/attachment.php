@@ -254,49 +254,63 @@ function controller_attachment_delete($page_name) {
     redirect(url_textblock($page_name));
 }
 
-// serve file through HTTP
+// Serve static file through HTTP with proper cache headers
 // WARNING: this function does not return
-function serve_attachment($filename, $attachment_name, $mimetype) {
-    
-    // Client side caching... let's save some bandwidth
-    $headers = apache_request_headers();
-    if (isset($headers['If-Modified-Since'])) {
-        // we split it due to some bug in Mozilla < v6
-        $modified_since = explode(';', $headers['If-Modified-Since']);
-        $modified_since = strtotime($modified_since[0]);
-    } else {
-        $modified_since = 0;
-    }
-
-    // Get file time
+function serve_file($filename, $attachment_name, $mimetype) {
+    // Validate file name
     log_assert(file_exists($filename));
-    $last_modified = filemtime($filename);
 
-    //FIXME: Hardcoded 1 week expiration date
-    header("Cache-Control: max-age: ".IA_CLIENT_CACHE_AGE." , public, must-revalidate");
-    // This is obsolete in browsers that support HTTP 1.1 
-    header('Expires: '. gmdate('D, d M Y H:i:s', $last_modified + IA_CLIENT_CACHE_AGE) .' GMT');
 
-    // Client's cache is current, yey!
-    if ($modified_since >= $last_modified && IA_CLIENT_CACHE_ENABLE) {
-        header('Last-Modified: '. gmdate('D, d M Y H:i:s', $last_modified) .' GMT', true, 304);
-        die();
+    // Client side caching... let's save some bandwidth
+    if (IA_CLIENT_CACHE_ENABLE) {
+        // Client timestamp
+        $headers = apache_request_headers();
+        if (isset($headers['If-Modified-Since'])) {
+            // we split it due to some bug in Mozilla < v6
+            $modified_since = explode(';', $headers['If-Modified-Since']);
+            $modified_since = strtotime($modified_since[0]);
+        }
+        else {
+            $modified_since = 0;
+        }
+
+        // Actual file timestamp
+        $last_modified = filemtime($filename);
+
+        // Serve HTTP headers to cache file
+        header("Cache-Control: max-age: ".IA_CLIENT_CACHE_AGE
+               ." , public, must-revalidate");
+        // Additional headers, obsolete in HTTP 1.1. browsers
+        header('Expires: '.gmdate('D, d M Y H:i:s',
+                                  $last_modified+IA_CLIENT_CACHE_AGE).' GMT');
+
+        if ($modified_since >= $last_modified) {
+            // Client's cache is up to date, yey!
+            header('Last-Modified: '.gmdate('D, d M Y H:i:s', $last_modified)
+                   .' GMT', true, 304);
+            log_print('Client has up-to-date cache');
+            die();
+        }
+        else {
+            // Client's cache is missing / out-dated
+            header('Last-Modified: '.gmdate('D, d M Y H:i:s', $last_modified)
+                   .' GMT', true, 200);
+        }
     }
-    else {
-        header('Last-Modified: '. gmdate('D, d M Y H:i:s', $last_modified) . ' GMT', true, 200);
-    }
-    
+
     // Open file
     $fp = fopen($filename, "rb");
     log_assert($fp);
     $stat = fstat($fp);
 
     // log_print_r($stat);
-    // log_print("Serving $attachment_name from $filename size ".$stat['size']." mime $mimetype");
+    // log_print("Serving $attachment_name from $filename size "
+    //           .$stat['size']." mime $mimetype");
 
     // More HTTP headers
     header("Content-Type: {$mimetype}");
-    header("Content-Disposition: inline; filename=".urlencode($attachment_name).";");
+    header("Content-Disposition: inline; filename="
+           .urlencode($attachment_name).";");
     header("Content-Length: " . $stat['size']);
 
     // Serve file
@@ -341,7 +355,7 @@ function controller_attachment_download($page_name, $file_name) {
         $attach = try_attachment_get($page_name, $file_name);
 
         // serve attachment with proper mime types
-        serve_attachment(attachment_get_filepath($attach), $file_name, $attach['mime_type']);
+        serve_file(attachment_get_filepath($attach), $file_name, $attach['mime_type']);
     } else {
         // redirect to main page
         header("Location: " . url_absolute(url_home()));

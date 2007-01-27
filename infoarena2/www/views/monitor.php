@@ -1,24 +1,50 @@
 <?php
 
-require_once(IA_ROOT . 'www/format/table.php');
-require_once(IA_ROOT . 'www/format/format.php');
+require_once(IA_ROOT.'www/format/table.php');
+require_once(IA_ROOT.'www/format/format.php');
+require_once(IA_ROOT.'www/format/list.php');
 require_once(IA_ROOT."www/format/form.php");
 
 include('header.php');
 
 echo '<h1>'.htmlentities($view['title']).'</h1>';
 
-if (is_null($view['user_filter']) && $view['user_security'] != 'anonymous') {
-    echo '<a href = "'.url_monitor().'?user='.htmlentities($view['user_name']).
-         '">Afiseaza doar joburile proprii.</a>';
+$tabs = array();
+$selected = null;
+
+// my-jobs tab
+if (!identity_anonymous()) {
+    $tabs['mine'] = format_link(url_monitor($user_name), 'Solutiile mele');
+    if ($user_name == $user_filter) {
+        $selected = 'mine';
+    }
 }
-else {
-    echo '<a href = "'.url_monitor().'">Afiseaza toate joburile.</a>';
+
+// all-jobs tab
+$tabs['all'] = format_link(url_monitor(), 'Toate solutiile');
+if (is_null($selected)) {
+    $selected = 'all';
+}
+
+// custom-user filter tab
+if ($user_filter && $user_filter != $user_name) {
+    $tabs['custom'] = format_link(url_monitor($user_filter),
+                                  'Trimise de "'.$user_filter.'"');
+    $selected = 'custom';
+}
+
+if (1 < count($tabs)) {
+    // mark 'active' tab
+    $tabs[$selected] = array($tabs[$selected],
+                             array('class' => 'active'));
+    // display tabs
+    echo format_ul($tabs, 'htabs');
 }
 
 if (!$jobs) {
-    print "<h3>Nici o solutie in coada de evaluare</h3>";
-} else {
+    print "<div class=\"notice\">Nici o solutie in coada de evaluare</div>";
+}
+else {
         // For the score column.
         function format_state($row) {
             $url = url_job_detail($row['id']);

@@ -1,5 +1,6 @@
 <?php
 
+// Check if there's an up-to-date cache entity
 function cache_query($cache_id, $date = null) {
     $fname = IA_CACHE_DIR . $cache_id;
     if (!file_exists($fname)) {
@@ -93,7 +94,5 @@ function cache_usage() {
 
     return $total;
 }
-
-
 
 ?>
