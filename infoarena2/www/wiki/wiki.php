@@ -9,7 +9,7 @@ require_once(IA_ROOT."common/cache.php");
 // Process textile and returns html with special macro tags.
 function wiki_process_textile($content) {
     require_once(IA_ROOT."www/wiki/MyTextile.php");
-    log_print_r("PROCESS TEXTILE");
+    log_print("PROCESS TEXTILE");
     $options = array(
             'disable_html' => true,
             'disable_filters' => true,

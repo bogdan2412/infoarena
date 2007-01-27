@@ -47,7 +47,11 @@ function db_affected_rows() {
 function db_query($query, $unbuffered = false) {
     global $dbLink;
 
+    if (!IA_DB_MYSQL_UNBUFFERED_QUERY) {
+        $unbuffered = false;
+    }
     if ($unbuffered) {
+        //log_print("UNBUFFERED QUERY!");
         $result = mysql_unbuffered_query($query, $dbLink);
     } else {
         //log_print("BUFFERED QUERY!");

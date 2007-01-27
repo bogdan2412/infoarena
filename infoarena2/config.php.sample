@@ -105,4 +105,7 @@ if (IA_SMTP_ENABLED) {
     define("IA_SMTP_PORT", "25");
 }
 
+// Disable mysql_unbuffered_query
+define("IA_DB_MYSQL_UNBUFFERED_QUERY", false);
+
 ?>
