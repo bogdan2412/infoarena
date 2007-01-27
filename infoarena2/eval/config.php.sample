@@ -52,6 +52,6 @@ define("IA_EVAL_TASK_GRADER_TIMELIMIT", 5000);
 define("IA_EVAL_TASK_GRADER_MEMLIMIT", 64000);
 
 // Add log timestamps.
-define("LOG_TIMESTAMP_FORMAT", "Y-m-d H:i:s");
+define("IA_LOG_TIMESTAMP_FORMAT", "Y-m-d H:i:s");
 
 ?>

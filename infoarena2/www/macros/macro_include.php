@@ -36,11 +36,11 @@ function macro_include($args) {
     }
     if (count($replace) == 0) {
         // Optimize and cache when there is no replace.
-        return wiki_process_text_recursive($textblock);
+        return wiki_process_textblock_recursive($textblock);
     } else {
         textblock_template_replace($textblock, $replace);
         // Disable caching when using templates.
-        return wiki_process_text_recursive($textblock, false);
+        return wiki_process_textblock_recursive($textblock, false);
     }
 }
 

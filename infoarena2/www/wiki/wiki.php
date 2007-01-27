@@ -7,9 +7,9 @@ require_once(IA_ROOT_DIR."common/textblock.php");
 require_once(IA_ROOT_DIR."common/cache.php");
 
 // Process textile and returns html with special macro tags.
-function wiki_process_textile($content) {
+function wiki_process_only_textile($content) {
     require_once(IA_ROOT_DIR."www/wiki/MyTextile.php");
-    log_print("PROCESS TEXTILE");
+    //log_print("PROCESS TEXTILE");
     $options = array(
             'disable_html' => true,
             'disable_filters' => true,
@@ -24,6 +24,7 @@ function wiki_process_textile($content) {
 }
 
 // Used in wiki_process_macros.
+// PRIVATE function.
 function wiki_macro_callback($matches) {
     // We need to parse args again.
     // We can't separate args in the main preg_replace_callback.
@@ -49,7 +50,7 @@ function wiki_macro_callback($matches) {
 }
 
 // Proces macros in content.
-function wiki_process_macros($content) {
+function wiki_process_only_macros($content) {
     require_once(IA_ROOT_DIR."www/macros/macros.php");
     return preg_replace_callback(
             '/ <div \s* macro_name="([a-z][a-z0-9_]*)" \s* runas="macro" \s*
@@ -63,11 +64,11 @@ function wiki_process_macros($content) {
                 \?>/xi', 'wiki_macro_callback', $content);*/
 }
 
-// No caching, used by JSON.
+// No caching, used by JSON and others
 // Transforms textile into full html with no cache.
 // There is no $tb object in JSON, so we're sort of fucked.
-function wiki_do_process_text($content) {
-    return wiki_process_macros(wiki_process_textile($content));
+function wiki_process_text($content) {
+    return wiki_process_only_macros(wiki_process_only_textile($content));
 }
 
 // This processes a big chunk of wiki-formatted text and returns html.
@@ -83,10 +84,10 @@ function wiki_process_textblock($tb) {
                    db_date_parse($tb['timestamp']);
         $cache_ret = cache_load($cacheid, null);
         if (is_null($cache_ret)) {
-            $cache_ret = wiki_process_textile($tb['text']);
+            $cache_ret = wiki_process_only_textile($tb['text']);
             cache_save($cacheid, $cache_ret);
         }
-        return wiki_process_macros($cache_ret);
+        return wiki_process_only_macros($cache_ret);
     }
 }
 
@@ -95,7 +96,7 @@ function wiki_process_textblock($tb) {
 //
 // This returns a html block. That html block can be an error div.
 // You can set $cache to false to disable caching, mainly for templates.
-function wiki_process_text_recursive($textblock, $cache = true) {
+function wiki_process_textblock_recursive($textblock, $cache = true) {
     log_assert_valid(textblock_validate($textblock));
 
     // This uses some black static magic.
@@ -120,7 +121,7 @@ function wiki_process_text_recursive($textblock, $cache = true) {
     if ($cache) {
         $res = wiki_process_textblock($textblock);
     } else {
-        $res = wiki_do_process_text($textblock['text']);
+        $res = wiki_process_text($textblock['text']);
     }
 
     --$include_count;

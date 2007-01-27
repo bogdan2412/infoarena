@@ -35,7 +35,7 @@ log_assert_equal($res['url'],  url_absolute(
 log_assert(strstr($res['content'], 'xzx-content1-xzx'));
 log_assert(strstr($res['content'], 'xzx-title1-xzx'));
 
-
+usleep(1000000);
 log_print("Admin makes edit #2 and protects page.");
 $res = curl_test(array(
         'url' => url_textblock_edit('sandbox/test_page'),
@@ -50,7 +50,7 @@ log_assert_equal($res['url'],  url_absolute(
 log_assert(strstr($res['content'], 'xzx-content2-xzx'));
 log_assert(strstr($res['content'], 'xzx-title2-xzx'));
 
-
+usleep(1000000);
 log_print("Dude1 tries to modify page, doesn't work.");
 $res = curl_test(array(
         'url' => url_textblock_edit('sandbox/test_page'),
@@ -64,6 +64,7 @@ log_assert(!strstr($res['content'], 'xzx-content2-xzx'));
 log_assert(!strstr($res['content'], 'xzx-title2-xzx'));
 
 
+usleep(1000000);
 log_print("Anon sees admin version.");
 $res = curl_test(array(
         'url' => url_textblock('sandbox/test_page'),

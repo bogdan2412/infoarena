@@ -27,7 +27,6 @@ function request_is_post() {
 //
 // FIXME: bool to se ia_redirect to REQUEST_URI? might be usefull.
 function redirect($absolute_url) {
-    log_print("HTTP Redirect to $absolute_url from {$_SERVER['QUERY_STRING']}");
     header("Location: {$absolute_url}\n\n");
     session_write_close();
     die();
@@ -42,7 +41,6 @@ function http_referer_check() {
 
 // Die with a http error.
 function die_http_error($code = 404, $msg = "File not found") {
-    log_print("HTTP ERROR $code $msg");
     header("HTTP/1.0 $code");
     echo '<h1>'.$msg.'</h1>';
     echo '<p><a href="'.IA_URL.'">Inapoi la prima pagina</a></p>';

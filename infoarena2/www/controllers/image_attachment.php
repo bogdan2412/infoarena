@@ -74,7 +74,6 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
     // FIXME: optimize code not to use output buffering. Image should be
     // streamed directly to user agent.
     ob_start();
-    log_print("Resizing image {$page_name} to {$resize}");
     switch ($img_type) {
         case IMAGETYPE_GIF:
             // NOTE: animated GIFs become static. Only the first frame is saved

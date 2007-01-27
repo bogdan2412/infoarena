@@ -150,7 +150,7 @@ function ia_template_footer() {
         }
     }
 ?>
-</div>
+</div>:q
 
 <?php if (!IA_DEVELOPMENT_MODE) { ?>
     <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">

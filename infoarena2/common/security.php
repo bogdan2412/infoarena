@@ -31,9 +31,11 @@ function security_query($user, $action, $object) {
     $username = getattr($user, 'username', 'null');
     $usersec = getattr($user, 'security_level', 'anonymous');
     $object_id = getattr($object, 'id', getattr($object, 'name', $object));
-    log_print("SECURITY QUERY: ".
-            "($username, $usersec, $action, $object_id): ".
-            "(username, level, action, object)");
+    if (IA_LOG_SECURITY) {
+        log_print("SECURITY QUERY: ".
+                "($username, $usersec, $action, $object_id): ".
+                "(username, level, action, object)");
+    }
 
     // group dispatcher
     switch ($group) {
@@ -70,10 +72,12 @@ function security_query($user, $action, $object) {
     }
 
     log_assert(is_bool($result), "SECURITY: FAILED, didn't return a bool");
-    if ($result) {
-        log_print("SECURITY: GRANTED");
-    } else {
-        log_print("SECURITY: DENIED");
+    if (IA_LOG_SECURITY) {
+        if ($result) {
+            log_print("SECURITY: GRANTED");
+        } else {
+            log_print("SECURITY: DENIED");
+        }
     }
     return $result;
 }
@@ -205,9 +209,11 @@ function security_textblock($user, $action, $textblock) {
     // Log query response.
     $action = security_simplify_action($action);
     $objid = $textblock['name'];
-    log_print("SECURITY QUERY TEXTBLOCK: ".
-            "($usersec, $action, $objid): ".
-            "(level, action, object");
+    if (IA_LOG_SECURITY) {
+        log_print("SECURITY QUERY TEXTBLOCK: ".
+                "($usersec, $action, $objid): ".
+                "(level, action, object");
+    }
 
     switch ($action) {
         case 'simple-view':
@@ -242,7 +248,9 @@ function security_attach($user, $action, $attach) {
     // HACK: magic prefix.
     if (preg_match('/^grader\_/', $attach['name'])) {
         $newaction = preg_replace('/^attach/', 'grader', $action);
-        log_print("SECURITY: CONVERTING $action to $newaction");
+        if (IA_LOG_SECURITY) {
+            log_print("SECURITY: CONVERTING $action to $newaction");
+        }
         $action = $newaction;
     }
     $tb = textblock_get_revision($attach['page']);
@@ -260,9 +268,11 @@ function security_user($user, $action, $target_user) {
     $action = security_simplify_action($action);
     $level = ($is_admin ? 'admin' : ($is_self ? 'self' : 'other'));
     $objid = $target_user['username'];
-    log_print("SECURITY QUERY USER: ".
-              "($level, $action, $objid): ".
-              "(level, action, object)");
+    if (IA_LOG_SECURITY) {
+        log_print("SECURITY QUERY USER: ".
+                  "($level, $action, $objid): ".
+                  "(level, action, object)");
+    }
 
     switch ($action) {
         case 'simple-view':
@@ -295,9 +305,11 @@ function security_task($user, $action, $task) {
     $action = security_simplify_action($action);
     $level = ($is_admin ? 'admin' : ($is_owner ? 'owner' : 'other'));
     $objid = $task['id'];
-    log_print("SECURITY QUERY TASK: ".
-            "($level, $action, $objid): ".
-            "(level, action, object)");
+    if (IA_LOG_SECURITY) {
+        log_print("SECURITY QUERY TASK: ".
+                "($level, $action, $objid): ".
+                "(level, action, object)");
+    }
 
     switch ($action) {
         // Read-only access.
@@ -349,10 +361,11 @@ function security_round($user, $action, $round) {
     $action = security_simplify_action($action);
     $level = ($is_admin ? 'admin' : 'other');
     $objid = $round['id'];
-    log_print("SECURITY QUERY ROUND: ".
-            "($level, $action, $objid): ".
-            "(level, action, object)");
-
+    if (IA_LOG_SECURITY) {
+        log_print("SECURITY QUERY ROUND: ".
+                "($level, $action, $objid): ".
+                "(level, action, object)");
+    }
 
     switch ($action) {
         case 'simple-view':
@@ -412,9 +425,11 @@ function security_job($user, $action, $job) {
     $action = security_simplify_action($action);
     $level = ($is_admin ? 'admin' : ($is_owner ? 'owner' : ($is_task_owner ? 'task-owner' : 'other')));
     $objid = $job['id'];
-    log_print("SECURITY QUERY JOB: ".
-            "($level, $action, $objid): ".
-            "(level, action, object)");
+    if (IA_LOG_SECURITY) {
+        log_print("SECURITY QUERY JOB: ".
+                "($level, $action, $objid): ".
+                "(level, action, object)");
+    }
 
     switch ($action) {
         case 'job-view':

@@ -1,10 +1,11 @@
 <?php
-
 require_once("../config.php");
 require_once(IA_ROOT_DIR."www/config.php");
 require_once(IA_ROOT_DIR."common/log.php");
 require_once(IA_ROOT_DIR."common/common.php");
-log_print("- -- --- ---- ----- Request: ".$_SERVER['QUERY_STRING']);
+if (IA_DEVELOPMENT_MODE) {
+    log_print("- -- --- ---- ----- Request: ".$_SERVER['QUERY_STRING']);
+}
 check_requirements();
 require_once(IA_ROOT_DIR."common/security.php");
 require_once(IA_ROOT_DIR."www/url.php");

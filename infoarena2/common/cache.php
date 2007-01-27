@@ -35,10 +35,14 @@ function cache_load($cache_id, $date = null) {
 
     // Yay, return
     if ($res === null) {
-        log_print("CACHE: miss on $cache_id(from $fname)");
+        if (IA_LOG_CACHE) {
+            log_print("CACHE: miss on $cache_id(from $fname)");
+        }
         return null;
     } else {
-        log_print("CACHE: hit on $cache_id");
+        if (IA_LOG_CACHE) {
+            log_print("CACHE: hit on $cache_id");
+        }
         return $res;
     }
 }
@@ -66,7 +70,9 @@ function cache_save($cache_id, $buffer) {
         return false;
     }
 
-    log_print("CACHE: Saved $cache_id");
+    if (IA_LOG_CACHE) {
+        log_print("CACHE: Saved $cache_id");
+    }
 
     return true;
 }

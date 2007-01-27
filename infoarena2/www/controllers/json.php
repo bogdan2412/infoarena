@@ -26,7 +26,7 @@ function controller_json($suburl) {
                 $output = 'Not enough privileges to preview this page';
             }
             else {
-                $output = wiki_do_process_text($page_content);
+                $output = wiki_process_text($page_content);
             }
 
             // view

@@ -18,7 +18,7 @@ function macro_news($args) {
         $res .= '<span class="date">'.htmlentities(date('d M Y', strtotime($subpage['timestamp']))).'</span>';
 
         $url = url_textblock($subpage['name']);
-        $text = wiki_process_text_recursive($subpage);
+        $text = wiki_process_textblock_recursive($subpage);
         // Hijack title if already there.
         if (preg_match('/^\s*<h1>(.*)<\/h1>(.*)$/sxi', $text, $matches)) {
             $res .= '<h1>'.format_link($url, $matches[1], false).'</h1>';

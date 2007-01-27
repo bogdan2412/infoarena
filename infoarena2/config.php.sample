@@ -102,4 +102,14 @@ if (IA_SMTP_ENABLED) {
 // Disable mysql_unbuffered_query
 define("IA_DB_MYSQL_UNBUFFERED_QUERY", false);
 
+// Logging options. Anything else in normal operation is a bug.
+// Filling error_log on a production machine sucks.
+
+// If true then log all security checks.
+// Warning: tons of output.
+define("IA_LOG_SECURITY", IA_DEVELOPMENT_MODE);
+
+// If true then log cache hits/misses
+define("IA_LOG_CACHE", IA_DEVELOPMENT_MODE);
+
 ?>

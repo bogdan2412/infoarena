@@ -31,7 +31,6 @@ function controller_attachment_list($page_name) {
 
 // Create a new attachment to a textblock.
 function controller_attachment_create($page_name) {
-    log_print("ATT CREATE");
     if (request_is_post()) {
         controller_attachment_submit($page_name);
         die();
@@ -53,8 +52,6 @@ function controller_attachment_submit($page_name) {
     identity_require('textblock-attach', $page);
 
     global $identity_user;
-
-    log_print("ATT SUBMIT");
 
     // Create view objects.
     $view = array();
@@ -214,8 +211,6 @@ function controller_attachment_submit($page_name) {
             }
         }
 
-        log_print("Auto-extracted {$extract_okcount} files; {$attach_okcount} successful attachment uploads");
-
         flash($msg);
         redirect(url_textblock($page_name));
     }
@@ -288,7 +283,9 @@ function serve_file($filename, $attachment_name, $mimetype) {
             // Client's cache is up to date, yey!
             header('Last-Modified: '.gmdate('D, d M Y H:i:s', $last_modified)
                    .' GMT', true, 304);
-            log_print('Client has up-to-date cache');
+            if (IA_LOG_CACHE) {
+                log_print('CACHE: Client has up-to-date cache');
+            }
             die();
         }
         else {
