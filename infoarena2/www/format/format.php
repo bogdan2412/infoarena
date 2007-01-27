@@ -1,6 +1,7 @@
 <?php
 
 require_once(IA_ROOT."common/db/user.php");
+require_once(IA_ROOT."common/rating.php");
 require_once(IA_ROOT."www/url.php");
 require_once(IA_ROOT."www/utilities.php");
 
@@ -143,12 +144,6 @@ function format_user_normal($user_name, $user_fullname, $rating = null) {
     $result .= "</div>";
 
     return $result;
-}
-
-// Represent rating in a human-friendly scale from 0 to 1000
-// NOTE: This is used only when displaying ratings to users!
-function rating_scale($absolute_rating) {
-    return round($absolute_rating / 3.0);
 }
 
 // Return rating group based on user's absolute rating.

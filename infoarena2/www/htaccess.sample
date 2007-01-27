@@ -23,5 +23,6 @@ php_value display_errors true
 php_value log_errors true
 php_value html_errors false
 php_value memory_limit "16M"
+php_value post_max_size "17M"
 php_value upload_max_filesize "16M"
 

@@ -45,7 +45,7 @@ function controller_resetpass() {
             $cpass = user_resetpass_key($user);
 
             // confirmation link
-            $clink = url_resetpass_confirm($user['username'], $cpass, true);
+            $clink = url_absolute(url_resetpass_confirm($user['username'], $cpass));
 
             // email user
             $to = $user['email'];

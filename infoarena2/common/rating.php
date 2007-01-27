@@ -231,4 +231,11 @@ function rating_update(&$users, $user_scores, $timestamp) {
     }
 }
 
+// Represent rating in a human-friendly scale from 0 to 1000
+// NOTE: This is used only when displaying ratings to users.
+// NOTE: Currently used by www/format/* and scripts/send-newsletter.
+function rating_scale($absolute_rating) {
+    return round($absolute_rating / 3.0);
+}
+
 ?>

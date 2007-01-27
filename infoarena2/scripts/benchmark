@@ -1,0 +1,43 @@
+#! /usr/bin/env php
+<?php
+
+// Runs a series of apache benchmarks.
+
+require_once(dirname($argv[0]) . "/utilities.php");
+
+// URLs to benchmark
+$benchmark_urls = array(
+    IA_URL . "clasament-rating",
+    IA_URL . "monitor",
+    IA_URL . "links",
+    IA_URL . "stiri",
+    IA_URL . "utilizator/domino?action=stats",
+    IA_URL . "plot/rating?user=gcosmin",
+);
+
+// number of tests
+$benchmark_n = 200;
+
+// benchmark command line
+$benchmark_cmd = "ab -n {$benchmark_n} %url% | grep \"Requests per second:\""
+                 ." | cut -c21- | xargs echo | cut -f1 -d \" \"";
+
+// run benchmarks
+log_print("Running {$benchmark_n} tests for each URL");
+foreach ($benchmark_urls as $url) {
+    $cmd = str_replace("%url%", $url, $benchmark_cmd);
+
+    // run benchmark & capture output
+    $handle = popen($cmd, 'r');
+    $buffer = fscanf($handle, "%s");
+    pclose($handle);
+    if (!$buffer) {
+        log_error("Command returned no output!\n{$cmd}");
+    }
+    $buffer = $buffer[0];
+
+    // pretty print
+    log_print($url."\t".$buffer."\treq/s");
+}
+
+?>
