@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT."common/db/textblock.php");
+require_once(IA_ROOT_DIR."common/db/textblock.php");
 
 // FIXME: document this macro
 function macro_grep($args) {

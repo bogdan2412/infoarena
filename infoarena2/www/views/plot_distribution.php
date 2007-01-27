@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT."www/format/format.php");
+require_once(IA_ROOT_DIR."www/format/format.php");
 
 if ($user) {
     $user_rating = $user['rating_cache'];
@@ -72,6 +72,6 @@ foreach ($distribution as $bucket => $count) {
 }
 
 // render PNG
-include(IA_ROOT.'www/views/gnuplot.php');
+include(IA_ROOT_DIR.'www/views/gnuplot.php');
 
 ?>

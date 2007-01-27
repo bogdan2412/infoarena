@@ -4,11 +4,11 @@
 $curdir = dirname($argv[0]);
 
 require_once($curdir . "/../config.php");
-require_once(IA_ROOT . "common/log.php");
-require_once(IA_ROOT . "common/common.php");
-require_once(IA_ROOT . "common/db/db.php");
+require_once(IA_ROOT_DIR . "common/log.php");
+require_once(IA_ROOT_DIR . "common/common.php");
+require_once(IA_ROOT_DIR . "common/db/db.php");
 
-if (realpath(IA_ROOT . 'scripts') != realpath($curdir)) {
+if (realpath(IA_ROOT_DIR . 'scripts') != realpath($curdir)) {
     log_error("You should only include this file from scripts");
 }
 

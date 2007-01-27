@@ -1,9 +1,9 @@
 <?php
 
-require_once(IA_ROOT."common/db/user.php");
-require_once(IA_ROOT."common/rating.php");
-require_once(IA_ROOT."www/url.php");
-require_once(IA_ROOT."www/utilities.php");
+require_once(IA_ROOT_DIR."common/db/user.php");
+require_once(IA_ROOT_DIR."common/rating.php");
+require_once(IA_ROOT_DIR."www/url.php");
+require_once(IA_ROOT_DIR."www/utilities.php");
 
 // Format an array of xml attributes.
 // Return '' or 'k1="v1" k2="v2"'.

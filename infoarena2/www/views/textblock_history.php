@@ -1,7 +1,7 @@
 <?php
 include('header.php');
-require_once(IA_ROOT . "www/format/table.php");
-require_once(IA_ROOT . "www/format/format.php");
+require_once(IA_ROOT_DIR . "www/format/table.php");
+require_once(IA_ROOT_DIR . "www/format/format.php");
 ?>
 
 <h1>Istoria paginii <?= format_link(url_textblock($page_name), $page_name) ?></h1>

@@ -1,7 +1,7 @@
 <?php
 
-require_once(IA_ROOT."common/db/db.php");
-require_once(IA_ROOT."common/attachment.php");
+require_once(IA_ROOT_DIR."common/db/db.php");
+require_once(IA_ROOT_DIR."common/attachment.php");
 
 /**
  * Attachment functions.
@@ -106,7 +106,7 @@ function attachment_get_count($page, $name='%') {
 // FIXME: does this belong here?
 function attachment_get_filepath($attach) {
     assert(is_array($attach));
-    return IA_ATTACH_DIR .
+    return IA_ROOT_DIR.'attach/'.
             preg_replace('/[^a-z0-9\.\-_]/i', '_', $attach['page']) . '_' .
             preg_replace('/[^a-z0-9\.\-_]/i', '_', $attach['name']) . '_' .
             $attach['id'];

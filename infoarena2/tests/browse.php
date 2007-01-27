@@ -4,7 +4,7 @@
 // This test looks around the website and catches casual html errors.
 
 require_once(dirname($argv[0]) . "/utilities.php");
-require_once(IA_ROOT."www/wiki/wiki.php");
+require_once(IA_ROOT_DIR."www/wiki/wiki.php");
 
 log_print("Passing the entire db through the wiki processor.");
 log_print("This might take a while. User pages are skipped.");

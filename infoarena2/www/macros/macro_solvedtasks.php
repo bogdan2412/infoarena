@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT."common/db/user.php");
+require_once(IA_ROOT_DIR."common/db/user.php");
 
 // Display solved tasks for given user.
 // When failed_tasks_hack is true, it displays failed tasks instead.

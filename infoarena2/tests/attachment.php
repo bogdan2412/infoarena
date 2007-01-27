@@ -169,7 +169,7 @@ log_assert_equal($res['http_code'], 404);
 log_print("Check files are gone in the db and on disk");
 log_assert_equal(array(), attachment_get_all('sandbox/test_page_2'));
 log_assert_equal(0, attachment_get_count('sandbox/test_page_2'));
-log_assert_equal(array(), glob(IA_ROOT . "attach/sandbox_test_page*"));
+log_assert_equal(array(), glob(IA_ROOT_DIR . "attach/sandbox_test_page*"));
 
 log_print("All tests passed. Warning: incomplete.");
 test_cleanup();

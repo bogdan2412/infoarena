@@ -1,8 +1,8 @@
 <?php
 
-require_once(IA_ROOT.'www/wiki/wiki.php');
-require_once(IA_ROOT.'www/format/format.php');
-require_once(IA_ROOT.'www/format/list.php');
+require_once(IA_ROOT_DIR.'www/wiki/wiki.php');
+require_once(IA_ROOT_DIR.'www/format/format.php');
+require_once(IA_ROOT_DIR.'www/format/list.php');
 
 $username = $user['username'];
 

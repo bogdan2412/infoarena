@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT.'www/config.php');
+require_once(IA_ROOT_DIR.'www/config.php');
 
 // Creates URLs to various parts of the infoarena website.
 // Please avoid hard-coding URLs throughout the code.
@@ -194,23 +194,23 @@ function url_user_info($username) {
 }
 
 function url_user_profile($username) {
-    return url_complex(TB_USER_PREFIX . $username, array());
+    return url_complex(IA_USER_TEXTBLOCK_PREFIX . $username, array());
 }
 
 function url_user_rating($username) {
-    return url_complex(TB_USER_PREFIX . $username, array(
+    return url_complex(IA_USER_TEXTBLOCK_PREFIX . $username, array(
             'action' => 'rating'
     ));
 }
 
 function url_user_stats($username) {
-    return url_complex(TB_USER_PREFIX . $username, array(
+    return url_complex(IA_USER_TEXTBLOCK_PREFIX . $username, array(
             'action' => 'stats'
     ));
 }
 
 function url_user_avatar($username, $resize = "50x50") {
-    return url_image_resize(TB_USER_PREFIX . $username, 'avatar', $resize);
+    return url_image_resize(IA_USER_TEXTBLOCK_PREFIX . $username, 'avatar', $resize);
 }
 
 function url_unsubscribe($username, $key) {

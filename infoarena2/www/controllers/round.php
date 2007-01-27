@@ -1,9 +1,9 @@
 <?php
 
-require_once(IA_ROOT."common/db/db.php");
-require_once(IA_ROOT."common/db/round.php");
-require_once(IA_ROOT."common/db/task.php");
-require_once(IA_ROOT."common/round.php");
+require_once(IA_ROOT_DIR."common/db/db.php");
+require_once(IA_ROOT_DIR."common/db/round.php");
+require_once(IA_ROOT_DIR."common/db/task.php");
+require_once(IA_ROOT_DIR."common/round.php");
 
 // Displays form to either create a new round or edit an existing one.
 // This form does not edit round content (its associated textblock)

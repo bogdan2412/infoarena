@@ -1,14 +1,14 @@
 <?php
 
-require_once(IA_ROOT."www/macros/macros.php");
-require_once(IA_ROOT."www/identity.php");
-require_once(IA_ROOT."www/url.php");
-require_once(IA_ROOT."common/textblock.php");
-require_once(IA_ROOT."common/cache.php");
+require_once(IA_ROOT_DIR."www/macros/macros.php");
+require_once(IA_ROOT_DIR."www/identity.php");
+require_once(IA_ROOT_DIR."www/url.php");
+require_once(IA_ROOT_DIR."common/textblock.php");
+require_once(IA_ROOT_DIR."common/cache.php");
 
 // Process textile and returns html with special macro tags.
 function wiki_process_textile($content) {
-    require_once(IA_ROOT."www/wiki/MyTextile.php");
+    require_once(IA_ROOT_DIR."www/wiki/MyTextile.php");
     log_print("PROCESS TEXTILE");
     $options = array(
             'disable_html' => true,
@@ -50,12 +50,12 @@ function wiki_macro_callback($matches) {
 
 // Proces macros in content.
 function wiki_process_macros($content) {
-    require_once(IA_ROOT."www/macros/macros.php");
+    require_once(IA_ROOT_DIR."www/macros/macros.php");
     return preg_replace_callback(
-            '/ <span \s* macro_name="([a-z][a-z0-9_]*)" \s* runas="macro" \s*
+            '/ <div \s* macro_name="([a-z][a-z0-9_]*)" \s* runas="macro" \s*
                 ((?: (?:[a-z][a-z0-9_]*) \s* = \s*
                     "(?:(?:[^"]*(?:"")*)*)" \s* )* \s*)
-                ><\/span>/xi', 'wiki_macro_callback', $content);
+                ><\/div>/xi', 'wiki_macro_callback', $content);
 /*    return preg_replace_callback(
             '/ <?([a-z][a-z0-9_]*) \s*
                 ((?: (?:[a-z][a-z0-9_]*) \s* = \s*
@@ -80,7 +80,7 @@ function wiki_process_textblock($tb) {
         return wiki_process_macros(wiki_process_textile($tb['text']));
     } else {
         $cacheid = preg_replace('/[^a-z0-9\.\-_]/i', '_', $tb['name']) . '_' .
-                   preg_replace('/[^a-z0-9\.\-_]/i', '_', $tb['timestamp']);
+                   db_date_parse($tb['timestamp']);
         $cache_ret = cache_load($cacheid, null);
         if (is_null($cache_ret)) {
             $cache_ret = wiki_process_textile($tb['text']);

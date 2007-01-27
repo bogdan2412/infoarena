@@ -4,7 +4,7 @@
 require_once(dirname($argv[0]) . "/utilities.php");
 db_connect();
 
-$smfprefix = DB_SMF_PREFIX;
+$smfprefix = IA_SMF_DB_PREFIX;
 
 /*$remaining_user_ids = array_values(db_fetch_all("SELECT `id` from `ia_user` LIMIT 300"));
 $ruids = '(' . implode(', ', $remaining_user_ids) . ')';

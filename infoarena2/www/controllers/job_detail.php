@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT . "common/db/job.php");
+require_once(IA_ROOT_DIR . "common/db/job.php");
 
 function controller_job_detail($job_id) {
     $action = request('action', 'view');

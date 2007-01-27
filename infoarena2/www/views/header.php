@@ -1,7 +1,7 @@
 <?php
 
-require_once(IA_ROOT.'www/views/sitewide.php');
-require_once(IA_ROOT.'www/views/utilities.php');
+require_once(IA_ROOT_DIR.'www/views/sitewide.php');
+require_once(IA_ROOT_DIR.'www/views/utilities.php');
 
 // Basic view checks.
 log_assert(is_array($view));
@@ -84,7 +84,7 @@ ia_template_topnav($topnav_select, $smf_admin);
 
     <?php if (identity_anonymous()) { ?>
     <div id="login">
-        <?php if (!isset($no_sidebar_login)) include(IA_ROOT.'www/views/form_login.php') ?>
+        <?php if (!isset($no_sidebar_login)) include(IA_ROOT_DIR.'www/views/form_login.php') ?>
         <p>
         <?= format_link(url_register(), "Ma inregistrez!" ) ?><br/>
         <?= format_link(url_resetpass(), "Mi-am uitat parola..." ) ?>
@@ -96,7 +96,7 @@ ia_template_topnav($topnav_select, $smf_admin);
     <script type="text/javascript" src="<?= htmlentities(url_static('js/time.js')) ?>"></script>
     <script type="text/javascript">loadTime(<?= format_date(null, "%H, %M, %S");?>);</script>
 
-    <?php include(IA_ROOT.'www/views/sidebar_ad.php'); ?>
+    <?php include(IA_ROOT_DIR.'www/views/sidebar_ad.php'); ?>
 </div>
 
 <div id="main">

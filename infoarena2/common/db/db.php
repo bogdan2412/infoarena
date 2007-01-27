@@ -10,7 +10,7 @@ if (defined("IA_FROM_SMF")) {
 
 // We currently use mysql
 // This also connects to mysql server
-require_once(IA_ROOT."common/db/db_mysql.php");
+require_once(IA_ROOT_DIR."common/db/db_mysql.php");
 
 // Executes query, fetches the all result rows
 function db_fetch_all($query) {

@@ -1,10 +1,10 @@
 <?php
 
 require_once(dirname($argv[0]) . "/../config.php");
-require_once(IA_ROOT."common/log.php");
-require_once(IA_ROOT."common/common.php");
-require_once(IA_ROOT."common/db/db.php");
-require_once(IA_ROOT."common/db/user.php");
+require_once(IA_ROOT_DIR."common/log.php");
+require_once(IA_ROOT_DIR."common/common.php");
+require_once(IA_ROOT_DIR."common/db/db.php");
+require_once(IA_ROOT_DIR."common/db/user.php");
 
 // Test with curl. $args format:
 // * url: url to curl. If http:// is ommited IA_URL_HOST is assumed.
@@ -74,7 +74,7 @@ function curl_test($args)
 // dies on failure.
 function validate_html($content)
 {
-    $fname = IA_ROOT . 'tests/temp.html';
+    $fname = IA_ROOT_DIR . 'tests/temp.html';
     file_put_contents($fname, $content);
 
     $result = shell_exec("validate --warn --verbose $fname");

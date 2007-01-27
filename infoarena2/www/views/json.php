@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT.'www/JSON.php');
+require_once(IA_ROOT_DIR.'www/JSON.php');
 
 // encode JSON
 $json = new Services_JSON();

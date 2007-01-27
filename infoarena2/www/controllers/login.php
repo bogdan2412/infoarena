@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT . "common/db/user.php");
+require_once(IA_ROOT_DIR . "common/db/user.php");
 
 function controller_login() {
     global $identity_user;

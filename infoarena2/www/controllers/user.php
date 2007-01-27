@@ -1,8 +1,8 @@
 <?
 
-require_once(IA_ROOT."common/textblock.php");
-require_once(IA_ROOT."common/db/textblock.php");
-require_once(IA_ROOT."common/db/user.php");
+require_once(IA_ROOT_DIR."common/textblock.php");
+require_once(IA_ROOT_DIR."common/db/textblock.php");
+require_once(IA_ROOT_DIR."common/db/user.php");
 
 // View user profile (personal page, rating evolution, statistics)
 // $action is one of (view | rating | stats)
@@ -15,7 +15,7 @@ function controller_user_view($username, $action, $revision = null) {
     }
 
     // Build view.
-    $page_name = TB_USER_PREFIX.$user['username'];
+    $page_name = IA_USER_TEXTBLOCK_PREFIX.$user['username'];
     $view = array(
         'title' => $user['full_name'].' ('.$user['username'].')',
         'page_name' => $page_name,

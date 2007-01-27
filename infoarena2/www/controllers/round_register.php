@@ -1,8 +1,8 @@
 <?php
 
-require_once(IA_ROOT."common/db/round.php");
-require_once(IA_ROOT."www/identity.php");
-require_once(IA_ROOT."www/format/pager.php");
+require_once(IA_ROOT_DIR."common/db/round.php");
+require_once(IA_ROOT_DIR."www/identity.php");
+require_once(IA_ROOT_DIR."www/format/pager.php");
 
 // Displays form to register remote user to given round_id
 function controller_round_register($round_id) {

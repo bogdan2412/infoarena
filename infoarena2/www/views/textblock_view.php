@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT.'www/wiki/wiki.php');
+require_once(IA_ROOT_DIR.'www/wiki/wiki.php');
 
 // site header
 include('header.php');

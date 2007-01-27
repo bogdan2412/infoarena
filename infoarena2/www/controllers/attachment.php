@@ -1,8 +1,8 @@
 <?php
 
-require_once(IA_ROOT."common/db/textblock.php");
-require_once(IA_ROOT."common/db/attachment.php");
-require_once(IA_ROOT.'www/controllers/zip_attachment.php');
+require_once(IA_ROOT_DIR."common/db/textblock.php");
+require_once(IA_ROOT_DIR."common/db/attachment.php");
+require_once(IA_ROOT_DIR.'www/controllers/zip_attachment.php');
 
 // Try to get the textblock model for a certain page.
 // If it fails it will flash and redirect

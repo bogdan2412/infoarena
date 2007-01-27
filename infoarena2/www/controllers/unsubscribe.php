@@ -1,7 +1,7 @@
 <?php
 
-require_once(IA_ROOT."common/db/user.php");
-require_once(IA_ROOT."common/user.php");
+require_once(IA_ROOT_DIR."common/db/user.php");
+require_once(IA_ROOT_DIR."common/user.php");
 
 // Unsubscribe user $username from mailing list.
 function controller_unsubscribe($username) {

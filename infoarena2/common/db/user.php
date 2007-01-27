@@ -1,7 +1,7 @@
 <?php
 
-require_once(IA_ROOT."common/db/db.php");
-require_once(IA_ROOT."common/user.php");
+require_once(IA_ROOT_DIR."common/db/db.php");
+require_once(IA_ROOT_DIR."common/user.php");
 
 /**
  * User-related functions.
@@ -87,9 +87,9 @@ function user_create($data) {
     $new_user = user_get_by_username($data['username']);
     log_assert($new_user, 'Registration input data was validated OK but no database entry was created');
 
-    require_once(IA_ROOT . "common/textblock.php");
+    require_once(IA_ROOT_DIR . "common/textblock.php");
     $replace = array("user_id" => $data['username']);
-    textblock_copy_replace("template/newuser", TB_USER_PREFIX.$data['username'],
+    textblock_copy_replace("template/newuser", IA_USER_TEXTBLOCK_PREFIX.$data['username'],
                            $replace, "public", $new_user['id']);
 
     return $new_user;

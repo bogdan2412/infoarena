@@ -3,12 +3,12 @@
 
 // dependencies
 require_once(dirname($argv[0]) . "/utilities.php");
-require_once(IA_ROOT."common/db/user.php");
-require_once(IA_ROOT."common/db/textblock.php");
-require_once(IA_ROOT."common/user.php");
-require_once(IA_ROOT."common/rating.php");
-require_once(IA_ROOT."common/email.php");
-require_once(IA_ROOT."www/url.php");
+require_once(IA_ROOT_DIR."common/db/user.php");
+require_once(IA_ROOT_DIR."common/db/textblock.php");
+require_once(IA_ROOT_DIR."common/user.php");
+require_once(IA_ROOT_DIR."common/rating.php");
+require_once(IA_ROOT_DIR."common/email.php");
+require_once(IA_ROOT_DIR."www/url.php");
 db_connect();
 
 // config
@@ -19,7 +19,7 @@ define("IA_BURST_LENGTH", 25);
 define("IA_BURST_DELAY", 500);
 
 // place where we store newsletter logs
-define("IA_NEWSLETTER_LOGDIR", IA_ROOT."scripts/newsletter-logs/");
+define("IA_NEWSLETTER_LOGDIR", IA_ROOT_DIR."scripts/newsletter-logs/");
 
 // return array with valid subscriber list identifiers
 function list_valid_ids() {

@@ -1,8 +1,8 @@
 <?php
 
-require_once(IA_ROOT . "common/db/db.php");
-require_once(IA_ROOT . "common/task.php");
-require_once(IA_ROOT . "common/db/parameter.php");
+require_once(IA_ROOT_DIR . "common/db/db.php");
+require_once(IA_ROOT_DIR . "common/task.php");
+require_once(IA_ROOT_DIR . "common/db/parameter.php");
 
 // Task-related db functions.
 
@@ -29,7 +29,7 @@ function task_create($task, $task_params) {
         task_update_parameters($task['id'], $task_params);
 
         // Copy templates.
-        require_once(IA_ROOT . "common/textblock.php");
+        require_once(IA_ROOT_DIR . "common/textblock.php");
         $replace = array("task_id" => $task['id']);
         textblock_copy_replace("template/newtask", $task['page_name'],
                 $replace, "task: {$task['id']}", $task['user_id']);

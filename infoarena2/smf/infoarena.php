@@ -12,11 +12,11 @@
 
 define("IA_FROM_SMF", true);
 
-require_once(IA_ROOT."common/common.php");
+require_once(IA_ROOT_DIR."common/common.php");
 check_requirements();
-require_once(IA_ROOT."common/security.php");
-require_once(IA_ROOT."www/utilities.php");
-require_once(IA_ROOT."www/identity.php");
+require_once(IA_ROOT_DIR."common/security.php");
+require_once(IA_ROOT_DIR."www/utilities.php");
+require_once(IA_ROOT_DIR."www/identity.php");
 
 
 // init SMF hooks to integrate with infoarena

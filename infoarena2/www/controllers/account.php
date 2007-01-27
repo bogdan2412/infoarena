@@ -1,9 +1,9 @@
 <?php
 
-require_once(IA_ROOT."common/db/user.php");
-require_once(IA_ROOT."common/db/attachment.php");
-require_once(IA_ROOT."common/db/smf.php");
-require_once(IA_ROOT."www/controllers/account_validator.php");
+require_once(IA_ROOT_DIR."common/db/user.php");
+require_once(IA_ROOT_DIR."common/db/attachment.php");
+require_once(IA_ROOT_DIR."common/db/smf.php");
+require_once(IA_ROOT_DIR."www/controllers/account_validator.php");
 
 // identify target user and check permission to edit profile
 // Yields flash_error & redirect when username invalid or security error
@@ -82,7 +82,7 @@ function controller_account() {
             // FIXME: Leverage code for attachment creation
             if ($avatar) {
                 // Add the file to the database.
-                $user_page = TB_USER_PREFIX.$user['username'];
+                $user_page = IA_USER_TEXTBLOCK_PREFIX.$user['username'];
                 $file_name = 'avatar';
                 $attach = attachment_get($file_name, $user_page);
                 if ($attach) {

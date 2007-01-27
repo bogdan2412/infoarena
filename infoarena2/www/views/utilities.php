@@ -1,8 +1,8 @@
 <?php
 
-require_once(IA_ROOT.'www/wiki/wiki.php');
-require_once(IA_ROOT.'common/db/textblock.php');
-require_once(IA_ROOT.'www/format/format.php');
+require_once(IA_ROOT_DIR.'www/wiki/wiki.php');
+require_once(IA_ROOT_DIR.'common/db/textblock.php');
+require_once(IA_ROOT_DIR.'www/format/format.php');
 
 // returns a form value, html-escaped by default.
 function fval($param_name, $escape_html = true) {
@@ -80,7 +80,7 @@ function wiki_include($page_name, $template_args = null) {
 
 // Format a field as a li. Uses global form_values/errors.
 function view_form_field_li($field_info, $field_name) {
-    require_once(IA_ROOT.'www/format/form.php');
+    require_once(IA_ROOT_DIR.'www/format/form.php');
     global $form_values, $form_errors;
 
     $row = format_form_field($field_info, $field_name,
@@ -92,7 +92,7 @@ function view_form_field_li($field_info, $field_name) {
 
 // Format a field as a tr. Uses global form_values/errors.
 function view_form_field_tr($field_info, $field_name) {
-    require_once(IA_ROOT.'www/format/form.php');
+    require_once(IA_ROOT_DIR.'www/format/form.php');
     global $form_values, $form_errors;
 
     $row = format_form_field($field_info, $field_name,

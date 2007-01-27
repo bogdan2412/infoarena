@@ -8,8 +8,8 @@ $view['head'] .= "<script type=\"text/javascript\" src=\"" . htmlentities(url_st
 $view['head'] .= "<script type=\"text/javascript\" src=\"" . htmlentities(url_static("js/roundedit.js")) . "\" ></script>";
 $view['head'] .= "<script type=\"text/javascript\" src=\"" . htmlentities(url_static("js/parameditor.js")) . "\" ></script>";
 
-require_once(IA_ROOT."common/round.php");
-require_once(IA_ROOT."www/format/form.php");
+require_once(IA_ROOT_DIR."common/round.php");
+require_once(IA_ROOT_DIR."www/format/form.php");
 include('views/header.php');
 
 // Validate $view values.

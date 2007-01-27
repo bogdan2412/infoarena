@@ -42,11 +42,11 @@ function format_backtrace($level, $backtrace = false) {
         return false;
     }
 
-    // Filename. Strips IA_ROOT.
+    // Filename. Strips IA_ROOT_DIR.
     $file = false;
     if (isset($backtrace[$level]['file'])) {
         $file = $backtrace[$level]['file'];
-        $file = preg_replace("/^".preg_quote(IA_ROOT, '/')."/", "", $file);
+        $file = preg_replace("/^".preg_quote(IA_ROOT_DIR, '/')."/", "", $file);
     }
 
     // Source line.
@@ -282,13 +282,13 @@ function logging_error_handler($errno, $errstr, $errfile, $errline) {
     }
 
     // The behaviour of this function is defined with error_log in php.ini
-    if (LOG_FATAL_ERRORS & $errno) {
+    if (IA_PHP_FATAL_ERROR_MASK & $errno) {
         $errstr = "Fatal:\t>>>" . $errstr . "<<<\t";
     }
     error_log($errstr);
 
     // Die on certain fatal errors:
-    if (LOG_FATAL_ERRORS & $errno) {
+    if (IA_PHP_FATAL_ERROR_MASK & $errno) {
         // Print a full backtrace on fatal errors.
         error_log("Caught a fatal error, printing a full backtrace");
         log_backtrace(2, false, true);

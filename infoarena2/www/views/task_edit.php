@@ -1,6 +1,6 @@
 <?php
-require_once(IA_ROOT."common/task.php");
-require_once(IA_ROOT."www/format/form.php");
+require_once(IA_ROOT_DIR."common/task.php");
+require_once(IA_ROOT_DIR."www/format/form.php");
 
 $view['head'] = getattr($view, 'head').
     "<script type=\"text/javascript\" src=\"" . htmlentities(url_static("js/parameditor.js")) . "\"></script>";

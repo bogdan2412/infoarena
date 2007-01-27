@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT."common/db/db.php");
+require_once(IA_ROOT_DIR."common/db/db.php");
 
 // Various routines used for tight SMF integration.
 //
@@ -53,7 +53,7 @@ function smf_create_user($ia_user) {
         'ID_GROUP' => ('admin' == $ia_user['security_level'] ? 1 : null),
     );
 
-    return db_insert(DB_SMF_PREFIX.'members', $fields);
+    return db_insert(IA_SMF_DB_PREFIX.'members', $fields);
 }
 
 // Updates SMF user information from a regular infoarena user.
@@ -101,7 +101,7 @@ function smf_update_user($ia_user) {
     );
 
     $where = sprintf("memberName='%s'", db_escape($ia_user['username']));
-    $res = db_update(DB_SMF_PREFIX.'members', $fields, $where);
+    $res = db_update(IA_SMF_DB_PREFIX.'members', $fields, $where);
 
     log_assert(1 >= $res, "smf_update_user() affected multiple rows in table "
                           ."ia_user! Needs serious attention!");
@@ -110,7 +110,7 @@ function smf_update_user($ia_user) {
 
 // Returns SMF member id from infoarena username
 function smf_get_member_id($username) {
-    $prefix = DB_SMF_PREFIX;
+    $prefix = IA_SMF_DB_PREFIX;
     $query = "
         SELECT ID_MEMBER FROM {$prefix}members
         WHERE memberName = '%s'

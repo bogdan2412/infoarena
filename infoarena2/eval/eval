@@ -3,20 +3,20 @@
 
 require_once(dirname($argv[0]) . "/config.php");
 
-require_once(IA_ROOT.'common/log.php');
-require_once(IA_ROOT.'common/common.php');
+require_once(IA_ROOT_DIR.'common/log.php');
+require_once(IA_ROOT_DIR.'common/common.php');
 
-require_once(IA_ROOT.'common/score.php');
-require_once(IA_ROOT.'common/task.php');
-require_once(IA_ROOT.'common/round.php');
-require_once(IA_ROOT.'common/security.php');
-require_once(IA_ROOT.'common/db/task.php');
-require_once(IA_ROOT.'common/db/job.php');
-require_once(IA_ROOT.'common/db/user.php');
+require_once(IA_ROOT_DIR.'common/score.php');
+require_once(IA_ROOT_DIR.'common/task.php');
+require_once(IA_ROOT_DIR.'common/round.php');
+require_once(IA_ROOT_DIR.'common/security.php');
+require_once(IA_ROOT_DIR.'common/db/task.php');
+require_once(IA_ROOT_DIR.'common/db/job.php');
+require_once(IA_ROOT_DIR.'common/db/user.php');
 
-require_once(IA_ROOT.'eval/utilities.php');
-require_once(IA_ROOT.'eval/download.php');
-require_once(IA_ROOT.'eval/classic_grader.php');
+require_once(IA_ROOT_DIR.'eval/utilities.php');
+require_once(IA_ROOT_DIR.'eval/download.php');
+require_once(IA_ROOT_DIR.'eval/classic_grader.php');
 
 log_print("");
 log_print("Eval started");

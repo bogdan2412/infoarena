@@ -1,8 +1,8 @@
 <?php
 
-require_once(IA_ROOT . "www/format/pager.php");
-require_once(IA_ROOT . "www/format/format.php");
-require_once(IA_ROOT . "common/db/textblock.php");
+require_once(IA_ROOT_DIR . "www/format/pager.php");
+require_once(IA_ROOT_DIR . "www/format/format.php");
+require_once(IA_ROOT_DIR . "common/db/textblock.php");
 
 // View recent changes.
 function controller_changes($page_name) {

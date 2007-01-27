@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT."www/format/format.php");
+require_once(IA_ROOT_DIR."www/format/format.php");
 
 // date range
 if (2 <= count($history)) {
@@ -106,6 +106,6 @@ foreach ($history as $round_id => $round) {
 }
 
 // render PNG
-include(IA_ROOT.'www/views/gnuplot.php');
+include(IA_ROOT_DIR.'www/views/gnuplot.php');
 
 ?>

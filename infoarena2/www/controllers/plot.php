@@ -1,7 +1,7 @@
 <?php
 
-require_once(IA_ROOT."common/db/user.php");
-require_once(IA_ROOT."common/db/score.php");
+require_once(IA_ROOT_DIR."common/db/user.php");
+require_once(IA_ROOT_DIR."common/db/score.php");
 
 // This controller serves real time plots (graphs) rendered
 // with gnuplot.

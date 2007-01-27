@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT . "www/format/format.php");
+require_once(IA_ROOT_DIR . "www/format/format.php");
 include('header.php');
 
 ?>

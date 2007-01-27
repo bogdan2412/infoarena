@@ -20,7 +20,7 @@ $webmaster_email = 'strat.cristian@gmail.com';
 // ---------------------------------------------------------------
 
 // The *absolute* disk path to the forum's folder. No trailing slash
-$boarddir = IA_ROOT . 'smf';
+$boarddir = IA_ROOT_DIR . 'smf';
 
 // Maintenance
 // Note: If $maintenance is set to 2, the forum will be unusable!
@@ -46,11 +46,11 @@ $boardurl = IA_SMF_URL;
 $cookiename = 'SMFCookie3210';
 
 // Database Info
-$db_server = DB_HOST;
-$db_name = DB_NAME;
-$db_user = DB_USER;
-$db_passwd = DB_PASS;
-$db_prefix = DB_SMF_PREFIX;
+$db_server = IA_DB_HOST;
+$db_name = IA_DB_NAME;
+$db_user = IA_DB_USER;
+$db_passwd = IA_DB_PASS;
+$db_prefix = IA_SMF_DB_PREFIX;
 $db_persist = 0;
 $db_error_send = 1;
 

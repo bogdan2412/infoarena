@@ -1,7 +1,7 @@
 <?php
 
-require_once(IA_ROOT."common/db/db.php");
-require_once(IA_ROOT."common/db/parameter.php");
+require_once(IA_ROOT_DIR."common/db/db.php");
+require_once(IA_ROOT_DIR."common/db/parameter.php");
 
 // Get round
 function round_get($round_id) {
@@ -39,7 +39,7 @@ function round_create($round, $round_params, $user_id) {
         round_update_parameters($round['id'], $round_params);
 
         // Copy templates.
-        require_once(IA_ROOT . "common/textblock.php");
+        require_once(IA_ROOT_DIR . "common/textblock.php");
         $replace = array("round_id" => $round['id']);
         textblock_copy_replace("template/newround", $round['page_name'],
                 $replace, "round: {$round['id']}", $user_id);

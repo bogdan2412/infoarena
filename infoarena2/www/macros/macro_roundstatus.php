@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT . "common/db/round.php");
+require_once(IA_ROOT_DIR . "common/db/round.php");
 
 // Displays round status. Pretty div, floating (in textile) strongly recommended.
 //

@@ -1,13 +1,13 @@
 <?php
 
-require_once(IA_ROOT . "www/format/pager.php");
-require_once(IA_ROOT . "common/db/textblock.php");
-require_once(IA_ROOT . "common/textblock.php");
+require_once(IA_ROOT_DIR . "www/format/pager.php");
+require_once(IA_ROOT_DIR . "common/db/textblock.php");
+require_once(IA_ROOT_DIR . "common/textblock.php");
 
 // smart ass diff
 function string_diff($string1, $string2) {
-    $name1 = tempnam(IA_ATTACH_DIR, "ia");
-    $name2 = tempnam(IA_ATTACH_DIR, "ia");
+    $name1 = tempnam(IA_ROOT_DIR.'attach/', "ia");
+    $name2 = tempnam(IA_ROOT_DIR.'attach/', "ia");
     $fp1 = fopen($name1, "w");
     if (!$fp1) {
         flash_error("Eroare la comparare!");

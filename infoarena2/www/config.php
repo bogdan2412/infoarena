@@ -48,7 +48,7 @@ define("IA_MAIL_SENDER_NO_REPLY", 'infoarena <no-reply@infoarena.ro>');
 define('IA_MAX_RECURSIVE_INCLUDES', 5);
 
 // Cache directory
-define('IA_CACHE_DIR', IA_ROOT . 'cache/');
+define('IA_CACHE_DIR', IA_ROOT_DIR . 'cache/');
 define('IA_CACHE_ENABLE', true);
 define('IA_IMAGE_CACHE_ENABLE', true);
 define('IA_TEXTILE_CACHE_ENABLE', true);

@@ -7,10 +7,10 @@ function db_connect() {
     // Repetitive include guard. Is this really needed?
     log_assert(!isset($dbLink), "Already connected to the database.");
     // log_print("connecting to database");
-    if (!$dbLink = mysql_connect(DB_HOST, DB_USER, DB_PASS)) {
+    if (!$dbLink = mysql_connect(IA_DB_HOST, IA_DB_USER, IA_DB_PASS)) {
         log_error('Cannot connect to database: '.mysql_error());
     }
-    if (!mysql_select_db(DB_NAME, $dbLink)) {
+    if (!mysql_select_db(IA_DB_NAME, $dbLink)) {
         log_error('Cannot select database.');
     }
 }

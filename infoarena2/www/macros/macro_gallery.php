@@ -1,7 +1,7 @@
 <?php
 
-require_once(IA_ROOT . "common/db/attachment.php");
-require_once(IA_ROOT . "www/format/pager.php");
+require_once(IA_ROOT_DIR . "common/db/attachment.php");
+require_once(IA_ROOT_DIR . "www/format/pager.php");
 
 define("MACRO_GALLERY_RESIZE", "130x80");
 

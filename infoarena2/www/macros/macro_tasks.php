@@ -1,9 +1,9 @@
 <?php
 
-require_once(IA_ROOT . "www/format/table.php");
-require_once(IA_ROOT . "www/format/pager.php");
-require_once(IA_ROOT . "common/db/round.php");
-require_once(IA_ROOT . "common/round.php");
+require_once(IA_ROOT_DIR . "www/format/table.php");
+require_once(IA_ROOT_DIR . "www/format/pager.php");
+require_once(IA_ROOT_DIR . "common/db/round.php");
+require_once(IA_ROOT_DIR . "common/round.php");
 
 function format_score_column($val) {
     if (is_null($val)) {

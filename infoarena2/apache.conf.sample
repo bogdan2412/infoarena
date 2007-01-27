@@ -1,20 +1,20 @@
 # Forum config
 
-Alias --write-me-IA_URL_PREFIX--forum "--write-me-IA_ROOT--smf/"
-<Directory "--write-me-IA_ROOT--smf/">
+Alias --write-me-IA_URL_PREFIX--forum "--write-me-IA_ROOT_DIR--smf/"
+<Directory "--write-me-IA_ROOT_DIR--smf/">
     Order deny,allow
     Deny from all
-    Allow from localhost
+    Allow from 127.0.0.1
     AllowOverride All
     DirectoryIndex index.php
 </Directory>
 
 # Main site.
-Alias --write-me-IA_URL_PREFIX-- "--write-me-IA_ROOT--www/"
-<Directory "--write-me-IA_ROOT--www/">
+Alias --write-me-IA_URL_PREFIX-- "--write-me-IA_ROOT_DIR--www/"
+<Directory "--write-me-IA_ROOT_DIR--www/">
     Order deny,allow
     Deny from all
-    Allow from localhost
+    Allow from 127.0.0.1
     AllowOverride All
     DirectoryIndex index.php
 </Directory>

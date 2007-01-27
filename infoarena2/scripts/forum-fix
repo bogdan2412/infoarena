@@ -6,12 +6,12 @@ db_connect();
 
 // Configure the forum.
 // SMF keeps paths in the database, we have to update them.
-$ia_root = IA_ROOT;
+$ia_root = IA_ROOT_DIR;
 $ia_url = IA_URL;
 
 $query = sprintf("UPDATE ia_smf_themes ".
         "SET `value` = '%s' WHERE `variable` = 'theme_dir'",
-        db_escape(IA_ROOT . "smf/Themes/infoarena2"));
+        db_escape(IA_ROOT_DIR . "smf/Themes/infoarena2"));
 db_query($query);
 $query = sprintf("UPDATE ia_smf_themes ".
         "SET `value` = '%s' WHERE `variable` = 'theme_url'",

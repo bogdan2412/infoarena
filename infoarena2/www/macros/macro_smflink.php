@@ -1,8 +1,8 @@
 <?php
 
-require_once(IA_ROOT."common/db/user.php");
-require_once(IA_ROOT."common/db/smf.php");
-require_once(IA_ROOT."www/format/format.php");
+require_once(IA_ROOT_DIR."common/db/user.php");
+require_once(IA_ROOT_DIR."common/db/smf.php");
+require_once(IA_ROOT_DIR."www/format/format.php");
 
 // Create link to various SMF pages
 function macro_smflink($args) {

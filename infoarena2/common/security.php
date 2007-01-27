@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT."common/db/round.php");
+require_once(IA_ROOT_DIR."common/db/round.php");
 
 
 // This module implements everything related to security.
@@ -143,7 +143,7 @@ function security_simplify_action($action)
 
 // Handles textblock security.
 function security_textblock($user, $action, $textblock) {
-    require_once(IA_ROOT."common/textblock.php");
+    require_once(IA_ROOT_DIR."common/textblock.php");
 
     $textsec = $textblock['security'];
     $usersec = getattr($user, 'security_level', 'anonymous');
@@ -153,10 +153,10 @@ function security_textblock($user, $action, $textblock) {
     // HACK: Forward security to user.
     // HACK: based on name
     if (preg_match("/^ ".
-                preg_quote(TB_USER_PREFIX, '/').
+                preg_quote(IA_USER_TEXTBLOCK_PREFIX, '/').
                 '('.IA_RE_USER_NAME.") (\/?.*) $/xi",
                 $textblock['name'], $matches)) {
-        require_once(IA_ROOT . "common/db/user.php");
+        require_once(IA_ROOT_DIR . "common/db/user.php");
         $ouser = user_get_by_username($matches[1]);
         if ($ouser === null) {
             log_warn("User page for missing user");
@@ -175,7 +175,7 @@ function security_textblock($user, $action, $textblock) {
 
     // Forward security to task.
     if (preg_match("/^ \s* task: \s* (".IA_RE_TASK_ID.") \s* $/xi", $textsec, $matches)) {
-        require_once(IA_ROOT . "common/db/task.php");
+        require_once(IA_ROOT_DIR . "common/db/task.php");
         $task = task_get($matches[1]);
         if ($task === null) {
             log_warn("Bad security descriptor, ask an admin.");
@@ -186,7 +186,7 @@ function security_textblock($user, $action, $textblock) {
 
     // Forward security to round.
     if (preg_match("/^ \s* round: \s* (".IA_RE_ROUND_ID.") \s* $/xi", $textsec, $matches)) {
-        require_once(IA_ROOT . "common/db/round.php");
+        require_once(IA_ROOT_DIR . "common/db/round.php");
         $round = round_get($matches[1]);
         if ($round === null) {
             log_warn("Bad security descriptor, ask an admin.");

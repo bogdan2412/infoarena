@@ -69,7 +69,7 @@ function task_init($task_id, $task_type, $user = null) {
             'title' => $task_id,
             'hidden' => 1,
             'source' => 'ad-hoc',
-            'page_name' => TB_TASK_PREFIX . $task_id,
+            'page_name' => IA_TASK_TEXTBLOCK_PREFIX . $task_id,
     );
 
     // User stuff. ugly

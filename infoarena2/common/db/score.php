@@ -1,8 +1,8 @@
 <?php
 
-require_once(IA_ROOT."common/db/db.php");
-require_once(IA_ROOT."common/db/round.php");
-require_once(IA_ROOT."common/parameter.php");
+require_once(IA_ROOT_DIR."common/db/db.php");
+require_once(IA_ROOT_DIR."common/db/round.php");
+require_once(IA_ROOT_DIR."common/parameter.php");
 
 // Escape an array of strings.
 function db_escape_array($array)

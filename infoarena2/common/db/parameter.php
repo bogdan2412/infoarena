@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT."common/db/db.php");
+require_once(IA_ROOT_DIR."common/db/db.php");
 
 // Round / task parameters
 // This is sort of shared between rounds and tasks.

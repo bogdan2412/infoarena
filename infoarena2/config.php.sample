@@ -12,19 +12,19 @@
 define("IA_DEVELOPMENT_MODE", true);
 
 // This is the subversion checkout directory. include trailing slash.
-define("IA_ROOT", '--write-me-IA_ROOT--');
+define("IA_ROOT_DIR", '--write-me-IA_ROOT_DIR--');
 
 // Database host. Probably localhost.
-define("DB_HOST", '--write-me-DB_HOST--');
+define("IA_DB_HOST", '--write-me-IA_DB_HOST--');
 
 // Database name.
-define("DB_NAME", '--write-me-DB_NAME--');
+define("IA_DB_NAME", '--write-me-IA_DB_NAME--');
 
 // Database user.
-define("DB_USER", '--write-me-DB_USER--');
+define("IA_DB_USER", '--write-me-IA_DB_USER--');
 
 // Database password
-define("DB_PASS", '--write-me-DB_PASS--');
+define("IA_DB_PASS", '--write-me-IA_DB_PASS--');
 
 // Web host. This is probably localhost. no trailing slash here
 define("IA_URL_HOST", "--write-me-IA_URL_HOST--");
@@ -45,7 +45,7 @@ define("IA_URL_PREFIX", "--write-me-IA_URL_PREFIX--");
 define("IA_HTTP_ENV", isset($_SERVER['REQUEST_URI']));
 
 // SMF database prefix (required!)
-define("DB_SMF_PREFIX", 'ia_smf_');
+define("IA_SMF_DB_PREFIX", 'ia_smf_');
 
 // "The" url to infoarena home page.
 define("IA_URL", IA_URL_HOST . IA_URL_PREFIX);
@@ -53,12 +53,6 @@ define("IA_URL", IA_URL_HOST . IA_URL_PREFIX);
 // URL to SMF. No trailing slash
 // Example: http://localhost/infoarena_smf
 define("IA_SMF_URL", IA_URL . 'forum');
-
-// Website root.
-define("IA_ROOT_WWW", IA_ROOT . "www/");
-
-// Attachment dir
-define("IA_ATTACH_DIR", IA_ROOT . "attach/");
 
 // cookie domain
 // leave null when working on localhost
@@ -72,7 +66,7 @@ define("IA_SESSION_LIFETIME_SECONDS", 5*24*3600);
 // These are the errors the scripts halts on.
 // E_ALL & ~ (E_USER_NOTICE | E_USER_WARNING)
 // FIXME: Why isn't this configurable in php.ini?
-define("LOG_FATAL_ERRORS", 0x19FF);
+define("IA_PHP_FATAL_ERROR_MASK", 0x19FF);
 
 // If this is true then the site is in debug.
 // NOTE: set this to false when public.
@@ -83,10 +77,10 @@ define("IA_DEBUG_MODE", true);
 //  - NOTE: it can't reside in common/db/*.php files since SMF
 //    cannot link db api.
 //  - NOTE: it can't reside in www/* since judge needs it too
-define("TB_TASK_PREFIX", 'problema/');
-define("TB_USER_PREFIX", 'utilizator/');
+define("IA_TASK_TEXTBLOCK_PREFIX", 'problema/');
+define("IA_USER_TEXTBLOCK_PREFIX", 'utilizator/');
 // FIXME: Do we really need this?
-define("TB_ROUND_PREFIX", 'runda/');
+define("IA_ROUND_TEXTBLOCK_PREFIX", 'runda/');
 
 // Secret code
 // Random string used as salt in various places where hashing is needed.

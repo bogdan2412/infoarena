@@ -1,8 +1,8 @@
 <?php
 
-require_once(IA_ROOT.'www/controllers/attachment.php');
-require_once(IA_ROOT.'common/db/attachment.php');
-require_once(IA_ROOT.'common/cache.php');
+require_once(IA_ROOT_DIR.'www/controllers/attachment.php');
+require_once(IA_ROOT_DIR.'common/db/attachment.php');
+require_once(IA_ROOT_DIR.'common/cache.php');
 
 // download attachment as resized image
 // see resize_coordinates() from utilities.php for detailed informations about

@@ -1,7 +1,7 @@
 <?php
 
-require_once(IA_ROOT . 'common/common.php');
-require_once(IA_ROOT . 'common/db/attachment.php');
+require_once(IA_ROOT_DIR . 'common/common.php');
+require_once(IA_ROOT_DIR . 'common/db/attachment.php');
 
 function copy_grader_file($task, $filename, $target)
 {

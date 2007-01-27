@@ -106,18 +106,18 @@ print("I'm going to ask you a couple of questions. Just press enter if you like 
 
 // Initialize config vars.
 $config_vars = array();
-$config_vars['IA_ROOT'] = realpath(dirname($argv[0]) . '/../') . '/';
+$config_vars['IA_ROOT_DIR'] = realpath(dirname($argv[0]) . '/../') . '/';
 $config_vars['IA_URL_HOST'] = 'http://localhost';
 $config_vars['IA_URL_PREFIX'] = '/infoarena2-dev/';
-$config_vars['DB_HOST'] = 'localhost';
-$config_vars['DB_USER'] = 'root';
-$config_vars['DB_PASS'] = '';
-$config_vars['DB_NAME'] = 'infoarena2';
+$config_vars['IA_DB_HOST'] = 'localhost';
+$config_vars['IA_DB_USER'] = 'root';
+$config_vars['IA_DB_PASS'] = '';
+$config_vars['IA_DB_NAME'] = 'infoarena2';
 
 // Ask user.
-$config_vars['IA_ROOT'] = read_line("SVN checkout dir?", $config_vars['IA_ROOT']);
-$config_vars['IA_ROOT'] = slash_string(
-        realpath($config_vars['IA_ROOT']), true, true);
+$config_vars['IA_ROOT_DIR'] = read_line("SVN checkout dir?", $config_vars['IA_ROOT_DIR']);
+$config_vars['IA_ROOT_DIR'] = slash_string(
+        realpath($config_vars['IA_ROOT_DIR']), true, true);
 $config_vars['IA_URL_HOST'] = read_line("Host part of url (with http)?",
         $config_vars['IA_URL_HOST']);
 $config_vars['IA_URL_HOST'] = slash_string(
@@ -129,20 +129,20 @@ $config_vars['IA_URL_PREFIX'] = slash_string(
 
 // Database configuration here.
 while (true) {
-    $config_vars['DB_HOST'] = read_line("Database host?",
-            $config_vars['DB_HOST']);
-    $config_vars['DB_USER'] = read_line("Database connection username?",
-            $config_vars['DB_USER']);
-    $config_vars['DB_PASS'] = read_line("Database password?",
-            $config_vars['DB_PASS']);
-    $config_vars['DB_NAME'] = read_line("Database name?",
-            $config_vars['DB_NAME']);
+    $config_vars['IA_DB_HOST'] = read_line("Database host?",
+            $config_vars['IA_DB_HOST']);
+    $config_vars['IA_DB_USER'] = read_line("Database connection username?",
+            $config_vars['IA_DB_USER']);
+    $config_vars['IA_DB_PASS'] = read_line("Database password?",
+            $config_vars['IA_DB_PASS']);
+    $config_vars['IA_DB_NAME'] = read_line("Database name?",
+            $config_vars['IA_DB_NAME']);
     // FIXME: check database connection.
 
     $dblink = mysql_connect(
-            $config_vars['DB_HOST'],
-            $config_vars['DB_USER'],
-            $config_vars['DB_PASS']);
+            $config_vars['IA_DB_HOST'],
+            $config_vars['IA_DB_USER'],
+            $config_vars['IA_DB_PASS']);
 
     if (!$dblink) {
         print("Can't connect to database, something must be wrong.\n");
@@ -153,13 +153,13 @@ while (true) {
         }
     }
 
-    if (!mysql_select_db($config_vars['DB_NAME'], $dblink)) {
+    if (!mysql_select_db($config_vars['IA_DB_NAME'], $dblink)) {
         print("Can't select database.\n");
         if (read_bool("Should I try to create the database?", true)) {
-            if (!mysql_query("CREATE DATABASE {$config_vars['DB_NAME']}")) {
+            if (!mysql_query("CREATE DATABASE {$config_vars['IA_DB_NAME']}")) {
                 die("Failed creating database, sorry.");
             }
-            if (!mysql_select_db($config_vars['DB_NAME'], $dblink)) {
+            if (!mysql_select_db($config_vars['IA_DB_NAME'], $dblink)) {
                 die("Still can't select database.\n");
             }
         }
@@ -168,7 +168,7 @@ while (true) {
 }
 
 // Do the config monkey.
-$ia_root = $config_vars['IA_ROOT'];
+$ia_root = $config_vars['IA_ROOT_DIR'];
 $ia_url = $config_vars['IA_URL_HOST'] . $config_vars['IA_URL_PREFIX'];
 handle_config_file($config_vars,
         $ia_root.'config.php.sample', $ia_root.'config.php');
@@ -181,11 +181,11 @@ handle_config_file($config_vars,
 
 if ($dblink && read_bool("Should I try to import the sample database?", true)) {
     $cmd = sprintf("mysql --user=%s --password=%s --host=%s %s < %s",
-            $config_vars['DB_USER'],
-            $config_vars['DB_PASS'],
-            $config_vars['DB_HOST'],
-            $config_vars['DB_NAME'],
-            $config_vars['IA_ROOT'] . "db.sql");
+            $config_vars['IA_DB_USER'],
+            $config_vars['IA_DB_PASS'],
+            $config_vars['IA_DB_HOST'],
+            $config_vars['IA_DB_NAME'],
+            $config_vars['IA_ROOT_DIR'] . "db.sql");
     print("Running $cmd\n");
     system($cmd);
 }
@@ -198,6 +198,13 @@ if (running_as_root() &&
         read_bool("Should I try to configure apache for you?", true)) {
     $sitename = slash_string($config_vars['IA_URL_PREFIX'], false, false);
     $sitename = read_line("Site name?", $sitename);
+    system("chmod g+ws {$ia_root}attach");
+    system("chmod g+ws {$ia_root}cache");
+
+    $username = null;
+    if (preg_match('/\/home\/([^\/]*)/', IA_ROOT, $matches)) {
+        $username = $matches[1];
+    }
     // Debian/Ubuntu
     if (is_dir('/etc/apache2/sites-available/') &&
         is_dir('/etc/apache2/sites-enabled/')) {
@@ -208,12 +215,18 @@ if (running_as_root() &&
                 "/etc/apache2/sites-available/$sitename");
         system("a2ensite $sitename");
         system("/etc/init.d/apache2 reload");
+        if ($username != null) {
+            system("adduser www-data {$username}");
+        }
     // Fedora/Redhat/others?
     } else if (is_dir('/etc/httpd/conf.d/')) {
         print('You seem to have a redhat-ish apache2 setup.\n');
         system("rm -rf /etc/httpd/infoarena2-dev");
         system("ln -sf {$ia_root}apache.conf /etc/httpd/conf.d/$sitename");
         system("service httpd restart");
+        if ($username != null) {
+            system("usermod -G `id -g $username` -a apache");
+        }
     } else {
         print("I can't figure out your system. I'm scared.\n");
     }

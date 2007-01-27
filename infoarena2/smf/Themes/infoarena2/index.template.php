@@ -29,7 +29,7 @@
     http://www.simplemachines.org/
 */
 
-require_once(IA_ROOT.'www/views/sitewide.php');
+require_once(IA_ROOT_DIR.'www/views/sitewide.php');
 
 // Initialize the template... mainly little settings.
 function template_init()

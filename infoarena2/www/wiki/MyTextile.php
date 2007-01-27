@@ -1,7 +1,7 @@
 <?php
 
-@require_once(IA_ROOT."www/wiki/Textile.php");
-require_once(IA_ROOT."common/attachment.php");
+@require_once(IA_ROOT_DIR."www/wiki/Textile.php");
+require_once(IA_ROOT_DIR."common/attachment.php");
 
 class MyTextile extends Textile {
     // FIXME: If you see a pointless textile error try tweaking this value.
@@ -38,13 +38,11 @@ class MyTextile extends Textile {
             }
 
             //$res = "<?$macro_name";
-            // DIVs don't work alyways; probably because textile treats DIVs as
-            // block-level elements rather than arbitrary HTML tags
-            $res = "<span macro_name=\"$macro_name\" runas=\"macro\"";
+            $res = "<div macro_name=\"$macro_name\" runas=\"macro\"";
             foreach ($macro_args as $k => $v) {
                 $res .= " $k=\"".$v."\"";
             }
-            $res .= "></span>";
+            $res .= "></div>";
             //$res .= " ?".">";
             //log_print("Packed macro: ".$res);
             return $res;

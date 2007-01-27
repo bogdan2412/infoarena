@@ -4,12 +4,12 @@
 require_once(dirname($argv[0]) . "/utilities.php");
 
 if (read_bool("Rebuild dep-check.db?", false)) {
-    system(IA_ROOT . "scripts/dep-rebuild");
+    system(IA_ROOT_DIR . "scripts/dep-rebuild");
 }
 
 // read dependencies db
 $exports = array();
-$dep_buffer = file_get_contents(IA_ROOT."scripts/dep-check.db");
+$dep_buffer = file_get_contents(IA_ROOT_DIR."scripts/dep-check.db");
 foreach (preg_split("/[\n\r]+/", $dep_buffer, -1, PREG_SPLIT_NO_EMPTY) as $line) {
     if (!($line = trim($line))) {
         continue;
@@ -52,7 +52,7 @@ foreach ($exports as $module => $idents) {
     // log_print_r("Processing $module");
     foreach ($idents as $ident) {
         // do grep
-        $fd = popen(IA_ROOT."scripts/_dcgrep {$ident} {$module} ".IA_ROOT, "r");
+        $fd = popen(IA_ROOT_DIR."scripts/_dcgrep {$ident} {$module} ".IA_ROOT_DIR, "r");
         log_assert($fd);
         $buffer = fread($fd, 500*1024);
         pclose($fd);

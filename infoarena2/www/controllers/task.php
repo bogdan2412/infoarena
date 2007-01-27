@@ -1,7 +1,7 @@
 <?php
 
-require_once(IA_ROOT . "common/db/task.php");
-require_once(IA_ROOT . "common/task.php");
+require_once(IA_ROOT_DIR . "common/db/task.php");
+require_once(IA_ROOT_DIR . "common/task.php");
 
 // Displays form to either create a new task or edit an existing one.
 // This form does not edit task content (its associated textblock)

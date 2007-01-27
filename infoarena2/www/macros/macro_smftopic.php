@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT.'www/macros/macro_remotebox.php');
+require_once(IA_ROOT_DIR.'www/macros/macro_remotebox.php');
 
 // Displays last posts in given SMF topic. This macro is a wrapper
 // for the more generic macro RemoteBox()
