@@ -139,18 +139,17 @@ function ia_template_footer() {
         // Development mode: display current page's log in site footer
         if (defined("IA_FROM_SMF")) {
             // too bad SMF cannot link infoarena log API :(
-        }
-        else {
+        } else {
             global $execution_stats;
             log_execution_stats();
             $buffer = $execution_stats['log_copy'];
-            echo '<textarea id="log" rows="30" cols="60">';
+            echo '<textarea id="log" rows="50">';
             echo htmlentities($buffer);
             echo '</textarea>';
         }
     }
 ?>
-</div>:q
+</div>
 
 <?php if (!IA_DEVELOPMENT_MODE) { ?>
     <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">

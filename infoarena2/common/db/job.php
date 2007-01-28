@@ -91,15 +91,14 @@ function job_get_range($start, $range, $task = null, $user = null) {
     log_assert($start >= 0);
     log_assert($range >= 0);
     $query = <<<SQL
-SELECT SQL_CALC_FOUND_ROWS
-            `job`.`id`, `job`.`user_id`, `task_id`, `compiler_id`, `status`,
-            `submit_time`, `eval_message`, `score`,
-            task.`page_name` as task_page_name, task.`title` as task_title,
-            task.`hidden` as task_hidden, task.`user_id` as task_owner_id,  
-            user.`username` as user_name, user.`full_name` as user_fullname
-      FROM ia_job AS job
-      LEFT JOIN ia_task AS task ON job.`task_id` = `task`.`id`
-      LEFT JOIN ia_user AS user ON job.`user_id` = `user`.`id`
+SELECT `job`.`id`, `job`.`user_id`, `task_id`, `compiler_id`, `status`,
+       `submit_time`, `eval_message`, `score`,
+       `task`.`page_name` as `task_page_name`, task.`title` as `task_title`,
+       `task`.`hidden` as `task_hidden`, `task`.`user_id` as `task_owner_id`,
+       `user`.`username` as `user_name`, `user`.`full_name` as `user_fullname`
+      FROM `ia_job` AS `job`
+      LEFT JOIN `ia_task` AS `task` ON job.`task_id` = `task`.`id`
+      LEFT JOIN `ia_user` AS `user` ON job.`user_id` = `user`.`id`
 SQL;
     if (!is_null($task)) {
         $query .= sprintf(" WHERE job.`task_id` = LCASE('%s')", db_escape($task));
@@ -115,10 +114,30 @@ SQL;
     }
     $query .= sprintf(" ORDER BY job.`submit_time` DESC LIMIT %s, %s", $start, $range);
 
-    return array(
-        db_fetch_all($query),
-        db_query_value("SELECT FOUND_ROWS()"),
-    );
+    return db_fetch_all($query);
+}
+
+function job_get_count($task = null, $user = null) {
+    $query = <<<SQL
+SELECT COUNT(*) as `cnt`
+      FROM `ia_job` AS `job`
+      LEFT JOIN `ia_task` AS `task` ON job.`task_id` = `task`.`id`
+      LEFT JOIN `ia_user` AS `user` ON job.`user_id` = `user`.`id`
+SQL;
+ 
+    if (!is_null($task)) {
+        $query .= sprintf(" WHERE job.`task_id` = LCASE('%s')", db_escape($task));
+    }
+    if (!is_null($user)) {
+        if (is_null($task)) {         
+            $query .= " WHERE ";
+        } else {
+            $query .= " AND ";
+        }
+        $query .= sprintf("user.`username` = LCASE('%s')", db_escape($user));
+    }
+    $res = db_fetch($query);
+    return $res['cnt'];
 }
 
 ?>

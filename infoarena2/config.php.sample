@@ -115,4 +115,7 @@ define("IA_LOG_CACHE", IA_DEVELOPMENT_MODE);
 // Log each and every SQL query. Not for the faint of heart.
 define("IA_LOG_SQL_QUERY", false);
 
+// Try to EXPLAIN every select query, useful when optimizing.
+define("IA_LOG_SQL_QUERY_EXPLAIN", false);
+
 ?>

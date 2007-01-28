@@ -65,10 +65,20 @@ function db_query($query, $unbuffered = false) {
     } else {
         // Print query info.
         if (IA_LOG_SQL_QUERY) {
-            log_print("Query: '$query'");
-            log_backtrace();
-            if (!IA_DB_MYSQL_UNBUFFERED_QUERY) {
-                log_print("Query returned ".db_num_rows($result)." rows");
+            log_print("SQL QUERY: '$query'");
+            if (!$unbuffered) {
+                log_print("SQL QUERY ROWS: ".db_num_rows($result));
+            }
+            if (IA_LOG_SQL_QUERY_EXPLAIN && strpos($query, 'SELECT') === 0) {
+                // FIXME: pipes, proper format.
+                $explanation = db_fetch_all("EXPLAIN $query");
+                log_print("EXPLANATION:");
+                if (count($explanation) > 0) {
+                    log_print('EXP: '.implode("\t", array_keys($explanation[0])));
+                    foreach ($explanation as $exprow) {
+                        log_print('EXP: '.implode("\t", array_values($exprow)));
+                    }
+                }
             }
         }
     }
