@@ -71,6 +71,12 @@ function pager_init_options($args = null)
     return $options;
 }
 
+// Call this on a pager options struct to find out if you need to send 'total_entries'
+// This is just an optimization, total_entries can't hurt.
+function pager_needs_total_entries($options) {
+    return $options['pager_style'] == 'standard';
+}
+
 // Format pager.
 function format_pager($options)
 {

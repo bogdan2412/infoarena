@@ -27,9 +27,7 @@ function macro_rankings($args) {
     $rounds = preg_split('/\s*\|\s*/', $roundstr);
 
     // FIXME: user/ task parameters.
-
-    $res = score_get("score", null, null, $rounds, $options['first_entry'], $options['display_entries'], "user_id", true);
-    $rankings = $res['scores'];
+    $rankings = score_get_range("score", null, null, $rounds, "user_id", $options['first_entry'], $options['display_entries'], true);
 
     $column_infos = array(
         array(
@@ -51,12 +49,13 @@ function macro_rankings($args) {
             'css_class' => 'number score'
         ),
     );
-    $options['total_entries'] = $res['total_rows'];
+    if (pager_needs_total_entries($options)) {
+        $options['total_entries'] = score_get_count("score", null, null, $rounds, 'user_id');
+    }
 
     if (0 >= count($rankings)) {
         return macro_message('Nici un rezultat inregistrat pentru aceasta runda.');
-    }
-    else {
+    } else {
         return format_table($rankings, $column_infos, $options);
     }
 }

@@ -82,17 +82,12 @@ function score_build_query($score, $user, $task, $round)
 // $user, $task, $round can be null, string or an array.
 // If null it's ignored, otherwise only scores for those users/tasks/rounds
 // are counted.
-function score_get($score_name, $user, $task, $round, $start, $count, $groupby = "user_id", $numbered = false)
+function score_get_range($score_name, $user, $task, $round, $groupby = "user_id", $start = 0, $count = 999999, $numbered = false)
 {
     log_assert(is_score_name($score_name));
     $where = score_build_where_clauses($user, $task, $round);
     $where[] = sprintf("ia_score.`name` = '%s'", db_escape($score_name));
-    if ($numbered) {
-        db_query("SET @counter = " . $start); // reset counter
-    }
-    $query = sprintf("
-            SELECT SQL_CALC_FOUND_ROWS
-                %s
+    $query = sprintf("SELECT
                 ia_score.`name` as `score_name`, `user_id`, `task_id`, `round_id`, SUM(`score`) as score, 
                 ia_user.username as user_name, ia_user.full_name as user_full,
                 ia_user.rating_cache AS user_rating
@@ -100,14 +95,33 @@ function score_get($score_name, $user, $task, $round, $start, $count, $groupby =
                 LEFT JOIN ia_user ON ia_user.id = ia_score.user_id
             WHERE %s GROUP BY %s
             ORDER BY `score` DESC LIMIT %s, %s",
-            ($numbered ? "(@counter := @counter + 1) as position," : ""),
             join($where, " AND "), $groupby, $start, $count);
     $scores = db_fetch_all($query);
+    if ($numbered) {
+        for ($i = 0; $i < count($scores); ++$i) {
+            $scores[$i]['position'] = $i + $start + 1;
+        }
+    }
 
-    return array(
-            'scores' => $scores,
-            'total_rows' => db_query_value("SELECT FOUND_ROWS();"),
-    );
+    return $scores;
+}
+
+// Count function for score_get_range
+function score_get_count($score_name, $user, $task, $round, $groupby) {
+    log_assert(is_score_name($score_name));
+    $where = score_build_where_clauses($user, $task, $round);
+    $where[] = sprintf("ia_score.`name` = '%s'", db_escape($score_name));
+    if ($user != null) {
+        $join = "LEFT JOIN ia_user ON ia_user.id = ia_score.user_id";
+    } else {
+        $join = "";
+    }
+    $query = sprintf("SELECT COUNT(*) AS `cnt`
+            FROM ia_score $join
+            WHERE %s",
+            join($where, " AND "), $groupby);
+    $res = db_fetch($query);
+    return $res['cnt'];
 }
 
 // Get a score value.
@@ -199,8 +213,8 @@ function rating_history($user_id) {
 //      ...
 //  );
 function rating_rounds() {
-    $query = "
-        SELECT object_id AS round_id, `value` AS `timestamp`,
+    $query = "SELECT
+               object_id AS round_id, `value` AS `timestamp`,
                ia_round.page_name AS round_page_name,
                ia_round.title AS round_title
         FROM `ia_parameter_value`
@@ -220,8 +234,7 @@ function rating_rounds() {
     }
 
     // filter out rounds having rating_update off
-    $query = "
-        SELECT object_id AS round_id, parameter_id, `value`
+    $query = "SELECT object_id AS round_id, parameter_id, `value`
         FROM `ia_parameter_value`
         WHERE parameter_id = 'rating_update' AND object_type = 'round'
     ";
@@ -264,8 +277,8 @@ function rating_rounds() {
 // table ia_user.
 function rating_last_scores() {
     // FIXME: horrible query
-    $query = "
-        SELECT ia_score.name AS `name`, ia_score.score AS score,
+    $query = "SELECT
+        ia_score.name AS `name`, ia_score.score AS score,
                ia_score.user_id, ia_score.round_id,
                pv.`value` AS `timestamp`, ia_user.username
         FROM ia_score
@@ -323,8 +336,7 @@ function rating_last_scores() {
 // NOTE: Some buckets may be missing completely
 function rating_distribution($bucket_size) {
     log_assert(is_numeric($bucket_size));
-    $query = "
-        SELECT
+    $query = "SELECT
             COUNT(*) AS `count`,
             FLOOR(rating_cache/{$bucket_size}) AS `bucket`
         FROM ia_user
@@ -345,8 +357,7 @@ function rating_distribution($bucket_size) {
 // Get top rated users list.
 function rating_toprated($start, $count)
 {
-    $query = "
-        SELECT SQL_CALC_FOUND_ROWS
+    $query = "SELECT SQL_CALC_FOUND_ROWS
             *
         FROM ia_user
         WHERE rating_cache > 0
