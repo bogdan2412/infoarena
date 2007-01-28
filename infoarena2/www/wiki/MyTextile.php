@@ -135,7 +135,7 @@ class MyTextile extends Textile {
                 $extra = preg_replace('/\s/', '', $extra);
                 // FIXME: sometimes we can determine width/height.
                 if (!resize_coordinates(100, 100, $extra)) {
-                    log_warn("Invalid resize instructions '$extra'");
+                    //log_warn("Invalid resize instructions '$extra'");
                     $extra = '';
                 }
                 $args['src'] = htmlentities(url_image_resize($matches[1], $matches[2], $extra)); 

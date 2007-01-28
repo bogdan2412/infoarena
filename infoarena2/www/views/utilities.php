@@ -67,7 +67,6 @@ function wiki_include($page_name, $template_args = null) {
 
     echo '<div class="wiki_text_block">';
     if (!is_null($template_args)) {
-        log_print("Replacing stuff in $page_name");
         textblock_template_replace($textblock, $template_args);
         // No caching, we're using template magic.
         echo wiki_process_text($textblock['text']);

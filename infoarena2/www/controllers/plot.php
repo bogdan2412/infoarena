@@ -16,7 +16,6 @@ function controller_plot($suburl) {
             if (!$user) {
                 die_http_error();
             }
-            log_print("Plotting rating history of user ".$username);
 
             // get rating history
             $history = rating_history($user['id']);
@@ -41,13 +40,6 @@ function controller_plot($suburl) {
 
             if (!$user && $username) {
                 die_http_error();
-            }
-
-            if ($user) {
-                log_print("Plotting rating distribution for ".$username);
-            }
-            else {
-                log_print("Plotting global rating distribution");
             }
 
             // get rating history

@@ -118,24 +118,22 @@ SQL;
 }
 
 function job_get_count($task = null, $user = null) {
-    $query = <<<SQL
-SELECT COUNT(*) as `cnt`
-      FROM `ia_job` AS `job`
-      LEFT JOIN `ia_task` AS `task` ON job.`task_id` = `task`.`id`
-      LEFT JOIN `ia_user` AS `user` ON job.`user_id` = `user`.`id`
-SQL;
- 
+    $joins = array();
+    $wheres = array("TRUE"); 
     if (!is_null($task)) {
-        $query .= sprintf(" WHERE job.`task_id` = LCASE('%s')", db_escape($task));
+        $joins[] = "LEFT JOIN `ia_task` AS `task` ON job.`task_id` = `task`.`id`";
+        $wheres[] = sprintf(" WHERE job.`task_id` = LCASE('%s')", db_escape($task));
     }
     if (!is_null($user)) {
-        if (is_null($task)) {         
-            $query .= " WHERE ";
-        } else {
-            $query .= " AND ";
-        }
-        $query .= sprintf("user.`username` = LCASE('%s')", db_escape($user));
+        $joins[] = "LEFT JOIN `ia_user` AS `user` ON job.`user_id` = `user`.`id`";
+        $wheres[] = sprintf("user.`username` = LCASE('%s')", db_escape($user));
     }
+
+    $query = "SELECT COUNT(*) as `cnt`".
+            "\nFROM `ia_job` AS `job`".
+            "\n".implode(' ', $joins).
+            "\nWHERE (".implode(') AND (', $wheres).')';
+
     $res = db_fetch($query);
     return $res['cnt'];
 }
