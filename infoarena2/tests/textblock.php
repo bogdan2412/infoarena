@@ -21,7 +21,6 @@ $res = curl_test(array(
 ));
 log_assert_equal($res['redirect_count'],  1);
 
-
 log_print("Dude1 creates page.");
 $res = curl_test(array(
         'url' => url_textblock_edit('sandbox/test_page'),

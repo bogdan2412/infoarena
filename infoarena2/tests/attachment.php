@@ -130,9 +130,9 @@ for ($i = 1; $i <= 5; ++$i) {
     log_assert(strstr($res['content'], htmlentities(
                 url_attachment('sandbox/test_page', "test_file_$i"))));
 }
-log_assert(strstr($res['content'], htmlentities(
+log_assert(strstr(strtolower($res['content']), htmlentities(
             url_user_profile('test_dude1'))));
-log_assert(!strstr($res['content'], htmlentities(
+log_assert(!strstr(strtolower($res['content']), htmlentities(
             url_user_profile('test_dude2'))));
 
 log_print("Admin moves the spammed page.");

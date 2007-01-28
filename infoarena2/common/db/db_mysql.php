@@ -66,18 +66,19 @@ function db_query($query, $unbuffered = false) {
         // Print query info.
         if (IA_LOG_SQL_QUERY) {
             log_print("SQL QUERY: '$query'");
-            if (!$unbuffered) {
+            if (!$unbuffered && strpos($query, 'SELECT') === 0) {
                 log_print("SQL QUERY ROWS: ".db_num_rows($result));
             }
-            if (IA_LOG_SQL_QUERY_EXPLAIN && strpos($query, 'SELECT') === 0) {
-                // FIXME: pipes, proper format.
-                $explanation = db_fetch_all("EXPLAIN $query");
-                log_print("EXPLANATION:");
-                if (count($explanation) > 0) {
-                    log_print('EXP: '.implode("\t", array_keys($explanation[0])));
-                    foreach ($explanation as $exprow) {
-                        log_print('EXP: '.implode("\t", array_values($exprow)));
-                    }
+        }
+        if (IA_LOG_SQL_QUERY_EXPLAIN && !$unbuffered &&
+                strpos($query, 'SELECT') === 0) {
+            // FIXME: pipes, proper format.
+            $explanation = db_fetch_all("EXPLAIN $query");
+            log_print("EXPLANATION:");
+            if (count($explanation) > 0) {
+                log_print('EXP: '.implode("\t", array_keys($explanation[0])));
+                foreach ($explanation as $exprow) {
+                    log_print('EXP: '.implode("\t", array_values($exprow)));
                 }
             }
         }

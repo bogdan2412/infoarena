@@ -9,7 +9,7 @@ require_once(IA_ROOT_DIR . "common/db/parameter.php");
 // Get task by id. No params.
 function task_get($task_id) {
     log_assert(is_task_id($task_id));
-    $query = sprintf("SELECT * FROM ia_task WHERE `id` = LCASE('%s')",
+    $query = sprintf("SELECT * FROM ia_task WHERE `id` = '%s'",
                      db_escape($task_id));
     $res = db_fetch($query);
     if ($res) {

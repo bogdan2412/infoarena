@@ -89,21 +89,21 @@ function validate_html($content)
 function test_prepare()
 {
     log_assert(user_create(array(
-            'username' => 'test_dude1',
+            'username' => 'test_dudE1',
             'password' => 'pwd',
             'full_name' => 'Testing Dude 1',
             'email' => 'no@spam.com',
     )), "Failed creating test dude 1");
 
     log_assert(user_create(array(
-            'username' => 'test_dude2',
+            'username' => 'teSt_dude2',
             'password' => 'pwd',
             'full_name' => 'Testing Dude 2',
             'email' => 'no@spam.com',
     )), "Failed creating test dude 2");
 
     log_assert(user_create(array(
-            'username' => 'test_helper1',
+            'username' => 'teSt_helper1',
             'password' => 'pwd',
             'full_name' => 'Testing Helper 1',
             'email' => 'no@spam.com',
@@ -111,14 +111,14 @@ function test_prepare()
     )), "Failed creating test helper 1");
 
     log_assert(user_create(array(
-            'username' => 'test_helper2',
+            'username' => 'test_hElper2',
             'password' => 'pwd',
             'full_name' => 'Testing Helper 2',
             'security_level' => 'helper',
     )), "Failed creating test helper 2");
 
     log_assert(user_create(array(
-            'username' => 'test_admin',
+            'username' => 'tEst_adMin',
             'password' => 'pwd',
             'full_name' => 'Testing Admin',
             'email' => 'no@spam.com',

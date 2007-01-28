@@ -246,7 +246,7 @@ function textblock_move($old_name, $new_name) {
     // Move attachments in db.
     $query = sprintf("UPDATE `ia_file`
                       SET `page` = '%s'
-                      WHERE LCASE(`page`) = LCASE('%s')",
+                      WHERE `page` = '%s'",
                       db_escape($new_name), db_escape($old_name));
     db_query($query);
 

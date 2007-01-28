@@ -15,7 +15,7 @@ function parameter_update_values($object_type, $object_id, $dict) {
 
     // delete all parameters connected to this task
     $query = sprintf("DELETE FROM ia_parameter_value
-                      WHERE object_type = '%s' AND object_id = LCASE('%s')",
+                      WHERE object_type = '%s' AND object_id = '%s'",
                      db_escape($object_type), db_escape($object_id));
     db_query($query);
 
@@ -34,7 +34,7 @@ function parameter_update_values($object_type, $object_id, $dict) {
 function parameter_get_values($object_type, $object_id) {
     $query = sprintf("SELECT *
                       FROM ia_parameter_value
-                      WHERE object_type = '%s' AND object_id = LCASE('%s')",
+                      WHERE object_type = '%s' AND object_id = '%s'",
                      db_escape($object_type), db_escape($object_id));
     $dict = array();
     foreach (db_fetch_all($query) as $row) {

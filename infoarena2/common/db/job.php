@@ -101,7 +101,7 @@ SELECT `job`.`id`, `job`.`user_id`, `task_id`, `compiler_id`, `status`,
       LEFT JOIN `ia_user` AS `user` ON job.`user_id` = `user`.`id`
 SQL;
     if (!is_null($task)) {
-        $query .= sprintf(" WHERE job.`task_id` = LCASE('%s')", db_escape($task));
+        $query .= sprintf(" WHERE job.`task_id` = '%s'", db_escape($task));
     }
     if (!is_null($user)) {
         if (is_null($task)) {         
@@ -110,7 +110,7 @@ SQL;
         else {
             $query .= " AND ";
         }
-        $query .= sprintf("user.`username` = LCASE('%s')", db_escape($user));
+        $query .= sprintf("user.`username` = '%s'", db_escape($user));
     }
     $query .= sprintf(" ORDER BY job.`submit_time` DESC LIMIT %s, %s", $start, $range);
 
@@ -121,12 +121,11 @@ function job_get_count($task = null, $user = null) {
     $joins = array();
     $wheres = array("TRUE"); 
     if (!is_null($task)) {
-        $joins[] = "LEFT JOIN `ia_task` AS `task` ON job.`task_id` = `task`.`id`";
-        $wheres[] = sprintf(" WHERE job.`task_id` = LCASE('%s')", db_escape($task));
+        $wheres[] = sprintf(" WHERE job.`task_id` = '%s'", db_escape($task));
     }
     if (!is_null($user)) {
         $joins[] = "LEFT JOIN `ia_user` AS `user` ON job.`user_id` = `user`.`id`";
-        $wheres[] = sprintf("user.`username` = LCASE('%s')", db_escape($user));
+        $wheres[] = sprintf("user.`username` = '%s'", db_escape($user));
     }
 
     $query = "SELECT COUNT(*) as `cnt`".

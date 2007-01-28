@@ -143,7 +143,7 @@ function ia_template_footer() {
             global $execution_stats;
             log_execution_stats();
             $buffer = $execution_stats['log_copy'];
-            echo '<textarea id="log" rows="50">';
+            echo '<textarea id="log" rows="50" cols="80">';
             echo htmlentities($buffer);
             echo '</textarea>';
         }

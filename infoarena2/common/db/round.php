@@ -7,7 +7,7 @@ require_once(IA_ROOT_DIR."common/db/parameter.php");
 function round_get($round_id) {
     // this assert brakes templates pages with round_id = %round_id%
     log_assert(is_round_id($round_id));
-    $query = sprintf("SELECT * FROM ia_round WHERE `id` = LCASE('%s')",
+    $query = sprintf("SELECT * FROM ia_round WHERE `id` = '%s'",
                      db_escape($round_id));
     return db_fetch($query);
 }
@@ -83,7 +83,7 @@ function round_get_tasks($round_id, $first = 0, $count = null, $user_id = null, 
         $query = sprintf("SELECT $fields
                           FROM ia_round_task as round_task
                           LEFT JOIN ia_task as task ON task.id = round_task.task_id
-                          WHERE `round_task`.`round_id` = LCASE('%s')
+                          WHERE `round_task`.`round_id` = '%s'
                           ORDER BY task.`order` LIMIT %d, %d",
                          db_escape($round_id), db_escape($first), db_escape($count));
     } else {
@@ -94,9 +94,9 @@ function round_get_tasks($round_id, $first = 0, $count = null, $user_id = null, 
                           LEFT JOIN ia_score as score ON
                                 score.user_id = %s AND
                                 score.name = '%s' AND
-                                score.round_id = LCASE('%s') AND
+                                score.round_id = '%s' AND
                                 score.task_id = round_task.task_id
-                          WHERE `round_task`.`round_id` = LCASE('%s')
+                          WHERE `round_task`.`round_id` = '%s'
                           ORDER BY task.`order` LIMIT %d, %d",
                          db_escape($user_id), db_escape($score_name), db_escape($round_id),
                          db_escape($round_id), db_escape($first), db_escape($count));
@@ -107,7 +107,7 @@ function round_get_tasks($round_id, $first = 0, $count = null, $user_id = null, 
 function round_get_task_count($round_id)
 {
     $query = sprintf("SELECT COUNT(*) FROM ia_round_task
-                      WHERE `round_id` = LCASE('%s')",
+                      WHERE `round_id` = '%s'",
                      db_escape($round_id));
     return db_query_value($query);
 }
@@ -217,7 +217,7 @@ function round_get_registered_users_range($round_id, $start, $range)
                           (@counter := @counter + 1) AS position
                           FROM ia_user_round 
                           LEFT JOIN ia_user AS user ON user_id = user.id
-                          WHERE round_id = LCASE('%s')
+                          WHERE round_id = '%s'
                           ORDER BY rating DESC
                           LIMIT %s, %s", db_escape($round_id), $start, $range);
     }
@@ -237,7 +237,7 @@ function round_get_registered_users_count($round_id)
     else
     {
         $query = sprintf("SELECT COUNT(*) FROM ia_user_round
-                          WHERE `round_id` = LCASE('%s')",
+                          WHERE `round_id` = '%s'",
                           db_escape($round_id));
     }
     return db_query_value($query);
