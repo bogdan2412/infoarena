@@ -112,4 +112,7 @@ define("IA_LOG_SECURITY", IA_DEVELOPMENT_MODE);
 // If true then log cache hits/misses
 define("IA_LOG_CACHE", IA_DEVELOPMENT_MODE);
 
+// Log each and every SQL query. Not for the faint of heart.
+define("IA_LOG_SQL_QUERY", false);
+
 ?>

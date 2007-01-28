@@ -47,20 +47,30 @@ function db_affected_rows() {
 function db_query($query, $unbuffered = false) {
     global $dbLink;
 
+    // Disable unbuffered queries.
     if (!IA_DB_MYSQL_UNBUFFERED_QUERY) {
         $unbuffered = false;
     }
+
+    // Do the query.
     if ($unbuffered) {
-        //log_print("UNBUFFERED QUERY!");
         $result = mysql_unbuffered_query($query, $dbLink);
     } else {
-        //log_print("BUFFERED QUERY!");
-        //log_backtrace();
         $result = mysql_query($query, $dbLink);
     }
+
     if (!$result) {
         log_print("Query: '$query'");
         log_error("MYSQL error: ".mysql_error($dbLink));
+    } else {
+        // Print query info.
+        if (IA_LOG_SQL_QUERY) {
+            log_print("Query: '$query'");
+            log_backtrace();
+            if (!IA_DB_MYSQL_UNBUFFERED_QUERY) {
+                log_print("Query returned ".db_num_rows($result)." rows");
+            }
+        }
     }
 
     if (IA_DEVELOPMENT_MODE) {
