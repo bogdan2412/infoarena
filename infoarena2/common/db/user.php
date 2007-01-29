@@ -2,12 +2,14 @@
 
 require_once(IA_ROOT_DIR."common/db/db.php");
 require_once(IA_ROOT_DIR."common/user.php");
+require_once(IA_ROOT_DIR."common/db/cache.php");
 
 /**
  * User-related functions.
  */
 
 // Test password in IA1 format.
+// NOTE: not cached, this is correct.
 function user_test_ia1_password($username, $password) {
     // old ia1 users are expected to have the ia1 hashed password
     // as their actual password
@@ -24,6 +26,7 @@ function user_test_ia1_password($username, $password) {
 }
 
 // Check user's password
+// NOTE: not cached, this is correct.
 function user_test_password($username, $password) {
     // hash password
     $password = user_hash_password($password, $username);
@@ -38,11 +41,14 @@ function user_test_password($username, $password) {
 
 // Get user information.
 function user_get_by_username($username) {
+    if (($res = db_cache_get('user', $username)) !== false) {
+        return $res;
+    }
     $query = sprintf("SELECT *
                       FROM ia_user
                       WHERE username = '%s'",
                      db_escape($username));
-    return db_fetch($query);
+    return db_cache_set('user', $username, db_fetch($query));
 }
 
 function user_get_by_email($email) {
@@ -90,6 +96,7 @@ function user_create($data) {
     textblock_copy_replace("template/newuser", IA_USER_TEXTBLOCK_PREFIX.$data['username'],
                            $replace, "public", $new_user['id']);
 
+    db_cache_purge('user');
     return $new_user;
 }
 
@@ -106,6 +113,7 @@ function user_update($data, $id) {
     $query = substr($query, 0, strlen($query)-1); // delete last ,
     $query .= " WHERE `id` = '" . db_escape($id) . "'";
 
+    db_cache_purge('user');
     return db_query($query);
 }
 
@@ -148,8 +156,7 @@ function user_submitted_tasks($user_id, $solved = true, $failed = true) {
         log_error('You can\'t select nothing.');
     }
 
-    $query = "
-        SELECT *
+    $query = "SELECT *
         FROM ia_score
         LEFT JOIN ia_task ON ia_task.id = ia_score.task_id
         WHERE ia_score.`name` = 'score' AND ia_score.user_id = '%s'
@@ -164,8 +171,7 @@ function user_submitted_tasks($user_id, $solved = true, $failed = true) {
 // Returns array with rounds that user has submitted to tasks.
 function user_submitted_rounds($user_id) {
     // FIXME: Find a way to remove the hard-coded "<> 'arhiva'"
-    $query = "
-        SELECT *
+    $query = "SELECT *
         FROM ia_score
         LEFT JOIN ia_round ON ia_round.id = ia_score.round_id
         WHERE ia_score.`name` = 'score' AND ia_score.user_id = '%s'

@@ -64,6 +64,7 @@ function db_query($query, $unbuffered = false) {
         log_error("MYSQL error: ".mysql_error($dbLink));
     } else {
         // Print query info.
+        //log_backtrace();
         if (IA_LOG_SQL_QUERY && strpos($query, 'EXPLAIN') !== 0) {
             log_print("SQL QUERY: '$query'");
             if (!$unbuffered && strpos($query, 'SELECT') === 0) {
@@ -73,7 +74,7 @@ function db_query($query, $unbuffered = false) {
         if (IA_LOG_SQL_QUERY_EXPLAIN && !$unbuffered &&
                 strpos($query, 'SELECT') === 0) {
             // FIXME: pipes, proper format.
-            $explanation = db_fetch_all("EXPLAIN $query");
+            $explanation = db_fetch_all("EXPLAIN EXTENDED $query");
             log_print("EXPLANATION:");
             if (count($explanation) > 0) {
                 log_print('EXP: '.implode("\t", array_keys($explanation[0])));

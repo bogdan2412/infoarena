@@ -7,12 +7,12 @@ require_once(dirname($argv[0]) . "/utilities.php");
 
 // URLs to benchmark
 $benchmark_urls = array(
+    IA_URL . "utilizator/domino?action=stats",
+    IA_URL . "plot/rating?user=gcosmin",
     IA_URL . "clasament-rating",
     IA_URL . "monitor",
     IA_URL . "links",
     IA_URL . "stiri",
-    IA_URL . "utilizator/domino?action=stats",
-    IA_URL . "plot/rating?user=gcosmin",
 );
 
 // number of tests

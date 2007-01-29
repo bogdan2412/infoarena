@@ -102,6 +102,11 @@ if (IA_SMTP_ENABLED) {
 // Disable mysql_unbuffered_query
 define("IA_DB_MYSQL_UNBUFFERED_QUERY", false);
 
+// Enable the DB cache by default.
+// If it's broken then you have a bug.
+// Disabling it might still be usefull for mysql tweaking.
+define("IA_ENABLE_DB_CACHE", true);
+
 // Logging options. Anything else in normal operation is a bug.
 // Filling error_log on a production machine sucks.
 
@@ -111,6 +116,9 @@ define("IA_LOG_SECURITY", IA_DEVELOPMENT_MODE);
 
 // If true then log cache hits/misses
 define("IA_LOG_CACHE", IA_DEVELOPMENT_MODE);
+
+// If true then log db cache hits/misses
+define("IA_LOG_DB_CACHE", false);
 
 // Log each and every SQL query. Not for the faint of heart.
 define("IA_LOG_SQL_QUERY", false);
