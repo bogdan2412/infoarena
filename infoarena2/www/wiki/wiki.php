@@ -53,10 +53,10 @@ function wiki_macro_callback($matches) {
 function wiki_process_only_macros($content) {
     require_once(IA_ROOT_DIR."www/macros/macros.php");
     return preg_replace_callback(
-            '/ <div \s* macro_name="([a-z][a-z0-9_]*)" \s* runas="macro" \s*
+            '/ <span \s* macro_name="([a-z][a-z0-9_]*)" \s* runas="macro" \s*
                 ((?: (?:[a-z][a-z0-9_]*) \s* = \s*
                     "(?:(?:[^"]*(?:"")*)*)" \s* )* \s*)
-                ><\/div>/xi', 'wiki_macro_callback', $content);
+                ><\/span>/xi', 'wiki_macro_callback', $content);
 /*    return preg_replace_callback(
             '/ <?([a-z][a-z0-9_]*) \s*
                 ((?: (?:[a-z][a-z0-9_]*) \s* = \s*

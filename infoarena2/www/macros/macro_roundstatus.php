@@ -32,11 +32,11 @@ function macro_roundstatus($args) {
     }
 
     if ($round['state'] == 'waiting') {
-        return '<div class="round status waiting">Aceasta runda nu a inceput inca</div>';
+        return '<span class="round status waiting">Aceasta runda nu a inceput inca</span>';
     } elseif ($round['state'] == 'running') {
-        return '<div class="round status running">Runda este activa!</div>';
+        return '<span class="round status running">Runda este activa!</span>';
     } elseif ($round['state'] == 'complete') {
-        return '<div class="round status complete">Runda s-a terminat</div>';
+        return '<span class="round status complete">Runda s-a terminat</span>';
     } else {
         return macro_error("Invalid round state");
     }

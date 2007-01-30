@@ -116,7 +116,7 @@ $res = curl_test(array(
 ));
 log_assert_equal($res['url'], url_absolute(url_textblock('runda/tEst_Round')));
 log_assert(strstr($res['content'], 'xzx-round-title-xzx'));
-log_assert(strstr($res['content'], '<div class="round status waiting">'));
+log_assert(strstr($res['content'], '<span class="round status waiting">'));
 log_assert(!strstr($res['content'], '<a href="'.
             url_textblock('problema/cmmdc')));
 log_assert(!strstr($res['content'], '<a href="'.
@@ -148,9 +148,9 @@ $res = curl_test(array(
 ));
 log_assert_equal($res['url'], url_absolute(url_textblock('runda/tEst_Round')));
 log_assert(strstr($res['content'], 'xzx-round-title-xzx'));
-log_assert(strstr($res['content'], '<div class="round status waiting">'));
-log_assert(!strstr($res['content'], '<div class="round status running">'));
-log_assert(!strstr($res['content'], '<div class="round status complete">'));
+log_assert(strstr($res['content'], '<span class="round status waiting">'));
+log_assert(!strstr($res['content'], '<span class="round status running">'));
+log_assert(!strstr($res['content'], '<span class="round status complete">'));
 log_assert(strstr($res['content'], '<a href="'.
             url_textblock('problema/cmmdc')));
 log_assert(strstr($res['content'], '<a href="'.
@@ -170,9 +170,9 @@ $res = curl_test(array(
 ));
 log_assert_equal($res['url'], url_absolute(url_textblock('runda/tEst_Round')));
 log_assert(strstr($res['content'], 'xzx-round-title-xzx'));
-log_assert(!strstr($res['content'], '<div class="round status waiting">'), "Round still waiting");
-log_assert(strstr($res['content'], '<div class="round status running">'));
-log_assert(!strstr($res['content'], '<div class="round status complete">'));
+log_assert(!strstr($res['content'], '<span class="round status waiting">'), "Round still waiting");
+log_assert(strstr($res['content'], '<span class="round status running">'));
+log_assert(!strstr($res['content'], '<span class="round status complete">'));
 log_assert(strstr($res['content'], '<a href="'.
             url_textblock('problema/cmmdc')));
 log_assert(strstr($res['content'], '<a href="'.
