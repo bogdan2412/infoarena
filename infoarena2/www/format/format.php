@@ -65,6 +65,27 @@ function format_link($url, $content, $escape = true, $attr = array()) {
     return format_tag("a", $content, $attr, $escape);
 }
 
+// Highlight an access key in a string, by surrounding the first occurence
+// of the $key with <span class="access-key"></span>
+// Case insensitive, nothing happens if $key is not found.
+// FIXME: Improve this logic.
+function format_highlight_access_key($string, $key) {
+    if (($pos = stripos($string, $key)) !== false) {
+        return substr_replace($string,
+                '<span class="access-key">'.$string[$pos].'</span>', $pos, 1);
+    } else {
+        return $string;
+    }
+}
+
+// Format a link with an access key.
+// Html content not supported because of format_highlight_access_key.
+function format_link_access($url, $content, $key, $attr = array()) {
+    $attr['accesskey'] = $key;
+    $content = format_highlight_access_key(htmlentities($content), $key);
+    return format_link($url, $content, false, $attr);
+}
+
 // Format img tag.
 // NOTE: html says alt is REQUIRED.
 // Escapes both args.

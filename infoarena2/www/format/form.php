@@ -86,8 +86,12 @@ function format_form_field_inner_editor(
         $type == 'string' ||
         $type == 'float' ||
         $type == 'datetime') {
+        $input_type = 'type';
+        if (getattr($field_info, 'is_password', false)) {
+            $input_type = 'password';
+        }
         return format_tag('input', null, array(
-                'type' => 'text',
+                'type' => $input_type,
                 'name' => $field_name,
                 'id' => "form_$field_name",
                 'value' => htmlentities($field_value),
@@ -128,16 +132,31 @@ function format_form_field_inner_editor(
 }
 
 // Format a certain form field. Returns something like
-// <label> <input> or <select> <error span> <info span>
+// <label> <error span> <editor> <info span>
 function format_form_field($field_info, $field_name,
         $field_value = null, $field_error = null, $enclose_in_tds = false) {
-    $label = "<label for=\"form_$field_name\">{$field_info['name']}</label>";
+
+    // Format label.
+    $label = "<label for=\"form_$field_name\"";
+    if (array_key_exists('access_key', $field_info)) {
+        $label .= 'accesskey="';
+        $label .= $field_info['access_key'];
+        $label .= '">';
+        $label .= format_highlight_access_key(
+                $field_info['name'], $field_info['access_key']);
+    } else {
+        $label .= $field_info['name'];
+    }
+    $label .= '</label>';
+
+    // Format error span.
     if ($field_error != null) {
         $errspan = "<span class=\"fieldError\">$field_error</span>";
     } else {
         $errspan = '';
     }
 
+    // Format editor.
     $editor = format_form_field_inner_editor($field_info, $field_name, $field_value);
     if (array_key_exists('description', $field_info)) {
         $helpspan = '<span class="fieldHelp">'.$field_info['description'].'</span>';
@@ -145,6 +164,7 @@ function format_form_field($field_info, $field_name,
         $helpspan = '';
     }
 
+    // Enclose in tds and return.
     if ($enclose_in_tds) {
         return "<td>$label</td>\n<td>$editor$errspan</td>\n<td>$helpspan</td>\n";
     } else {

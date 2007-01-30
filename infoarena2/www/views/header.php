@@ -65,7 +65,7 @@ ia_template_topnav($topnav_select, $smf_admin);
 <div id="sidebar">
     <ul id="nav" class="clear">
         <li><a href="<?= htmlentities(url_home()) ?>">Home</a></li>
-        <li><a href="<?= htmlentities(url_textblock('arhiva')) ?>">Arhiva de probleme</a></li>
+        <li><?= format_link_access(url_textblock('arhiva'), "Arhiva de probleme", 'a') ?></li>
         <li><a href="<?= htmlentities(url_textblock('concursuri')) ?>">Concursuri online</a></li>
         <li><a href="<?= htmlentities(url_textblock('clasament-rating')) ?>">Clasament</a></li>
         <li><a href="<?= htmlentities(url_textblock('articole')) ?>">Articole</a></li>
@@ -75,10 +75,10 @@ ia_template_topnav($topnav_select, $smf_admin);
         <li><a href="<?= htmlentities(url_textblock('despre-infoarena')) ?>">Despre infoarena</a></li>
         <li><a href="<?= htmlentities(url_textblock('documentatie')) ?>">Documentatie</a></li>
         <li class="separator"><hr/></li>
-        <li><a href="<?= htmlentities(url_monitor(identity_username())) ?>">Monitorul de evaluare</a></li>
+        <li><?= format_link_access(url_monitor(identity_username()), "Monitorul de evaluare", 'm') ?></li>
         <?php if (!identity_anonymous()) { ?>
         <li><a href="<?= htmlentities(url_submit()) ?>"><strong>Trimite solutii</strong></a></li>
-        <li><a href="<?= htmlentities(url_account()) ?>">Contul meu</a></li>
+        <li><?= format_link_access(url_account(), "Contul meu", 'c') ?></li>
         <?php } ?>
     </ul>
 

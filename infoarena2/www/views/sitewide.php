@@ -25,9 +25,9 @@ function ia_template_header() {
             <span class="user">
                 <strong><?= htmlentities($identity_user['full_name']) ?></strong><br/>
                 <?= format_user_ratingbadge($username, $identity_user['rating_cache']) ?>
-                <?= format_link(url_user_profile($username, true), $username) ?><br/>
+                <?= format_link_access(url_user_profile($username, true), $username, 'p') ?><br/>
                 <?= format_link(url_logout(), "logout", true, array('class' => 'logout')) ?> |
-                <?= format_link(url_account(), 'contul meu') ?>
+                <?= format_link_access(url_account(), 'contul meu', 'c') ?>
             </span>
         </div>
     <?php } ?>
@@ -59,7 +59,7 @@ function ia_template_topnav($selected = 'infoarena', $smf_admin = false) {
     </li>
     <li>
         <?= getattr($pre, 'forum') ?>
-        <?= format_link(url_forum(), "forum") ?>
+        <?= format_link_access(url_forum(), "forum", 'f') ?>
         <?= getattr($post, 'forum') ?>
     </li>
     <li>
@@ -81,7 +81,7 @@ function ia_template_topnav($selected = 'infoarena', $smf_admin = false) {
 <?php } else { ?>
     <li>
         <?= getattr($pre, 'profile') ?>
-        <?= format_link(url_user_profile($identity_user['username']), 'profilul meu') ?>
+        <?= format_link_access(url_user_profile($identity_user['username']), 'profilul meu', 'p') ?>
         <?= getattr($post, 'profile') ?></li>
     <li>
         <?= getattr($pre, 'pm') ?>

@@ -87,6 +87,22 @@ function format_pager($options)
     }
 }
 
+// Internal for format_standard_pager
+function _format_standard_pager_link($options, $number) {
+    $url_args = getattr($options, 'url_args', $_GET);
+    $param_prefix = getattr($options, 'param_prefix', '');
+    $display_entries = getattr($options, 'display_entries', IA_PAGER_DEFAULT_DISPLAY_ENTRIES);
+
+    $url_args[$param_prefix.'first_entry'] = $number * $display_entries;
+    ++$number;
+    $access_keys = getattr($options, 'use_digit_access_keys', true);
+    if ($access_keys && $number >= 0 && $number <= 9) {
+        $args['accesskey'] = $number;
+    }
+
+    return format_link(url_from_args($url_args), $number, false, $args) . ' ';
+}
+
 // Formats a standard pager. Used by format_table.
 function format_standard_pager($options)
 {
@@ -94,9 +110,8 @@ function format_standard_pager($options)
     $first_entry = getattr($options, 'first_entry', 0);
     $total_entries = $options['total_entries'];
     $display_entries = getattr($options, 'display_entries', IA_PAGER_DEFAULT_DISPLAY_ENTRIES);
-    $url_args = getattr($options, 'url_args', $_GET);
-    $param_prefix = getattr($options, 'param_prefix', '');
     $surround_pages = getattr($options, 'surround_pages', 5);
+    $access_keys = getattr($options, 'use_digit_access_keys', true);
 
     assert(is_whole_number($display_entries));
     assert(is_whole_number($first_entry));
@@ -113,35 +128,29 @@ function format_standard_pager($options)
     $result = "Vezi pagina: ";
     if ($curpage < 8) {
         for ($i = 0; $i < $curpage; ++$i) {
-            $url_args[$param_prefix.'first_entry'] = $i * $display_entries;
-            $result .= format_link(url_from_args($url_args), $i + 1)." ";
+            $result .= _format_standard_pager_link($options, $i);
         }
     } else {
         for ($i = 0; $i < $surround_pages; ++$i) {
-            $url_args[$param_prefix.'first_entry'] = $i * $display_entries;
-            $result .= format_link(url_from_args($url_args), $i + 1)." ";
+            $result .= _format_standard_pager_link($options, $i);
         }
         $result .= "... ";
         for ($i = $curpage - $surround_pages; $i < $curpage; ++$i) {
-            $url_args[$param_prefix.'first_entry'] = $i * $display_entries;
-            $result .= format_link(url_from_args($url_args), $i + 1)." ";
+            $result .= _format_standard_pager_link($options, $i);
         }
     }
     $result .= '<span class="selected"><strong>'.($curpage + 1)."</strong></span> ";
     if ($totpages - $curpage < 3 + 2 * $surround_pages) {
         for ($i = $curpage + 1; $i < $totpages; ++$i) {
-            $url_args[$param_prefix.'first_entry'] = $i * $display_entries;
-            $result .= format_link(url_from_args($url_args), $i + 1)." ";
+            $result .= _format_standard_pager_link($options, $i);
         }
     } else {
         for ($i = $curpage + 1; $i <= $curpage + $surround_pages; ++$i) {
-            $url_args[$param_prefix.'first_entry'] = $i * $display_entries;
-            $result .= format_link(url_from_args($url_args), $i + 1)." ";
+            $result .= _format_standard_pager_link($options, $i);
         }
         $result .= "... ";
         for ($i = $totpages - $surround_pages; $i < $totpages; ++$i) {
-            $url_args[$param_prefix.'first_entry'] = $i * $display_entries;
-            $result .= format_link(url_from_args($url_args), $i + 1)." ";
+            $result .= _format_standard_pager_link($options, $i);
         }
     }
 
