@@ -10,24 +10,19 @@ require_once(IA_ROOT_DIR."www/format/format.php");
 //      user(required): user id.
 //      info(required): parameter.
 function macro_userinfo($args) {
-    static $last_user_id = null;
-    static $user;
-
     $user_id = getattr($args, 'user', '');
     if ($user_id === '') {
         return macro_error("User parameter required.");
     }
 
-    if ($last_user_id != $user_id) {
-        $user = user_get_by_username($user_id);
-        if (!$user) {
-            return macro_error("No such username: ".$user_id);
-        }
-    }
-
     $info = getattr($args, 'info', '');
     if ($info === '') {
         return macro_error("Info parameter required");
+    }
+
+    $user = user_get_by_username($user_id);
+    if (!$user) {
+        return macro_error("No such username: ".$user_id);
     }
 
     switch ($info) {
@@ -43,8 +38,7 @@ function macro_userinfo($args) {
         case 'rating':
             if ($user['rating_cache']) {
                 return htmlentities(rating_scale($user['rating_cache']));
-            }
-            else {
+            } else {
                 return 'n/a';
             }
         default:

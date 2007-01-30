@@ -8,8 +8,7 @@ require_once(IA_ROOT_DIR . "common/round.php");
 function format_score_column($val) {
     if (is_null($val)) {
         return 'N/A';
-    }
-    else {
+    } else {
         return round($val);
     }
 }
@@ -60,10 +59,12 @@ function macro_tasks($args) {
     }
     log_assert_valid(round_validate($round));
 
+
     // Check if user can see round tasks
     if (!identity_can('round-view-tasks', $round)) {
         return macro_permission_error();
     }
+
 
     $scores = !is_null(getattr($args, 'score'));
     if (identity_anonymous() || $scores == false) {
@@ -71,6 +72,9 @@ function macro_tasks($args) {
     } else {
         $user_id = identity_get_user_id();
     }
+
+    $show_numbers = getattr($args, 'show_numbers', false);
+    $show_authors = getattr($args, 'show_authors', true);
 
     // get round tasks
     $tasks = round_get_tasks($round_id,
@@ -82,17 +86,27 @@ function macro_tasks($args) {
     $options['css_class'] = 'tasks';
 
     $column_infos = array();
-    $column_infos[] = array(
-            'title' => 'Numar',
-            'css_class' => 'number',
-            'rowform' => create_function('$row', 'return $row["order"];'),
-    );
+    if ($show_numbers) {
+        $column_infos[] = array(
+                'title' => 'Numar',
+                'css_class' => 'number',
+                'rowform' => create_function('$row',
+                        'return str_pad($row["order"] - 1, 3, \'0\', STR_PAD_LEFT);'),
+        );
+    }
     $column_infos[] = array(
             'title' => 'Titlul problemei',
             'css_class' => 'task',
             'rowform' => create_function('$row',
                     'return format_link(url_textblock($row["page_name"]), $row["title"]);'),
     );
+    if ($show_authors) {
+        $column_infos[] = array(
+                'title' => 'Autor',
+                'css_class' => 'author',
+                'key' => 'author',
+        );
+    }
     if (!is_null($user_id)) {
         $column_infos[] = array (
                 'title' => 'Scorul tau',

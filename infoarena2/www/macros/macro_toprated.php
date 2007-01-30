@@ -25,8 +25,7 @@ function macro_toprated($args) {
     $args['param_prefix'] = 'toprated_';
     $options = pager_init_options($args);
 
-    $res = rating_toprated($options['first_entry'], $options['display_entries']);
-    $rankings = $res['scores'];
+    $rankings = get_users_by_rating_range($options['first_entry'], $options['display_entries']);
 
     $column_infos = array(
         array(
@@ -49,12 +48,13 @@ function macro_toprated($args) {
             'css_class' => 'number rating',
         ),
     );
-    $options['total_entries'] = $res['total_rows'];
+    if (pager_needs_total_entries($options)) {
+        $options['total_entries'] = get_users_by_rating_count();
+    }
 
     if (0 >= count($rankings)) {
         return macro_message('Nici un utilizator cu rating.');
-    }
-    else {
+    } else {
         return format_table($rankings, $column_infos, $options);
     }
 }

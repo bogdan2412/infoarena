@@ -355,10 +355,9 @@ function rating_distribution($bucket_size) {
 }
 
 // Get top rated users list.
-function rating_toprated($start, $count)
+function get_users_by_rating_range($start, $count)
 {
-    $query = "SELECT SQL_CALC_FOUND_ROWS
-            *
+    $query = "SELECT *
         FROM ia_user
         WHERE rating_cache > 0
         AND security_level != 'admin'
@@ -366,12 +365,17 @@ function rating_toprated($start, $count)
         LIMIT %s, %s
     ";
     $query = sprintf($query, $start, $count);
-    $ratings = db_fetch_all($query);
+    return db_fetch_all($query);
+}
 
-    return array(
-        'scores' => $ratings,
-        'total_rows' => db_query_value("SELECT FOUND_ROWS();"),
-    );
+// Count function for get_user_by_rating_range.
+function get_users_by_rating_count() {
+    $query = "SELECT COUNT(*) as `cnt`
+        FROM `ia_user`
+        WHERE `rating_cache` > 0
+        AND `security_level` != 'admin'";
+    $res = db_fetch($query);
+    return $res['cnt'];
 }
 
 ?>

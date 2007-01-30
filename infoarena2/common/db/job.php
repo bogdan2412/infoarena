@@ -121,7 +121,7 @@ function job_get_count($task = null, $user = null) {
     $joins = array();
     $wheres = array("TRUE"); 
     if (!is_null($task)) {
-        $wheres[] = sprintf(" WHERE job.`task_id` = '%s'", db_escape($task));
+        $wheres[] = sprintf("job.`task_id` = '%s'", db_escape($task));
     }
     if (!is_null($user)) {
         $joins[] = "LEFT JOIN `ia_user` AS `user` ON job.`user_id` = `user`.`id`";
