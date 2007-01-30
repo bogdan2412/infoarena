@@ -6,7 +6,6 @@ require_once(IA_ROOT_DIR . 'www/url.php');
 
 ?>
 
-
 <h1><?= htmlentities($view['title']) ?></h1>
 
 <table class="job">
@@ -42,71 +41,80 @@ require_once(IA_ROOT_DIR . 'www/url.php');
 
 <div class="job-eval-log">
 <?php
-$lines = explode("\n", $job['eval_log']); 
-$eval_log = "";
-$print_header = true;
-$column_infos = array(
-    array(
-        'title' => 'Test', 
-        'row' => 0,
-        'col' => 2
-    ),
-    array(
-        'title' => 'Timp de executie',
-        'row' => 2,
-        'col' => 1
-    ),
-    array(
-        'title' => 'Memorie folosita',
-        'row' => 3,
-        'col' => 1
-    ),
-    array(
-        'title' => 'Mesaj evaluare',
-        'row' => 4
-    ),
-    array(
-        'title' => 'Punctaj',
-        'row' => 5,
-        'col' => 0
-    ),
-);
-  
-foreach ($lines as $line) {
-    $line_tokens = explode(": ", $line);
 
-    if (strpos($line, 'Punctaj total') !== false) {
-        $eval_log .= '<tr><td colspan="'.(count($column_infos)-1).'">'.
-                     htmlentities($line_tokens[0]).'</td><td class = "total_score">'.
-                     htmlentities($line_tokens[1]).'</td></tr>';
+$eval_log = "";
+$before_table = true;
+$after_table = false;
+
+// Parse every line of eval_log
+// We have some creepy logic to print a table in the middle.
+// FIXME: This is some of the worst code ever.
+$lines = explode("\n", $job['eval_log']); 
+foreach ($lines as $line) {
+    if ($after_table) {
+        $eval_log .= $line . '<br />';
         continue;
     }
-    if (strpos($line, 'Rulez testul') === false) {
-        $eval_log .= $line . "\n";
+
+    // Parse total score line.
+    if (preg_match('/^Punctaj total: ([0-9]+)$/', $line, $matches)) {
+        $eval_log .= '<tr>';
+        $eval_log .= '<td colspan="4">Punctaj total:</td>';
+        $eval_log .= '<td class="total_score">';
+        $eval_log .= $matches[1];
+        $eval_log .= '</td></tr></table>';
+        $after_table = true;
         continue;
     }
-    if ($print_header) {
-        $eval_log .= '<table class="job_eval_log"><tr>';
-        foreach ($column_infos as $column) {
-            $eval_log .= "<th>".$column['title']."</th>";
+
+    // Parse test-run line.
+    if (preg_match('/^Rulez testul ([0-9]+): '.
+            '([^:]*): timp ([0-9]+)ms: mem ([0-9]+)kb: '.
+            '(.*): ([0-9]+) puncte$/', $line, $matches)) {
+        $test_no = $matches[1];
+        $test_status = $matches[2];
+        $test_time = $matches[3];
+        $test_mem = $matches[4];
+        $test_msg = $matches[5];
+        $test_score = $matches[6];
+
+        // Print the header when we see the first row.
+        if ($before_table) {
+            $eval_log .= '<table class="job_eval_log"><tr>';
+            $eval_log .= "<th>Test</th>";
+            $eval_log .= "<th>Timp executie</th>";
+            $eval_log .= "<th>Memorie folosita</th>";
+            $eval_log .= "<th>Mesaj</th>";
+            $eval_log .= "<th>Punctaj</th>";
+            $eval_log .= "</tr>";
+            $before_table = false;
         }
-        $eval_log .= '</tr>';
-        $print_header = false;
+
+        // Print actual data.
+        $eval_log .= '<tr>';
+        $eval_log .= '<td>'.$test_no.'</td>';
+        $eval_log .= '<td>'.$test_time.'ms</td>';
+        $eval_log .= '<td>'.$test_mem.'kb</td>';
+        $eval_log .= '<td>'.$test_msg.'</td>';
+        $eval_log .= '<td>'.$test_score.'</td>';
+        $eval_log .= "</tr>";
+
+        continue;
     }
-  
-    $eval_log .= '<tr>';
-    foreach ($column_infos as $column) {
-        $token = $line_tokens[$column['row']];
-        if (isset($column['col'])) {
-            $token = explode(" ", $token);
-            $token = $token[$column['col']];
-        }
-        $eval_log .= '<td>' . htmlentities($token) . '</td>';
+
+    // Pass everything else straight through.
+    if ($before_table) {
+        $eval_log .= $line . '<br />';
+    } else {
+        // Only blank lines between table and final score.
     }
-    $eval_log .= "</tr>";
 }
-$eval_log .= "</table>";
+
+if (!$after_table) {
+    $eval_log .= "</table>";
+}
 echo $eval_log;
+
 ?>
 <?= htmlentities($job['eval_message']) ?>
 </div>
