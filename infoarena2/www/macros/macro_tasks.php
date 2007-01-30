@@ -90,14 +90,14 @@ function macro_tasks($args) {
         $column_infos[] = array(
                 'title' => 'Numar',
                 'css_class' => 'number',
-                'rowform' => create_function('$row',
+                'rowform' => create_function_cached('$row',
                         'return str_pad($row["order"] - 1, 3, \'0\', STR_PAD_LEFT);'),
         );
     }
     $column_infos[] = array(
             'title' => 'Titlul problemei',
             'css_class' => 'task',
-            'rowform' => create_function('$row',
+            'rowform' => create_function_cached('$row',
                     'return format_link(url_textblock($row["page_name"]), $row["title"]);'),
     );
     if ($show_authors) {

@@ -14,17 +14,17 @@ else {
     $column_infos = array(
         array(
             'title' => 'Pozitie',
-            'rowform' => create_function('$row', 'return $row["position"];'),
+            'rowform' => create_function_cached('$row', 'return $row["position"];'),
             'css_class' => 'number rank',
         ),
         array(
             'title' => 'Nume',
-            'rowform' => create_function('$row',
+            'rowform' => create_function_cached('$row',
                                          'return format_user_normal($row["username"], $row["fullname"], $row["rating"]);'),
         ),
         array(
             'title' => 'Rating',
-            'rowform' => create_function('$row', 'return rating_scale($row["rating"]);'),
+            'rowform' => create_function_cached('$row', 'return rating_scale($row["rating"]);'),
             'css_class' => 'number rating'
         ),
     );

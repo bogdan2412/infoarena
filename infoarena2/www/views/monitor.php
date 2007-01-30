@@ -91,7 +91,7 @@ else {
         array(
             'title' => 'Utilizator',
             'key' => 'username',
-            'rowform' => create_function('$row',
+            'rowform' => create_function_cached('$row',
                  'return format_user_tiny($row["user_name"], $row["user_fullname"]);'),
         ),
         array(

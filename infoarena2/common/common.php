@@ -132,6 +132,22 @@ function is_user_full_name($user_full_name) {
     return preg_match('/^'.IA_RE_USER_FULL_NAME.'$/xi', $user_full_name);
 }
 
+// Cached version of create_function_cached.
+// Never use create_function_cached directly because it's a memory leak.
+// It's better to try avoid create_function_cached anyway, but if you
+// have to use it it's better to use this cached version.
+function create_function_cached($args, $code) {
+    if (!IA_ENABLE_CREATE_FUNCTION_CACHE) {
+        return create_function($args, $code);
+    }
+    static $_cache = array();
+    $key = str_replace('|', '<|>', $args) . '|' . str_replace('|', '<|>', $code);
+    if (!array_key_exists($key, $_cache)) {
+        $_cache[$key] = create_function($args, $code);
+    }
+    return $_cache[$key];
+}
+
 // Checks system requirements.
 // This will fail early if something is missing.
 function check_requirements()

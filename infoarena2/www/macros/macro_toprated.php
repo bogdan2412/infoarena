@@ -31,20 +31,20 @@ function macro_toprated($args) {
         array(
             'title' => 'Loc',
             'key' => 'full_name',
-            'rowform' => create_function('$row',
+            'rowform' => create_function_cached('$row',
                                          'return format_rank($row, '.$options['first_entry'].');'),
             'css_class' => 'number rank',
         ),
         array(
             'title' => 'Nume',
             'key' => 'full_name',
-            'rowform' => create_function('$row',
+            'rowform' => create_function_cached('$row',
                                          'return format_user_normal($row["username"], $row["full_name"], $row["rating_cache"]);'),
         ),
         array(
             'title' => 'Rating',
             'key' => 'rating_cache',
-            'rowform' => create_function('$row', 'return rating_scale($row[\'rating_cache\']);'),
+            'rowform' => create_function_cached('$row', 'return rating_scale($row[\'rating_cache\']);'),
             'css_class' => 'number rating',
         ),
     );

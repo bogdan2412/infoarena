@@ -2634,7 +2634,7 @@ class Textile {
     foreach ($list as $filter) {
       if (!isset($filters[$filter])) { continue; }
       if (is_string($filters[$filter])) {
-        $text = (($f = create_function('$text, $param', $filters[$filter])) ? $f($text, $param) : $text);
+        $text = (($f = create_function_cached('$text, $param', $filters[$filter])) ? $f($text, $param) : $text);
       }
     }
     return $text;
@@ -3252,16 +3252,9 @@ class Textile {
    * @private
    */
   function _cb($function) {
-    static $callback_cache = array();
     $current =& Textile::_current_store($this);
-    if (array_key_exists($function, $callback_cache)) {
-        return $callback_cache[$function];
-    } else {
-        $func = create_function('$m',
-                '$me =& Textile::_current(); return '.$function .';');
-        $callback_cache[$function] = $func;
-        return $func;
-    }
+    return create_function_cached('$m',
+            '$me =& Textile::_current(); return '.$function .';');
   } // function _cb
 
   /**

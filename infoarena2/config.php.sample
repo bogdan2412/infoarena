@@ -107,6 +107,10 @@ define("IA_DB_MYSQL_UNBUFFERED_QUERY", false);
 // Disabling it might still be usefull for mysql tweaking.
 define("IA_ENABLE_DB_CACHE", true);
 
+// Enabled the create_function_cached cached.
+// If false then create_function_cached_cached is the same as create_function_cached
+define("IA_ENABLE_CREATE_FUNCTION_CACHE", true);
+
 // Logging options. Anything else in normal operation is a bug.
 // Filling error_log on a production machine sucks.
 
