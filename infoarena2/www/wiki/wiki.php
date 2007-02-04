@@ -80,14 +80,14 @@ function wiki_process_textblock($tb) {
     if (!IA_TEXTILE_CACHE_ENABLE) {
         return wiki_process_macros(wiki_process_textile($tb['text']));
     } else {
-        $cacheid = preg_replace('/[^a-z0-9\.\-_]/i', '_', $tb['name']) . '_' .
+        $cache_id = preg_replace('/[^a-z0-9\.\-_]/i', '_', $tb['name']) . '_' .
                    db_date_parse($tb['timestamp']);
-        $cache_ret = cache_load($cacheid, null);
-        if (is_null($cache_ret)) {
-            $cache_ret = wiki_process_only_textile($tb['text']);
-            cache_save($cacheid, $cache_ret);
+        $cache_res = cache_get($cache_id);
+        if ($cache_res == false) {
+            $cache_res = wiki_process_only_textile($tb['text']);
+            cache_set($cache_id, $cache_res);
         }
-        return wiki_process_only_macros($cache_ret);
+        return wiki_process_only_macros($cache_res);
     }
 }
 

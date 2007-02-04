@@ -46,6 +46,10 @@ function http_referer_check() {
 //
 // This function analyzes http headers and looks for an If-Modified-Since header.
 function http_cache_check($last_modified, $cache_age = IA_CLIENT_CACHE_AGE) {
+    if (!IA_CLIENT_CACHE_ENABLE) {
+        return;
+    }
+
     $headers = apache_request_headers();
     if (isset($headers['If-Modified-Since'])) {
         // we split it due to some bug in Mozilla < v6
@@ -67,14 +71,48 @@ function http_cache_check($last_modified, $cache_age = IA_CLIENT_CACHE_AGE) {
         header('Last-Modified: '.gmdate('D, d M Y H:i:s', $last_modified)
                .' GMT', true, 304);
         if (IA_LOG_CACHE) {
-            log_print('CACHE: Client has up-to-date cache');
+            log_print('CACHE: Client hit');
         }
         die();
     } else {
+        if (IA_LOG_CACHE) {
+            log_print('CACHE: Client miss');
+        }
         // Client's cache is missing / out-dated
         header('Last-Modified: '.gmdate('D, d M Y H:i:s', $last_modified)
                .' GMT', true, 200);
     }
+}
+
+// Serve static file through HTTP
+// NOTE: cache check enabled by default
+// WARNING: this function does not return
+function http_serve($disk_file_name, $http_file_name, $mime_type = null, $cache_check = true) {
+    // Open file
+    $fp = fopen($disk_file_name, "rb");
+    log_assert($fp);
+    $stat = fstat($fp);
+    log_assert(is_array($stat), "fstat failed");
+
+    if ($cache_check) {
+        http_cache_check($stat['mtime']);
+    }
+
+    // HTTP headers.
+    if (!is_null($mime_type)) {
+        header("Content-Type: {$mime_type}");
+    }
+    header("Content-Disposition: inline; filename="
+           .urlencode($http_file_name).";");
+    header("Content-Length: " . $stat['size']);
+
+    // Serve file
+    $written = fpassthru($fp);
+    if ($written != $stat['size']) {
+        log_error("fpassthru failed somehow.");
+    }
+    fclose($fp);
+    die();
 }
 
 // Die with a http error.

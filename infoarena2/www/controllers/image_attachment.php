@@ -14,16 +14,12 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
     }
 
     // check if image exists
-    $found = true;
     $attach = attachment_get($file_name, $page_name);
-    if (!$attach) {
-        $found = false;
-    }
+    $found = !is_null($attach);
     if ($found) {
         $real_name = attachment_get_filepath($attach);
         $found = file_exists($real_name);
     }
-
     // if image was not found we display a placeholder image
     if (!$found) {
         $page_name = 'template/infoarena';
@@ -32,14 +28,14 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
         log_assert($attach);
         $real_name = attachment_get_filepath($attach);
     }
-
     // check permission to download file
     if (!identity_can('attach-download', $attach)) {
         die_http_error();
     }
 
     // Abort if client has up-to-date version.
-    http_cache_check(@filemtime($file_name));
+    $mtime = @filemtime($real_name);
+    http_cache_check($mtime);
 
     // Get image stats.
     $ret = getimagesize($real_name);
@@ -47,7 +43,6 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
         die_http_error(500, "Bad image format.");
     }
     list($img_width, $img_height, $img_type, $img_attr) = $ret;
-
 
     // validate resize instructions & compute new dimensions
     $newcoords = resize_coordinates($img_width, $img_height, $resize);
@@ -60,24 +55,19 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
     // put some constraints here for security
     if ($new_width > IA_IMAGE_RESIZE_MAX_WIDTH || $new_height > IA_IMAGE_RESIZE_MAX_HEIGHT) {
         die_http_error(500, "Bad image size.");
-        redirect(url_textblock($page_name));
     }
 
     // query image cache for existing resampled image
     if (IA_IMAGE_CACHE_ENABLE) {
-        $cache_fn = imagecache_query($attach, $resize);
-
-        if (null !== $cache_fn) {
-            // cache has it
-            serve_file($cache_fn, $file_name,
-                       image_type_to_mime_type($img_type));
-            // function doesn't return
+        $cache_id = $attach['id'] . '_' . $resize;
+        if (cache_has($cache_id, $mtime)) {
+            cache_serve($cache_id, $file_name, image_type_to_mime_type($img_type));
+            log_error("Should not return");
         }
     }
 
-    // actual image resizing
-    // FIXME: optimize code not to use output buffering. Image should be
-    // streamed directly to user agent.
+    // Actual image resizing
+    // Image is placed in output buffer, cached, then flushed.
     ob_start();
     switch ($img_type) {
         case IMAGETYPE_GIF:
@@ -120,21 +110,10 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
             // unsupported image type
             die_http_error(500, "Unsupported image type");
     }
-    $buffer = ob_get_contents();
-    ob_end_clean();
 
-    // cache resample
+    // Store in cache, if enabled
     if (IA_IMAGE_CACHE_ENABLE) {
-        imagecache_save($attach['id'], $resize, $buffer);
-        $cache_fn = imagecache_query($attach, $resize);
-
-        if (null !== $cache_fn) {
-            // Image was cached. Serve through serve_file in order to issue
-            // correct client-side cache HTTP headers.
-            serve_file($cache_fn, $file_name,
-                       image_type_to_mime_type($img_type));
-            // function doesn't return
-        }
+        cache_set($cache_id, ob_get_contents());
     }
 
     // HTTP headers
@@ -144,35 +123,10 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
     // be shadowed by mb_strlen() and treat strings as unicode by default,
     // thus reporting invalid lengths for random binary buffers.
     // What is the alternative?
-    header('Content-Length: ', strlen($buffer));
+    header('Content-Length: ', ob_get_length());
 
-    // serve content
-    echo $buffer;
+    ob_end_flush();
     die();
-}
-
-// Tells whether there is a resampled (resized according to $resize
-// instructions) and up-to-date version of image attachment $attach_id.
-//
-// Returns if not found, otherwise request is served.
-function imagecache_query($attach, $resize) {
-    $cacheid = imagecache_ident($attach['id'], $resize);
-    $attname = attachment_get_filepath($attach);
-    return cache_query($cacheid, @filemtime($attname));
-}
-
-// Inserts resampled version of attachment $attach_id into image cache.
-// $buffer is the actual binary file contents of the resampled image.
-//
-// Returns boolean whether caching succeeded. File will not be cached if
-// image cache exceeds allowed quota.
-function imagecache_save($attach_id, $resize, $buffer) {
-    return cache_save(imagecache_ident($attach_id, $resize), $buffer);
-}
-
-// Return cache identifier for image.
-function imagecache_ident($attach_id, $resize) {
-    return $attach_id . '_' . $resize;
 }
 
 ?>

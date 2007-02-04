@@ -1,104 +1,80 @@
 <?php
 
-// Check if there's an up-to-date cache entity
-function cache_query($cache_id, $date = null) {
-    $fname = IA_CACHE_DIR . $cache_id;
-    if (!file_exists($fname)) {
-        return null;
-    } else {
-        $mtime = @filemtime($fname);
-        // Ignore old stuff.
-        if ($date !== null && ($mtime === false || $mtime < $date)) {
-            @unlink($fname);
-            return null;
-        } else {
-            return $fname;
-        }
-    }
-}
-
-// Loads blob from cache, or returns null if not found.
-// if $date(unix timestamp) is not null it will fail if the file is older.
+// Check if there is something in the cache newer that date.
+// If date is null age doesn't matter.
+// Date must be unix timestamp.
+// Old stuff is deleted.
 //
-// FIXME: this code is retarded.
-// FIxME: properly check stuff.
-function cache_load($cache_id, $date = null) {
-    $fname = cache_query($cache_id, $date);
-    if (!is_null($fname)) {
-        $res = file_get_contents($fname);
-        if ($res === false) {
-            $res = null;
-        }
-    } else {
-        $res = null;
-    }
+// Only returns true/false.
+function cache_has($cache_id, $date = null) {
+    $file_name = IA_CACHE_DIR . $cache_id;
 
-    // Yay, return
-    if ($res === null) {
-        if (IA_LOG_CACHE) {
-            log_print("CACHE: miss on $cache_id(from $fname)");
-        }
-        return null;
+    if (!@is_readable($file_name)) {
+        return false;
     } else {
-        if (IA_LOG_CACHE) {
-            log_print("CACHE: hit on $cache_id");
+        if (is_null($date) || $date === false) {
+            return true;
         }
-        return $res;
+
+        // Check mtime
+        $mtime = @filemtime($file_name);
+
+        // Delete old stuff.
+        if ($mtime === false || $mtime < $date) {
+            @unlink($fname);
+            return false;
+        } else {
+            return true;
+        }
     }
 }
 
-// Sweep the cache
-function cache_sweep() {
-    log_warn("CACHE: Sweeping not implemented.");
-}
+// Get an object from the cache, or FALSE if nothing is found.
+function cache_get($cache_id) {
+    $file_name = IA_CACHE_DIR . $cache_id;
 
-// Add something to the cache.
-function cache_save($cache_id, $buffer) {
-    /*if (cache_usage() > IA_CACHE_SIZE) {
-        // cache is full
-        log_warn('Cache is full.');
-        cache_sweep();
-        return false;
-    }*/
-
-    $filename = IA_CACHE_DIR . $cache_id;
-    $ret = @file_put_contents($filename, $buffer, LOCK_EX);
-    // A broken cacke is fairly harmless, especially in debug.
-    // Throwing up here results in no visible images, which tends to suck.
-    if (false === $ret) {
-        log_warn('CACHE: Could not create file ' . $filename);
+    if (@is_readable($file_name)) {
+        if (IA_LOG_CACHE) {
+            log_print("CACHE: DISK: HIT on $cache_id");
+        }
+        return file_get_contents($file_name);
+    } else {
+        if (IA_LOG_CACHE) {
+            log_print("CACHE: DISK: MISS on $cache_id");
+        }
         return false;
     }
+}
+
+// If $cache_id is in cache, then pass it to the client.
+// Fails if not found.
+function cache_serve($cache_id, $http_file_name, $mime_type = null) {
+    require_once(IA_ROOT_DIR . 'www/utilities.php');
+    $file_name = IA_CACHE_DIR . $cache_id;
 
     if (IA_LOG_CACHE) {
-        log_print("CACHE: Saved $cache_id");
+        log_print("CACHE: DISK: SERVE $cache_id");
     }
-
-    return true;
+    http_serve($file_name, $http_file_name, $mime_type);
 }
 
-// Calculate cache usage.
-function cache_usage() {
-    // scan all files in image cache directory
-    $nodes = scandir(IA_CACHE_DIR);
-    $files = array();
-    foreach ($nodes as $node) {
-        if (!is_dir($node)) {
-            $files[] = $node;
+// Place an object in the cache.
+// Object should expire after $ttl, but it's only a hint.
+// Always returns $buffer.
+function cache_set($cache_id, $buffer, $ttl = 0) {
+    $file_name = IA_CACHE_DIR . $cache_id;
+
+    $ret = @file_put_contents($file_name, $buffer, LOCK_EX);
+
+    if (IA_LOG_CACHE) {
+        if ($ret) {
+            log_print("CACHE: DISK: SET $cache_id");
+        } else {
+            log_warn("CACHE: DISK: FAIL SET $cache_id");
         }
     }
 
-    // sum up file size
-    $total = 0;
-    foreach ($files as $file) {
-        $fsize = filesize(IA_CACHE_DIR . $file);
-        if (false === $fsize) {
-            log_warn('CACHE: Could not determine file size of ' . IA_CACHE_DIR . $file);
-        }
-        $total += $fsize;
-    }
-
-    return $total;
+    return $buffer;
 }
 
 ?>

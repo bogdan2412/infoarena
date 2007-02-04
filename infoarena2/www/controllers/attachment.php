@@ -249,36 +249,6 @@ function controller_attachment_delete($page_name) {
     redirect(url_textblock($page_name));
 }
 
-// Serve static file through HTTP with proper cache headers
-// WARNING: this function does not return
-function serve_file($filename, $attachment_name, $mimetype) {
-    // Validate file name
-    log_assert(is_readable($filename));
-
-    // Open file
-    $fp = fopen($filename, "rb");
-    log_assert($fp);
-    $stat = fstat($fp);
-
-    // log_print_r($stat);
-    // log_print("Serving $attachment_name from $filename size "
-    //           .$stat['size']." mime $mimetype");
-
-    // More HTTP headers
-    header("Content-Type: {$mimetype}");
-    header("Content-Disposition: inline; filename="
-           .urlencode($attachment_name).";");
-    header("Content-Length: " . $stat['size']);
-
-    // Serve file
-    $written = fpassthru($fp);
-    if ($written != $stat['size']) {
-        log_error("fpassthru failed somehow.");
-    }
-    fclose($fp);
-    die();
-}
-
 // Check for attachment validity and proper permissions.
 // Does NOT print error message. Instead it returns HTTP 403/404.
 //
@@ -312,7 +282,7 @@ function controller_attachment_download($page_name, $file_name) {
         $attach = try_attachment_get($page_name, $file_name);
 
         // serve attachment with proper mime types
-        serve_file(attachment_get_filepath($attach), $file_name, $attach['mime_type']);
+        http_serve(attachment_get_filepath($attach), $file_name, $attach['mime_type']);
     } else {
         // redirect to main page
         header("Location: " . url_absolute(url_home()));
