@@ -31,7 +31,7 @@ function parameter_update_values($object_type, $object_id, $dict) {
     }
 
     // Store to cache.
-    db_cache_set("$object_type-params-by-id", $object_id, $dict);
+    mem_cache_set("$object_type-params-by-id:$object_id", $dict);
 }
 
 // Returns hash with task parameter values
@@ -39,7 +39,7 @@ function parameter_get_values($object_type, $object_id) {
     log_assert($object_type == 'task' || $object_type == 'round');
 
     // Search in cache.
-    if (($res = db_cache_get("$object_type-params-by-id", $object_id)) !== false) {
+    if (($res = mem_cache_get("$object_type-params-by-id:$object_id")) !== false) {
         return $res;
     }
 
@@ -53,7 +53,8 @@ function parameter_get_values($object_type, $object_id) {
     }
     
     // Store in cache
-    return db_cache_set("$object_type-params-by-id", $object_id, $dict);
+    mem_cache_set("$object_type-params-by-id:$object_id", $dict);
+    return $dict;
 }
 
 ?>

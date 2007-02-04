@@ -3,18 +3,27 @@
 require_once(IA_ROOT_DIR."common/db/db.php");
 require_once(IA_ROOT_DIR."common/db/parameter.php");
 
+function _round_cache_add($round) {
+    mem_cache_set("round-by-id:{$round['id']}", $round);
+    return $round;
+}
+
+function _round_cache_delete($round) {
+    mem_cache_delete("round-by-id:{$round['id']}");
+}
+
 // Get round
 function round_get($round_id) {
     // this assert brakes templates pages with round_id = %round_id%
     log_assert(is_round_id($round_id));
 
-    if (($res = db_cache_get('round-by-id', $round_id)) !== false) {
+    if (($res = mem_cache_get("round-by-id:$round_id")) !== false) {
         return $res;
     }
 
     $query = sprintf("SELECT * FROM ia_round WHERE `id` = %s",
                      db_quote($round_id));
-    return db_cache_set('round-by-id', $round_id, db_fetch($query));
+    return _round_cache_add(db_fetch($query));
 }
 
 // Create new round
@@ -25,7 +34,7 @@ function round_create($round, $round_params, $user_id) {
     log_assert_valid(round_validate_parameters($round['type'], $round_params));
 
     db_insert('ia_round', $round);
-    db_cache_purge('round-by-id', $round['id']);
+    _round_cache_delete($round);
     $new_round = round_get($round['id']);
 
     if ($new_round) {
@@ -37,11 +46,10 @@ function round_create($round, $round_params, $user_id) {
         textblock_copy_replace("template/newround", $round['page_name'],
                 $replace, "round: {$round['id']}", $user_id);
 
-        db_cache_set('round-by-id', $round['id'], $round);
-        db_cache_set('round-param-by-id', $round['id'], $round_params);
+        _round_cache_add($round);
         return true;
     } else {
-        db_cache_purge('round');
+        _round_cache_delete($round);
         return false;
     }
 }
@@ -51,7 +59,9 @@ function round_update($round) {
     log_assert_valid(round_validate($round));
     if (db_update('ia_round', $round,
             "`id` = '".db_escape($round['id'])."'")) {
-        db_cache_set('round-by-id', $round['id'], $round);
+        _round_cache_add($round);
+    } else {
+        _round_cache_delete($round);
     }
 }
 

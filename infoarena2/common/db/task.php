@@ -4,20 +4,27 @@ require_once(IA_ROOT_DIR . "common/db/db.php");
 require_once(IA_ROOT_DIR . "common/task.php");
 require_once(IA_ROOT_DIR . "common/db/parameter.php");
 
-// Task-related db functions.
+function _task_cache_add($task) {
+    mem_cache_set("task-by-id:{$task['id']}", $task);
+    return $task;
+}
+
+function _task_cache_delete($task) {
+    mem_cache_delete("task-by-id:{$task['id']}");
+}
 
 // Get task by id. No params.
 function task_get($task_id) {
     // this assert brakes templates pages with round_id = %round_id%
     log_assert(is_task_id($task_id));
 
-    if (($res = db_cache_get('task-by-id', $task_id)) !== false) {
+    if (($res = mem_cache_get("task-by-id:$task_id")) !== false) {
         return $res;
     }
 
     $query = sprintf("SELECT * FROM ia_task WHERE `id` = '%s'",
                      db_escape($task_id));
-    return db_cache_set('task-by-id', $task_id, db_fetch($query));
+    return _task_cache_add(db_fetch($query));
 }
 
 // create new task
@@ -36,16 +43,19 @@ function task_create($task, $task_params) {
         textblock_copy_replace("template/newtask", $task['page_name'],
                 $replace, "task: {$task['id']}", $task['user_id']);
 
-        db_cache_set('task-by-id', $task['id'], $task);
+        _task_cache_add($task);
     }
     return $res;
 }
 
 function task_update($task) {
     log_assert_valid(task_validate($task));
-    return db_update('ia_task', $task,
-            "`id` = '".db_escape($task['id'])."'");
-    db_cache_set('task-by-id', $task['id'], $task);
+    if (db_update('ia_task', $task,
+            "`id` = '".db_escape($task['id'])."'")) {
+        _task_cache_add($task);
+    } else {
+        _task_cache_delete($task);
+    }
 }
 
 // binding for parameter_get_values
@@ -64,7 +74,7 @@ function task_update_parameters($task_id, $param_values) {
 function task_get_all() {
     $res = db_fetch_all("SELECT * FROM ia_task");
     foreach ($res as $task) {
-        db_cache_set('task-by-id', $task['id'], $task);
+        _task_cache_add($task);
     }
     return $res;
 }

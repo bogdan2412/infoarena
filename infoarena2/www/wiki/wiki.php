@@ -82,10 +82,10 @@ function wiki_process_textblock($tb) {
     } else {
         $cache_id = preg_replace('/[^a-z0-9\.\-_]/i', '_', $tb['name']) . '_' .
                    db_date_parse($tb['timestamp']);
-        $cache_res = cache_get($cache_id);
+        $cache_res = disk_cache_get($cache_id);
         if ($cache_res == false) {
             $cache_res = wiki_process_only_textile($tb['text']);
-            cache_set($cache_id, $cache_res);
+            disk_cache_set($cache_id, $cache_res);
         }
         return wiki_process_only_macros($cache_res);
     }

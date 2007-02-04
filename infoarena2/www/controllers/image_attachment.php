@@ -60,8 +60,8 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
     // query image cache for existing resampled image
     if (IA_IMAGE_CACHE_ENABLE) {
         $cache_id = $attach['id'] . '_' . $resize;
-        if (cache_has($cache_id, $mtime)) {
-            cache_serve($cache_id, $file_name, image_type_to_mime_type($img_type));
+        if (disk_cache_has($cache_id, $mtime)) {
+            disk_cache_serve($cache_id, $file_name, image_type_to_mime_type($img_type));
             log_error("Should not return");
         }
     }
@@ -113,7 +113,7 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
 
     // Store in cache, if enabled
     if (IA_IMAGE_CACHE_ENABLE) {
-        cache_set($cache_id, ob_get_contents());
+        disk_cache_set($cache_id, ob_get_contents());
     }
 
     // HTTP headers

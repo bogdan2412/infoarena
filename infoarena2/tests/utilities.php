@@ -147,6 +147,8 @@ function test_cleanup()
 }
 
 db_connect();
+mem_cache_purge();
+disk_cache_purge();
 check_requirements();
 
 // Add log timestamps.

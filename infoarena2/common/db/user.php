@@ -2,11 +2,22 @@
 
 require_once(IA_ROOT_DIR."common/db/db.php");
 require_once(IA_ROOT_DIR."common/user.php");
-require_once(IA_ROOT_DIR."common/db/cache.php");
+require_once(IA_ROOT_DIR."common/cache.php");
 
 /**
  * User-related functions.
  */
+
+function _user_cache_add($user) {
+    mem_cache_set("user-by-name:{$user['username']}", $user);
+    mem_cache_set("user-by-id:{$user['username']}", $user);
+    return $user;
+}
+
+function _user_cache_delete($user) {
+    mem_cache_delete("user-by-name:{$user['username']}");
+    mem_cache_delete("user-by-id:{$user['username']}");
+}
 
 // Test password in IA1 format.
 // NOTE: not cached, this is correct.
@@ -39,41 +50,35 @@ function user_test_password($username, $password) {
     return db_fetch($query);
 }
 
+function user_get_by_email($email) {
+    $query = sprintf("SELECT *
+                      FROM ia_user
+                      WHERE email = '%s'",
+                     db_escape($email));
+    return _user_cache_add(db_fetch($query));
+}
+
 // Get user information.
 function user_get_by_username($user_name) {
-    if (($res = db_cache_get('user-by-name', $user_name)) !== false) {
+    if (($res = mem_cache_get("user-by-name:$user_name")) !== false) {
         return $res;
     }
     $query = sprintf("SELECT *
                       FROM ia_user
                       WHERE username = '%s'",
                      db_escape($user_name));
-    $user = db_fetch($query);
-    db_cache_set('user-by-name', $user_name, $user);
-    db_cache_set('user-by-id', $user['id'], $user);
-    return $user;
-}
-
-function user_get_by_email($email) {
-    $query = sprintf("SELECT *
-                      FROM ia_user
-                      WHERE email = '%s'",
-                     db_escape($email));
-    return db_fetch($query);
+    return _user_cache_add(db_fetch($query));
 }
 
 function user_get_by_id($user_id) {
-    if (($res = db_cache_get('user-by-id', $user_id)) !== false) {
+    if (($res = mem_cache_get("user-by-id:$user_name")) !== false) {
         return $res;
     }
     $query = sprintf("SELECT *
                       FROM ia_user
                       WHERE id = %s",
                      db_quote($user_id));
-    $user = db_fetch($query);
-    db_cache_set('user-by-id', $user_id, $user);
-    db_cache_set('user-by-name', $user['username'], $user);
-    return $user;
+    return _user_cache_add(db_fetch($query));
 }
 
 // Create a new user.
@@ -94,9 +99,8 @@ function user_create($data) {
     $query = substr($query, 0, strlen($query)-1); // delete last ,
     $query .= ')';
 
-    // create user
-    //log_print('Creating database entry for user: '.$data['username']);
     db_query($query);
+    mem_cache_delete("user-by-username:{$data['username']}");
     $new_user = user_get_by_username($data['username']);
     log_assert($new_user, 'Registration input data was validated OK but no database entry was created');
 
@@ -105,9 +109,7 @@ function user_create($data) {
     textblock_copy_replace("template/newuser", IA_USER_TEXTBLOCK_PREFIX.$data['username'],
                            $replace, "public", $new_user['id']);
 
-    db_cache_set('user-by-id', $new_user['id'], $new_user);
-    db_cache_set('user-by-name', $new_user['username'], $new_user);
-    return $new_user;
+    return _user_cache_add($new_user);
 }
 
 // Update user information.
@@ -123,9 +125,9 @@ function user_update($data, $id) {
     $query = substr($query, 0, strlen($query)-1); // delete last ,
     $query .= " WHERE `id` = '" . db_escape($id) . "'";
 
-    db_cache_purge('user-by-name');
-    db_cache_purge('user-by-id');
-    return db_query($query);
+    mem_cache_delete("user-by-username:{$data['username']}");
+    mem_cache_delete("user-by-id:$id");
+    return _user_cache_add($new_user);
 }
 
 // Returns array with *all* registered usernames.
@@ -142,10 +144,13 @@ function user_get_list($all_fields = false) {
     return $users;
 }
 
-// Counts number of uers
+// Counts number of users
 function user_count() {
+    if (($res = mem_cache_get("total-user-count")) !== false) {
+        return $res;
+    }
     $result = db_query_value("SELECT COUNT(*) FROM ia_user");
-    return $result;
+    return mem_cache_set("total-user-count", $result);
 }
 
 // Returns array with user submitted tasks. Filter tasks by choosing whether
