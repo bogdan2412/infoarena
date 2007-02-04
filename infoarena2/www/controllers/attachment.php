@@ -253,47 +253,7 @@ function controller_attachment_delete($page_name) {
 // WARNING: this function does not return
 function serve_file($filename, $attachment_name, $mimetype) {
     // Validate file name
-    log_assert(file_exists($filename));
-
-
-    // Client side caching... let's save some bandwidth
-    if (IA_CLIENT_CACHE_ENABLE) {
-        // Client timestamp
-        $headers = apache_request_headers();
-        if (isset($headers['If-Modified-Since'])) {
-            // we split it due to some bug in Mozilla < v6
-            $modified_since = explode(';', $headers['If-Modified-Since']);
-            $modified_since = strtotime($modified_since[0]);
-        }
-        else {
-            $modified_since = 0;
-        }
-
-        // Actual file timestamp
-        $last_modified = filemtime($filename);
-
-        // Serve HTTP headers to cache file
-        header("Cache-Control: max-age: ".IA_CLIENT_CACHE_AGE
-               ." , public, must-revalidate");
-        // Additional headers, obsolete in HTTP 1.1. browsers
-        header('Expires: '.gmdate('D, d M Y H:i:s',
-                                  $last_modified+IA_CLIENT_CACHE_AGE).' GMT');
-
-        if ($modified_since >= $last_modified) {
-            // Client's cache is up to date, yey!
-            header('Last-Modified: '.gmdate('D, d M Y H:i:s', $last_modified)
-                   .' GMT', true, 304);
-            if (IA_LOG_CACHE) {
-                log_print('CACHE: Client has up-to-date cache');
-            }
-            die();
-        }
-        else {
-            // Client's cache is missing / out-dated
-            header('Last-Modified: '.gmdate('D, d M Y H:i:s', $last_modified)
-                   .' GMT', true, 200);
-        }
-    }
+    log_assert(is_readable($filename));
 
     // Open file
     $fp = fopen($filename, "rb");

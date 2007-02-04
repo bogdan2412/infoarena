@@ -38,11 +38,16 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
         die_http_error();
     }
 
+    // Abort if client has up-to-date version.
+    http_cache_check(@filemtime($file_name));
+
+    // Get image stats.
     $ret = getimagesize($real_name);
     if (false === $ret) {
         die_http_error(500, "Bad image format.");
     }
     list($img_width, $img_height, $img_type, $img_attr) = $ret;
+
 
     // validate resize instructions & compute new dimensions
     $newcoords = resize_coordinates($img_width, $img_height, $resize);

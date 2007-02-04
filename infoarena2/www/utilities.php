@@ -39,6 +39,44 @@ function http_referer_check() {
     return $HTTP_REFERER==null || substr($HTTP_REFERER, 0, (strlen($HTTP_HOST)+7)) == "http://".$HTTP_HOST;
 }
 
+// Client side caching... let's save some bandwidth
+// If you call this and the client has a version which is newer that $last_modified
+// then the request aborts.
+// Otherwise the client is told to only ask again after $cache_age seconds.
+//
+// This function analyzes http headers and looks for an If-Modified-Since header.
+function http_cache_check($last_modified, $cache_age = IA_CLIENT_CACHE_AGE) {
+    $headers = apache_request_headers();
+    if (isset($headers['If-Modified-Since'])) {
+        // we split it due to some bug in Mozilla < v6
+        $modified_since = explode(';', $headers['If-Modified-Since']);
+        $modified_since = strtotime($modified_since[0]);
+    } else {
+        $modified_since = 0;
+    }
+
+    // Serve HTTP headers to cache file
+    header("Cache-Control: max-age: ".IA_CLIENT_CACHE_AGE
+           ." , public, must-revalidate");
+    // Additional headers, obsolete in HTTP 1.1. browsers
+    header('Expires: '.gmdate('D, d M Y H:i:s',
+              time()+IA_CLIENT_CACHE_AGE).' GMT');
+
+    if ($last_modified !== false && $modified_since >= $last_modified) {
+        // Client's cache is up to date, yey!
+        header('Last-Modified: '.gmdate('D, d M Y H:i:s', $last_modified)
+               .' GMT', true, 304);
+        if (IA_LOG_CACHE) {
+            log_print('CACHE: Client has up-to-date cache');
+        }
+        die();
+    } else {
+        // Client's cache is missing / out-dated
+        header('Last-Modified: '.gmdate('D, d M Y H:i:s', $last_modified)
+               .' GMT', true, 200);
+    }
+}
+
 // Die with a http error.
 function die_http_error($code = 404, $msg = "File not found") {
     header("HTTP/1.0 $code");
