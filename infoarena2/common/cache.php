@@ -54,12 +54,12 @@ function cache_sweep() {
 
 // Add something to the cache.
 function cache_save($cache_id, $buffer) {
-    if (cache_usage() > IA_CACHE_SIZE) {
+    /*if (cache_usage() > IA_CACHE_SIZE) {
         // cache is full
         log_warn('Cache is full.');
         cache_sweep();
         return false;
-    }
+    }*/
 
     $filename = IA_CACHE_DIR . $cache_id;
     $ret = @file_put_contents($filename, $buffer, LOCK_EX);

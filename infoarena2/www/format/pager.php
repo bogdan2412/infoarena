@@ -96,6 +96,7 @@ function _format_standard_pager_link($options, $number) {
     $url_args[$param_prefix.'first_entry'] = $number * $display_entries;
     ++$number;
     $access_keys = getattr($options, 'use_digit_access_keys', true);
+    $args = array();
     if ($access_keys && $number >= 0 && $number <= 9) {
         $args['accesskey'] = $number;
     }

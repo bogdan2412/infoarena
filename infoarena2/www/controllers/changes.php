@@ -35,7 +35,7 @@ function controller_changes($page_name) {
         $view['item'] = array();
 
         foreach ($revisions as $rev) {
-            log_print_r($rev);
+            //log_print_r($rev);
             $item = array();
             $item['title'] = sprintf("%s modificat de %s",
                     $rev['title'] , $rev['user_name']);

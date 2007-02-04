@@ -116,7 +116,7 @@ function ia_template_footer() {
 <?php if (!IA_DEVELOPMENT_MODE) { ?>
     <p class="cc">
     <!--Creative Commons License-->
-    <a class="badge" rel="license" href="http://creativecommons.org/licenses/by-nc/2.5/"><img alt="Creative Commons License" src="http://i.creativecommons.org/l/by-nc/2.5/88x31.png"/></a>
+    <a class="badge" rel="license" href="http://creativecommons.org/licenses/by-nc/2.5/"><img alt="Creative Commons License" src="<?= url_static('images/CreativeCommonsBadge.png') ?>"/></a>
     Cu exceptia cazurilor in care se specifica altfel, continutul site-ului infoarena<br/>este publicat sub licenta <a rel="license" href="http://creativecommons.org/licenses/by-nc/2.5/">Creative Commons Attribution-NonCommercial 2.5</a>.
     <!--/Creative Commons License-->
     <rdf:RDF xmlns="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">

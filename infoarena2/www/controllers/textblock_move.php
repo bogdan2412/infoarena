@@ -16,7 +16,7 @@ function controller_textblock_move($page_name) {
         redirect(url_home());
     }
 
-    log_print_r($_REQUEST);
+    //log_print_r($_REQUEST);
 
     $values = array();
     $errors = array();

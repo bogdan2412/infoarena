@@ -72,7 +72,7 @@ void jrun_parse_options(int argc, char *argv[])
     jopt.stdout_file[0] = jopt.stderr_file[0] = jopt.stdin_file[0] = 0;
 
     while (1) {
-        int opt = getopt_long(argc, argv, "u:g:d:p:t:m:n:v", long_options, &option_index);
+        int opt = getopt_long(argc, argv, "u:g:d:p:n:t:w:m:v", long_options, &option_index);
         if (opt == -1) {
             break;
         }
