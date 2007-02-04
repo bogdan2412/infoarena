@@ -36,8 +36,11 @@ function controller_round_details($round_id) {
 
     // get parameter list for rounds (in general, not for this specific round)
     $param_infos = round_get_parameter_infos();
-    $all_tasks_by_id = task_get_all_assoc();
-    $all_tasks = array_values($all_tasks_by_id);
+    $all_tasks = task_get_all();
+    $all_task_ids = array();
+    foreach ($all_tasks as $task) {
+        $all_task_ids[$task['id']] = true;
+    }
 
     // Get parameters and task list.
     $round_params = round_get_parameters($round['id']);
@@ -93,7 +96,8 @@ function controller_round_details($round_id) {
                 $errors['tasks'] = 'Valori invalide.';
                 break;
             }
-            if (!array_key_exists($tid, $all_tasks_by_id)) {
+            if (!array_key_exists($tid, $all_task_ids)) {
+                log_print_r($all_task_ids);
                 $errors['tasks'] = "Nu exista task-ul $tid.";
                 break;
             }

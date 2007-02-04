@@ -38,7 +38,7 @@ $res = curl_test(array(
 ));
 log_assert(strstr($res['content'], "xzx-content-xzx"));
 log_assert(strstr($res['content'], "xzx-title-xzx"));
-log_assert(strstr($res['content'], "<a href=\"".htmlentities(
+log_assert(stristr($res['content'], "<a href=\"".htmlentities(
             url_user_profile('test_dude1'))));
 log_assert(stristr($res['content'], "<a href=\"".htmlentities(
             url_user_rating('test_dude1'))));

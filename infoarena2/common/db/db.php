@@ -116,13 +116,11 @@ function db_insert($table, $dict) {
         }
     }
 
-    $table = db_escape($table);
-
     $query = "INSERT INTO `{$table}` (`";
     $query .= join('`, `', array_keys($dict));
-    $query .= "`) VALUES ('";
-    $query .= join("', '", array_map('db_escape', array_values($dict)));
-    $query .= "')";
+    $query .= "`) VALUES (";
+    $query .= join(", ", array_map('db_quote', array_values($dict)));
+    $query .= ")";
 
     db_query($query);
 
@@ -157,7 +155,6 @@ function db_update($table, $dict, $where = null) {
     log_assert(1 <= count($dict), 'db_update() called with empty $dict');
 
     // build query
-    $table = db_escape($table);
     $query = "UPDATE `{$table}`\nSET ";
     $first = true;
     foreach ($dict as $k => $v) {
@@ -172,7 +169,7 @@ function db_update($table, $dict, $where = null) {
             $v = 'NULL';
         }
         else {
-            $v = "'".db_escape($v)."'";
+            $v = db_quote($v);
         }
         $query .= "`{$k}` = {$v}";
     }
@@ -187,6 +184,7 @@ function db_update($table, $dict, $where = null) {
 }
 
 // FIXME: obliterate
+
 /**
  * News
  * This is for the special "news" controller.
@@ -197,8 +195,8 @@ function news_get_range($start, $range, $prefix = null) {
                       FROM ia_textblock
                       WHERE `name` LIKE 'stiri/%s%%'
                       ORDER BY ia_textblock.`timestamp` DESC
-                      LIMIT %s,%s",
-                     db_escape($prefix), db_escape($start), db_escape($range));
+                      LIMIT %s, %s",
+                     db_escape($prefix), db_quote((int)$start), db_quote((int)$range));
     return db_fetch_all($query);
 }
 

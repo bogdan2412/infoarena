@@ -7,12 +7,6 @@ require_once(IA_ROOT_DIR . "www/format/pager.php");
 require_once(IA_ROOT_DIR . "www/format/format.php");
 require_once(IA_ROOT_DIR . "common/db/score.php");
 
-function format_rank($row, $start_index) {
-    static $rank = 0;
-    $rank++;
-    return $start_index + $rank; 
-}
-
 // Displays *interactive* rankings table displaying user *ratings*.
 //
 // Arguments:
@@ -30,9 +24,7 @@ function macro_toprated($args) {
     $column_infos = array(
         array(
             'title' => 'Loc',
-            'key' => 'full_name',
-            'rowform' => create_function_cached('$row',
-                                         'return format_rank($row, '.$options['first_entry'].');'),
+            'key' => 'position',
             'css_class' => 'number rank',
         ),
         array(

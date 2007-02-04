@@ -40,15 +40,18 @@ function user_test_password($username, $password) {
 }
 
 // Get user information.
-function user_get_by_username($username) {
-    if (($res = db_cache_get('user', $username)) !== false) {
+function user_get_by_username($user_name) {
+    if (($res = db_cache_get('user-by-name', $user_name)) !== false) {
         return $res;
     }
     $query = sprintf("SELECT *
                       FROM ia_user
                       WHERE username = '%s'",
-                     db_escape($username));
-    return db_cache_set('user', $username, db_fetch($query));
+                     db_escape($user_name));
+    $user = db_fetch($query);
+    db_cache_set('user-by-name', $user_name, $user);
+    db_cache_set('user-by-id', $user['id'], $user);
+    return $user;
 }
 
 function user_get_by_email($email) {
@@ -59,12 +62,18 @@ function user_get_by_email($email) {
     return db_fetch($query);
 }
 
-function user_get_by_id($id) {
+function user_get_by_id($user_id) {
+    if (($res = db_cache_get('user-by-id', $user_id)) !== false) {
+        return $res;
+    }
     $query = sprintf("SELECT *
                       FROM ia_user
-                      WHERE id = '%s'",
-                     db_escape($id));
-    return db_fetch($query);
+                      WHERE id = %s",
+                     db_quote($user_id));
+    $user = db_fetch($query);
+    db_cache_set('user-by-id', $user_id, $user);
+    db_cache_set('user-by-name', $user['username'], $user);
+    return $user;
 }
 
 // Create a new user.
@@ -96,7 +105,8 @@ function user_create($data) {
     textblock_copy_replace("template/newuser", IA_USER_TEXTBLOCK_PREFIX.$data['username'],
                            $replace, "public", $new_user['id']);
 
-    db_cache_purge('user');
+    db_cache_set('user-by-id', $new_user['id'], $new_user);
+    db_cache_set('user-by-name', $new_user['username'], $new_user);
     return $new_user;
 }
 
@@ -113,7 +123,8 @@ function user_update($data, $id) {
     $query = substr($query, 0, strlen($query)-1); // delete last ,
     $query .= " WHERE `id` = '" . db_escape($id) . "'";
 
-    db_cache_purge('user');
+    db_cache_purge('user-by-name');
+    db_cache_purge('user-by-id');
     return db_query($query);
 }
 

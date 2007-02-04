@@ -7,22 +7,14 @@ require_once(IA_ROOT_DIR."common/db/parameter.php");
 function round_get($round_id) {
     // this assert brakes templates pages with round_id = %round_id%
     log_assert(is_round_id($round_id));
-    $query = sprintf("SELECT * FROM ia_round WHERE `id` = '%s'",
-                     db_escape($round_id));
-    return db_fetch($query);
-}
 
-// Returns array with all open rounds
-// FIXME: obliterate
-function round_get_info() {
-    $query = sprintf("SELECT *
-                      FROM `ia_round`
-                      ORDER BY `ia_round`.`title`");
-    $list = array();
-    foreach (db_fetch_all($query) as $row) {
-        $list[$row['id']] = $row;
+    if (($res = db_cache_get('round-by-id', $round_id)) !== false) {
+        return $res;
     }
-    return $list;
+
+    $query = sprintf("SELECT * FROM ia_round WHERE `id` = %s",
+                     db_quote($round_id));
+    return db_cache_set('round-by-id', $round_id, db_fetch($query));
 }
 
 // Create new round
@@ -33,6 +25,7 @@ function round_create($round, $round_params, $user_id) {
     log_assert_valid(round_validate_parameters($round['type'], $round_params));
 
     db_insert('ia_round', $round);
+    db_cache_purge('round-by-id', $round['id']);
     $new_round = round_get($round['id']);
 
     if ($new_round) {
@@ -44,18 +37,22 @@ function round_create($round, $round_params, $user_id) {
         textblock_copy_replace("template/newround", $round['page_name'],
                 $replace, "round: {$round['id']}", $user_id);
 
+        db_cache_set('round-by-id', $round['id'], $round);
+        db_cache_set('round-param-by-id', $round['id'], $round_params);
         return true;
     } else {
+        db_cache_purge('round');
         return false;
     }
 }
 
 // Update a round.
-// FIXME: crap code.
 function round_update($round) {
     log_assert_valid(round_validate($round));
-    return db_update('ia_round', $round,
-            "`id` = '".db_escape($round['id'])."'");
+    if (db_update('ia_round', $round,
+            "`id` = '".db_escape($round['id'])."'")) {
+        db_cache_set('round-by-id', $round['id'], $round);
+    }
 }
 
 // Returns array with all tasks attached to the specified round
@@ -66,6 +63,7 @@ function round_update($round) {
 // information to yield a correct answer.
 //
 // FIXME: sensible ordering.
+// FIXME: cache tasks.
 //
 // if user_id is non-null a join is done on $score
 function round_get_tasks($round_id, $first = 0, $count = null, $user_id = null, $score_name = null) {
@@ -113,14 +111,15 @@ function round_get_task_count($round_id)
     return db_query_value($query);
 }
 
-// binding for parameter_get_values
+// Get round parameters.
+// array() if nothing found?
 function round_get_parameters($round_id) {
     return parameter_get_values('round', $round_id);
 }
 
 // binding for parameter_update_values
 function round_update_parameters($round_id, $param_values) {
-    return parameter_update_values('round', $round_id, $param_values);
+    parameter_update_values('round', $round_id, $param_values);
 }
 
 // Replaces attached task list for given round
@@ -146,32 +145,19 @@ function round_update_task_list($round_id, $tasks) {
     db_query($query);
 }
 
-// Return list of round ids
-function round_get_list() {
-    $query = "SELECT id FROM ia_round";
-    $rows = db_fetch_all($query);
-
-    $list = array();
-    foreach ($rows as $row) {
-        $list[] = $row['id'];
-    }
-
-    return $list;
-}
-
 // Returns boolean whether given user is registered to round $round_id
 function round_is_registered($round_id, $user_id) {
     log_assert(is_round_id($round_id));
     log_assert(is_user_id($user_id));
 
-    //FIXME: this should not be here
+    // FIXME: this should not be here
     if ('arhiva' == $round_id) {
         return true;
     }
 
     $query = sprintf("SELECT COUNT(*) AS `cnt` FROM ia_user_round
-                      WHERE round_id='%s' AND user_id='%s'",
-                     db_escape($round_id), db_escape($user_id));
+                      WHERE round_id=%s AND user_id=%s",
+                     db_quote($round_id), db_quote($user_id));
 
     $count = db_query_value($query);
     return (0 < $count);
@@ -193,36 +179,38 @@ function round_register_user($round_id, $user_id) {
 }
 
 // Returs list of registred user to round $round_id, order by rating
+// round can be 
 function round_get_registered_users_range($round_id, $start, $range)
 {
+    log_assert(is_round_id($round_id));
     log_assert(is_whole_number($start));
     log_assert(is_whole_number($range));
-    log_assert(is_round_id($round_id));
     log_assert($start >= 0);
     log_assert($range >= 0);
-    db_query("SET @counter = ".$start);
 
-    //FIXME: This should not be here
+    // FIXME: don't differentiate on $round['type']
     $round = round_get($round_id);
     if ($round['type'] == 'archive') {
-        $query = sprintf("SELECT id AS user_id, rating_cache AS rating,
-                          username, full_name AS fullname,
-                          (@counter := @counter + 1) AS position
-                          FROM ia_user 
+        $query = sprintf("SELECT user.id AS user_id, user.rating_cache AS rating,
+                          user.username AS username, user.full_name AS fullname
+                          FROM ia_user AS user
                           ORDER BY rating DESC
                           LIMIT %s, %s", $start, $range);
-    }
-    else {
-        $query = sprintf("SELECT user_id, user.rating_cache AS rating,
-                          user.username AS username, user.full_name AS fullname,
-                          (@counter := @counter + 1) AS position
-                          FROM ia_user_round 
+    } else {
+        $query = sprintf("SELECT user.id AS user_id, user.rating_cache AS rating,
+                          user.username AS username, user.full_name AS fullname
+                          FROM ia_user_round AS user_round
                           LEFT JOIN ia_user AS user ON user_id = user.id
                           WHERE round_id = '%s'
                           ORDER BY rating DESC
                           LIMIT %s, %s", db_escape($round_id), $start, $range);
     }
-    return db_fetch_all($query);
+
+    $tab = db_fetch_all($query);
+    for ($i = 0; $i < count($tab); ++$i) {
+        $tab[$i]['position'] = $start + $i + 1;
+    }
+    return $tab;
 }
 
 // Returns number of registered users in a certain round
@@ -230,13 +218,11 @@ function round_get_registered_users_count($round_id)
 {
     log_assert(is_round_id($round_id));
 
-    //FIXME: This should not be here.. I bet this is horribly wrong somehow :)
+    // FIXME: don't differentiate on $round['type']
     $round = round_get($round_id);
     if ($round['type'] == 'archive') {
-        $query = "SELECT COUNT(*) FROM ia_user";
-    }
-    else
-    {
+        $query = sprintf("SELECT COUNT(*) FROM ia_user");
+    } else {
         $query = sprintf("SELECT COUNT(*) FROM ia_user_round
                           WHERE `round_id` = '%s'",
                           db_escape($round_id));

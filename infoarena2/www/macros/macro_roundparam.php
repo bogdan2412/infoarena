@@ -15,11 +15,6 @@ require_once(IA_ROOT_DIR . "common/db/round.php");
 //      RoundParam(round_id="archive" param="title")
 //      RoundParam(round_id="archive" param="type")
 function macro_roundparam($args) {
-    static $last_round_id = null;
-    static $round;
-    static $params;
-    static $textblock;
-
     $round_id = getattr($args, 'round_id');
     $param = getattr($args, 'param');
 
@@ -31,18 +26,13 @@ function macro_roundparam($args) {
         return macro_error("Expecting parameter `param`");
     }
 
-    // fetch round, parameters & textblock
-    if ($last_round_id != $round_id) {
-        if (!is_round_id($round_id)) {
-            return macro_error("Invalid round id");
-        }
-        $round = round_get($round_id);
-        if ($round) {
-            $params = round_get_parameters($round_id);
-        }
-
-        // remember
-        $last_round_id = $round_id;
+    // fetch round & parameters
+    if (!is_round_id($round_id)) {
+        return macro_error("Invalid round id");
+    }
+    $round = round_get($round_id);
+    if ($round) {
+        $params = round_get_parameters($round_id);
     }
 
     // validate round id

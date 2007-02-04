@@ -86,7 +86,7 @@ function format_form_field_inner_editor(
         $type == 'string' ||
         $type == 'float' ||
         $type == 'datetime') {
-        $input_type = 'type';
+        $input_type = 'text';
         if (getattr($field_info, 'is_password', false)) {
             $input_type = 'password';
         }
@@ -145,6 +145,7 @@ function format_form_field($field_info, $field_name,
         $label .= format_highlight_access_key(
                 $field_info['name'], $field_info['access_key']);
     } else {
+        $label .= '>';
         $label .= $field_info['name'];
     }
     $label .= '</label>';

@@ -16,9 +16,36 @@ function db_connect() {
 }
 
 // Escapes a string to be safely included in a query.
-// Pure evil.
 function db_escape($str) {
-    return mysql_escape_string($str);
+    return mysql_real_escape_string($str);
+}
+
+// Quotes a variable so it can be safely placed inside an SQL query.
+// This will surround strings with quotes and leave integers alone.
+//
+// NOTE: this function is always safe to concat inline.
+function db_quote($arg) {
+    if (is_null($arg)) {
+        return 'NULL';
+    } else if (is_string($arg)) {
+        return "'" . db_escape($arg) . "'";
+    } else if (is_numeric($arg)) {
+        // FIXME: is_numeric guarantees mysql safety?
+        // FIXME: does it also guarantee that mysql can parse it?
+        return (string)$arg;
+        //return "'" . db_escape((string)$arg) . "'";
+    } else if (is_bool($arg)) {
+        if ($arg) {
+            return 'TRUE';
+        } else {
+            return 'FALSE';
+        }
+    } else if (is_array($arg) || is_object($arg) || is_resource($arg) || is_callable($arg)) {
+        log_error("Can't db_quote complex objects");
+        return (string)$arg;
+    } else {
+        log_error("Unknown object type?");
+    }
 }
 
 // Number of rows selected by the last SELECT statement

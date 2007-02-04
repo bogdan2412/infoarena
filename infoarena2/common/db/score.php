@@ -365,10 +365,14 @@ function get_users_by_rating_range($start, $count)
         LIMIT %s, %s
     ";
     $query = sprintf($query, $start, $count);
-    return db_fetch_all($query);
+    $tab = db_fetch_all($query);
+    for ($i = 0; $i < count($tab); ++$i) {
+        $tab[$i]['position'] = $start + $i + 1;
+    }
+    return $tab;
 }
 
-// Count function for get_user_by_rating_range.
+// Count function for get_users_by_rating_range.
 function get_users_by_rating_count() {
     $query = "SELECT COUNT(*) as `cnt`
         FROM `ia_user`
