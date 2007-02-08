@@ -111,12 +111,12 @@ function score_get_count($score_name, $user, $task, $round, $groupby) {
     log_assert(is_score_name($score_name));
     $where = score_build_where_clauses($user, $task, $round);
     $where[] = sprintf("ia_score.`name` = '%s'", db_escape($score_name));
-    if ($user != null) {
+    if ($user !== null) {
         $join = "LEFT JOIN ia_user ON ia_user.id = ia_score.user_id";
     } else {
         $join = "";
     }
-    $query = sprintf("SELECT COUNT(*) AS `cnt`
+    $query = sprintf("SELECT COUNT(DISTINCT user_id) as `cnt`
             FROM ia_score $join
             WHERE %s",
             join($where, " AND "), $groupby);
