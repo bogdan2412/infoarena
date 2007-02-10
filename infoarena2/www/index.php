@@ -44,7 +44,7 @@ $action = request('action', 'view');
 
 // Direct mapping list
 // Note: array_flip() flips keys with values in a dictionary.
-$directmaps = array_flip(array('register', 'account', 'news_feed', 'changes',
+$directmaps = array_flip(array('register', 'news_feed', 'changes',
                                'login', 'logout', 'json', 'job_detail',
                                'monitor', 'submit', 'userinfo', 'plot',
                                'unsubscribe', 'resetpass'
@@ -59,6 +59,12 @@ if (isset($directmaps[$urlstart])) {
     require_once(IA_ROOT_DIR."www/controllers/{$urlstart}.php");
     $fname = "controller_{$urlstart}";
     $fname($page_id);
+}
+
+// Account edit page.
+else if ($urlstart == 'account') {
+    require_once(IA_ROOT_DIR.'www/controllers/account.php');
+    controller_account(getattr($pagepath, 1));
 }
 
 // Task creator

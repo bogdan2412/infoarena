@@ -14,72 +14,89 @@ function account_validate_user() {
         // current remote user
         global $identity_user;
         $user = $identity_user;
-    }
-    else {
+    } else {
         // validate username
         $user = user_get_by_username($username);
     }
 
-    // validate user
-    if (!$user) {
-        flash_error('Cont de utilizator inexistent');
-        redirect(url_home());
-    }
-
     // permission check
-    identity_require('user-editprofile', $user);
 
     return $user;
 }
 
 // Controller to update user profile
-function controller_account() {
+// $username is the name of the user to edit.
+function controller_account($username = null) {
     global $identity_user;
-    $user = account_validate_user();
+
+    // This should fail for anon users.
+    identity_require_login();
+
+    // Get the user we have to edit.
+    if ($username === null) {
+        $user = $identity_user;
+        $username = $identity_user['username'];
+    } else {
+        $user = user_get_by_username($username);
+        if (!$user) {
+            flash_error('Cont de utilizator inexistent');
+            redirect(url_home());
+        }
+    }
+
+    // Check security.
+    identity_require('user-editprofile', $user);
+
+    // editing own profile ?
+    $ownprofile = (getattr($user, 'id') == getattr($identity_user, 'id'));
 
     // here we collect user input & validation errors
     $data = array();
     $errors = array();
 
-    // submit?
-    $submit = request_is_post();
-
-    // editing own profile ?
-    $ownprofile = (getattr($user, 'id') == getattr($identity_user, 'id'));
-
-    if ($submit) {
+    if (request_is_post()) {
         // user submitted profile form. Process it
 
-        // validate data
-        $data['username'] = getattr($_POST, 'username');
-        $data['passwordold'] = getattr($_POST, 'passwordold');
-        $data['password'] = getattr($_POST, 'password');
-        $data['password2'] = getattr($_POST, 'password2');
-        $data['full_name'] = getattr($_POST, 'full_name');
-        $data['email'] = getattr($_POST, 'email');
-        $data['newsletter'] = (getattr($_POST, 'newsletter') ? 1 : 0);
+        // get data and validate it
+        $data['username'] = trim(request('username', $user['username']));
+        $data['passwordold'] = request('passwordold');
+        $data['password'] = request('password');
+        $data['password2'] = request('password2');
+        $data['full_name'] = trim(request('full_name', $user['full_name']));
+        $data['email'] = trim(request('email', $user['email']));
+        $data['newsletter'] = (request('newsletter', $user['newsletter']) ? 1 : 0);
+
+        // Security level, only if allowed.
+        $data['security_level'] = request('security_level', $user['security_level']);
+        if ($user['security_level'] != $data['security_level']) {
+            identity_require('user-change-security', $user);
+        }
+
         $errors = validate_profile_data($data, $user);
+        log_print_r($data);
+        log_print_r($errors);
 
         // validate avatar
         // FIXME: This should leverage attachment creation code
-        $avatar = basename($_FILES['avatar']['name']);
-        $mime_type = $_FILES['avatar']['type'];
-        if ($avatar) {
-            $avatar_size = $_FILES['avatar']['size'];
-            // Check file size
-            if ($avatar_size < 0 || $avatar_size > IA_AVATAR_MAXSIZE) {
-                $errors['avatar'] = 'Fisierul depaseste limita de '
-                                    .(IA_AVATAR_MAXSIZE / 1024).' KB';
+        if (array_key_exists('avatar', $_FILES)) {
+            $avatar = basename($_FILES['avatar']['name']);
+            $mime_type = $_FILES['avatar']['type'];
+            if ($avatar) {
+                $avatar_size = $_FILES['avatar']['size'];
+                // Check file size
+                if ($avatar_size < 0 || $avatar_size > IA_AVATAR_MAXSIZE) {
+                    $errors['avatar'] = 'Fisierul depaseste limita de '
+                                        .(IA_AVATAR_MAXSIZE / 1024).' KB';
+                }
             }
+        } else {
+            $avatar = null;
         }
 
         // process data
         if (!$errors) {
-            $fields = $data;
-            unset($fields['username']);
-
             // upload avatar; similar to attachments
-            // FIXME: Leverage code for attachment creation
+            // FIXME: use attachments code. Too bad attachments code is just as ugly.
             if ($avatar) {
                 // Add the file to the database.
                 $user_page = IA_USER_TEXTBLOCK_PREFIX.$user['username'];
@@ -89,8 +106,7 @@ function controller_account() {
                     // Attachment already exists, overwrite.
                     attachment_update($attach['id'], $file_name, $avatar_size,
                                       $mime_type, $user_page, $user['id']);
-                }
-                else {
+                } else {
                     // New attachment. Insert.
                     attachment_insert($file_name, $avatar_size,
                                       $mime_type, $user_page, $user['id']);
@@ -114,25 +130,26 @@ function controller_account() {
                 }
             }
 
+            // Create new user entry.
+            $new_user = $user;
+
             // modify user entry in database
-            if (0 == strlen(trim($fields['password']))) {
-                unset($fields['password']);
+            if (0 !== strlen($data['password'])) {
+                $new_user['password'] = user_hash_password(
+                        $data['password'], $new_user['username']);
+            } else {
+                $new_user['password'] = $user['password'];
             }
-            else {
-                // when updating user password, it is mandatory to also specify
-                // username
-                $fields['username'] = $user['username'];
-            }
-            // trim unwanted/invalid fields
-            unset($fields['password2']);
-            unset($fields['passwordold']);
+            $new_user['full_name'] = $data['full_name'];
+            $new_user['email'] = $data['email'];
+            $new_user['newsletter'] = $data['newsletter'];
+            $new_user['security_level'] = $data['security_level'];
 
             // update database entry
-            user_update($fields, $user['id']);
+            log_print_r($user);
+            log_print_r($new_user);
+            user_update($new_user);
             $new_user = user_get_by_id($user['id']);
-
-            // propagate changes to SMF
-            smf_update_user($new_user);
 
             // if changing own profile, reload identity information
             if ($ownprofile) {
@@ -142,14 +159,11 @@ function controller_account() {
 
             // done. redirect to same page so user has a strong confirmation
             // of data being saved
-            flash("Modificarile au fost salvate! ".getattr($errors, 'avatar'));
-            redirect(url_account($user['username']));
-        }
-        else {
+            flash("Modificarile au fost salvate!");
+        } else {
             flash_error('Am intalnit probleme. Verifica datele introduse.');
         }
-    }
-    else {
+    } else {
         // form is displayed for the first time. Fill in default values
         $data = $user;
 
@@ -157,15 +171,19 @@ function controller_account() {
         unset($data['id']);
         unset($data['username']);
         unset($data['password']);
+        if (!identity_can('user-change-security', $user)) {
+            unset($data['security_level']);
+        }
     }
 
     // attach form is displayed for the first time or validation error occurred
     // display form
     $view = array();
+
+    // FIXME: belongs in view.
     if ($ownprofile) {
         $view['title'] = 'Contul meu';
-    }
-    else {
+    } else {
         $view['title'] = 'Modifica date pentru '.$user['username'];
     }
     $view['user'] = $user;

@@ -53,7 +53,7 @@ function list_get($list_id) {
 
         case 'test':
             // a small set of users. meant for testing
-            $usernames = array('wickedman', 'gigikent');
+            $usernames = array('wickedman', 'gigikent', 'Freja');
             $query = "SELECT * FROM ia_user
                       WHERE username IN ('".join("', '", $usernames)."')
                       ORDER BY full_name";

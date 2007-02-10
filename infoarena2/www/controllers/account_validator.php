@@ -104,6 +104,15 @@ function validate_user_data($data, $register, $user = null) {
                          .'aceste conditii.';
     }
 
+    // Security
+    if (!$register && array_key_exists('security_level', $data)) {
+        if ($user['security_level'] != 'normal' &&
+               $user['security_level'] != 'helper' &&
+               $user['security_level'] != 'admin') {
+            $errors['security_level'] = "Nivel de securitate invalid";
+        }
+    }
+
     return $errors;
 }
 

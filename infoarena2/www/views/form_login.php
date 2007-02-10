@@ -1,6 +1,6 @@
 <form action="<?= htmlentities(url_login()) ?>" method="post" class="login">
 <fieldset>
-    <legend><img src="<?= htmlentities(url_static('images/icons/key.gif')) ?>" alt="Yellow key, just a decoration" /> Autentificare</legend>
+    <legend><img src="<?= htmlentities(url_static('images/icons/key.gif')) ?>" alt="!" /> Autentificare</legend>
     <ul class="form">
 <?= view_form_field_li(array(
         'name' => 'Cont de utilizator',

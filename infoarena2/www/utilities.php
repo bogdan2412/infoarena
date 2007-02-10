@@ -70,14 +70,10 @@ function http_cache_check($last_modified, $cache_age = IA_CLIENT_CACHE_AGE) {
         // Client's cache is up to date, yey!
         header('Last-Modified: '.gmdate('D, d M Y H:i:s', $last_modified)
                .' GMT', true, 304);
-        if (IA_LOG_CACHE) {
-            log_print('CACHE: Client hit');
-        }
+        // log_print('CACHE: Client hit');
         die();
     } else {
-        if (IA_LOG_CACHE) {
-            log_print('CACHE: Client miss');
-        }
+        // log_print('CACHE: Client miss');
         // Client's cache is missing / out-dated
         header('Last-Modified: '.gmdate('D, d M Y H:i:s', $last_modified)
                .' GMT', true, 200);

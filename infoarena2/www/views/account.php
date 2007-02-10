@@ -1,4 +1,7 @@
-<?php include('header.php'); ?>
+<?php
+require_once(IA_ROOT_DIR.'www/views/utilities.php');
+include('header.php');
+?>
 
 <h1><?= htmlentities($view['title']) ?></h1>
 
@@ -21,27 +24,50 @@
 
 <form enctype="multipart/form-data" action="<?= htmlentities($action) ?>" method="post" class="profile clear">
 <fieldset>
-    <legend><img src="<?= htmlentities(url_static('images/icons/key.gif')) ?>"/> Schimba parola</legend>
+    <legend><img src="<?= htmlentities(url_static('images/icons/key.gif')) ?>" alt="!" /> Informatii legate de securitate</legend>
     <ul class="form">
         <li>
             <label for='form_passwordold'>Parola curenta</label>
             <?= ferr_span('passwordold') ?>
-            <input autocomplete="off" type="password" name='passwordold' id="form_passwordold" />
+            <input type="password" name='passwordold' id="form_passwordold" />
             <span class="fieldHelp">Completeaza doar daca vrei sa schimbi parola sau adresa de e-mail</span>
         </li>
         <li>
             <label for='form_password'>Parola noua</label>
             <?= ferr_span('password') ?>
-            <input autocomplete="off" type="password" name='password' id="form_password" />
+            <input type="password" name='password' id="form_password" />
             <span class="fieldHelp">Cel putin 4 caractere</span>
         </li>
         <li>
             <label for='form_password2'>Confirmare parola noua</label>
             <?= ferr_span('password2') ?>
-            <input autocomplete="off" type="password" name='password2' id="form_password2" />
+            <input type="password" name='password2' id="form_password2" />
         </li>
-    <ul>
+<?
+if (array_key_exists('security_level', $form_values)) {
+    echo view_form_field_li(array(
+            'name' => 'Nivel de securitate',
+            'type' => 'enum',
+            'values' => array(
+                    'normal' => 'Utilizator normal',
+                    'helper' => 'Propunator de probleme',
+                    'admin' => 'Admin smenar',
+            ),
+            'default' => 'normal',
+    ), 'security_level');
+}
+?>
+    </ul>
 </fieldset>
+
+<!-- Hack for valid html (autocomplete is not in the spec). -->
+<script language="JavaScript" type="text/javascript">
+<!--
+    document.getElementById("form_passwordold").setAttribute("autocomplete", "off");
+    document.getElementById("form_password").setAttribute("autocomplete", "off");
+    document.getElementById("form_password2").setAttribute("autocomplete", "off");
+-->
+</script>
 
 <fieldset>
     <legend>Schimba avatar</legend>
@@ -50,7 +76,7 @@
             <?php
                 // display avatar
                 $avatar_url = url_user_avatar($user['username'], "150x150");
-                echo '<img class="avatar" src="'.htmlentities($avatar_url).'"/>';
+                echo '<img class="avatar" src="'.htmlentities($avatar_url).'" alt="avatar"/>';
             ?>
         </li>
         <li>
@@ -89,6 +115,7 @@
     <li>
         <input type="submit" value="Salveaza" id="form_submit" class="button important" />
     </li>
+</ul>
 </form>
 
 <?php include('footer.php'); ?>

@@ -43,7 +43,7 @@ function fieldinfo_validate($finfo) {
             }
             if ($type == 'enum') {
                 if (!array_key_exists(getattr($finfo, 'default'), $values)) {
-                    $errors['default'] = "Default value missing";
+                    $errors['default'] = "Default value missing among valid values.";
                 }
             } else if ($type == 'set') {
                 foreach (getattr($finfo, 'default', array()) as $dv) {
@@ -97,7 +97,11 @@ function format_form_field_inner_editor(
                 'value' => htmlentities($field_value),
         ));
     } else if ($type == 'bool' || $type == 'enum' || $type == 'set') {
+        // All these are handled as a select.
+        // Set uses a smart selctor with two lists.
+        
         if ($type == 'bool') {
+            // Convert bools to enums.
             $values = array(
                     '0' => 'Nu',
                     '1' => 'Da'
@@ -105,6 +109,8 @@ function format_form_field_inner_editor(
         } else {
             $values = $field_info['values'];
         }
+
+        // Attributes for the select tag.
         $select_attribs = array();
         $select_attribs['name'] = $field_name;
         $select_attribs['id'] = "form_$field_name";
@@ -114,11 +120,16 @@ function format_form_field_inner_editor(
             $select_attribs['size'] = 10;
             $select_attribs['name'] .= '[]';
         } else {
+            // field_value contains the selected value, if not a set
+            // then we pack it in an array of one element.
             // How evil am I?
             $field_value = array($field_value);
         }
+
+        // Generate html
         $res = format_open_tag('select', $select_attribs);
         foreach ($values as $val => $content) {
+            // Format and append option tags.
             $option_attribs = array();
             $option_attribs['value'] = $val;
             if (in_array($val, $field_value)) {

@@ -47,7 +47,11 @@ function curl_test($args)
     }
 
     if (isset($args['user'])) {
-        $curl_args[CURLOPT_USERPWD] = $args['user'].':pwd';
+        if (array_key_exists('pwd', $args)) {
+            $curl_args[CURLOPT_USERPWD] = $args['user'].':'.$args['pwd'];
+        } else {
+            $curl_args[CURLOPT_USERPWD] = $args['user'].':pwd';
+        }
     }
 
     $ch = curl_init();
@@ -88,42 +92,38 @@ function validate_html($content)
 // Create test users.
 function test_prepare()
 {
-    log_assert(user_create(array(
-            'username' => 'test_dudE1',
-            'password' => 'pwd',
-            'full_name' => 'Testing Dude 1',
-            'email' => 'no@spam.com',
-    )), "Failed creating test dude 1");
+    $user = user_init();
+    $user['email'] = "no@spam.com";
 
-    log_assert(user_create(array(
-            'username' => 'teSt_dude2',
-            'password' => 'pwd',
-            'full_name' => 'Testing Dude 2',
-            'email' => 'no@spam.com',
-    )), "Failed creating test dude 2");
+    $user['username'] = 'test_dudE1';
+    $user['password'] = user_hash_password('pwd', $user['username']);
+    $user['full_name'] = 'Testing Dude 1';
+    log_assert(user_create($user));
 
-    log_assert(user_create(array(
-            'username' => 'teSt_helper1',
-            'password' => 'pwd',
-            'full_name' => 'Testing Helper 1',
-            'email' => 'no@spam.com',
-            'security_level' => 'helper',
-    )), "Failed creating test helper 1");
+    $user['username'] = 'teSt_dude2';
+    $user['password'] = user_hash_password('pwd', $user['username']);
+    $user['full_name'] = 'Testing Dude 2';
+    log_assert(user_create($user));
 
-    log_assert(user_create(array(
-            'username' => 'test_hElper2',
-            'password' => 'pwd',
-            'full_name' => 'Testing Helper 2',
-            'security_level' => 'helper',
-    )), "Failed creating test helper 2");
+    $user['username'] = 'teSt_helper1';
+    $user['password'] = user_hash_password('pwd', $user['username']);
+    $user['full_name'] = 'Testing Helper 1';
+    $user['email'] = 'no@spam.com';
+    $user['security_level'] = 'helper';
+    log_assert(user_create($user));
 
-    log_assert(user_create(array(
-            'username' => 'tEst_adMin',
-            'password' => 'pwd',
-            'full_name' => 'Testing Admin',
-            'email' => 'no@spam.com',
-            'security_level' => 'admin',
-    )), "Failed creating test admin");
+    $user['username'] = 'test_hElper2';
+    $user['password'] = user_hash_password('pwd', $user['username']);
+    $user['full_name'] = 'Testing Helper 2';
+    $user['security_level'] = 'helper';
+    log_assert(user_create($user));
+
+    $user['username'] = 'tEst_adMin';
+    $user['password'] = user_hash_password('pwd', $user['username']);
+    $user['full_name'] = 'Testing Admin';
+    $user['email'] = 'no@spam.com';
+    $user['security_level'] = 'admin';
+    log_assert(user_create($user));
 }
 
 // Cleanup for testing.

@@ -136,6 +136,7 @@ function security_simplify_action($action)
         case 'round-view-tasks':
         case 'round-register':
         case 'user-editprofile':
+        case 'user-change-security':
         case 'job-view':
         case 'job-download': 
             return $action;
@@ -283,6 +284,10 @@ function security_user($user, $action, $target_user) {
         case 'user-editprofile':
             // anyone can edit their own profile. admins can edit any profile
             return $is_admin || $is_self;
+
+        // FIXME: haaaaack.
+        case 'user-change-security':
+            return $is_admin;
 
         // Nobody is allowed here. This includes moving/deleting user's own
         // page and changing security descriptors in user pages.

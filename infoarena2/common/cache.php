@@ -34,12 +34,12 @@ function disk_cache_get($cache_id) {
     $file_name = IA_ROOT_DIR . 'cache/' . $cache_id;
 
     if (@is_readable($file_name)) {
-        if (IA_LOG_CACHE) {
+        if (IA_LOG_DISK_CACHE) {
             log_print("CACHE: DISK: HIT on $cache_id");
         }
         return file_get_contents($file_name);
     } else {
-        if (IA_LOG_CACHE) {
+        if (IA_LOG_DISK_CACHE) {
             log_print("CACHE: DISK: MISS on $cache_id");
         }
         return false;
@@ -52,7 +52,7 @@ function disk_cache_serve($cache_id, $http_file_name, $mime_type = null) {
     require_once(IA_ROOT_DIR . 'www/utilities.php');
     $file_name = IA_ROOT_DIR . 'cache/' . $cache_id;
 
-    if (IA_LOG_CACHE) {
+    if (IA_LOG_DISK_CACHE) {
         log_print("CACHE: DISK: SERVE $cache_id");
     }
     http_serve($file_name, $http_file_name, $mime_type);
@@ -66,7 +66,7 @@ function disk_cache_set($cache_id, $buffer, $ttl = 0) {
 
     $ret = @file_put_contents($file_name, $buffer, LOCK_EX);
 
-    if (IA_LOG_CACHE) {
+    if (IA_LOG_DISK_CACHE) {
         if ($ret) {
             log_print("CACHE: DISK: SET $cache_id");
         } else {
@@ -90,22 +90,41 @@ function disk_cache_purge() {
     }
 }
 
+//
+// Memory caching implementation depends on IA_MEM_CACHE_METHOD.
+// There are only four functions, which should be enough for just about everything.
+//
+// You can store arrays, ints, string, null but not booleans because they're
+// used by the mem_cache_get function. You could store booleans as 0/1 however.
+//
+// FUNCTIONS:
+//      mem_cache_get gets an object from the cache, or FALSE if not found.
+//      A null result means it a null value was stored.
+//
+//      mem_cache_set places an object in the cache with a certain ttl and
+//      returns the untouched object. Booleans can't be stored.
+//
+//      mem_cache_delete removes something from the cache, use this when the
+//      object is no longer valid.
+//
+//      mem_cache_purge deletes everything from the cache. Try to avoid calling it.
+//
+// FIXME: cache is not logged. See IA_LOG_MEM_CACHE.
 if (IA_MEM_CACHE_METHOD == 'none') {
 
-    // Fake cache
+    // Fake cache implementation/
 
     function mem_cache_get($cache_id) {
         return false;
     }
 
-    function mem_cache_set($cache_id, $buffer, $ttl = 10) {
+    function mem_cache_set($cache_id, $object, $ttl = IA_MEM_CACHE_DURATION) {
+        return $object;
     }
 
     function mem_cache_delete($cache_id) {
     }
 
-    // Purge the entire SHM cache.
-    // FIXME: does this actually work?
     function mem_cache_purge() {
     }
 
@@ -122,7 +141,7 @@ if (IA_MEM_CACHE_METHOD == 'none') {
         }
     }
 
-    function mem_cache_set($cache_id, $buffer, $ttl = 10) {
+    function mem_cache_set($cache_id, $buffer, $ttl = IA_MEM_CACHE_DURATION) {
         log_assert($object !== 'false', "Can't cache false values");
         eaccelerator_put($cache_id, $buffer, $ttl);
     }
@@ -139,34 +158,52 @@ if (IA_MEM_CACHE_METHOD == 'none') {
 
 } else if (IA_MEM_CACHE_METHOD == 'memcached') {
 
+    // memcached cache implementation.
+
     $_memcache = memcache_pconnect('localhost');
 
     function mem_cache_get($cache_id) {
         global $_memcache;
         $res = memcache_get($_memcache, $cache_id);
         if ($res === false) {
+            if (IA_LOG_MEM_CACHE) {
+                log_print("MEM CACHE: miss on $cache_id");
+            }
             return false;
         } else {
+            if (IA_LOG_MEM_CACHE) {
+                log_print("MEM CACHE: hit on $cache_id");
+            }
             return unserialize($res);
         }
     }
 
-    function mem_cache_set($cache_id, $object, $ttl = 10) {
+    function mem_cache_set($cache_id, $object, $ttl = IA_MEM_CACHE_DURATION) {
         global $_memcache;
         log_assert($object !== 'false', "Can't cache false values");
         memcache_set($_memcache, $cache_id, serialize($object), 0, $ttl);
+
+        if (IA_LOG_MEM_CACHE) {
+            log_print("MEM CACHE: store $cache_id");
+        }
     }
 
     function mem_cache_delete($cache_id) {
         global $_memcache;
         memcache_delete($_memcache, $cache_id);
+
+        if (IA_LOG_MEM_CACHE) {
+            log_print("MEM CACHE: delete $cache_id");
+        }
     }
 
-    // Purge the entire SHM cache.
-    // FIXME: does this actually work?
     function mem_cache_purge() {
         global $_memcache;
         memcache_flush($_memcache);
+
+        if (IA_LOG_MEM_CACHE) {
+            log_print("MEM CACHE: purge");
+        }
     }
 }
 

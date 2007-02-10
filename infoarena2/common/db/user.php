@@ -8,20 +8,30 @@ require_once(IA_ROOT_DIR."common/cache.php");
  * User-related functions.
  */
 
+// Add an user to the cache, or update if already there.
+// Nothing happens if null is passed.
+//
+// Query functions can use this safely, it will just ignore nulls.
+// Always returns $user.
 function _user_cache_add($user) {
-    mem_cache_set("user-by-name:{$user['username']}", $user);
-    mem_cache_set("user-by-id:{$user['username']}", $user);
+    if (!is_null($user)) {
+        log_assert_valid(user_validate($user));
+        mem_cache_set("user-by-name:{$user['username']}", $user);
+        mem_cache_set("user-by-id:{$user['username']}", $user);
+    }
     return $user;
 }
 
+// Delete an user from the cache. $user must be a valid user.
 function _user_cache_delete($user) {
+    log_assert_valid(user_validate($user));
     mem_cache_delete("user-by-name:{$user['username']}");
     mem_cache_delete("user-by-id:{$user['username']}");
 }
 
 // Test password in IA1 format.
-// NOTE: not cached, this is correct.
-function user_test_ia1_password($username, $password) {
+function user_test_ia1_password($username, $password)
+{
     // old ia1 users are expected to have the ia1 hashed password
     // as their actual password
     $password = db_query_value(sprintf("SELECT PASSWORD('%s')",
@@ -33,105 +43,144 @@ function user_test_ia1_password($username, $password) {
                       FROM ia_user
                       WHERE username = '%s' AND '%s' = `password`",
                      db_escape($username), db_escape($password));
-    return db_fetch($query);
+
+    return _user_cache_add(db_fetch($query));
 }
 
-// Check user's password
-// NOTE: not cached, this is correct.
-function user_test_password($username, $password) {
-    // hash password
-    $password = user_hash_password($password, $username);
-    // test
+// Check user's password.
+// Returns user struct or null if user/passwrd is wrong.
+function user_test_password($username, $password)
+{
+    // Query database
+    $hash = user_hash_password($password, $username);
     $query = sprintf("SELECT *
                       FROM ia_user
-                      WHERE username = '%s' AND '%s' = `password`",
-                     db_escape($username),
-                     db_escape($password));
-    return db_fetch($query);
+                      WHERE username = %s AND `password` = %s",
+                     db_quote($username), db_quote($hash));
+    $user = db_fetch($query);
+
+    // Store in cache
+    return _user_cache_add(db_fetch($query));
 }
 
-function user_get_by_email($email) {
+// Get user by email. Returns valid user or null.
+function user_get_by_email($email)
+{
+    // Query database.
     $query = sprintf("SELECT *
                       FROM ia_user
                       WHERE email = '%s'",
                      db_escape($email));
+    $user = db_fetch($query);
+
+    // Store in cache if not null.
     return _user_cache_add(db_fetch($query));
 }
 
-// Get user information.
-function user_get_by_username($user_name) {
+// Get user by username. Returns valid user or null.
+function user_get_by_username($user_name)
+{
+    // Check the cache.
     if (($res = mem_cache_get("user-by-name:$user_name")) !== false) {
         return $res;
     }
+
+    // Query database.
     $query = sprintf("SELECT *
                       FROM ia_user
                       WHERE username = '%s'",
                      db_escape($user_name));
-    return _user_cache_add(db_fetch($query));
+    $user = db_fetch($query);
+
+    // Keep in cache.
+    // If we didn't find an user we store a null in the cache by hand.
+    if ($user !== null) {
+        return _user_cache_add($user);
+    } else {
+        mem_cache_set("user-by-name:$user_name", null);
+        return null;
+    }
 }
 
-function user_get_by_id($user_id) {
-    if (($res = mem_cache_get("user-by-id:$user_name")) !== false) {
+// Get an user struct by his numeric id.
+// Remarkably similar to user_get_by_username.
+function user_get_by_id($user_id)
+{
+    // Check the cache.
+    if (($res = mem_cache_get("user-by-id:$user_id")) !== false) {
         return $res;
     }
+
+    // Query database
     $query = sprintf("SELECT *
                       FROM ia_user
                       WHERE id = %s",
                      db_quote($user_id));
-    return _user_cache_add(db_fetch($query));
+    $user = db_fetch($query);
+
+    // Keep in cache
+    if ($user !== null) {
+        return _user_cache_add($user);
+    } else {
+        mem_cache_set("user-by-id:$user_id", null);
+        return null;
+    }
+
 }
 
 // Create a new user.
-function user_create($data) {
-    $query = "INSERT INTO ia_user (";
-    foreach ($data as $key => $val) {
-        $query .= '`' . $key . '`,';
-    }
-    $query = substr($query, 0, strlen($query)-1);
-    $query .= ') VALUES (';
-    foreach ($data as $key => $val) {
-        if ($key == 'password') {
-            $val = user_hash_password($val, $data['username']);
-        }
+// This also creates an user page and SMF user.
+// $user must be a valid user struct, user_id ignored
+// Returns created $user or throws up on error.
+function user_create($user)
+{
+    log_assert_valid(user_validate($user));
 
-        $query .= "'" . db_escape($val) . "',";
-    }
-    $query = substr($query, 0, strlen($query)-1); // delete last ,
-    $query .= ')';
+    // DB magic.
+    unset($user['id']);
+    db_insert("ia_user", $user);
+    $user['id'] = db_insert_id();
 
-    db_query($query);
-    mem_cache_delete("user-by-username:{$data['username']}");
-    $new_user = user_get_by_username($data['username']);
-    log_assert($new_user, 'Registration input data was validated OK but no database entry was created');
+    // Check db magic
+    // FIXME: do we really need this?
+    _user_cache_delete($user);
+    $new_user = user_get_by_username($user['username']);
+    log_assert($new_user, "Failed creating user");
 
+    // Create user page.
     require_once(IA_ROOT_DIR . "common/textblock.php");
-    $replace = array("user_id" => $data['username']);
-    textblock_copy_replace("template/newuser", IA_USER_TEXTBLOCK_PREFIX.$data['username'],
+    $replace = array("user_id" => $user['username']);
+    textblock_copy_replace("template/newuser", IA_USER_TEXTBLOCK_PREFIX.$user['username'],
                            $replace, "public", $new_user['id']);
 
+    // Create SMF user
+    require_once(IA_ROOT_DIR."common/db/smf.php");
+    $smf_id = smf_create_user($user);
+    log_assert($smf_id, "SMF user for {$user['username']} not created.");
+
+    // Cache and return
     return _user_cache_add($new_user);
 }
 
 // Update user information.
-// NOTE: When updating password, it is mandatory that you also specify username
-function user_update($data, $id) {
-    $query = "UPDATE ia_user SET ";
-    foreach ($data as $key => $val) {
-        if ($key == 'password') {
-            $val = user_hash_password($val, $data['username']);
-        }
-        $query .= "`" . $key . "`='" . db_escape($val) . "',";
-    }
-    $query = substr($query, 0, strlen($query)-1); // delete last ,
-    $query .= " WHERE `id` = '" . db_escape($id) . "'";
+// $user should be a complete user struct.
+// Uses db_update evilness.
+// Also updates SMF, which is good.
+function user_update($user)
+{
+    log_assert_valid(user_validate($user));
+    
+    // Update DB
+    db_update("ia_user", $user, "id = ".db_quote($user['id']));
 
-    mem_cache_delete("user-by-username:{$data['username']}");
-    mem_cache_delete("user-by-id:$id");
-    return _user_cache_add($new_user);
+    // Update SMF
+    smf_update_user($user);
+
+    _user_cache_add($user);
 }
 
 // Returns array with *all* registered usernames.
-// Please use this wisely.
+// FIXME: grep and exterminate.
 function user_get_list($all_fields = false) {
     $rows = db_fetch_all("SELECT * FROM ia_user");
     if ($all_fields) {
@@ -144,7 +193,7 @@ function user_get_list($all_fields = false) {
     return $users;
 }
 
-// Counts number of users
+// Counts number of users, cached.
 function user_count() {
     if (($res = mem_cache_get("total-user-count")) !== false) {
         return $res;

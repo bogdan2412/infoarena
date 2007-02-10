@@ -26,7 +26,7 @@
 
 <form enctype="multipart" action="<?= htmlentities($action) ?>" method="post" class="profile clear">
 <fieldset>
-    <legend><img src="<?= htmlentities(url_static('images/icons/key.gif')) ?>"/> Utilizator infoarena</legend>
+    <legend><img src="<?= htmlentities(url_static('images/icons/key.gif')) ?>" alt="!" /> Utilizator infoarena</legend>
     <ul class="form">
         <li>
             <label for='form_username'>Nume cont utilizator</label>
@@ -37,24 +37,32 @@
         <li>
             <label for='form_password'>Parola</label>
             <?= ferr_span('password') ?>
-            <input autocomplete="off" type="password" name='password' id="form_password" />
+            <input type="password" name="password" id="form_password" />
             <span class="fieldHelp">Cel putin 4 caractere</span>
         </li>
         <li>
             <label for='form_password2'>Confirmare parola</label>
             <?= ferr_span('password2') ?>
-            <input autocomplete="off" type="password" name='password2' id="form_password2" />
+            <input type="password" name="password2" id="form_password2" />
         </li>
-    <ul>
+    </ul>
 </fieldset>
+
+<!-- Hack for valid html (autocomplete is not in the spec). -->
+<script language="JavaScript" type="text/javascript">
+<!--
+    document.getElementById("form_password").setAttribute("autocomplete", "off");
+    document.getElementById("form_password2").setAttribute("autocomplete", "off");
+-->
+</script>
 
 <fieldset>
     <legend>Informatii personale</legend>
     <ul class="form">
         <li>
-            <label for="form_name">Nume complet</label>
+            <label for="form_full_name">Nume complet</label>
             <?= ferr_span('full_name') ?>
-            <input type="text" name="full_name" value="<?= fval('full_name') ?>" id="form_name" />
+            <input type="text" name="full_name" value="<?= fval('full_name') ?>" id="form_full_name" />
             <span class="fieldHelp">Conturile cu nume gresite sau false vor fi dezactivate</span>
         </li>
         <li>
@@ -81,6 +89,8 @@
     <li>
         <input type="submit" value="Inregistreaza-ma" id="form_submit" class="button important" />
     </li>
+</ul>
+
 </form>
 
 <?php include('footer.php'); ?>
