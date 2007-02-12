@@ -58,12 +58,12 @@ function user_validate($user) {
     // Username
     if (!array_key_exists('username', $user)) {
         $errors['username'] = 'Lipseste numele de utilizator.';
-    } else if (4 > strlen($user['username'])) {
+    } else if (2 > strlen($user['username'])) {
         $errors['username'] = 'Nume de utilizator este prea scurt.';
-    } else if (16 < strlen($user['username'])) {
+    } else if (60 < strlen($user['username'])) {
         $errors['username'] = 'Nume de utilizator este prea lung.';
-    } else if (!is_user_name($user['username'])) {
-        $errors['username'] = 'Numele utilizator contine caractere invalide.';
+//    } else if (!is_user_name($user['username'])) {
+//        $errors['username'] = 'Numele utilizator contine caractere invalide.';
     }
 
     // Password
@@ -74,8 +74,8 @@ function user_validate($user) {
     // E-mail
     if (!array_key_exists('email', $user)) {
         $errors['email'] = 'Lipseste adresa de e-mail.';
-    } else if (!is_valid_email($user['email'])) {
-        $errors['email'] = 'Adresa de e-mail introdusa este invalida.';
+//    } else if (!is_valid_email($user['email'])) {
+//        $errors['email'] = 'Adresa de e-mail introdusa este invalida.';
     }
 
     // Full name
@@ -83,8 +83,8 @@ function user_validate($user) {
         $errors['full_name'] = 'Lipseste numele complet.';
     } else if (strlen($user['full_name']) < 1) {
         $errors['full_name'] = 'Numele este prea scurt';
-    } else if (!is_user_full_name($user['full_name'])) {
-        $errors['full_name'] = 'Numele contine caractere invalide.';
+//    } else if (!is_user_full_name($user['full_name'])) {
+//        $errors['full_name'] = 'Numele contine caractere invalide.';
     }
 
     // Security level

@@ -135,24 +135,42 @@ if (IA_MEM_CACHE_METHOD == 'none') {
     function mem_cache_get($cache_id) {
         $res = eaccelerator_get($cache_id);
         if ($res === null) {
+            if (IA_LOG_MEM_CACHE) {
+                log_print("MEM CACHE: miss on $cache_id");
+            }
             return false;
         } else {
+            if (IA_LOG_MEM_CACHE) {
+                log_print("MEM CACHE: hit on $cache_id");
+            }
             return unserialize($res);
         }
     }
 
-    function mem_cache_set($cache_id, $buffer, $ttl = IA_MEM_CACHE_DURATION) {
+    function mem_cache_set($cache_id, $object, $ttl = IA_MEM_CACHE_DURATION) {
         log_assert($object !== 'false', "Can't cache false values");
-        eaccelerator_put($cache_id, $buffer, $ttl);
+        eaccelerator_put($cache_id, serialize($object), $ttl);
+
+        if (IA_LOG_MEM_CACHE) {
+            log_print("MEM CACHE: store $cache_id");
+        }
+
+        return $object;
     }
 
     function mem_cache_delete($cache_id) {
         eaccelerator_rm($cache_id);
+        if (IA_LOG_MEM_CACHE) {
+            log_print("MEM CACHE: delete $cache_id");
+        }
     }
 
     // Purge the entire SHM cache.
     // FIXME: does this actually work?
     function mem_cache_purge() {
+        if (IA_LOG_MEM_CACHE) {
+            log_print("MEM CACHE: purge");
+        }
         eaccelerator_gc();
     }
 
@@ -186,6 +204,7 @@ if (IA_MEM_CACHE_METHOD == 'none') {
         if (IA_LOG_MEM_CACHE) {
             log_print("MEM CACHE: store $cache_id");
         }
+        return $object;
     }
 
     function mem_cache_delete($cache_id) {

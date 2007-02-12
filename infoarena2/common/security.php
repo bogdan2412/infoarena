@@ -255,7 +255,11 @@ function security_attach($user, $action, $attach) {
         $action = $newaction;
     }
     $tb = textblock_get_revision($attach['page']);
+    if (!$tb) {
+        log_print_r($attach);
+    }
     log_assert($tb, "Orphan attachment");
+
     return security_textblock($user, $action, $tb);
 }
 

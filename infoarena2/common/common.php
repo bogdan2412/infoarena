@@ -27,22 +27,22 @@ define("IA_RE_PAGE_NAME", '[a-z0-9][a-z0-9_\-\.\@\/]*');
 // Lowercase, words are separated by only one /(no trailing).
 // CASE sensitive!!
 define("IA_RE_NORMAL_PAGE_NAME", '
-        (?: [a-z0-9] [a-z0-9_\-\.\@]* )
-        (?: \/ [a-z0-9] [a-z0-9_\-\.\@]* )*');
+        (?: [a-z0-9_\-\.\@\+\*\[\]]* )
+        (?: \/ [a-z0-9_\-\.\@]* )*');
 
 // Short identifiers. FIXME: limit length here too?
 define("IA_RE_ROUND_ID", '[a-z0-9][a-z0-9_\-\.]*');
 define("IA_RE_TASK_ID", '[a-z0-9][a-z0-9_\-\.]*');
 define("IA_RE_SCORE_NAME", '[a-z0-9][a-z0-9_\-\.]*');
 
-define("IA_RE_USER_NAME", '[a-z0-9][a-z0-9_\-\.\@]*');
+define("IA_RE_USER_NAME", '[_@a-z0-9][a-z0-9_\-\.\@]*');
 
 // Valid email. A complete check is not possible, see
 // http://www.regular-expressions.info/email.html
 define("IA_RE_EMAIL", '[^@]+@.+\..+');
 
 // User full name. Your name can't be %$!
-define("IA_RE_USER_FULL_NAME", '[a-z][a-z0-9\-\.\ ]+');
+define("IA_RE_USER_FULL_NAME", '[a-z0-9\-\.\ \@]+');
 
 // Attachment names.
 // Starts with letter or number, can also contain .-_

@@ -182,7 +182,7 @@ function user_update($user)
 // Returns array with *all* registered usernames.
 // FIXME: grep and exterminate.
 function user_get_list($all_fields = false) {
-    $rows = db_fetch_all("SELECT * FROM ia_user");
+    $rows = db_fetch_all("SELECT * FROM `ia_user`");
     if ($all_fields) {
         return $rows;
     }
@@ -191,6 +191,12 @@ function user_get_list($all_fields = false) {
         $users[] = $row['username'];
     }
     return $users;
+}
+
+// Get all users.
+// Do not fucking use.
+function user_get_all() {
+    return db_fetch_all("SELECT * FROM `ia_user`");
 }
 
 // Counts number of users, cached.

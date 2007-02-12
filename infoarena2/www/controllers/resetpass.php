@@ -114,14 +114,8 @@ function controller_resetpass_confirm($username) {
     // reset password
     $new_password = sha1(mt_rand(1000000, 9999999).IA_SECRET);
     $new_password = substr($new_password, 0, 6);
-    $fields = array(
-        'password' => $new_password,
-        'username' => $user['username']
-    );
-    user_update($fields, $user['id']);
-
-    // also update SMF user entry
-    smf_update_user(user_get_by_id($user['id']));
+    $user['password'] = user_hash_password($new_password, $user['username']);
+    user_update($user);
 
     // send email with new password
     $to = $user['email'];
