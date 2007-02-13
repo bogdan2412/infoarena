@@ -1,0 +1,10 @@
+#! /usr/bin/env php
+<?php
+
+require_once(dirname($argv[0]) . "/utilities.php");
+require_once(IA_ROOT_DIR . "common/cache.php");
+
+disk_cache_purge();
+mem_cache_purge();
+
+?>
