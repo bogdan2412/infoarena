@@ -59,8 +59,14 @@ function controller_round_details($round_id) {
     $values['page_name'] = request('page_name', $round['page_name']);
     $values['start_time'] = request('start_time', $round['start_time']);
 
-    // Get tasks. WTF, this works? wicked!
-    $values['tasks'] = request('tasks', $round_tasks);
+    // Get tasks. SHIT FUCK DAMN;
+    // It seems we can't find out if the user submitted anything at all.
+    // Which messes up everything.
+    if (request_is_post()) {
+        $values['tasks'] = request('tasks', array());
+    } else {
+        $values['tasks'] = $round_tasks;
+    }
 
     // Parameter values, for all possible types of rounds.
     // Yucky, but functional.
@@ -133,6 +139,7 @@ function controller_round_details($round_id) {
     // If posting with no errors then do the db monkey
     if (request_is_post() && !$errors) {
         // FIXME: error handling? Is that even remotely possible in php?
+        log_print_r($_REQUEST);
         round_update($new_round);
         round_update_parameters($round_id, $new_round_params);
         round_update_task_list($round_id, $new_round_tasks);

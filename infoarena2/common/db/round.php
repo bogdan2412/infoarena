@@ -146,13 +146,19 @@ function round_update_task_list($round_id, $tasks) {
                      db_escape($round_id));
     db_query($query);
 
-    // insert new relations
-    foreach ($tasks as $task_id) {
-        $values[] = "('".db_escape($round_id)."', '".db_escape($task_id)."')";
+    log_print_r($tasks);
+    log_print(count($tasks));
+
+    if (count($tasks) > 0) {
+        // insert new relations
+        $values = array();
+        foreach ($tasks as $task_id) {
+            $values[] = "('".db_escape($round_id)."', '".db_escape($task_id)."')";
+        }
+        $query = "INSERT INTO ia_round_task (round_id, task_id) 
+                  VALUES ". implode(', ', $values);
+        db_query($query);
     }
-    $query = "INSERT INTO ia_round_task (round_id, task_id) 
-              VALUES ". implode(', ', $values);
-    db_query($query);
 }
 
 // Returns boolean whether given user is registered to round $round_id
