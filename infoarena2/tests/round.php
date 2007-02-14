@@ -133,6 +133,7 @@ $res = curl_test(array(
         'post' => array(
                 'type' => 'archive',
                 'start_time' => $start_date,
+                'tasks' => array('cmmdc', 'flip', 'biti'),
         ),
 ));
 log_assert_equal($res['url'], url_absolute(url_round_edit('test_round')));
