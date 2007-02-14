@@ -32,7 +32,7 @@ define("IA_RE_NORMAL_PAGE_NAME", '
 
 // Short identifiers. FIXME: limit length here too?
 define("IA_RE_ROUND_ID", '[a-z0-9][a-z0-9_\-\.]*');
-define("IA_RE_TASK_ID", '[a-z0-9][a-z0-9_\-\.]*');
+define("IA_RE_TASK_ID", '(?-i:[a-z0-9][a-z0-9_\-\.]*)');
 define("IA_RE_SCORE_NAME", '[a-z0-9][a-z0-9_\-\.]*');
 
 define("IA_RE_USER_NAME", '[_@a-z0-9][a-z0-9_\-\.\@]*');

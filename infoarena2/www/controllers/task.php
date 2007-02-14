@@ -144,7 +144,7 @@ function controller_task_create()
 
     if (request_is_post()) {
         if (!is_task_id($values['id'])) {
-            $errors['id'] = "Id de task invalid";
+            $errors['id'] = "Id de task invalid. Nu se permit majuscule!";
         } else if (task_get($values['id'])) {
             $errors['id'] = "Exista deja un task cu acest id";
         }
