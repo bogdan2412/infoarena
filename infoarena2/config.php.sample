@@ -122,10 +122,10 @@ define("IA_MEM_CACHE_DURATION", 300);
 
 // If true then log all security checks.
 // Warning: tons of output.
-define("IA_LOG_SECURITY", IA_DEVELOPMENT_MODE);
+define("IA_LOG_SECURITY", false);
 
 // If true then log disk cache hits/misses
-define("IA_LOG_DISK_CACHE", IA_DEVELOPMENT_MODE);
+define("IA_LOG_DISK_CACHE", false);
 
 // If true then log mem cache hits/misses
 define("IA_LOG_MEM_CACHE", false);

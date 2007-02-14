@@ -3,40 +3,91 @@
 
 require_once(dirname($argv[0]) . "/utilities.php");
 db_connect();
-
 $smfprefix = IA_SMF_DB_PREFIX;
 
-/*$remaining_user_ids = array_values(db_fetch_all("SELECT `id` from `ia_user` LIMIT 300"));
-$ruids = '(' . implode(', ', $remaining_user_ids) . ')';
-db_query("DELETE FROM `ia_user` WHERE id NOT IN $ruids");
-db_query("DELETE FROM `ia_score` WHERE user_id NOT IN $rids");*/
-
-// censoring sensitive data
-//  - passwords
+// Set password=username
 db_query("UPDATE ia_user
           SET `password` = SHA1(CONCAT(LCASE(username), LCASE(username)))");
 db_query("UPDATE {$smfprefix}members
           SET `passwd` = SHA1(CONCAT(LCASE(memberName), LCASE(memberName)))");
-//  - email
+// Delete emails
 db_query("UPDATE ia_user
           SET email = CONCAT(username, '@example.com')");
 db_query("UPDATE {$smfprefix}members
           SET emailAddress = CONCAT(memberName, '@example.com')");
-//  - other SMF data
+
+// Delete smf magic
 db_query("UPDATE {$smfprefix}members
           SET secretQuestion = '', secretAnswer='', memberIP='',
               memberIP2=''");
-//  - attachments
+
+// Delete all attachments except noimage
 db_query("DELETE FROM ia_file
           WHERE name <> 'noimage'");
-//  - delete private pages
-db_query("DELETE FROM `ia_textblock_revision` WHERE `name` IN ".
-         "(SELECT `name` FROM `ia_textblock` WHERE security='private')");
-db_query("DELETE FROM `ia_textblock` WHERE security='private'");
-//  - Remove user sources
+
+// Delete submissions.
 db_query("UPDATE ia_job SET file_contents='--gone--'");
 
-// Censor forum. FIXME: only censor private stuff. eeek.
+// Delete hidden tasks
+db_query("DELETE FROM ia_task where hidden = 1");
+
+// Delete extra users. Only kill mortals
+$del_user_count = db_query_value("SELECT COUNT(*) FROM ia_user") - 100;
+db_query("DELETE FROM ia_user ".
+         "WHERE security_level = 'normal' ".
+         "ORDER BY RAND() LIMIT $del_user_count");
+
+// Delete orphan smf members
+db_query("DELETE ia_smf_members FROM ia_smf_members ".
+        "LEFT JOIN ia_user on ia_user.username = ia_smf_members.memberName ".
+        "WHERE (ia_user.username IS NULL) ");
+
+// Delete orphan scores.
+db_query("DELETE ia_score FROM ia_score ".
+        "LEFT JOIN ia_user on ia_user.id = ia_score.user_id ".
+        "LEFT JOIN ia_task on ia_task.id = ia_score.task_id ".
+        "LEFT JOIN ia_round on ia_round.id = ia_score.round_id ".
+        "WHERE (ia_score.user_id IS NOT NULL AND ia_user.id IS NULL) ".
+        "OR (ia_score.task_id IS NOT NULL AND ia_task.id IS NULL) ".
+        "OR (ia_score.round_id IS NOT NULL AND ia_round.id IS NULL)");
+
+// Delete orphan jobs
+db_query("DELETE ia_job FROM ia_job ".
+        "LEFT JOIN ia_user on ia_user.id = ia_job.user_id ".
+        "LEFT JOIN ia_task on ia_task.id = ia_job.task_id ".
+        "WHERE (ia_user.id IS NULL) OR (ia_task.id IS NULL)");
+
+// Delete extra jobs.
+$del_job_count = db_query_value("SELECT COUNT(*) FROM ia_job") - 100;
+db_query("DELETE FROM ia_job ORDER BY RAND() LIMIT $del_job_count");
+
+// Delete private pages
+db_query("DELETE FROM `ia_textblock` WHERE security='private'");
+
+// Delete task pages
+// This is needed to avoid leaking secret statements.
+db_query("DELETE FROM `ia_textblock` ".
+         "WHERE name LIKE 'problema/%' AND name NOT IN ".
+         "(SELECT page_name FROM ia_task)");
+
+// Delete dangling user pages.
+// They take a huge amount of space.
+db_query("DELETE FROM `ia_textblock` ".
+         "WHERE name LIKE 'utilizator/%' AND name NOT IN ".
+         "(SELECT CONCAT('utilizator/', username) FROM ia_user)");
+
+// Delete dangling old revisions.
+db_query("DELETE `ia_textblock_revision` FROM ia_textblock_revision ".
+         "LEFT JOIN ia_textblock ON ia_textblock_revision.name = ia_textblock.name ".
+         "WHERE ia_textblock.name IS NULL");
+
+// Erase worthless history.
+$revision_limit = db_query_value("SELECT COUNT(*) FROM ia_textblock_revision") - 500;
+db_query("DELETE FROM ia_textblock_revision ".
+         "ORDER BY RAND() LIMIT $revision_limit");
+
+// Censor forum. FIXME: only censor private stuff.
+// We could look inside smf and only delete some things, but it's fucking hard.
 //  - personal and public SMF messages (we have some private threads)
 db_query("DELETE FROM `{$smfprefix}messages`");
 db_query("DELETE FROM `{$smfprefix}personal_messages`");
@@ -56,4 +107,12 @@ db_query("DELETE FROM `{$smfprefix}log_search_results`");
 db_query("DELETE FROM `{$smfprefix}log_search_subjects`");
 db_query("DELETE FROM `{$smfprefix}log_search_topics`");
 db_query("DELETE FROM `{$smfprefix}log_topics`");
+
+foreach (db_fetch_all("SHOW TABLES") as $row) {
+    $row = array_values($row);
+    $table = $row[0];
+    db_query("OPTIMIZE TABLE $table");
+    db_query("ANALYZE TABLE $table");
+}
+
 ?>
