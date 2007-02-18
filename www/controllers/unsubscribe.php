@@ -34,10 +34,8 @@ function controller_unsubscribe($username) {
     }
 
     // unsubscribe user
-    $fields = array(
-        'newsletter' => 0 
-    );
-    user_update($fields, $user['id']);
+    $user['newsletter'] = 0;
+    user_update($user);
 
     // update logged-in user
     if ($identity_user && $user['id'] == $identity_user['id']) {

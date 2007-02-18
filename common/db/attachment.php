@@ -107,8 +107,8 @@ function attachment_get_count($page, $name='%') {
 function attachment_get_filepath($attach) {
     assert(is_array($attach));
     return IA_ROOT_DIR.'attach/'.
-            preg_replace('/[^a-z0-9\.\-_]/i', '_', $attach['page']) . '_' .
-            preg_replace('/[^a-z0-9\.\-_]/i', '_', $attach['name']) . '_' .
+            strtolower(preg_replace('/[^a-z0-9\.\-_]/i', '_', $attach['page'])) . '_' .
+            strtolower(preg_replace('/[^a-z0-9\.\-_]/i', '_', $attach['name'])) . '_' .
             $attach['id'];
 }
 

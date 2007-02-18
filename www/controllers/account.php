@@ -64,7 +64,7 @@ function controller_account($username = null) {
         $data['password2'] = request('password2');
         $data['full_name'] = trim(request('full_name', $user['full_name']));
         $data['email'] = trim(request('email', $user['email']));
-        $data['newsletter'] = (request('newsletter', $user['newsletter']) ? 1 : 0);
+        $data['newsletter'] = request('newsletter', false) ? 1 : 0;
 
         // Security level, only if allowed.
         $data['security_level'] = request('security_level', $user['security_level']);

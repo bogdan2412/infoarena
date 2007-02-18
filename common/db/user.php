@@ -1,6 +1,7 @@
 <?php
 
 require_once(IA_ROOT_DIR."common/db/db.php");
+require_once(IA_ROOT_DIR."common/db/smf.php");
 require_once(IA_ROOT_DIR."common/user.php");
 require_once(IA_ROOT_DIR."common/cache.php");
 
