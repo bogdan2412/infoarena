@@ -18,10 +18,6 @@ require_once(IA_ROOT_DIR.'eval/utilities.php');
 require_once(IA_ROOT_DIR.'eval/download.php');
 require_once(IA_ROOT_DIR.'eval/classic_grader.php');
 
-log_print("");
-log_print("Eval started");
-log_print("");
-
 error_reporting(0xFFFF);
 
 // Create a job_result for a system error
@@ -109,24 +105,49 @@ function job_handle($job) {
     score_update_for_job($job_result['score'], $job['submit_time'], $job['user_id'], $job['task_id']);
 }
 
-db_connect();
-while (1) {
-    if ($round = round_get_round_to_stop()) {
-        round_event_stop($round);
-        continue;
+// Main evaluation loop. It works by polling the sql server
+// every IA_EVAL_POLL_INTERVAL
+function eval_main_loop() {
+    db_connect();
+
+    log_print("");
+    log_print("Eval started");
+    log_print("");
+
+    while (1) {
+        if ($round = round_get_round_to_stop()) {
+            round_event_stop($round);
+            continue;
+        }
+        if ($round = round_get_round_to_start()) {
+            round_event_start($round);
+            continue;
+        }
+        if ($round = round_get_round_to_wait()) {
+            round_event_wait($round);
+        }
+        if ($job = job_get_next_job()) {
+            job_handle($job);
+            continue;
+        }
+        milisleep(IA_EVAL_POLL_INTERVAL);
     }
-    if ($round = round_get_round_to_start()) {
-        round_event_start($round);
-        continue;
-    }
-    if ($round = round_get_round_to_wait()) {
-        round_event_wait($round);
-    }
-    if ($job = job_get_next_job()) {
-        job_handle($job);
-        continue;
-    }
-    milisleep(IA_EVAL_POLL_INTERVAL);
 }
+
+$options = getopt("dl:");
+
+if (array_key_exists('d', $options)) {
+    // Run in daemon mode. Fork to background, pid to eval.pid
+    if ($pid = pcntl_fork()) {
+        die();
+    }
+    file_put_contents(IA_ROOT_DIR . 'eval/eval.pid', getmypid() . "\n");
+}
+
+if (array_key_exists('l', $options)) {
+    ini_set('error_log', $options['l']);
+}
+
+eval_main_loop();
 
 ?>
