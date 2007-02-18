@@ -136,6 +136,6 @@ do {
     } else {
         print("Invalid arguments\n");
     }
-} while (true);
+} while (false);
 
 ?>
