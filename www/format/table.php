@@ -168,7 +168,7 @@ function format_table($data, $column_infos = null, $options = null)
 
     // Paging.
     if (getattr($options, 'pager_style', 'none') != 'none') {
-        $result .= format_pager($options);
+            $result .= format_pager($options);
     }
 
     return $result;

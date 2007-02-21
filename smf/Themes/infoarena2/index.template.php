@@ -19,7 +19,7 @@
     The main_below sub template, conversely, is shown after the main content.
     It should probably contain the copyright statement and some other things.
 
-    The linktree sub template shouid display the link tree, using the data
+    The linktree sub template should display the link tree, using the data
     in the $context['linktree'] variable.
 
     The menu sub template should display all the relevant buttons the user

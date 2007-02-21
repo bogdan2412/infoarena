@@ -68,10 +68,6 @@ else {
 
         // For the task column.
         function format_task_link($row) {
-            //FIXME: horrible hack
-            if (!identity_can('job-view', $row)) {
-                return "???";
-            }
             return format_link(
                     url_textblock($row['task_page_name']),
                     $row['task_title']);

@@ -31,7 +31,6 @@ function ia_template_header() {
             </span>
         </div>
     <?php } ?>
-
     <?php if (IA_DEVELOPMENT_MODE) { ?>
         <div id="dev_warning">
             Bravely working in development mode&hellip;<br/>Keep it up!
@@ -93,6 +92,14 @@ function ia_template_topnav($selected = 'infoarena', $smf_admin = false) {
         <?= getattr($pre, 'smf_admin') ?>
         <?= format_link(url_forum() . "?action=admin", "forum admin") ?>
         <?= getattr($post, 'smf_admin') ?>
+    </li>
+<?php } ?>
+<?php if ($selected != 'infoarena' && $selected != 'login' && 
+          $selected != 'register' && $selected != 'profile') { ?>
+    <li>
+        <?= getattr($pre, 'search_forum') ?>
+        <?= format_link(url_forum() . "?action=search", "cautare") ?>
+        <?= getattr($post, 'search_forum') ?>
     </li>
 <?php } ?>
 <?php } ?>
