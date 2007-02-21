@@ -63,6 +63,4 @@ function controller_plot($suburl) {
             redirect(url_home());
     }
 }
-
-
 ?>

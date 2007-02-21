@@ -166,11 +166,6 @@ function round_is_registered($round_id, $user_id) {
     log_assert(is_round_id($round_id));
     log_assert(is_user_id($user_id));
 
-    // FIXME: this should not be here
-    if ('arhiva' == $round_id) {
-        return true;
-    }
-
     $query = sprintf("SELECT COUNT(*) AS `cnt` FROM ia_user_round
                       WHERE round_id=%s AND user_id=%s",
                      db_quote($round_id), db_quote($user_id));
@@ -187,6 +182,7 @@ function round_is_registered($round_id, $user_id) {
 // will fail.
 function round_register_user($round_id, $user_id) {
     log_assert(is_round_id($round_id));
+    log_assert(is_user_id($user_id));
     $insert_fields = array(
         "round_id" => $round_id,
         "user_id" => $user_id
@@ -206,21 +202,13 @@ function round_get_registered_users_range($round_id, $start, $range)
 
     // FIXME: don't differentiate on $round['type']
     $round = round_get($round_id);
-    if ($round['type'] == 'archive') {
-        $query = sprintf("SELECT user.id AS user_id, user.rating_cache AS rating,
-                          user.username AS username, user.full_name AS fullname
-                          FROM ia_user AS user
-                          ORDER BY rating DESC
-                          LIMIT %s, %s", $start, $range);
-    } else {
-        $query = sprintf("SELECT user.id AS user_id, user.rating_cache AS rating,
-                          user.username AS username, user.full_name AS fullname
-                          FROM ia_user_round AS user_round
-                          LEFT JOIN ia_user AS user ON user_id = user.id
-                          WHERE round_id = '%s'
-                          ORDER BY rating DESC
-                          LIMIT %s, %s", db_escape($round_id), $start, $range);
-    }
+    $query = sprintf("SELECT user.id AS user_id, user.rating_cache AS rating,
+                      user.username AS username, user.full_name AS fullname
+                      FROM ia_user_round AS user_round
+                      LEFT JOIN ia_user AS user ON user_id = user.id
+                      WHERE round_id = '%s'
+                      ORDER BY rating DESC
+                      LIMIT %s, %s", db_escape($round_id), $start, $range);
 
     $tab = db_fetch_all($query);
     for ($i = 0; $i < count($tab); ++$i) {
@@ -236,13 +224,9 @@ function round_get_registered_users_count($round_id)
 
     // FIXME: don't differentiate on $round['type']
     $round = round_get($round_id);
-    if ($round['type'] == 'archive') {
-        $query = sprintf("SELECT COUNT(*) FROM ia_user");
-    } else {
-        $query = sprintf("SELECT COUNT(*) FROM ia_user_round
-                          WHERE `round_id` = '%s'",
-                          db_escape($round_id));
-    }
+    $query = sprintf("SELECT COUNT(*) FROM ia_user_round
+                      WHERE `round_id` = '%s'",
+                      db_escape($round_id));
     return db_query_value($query);
 }
 

@@ -23,7 +23,7 @@ log_print("Recomputing ratings for ".count($rounds)." rounds...");
 $i = 1;
 $cnt = count($rounds);
 foreach ($rounds as $round_id => $round) {
-    echo "\n\n\nRound {$i}/{$cnt}\n";
+    echo "\n\n\nRound {$i}/{$cnt} - {$round_id}...\n";
     system("./update-ratings {$round_id}");
     $i++;
 }

@@ -28,8 +28,10 @@ $plot_script .= $script;
 // store auxiliary data in a temporary file
 // NOTE: Don't worry about /tmp! If it doesn't exists, tempnam
 // finds the right system temporary folder
-$tmpfname = tempnam("/tmp", "iagnuplot_");
+$tmpfname = tempnam("/tmp/", "iagnuplot_");
+chmod($tmpfname, 666);
 log_assert($tmpfname);
+
 $ftemp = fopen($tmpfname, "w");
 log_assert($ftemp);
 fwrite($ftemp, $data);
@@ -43,6 +45,7 @@ $descriptorspec = array(
     0 => array("pipe", "r"),
     1 => array("pipe", "w"),
 );
+
 $process = proc_open("gnuplot | convert -rotate 90 -density 72 "
                      ."-resample 51x50 -crop {$width}x{$height}+0+0 "
                      ."-gravity South ps:- png:-",

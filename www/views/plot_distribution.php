@@ -73,5 +73,4 @@ foreach ($distribution as $bucket => $count) {
 
 // render PNG
 include(IA_ROOT_DIR.'www/views/gnuplot.php');
-
 ?>

@@ -184,12 +184,14 @@ function user_update($user)
 // FIXME: grep and exterminate.
 function user_get_list($all_fields = false) {
     $rows = db_fetch_all("SELECT * FROM `ia_user`");
-    if ($all_fields) {
-        return $rows;
-    }
     $users = array();
     foreach ($rows as $row) {
-        $users[] = $row['username'];
+        if ($all_fields) {
+            $users[$row['username']] = $row;
+        }
+        else {
+            $users[] = $row['username'];
+        }
     }
     return $users;
 }

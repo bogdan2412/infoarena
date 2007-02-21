@@ -20,31 +20,30 @@ require_once(IA_ROOT_DIR."common/parameter.php");
 db_connect();
 
 // validate argv
-log_assert(2 == $argc, "Expecting a single argument: round_id");
+log_assert(2 == $argc, "Expecting a single argument: round_id!");
 $round_id = $argv[1];
 
 // validate round id
 $round = round_get($round_id);
-log_assert($round, "Invalid round identifier");
+log_assert($round, "Invalid round identifier!");
 $params = round_get_parameters($round_id);
 log_assert(isset($params['rating_timestamp']),
-           "Round does not have parameter rating_timestamp");
+           "Round does not have parameter rating_timestamp!");
 $timestamp = parameter_decode('rating_timestamp', $params['rating_timestamp']);
 log_assert(isset($params['rating_update']),
-           "Round does not have parameter rating_update");
+           "Round does not have parameter rating_update!");
 log_assert(parameter_decode('rating_update', $params['rating_update']),
-           "Round is not marked as rating_update");
-
-log_print("Updating ratings for round ".$round_id."\n");
+           "Round is not marked as rating_update!");
+log_print("Updating ratings for round ".$round_id."...\n");
 
 // read all registered user names
-log_print("Reading whole user list");
+log_print("Reading whole user list...");
 $user_list = user_get_list();
 $usercount = count($user_list);
 log_print(count($user_list) . " infoarena users");
 
 // read last user ratings, deviations & timestamps
-log_print("Reading last user ratings, deviations and timestamps");
+log_print("Reading last user ratings, deviations and timestamps...");
 $current_scores = rating_last_scores();
 
 // do some quick testing: check if current rating cache corresponds
@@ -56,36 +55,34 @@ foreach ($ucheck as $row) {
     }
     log_assert(isset($current_scores[$row['username']]));
     if ($current_scores[$row['username']]['rating'] != $row['rating_cache']) {
-        print_r($current_scores[$row['username']]);
-        print_r($row);
-        log_print('rating_last_scores() fails to match rating_cache');
-        read_bool('This is serious. Have you seen the warning?');
-        log_error('rating_last_scores() fails to match rating_cache');
+            echo $row['username']." -> ".$current_scores[$row['username']]['rating']." != ".$row['rating_cache']."\n";
+            log_print('rating_last_scores() fails to match rating_cache!!!');
+//            read_bool('This is serious. Have you seen the warning?');
+//            log_error('rating_last_scores() fails to match rating_cache!!!');
     }
 }
 
 // merge data
-log_print("Merging data");
+log_print("Merging data...");
 $users = rating_init($user_list, $current_scores);
 
 // read registered users
 $scores = array();
-log_print("Reading round registered users");
+log_print("Reading round registered users...");
 $round_users = round_get_registered_users_range($round['id'], 0, $usercount);
-log_print(count($round_users) . " users registered for this his round");
+log_print(count($round_users) . " users registered for this round.");
 foreach ($round_users as $row) {
     assert(isset($row['username']));
     $scores[$row['username']] = 0;
 }
 
 // read round scores
-log_print("Reading round scores");
-$round_rows = score_get("score", null, null, $round_id, 0, $usercount);
-$round_rows = $round_rows['scores'];
-log_print(count($round_rows) . " users were scored in this round");
+log_print("Reading round scores...");
+$round_rows = score_get_range("score", null, null, $round_id, "user_id", 0, $usercount);
+log_print(count($round_rows) . " users were scored in this round.");
 foreach ($round_rows as $row) {
     log_assert(isset($row['user_name']) && isset($row['score']));
-    if (isset($scores[$row['user_name']]) || $timestamp < INFOARENA2_TIMESTAMP) {
+    if (isset($scores[$row['user_name']])) {
         $scores[$row['user_name']] = $row['score'];
     }
 }
@@ -94,13 +91,9 @@ foreach ($round_rows as $row) {
 rating_update($users, $scores, $timestamp);
 
 // update database
-log_print("Updating database");
-foreach (($round_rows + $round_users) as $row) {
-    // FIXME: Why in the world we have 2 ways of calling user names?
-    // FIXME: Do a grep throughout the source code. Replace 'user_name'
-    // with 'username'.
-    $username = isset($row['username']) ? $row['username']
-                                        : $row['user_name'];
+log_print("Updating database...");
+foreach ($round_users as $row) {
+    $username = $row['username'];
     $user_id = $row['user_id'];
     // for this round (history)
     score_update("rating", $user_id, null, $round_id,
@@ -108,9 +101,9 @@ foreach (($round_rows + $round_users) as $row) {
     score_update("deviation", $user_id, null, $round_id,
                  $users[$username]['deviation']);
     // cache rating
-    user_update(array("rating_cache" => $users[$username]['rating']), $user_id);
+    $user = $ucheck[$username];
+    $user['rating_cache'] = $users[$username]['rating'];
+    user_update($user);
 
-    // log_print($username.' => '.$users[$username]['rating']);
-}
-
+    }
 ?>

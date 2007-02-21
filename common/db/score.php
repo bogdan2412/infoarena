@@ -212,6 +212,7 @@ function rating_history($user_id) {
 //          ),
 //      ...
 //  );
+// NOTE: it does not return rounds that have rating_update but no rating_timestamp!
 function rating_rounds() {
     $query = "SELECT
                object_id AS round_id, `value` AS `timestamp`,
@@ -220,8 +221,8 @@ function rating_rounds() {
         FROM `ia_parameter_value`
         LEFT JOIN ia_round ON ia_round.id = ia_parameter_value.object_id
         WHERE parameter_id = 'rating_timestamp' AND object_type = 'round'
-              AND NOT ia_round.id IS NULL
-        ORDER BY `timestamp`
+              AND NOT ia_round.id IS NULL 
+        ORDER BY `timestamp`, round_id
     ";
     $rows = db_fetch_all($query);
     $rounds = array();
@@ -244,16 +245,24 @@ function rating_rounds() {
         if (!isset($rounds[$round_id])) {
             log_warn("Round {$round_id} has rating_update but no "
                       ."rating_timestamp parameter!");
+            unset($rounds[$round_id]);
             continue;
         }
         $value = parameter_decode($row['parameter_id'], $row['value']);
         if ($value) {
+            $rounds[$round_id]['rating_update'] = true;
             continue;
         }
 
         // Round parameters say round does not affect rating
         unset($rounds[$round_id]);
     }
+    foreach ($rounds as $round_id => $round) {
+        if (!isset($round['rating_update'])) {
+            unset($rounds[$round_id]);
+        }
+    }
+
     return $rounds;
 }
 
@@ -287,7 +296,7 @@ function rating_last_scores() {
             AND pv.parameter_id = 'rating_timestamp'
         LEFT JOIN ia_user ON ia_user.id = ia_score.user_id
         WHERE ia_score.name IN ('rating', 'deviation')
-        ORDER BY `timestamp` DESC
+        ORDER BY `timestamp` DESC, ia_score.round_id DESC
     ";
     $rows = db_fetch_all($query);
 
