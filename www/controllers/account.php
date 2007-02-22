@@ -73,8 +73,6 @@ function controller_account($username = null) {
         }
 
         $errors = validate_profile_data($data, $user);
-        log_print_r($data);
-        log_print_r($errors);
 
         // validate avatar
         // FIXME: This should leverage attachment creation code
@@ -146,8 +144,6 @@ function controller_account($username = null) {
             $new_user['security_level'] = $data['security_level'];
 
             // update database entry
-            log_print_r($user);
-            log_print_r($new_user);
             user_update($new_user);
             $new_user = user_get_by_id($user['id']);
 

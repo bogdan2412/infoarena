@@ -29,10 +29,11 @@ $plot_script .= $script;
 // NOTE: Don't worry about /tmp! If it doesn't exists, tempnam
 // finds the right system temporary folder
 $tmpfname = tempnam("/tmp/", "iagnuplot_");
-chmod($tmpfname, 666);
 log_assert($tmpfname);
 
 $ftemp = fopen($tmpfname, "w");
+// NOTE: the 0 (zero) at the beginning indicates octal constant value
+chmod($tmpfname, 0666);
 log_assert($ftemp);
 fwrite($ftemp, $data);
 fclose($ftemp);

@@ -344,13 +344,14 @@ The basic layout of the homepage is as follows:
     height: 1%;
 }
 
-#main .news h3 {
+#main .news h1 {
     font-family: Georgia, "Times New Roman", Times, serif;
     color: green;
     font-size: 13pt;
     font-weight: normal;
     border: 0;
     margin: 0;
+    margin-left: 55px;
 }
 
 .news .item {
@@ -362,12 +363,12 @@ The basic layout of the homepage is as follows:
 
 .news .item .wiki_text_block {
     line-height: 1.5em;
-    margin-left: 47px;
+    margin-left: 55px;
 }
 
 .news .item .date {
     float: left;
-    width: 25px;
+    width: 35px;
     padding: 5px;
     font-family: Arial, Helvetica, sans-serif;
     text-align: center;
@@ -375,7 +376,7 @@ The basic layout of the homepage is as follows:
     margin: 5px 8px 5px 0;
     padding-top: 10px;
     color: #060;
-    background: #D9E7BE url(../images/calendar.jpg) no-repeat top center;
+    background: #D9E7BE url(../images/calendar.jpg) repeat-x top center;
     line-height: 1.2;
 }
 

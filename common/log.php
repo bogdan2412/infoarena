@@ -126,7 +126,7 @@ function log_warn($message, $include_origin = false) {
 }
 
 // Use this when you hit a serious problem, and can't recover.
-// You might want to use log_error instead.
+// You might want to use log_warn() instead.
 function log_error($message, $include_origin = false) {
     if ($include_origin) {
         $message = format_message_backtrace($message);
