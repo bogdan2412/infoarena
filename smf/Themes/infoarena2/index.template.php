@@ -359,10 +359,7 @@ function template_menu() {
     elseif ('pm' == $context['current_action']) {
         $current_action = 'pm';
     }
-    elseif ('search' == $context['current_action'] || 
-            'search2' == $context['current_action']) {
-        $current_action = 'search_forum';
-    } else {
+    else {
         $current_action = 'forum';
     }
 
@@ -372,7 +369,10 @@ function template_menu() {
     // display menu
     ia_template_topnav($current_action, $smf_admin);
     if ($context['user']['is_logged']) {
-        echo '<div align="right"><a href="', $scripturl, '?action=unread">', $txt['unread_since_visit'], '</a> <br /></div>';
+        echo '<div style="float: right; padding: 3pt">',
+             '<a href="', $scripturl, '?action=search', '"><strong>Cauta in forum</strong></a> | ',
+             '<a href="', $scripturl, '?action=unread">', $txt['unread_since_visit'], '</a>',
+             '<br /></div>';
     //          <a href="', $scripturl, '?action=unreadreplies">', $txt['show_unread_replies'], '</a><br />
     }
 }

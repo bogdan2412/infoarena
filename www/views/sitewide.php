@@ -94,14 +94,6 @@ function ia_template_topnav($selected = 'infoarena', $smf_admin = false) {
         <?= getattr($post, 'smf_admin') ?>
     </li>
 <?php } ?>
-<?php if ($selected != 'infoarena' && $selected != 'login' && 
-          $selected != 'register' && $selected != 'profile') { ?>
-    <li>
-        <?= getattr($pre, 'search_forum') ?>
-        <?= format_link(url_forum() . "?action=search", "cautare") ?>
-        <?= getattr($post, 'search_forum') ?>
-    </li>
-<?php } ?>
 <?php } ?>
 </ul>
 </div>
