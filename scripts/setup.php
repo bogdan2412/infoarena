@@ -213,6 +213,10 @@ if (running_as_root() &&
         system("rm -rf /etc/apache2/sites-enabled/$sitename");
         system("ln -sf {$ia_root}apache.conf ".
                 "/etc/apache2/sites-available/$sitename");
+
+        // Enable site ad modules, then reload
+        system("a2enmod php5");
+        system("a2enmod rewrite");
         system("a2ensite $sitename");
         system("/etc/init.d/apache2 reload");
         if ($username != null) {
