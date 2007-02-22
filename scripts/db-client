@@ -18,6 +18,7 @@ if (strstr(IA_DB_HOST, ":")) {
     $cmdline .= " --host=".IA_DB_HOST;
 }
 $cmdline .= " ".IA_DB_NAME;
+log_print("Exec $cmdline");
 
 magic_exec($cmdline);
 

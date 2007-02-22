@@ -15,7 +15,6 @@ getgid
 setgid
 setresuid
 setregid
-getpid
 getegid
 getppid
 kill
@@ -30,7 +29,6 @@ chdir
 fchdir
 chroot
 setrlimit
-getrlimit
 getrusage
 reboot
 mount

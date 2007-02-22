@@ -38,7 +38,7 @@ function task_grade_job_classic($task, $tparams, $job) {
     }
 
     // Compile user source.
-    if (!@file_put_contents("user." . $job['compiler_id'], $job['file_contents'])) {
+    if (false === @file_put_contents("user." . $job['compiler_id'], $job['file_contents'])) {
         log_warn("Can't write user file on disk.");
         return jobresult_system_error();
     }

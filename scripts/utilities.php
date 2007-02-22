@@ -78,7 +78,7 @@ function magic_exec($cmd)
     if ($exe === null) {
         log_error("Couldn't find '$prog' executable.");
     } else {
-        pcntl_exec($exe, array_slice($argv, 1));
+        pcntl_exec($exe, array_slice($argv, 1), $_ENV);
     }
 }
 
