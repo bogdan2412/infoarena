@@ -162,8 +162,11 @@ function rating_history($user_id) {
 
     // get user scores
     $query = sprintf("SELECT * FROM `ia_score`
+                      LEFT JOIN ia_round ON round_id = ia_round.id
                       WHERE `name` IN ('deviation', 'rating')
-                      AND user_id = '%s'",
+                            AND user_id = '%s'
+                            AND ia_round.state = 'complete'
+                     ",
                      db_escape($user_id));
     $rows = db_fetch_all($query);
 
@@ -171,12 +174,6 @@ function rating_history($user_id) {
     foreach ($rows as $row) {
         $round_id = $row['round_id'];
         log_assert(isset($history[$round_id]));
-
-        $params = round_get_parameters($round_id);
-        if (!round_is_registered($round_id, $user_id) && 
-            $params['rating_timestamp'] >= INFOARENA2_TIMESTAMP) {
-            continue;
-        }
 
         switch ($row['name']) {
             case 'rating':
@@ -201,7 +198,9 @@ function rating_history($user_id) {
     return $history;
 }
 
-// Returns all rounds that have ratings enabled in chronological order.
+// Returns all COMPLETED rounds in chronological order that have ratings
+// enabled.
+//
 // Output array format is:
 //  array(
 //      round_id =>
@@ -212,16 +211,16 @@ function rating_history($user_id) {
 //          ),
 //      ...
 //  );
-// NOTE: it does not return rounds that have rating_update but no rating_timestamp!
 function rating_rounds() {
-    $query = "SELECT
+    $query = "
+        SELECT
                object_id AS round_id, `value` AS `timestamp`,
                ia_round.page_name AS round_page_name,
                ia_round.title AS round_title
         FROM `ia_parameter_value`
         LEFT JOIN ia_round ON ia_round.id = ia_parameter_value.object_id
         WHERE parameter_id = 'rating_timestamp' AND object_type = 'round'
-              AND NOT ia_round.id IS NULL 
+              AND NOT ia_round.id IS NULL AND ia_round.`state` = 'complete'
         ORDER BY `timestamp`, round_id
     ";
     $rows = db_fetch_all($query);
@@ -389,6 +388,12 @@ function get_users_by_rating_count() {
         AND `security_level` != 'admin'";
     $res = db_fetch($query);
     return $res['cnt'];
+}
+
+// Clears ALL user ratings & rating history
+function rating_clear() {
+    db_query("DELETE FROM ia_score WHERE `name` IN ('rating', 'deviation')");
+    db_query("UPDATE ia_user SET rating_cache = NULL");
 }
 
 ?>
