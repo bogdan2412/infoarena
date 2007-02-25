@@ -1,25 +1,26 @@
 <?php
-/******************************************************************************
-* ManageBoards.php                                                            *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* ManageBoards.php                                                                *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1.2                                           *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -378,7 +379,7 @@ function EditCategory2()
 		if (isset($_POST['delete_action']) && $_POST['delete_action'] == 1)
 		{
 			if (empty($_POST['cat_to']))
-				fatal_error($txt['mboards_delete_error']);
+				fatal_lang_error('mboards_delete_error');
 
 			deleteCategories(array($_POST['cat']), (int) $_POST['cat_to']);
 		}
@@ -501,12 +502,10 @@ function EditBoard()
 	if (!empty($_REQUEST['boardid']))
 	{
 		$context['can_move_children'] = false;
+		$context['children'] = $boards[$_REQUEST['boardid']]['tree']['children'];
 		foreach ($context['board_order'] as $board)
 			if ($board['is_child'] == false && $board['selected'] == false)
-			{
 				$context['can_move_children'] = true;
-				$context['children'] = $boards[$_REQUEST['boardid']]['tree']['children'];
-			}
 	}
 
 	// Get other available categories.
@@ -611,7 +610,7 @@ function EditBoard2()
 		{
 			// New boards by default go to the bottom of the category.
 			if (empty($_POST['new_cat']))
-				$boardOptions['target_category'] = $_POST['cur_cat'];
+				$boardOptions['target_category'] = (int) $_POST['cur_cat'];
 			if (!isset($boardOptions['move_to']))
 				$boardOptions['move_to'] = 'bottom';
 

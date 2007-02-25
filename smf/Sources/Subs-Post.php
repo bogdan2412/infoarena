@@ -1,25 +1,26 @@
 <?php
-/******************************************************************************
-* Subs-Post.php                                                               *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* Subs-Post.php                                                                   *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1.2                                           *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -189,6 +190,9 @@ function preparsecode(&$message, $previewing = false)
 	// Now that we've fixed all the code tags, let's fix the img and url tags...
 	$parts = preg_split('~(\[/code\]|\[code(?:=[^\]]+)?\])~i', $message, -1, PREG_SPLIT_DELIM_CAPTURE);
 
+	// The regular expression non breaking space has many versions.
+	$non_breaking_space = $context['utf8'] ? ($context['server']['complex_preg_chars'] ? '\x{A0}' : pack('C*', 0xC2, 0xA0)) : '\xA0';
+
 	// Only mess with stuff outside [code] tags.
 	for ($i = 0, $n = count($parts); $i < $n; $i++)
 	{
@@ -199,9 +203,9 @@ function preparsecode(&$message, $previewing = false)
 
 			// Replace /me.+?\n with [me=name]dsf[/me]\n.
 			if (strpos($user_info['name'], '[') !== false || strpos($user_info['name'], ']') !== false || strpos($user_info['name'], '\'') !== false || strpos($user_info['name'], '"') !== false)
-				$parts[$i] = preg_replace('~(\A|\n)/me(?: |&nbsp;)(.*?)(\n|\z)~i', '$1[me=&quot;' . $user_info['name'] . '&quot;]$2[/me]$3', $parts[$i]);
+				$parts[$i] = preg_replace('~(?:\A|\n)/me(?: |&nbsp;)([^\n]*)(?:\z)?~i', '[me=&quot;' . $user_info['name'] . '&quot;]$1[/me]', $parts[$i]);
 			else
-				$parts[$i] = preg_replace('~(\A|\n)/me(?: |&nbsp;)(.*?)(\n|\z)~i', '$1[me=' . $user_info['name'] . ']$2[/me]$3', $parts[$i]);
+				$parts[$i] = preg_replace('~(?:\A|\n)/me(?: |&nbsp;)([^\n]*)(?:\z)?~i', '[me=' . $user_info['name'] . ']$1[/me]', $parts[$i]);
 
 			if (!$previewing)
 			{
@@ -222,44 +226,47 @@ function preparsecode(&$message, $previewing = false)
 			if ($list_open - $list_close > 0)
 				$parts[$i] = $parts[$i] . str_repeat('[/list]', $list_open - $list_close);
 
+			// Make sure all tags are lowercase.
+			$parts[$i] = preg_replace('~\[([/]?)(list|li|table|tr|td)([^\]]*)\]~e', '"[$1" . strtolower("$2") . "$3]"', $parts[$i]);
+
 			$mistake_fixes = array(
 				// Find [table]s not followed by [tr].
-				'~\[table\](?![\s' . ($context['utf8'] ? '\x{C2A0}' : '\xA0') . ']*\[tr\])~is' . ($context['utf8'] ? 'u' : '') => '[table][tr]',
+				'~\[table\](?![\s' . $non_breaking_space . ']*\[tr\])~s' . ($context['utf8'] ? 'u' : '') => '[table][tr]',
 				// Find [tr]s not followed by [td].
-				'~\[tr\](?![\s' . ($context['utf8'] ? '\x{C2A0}' : '\xA0') . ']*\[td\])~is' . ($context['utf8'] ? 'u' : '') => '[tr][td]',
+				'~\[tr\](?![\s' . $non_breaking_space . ']*\[td\])~s' . ($context['utf8'] ? 'u' : '') => '[tr][td]',
 				// Find [/td]s not followed by something valid.
-				'~\[/td\](?![\s' . ($context['utf8'] ? '\x{C2A0}' : '\xA0') . ']*(?:\[td\]|\[/tr\]|\[/table\]))~is' . ($context['utf8'] ? 'u' : '') => '[/td][/tr]',
+				'~\[/td\](?![\s' . $non_breaking_space . ']*(?:\[td\]|\[/tr\]|\[/table\]))~s' . ($context['utf8'] ? 'u' : '') => '[/td][/tr]',
 				// Find [/tr]s not followed by something valid.
-				'~\[/tr\](?![\s' . ($context['utf8'] ? '\x{C2A0}' : '\xA0') . ']*(?:\[tr\]|\[/table\]))~is' . ($context['utf8'] ? 'u' : '') => '[/tr][/table]',
+				'~\[/tr\](?![\s' . $non_breaking_space . ']*(?:\[tr\]|\[/table\]))~s' . ($context['utf8'] ? 'u' : '') => '[/tr][/table]',
 				// Find [/td]s incorrectly followed by [/table].
-				'~\[/td\][\s' . ($context['utf8'] ? '\x{C2A0}' : '\xA0') . ']*\[/table\]~is' . ($context['utf8'] ? 'u' : '') => '[/td][/tr][/table]',
+				'~\[/td\][\s' . $non_breaking_space . ']*\[/table\]~s' . ($context['utf8'] ? 'u' : '') => '[/td][/tr][/table]',
 				// Find [table]s, [tr]s, and [/td]s (possibly correctly) followed by [td].
-				'~\[(table|tr|/td)\]([\s' . ($context['utf8'] ? '\x{C2A0}' : '\xA0') . ']*)\[td\]~is' . ($context['utf8'] ? 'u' : '') => '[$1]$2[_td_]',
+				'~\[(table|tr|/td)\]([\s' . $non_breaking_space . ']*)\[td\]~s' . ($context['utf8'] ? 'u' : '') => '[$1]$2[_td_]',
 				// Now, any [td]s left should have a [tr] before them.
-				'~\[td\]~is' => '[tr][td]',
+				'~\[td\]~s' => '[tr][td]',
 				// Look for [tr]s which are correctly placed.
-				'~\[(table|/tr)\]([\s' . ($context['utf8'] ? '\x{C2A0}' : '\xA0') . ']*)\[tr\]~is' . ($context['utf8'] ? 'u' : '') => '[$1]$2[_tr_]',
+				'~\[(table|/tr)\]([\s' . $non_breaking_space . ']*)\[tr\]~s' . ($context['utf8'] ? 'u' : '') => '[$1]$2[_tr_]',
 				// Any remaining [tr]s should have a [table] before them.
-				'~\[tr\]~is' => '[table][tr]',
+				'~\[tr\]~s' => '[table][tr]',
 				// Look for [/td]s followed by [/tr].
-				'~\[/td\]([\s' . ($context['utf8'] ? '\x{C2A0}' : '\xA0') . ']*)\[/tr\]~is' . ($context['utf8'] ? 'u' : '') => '[/td]$1[_/tr_]',
+				'~\[/td\]([\s' . $non_breaking_space . ']*)\[/tr\]~s' . ($context['utf8'] ? 'u' : '') => '[/td]$1[_/tr_]',
 				// Any remaining [/tr]s should have a [/td].
-				'~\[/tr\]~is' => '[/td][/tr]',
+				'~\[/tr\]~s' => '[/td][/tr]',
 				// Look for properly opened [li]s which aren't closed.
-				'~\[li\]([^\[\]]+?)\[li\]~is' => '[li]$1[_/li_][_li_]',
-				'~\[li\]([^\[\]]+?)$~is' => '[li]$1[/li]',
+				'~\[li\]([^\[\]]+?)\[li\]~s' => '[li]$1[_/li_][_li_]',
+				'~\[li\]([^\[\]]+?)$~s' => '[li]$1[/li]',
 				// Lists - find correctly closed items/lists.
-				'~\[/li\]([\s' . ($context['utf8'] ? '\x{C2A0}' : '\xA0') . ']*)\[/list\]~is' . ($context['utf8'] ? 'u' : '') => '[_/li_]$1[/list]',
+				'~\[/li\]([\s' . $non_breaking_space . ']*)\[/list\]~s' . ($context['utf8'] ? 'u' : '') => '[_/li_]$1[/list]',
 				// Find list items closed and then opened.
-				'~\[/li\]([\s' . ($context['utf8'] ? '\x{C2A0}' : '\xA0') . ']*)\[li\]~is' . ($context['utf8'] ? 'u' : '') => '[_/li_]$1[_li_]',
+				'~\[/li\]([\s' . $non_breaking_space . ']*)\[li\]~s' . ($context['utf8'] ? 'u' : '') => '[_/li_]$1[_li_]',
 				// Now, find any [list]s or [/li]s followed by [li].
-				'~\[(list(?: [^\]]*?)?|/li)\]([\s' . ($context['utf8'] ? '\x{C2A0}' : '\xA0') . ']*)\[li\]~is' . ($context['utf8'] ? 'u' : '') => '[$1]$2[_li_]',
+				'~\[(list(?: [^\]]*?)?|/li)\]([\s' . $non_breaking_space . ']*)\[li\]~s' . ($context['utf8'] ? 'u' : '') => '[$1]$2[_li_]',
 				// Any remaining [li]s weren't inside a [list].
-				'~\[li\]~i' => '[list][li]',
+				'~\[li\]~' => '[list][li]',
 				// Any remaining [/li]s weren't before a [/list].
-				'~\[/li\]~i' => '[/li][/list]',
+				'~\[/li\]~' => '[/li][/list]',
 				// Put the correct ones back how we found them.
-				'~\[_(li|/li|td|tr|/tr)_\]~i' => '[$1]',
+				'~\[_(li|/li|td|tr|/tr)_\]~' => '[$1]',
 			);
 
 			// Fix up some use of tables without [tr]s, etc. (it has to be done more than once to catch it all.)
@@ -451,7 +458,7 @@ function fixTag(&$message, $myTag, $protocols, $embeddedUrl = false, $hasEqualSi
 	$replaces = array();
 
 	if ($hasEqualSign)
-		preg_match_all('~\[(' . $myTag . ')=([^\]]*?)\]~is', $message, $matches);
+		preg_match_all('~\[(' . $myTag . ')=([^\]]*?)\](.+?)\[/(' . $myTag . ')\]~is', $message, $matches);
 	else
 		preg_match_all('~\[(' . $myTag . ($hasExtra ? '(?:[^\]]*?)' : '') . ')\](.+?)\[/(' . $myTag . ')\]~is', $message, $matches);
 
@@ -462,6 +469,8 @@ function fixTag(&$message, $myTag, $protocols, $embeddedUrl = false, $hasEqualSi
 		$this_tag = $matches[1][$k];
 		if (!$hasEqualSign)
 			$this_close = $matches[3][$k];
+		else
+			$this_close = $matches[4][$k];
 
 		$found = false;
 		foreach ($protocols as $protocol)
@@ -489,12 +498,15 @@ function fixTag(&$message, $myTag, $protocols, $embeddedUrl = false, $hasEqualSi
 		elseif (!$found)
 			$replace = $protocols[0] . '://' . $replace;
 
-		if ($hasEqualSign)
+		if ($hasEqualSign && $embeddedUrl)
+			$replaces['[' . $matches[1][$k] . '=' . $matches[2][$k] . ']' . $matches[3][$k] . '[/' . $matches[4][$k] . ']'] = '[' . $this_tag . '=' . $replace . ']' . $matches[3][$k] . '[/' . $this_close . ']';
+		elseif ($hasEqualSign)
 			$replaces['[' . $matches[1][$k] . '=' . $matches[2][$k] . ']'] = '[' . $this_tag . '=' . $replace . ']';
 		elseif ($embeddedUrl)
 			$replaces['[' . $matches[1][$k] . ']' . $matches[2][$k] . '[/' . $matches[3][$k] . ']'] = '[' . $this_tag . '=' . $replace . ']' . $matches[2][$k] . '[/' . $this_close . ']';
 		else
 			$replaces['[' . $matches[1][$k] . ']' . $matches[2][$k] . '[/' . $matches[3][$k] . ']'] = '[' . $this_tag . ']' . $replace . '[/' . $this_close . ']';
+
 	}
 
 	foreach ($replaces as $k => $v)
@@ -513,19 +525,25 @@ function sendmail($to, $subject, $message, $from = null, $message_id = null, $se
 {
 	global $webmaster_email, $context, $modSettings, $txt, $scripturl;
 
+	// Use sendmail if it's set or if no SMTP server is set.
+	$use_sendmail = empty($modSettings['mail_type']) || $modSettings['smtp_host'] == '';
+
+	// Line breaks need to be \r\n only in windows or for SMTP.
+	$line_break = $context['server']['is_windows'] || !$use_sendmail ? "\r\n" : "\n";
+
 	// So far so good.
 	$mail_result = true;
 
 	// If the recipient list isn't an array, make it one.
 	$to_array = is_array($to) ? $to : array($to);
 
-	// Sadly Hotmail doesn't support character sets properly.
+	// Sadly Hotmail & Yahoomail don't support character sets properly.
 	if ($hotmail_fix === null)
 	{
 		$hotmail_to = array();
 		foreach ($to_array as $i => $to_address)
 		{
-			if (preg_match('~@hotmail.[a-zA-Z\.]{2,6}$~i', $to_address) === 1)
+			if (preg_match('~@(yahoo|hotmail)\.[a-zA-Z\.]{2,6}$~i', $to_address) === 1)
 			{
 				$hotmail_to[] = $to_address;
 				$to_array = array_diff($to_array, array($to_address));
@@ -546,29 +564,29 @@ function sendmail($to, $subject, $message, $from = null, $message_id = null, $se
 
 	// Get rid of slashes and entities.
 	$subject = un_htmlspecialchars(stripslashes($subject));
-	// Make the message use \r\n's only.
-	$message = str_replace(array("\r", "\n"), array('', "\r\n"), stripslashes($message));
+	// Make the message use the proper line breaks.
+	$message = str_replace(array("\r", "\n"), array('', $line_break), stripslashes($message));
 
 	// Make sure hotmail mails are sent as HTML so that HTML entities work.
 	if ($hotmail_fix && !$send_html)
 	{
 		$send_html = true;
-		$message = strtr($message, array("\r\n" => "<br />\r\n"));
+		$message = strtr($message, array($line_break => '<br />' . $line_break));
 		$message = preg_replace('~(' . preg_quote($scripturl, '~') . '([?/][\w\-_%\.,\?&;=#]+)?)~', '<a href="$1">$1</a>', $message);
 	}
 
-	list (, $from_name) = mimespecialchars(addcslashes($from !== null ? $from : $context['forum_name'], '<>()\'\\"'), true, $hotmail_fix);
-	list (, $subject) = mimespecialchars($subject, true, $hotmail_fix);
+	list (, $from_name) = mimespecialchars(addcslashes($from !== null ? $from : $context['forum_name'], '<>()\'\\"'), true, $hotmail_fix, $line_break);
+	list (, $subject) = mimespecialchars($subject, true, $hotmail_fix, $line_break);
 
 	// Construct the mail headers...
-	$headers = 'From: "' . $from_name . '" <' . (empty($modSettings['mail_from']) ? $webmaster_email : $modSettings['mail_from']) . ">\r\n";
-	$headers .= $from !== null ? 'Reply-To: <' . $from . ">\r\n" : '';
-	$headers .= 'Return-Path: ' . (empty($modSettings['mail_from']) ? $webmaster_email: $modSettings['mail_from']) . "\r\n";
-	$headers .= 'Date: ' . gmdate('D, d M Y H:i:s') . ' +0000' . "\r\n";
+	$headers = 'From: "' . $from_name . '" <' . (empty($modSettings['mail_from']) ? $webmaster_email : $modSettings['mail_from']) . '>' . $line_break;
+	$headers .= $from !== null ? 'Reply-To: <' . $from . '>' . $line_break : '';
+	$headers .= 'Return-Path: ' . (empty($modSettings['mail_from']) ? $webmaster_email: $modSettings['mail_from']) . $line_break;
+	$headers .= 'Date: ' . gmdate('D, d M Y H:i:s') . ' +0000' . $line_break;
 
 	if ($message_id !== null && empty($modSettings['mail_no_message_id']))
-		$headers .= 'Message-ID: <' . md5($scripturl . microtime()) . '-' . $message_id . strstr(empty($modSettings['mail_from']) ? $webmaster_email : $modSettings['mail_from'], '@') . ">\r\n";
-	$headers .= "X-Mailer: SMF\r\n";
+		$headers .= 'Message-ID: <' . md5($scripturl . microtime()) . '-' . $message_id . strstr(empty($modSettings['mail_from']) ? $webmaster_email : $modSettings['mail_from'], '@') . '>' . $line_break;
+	$headers .= 'X-Mailer: SMF' . $line_break;
 
 	// pass this to the integration before we start modifying the output -- it'll make it easier later
 	if (isset($modSettings['integrate_outgoing_email']) && function_exists($modSettings['integrate_outgoing_email']))
@@ -577,45 +595,59 @@ function sendmail($to, $subject, $message, $from = null, $message_id = null, $se
 			return false;
 	}
 
-	$charset = isset($context['character_set']) ? $context['character_set'] : $txt['lang_character_set'];
+	// Save the original message...
+	$orig_message = $message;
 
-	list ($charset, $message, $encoding) = mimespecialchars($message, false, $hotmail_fix);
+	// The mime boundary separates the different alternative versions.
+	$mime_boundary = 'SMF-' . md5($message . time());
 
 	// Sending HTML?  Let's plop in some basic stuff, then.
 	if ($send_html)
 	{
 		// This should send a text message with MIME multipart/alternative stuff.
-		$mime_boundary = 'SMF-' . md5($message . time());
-		$headers .= 'Mime-Version: 1.0' . "\r\n";
-		$headers .= 'Content-Type: multipart/alternative; boundary="' . $mime_boundary . '"' . "\r\n";
-		$headers .= 'Content-Transfer-Encoding: ' . ($encoding == '' ? '7bit' : $encoding);
+		$headers .= 'Mime-Version: 1.0' . $line_break;
+		$headers .= 'Content-Type: multipart/alternative; boundary="' . $mime_boundary . '"' . $line_break;
+		$headers .= 'Content-Transfer-Encoding: 7bit' . $line_break;
 
-		// Save the original message...
-		$orig_message = $message;
+		$no_html_message = un_htmlspecialchars(strip_tags(strtr($orig_message, array('</title>' => $line_break))));
 
 		// But, then, dump it and use a plain one for dinosaur clients.
-		$message = un_htmlspecialchars(strip_tags(strtr($orig_message, array('</title>' => "\r\n")))) . "\r\n--" . $mime_boundary . "\r\n";
+		list(, $plain_message) = mimespecialchars($no_html_message, false, true, $line_break);
+		$message = $plain_message . $line_break . '--' . $mime_boundary . $line_break;
 
 		// This is the plain text version.  Even if no one sees it, we need it for spam checkers.
-		$message .= 'Content-Type: text/plain; charset=' . $charset . "\r\n";
-		$message .= 'Content-Transfer-Encoding: ' . ($encoding == '' ? '7bit' : $encoding) . "\r\n\r\n";
-		$message .= un_htmlspecialchars(strip_tags(strtr($orig_message, array('</title>' => "\r\n")))) . "\r\n--" . $mime_boundary . "\r\n";
+		list($charset, $plain_charset_message, $encoding) = mimespecialchars($no_html_message, false, false, $line_break);
+		$message .= 'Content-Type: text/plain; charset=' . $charset . $line_break;
+		$message .= 'Content-Transfer-Encoding: ' . $encoding . $line_break . $line_break;
+		$message .= $plain_charset_message . $line_break . '--' . $mime_boundary . $line_break;
 
 		// This is the actual HTML message, prim and proper.  If we wanted images, they could be inlined here (with multipart/related, etc.)
-		$message .= 'Content-Type: text/html; charset=' . $charset . "\r\n";
-		$message .= 'Content-Transfer-Encoding: ' . ($encoding == '' ? '7bit' : $encoding) . "\r\n\r\n";
-		$message .= $orig_message . "\r\n--" . $mime_boundary . '--';
+		list($charset, $html_message, $encoding) = mimespecialchars($orig_message, false, $hotmail_fix, $line_break);
+		$message .= 'Content-Type: text/html; charset=' . $charset . $line_break;
+		$message .= 'Content-Transfer-Encoding: ' . ($encoding == '' ? '7bit' : $encoding) . $line_break . $line_break;
+		$message .= $html_message . $line_break . '--' . $mime_boundary . '--';
 	}
 	// Text is good too.
 	else
 	{
-		$headers .= 'Content-Type: text/plain; charset=' . $charset . "\r\n";
-		if ($encoding != '')
-			$headers .= 'Content-Transfer-Encoding: ' . $encoding;
+		// Using mime, as it allows to send a plain unencoded alternative.
+		$headers .= 'Mime-Version: 1.0' . $line_break;
+		$headers .= 'Content-Type: multipart/alternative; boundary="' . $mime_boundary . '"' . $line_break;
+		$headers .= 'Content-Transfer-Encoding: 7bit' . $line_break;
+
+		// Send a plain message first, for the older web clients.
+		list(, $plain_message) = mimespecialchars($orig_message, false, true, $line_break);
+		$message = $plain_message . $line_break . '--' . $mime_boundary . $line_break;
+
+		// Now add an encoded message using the forum's character set.
+		list ($charset, $encoded_message, $encoding) = mimespecialchars($orig_message, false, false, $line_break);
+		$message .= 'Content-Type: text/plain; charset=' . $charset . $line_break;
+		$message .= 'Content-Transfer-Encoding: ' . $encoding . $line_break . $line_break;
+		$message .= $encoded_message . $line_break . '--' . $mime_boundary . '--';
 	}
 
 	// SMTP or sendmail?
-	if (empty($modSettings['mail_type']) || $modSettings['smtp_host'] == '')
+	if ($use_sendmail)
 	{
 		$subject = strtr($subject, array("\r" => '', "\n" => ''));
 		if (!empty($modSettings['mail_strip_carriage']))
@@ -639,7 +671,7 @@ function sendmail($to, $subject, $message, $from = null, $message_id = null, $se
 		}
 	}
 	else
-		$mail_result = $mail_result && smtp_mail($to_array, $subject, $message, $send_html ? $headers : "Mime-Version: 1.0\r\n" . $headers);
+		$mail_result = $mail_result && smtp_mail($to_array, $subject, $message, $send_html ? $headers : "Mime-Version: 1.0" . $line_break . $headers);
 
 	// Everything go smoothly?
 	return $mail_result;
@@ -824,7 +856,7 @@ function sendpm($recipients, $subject, $message, $store_outbox = false, $from = 
 }
 
 // Prepare text strings for sending as email body or header.
-function mimespecialchars($string, $with_charset = true, $hotmail_fix = false)
+function mimespecialchars($string, $with_charset = true, $hotmail_fix = false, $line_break = "\r\n")
 {
 	global $context;
 
@@ -885,46 +917,24 @@ function mimespecialchars($string, $with_charset = true, $hotmail_fix = false)
 				return "";');
 
 		// Convert all 'special' characters to HTML entities.
-		preg_replace('~[\x80-\x{10FFFF}]~eu', '$entityConvert("\1")', $string);
-
-		return array($charset, $string, '7bit');
+		return array($charset, preg_replace('~([\x80-' . ($context['server']['complex_preg_chars'] ? '\x{10FFFF}' : pack('C*', 0xF7, 0xBF, 0xBF, 0xBF)) . '])~eu', '$entityConvert("\1")', $string), '7bit');
 	}
 
 	// We don't need to mess with the subject line if no special characters were in it..
-	elseif (!$hotmail_fix &preg_match('~([^\x09\x0A\x0D\x20-\x7F])~', $string) === 1)
+	elseif (!$hotmail_fix && preg_match('~([^\x09\x0A\x0D\x20-\x7F])~', $string) === 1)
 	{
-		// replace special characters...
-		$string = preg_replace('~([^\x09\x0A\x0D\x20\x25-\x3C\x3E\x41-\x5A\x61-\x7A])~e', 'sprintf("=%02X", ord("\1"))', $string);
+		// Base64 encode.
+		$string = base64_encode($string);
 
-		$start_with = $with_charset ? '=?' . $charset . '?Q?' : '';
-		$end_with = $with_charset ? '?=' : '';
-		$num_chars = 76 - strlen($start_with) - strlen($end_with);
+		// Show the characterset and the transfer-encoding for header strings.
+		if ($with_charset)
+			$string = '=?' . $charset . '?B?' . $string . '?=';
 
+		// Break it up in lines (mail body).
+		else
+			$string = chunk_split($string, 76, $line_break);
 
-/*		// Add soft breaks after 76 characters.
-		$lines = explode("\r\n", $string);
-		foreach ($lines as $i => $dummy)
-		{
-			$result = array();
-			foreach (explode("\r\n", $lines[$i]) as $line)
-			{
-				while (true)
-				{
-					if (strlen($line) <= $num_chars)
-					{
-						$result[] = $line;
-						break;
-					}
-					$cut_at = $line{$num_chars - 2} === '=' ?  $num_chars - 2 : ($line{$num_chars - 3} === '=' ? $num_chars - 3 : $num_chars - 1);
-					$result[] = substr($line, 0, $cut_at);// . '=';
-					$line = substr($line, $cut_at);
-				}
-			}
-			$lines[$i] = implode("$end_with\r\n$start_with", $result);
-		}
-		return array($charset, $start_with . implode("$end_with\r\n$start_with", $lines) . $end_with, 'quoted-printable');
-*/		
-		return array($charset, $start_with . $string . $end_with, 'quoted-printable');
+		return array($charset, $string, 'base64');
 	}
 
 	else
@@ -1282,7 +1292,7 @@ function SpellCheck()
 	pspell_new('en');
 
 	// Next, the dictionary in question may not exist.  So, we try it... but...
-	$pspell_link = pspell_new($txt['lang_dictionary'], $txt['lang_spelling'], '', strtr($txt['lang_character_set'], array('iso-' => 'iso', 'ISO-' => 'iso')), PSPELL_FAST | PSPELL_RUN_TOGETHER);
+	$pspell_link = pspell_new($txt['lang_dictionary'], $txt['lang_spelling'], '', strtr($context['character_set'], array('iso-' => 'iso', 'ISO-' => 'iso')), PSPELL_FAST | PSPELL_RUN_TOGETHER);
 	error_reporting($old);
 	ob_end_clean();
 
@@ -1293,75 +1303,36 @@ function SpellCheck()
 	if (!isset($_POST['spellstring']) || !$pspell_link)
 		die;
 
-	// Can't have any \n's or \r's in javascript strings.
-	$mystr = trim(str_replace(array("\r", "\n"), array('', '_|_'), stripslashes($_POST['spellstring'])));
-
-	$alphas = 'šàáâãäåçèéêëìíîïñòóôõöøùúûüıÿ[:alpha:]\'';
-	preg_match_all('~(?:<[^>]+>)|(?:\[[^ ][^\]]*\])|(?:&[^; ]+;)|(?<=^|[^' . $alphas . '])([' . $alphas . ']+)~si', $mystr, $alphas, PREG_PATTERN_ORDER);
-
-	// Do this after because the js doesn't count '\"' as two, but PHP does.
+	// Construct a bit of Javascript code.
 	$context['spell_js'] = '
 		var txt = {"done": "' . $txt['spellcheck_done'] . '"};
-		var mispstr = "' . str_replace(array('\\', '"', '</script>'), array('\\\\', '\\"', '<" + "/script>'), $mystr) . '";
+		var mispstr = window.opener.document.forms[spell_formname][spell_fieldname].value;
 		var misps = Array(';
 
-	// This is some sanity checking: they should be chronological.
-	$last_occurance = 0;
+	// Get all the words (Javascript already seperated them).
+	$alphas = explode("\n", stripslashes(strtr($_POST['spellstring'], array("\r" => ''))));
 
 	$found_words = false;
-	$code_block = false;
-	for ($i = 0, $n = count($alphas[0]); $i < $n; $i++)
+	for ($i = 0, $n = count($alphas); $i < $n; $i++)
 	{
-		// Check if we're inside a code block...
-		if (preg_match('~\[/?code\]~i', $alphas[0][$i]))
-			$code_block = !$code_block;
-
-		// Code block?  No word?
-		if (empty($alphas[1][$i]) || $code_block)
-		{
-			$last_occurance += strlen($alphas[0][$i]);
-			continue;
-		}
-
-		$check_word = $alphas[1][$i];
-		if (substr($check_word, 0, 1) == '\'')
-			$check_word = substr($check_word, 1);
-		if (substr($check_word, -1) == '\'')
-			$check_word = substr($check_word, 0, -1);
+		// Words are sent like 'word|offset_begin|offset_end'.
+		$check_word = explode('|', $alphas[$i]);
 
 		// If the word is a known word, or spelled right...
-		// !!! Add an option for uppercase skipping?
-		if (in_array($func['strtolower']($check_word), $known_words) || pspell_check($pspell_link, $check_word) || strtoupper($check_word) == $check_word)
-		{
-			// Add on this word's length, and continue.
-			$last_occurance += strlen($alphas[0][$i]);
+		if (in_array($func['strtolower']($check_word[0]), $known_words) || pspell_check($pspell_link, $check_word[0]) || !isset($check_word[2]))
 			continue;
-		}
 
 		// Find the word, and move up the "last occurance" to here.
-		if ($last_occurance <= strlen($mystr))
-			$last_occurance = strpos($mystr, $alphas[0][$i], $last_occurance + 1);
 		$found_words = true;
 
 		// Add on the javascript for this misspelling.
 		$context['spell_js'] .= '
-			new misp("' . $alphas[1][$i] . '", ' . (int) $last_occurance . ', ' . ($last_occurance + strlen($alphas[1][$i]) - 1) . ', [';
+			new misp("' . strtr($check_word[0], array('\\' => '\\\\', '"' => '\\"', '<' => '', '&gt;' => '')) . '", ' . (int) $check_word[1] . ', ' . (int) $check_word[2] . ', [';
 
 		// If there are suggestions, add them in...
-		$suggestions = pspell_suggest($pspell_link, $check_word);
+		$suggestions = pspell_suggest($pspell_link, $check_word[0]);
 		if (!empty($suggestions))
-		{
-			for ($j = 0, $k = count($suggestions); $j < $k; $j++)
-			{
-				// Add back the quotes...
-				if (substr($alphas[1][$i], 0, 1) == '\'')
-					$suggestions[$j] = '\'' . $suggestions[$j];
-				if (substr($alphas[1][$i], -1) == '\'')
-					$suggestions[$j] = $suggestions[$j] . '\'';
-			}
-
 			$context['spell_js'] .= '"' . join('", "', $suggestions) . '"';
-		}
 
 		$context['spell_js'] .= ']),';
 	}
@@ -1511,7 +1482,7 @@ function createPost(&$msgOptions, &$topicOptions, &$posterOptions)
 	$topicOptions['lock_mode'] = isset($topicOptions['lock_mode']) ?  $topicOptions['lock_mode'] : null;
 	$topicOptions['sticky_mode'] = isset($topicOptions['sticky_mode']) ? $topicOptions['sticky_mode'] : null;
 	$posterOptions['id'] = empty($posterOptions['id']) ? 0 : (int) $posterOptions['id'];
-	$posterOptions['ip'] = empty($posterOptions['ip']) ? $user_info['ip'] : $posterOptions['ip'];
+	$posterOptions['ip'] = empty($posterOptions['ip']) ? $user_info['ip2'] : $posterOptions['ip'];
 
 	// If nothing was filled in as name/e-mail address, try the member table.
 	if (!isset($posterOptions['name']) || $posterOptions['name'] == '' || (empty($posterOptions['email']) && !empty($posterOptions['id'])))

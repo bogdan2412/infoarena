@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1 RC3; BoardIndex
+// Version: 1.1; BoardIndex
 
 function template_main()
 {
@@ -83,7 +83,7 @@ function template_main()
 
 	/* Each category in categories is made up of:
 	id, href, link, name, is_collapsed (is it collapsed?), can_collapse (is it okay if it is?),
-	new (is it new?), collapse_href (href to collapse/expand), collapse_image (up/down iamge),
+	new (is it new?), collapse_href (href to collapse/expand), collapse_image (up/down image),
 	and boards. (see below.) */
 	$first = true;
 	foreach ($context['categories'] as $category)
@@ -205,7 +205,7 @@ function template_main()
 		$mark_read_button = array('markread' => array('text' => 452, 'image' => 'markread.gif', 'lang' => true, 'url' => $scripturl . '?action=markasread;sa=all;sesc=' . $context['session_id']));
 
 		// Show the mark all as read button?
-		if ($settings['show_mark_read'])
+		if ($settings['show_mark_read'] && !empty($context['categories']))
 				echo '
 				<table cellpadding="0" cellspacing="0" border="0" style="position: relative; top: -5px;">
 					<tr>

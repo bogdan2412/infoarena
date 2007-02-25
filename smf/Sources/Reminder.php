@@ -1,25 +1,26 @@
 <?php
-/******************************************************************************
-* Reminder.php                                                                *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* Reminder.php                                                                    *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1.2                                           *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -162,7 +163,7 @@ function setPassword()
 
 function setPassword2()
 {
-	global $db_prefix, $context, $txt;
+	global $db_prefix, $context, $txt, $modSettings, $sourcedir;
 
 	if (empty($_POST['u']) || !isset($_POST['passwrd1']) || !isset($_POST['passwrd2']))
 		fatal_lang_error(1, false);
@@ -179,7 +180,7 @@ function setPassword2()
 
 	// Get the code as it should be from the database.
 	$request = db_query("
-		SELECT validation_code, memberName
+		SELECT validation_code, memberName, emailAddress
 		FROM {$db_prefix}members
 		WHERE ID_MEMBER = $_POST[u]
 			AND is_activated = 1
@@ -190,8 +191,16 @@ function setPassword2()
 	if (mysql_num_rows($request) == 0)
 		fatal_lang_error('invalid_userid', false);
 
-	list ($realCode, $username) = mysql_fetch_row($request);
+	list ($realCode, $username, $email) = mysql_fetch_row($request);
 	mysql_free_result($request);
+
+	// Is the password actually valid?
+	require_once($sourcedir . '/Subs-Auth.php');
+	$passwordError = validatePassword($_POST['passwrd1'], $username, array($email));
+
+	// What - it's not?
+	if ($passwordError != null)
+		fatal_lang_error('profile_error_password_' . $passwordError, false);
 
 	// Quit if this code is not right.
 	if (empty($_POST['code']) || substr($realCode, 0, 10) != substr(md5($_POST['code']), 0, 10))

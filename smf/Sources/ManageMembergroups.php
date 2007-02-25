@@ -1,25 +1,26 @@
 <?php
-/******************************************************************************
-* ManageMembergroups.php                                                      *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* ManageMembergroups.php                                                          *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1.2                                           *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -221,7 +222,7 @@ function MembergroupIndex()
 		foreach ($dummy as $id => $data)
 		{
 			if ($data['href'] != '')
-				$context['groups'][$temp][$id]['link'] = '<a href="' . $data['href'] . '">' . $data['num_members'] . '</a>';
+				$context['groups'][$temp][$id]['link'] = '<a href="' . $data['href'] . '">' . $data['name'] . '</a>';
 			else
 				$context['groups'][$temp][$id]['link'] = '';
 		}
@@ -272,14 +273,21 @@ function AddMembergroup()
 		{
 			$_POST['copyperm'] = (int) $_POST['copyperm'];
 
+			// Don't allow copying of a real priviledged person!
+			require_once($sourcedir . '/ManagePermissions.php');
+			loadIllegalPermissions();
+
 			$request = db_query("
 				SELECT permission, addDeny
 				FROM {$db_prefix}permissions
 				WHERE ID_GROUP = $_POST[copyperm]", __FILE__, __LINE__);
 			$setString = '';
 			while ($row = mysql_fetch_assoc($request))
-				$setString .= "
-					($ID_GROUP, '$row[permission]', $row[addDeny]),";
+			{
+				if (empty($context['illegal_permissions']) || !in_array($row['permission'], $context['illegal_permissions']))
+					$setString .= "
+						($ID_GROUP, '$row[permission]', $row[addDeny]),";
+			}
 			mysql_free_result($request);
 
 			if (!empty($setString))
@@ -585,7 +593,7 @@ function MembergroupMembers()
 
 		foreach ($memberNames as $index => $memberName)
 		{
-			$memberNames[$index] = trim($memberNames[$index]);
+			$memberNames[$index] = trim($func['strtolower']($memberNames[$index]));
 
 			if (strlen($memberNames[$index]) == 0)
 				unset($memberNames[$index]);
@@ -594,7 +602,7 @@ function MembergroupMembers()
 		$request = db_query("
 			SELECT ID_MEMBER
 			FROM {$db_prefix}members
-			WHERE memberName IN ('" . implode("', '", $memberNames) . "') OR realName IN ('" . implode("', '", $memberNames) . "')
+			WHERE LOWER(memberName) IN ('" . implode("', '", $memberNames) . "') OR LOWER(realName) IN ('" . implode("', '", $memberNames) . "')
 			LIMIT " . count($memberNames), __FILE__, __LINE__);
 		$members = array();
 		while ($row = mysql_fetch_assoc($request))

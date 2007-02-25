@@ -89,8 +89,9 @@ hr, .hrcolor
 }
 
 /* No image should have a border when linked */
-a img{
-border: 0;
+a img
+{
+	border: 0;
 }
 /* A quote, perhaps from another post. */
 .quote
@@ -354,7 +355,8 @@ p.copy {
 }
 
 /* Sometimes there will be an error when you post */
-.error{
+.error
+{
 	color: red;
 }
 

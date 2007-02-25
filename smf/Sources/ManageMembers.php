@@ -1,29 +1,30 @@
 <?php
-/******************************************************************************
-* ManageMembers.php                                                           *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* ManageMembers.php                                                               *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1                                             *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
-/* // Show a list of members or a selection of members.
+/* Show a list of members or a selection of members.
 
 	void ViewMembers()
 		- the main entrance point for the Manage Members screen.
@@ -351,6 +352,8 @@ function ViewMemberlist()
 						$query_parts[] = "{$param_info['db_fields'][0]} > '0000-12-31'";
 					}
 				}
+				elseif ($param_info['type'] == 'date' && $_POST['types'][$param_name] == '=')
+					$query_parts[] = $param_info['db_fields'][0] . ' > ' . $_POST[$param_name] . ' AND ' . $param_info['db_fields'][0] . ' < ' . ($_POST[$param_name] + 86400);
 				else
 					$query_parts[] = $param_info['db_fields'][0] . ' ' . $range_trans[$_POST['types'][$param_name]] . ' ' . $_POST[$param_name];
 			}

@@ -1,25 +1,26 @@
 <?php
-/******************************************************************************
-* Themes.php                                                                  *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* Themes.php                                                                      *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1.2                                           *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -551,12 +552,7 @@ function SetThemeOptions()
 	checkSession('get');
 
 	$old_id = $settings['theme_id'];
-	// Once again, these are settings which need to be retained as they are template settings.
-	$template_settings = array('use_default_images', 'doctype', 'theme_version', 'use_tabs', 'use_buttons', 'seperate_sticky_lock');
-	$old_settings = array();
-	foreach ($template_settings as $setting)
-		if (isset($settings[$setting]))
-			$old_settings[$setting] = $settings[$setting];
+	$old_settings = $settings;
 
 	loadTheme($_GET['th'], false);
 
@@ -609,8 +605,7 @@ function SetThemeOptions()
 
 	// Restore the existing theme.
 	loadTheme($old_id, false);
-	foreach ($old_settings as $setting => $value)
-		$settings[$setting] = $value;
+	$settings = $old_settings;
 
 	loadTemplate('Themes');
 }
@@ -685,12 +680,7 @@ function SetThemeSettings()
 		$context['smiley_sets'][$set] = $set_names[$i];
 
 	$old_id = $settings['theme_id'];
-	// Settings that need to be retained as they are template settings.
-	$template_settings = array('use_default_images', 'doctype', 'theme_version', 'use_tabs', 'use_buttons', 'seperate_sticky_lock');
-	$old_settings = array();
-	foreach ($template_settings as $setting)
-		if (isset($settings[$setting]))
-			$old_settings[$setting] = $settings[$setting];
+	$old_settings = $settings;
 
 	loadTheme($_GET['th'], false);
 
@@ -727,8 +717,7 @@ function SetThemeSettings()
 
 	// Restore the current theme.
 	loadTheme($old_id, false);
-	foreach ($old_settings as $setting => $value)
-		$settings[$setting] = $value;
+	$settings = $old_settings;
 
 	loadTemplate('Themes');
 }
@@ -773,7 +762,7 @@ function RemoveTheme()
 	else
 		updateSettings(array('knownThemes' => $known));
 
-	redirectexit('action=theme;sa=admin;sesc=' . $sc);
+	redirectexit('action=theme;sa=list;sesc=' . $sc);
 }
 
 // Choose a theme from a list.
@@ -1230,15 +1219,8 @@ function EditTheme()
 
 	if (isset($_REQUEST['preview']))
 	{
-		//loadLanguage('Settings');
-
-		//$context['sub_template'] = 'rawdata';
-		//$context['raw_data'] = isset($txt['preview_html']) ? $txt['preview_html'] : '';
-
-		//$_SESSION['ID_THEME'] = (int) $_GET['old'];
+		// !!! Should this be removed?
 		die;
-
-		return;
 	}
 
 	isAllowedTo('admin_forum');
@@ -1714,7 +1696,7 @@ function convert_template($output_dir, $old_template = '')
 
 	// Step 4: Now we add the beginning and end...
 	$old_template = '<?php
-// Version: 1.1 RC3; index
+// Version: 1.1; index
 
 // Initialize the template... mainly little settings.
 function template_init()

@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1 RC3; PersonalMessage
+// Version: 1.1; PersonalMessage
 
 // This is the main sidebar for the personal messages section.
 function template_pm_above()
@@ -78,7 +78,7 @@ function template_folder()
 	global $context, $settings, $options, $scripturl, $modSettings, $txt;
 
 	echo '
-<form action="', $scripturl, '?action=pm;sa=pmactions;f=', $context['folder'], ';start=', $context['start'], $context['current_label_id'] != -1 ? ';l=' . $context['current_label_id'] : '', '" method="post" accept-charset="', $context['character_set'], '">
+<form action="', $scripturl, '?action=pm;sa=pmactions;f=', $context['folder'], ';start=', $context['start'], $context['current_label_id'] != -1 ? ';l=' . $context['current_label_id'] : '', '" method="post" accept-charset="', $context['character_set'], '" name="pmFolder">
 	<table border="0" width="100%" cellpadding="2" cellspacing="1" class="bordercolor">
 		<tr class="titlebg">
 			<td align="center" width="2%">&nbsp;</td>
@@ -99,7 +99,7 @@ function template_folder()
 		<tr class="', $message['alternate'] == 0 ? 'windowbg' : 'windowbg2', '">
 			<td align="center" width="2%">', $message['is_replied_to'] ? '<img src="' . $settings['images_url'] . '/icons/pm_replied.gif" style="margin-right: 4px;" alt="' . $txt['pm_replied'] . '" />' : '<img src="' . $settings['images_url'] . '/icons/pm_read.gif" style="margin-right: 4px;" alt="' . $txt['pm_read'] . '" />', '</td>
 			<td>', $message['time'], '</td>
-			<td><a href="#', $message['id'], '">', $message['subject'], '</a></td>
+			<td><a href="#msg', $message['id'], '">', $message['subject'], '</a></td>
 			<td>', ($context['from_or_to'] == 'from' ? $message['member']['link'] : (empty($message['recipients']['to']) ? '' : implode(', ', $message['recipients']['to']))), '</td>
 			<td align="center"><input type="checkbox" name="pms[]" id="deletelisting', $message['id'], '" value="', $message['id'], '"', $message['is_selected'] ? ' checked="checked"' : '', ' onclick="document.getElementById(\'deletedisplay', $message['id'], '\').checked = this.checked;" class="check" /></td>
 		</tr>';
@@ -150,8 +150,8 @@ function template_folder()
 					var allLabels = {};
 					function loadLabelChoices()
 					{
-						var listing = document.forms[1].elements;
-						var theSelect = document.forms[1].pm_action;
+						var listing = document.forms.pmFolder.elements;
+						var theSelect = document.forms.pmFolder.pm_action;
 						var add, remove, toAdd = {length: 0}, toRemove = {length: 0};
 
 						if (theSelect.childNodes.length == 0)
@@ -257,7 +257,7 @@ function template_folder()
 
 			echo '
 		<tr><td style="padding: 1px 1px 0 1px;">
-			<a name="', $message['id'], '"></a>
+			<a name="msg', $message['id'], '"></a>
 			<table width="100%" cellpadding="3" cellspacing="0" border="0">
 				<tr><td colspan="2" class="', $windowcss, '">
 					<table width="100%" cellpadding="4" cellspacing="1" style="table-layout: fixed;">
@@ -412,7 +412,7 @@ function template_folder()
 						</tr>
 						<tr class="', $windowcss, '">
 							<td valign="bottom" class="smalltext" width="85%">
-								', (!empty($modSettings['enableReportPM']) ? '<div align="right"><a href="' . $scripturl . '?action=pm;sa=report;l=' . $context['current_label_id'] . ';pmsg=' . $message['id'] . '" class="smalltext">' . $txt['pm_report_to_admin'] . '</a></div>' : '');
+								', (!empty($modSettings['enableReportPM']) && $context['folder'] != 'outbox' ? '<div align="right"><a href="' . $scripturl . '?action=pm;sa=report;l=' . $context['current_label_id'] . ';pmsg=' . $message['id'] . '" class="smalltext">' . $txt['pm_report_to_admin'] . '</a></div>' : '');
 
 			// Show the member's signature?
 			if (!empty($message['member']['signature']) && empty($options['show_no_signatures']))
@@ -528,7 +528,7 @@ function template_search()
 			document.getElementById("expandLabelsIcon").src = smf_images_url + (current ? "/expand.gif" : "/collapse.gif");
 		}
 	// ]]></script>
-<form action="', $scripturl, '?action=pm;sa=search2" method="post" accept-charset="', $context['character_set'], '">
+<form action="', $scripturl, '?action=pm;sa=search2" method="post" accept-charset="', $context['character_set'], '" name="pmSearchForm">
 	<table border="0" width="75%" align="center" cellpadding="3" cellspacing="0" class="tborder">
 		<tr class="titlebg">
 			<td colspan="2">', $txt['pm_search_title'], '</td>
@@ -556,7 +556,7 @@ function template_search()
 					<b>', $txt['pm_search_text'], ':</b><br />
 					<input type="text" name="search"', !empty($context['search_params']['search']) ? ' value="' . $context['search_params']['search'] . '"' : '', ' size="40" />&nbsp;
 					<input type="submit" name="submit" value="', $txt['pm_search_go'], '" /><br />
-					<a href="', $scripturl, '?action=search;advanced" onclick="this.href += \';search=\' + document.searchform.search.value;">', $txt['pm_search_advanced'], '</a>
+					<a href="', $scripturl, '?action=pm;sa=search;advanced" onclick="this.href += \';search=\' + escape(document.forms.pmSearchForm.search.value);">', $txt['pm_search_advanced'], '</a>
 					<input type="hidden" name="advanced" value="0" />';
 	}
 	else
@@ -575,6 +575,31 @@ function template_search()
 						</tr><tr>
 							<td>
 								<input type="text" name="search"', !empty($context['search_params']['search']) ? ' value="' . $context['search_params']['search'] . '"' : '', ' size="40" />
+								<script language="JavaScript" type="text/javascript"><!-- // --><![CDATA[
+									if (typeof(window.addEventListener) == "undefined")
+									{
+										if (window.attachEvent)
+										{
+											window.addEventListener = function (sEvent, funcHandler, bCapture)
+											{
+												window.attachEvent("on" + sEvent, funcHandler);
+											}
+										}
+										else
+										{
+											window.addEventListener = function (sEvent, funcHandler, bCapture) 
+											{
+												window["on" + sEvent] = funcHandler;
+											}
+										}
+									}
+									function initSearch()
+									{
+										if (document.forms.pmSearchForm.search.value.indexOf("%u") != -1)
+											document.forms.pmSearchForm.search.value = unescape(document.forms.pmSearchForm.search.value);
+									}
+									window.addEventListener("load", initSearch, false);
+								// ]]></script>
 							</td><td style="padding-right: 2ex;">
 								<select name="searchtype">
 									<option value="1"', empty($context['search_params']['searchtype']) ? ' selected="selected"' : '', '>', $txt['pm_search_match_all'], '</option>
@@ -626,7 +651,7 @@ function template_search()
 						<tr>';
 				echo '
 							<td width="50%">
-								<label for="searchlabel[', $label['id'], ']"><input type="checkbox" id="searchlabel[', $label['id'], ']" name="searchlabel[', $label['id'], ']" value="', $label['id'], '" ', $label['checked'] ? 'checked="checked"' : '', ' class="check" />
+								<label for="searchlabel_', $label['id'], '"><input type="checkbox" id="searchlabel_', $label['id'], '" name="searchlabel[', $label['id'], ']" value="', $label['id'], '" ', $label['checked'] ? 'checked="checked"' : '', ' class="check" />
 								', $label['name'], '</label>
 							</td>';
 				if (!$alternate)
@@ -823,7 +848,7 @@ function template_send()
 	{
 		echo '
 		<br />
-		<table border="0" width="75%" cellspacing="1" cellpadding="3" class="bordercolor" align="center">
+		<table border="0" width="80%" cellspacing="1" cellpadding="3" class="bordercolor" align="center">
 			<tr class="titlebg">
 				<td>', $txt['pm_send_report'], '</td>
 			</tr>
@@ -843,7 +868,7 @@ function template_send()
 	if (isset($context['preview_message']))
 	echo '
 		<br />
-		<table border="0" width="75%" cellspacing="1" cellpadding="3" class="bordercolor" align="center">
+		<table border="0" width="80%" cellspacing="1" cellpadding="3" class="bordercolor" align="center">
 			<tr class="titlebg">
 				<td>', $context['preview_subject'], '</td>
 			</tr>
@@ -856,7 +881,7 @@ function template_send()
 
 	// Main message editing box.
 	echo '
-		<table border="0" width="75%" align="center" cellpadding="3" cellspacing="1" class="bordercolor">
+		<table border="0" width="80%" align="center" cellpadding="3" cellspacing="1" class="bordercolor">
 			<tr class="titlebg">
 				<td><img src="', $settings['images_url'], '/icons/im_newmsg.gif" alt="', $txt[321], '" title="', $txt[321], '" />&nbsp;', $txt[321], '</td>
 			</tr><tr>
@@ -900,6 +925,32 @@ function template_send()
 								<td align="right"><b', (isset($context['post_error']['no_subject']) ? ' style="color: red;"' : ''), '>', $txt[70], ':</b></td>
 								<td><input type="text" name="subject" value="', $context['subject'], '" tabindex="', $context['tabindex']++, '" size="40" maxlength="50" /></td>
 							</tr>';
+
+	if ($context['visual_verification'])
+	{
+		echo '
+							<tr>
+								<td align="right" valign="top">
+									<b>', $txt['pm_visual_verification_label'], ':</b>
+								</td>
+								<td>';
+		if ($context['use_graphic_library'])
+			echo '
+									<img src="', $context['verificiation_image_href'], '" alt="', $txt['pm_visual_verification_desc'], '" /><br />';
+		else
+			echo '
+									<img src="', $context['verificiation_image_href'], ';letter=1" alt="', $txt['pm_visual_verification_desc'], '" />
+									<img src="', $context['verificiation_image_href'], ';letter=2" alt="', $txt['pm_visual_verification_desc'], '" />
+									<img src="', $context['verificiation_image_href'], ';letter=3" alt="', $txt['pm_visual_verification_desc'], '" />
+									<img src="', $context['verificiation_image_href'], ';letter=4" alt="', $txt['pm_visual_verification_desc'], '" />
+									<img src="', $context['verificiation_image_href'], ';letter=5" alt="', $txt['pm_visual_verification_desc'], '" /><br />';
+		echo '
+									<a href="', $context['verificiation_image_href'], ';sound" onclick="return reqWin(this.href, 400, 120);">', $txt['pm_visual_verification_listen'], '</a><br /><br />
+									<input type="text" name="visual_verification_code" size="30" tabindex="', $context['tabindex']++, '" />
+									<div class="smalltext">', $txt['pm_visual_verification_desc'], '</div>
+								</td>
+							</tr>';
+	}
 
 	// Show BBC buttons, smileys and textbox.
 	theme_postbox($context['message']);

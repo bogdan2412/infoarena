@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1 RC3; Xml
+// Version: 1.1; Xml
 
 function template_quotefast()
 {

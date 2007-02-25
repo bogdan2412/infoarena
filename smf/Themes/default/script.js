@@ -450,7 +450,7 @@ function hashLoginPassword(doForm, cur_session_id)
 	if (typeof(window.opera) == "undefined")
 		doForm.passwrd.autocomplete = "off";
 
-	doForm.hash_passwrd.value = hex_sha1(hex_sha1(doForm.user.value.toLowerCase() + doForm.passwrd.value) + cur_session_id);
+	doForm.hash_passwrd.value = hex_sha1(hex_sha1(doForm.user.value.php_to8bit().php_strtolower() + doForm.passwrd.value.php_to8bit()) + cur_session_id);
 
 	// It looks nicer to fill it with asterisks, but Firefox will try to save that.
 	if (navigator.userAgent.indexOf("Firefox/") != -1)

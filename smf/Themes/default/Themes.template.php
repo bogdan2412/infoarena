@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1 RC3; Themes
+// Version: 1.1; Themes
 
 // The main sub template - for theme administration.
 function template_main()

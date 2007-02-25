@@ -1,25 +1,26 @@
 <?php
-/******************************************************************************
-* Display.php                                                                 *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* Display.php                                                                     *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1.2                                           *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -129,6 +130,9 @@ function Display()
 
 		// Go to the newest message on this topic.
 		$_REQUEST['start'] = 'new';
+
+ 		// Duplicate link!  Tell the robots not to link this.
+ 		$context['robot_no_index'] = true;
 	}
 
 	// Add 1 to the number of views of this topic.
@@ -233,6 +237,8 @@ function Display()
 			
 			// We need to reverse the start as well in this case.
 			$_REQUEST['start'] = empty($options['view_newest_first']) ? $context['start_from'] : $topicinfo['numReplies'] - $context['start_from'];
+
+			$context['robot_no_index'] = true;
 		}
 	}
 
@@ -1020,7 +1026,7 @@ function Download()
 
 	// Send the attachment headers.
 	header('Pragma: ');
-	header('Cache-Control: max-age=' . (525600 * 60) . ', private');
+
 	if (!$context['browser']['is_gecko'])
 		header('Content-Transfer-Encoding: binary');
 	header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 525600 * 60) . ' GMT');
@@ -1030,21 +1036,49 @@ function Download()
 	header('Connection: close');
 	header('ETag: ' . $file_md5);
 
+	if (filesize($filename) != 0)
+	{
+		$size = @getimagesize($filename);
+		if (!empty($size))
+		{
+			// What headers are valid?
+			$validTypes = array(
+				1 => 'gif',
+				2 => 'jpeg',
+				3 => 'png',
+				5 => 'psd',
+				6 => 'bmp',
+				7 => 'tiff',
+				8 => 'tiff',
+				9 => 'jpeg',
+				14 => 'iff',
+			);
+
+			// Do we have a mime type we can simpy use?
+			if (!empty($size['mime']))
+				header('Content-Type: ' . $size['mime']);
+			elseif (isset($validTypes[$size[2]]))
+				header('Content-Type: image/' . $validTypes[$size[2]]);
+			// Otherwise - let's think safety first... it might not be an image...
+			elseif (isset($_REQUEST['image']))
+				unset($_REQUEST['image']);
+		}
+		// Once again - safe!
+		elseif (isset($_REQUEST['image']))
+			unset($_REQUEST['image']);
+	}
+
 	if (!isset($_REQUEST['image']))
 	{
 		header('Content-Disposition: attachment; filename="' . $real_filename . '"');
 		header('Content-Type: application/octet-stream');
 	}
 
-	if (filesize($filename) != 0)
-	{
-		$size = @getimagesize($filename);
-		if (!empty($size) && $size[2] > 0 && $size[2] < 4)
-			header('Content-Type: image/' . ($size[2] != 1 ? ($size[2] != 2 ? 'png' : 'jpeg') : 'gif'));
-		// Errr, it's an image.... what kind?  A... gif?  Yeah that's it, gif!  Like JIF, the peanut butter.
-		elseif (isset($_REQUEST['image']))
-			header('Content-Type: image/gif');
-	}
+	// If this has an "image extension" - but isn't actually an image - then ensure it isn't cached cause of silly IE.
+	if (!isset($_REQUEST['image']) && in_array(substr($real_filename, -4), array('.gif', '.jpg', '.bmp', '.png', 'jpeg', 'tiff')))
+    		header('Cache-Control: no-cache'); 
+    	else
+		header('Cache-Control: max-age=' . (525600 * 60) . ', private');
 
 	if (empty($modSettings['enableCompressedOutput']) || filesize($filename) > 4194304)
 		header('Content-Length: ' . filesize($filename));

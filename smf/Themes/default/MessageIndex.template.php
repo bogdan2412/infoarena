@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1 RC3; MessageIndex
+// Version: 1.1; MessageIndex
 
 function template_main()
 {
@@ -309,7 +309,7 @@ function template_main()
 							</select>';
 			}
 			echo '
-							<input type="submit" value="', $txt['quick_mod_go'], '" onclick="return document.topicForm.qaction.value != \'\' &amp;&amp; confirm(\'', $txt['quickmod_confirm'], '\');" />
+							<input type="submit" value="', $txt['quick_mod_go'], '" onclick="return document.forms.quickModForm.qaction.value != \'\' &amp;&amp; confirm(\'', $txt['quickmod_confirm'], '\');" />
 						</td>
 					</tr>';
 		}
@@ -408,20 +408,32 @@ function template_main()
 	hide_prefixes.push("lockicon", "stickyicon", "pages", "newicon");
 
 	// Use it to detect when we\'ve stopped editing.
-	document.onmousedown = mouse_down;
+	document.onclick = modify_topic_click;
 
 	var mouse_on_div;
-	function mouse_down(e)
+	function modify_topic_click()
 	{
 		if (in_edit_mode == 1 && mouse_on_div == 0)
 			modify_topic_save("', $context['session_id'], '");
+	}
+
+	function modify_topic_keypress(oEvent)
+	{
+		if (typeof(oEvent.keyCode) != "undefined" && oEvent.keyCode == 13)
+		{
+			modify_topic_save("', $context['session_id'], '");
+			if (typeof(oEvent.preventDefault) == "undefined")
+				oEvent.returnValue = false;
+			else
+				oEvent.preventDefault();
+		}
 	}
 
 	// For templating, shown when an inline edit is made.
 	function modify_topic_show_edit(subject)
 	{
 		// Just template the subject.
-		setInnerHTML(cur_subject_div, \'<input type="text" name="subject" value="\' + subject + \'" size="60" style="width: 99%;"  maxlength="80" /><input type="hidden" name="topic" value="\' + cur_topic_id + \'" /><input type="hidden" name="msg" value="\' + cur_msg_id.substr(4) + \'" />\');
+		setInnerHTML(cur_subject_div, \'<input type="text" name="subject" value="\' + subject + \'" size="60" style="width: 99%;"  maxlength="80" onkeypress="modify_topic_keypress(event)" /><input type="hidden" name="topic" value="\' + cur_topic_id + \'" /><input type="hidden" name="msg" value="\' + cur_msg_id.substr(4) + \'" />\');
 	}
 
 	// And the reverse for hiding it.

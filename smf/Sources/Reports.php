@@ -1,25 +1,26 @@
 <?php
-/******************************************************************************
-* Reports.php                                                                 *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* Reports.php                                                                     *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1                                             *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -318,11 +319,12 @@ function BoardPermissionsReport()
 		);
 	mysql_free_result($request);
 
-	// Get all the possible membergroups!
+	// Get all the possible membergroups, except for admin!
 	$request = db_query("
 		SELECT ID_GROUP, groupName
 		FROM {$db_prefix}membergroups
-		WHERE $group_clause" . (empty($modSettings['permission_enable_postgroups']) ? "
+		WHERE $group_clause
+			AND ID_GROUP != 1" . (empty($modSettings['permission_enable_postgroups']) ? "
 			AND minPosts = -1" : '') . "
 		ORDER BY minPosts, IF(ID_GROUP < 4, ID_GROUP, 4), groupName", __FILE__, __LINE__);
 	if (!isset($_REQUEST['groups']) || in_array(-1, $_REQUEST['groups']) || in_array(0, $_REQUEST['groups']))
@@ -349,6 +351,7 @@ function BoardPermissionsReport()
 	while ($row = mysql_fetch_assoc($request))
 	{
 		$board_permissions[$row['ID_BOARD']][$row['ID_GROUP']][$row['permission']] = $row['addDeny'];
+
 		// Make sure we get every permission.
 		if (!isset($permissions[$row['permission']]))
 		{
@@ -461,7 +464,7 @@ function MemberGroupsReport()
 			'name' => $row['name'],
 			'local_perms' => !empty($modSettings['permission_enable_by_board']) && $row['permission_mode'] == 1,
 			'permission_mode' => empty($modSettings['permission_enable_by_board']) ? (empty($row['permission_mode']) ? $txt['permission_mode_normal'] : ($row['permission_mode'] == 2 ? $txt['permission_mode_no_polls'] : ($row['permission_mode'] == 3 ? $txt['permission_mode_reply_only'] : $txt['permission_mode_read_only']))) : $txt['permission_mode_normal'],
-			'groups' => array_merge(array(1), explode(',', $row['memberGroups'])),
+			'groups' => array_merge(array(1,3), explode(',', $row['memberGroups'])),
 		);
 	mysql_free_result($request);
 
@@ -557,11 +560,12 @@ function GroupPermissionsReport()
 	else
 		$clause = 'ID_GROUP != 3';
 
-	// Get all the possible membergroups!
+	// Get all the possible membergroups, except for admin!
 	$request = db_query("
 		SELECT ID_GROUP, groupName
 		FROM {$db_prefix}membergroups
-		WHERE $clause" . (empty($modSettings['permission_enable_postgroups']) ? "
+		WHERE $clause
+			AND ID_GROUP != 1" . (empty($modSettings['permission_enable_postgroups']) ? "
 			AND minPosts = -1" : '') . "
 		ORDER BY minPosts, IF(ID_GROUP < 4, ID_GROUP, 4), groupName", __FILE__, __LINE__);
 	if (!isset($_REQUEST['groups']) || in_array(-1, $_REQUEST['groups']) || in_array(0, $_REQUEST['groups']))

@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1 RC3; Settings
+// Version: 1.1; Settings
 
 function template_options()
 {

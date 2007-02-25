@@ -4,14 +4,62 @@ var spell_formname, spell_fieldname;
 // Spell check the specified field in the specified form.
 function spellCheck(formName, fieldName)
 {
-	// Grab the spell checking form.
+	// Grab the (hidden) spell checking form.
 	var spellform = document.forms.spell_form;
 
+	// Register the name of the editing form for future reference.
 	spell_formname = formName;
 	spell_fieldname = fieldName;
-	spellform.spellstring.value = document.forms[formName][fieldName].value;
 
+	// This should match a word (most of the time).
+	var regexpWordMatch = /(?:<[^>]+>)|(?:\[[^ ][^\]]*\])|(?:&[^; ]+;)|(?:[^0-9\s\]\[{};:"\\|,<.>\/?`~!@#$%^&*()_+=]+)/g;
+
+	// These characters can appear within words.
+	var aWordCharacters = ['-', '\''];
+
+	var aWords = new Array(), aResult = new Array();
+	var sText = document.forms[formName][fieldName].value
+	var bInCode = false;
+	var iOffset1, iOffset2;
+
+	// Loop through all words.
+	while ((aResult = regexpWordMatch.exec(sText)) && typeof(aResult) != 'undefined')
+	{
+		iOffset1 = 0;
+		iOffset2 = aResult[0].length - 1;
+
+		// Strip the dashes and hyphens from the begin of the word.
+		while (in_array(aResult[0].charAt(iOffset1), aWordCharacters) && iOffset1 < iOffset2)
+			iOffset1++;
+
+		// Strip the dashes and hyphens from the end of the word.
+		while (in_array(aResult[0].charAt(iOffset2), aWordCharacters) && iOffset1 < iOffset2)
+			iOffset2--;
+
+		// I guess there's only dashes and hyphens in this word...
+		if (iOffset1 == iOffset2)
+			continue;
+
+		// Ignore code blocks.
+		if (aResult[0].substr(0, 5).toLowerCase() == '[code')
+			bInCode = true;
+
+		// Glad we're out of that code block!
+		else if (bInCode && aResult[0].substr(0, 7).toLowerCase() == '[/code]')
+			bInCode = false;
+
+		// Now let's get to business.
+		else if (!bInCode && !in_array(aResult[0].charAt(0), ['[', '<']) && aResult[0].toUpperCase() != aResult[0])
+			aWords[aWords.length] = aResult[0].substr(iOffset1, iOffset2 - iOffset1 + 1) + '|' + (iOffset1 + sText.substr(0, aResult.index).length) + '|' + (iOffset2 + sText.substr(0, aResult.index).length);
+	}
+
+	// Open the window...
 	openSpellWin(640, 480);
+
+	// Pass the data to a form...
+	spellform.spellstring.value = aWords.join('\n');
+
+	//  and go!
 	spellform.submit();
 
 	return true;

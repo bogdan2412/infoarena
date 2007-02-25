@@ -2,7 +2,7 @@
 
 // Hacked template to integrate in infoarena 2 
 
-// Version: 1.1 RC3; index
+// Version: 1.1; index
 
 /*	This template is, perhaps, the most important template in the theme. It
 	contains the main template layer that displays the header and footer of
@@ -49,7 +49,7 @@ function template_init()
 
 	/* The version this template/theme is for.
 		This should probably be the version of SMF it was created for. */
-	$settings['theme_version'] = '1.1 RC3';
+	$settings['theme_version'] = '1.1';
 
 	/* Set a setting that tells the theme that it can render the tabs. */
 	$settings['use_tabs'] = true;
@@ -71,21 +71,24 @@ function template_main_above()
 	echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"', $context['right_to_left'] ? ' dir="rtl"' : '', '><head>
 	<meta http-equiv="Content-Type" content="text/html; charset=', $context['character_set'], '" />
-	<meta name="description" content="', $context['page_title'], '" />
+	<meta name="description" content="', $context['page_title'], '" />', empty($context['robot_no_index']) ? '' : '
+	<meta name="robots" content="noindex" />', '
 	<meta name="keywords" content="PHP, MySQL, bulletin, board, free, open, source, smf, simple, machines, forum" />
-	<script language="JavaScript" type="text/javascript" src="', $settings['default_theme_url'], '/script.js?rc3"></script>
+	<script language="JavaScript" type="text/javascript" src="', $settings['default_theme_url'], '/script.js?fin11"></script>
 	<script language="JavaScript" type="text/javascript"><!-- // --><![CDATA[
 		var smf_theme_url = "', $settings['theme_url'], '";
 		var smf_images_url = "', $settings['images_url'], '";
 		var smf_scripturl = "', $scripturl, '";
+		var smf_iso_case_folding = ', $context['server']['iso_case_folding'] ? 'true' : 'false', ';
+		var smf_charset = "', $context['character_set'], '";
 	// ]]></script>
 	<title>', $context['page_title'], '</title>';
 
-	// The ?rc3 part of this link is just here to make sure browsers don't cache it wrongly.
+	// The ?fin11 part of this link is just here to make sure browsers don't cache it wrongly.
 	echo '
 	<link rel="stylesheet" type="text/css" href="', IA_URL, 'static/css/sitewide.css" />
-	<link rel="stylesheet" type="text/css" href="', $settings['theme_url'], '/style.css?rc3" />
-	<link rel="stylesheet" type="text/css" href="', $settings['default_theme_url'], '/print.css?rc3" media="print" />';
+	<link rel="stylesheet" type="text/css" href="', $settings['theme_url'], '/style.css?fin11" />
+	<link rel="stylesheet" type="text/css" href="', $settings['default_theme_url'], '/print.css?fin11" media="print" />';
 
 	/* Internet Explorer 4/5 and Opera 6 just don't do font sizes properly. (they are big...)
 		Thus, in Internet Explorer 4, 5, and Opera 6 this will show fonts one size smaller than usual.
@@ -250,7 +253,7 @@ function template_main_below()
 	ia_template_footer();
 
 	// This is an interesting bug in Internet Explorer AND Safari. Rather annoying, it makes overflows just not tall enough.
-	if (($context['browser']['is_ie'] && !$context['browser']['is_ie4']) || $context['browser']['is_mac_ie'] || $context['browser']['is_safari'])
+	if (($context['browser']['is_ie'] && !$context['browser']['is_ie4']) || $context['browser']['is_mac_ie'] || $context['browser']['is_safari'] || $context['browser']['is_firefox'])
 	{
 		// The purpose of this code is to fix the height of overflow: auto div blocks, because IE can't figure it out for itself.
 		echo '
@@ -271,6 +274,19 @@ function template_main_below()
 						codeFix[i].style.height = (codeFix[i].offsetHeight + 20) + "px";
 				}
 			}';
+		elseif ($context['browser']['is_firefox'])
+			echo '
+			window.addEventListener("load", smf_codeFix, false);
+			function smf_codeFix()
+			{
+				var codeFix = document.getElementsByTagName ? document.getElementsByTagName("div") : document.all.tags("div");
+
+				for (var i = 0; i < codeFix.length; i++)
+				{
+					if (codeFix[i].className == "code" && (codeFix[i].scrollWidth > codeFix[i].clientWidth || codeFix[i].clientWidth == 0))
+						codeFix[i].style.overflow = "scroll";
+				}
+			}';			
 		else
 			echo '
 			var window_oldOnload = window.onload;

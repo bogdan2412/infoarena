@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1 RC3; Poll
+// Version: 1.1.2; Poll
 
 function template_main()
 {
@@ -15,7 +15,7 @@ function template_main()
 				if (pollOptionNum == 0)
 				{
 					for (var i = 0; i < document.forms.postmodify.elements.length; i++)
-						if (document.forms.postmodify.elements[i].id.substr(0, 8) == "options[")
+						if (document.forms.postmodify.elements[i].id.substr(0, 8) == "options-")
 							pollOptionNum++;
 				}
 				pollOptionNum++
@@ -73,7 +73,7 @@ function template_main()
 	foreach ($context['choices'] as $choice)
 	{
 		echo '
-									<label for="options[', $choice['id'], ']" ', (isset($context['poll_error']['poll_few']) ? ' style="color: red;"' : ''), '>', $txt['smf22'], ' ', $choice['number'], '</label>: <input type="text" name="options[', $choice['id'], ']" id="options[', $choice['id'], ']" size="25" value="', $choice['label'], '" />';
+									<label for="options-', $choice['id'], '" ', (isset($context['poll_error']['poll_few']) ? ' style="color: red;"' : ''), '>', $txt['smf22'], ' ', $choice['number'], '</label>: <input type="text" name="options[', $choice['id'], ']" id="options-', $choice['id'], '" size="25" value="', $choice['label'], '" />';
 
 		// Does this option have a vote count yet, or is it new?
 		if ($choice['votes'] != -1)

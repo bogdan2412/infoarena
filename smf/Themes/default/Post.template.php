@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1 RC3; Post
+// Version: 1.1; Post
 
 // The main template for the post page.
 function template_main()
@@ -59,6 +59,9 @@ function template_main()
 						"eventid", "calendar", "year", "month", "day",
 						"poll_max_votes", "poll_expire", "poll_change_vote", "poll_hide"
 					];
+					var checkboxFields = [
+						"ns",
+					];
 
 					for (i in textFields)
 						if (document.forms.postmodify.elements[textFields[i]])
@@ -66,6 +69,9 @@ function template_main()
 					for (i in numericFields)
 						if (document.forms.postmodify.elements[numericFields[i]] && typeof(document.forms.postmodify[numericFields[i]].value) != "undefined")
 							x[x.length] = numericFields[i] + "=" + parseInt(document.forms.postmodify.elements[numericFields[i]].value);
+					for (i in checkboxFields)
+						if (document.forms.postmodify.elements[checkboxFields[i]] && document.forms.postmodify.elements[checkboxFields[i]].checked)
+							x[x.length] = checkboxFields[i] + "=" + document.forms.postmodify.elements[checkboxFields[i]].value;
 
 					sendXMLDocument(smf_scripturl + "?action=post2" + (current_board ? ";board=" + current_board : "") + (make_poll ? ";poll" : "") + ";preview;xml", x.join("&"), onDocSent);
 
@@ -155,9 +161,9 @@ function template_main()
 				for (i in textFields)
 					if (document.forms.postmodify.elements[textFields[i]])
 						document.forms.postmodify[textFields[i]].value = document.forms.postmodify[textFields[i]].value.replace(/&#/g, "&#38;#");
-				for (i in document.forms.postmodify)
-					if (document.forms.postmodify[i].name.indexOf("options") == 0)
-						document.forms.postmodify[i].value = document.forms.postmodify[i].value.replace(/&#/g, "&#38;#");
+				for (var i = document.forms.postmodify.elements.length - 1; i >= 0; i--)
+					if (document.forms.postmodify.elements[i].name.indexOf("options") == 0)
+						document.forms.postmodify.elements[i].value = document.forms.postmodify.elements[i].value.replace(/&#/g, "&#38;#");
 			}';
 
 
@@ -788,6 +794,7 @@ function template_postbox(&$message)
 			'list' => array('code' => 'list', 'before' => '[list]\n[li]', 'after' => '[/li]\n[li][/li]\n[/list]', 'description' => $txt[261]),
 		);
 
+		$found_button = false;
 		// Here loop through the array, printing the images/rows/separators!
 		foreach ($context['bbc_tags'][0] as $image => $tag)
 		{
@@ -797,6 +804,8 @@ function template_postbox(&$message)
 				// Is this tag disabled?
 				if (!empty($context['disabled_tags'][$tag['code']]))
 					continue;
+
+				$found_button = true;
 
 				// If there's no after, we're just replacing the entire selection in the post box.
 				if (!isset($tag['after']))
@@ -809,8 +818,11 @@ function template_postbox(&$message)
 				echo '<img onmouseover="bbc_highlight(this, true);" onmouseout="if (window.bbc_highlight) bbc_highlight(this, false);" src="', $settings['images_url'], '/bbc/', $image, '.gif" align="bottom" width="23" height="22" alt="', $tag['description'], '" title="', $tag['description'], '" style="background-image: url(', $settings['images_url'], '/bbc/bbc_bg.gif); margin: 1px 2px 1px 1px;" /></a>';
 			}
 			// I guess it's a divider...
-			else
+			elseif ($found_button)
+			{
 				echo '<img src="', $settings['images_url'], '/bbc/divider.gif" alt="|" style="margin: 0 3px 0 3px;" />';
+				$found_button = false;
+			}
 		}
 
 		// Print a drop down list for all the colors we allow!
@@ -834,6 +846,7 @@ function template_postbox(&$message)
 						</select>';
 		echo '<br />';
 
+		$found_button = false;
 		// Print the buttom row of buttons!
 		foreach ($context['bbc_tags'][1] as $image => $tag)
 		{
@@ -842,6 +855,8 @@ function template_postbox(&$message)
 				// Is this tag disabled?
 				if (!empty($context['disabled_tags'][$tag['code']]))
 					continue;
+
+				$found_button = true;
 
 				// If there's no after, we're just replacing the entire selection in the post box.
 				if (!isset($tag['after']))
@@ -854,8 +869,11 @@ function template_postbox(&$message)
 				echo '<img onmouseover="bbc_highlight(this, true);" onmouseout="if (window.bbc_highlight) bbc_highlight(this, false);" src="', $settings['images_url'], '/bbc/', $image, '.gif" align="bottom" width="23" height="22" alt="', $tag['description'], '" title="', $tag['description'], '" style="background-image: url(', $settings['images_url'], '/bbc/bbc_bg.gif); margin: 1px 2px 1px 1px;" /></a>';
 			}
 			// I guess it's a divider...
-			else
+			elseif ($found_button)
+			{
 				echo '<img src="', $settings['images_url'], '/bbc/divider.gif" alt="|" style="margin: 0 3px 0 3px;" />';
+				$found_button = false;
+			}
 		}
 
 		echo '
@@ -1104,7 +1122,7 @@ function template_announce()
 
 	foreach ($context['groups'] as $group)
 				echo '
-						<label for="who[', $group['id'], ']"><input type="checkbox" name="who[', $group['id'], ']" id="who[', $group['id'], ']" value="', $group['id'], '" checked="checked" class="check" /> ', $group['name'], '</label> <i>(', $group['member_count'], ')</i><br />';
+						<label for="who_', $group['id'], '"><input type="checkbox" name="who[', $group['id'], ']" id="who_', $group['id'], '" value="', $group['id'], '" checked="checked" class="check" /> ', $group['name'], '</label> <i>(', $group['member_count'], ')</i><br />';
 
 	echo '
 						<br />

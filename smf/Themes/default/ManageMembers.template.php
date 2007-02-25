@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1 RC3; ManageMembers
+// Version: 1.1; ManageMembers
 
 function template_view_members()
 {

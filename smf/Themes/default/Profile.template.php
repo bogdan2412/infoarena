@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1 RC3; Profile
+// Version: 1.1.2; Profile
 
 // Template for the profile side bar - goes before any other profile template.
 function template_profile_above()
@@ -485,7 +485,7 @@ function template_trackUser()
 				</tr><tr>
 					<td class="windowbg2" align="left">', $txt['ips_in_errors'], ':</td>
 					<td class="windowbg2" align="left">
-						', (count($context['ips']) > 0 ? implode(', ', $context['error_ips']) : '(' . $txt['none'] . ')'), '
+						', (count($context['error_ips']) > 0 ? implode(', ', $context['error_ips']) : '(' . $txt['none'] . ')'), '
 					</td>
 				</tr>';
 
@@ -1088,7 +1088,7 @@ function template_account()
 									<b', (isset($context['modify_error']['no_name']) || isset($context['modify_error']['name_taken']) ? ' style="color: red;"' : ''), '>', $txt[68], ': </b>
 									<div class="smalltext">', $txt[518], '</div>
 								</td>
-								<td>', ($context['allow_edit_name'] ? '<input type="text" name="realName" size="30" value="' . $context['member']['name'] . '" />' : $context['member']['name']), '</td>
+								<td>', ($context['allow_edit_name'] ? '<input type="text" name="realName" size="30" value="' . $context['member']['name'] . '" maxlength="60" />' : $context['member']['name']), '</td>
 							</tr>';
 
 		// Allow the administrator to change the date they registered on and their post count.
@@ -1619,7 +1619,7 @@ function template_theme()
 		function autoDetectTimeOffset()
 		{
 			// Get the difference between the two, set it up so that the sign will tell us who is ahead of who
-			var diff = Math.round((serverTime.getTime() - localTime.getTime())/3600000);
+			var diff = Math.round((localTime.getTime() - serverTime.getTime())/3600000);
 
 			// Make sure we are limiting this to one day\'s difference
 			diff %= 24;

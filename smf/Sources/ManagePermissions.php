@@ -1,37 +1,44 @@
 <?php
-/******************************************************************************
-* ManagePermissions.php                                                       *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* ManagePermissions.php                                                           *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1.2                                           *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
 /*	ManagePermissions handles all possible permission stuff. The following
 	functions are used:
 
-	void ModifyPermissions()
-		- calls the right function based on the given subaction.
-		// !!!
+   void ModifyPermissions()
+      - calls the right function based on the given subaction.
+      - checks the permissions, based on the sub-action.
+      - called by ?action=managepermissions.
+      - loads the ManagePermissions language file.
 
-	void PermissionIndex()
-		// !!!
+   void PermissionIndex()
+      - sets up the permissions by membergroup index page.
+      - called by ?action=managepermissions
+      - uses the permission_index template of the ManageBoards template.
+      - loads the ManagePermissions language and template.
+      - creates an array of all the groups with the number of members and permissions.
 
 	void SetQuickGroups()
 		- handles permission modification actions from the upper part of the
@@ -39,7 +46,11 @@ if (!defined('SMF'))
 		// !!!
 
 	void SwitchBoard()
-		// !!!
+		- handles the process of switching boards: global to local and vice versa.
+		- checks the current session and then validates it.
+		- redirects if the board is already using the permission set being applied to it.
+		- copies the global permissions over when set to local.
+		- deletes rows in database for local permissions when switched to global.
 
 	void ModifyMembergroup()
 		- modify (local and global) permissions.
@@ -416,9 +427,11 @@ function PermissionByBoard()
 
 function SetQuickGroups()
 {
-	global $db_prefix;
+	global $db_prefix, $context;
 
 	checkSession();
+
+	loadIllegalPermissions();
 
 	// Make sure only one of the quick options was selected.
 	if ((!empty($_POST['predefined']) && ((isset($_POST['copy_from']) && $_POST['copy_from'] != 'empty') || !empty($_POST['permissions']))) || (!empty($_POST['copy_from']) && $_POST['copy_from'] != 'empty' && !empty($_POST['permissions'])))
@@ -534,12 +547,19 @@ function SetQuickGroups()
 			$insert_string = '';
 			foreach ($_POST['group'] as $group_id)
 				foreach ($target_perm as $perm => $addDeny)
+				{
+					// No dodgy permissions please!
+					if (!empty($context['illegal_permissions']) && in_array($perm, $context['illegal_permissions']))
+						continue;
+
 					$insert_string .= "('$perm', $group_id, $addDeny),";
+				}
 
 			// Delete the previous permissions...
 			db_query("
 				DELETE FROM {$db_prefix}permissions
-				WHERE ID_GROUP IN (" . implode(', ', $_POST['group']) . ")", __FILE__, __LINE__);
+				WHERE ID_GROUP IN (" . implode(', ', $_POST['group']) . ")
+					" . (empty($context['illegal_permissions']) ? '' : ' AND permission NOT IN (' . implode(', ', $context['illegal_permissions']) . ')'), __FILE__, __LINE__);
 
 			if (!empty($insert_string))
 			{
@@ -603,7 +623,8 @@ function SetQuickGroups()
 				db_query("
 					DELETE FROM {$db_prefix}permissions
 					WHERE ID_GROUP IN (" . implode(', ', $_POST['group']) . ")
-						AND permission = '$permission'", __FILE__, __LINE__);
+						AND permission = '$permission'
+						" . (empty($context['illegal_permissions']) ? '' : ' AND permission NOT IN (' . implode(', ', $context['illegal_permissions']) . ')'), __FILE__, __LINE__);
 			else
 				db_query("
 					DELETE FROM {$db_prefix}board_permissions
@@ -615,7 +636,7 @@ function SetQuickGroups()
 		else
 		{
 			$addDeny = $_POST['add_remove'] == 'add' ? '1' : '0';
-			if ($permissionType == 'membergroup')
+			if ($permissionType == 'membergroup' && (empty($context['illegal_permissions']) || !in_array($permission, $context['illegal_permissions'])))
 				db_query("
 					REPLACE INTO {$db_prefix}permissions
 						(permission, ID_GROUP, addDeny)
@@ -623,7 +644,7 @@ function SetQuickGroups()
 						('$permission', " . implode(", $addDeny),
 						('$permission', ", $_POST['group']) . ", $addDeny)", __FILE__, __LINE__);
 			// Board permissions go into the other table.
-			else
+			elseif ($permissionType != 'membergroup')
 				db_query("
 					REPLACE INTO {$db_prefix}board_permissions
 						(permission, ID_GROUP, ID_BOARD, addDeny)
@@ -632,6 +653,14 @@ function SetQuickGroups()
 						('$permission', ", $_POST['group']) . ", $_REQUEST[boardid], $addDeny)", __FILE__, __LINE__);
 		}
 	}
+
+	// Don't allow guests to have certain permissions.
+	db_query("
+		DELETE FROM {$db_prefix}permissions
+		WHERE ID_GROUP = -1 AND
+			(permission = 'manage_membergroups'
+			OR permission = 'manage_permissions'
+			OR permission = 'admin_forum')", __FILE__, __LINE__);
 
 	redirectexit('action=permissions;boardid=' . $_REQUEST['boardid']);
 }
@@ -814,13 +843,15 @@ function ModifyMembergroup()
 
 function ModifyMembergroup2()
 {
-	global $db_prefix, $modSettings;
+	global $db_prefix, $modSettings, $context;
 
 	// Never do this if there are no local permissions to be set.
 	if (empty($modSettings['permission_enable_by_board']) && !empty($_REQUEST['boardid']))
 		redirectexit('action=permissions');
 
 	checkSession();
+
+	loadIllegalPermissions();
 
 	$_GET['group'] = (int) $_GET['group'];
 	$_GET['boardid'] = (int) $_GET['boardid'];
@@ -836,7 +867,13 @@ function ModifyMembergroup2()
 			{
 				foreach ($perm_array as $permission => $value)
 					if ($value == 'on' || $value == 'deny')
+					{
+						// Don't allow people to escalate themselves!
+						if (!empty($context['illegal_permissions']) && in_array($permission, $context['illegal_permissions']))
+							continue;
+
 						$givePerms[$perm_type][] = "$permission', " . ($value == 'deny' ? '0' : '1');
+					}
 			}
 		}
 	}
@@ -846,7 +883,8 @@ function ModifyMembergroup2()
 	{
 		db_query("
 			DELETE FROM {$db_prefix}permissions
-			WHERE ID_GROUP = $_GET[group]", __FILE__, __LINE__);
+			WHERE ID_GROUP = $_GET[group]
+			" . (empty($context['illegal_permissions']) ? '' : ' AND permission NOT IN (' . implode(', ', $context['illegal_permissions']) . ')'), __FILE__, __LINE__);
 		if (!empty($givePerms['membergroup']))
 			db_query("
 				INSERT IGNORE INTO {$db_prefix}permissions
@@ -996,7 +1034,9 @@ function GeneralPermissionSettings()
 // Set the permission level for a specific board, group, or group for a board.
 function setPermissionLevel($level, $group, $board = 'null')
 {
-	global $db_prefix;
+	global $db_prefix, $context;
+
+	loadIllegalPermissions();
 
 	// Levels by group... restrict, standard, moderator, maintenance.
 	$groupLevels = array(
@@ -1139,6 +1179,11 @@ function setPermissionLevel($level, $group, $board = 'null')
 		'modify_any',
 	));
 
+	// Make sure we're not granting someone too many permissions!
+	foreach ($groupLevels['global'][$level] as $k => $permission)
+		if (!empty($context['illegal_permissions']) && in_array($permission, $context['illegal_permissions']))
+			unset($groupLevels['global'][$level][$k]);
+
 	// Setting group permissions.
 	if ($board === 'null' && $group !== 'null')
 	{
@@ -1149,7 +1194,8 @@ function setPermissionLevel($level, $group, $board = 'null')
 
 		db_query("
 			DELETE FROM {$db_prefix}permissions
-			WHERE ID_GROUP = $group", __FILE__, __LINE__);
+			WHERE ID_GROUP = $group
+			" . (empty($context['illegal_permissions']) ? '' : ' AND permission NOT IN (' . implode(', ', $context['illegal_permissions']) . ')'), __FILE__, __LINE__);
 		db_query("
 			DELETE FROM {$db_prefix}board_permissions
 			WHERE ID_GROUP = $group
@@ -1514,6 +1560,9 @@ function save_inline_permissions($permissions)
 	if (!allowedTo('manage_permissions'))
 		return;
 
+	// Check they can't do certain things.
+	loadIllegalPermissions();
+
 	$insertRows = '';
 	foreach ($permissions as $permission)
 	{
@@ -1522,7 +1571,7 @@ function save_inline_permissions($permissions)
 
 		foreach ($_POST[$permission] as $ID_GROUP => $value)
 		{
-			if (in_array($value, array('on', 'deny')))
+			if (in_array($value, array('on', 'deny')) && (empty($context['illegal_permissions']) || !in_array($permission, $context['illegal_permissions'])))
 				$insertRows .= ', (' . (int) $ID_GROUP . ", '$permission', " . ($value == 'on' ? '1' : '0') . ')';
 		}
 	}
@@ -1530,7 +1579,8 @@ function save_inline_permissions($permissions)
 	// Remove the old permissions...
 	db_query("
 		DELETE FROM {$db_prefix}permissions
-		WHERE permission IN ('" . implode("', '", $permissions) . "')", __FILE__, __LINE__);
+		WHERE permission IN ('" . implode("', '", $permissions) . "')
+		" . (empty($context['illegal_permissions']) ? '' : ' AND permission NOT IN (' . implode(', ', $context['illegal_permissions']) . ')'), __FILE__, __LINE__);
 
 	// ...and replace them with new ones.
 	if ($insertRows != '')
@@ -1538,6 +1588,20 @@ function save_inline_permissions($permissions)
 			INSERT INTO {$db_prefix}permissions
 				(ID_GROUP, permission, addDeny)
 			VALUES " . substr($insertRows, 2), __FILE__, __LINE__);
+}
+
+// Load permissions someone cannot grant.
+function loadIllegalPermissions()
+{
+	global $context;
+
+	$context['illegal_permissions'] = array();
+	if (!allowedTo('admin_forum'))
+		$context['illegal_permissions'][] = 'admin_forum';
+	if (!allowedTo('manage_membergroups'))
+		$context['illegal_permissions'][] = 'manage_membergroups';
+	if (!allowedTo('manage_permissions'))
+		$context['illegal_permissions'][] = 'manage_permissions';
 }
 
 ?>

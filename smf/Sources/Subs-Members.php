@@ -1,25 +1,26 @@
 <?php
-/******************************************************************************
-* Subs-members.php                                                            *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* Subs-members.php                                                                *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1.2                                           *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -74,7 +75,7 @@ if (!defined('SMF'))
 		- allows to perform several checks on the input, e.g. reserved names.
 		- adjusts member statistics.
 
-	bool isReservedName(string name, int ID_MEMBER = 0, bool is_name = true)
+	bool isReservedName(string name, int ID_MEMBER = 0, bool is_name = true, bool fatal = true)
 		- checks if name is a reserved name or username.
 		- if is_name is false, the name is assumed to be a username.
 		- the ID_MEMBER variable is used to ignore duplicate matches with the
@@ -616,7 +617,7 @@ function registerMember(&$regOptions)
 		fatal_lang_error(37, false);
 
 	// Spaces and other odd characters are evil...
-	$regOptions['username'] = preg_replace('~[\t\n\r\x0B\0' . ($context['utf8'] ? '\x{C2A0}' : '\xA0') . ']+~' . ($context['utf8'] ? 'u' : ''), ' ', $regOptions['username']);
+	$regOptions['username'] = preg_replace('~[\t\n\r\x0B\0' . ($context['utf8'] ? ($context['server']['complex_preg_chars'] ? '\x{A0}' : pack('C*', 0xC2, 0xA0)) : '\xA0') . ']+~' . ($context['utf8'] ? 'u' : ''), ' ', $regOptions['username']);
 
 	// Don't use too long a name.
 	if ($func['strlen']($regOptions['username']) > 25)
@@ -667,7 +668,7 @@ function registerMember(&$regOptions)
 
 		// Password isn't legal?
 		if ($passwordError != null)
-			fatal_lang_error('profile_error_password_' . $passwordError);
+			fatal_lang_error('profile_error_password_' . $passwordError, false);
 	}
 
 	// You may not be allowed to register this email.
@@ -847,7 +848,7 @@ function registerMember(&$regOptions)
 }
 
 // Check if a name is in the reserved words list. (name, current member id, name/username?.)
-function isReservedName($name, $current_ID_MEMBER = 0, $is_name = true)
+function isReservedName($name, $current_ID_MEMBER = 0, $is_name = true, $fatal = true)
 {
 	global $user_info, $modSettings, $db_prefix, $func;
 
@@ -870,12 +871,20 @@ function isReservedName($name, $current_ID_MEMBER = 0, $is_name = true)
 			$reservedCheck = empty($modSettings['reserveCase']) ? $func['strtolower']($reserved) : $reserved;
 			// If it's not just entire word, check for it in there somewhere...
 			if ($checkMe == $reservedCheck || ($func['strpos']($checkMe, $reservedCheck) !== false && empty($modSettings['reserveWord'])))
-				fatal_lang_error(244, true, array($reserved));
+			{
+				if ($fatal)
+					fatal_lang_error(244, true, array($reserved));
+				else
+					return true;
+			}
 		}
 
 		$censor_name = $name;
 		if (censorText($censor_name) != $name)
-			fatal_lang_error('name_censored', true, array($name));
+			if ($fatal)
+				fatal_lang_error('name_censored', true, array($name));
+			else
+				return true;
 	}
 
 	// Get rid of any SQL parts of the reserved name...
@@ -889,8 +898,10 @@ function isReservedName($name, $current_ID_MEMBER = 0, $is_name = true)
 			AND ") . "(realName LIKE '$checkName' OR memberName LIKE '$checkName')
 		LIMIT 1", __FILE__, __LINE__);
 	if (mysql_num_rows($request) > 0)
+	{
+		mysql_free_result($request);
 		return true;
-	mysql_free_result($request);
+	}
 
 	// Does name case insensitive match a member group name?
 	$request = db_query("
@@ -899,9 +910,11 @@ function isReservedName($name, $current_ID_MEMBER = 0, $is_name = true)
 		WHERE groupName LIKE '$checkName'
 		LIMIT 1", __FILE__, __LINE__);
 	if (mysql_num_rows($request) > 0)
+	{
+		mysql_free_result($request);
 		return true;
-	mysql_free_result($request);
-
+	}
+	
 	// Okay, they passed.
 	return false;
 }

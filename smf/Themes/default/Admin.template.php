@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1 RC3; Admin
+// Version: 1.1.1; Admin
 
 // This contains the html for the side bar of the admin center, which is used for all admin pages.
 function template_admin_above()
@@ -219,6 +219,19 @@ function template_admin()
 							<i id="smfVersion" style="white-space: nowrap;">??</i><br />
 							', $context['can_admin'] ? '<a href="' . $scripturl . '?action=detailedversion">' . $txt['dvc_more'] . '</a>' : '', '<br />';
 
+	// Have they paid to remove copyright?
+	if (!empty($context['copyright_expires']))
+	{
+		echo '
+							<br />', sprintf($txt['copyright_ends_in'], $context['copyright_expires']);
+
+		if ($context['copyright_expires'] < 30)
+			echo '
+							<div style="color: red;">', sprintf($txt['copyright_click_renew'], $context['copyright_key']), '</div>';
+
+		echo '<br />';
+	}
+
 	// Display all the members who can administrate the forum.
 	echo '
 							<br />
@@ -378,6 +391,37 @@ function template_admin()
 					oldonload();
 			}
 		// ]]></script>';
+}
+
+// Mangage the copyright.
+function template_manage_copyright()
+{
+	global $context, $settings, $options, $scripturl, $txt;
+
+	echo '
+	<form action="', $scripturl, '?action=admin;area=copyright" method="post" accept-charset="', $context['character_set'], '">
+		<table width="80%" align="center" cellpadding="2" cellspacing="0" border="0" class="tborder">
+			<tr class="titlebg">
+				<td colspan="2">', $txt['copyright_removal'], '</td>
+			</tr><tr>
+				<td colspan="2" class="windowbg2">
+					<span class="smalltext">', $txt['copyright_removal_desc'], '</span>
+				</td>
+			</tr><tr class="windowbg">
+				<td width="50%">
+					<b>', $txt['copyright_code'], ':</b>
+				</td>
+				<td width="50%">
+					<input type="text" name="copy_code" value="" />
+				</td>
+			</tr><tr>
+				<td colspan="2" align="center" class="windowbg2">
+					<input type="submit" value="', $txt['copyright_proceed'], '" />
+				</td>
+			</tr>
+		</table>
+		<input type="hidden" name="sc" value="', $context['session_id'], '" />
+	</form>';
 }
 
 // Show some support information and credits to those who helped make this.
@@ -1138,7 +1182,7 @@ function template_maintain()
 
 							for (var i = 0; i < document.forms.rotForm.length; i++)
 							{
-								if (document.forms.rotForm.elements[i].type.toLowerCase() == "checkbox")
+								if (document.forms.rotForm.elements[i].type.toLowerCase() == "checkbox" && document.forms.rotForm.elements[i].id != "delete_old_not_sticky")
 									document.forms.rotForm.elements[i].checked = !rotSwap;
 							}
 						}
@@ -1180,7 +1224,7 @@ function template_maintain()
 		// Display a checkbox with every board.
 		foreach ($category['boards'] as $board)
 			echo '
-										<label for="boards[', $board['id'], ']"><input type="checkbox" name="boards[', $board['id'], ']" id="boards[', $board['id'], ']" checked="checked" class="check" /> ', str_repeat('&nbsp; ', $board['child_level']), $board['name'], '</label><br />';
+										<label for="boards_', $board['id'], '"><input type="checkbox" name="boards[', $board['id'], ']" id="boards_', $board['id'], '" checked="checked" class="check" /> ', str_repeat('&nbsp; ', $board['child_level']), $board['name'], '</label><br />';
 		echo '
 										<br />';
 

@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1 RC3; Help
+// Version: 1.1; Help
 
 function template_popup()
 {
@@ -24,9 +24,11 @@ function template_popup()
 		</style>
 	</head>
 	<body style="margin: 1ex;">
-		', $context['help_text'], '<br />
-		<br />
-		<div align="center"><a href="javascript:self.close();">', $txt[1006], '</a></div>
+		<div class="popuptext">
+			', $context['help_text'], '<br />
+			<br />
+			<div align="center"><a href="javascript:self.close();">', $txt[1006], '</a></div>
+		</div>
 	</body>
 </html>';
 }
@@ -180,7 +182,7 @@ function template_manual_below()
 
 	echo '
 		</div>
-		<div id="helpmenu" class="titlebg" style="padding: 4px;">';
+		<div id="helpmenu2" class="titlebg" style="padding: 4px;">';
 
 	$menu_items = array();
 	foreach ($context['all_pages'] as $page_url => $page_txt)
@@ -1127,7 +1129,7 @@ function template_manual_profile()
 								<td class="catbg">', $txt['manual_profile_profile_info2'], '</td>
 							</tr>
 							<tr class="windowbg2">
-								<td class="smalltext" class="windowbg"><a href="', $scripturl, '?action=help;page=profile#owners" style="font-size: x-small;" class="board">', $txt['manual_profile_summary2'], '</a><br />
+								<td class="smalltext"><a href="', $scripturl, '?action=help;page=profile#owners" style="font-size: x-small;" class="board">', $txt['manual_profile_summary2'], '</a><br />
 								<a href="', $scripturl, '?action=help;page=profile#owners" style="font-size: x-small;" class="board">', $txt['manual_profile_show_stats'], '</a><br />
 								<a href="', $scripturl, '?action=help;page=profile#owners" style="font-size: x-small;" class="board">', $txt['manual_profile_show_posts'], '</a><br />
 								<br /></td>
@@ -1136,7 +1138,7 @@ function template_manual_profile()
 								<td class="catbg">', $txt['manual_profile_modify_own_profile'], '</td>
 							</tr>
 							<tr class="windowbg2">
-								<td class="smalltext" class="windowbg"><a href="', $scripturl, '?action=help;page=profile#owners" style="font-size: x-small;" class="board">', $txt['manual_profile_acct_settings'], '</a><br />
+								<td class="smalltext"><a href="', $scripturl, '?action=help;page=profile#owners" style="font-size: x-small;" class="board">', $txt['manual_profile_acct_settings'], '</a><br />
 								<a href="', $scripturl, '?action=help;page=profile#owners" style="font-size: x-small;" class="board">', $txt['manual_profile_forum_profile'], '</a><br />
 								<b><a href="', $scripturl, '?action=help;page=profile#owners" style="font-size: x-small;" class="board">', $txt['manual_profile_look_and_layout'], '</a></b><br />
 								<a href="', $scripturl, '?action=help;page=profile#owners" style="font-size: x-small;" class="board">', $txt['manual_profile_notify_email'], '</a><br />
@@ -1147,7 +1149,7 @@ function template_manual_profile()
 								<td class="catbg">', $txt['manual_profile_actions'], '</td>
 							</tr>
 							<tr class="windowbg2">
-								<td class="smalltext" class="windowbg"><a href="', $scripturl, '?action=help;page=profile#owners" style="font-size: x-small;" class="board">', $txt['manual_profile_delete_account'], '</a><br />
+								<td class="smalltext"><a href="', $scripturl, '?action=help;page=profile#owners" style="font-size: x-small;" class="board">', $txt['manual_profile_delete_account'], '</a><br />
 								<br /></td>
 							</tr>
 						</table>
@@ -1321,7 +1323,7 @@ function template_manual_profile()
 					<td class="catbg">', $txt['manual_profile_profile_info'], '</td>
 				</tr>
 				<tr class="windowbg2">
-					<td class="windowbg"><b><a href="', $scripturl, '?action=help;page=profile#admins" style="font-size: x-small;" class="board">', $txt['manual_profile_summary2'], '</a></b><br />
+					<td class="windowbg2"><b><a href="', $scripturl, '?action=help;page=profile#admins" style="font-size: x-small;" class="board">', $txt['manual_profile_summary2'], '</a></b><br />
 					<a href="', $scripturl, '?action=help;page=profile#admins" style="font-size: x-small;" class="board">', $txt['manual_profile_show_stats'], '</a><br />
 					<a href="', $scripturl, '?action=help;page=profile#admins" style="font-size: x-small;" class="board">', $txt['manual_profile_show_posts'], '</a><br />
 					<a href="', $scripturl, '?action=help;page=profile#admins" style="font-size: x-small;" class="board">', $txt['manual_profile_track_user'], '</a><br />
@@ -1333,7 +1335,7 @@ function template_manual_profile()
 					<td class="catbg">', $txt['manual_profile_sub_modify_profile'], '</td>
 				</tr>
 				<tr class="windowbg2">
-					<td class="windowbg"><a href="', $scripturl, '?action=help;page=profile#admins" style="font-size: x-small;" class="board">', $txt['manual_profile_acct_settings'], '</a><br />
+					<td class="windowbg2"><a href="', $scripturl, '?action=help;page=profile#admins" style="font-size: x-small;" class="board">', $txt['manual_profile_acct_settings'], '</a><br />
 					<a href="', $scripturl, '?action=help;page=profile#admins" style="font-size: x-small;" class="board">', $txt['manual_profile_forum_profile'], '</a><br />
 					<a href="', $scripturl, '?action=help;page=profile#admins" style="font-size: x-small;" class="board">', $txt['manual_profile_look_and_layout'], '</a><br />
 					<a href="', $scripturl, '?action=help;page=profile#admins" style="font-size: x-small;" class="board">', $txt['manual_profile_notify_email'], '</a><br />
@@ -1344,7 +1346,7 @@ function template_manual_profile()
 					<td class="catbg">', $txt['manual_profile_actions'], '</td>
 				</tr>
 				<tr class="windowbg2">
-					<td class="windowbg"><a href="', $scripturl, '?action=help;page=profile#admins" style="font-size: x-small;" class="board">', $txt['manual_profile_ban_user'], '</a><br />
+					<td class="windowbg2"><a href="', $scripturl, '?action=help;page=profile#admins" style="font-size: x-small;" class="board">', $txt['manual_profile_ban_user'], '</a><br />
 					<a href="', $scripturl, '?action=help;page=profile#admins" style="font-size: x-small;" class="board">', $txt['manual_profile_delete_account'], '</a><br />
 					<br /></td>
 				</tr>
@@ -1794,7 +1796,8 @@ function template_manual_posting()
 		<tr>
 			<td>', $txt['manual_posting_bbc_shadow'], '</td>
 			<td><img onmouseover="bbc_highlight(this, true);" onmouseout="bbc_highlight(this, false);" src="', $settings['images_url'], '/bbc/shadow.gif" alt="', $txt['manual_posting_bbc_shadow'], '" style="background-image: url(', $settings['images_url'], '/bbc/bbc_bg.gif); margin: 1px 2px 1px 1px;" /></td>
-			<td>', $txt['manual_posting_shadow_code'], '<td>
+			<td>', $txt['manual_posting_shadow_code'], '</td>
+			<td>
 				<div style="filter: Shadow(color=red, direction=240); width: 30px;">
 					', $txt['manual_posting_shadow_output'], '
 				</div>

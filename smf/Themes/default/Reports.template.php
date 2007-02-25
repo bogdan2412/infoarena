@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1 RC3; Reports
+// Version: 1.1; Reports
 
 // Choose which type of report to run?
 function template_report_type()

@@ -1,25 +1,26 @@
 <?php
-/******************************************************************************
-* Subs-Package.php                                                            *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* Subs-Package.php                                                                *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1.2                                             *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -590,7 +591,7 @@ function getPackageInfo($gzfilename)
 
 function packageRequireFTP($destination_url, $files = null)
 {
-	global $context, $modSettings, $package_ftp, $boarddir;
+	global $context, $modSettings, $package_ftp, $boarddir, $txt;
 
 	// Try to make them writable the manual way.
 	if ($files !== null)
@@ -733,12 +734,13 @@ function packageRequireFTP($destination_url, $files = null)
 			'destination' => $destination_url,
 		);
 
+		$context['page_title'] = $txt['package_ftp_necessary'];
 		$context['sub_template'] = 'ftp_required';
 		obExit();
 	}
 	else
 	{
-		if ($_POST['ftp_path'] != '')
+		if (!in_array($_POST['ftp_path'], array('', '/')))
 		{
 			$ftp_root = strtr($boarddir, array($_POST['ftp_path'] => ''));
 			if (substr($ftp_root, -1) == '/' && ($_POST['ftp_path'] == '' || substr($_POST['ftp_path'], 0, 1) == '/'))
@@ -766,7 +768,7 @@ function packageRequireFTP($destination_url, $files = null)
 // Parses a package-info.xml file - method can be 'install', 'upgrade', or 'uninstall'.
 function parsePackageInfo(&$packageXML, $testing_only = true, $method = 'install', $previous_version = '')
 {
-	global $boarddir, $forum_version;
+	global $boarddir, $forum_version, $context;
 
 	// Mayday!  That action doesn't exist!!
 	if (empty($packageXML) || !$packageXML->exists($method))
@@ -814,7 +816,7 @@ function parsePackageInfo(&$packageXML, $testing_only = true, $method = 'install
 	$return = array();
 
 	$temp_auto = 0;
-	$temp_path = $boarddir . '/Packages/temp' . (isset($context['base_path']) ? $context['base_path'] : '');
+	$temp_path = $boarddir . '/Packages/temp/' . (isset($context['base_path']) ? $context['base_path'] : '');
 
 	// This is the testing phase... nothing shall be done yet.
 	foreach ($actions as $action)
@@ -826,9 +828,9 @@ function parsePackageInfo(&$packageXML, $testing_only = true, $method = 'install
 			// !!! TODO: Make sure the file actually exists?  Might not work when testing?
 			if ($action->exists('@type') && $action->fetch('@type') == 'inline')
 			{
-				$filename = $temp_path . '/$auto_' . $temp_auto++ . ($actionType == 'readme' || $actionType == 'redirect' ? '.txt' : ($actionType == 'code' ? '.php' : '.mod'));
+				$filename = $temp_path . '$auto_' . $temp_auto++ . ($actionType == 'readme' || $actionType == 'redirect' ? '.txt' : ($actionType == 'code' ? '.php' : '.mod'));
 				package_put_contents($filename, $action->fetch('.'));
-				$filename = strtr($filename, array($temp_path . '/' => ''));
+				$filename = strtr($filename, array($temp_path => ''));
 			}
 			else
 				$filename = $action->fetch('.');
@@ -872,7 +874,7 @@ function parsePackageInfo(&$packageXML, $testing_only = true, $method = 'install
 			if ($action->exists('@from'))
 				$this_action['source'] = parse_path($action->fetch('@from'));
 			else
-				$this_action['source'] = $temp_path . '/' . $this_action['filename'];
+				$this_action['source'] = $temp_path . $this_action['filename'];
 		}
 
 		// Check if these things can be done. (chmod's etc.)
@@ -1022,7 +1024,14 @@ function parsePackageInfo(&$packageXML, $testing_only = true, $method = 'install
 
 			$failure |= !copy($action['source'], $action['destination']);
 		}
-		elseif ($action['type'] == 'move-dir' || $action['type'] == 'move-file')
+		elseif ($action['type'] == 'move-file')
+		{
+			if (!mktree(dirname($action['destination']), 0755) || !is_writable(dirname($action['destination'])))
+				$failure |= !mktree(dirname($action['destination']), 0777);
+
+			$failure |= !rename($action['source'], $action['destination']);
+		}
+		elseif ($action['type'] == 'move-dir')
 		{
 			if (!mktree($action['destination'], 0755) || !is_writable($action['destination']))
 				$failure |= !mktree($action['destination'], 0777);
@@ -1333,7 +1342,7 @@ function parseModification($file, $testing = true, $undo = false)
 		}
 
 		// Doesn't exist - give an error or what?
-		if (!file_exists($working_file) && (!$file->exists('@error') || (trim($file->fetch('@error')) != 'ignore' && trim($file->fetch('@error')) != 'skip')))
+		if (!file_exists($working_file) && (!$file->exists('@error') || !in_array(trim($file->fetch('@error')), array('ignore', 'skip'))))
 		{
 			$actions[] = array(
 				'type' => 'missing',
@@ -1345,8 +1354,14 @@ function parseModification($file, $testing = true, $undo = false)
 			continue;
 		}
 		// Skip the file if it doesn't exist.
-		elseif (!file_exists($working_file) && $file->exists('@error') && trim($file->fetch('@error')) == 'skip')
+		elseif (!file_exists($working_file) && $file->exists('@error') && trim($file->fetch('@error')) === 'skip')
+		{
+			$actions[] = array(
+				'type' => 'skipping',
+				'filename' => $working_file,
+			);
 			continue;
+		}
 		// Okay, we're creating this file then...?
 		elseif (!file_exists($working_file))
 			$working_data = '';
@@ -1362,210 +1377,184 @@ function parseModification($file, $testing = true, $undo = false)
 		$operations = $file->exists('operation') ? $file->set('operation') : array();
 		foreach ($operations as $operation)
 		{
-			// Special case: find the end of the file!
-			if ($operation->exists('search/@position') && trim($operation->fetch('search/@position')) == 'end')
-			{
-				$replace_with = $operation->fetch('add');
+			// Convert operation to an array.
+			$actual_operation = array(
+				'searches' => array(),
+				'error' => $operation->exists('@error') && in_array(trim($operation->fetch('@error')), array('ignore', 'fatal', 'required')) ? trim($operation->fetch('@error')) : 'fatal',
+			);
 
-				if (!$undo)
-				{
-					if (substr(rtrim($working_data), -3) == "\n?" . '>')
-						$working_data = substr(rtrim($working_data), 0, -3) . $replace_with . "\n?" . '>';
-					else
-						$working_data = $working_data . $replace_with;
-				}
-				else
-				{
-					if (substr(rtrim($working_data), -3 - strlen($replace_with)) == $replace_with . "\n?" . '>')
-						$working_data = substr(rtrim($working_data), 0, -3 - strlen($replace_with)) . "\n?" . '>';
-					elseif (substr(rtrim($working_data), -strlen($replace_with)) == $replace_with)
-						$working_data = substr(rtrim($working_data), 0, -strlen($replace_with));
-					elseif (!$operation->exists('@error') || $operation->fetch('@error') == 'fatal')
-					{
-						$actions[] = array(
-							'type' => 'failure',
-							'filename' => $working_file,
-							'search' => $replace_with
-						);
-						continue;
-					}
-				}
+			// The 'add' parameter is used for all searches in this operation.
+			$add = $operation->exists('add') ? $operation->fetch('add') : '';
 
-				$actions[] = array(
-					'type' => 'append',
-					'filename' => $working_file,
-					'add' => $replace_with
+			// Grab all search items of this operation (in most cases just 1).
+			$searches = $operation->set('search');
+			foreach ($searches as $i => $search)
+				$actual_operation['searches'][] = array(
+					'position' => $search->exists('@position') && in_array(trim($search->fetch('@position')), array('before', 'after', 'replace', 'end')) ? trim($search->fetch('@position')) : 'replace',
+					'is_reg_exp' => $search->exists('@regexp') && trim($search->fetch('@regexp')) === 'true',
+					'loose_whitespace' => $search->exists('@whitespace') && trim($search->fetch('@whitespace')) === 'loose',
+					'search' => $search->fetch('.'),
+					'add' => $add,
+					'preg_search' => '',
+					'preg_replace' => '',
 				);
-			}
-			// Otherwise we will need to look for the search data.
-			else
+
+			// At least one search should be defined.
+			if (empty($actual_operation['searches']))
 			{
-				// Start with what we have....
-				$working_search = '';
-				$replace_with = $operation->exists('add') ? $operation->fetch('add') : '';
+				$actions[] = array(
+					'type' => 'failure',
+					'filename' => $working_file,
+					'search' => $search['search'],
+				);
 
-				// Are we doing a fancy-shmancy regexp search?
-				$regexp = false;
+				// Skip to the next operation.
+				continue;
+			}
 
-				$temp_searches = $operation->set('search');
-				if (count($temp_searches) > 1)
+			// Reverse the operations in case of undoing stuff.
+			if ($undo)
+			{
+				foreach ($actual_operation['searches'] as $i => $search)
 				{
-					// Resort the list so replace comes first - it must.
-					$searches = array();
-					foreach ($temp_searches as $i => $v)
-					{
-						// A quick check on whether it's a regular expression search...
-						if (!$undo && $temp_searches[$i]->exists('@regexp') && trim($temp_searches[$i]->fetch('@regexp')) == 'true')
-							$regexp = true;
 
-						if (!$v->exists('@position') || ($v->fetch('@position') != 'before' && $v->fetch('@position') != 'after'))
-						{
-							$searches[] = $v;
-							unset($temp_searches[$i]);
-						}
+					// Reverse modification of regular expressions are not allowed.
+					if ($search['is_reg_exp'])
+					{
+						if ($actual_operation['error'] === 'fatal')
+							$actions[] = array(
+								'type' => 'failure',
+								'filename' => $working_file,
+								'search' => $search['search'],
+							);
+
+						// Continue to the next operation.
+						continue 2;
 					}
 
-					// Add on the rest, in the order they were in.
-					$searches = array_merge($searches, $temp_searches);
+					// The replacement is now the search subject...
+					if ($search['position'] === 'replace' || $search['position'] === 'end')
+						$actual_operation['searches'][$i]['search'] = $search['add'];
+					else
+					{
+						// Reversing a before/after modification becomes a replacement.
+						$actual_operation['searches'][$i]['position'] = 'replace';
+
+						if ($search['position'] === 'before')
+							$actual_operation['searches'][$i]['search'] .= $search['add'];
+						elseif ($search['position'] === 'after')
+							$actual_operation['searches'][$i]['search'] = $search['add'] . $search['search'];
+					}
+
+					// ...and the search subject is now the replacement.
+					$actual_operation['searches'][$i]['add'] = $search['search'];
 				}
+			}
+
+			// Sort the search list so the replaces come before the add before/after's.
+			if (count($actual_operation['searches']) !== 1)
+			{
+				$replacements = array();
+
+				foreach ($actual_operation['searches'] as $i => $search)
+				{
+					if ($search['position'] === 'replace')
+					{
+						$replacements[] = $search;
+						unset($actual_operation['searches'][$i]);
+					}
+				}
+				$actual_operation['searches'] = array_merge($replacements, $actual_operation['searches']);
+			}
+
+			// Create regular expression replacements from each search.
+			foreach ($actual_operation['searches'] as $i => $search)
+			{
+				// Not much needed if the search subject is already a regexp.
+				if ($search['is_reg_exp'])
+					$actual_operation['searches'][$i]['preg_search'] = $search['search'];
 				else
 				{
-					$searches = $temp_searches;
-					$regexp = !$undo && !empty($searches) && $searches[0]->exists('@regexp') && trim($searches[0]->fetch('@regexp')) == 'true';
+					// Make the search subject fit into a regular expression.
+					$actual_operation['searches'][$i]['preg_search'] = preg_quote($search['search'], '~');
+
+					// Using 'loose', a random amount of tabs and spaces may be used.
+					if ($search['loose_whitespace'])
+						$actual_operation['searches'][$i]['preg_search'] = preg_replace('~[ \t]+~', '[ \t]+', $actual_operation['searches'][$i]['preg_search']);
 				}
 
-				// If we're not using regular expression search, replace out any $'s and \'s!
-				if (!$regexp)
+				// Shuzzup.  This is done so we can safely use a regular expression. ($0 is bad!!)
+				$actual_operation['searches'][$i]['preg_replace'] = strtr($search['add'], array('$' => '[$PACK' . 'AGE1$]', '\\' => '[$PACK' . 'AGE2$]'));
+
+				// Before, so the replacement comes after the search subject :P
+				if ($search['position'] === 'before')
 				{
-					// Shuzzup.  This is done so we can safely use a regular expression. ($0 is bad!!)
-					if (!$undo)
-						$replace_with = strtr($replace_with, array('$' => '[$PACK' . 'AGE1$]', '\\' => '[$PACK' . 'AGE2$]'));
-					else
-						$replace_with = preg_quote($replace_with, '~');
+					$actual_operation['searches'][$i]['preg_search'] = '(' . $actual_operation['searches'][$i]['preg_search'] . ')';
+					$actual_operation['searches'][$i]['preg_replace'] = '$1' . $actual_operation['searches'][$i]['preg_replace'];
 				}
 
-				// Go through all the search conditions.
-				foreach ($searches as $search)
+				// After, after what?
+				elseif ($search['position'] === 'after')
 				{
-					$this_clean_search = $search->fetch('.');
+					$actual_operation['searches'][$i]['preg_search'] = '(' . $actual_operation['searches'][$i]['preg_search'] . ')';
+					$actual_operation['searches'][$i]['preg_replace'] .= '$1';
+				}
 
-					// Are we not using regular expressions explicitly?
-					if (!$regexp)
+				// Position the replacement at the end of the file (or just before the closing PHP tags).
+				elseif ($search['position'] === 'end')
+				{
+					if ($undo)
 					{
-						$this_search = preg_quote($this_clean_search, '~');
-
-						// Remember, can't have whitespace correction and regexp on at the same time.
-						if ($search->exists('@whitespace') && trim($search->fetch('@whitespace')) != 'loose')
-							$this_search = preg_replace('~[ \t]+~', '[ \t]+', $this_search);
-
-						// Shuzzup again.  Read the comment above a few lines where this is done to $replace_with...
-						if ($undo)
-							$working_search = strtr($working_search, array('$' => '[$PACK' . 'AGE1$]', '\\' => '[$PACK' . 'AGE2$]'));
-					}
-					else
-						$this_search = $this_clean_search;
-
-					// Get the position to replace on.
-					$position = $search->exists('@position') ? trim($search->fetch('@position')) : 'replace';
-
-					if ($position == 'before')
-					{
-						if (!$regexp)
-						{
-							if (!$undo)
-							{
-								$working_search = '(' . $this_search . ')' . $working_search;
-								$replace_with = '$1' . $replace_with;
-							}
-							else
-							{
-								$working_search = '$1' . $working_search;
-								$replace_with = '(' . $this_search . ')' . $replace_with;
-							}
-						}
-						else
-						{
-							$working_search = $this_search . $working_search;
-							$replace_with = $this_clean_search . $replace_with;
-						}
-					}
-					elseif ($position == 'after')
-					{
-						if (!$regexp)
-						{
-							if (!$undo)
-							{
-								$working_search = $working_search . '(' . $this_search . ')';
-								$replace_with = $replace_with . '$1';
-							}
-							else
-							{
-								$working_search = $working_search . '$1';
-								$replace_with = $replace_with . '(' . $this_search . ')';
-							}
-						}
-						else
-						{
-							$working_search = $working_search . $this_search;
-							$replace_with = $replace_with . $this_clean_search;
-						}
+						$actual_operation['searches'][$i]['preg_replace'] = '';
 					}
 					else
 					{
-						if (!$undo)
-							$working_search = $this_search;
-						else
-							$working_search = $this_clean_search;
+						$actual_operation['searches'][$i]['preg_search'] = '(\\n\\?\\>)?$';
+						$actual_operation['searches'][$i]['preg_replace'] .= '$1';
 					}
 				}
 
-				if ($undo)
-				{
-					$temp = $replace_with;
-					$replace_with = $working_search;
-					$working_search = $temp;
+				// Testing 1, 2, 3...
+				$failed = preg_match('~' . $actual_operation['searches'][$i]['preg_search'] . '~s', $working_data) === 0;
 
-					// We can't undo this!
-					if (trim($working_search) == '')
-						continue;
-				}
-				elseif ($working_search == '')
-					continue;
-
-				$failed = preg_match('~' . $working_search . '~s', $working_data) == 0;
-				if ($failed && (!$operation->exists('@error') || $operation->fetch('@error') == 'fatal'))
+				// Nope, search pattern not found.
+				if ($failed && $actual_operation['error'] === 'fatal')
 				{
 					$actions[] = array(
 						'type' => 'failure',
 						'filename' => $working_file,
-						'search' => $working_search
-					);
-
-					$everything_found = false;
-					continue;
-				}
-				elseif (!$failed && $operation->exists('@error') && $operation->fetch('@error') == 'required')
-				{
-					$actions[] = array(
-						'type' => 'failure',
-						'filename' => $working_file,
-						'search' => $working_search
+						'search' => $actual_operation['searches'][$i]['preg_search'],
 					);
 
 					$everything_found = false;
 					continue;
 				}
 
-				if ($replace_with == '')
+				// Found, but in this case, that means failure!
+				elseif (!$failed && $actual_operation['error'] === 'required')
+				{
+					$actions[] = array(
+						'type' => 'failure',
+						'filename' => $working_file,
+						'search' => $actual_operation['searches'][$i]['preg_search'],
+					);
+
+					$everything_found = false;
+					continue;
+				}
+
+				// Replace it into nothing? That's not an option...unless it's an undoing end.
+				if ($search['add'] === '' && ($search['position'] !== 'end' || !$undo))
 					continue;
 
-				$working_data = preg_replace('~' . $working_search . '~s', $replace_with, $working_data);
+				// Finally, we're doing some replacements.
+				$working_data = preg_replace('~' . $actual_operation['searches'][$i]['preg_search'] . '~s', $actual_operation['searches'][$i]['preg_replace'], $working_data, 1);
 
 				$actions[] = array(
 					'type' => 'replace',
 					'filename' => $working_file,
-					'search' => $working_search,
-					'replace' => $replace_with
+					'search' => $actual_operation['searches'][$i]['preg_search'],
+					'replace' =>  $actual_operation['searches'][$i]['preg_replace'],
 				);
 			}
 		}
@@ -2861,7 +2850,7 @@ class ftp_connection
 			return false;
 
 		// No slash on the end, please...
-		if (substr($ftp_path, -1) == '/')
+		if ($ftp_path !== '/' && substr($ftp_path, -1) === '/')
 			$ftp_path = substr($ftp_path, 0, -1);
 
 		fwrite($this->connection, 'CWD ' . $ftp_path . "\r\n");

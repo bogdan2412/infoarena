@@ -11,11 +11,18 @@ function modify_topic(topic_id, first_msg_id, cur_session_id)
 		if (typeof(test.setRequestHeader) != "function")
 			return;
 	}
-	cur_topic_id = topic_id;
 
 	if (in_edit_mode == 1)
-		modify_topic_cancel();
+	{
+		if (cur_topic_id == topic_id)
+			return;
+		else
+			modify_topic_cancel();
+	}
+
 	in_edit_mode = 1;
+	mouse_on_div = 1;
+	cur_topic_id = topic_id;
 
 	if (typeof window.ajax_indicator == "function")
 		ajax_indicator(true);
@@ -75,16 +82,22 @@ function modify_topic_done(XMLDoc)
 	}
 
 	var message = XMLDoc.getElementsByTagName("smf")[0].getElementsByTagName("message")[0];
-	var subject = message.getElementsByTagName("subject")[0].childNodes[0].nodeValue;
+	var subject = message.getElementsByTagName("subject")[0];
+	var error = message.getElementsByTagName("error")[0];
 
-	modify_topic_hide_edit(subject);
+	if (typeof window.ajax_indicator == "function")
+		ajax_indicator(false);
+
+	if (!subject || error)
+		return false;
+
+	subjectText = subject.childNodes[0].nodeValue;
+
+	modify_topic_hide_edit(subjectText);
 
 	set_hidden_topic_areas('');
 
 	in_edit_mode = 0;
-
-	if (typeof window.ajax_indicator == "function")
-		ajax_indicator(false);
 
 	return false;
 }

@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1 RC3; Notify
+// Version: 1.1; Notify
 
 function template_main()
 {

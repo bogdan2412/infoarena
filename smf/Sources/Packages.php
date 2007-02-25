@@ -1,25 +1,26 @@
 <?php
-/******************************************************************************
-* Packages.php                                                                *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* Packages.php                                                                    *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1.2                                           *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -294,6 +295,9 @@ function PackageInstallTest()
 
 			continue;
 		}
+		// Don't show redirects.
+		elseif ($action['type'] == 'redirect')
+			continue;
 		elseif ($action['type'] == 'error')
 			$context['has_failure'] = true;
 		elseif ($action['type'] == 'modification')
@@ -334,6 +338,14 @@ function PackageInstallTest()
 						'action' => strtr($mod_action['filename'], array($boarddir => '.')),
 						'description' => $failed ? $txt['package_action_failure'] : $txt['package_action_success']
 					);
+				elseif ($mod_action['type'] == 'skipping')
+				{
+					$context['actions'][] = array(
+						'type' => $txt['package56'],
+						'action' => strtr($mod_action['filename'], array($boarddir => '.')),
+						'description' => $txt['package_action_skipping']
+					);
+				}
 				elseif ($mod_action['type'] == 'missing')
 				{
 					$context['has_failure'] = true;
@@ -906,7 +918,7 @@ function PackageOptions()
 		'url' => $scripturl . '?action=packages;sa=options',
 		'name' => &$txt['package_install_options']
 	);
-	$context['page_title'] = $txt['package_settings'];
+	$context['page_title'] .= ' - ' . $txt['package_settings'];
 	$context['sub_template'] = 'install_options';
 
 	$context['package_ftp_server'] = isset($modSettings['package_server']) ? $modSettings['package_server'] : 'localhost';

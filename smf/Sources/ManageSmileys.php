@@ -1,25 +1,26 @@
 <?php
-/******************************************************************************
-* ManageSmileys.php                                                           *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* ManageSmileys.php                                                               *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1.1                                           *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -201,9 +202,9 @@ function EditSmileySets()
 					unset($set_paths[$id], $set_names[$id]);
 
 			updateSettings(array(
-				'smiley_sets_known' => implode(',', $set_paths),
-				'smiley_sets_names' => implode("\n", $set_names),
-				'smiley_sets_default' => in_array($modSettings['smiley_sets_default'], $set_paths) ? $modSettings['smiley_sets_default'] : $set_paths[0],
+				'smiley_sets_known' => addslashes(implode(',', $set_paths)),
+				'smiley_sets_names' => addslashes(implode("\n", $set_names)),
+				'smiley_sets_default' => addslashes(in_array($modSettings['smiley_sets_default'], $set_paths) ? $modSettings['smiley_sets_default'] : $set_paths[0]),
 			));
 
 			cache_put_data('parsing_smileys', null, 480);
@@ -225,9 +226,9 @@ function EditSmileySets()
 					fatal_lang_error('smiley_set_already_exists');
 
 				updateSettings(array(
-					'smiley_sets_known' => $modSettings['smiley_sets_known'] . ',' . $_POST['smiley_sets_path'],
-					'smiley_sets_names' => $modSettings['smiley_sets_names'] . "\n" . $_POST['smiley_sets_name'],
-					'smiley_sets_default' => empty($_POST['smiley_sets_default']) ? $modSettings['smiley_sets_default'] : $_POST['smiley_sets_path'],
+					'smiley_sets_known' => addslashes($modSettings['smiley_sets_known']) . ',' . $_POST['smiley_sets_path'],
+					'smiley_sets_names' => addslashes($modSettings['smiley_sets_names']) . "\n" . $_POST['smiley_sets_name'],
+					'smiley_sets_default' => empty($_POST['smiley_sets_default']) ? addslashes($modSettings['smiley_sets_default']) : $_POST['smiley_sets_path'],
 				));
 			}
 			// Modify an existing smiley set.
@@ -241,12 +242,12 @@ function EditSmileySets()
 				if (in_array($_POST['smiley_sets_path'], $set_paths) && $_POST['smiley_sets_path'] != $set_paths[$_POST['set']])
 					fatal_lang_error('smiley_set_path_already_used');
 
-				$set_paths[$_POST['set']] = $_POST['smiley_sets_path'];
-				$set_names[$_POST['set']] = $_POST['smiley_sets_name'];
+				$set_paths[$_POST['set']] = stripslashes($_POST['smiley_sets_path']);
+				$set_names[$_POST['set']] = stripslashes($_POST['smiley_sets_name']);
 				updateSettings(array(
-					'smiley_sets_known' => implode(',', $set_paths),
-					'smiley_sets_names' => implode("\n", $set_names),
-					'smiley_sets_default' => empty($_POST['smiley_sets_default']) ? $modSettings['smiley_sets_default'] : $_POST['smiley_sets_path']
+					'smiley_sets_known' => addslashes(implode(',', $set_paths)),
+					'smiley_sets_names' => addslashes(implode("\n", $set_names)),
+					'smiley_sets_default' => empty($_POST['smiley_sets_default']) ? addslashes($modSettings['smiley_sets_default']) : $_POST['smiley_sets_path']
 				));
 			}
 
@@ -435,7 +436,7 @@ function AddSmiley()
 			{
 				$smileyLocation = $context['smileys_dir'] . '/' . $context['smiley_sets'][$i]['path'] . '/' . $destName;
 				move_uploaded_file($_FILES['uploadSmiley']['tmp_name'], $smileyLocation);
-				@chmod($currentPath, 0644);
+				@chmod($smileyLocation, 0644);
 
 				// Now, we want to move it from there to all the other sets.
 				for ($n = count($context['smiley_sets']); $i < $n; $i++)
@@ -924,8 +925,8 @@ function InstallSmileySet()
 		redirectexit('action=smileys');
 
 	updateSettings(array(
-		'smiley_sets_known' => $modSettings['smiley_sets_known'] . ',' . $name,
-		'smiley_sets_names' => $modSettings['smiley_sets_names'] . "\n" . strtok(basename(isset($_FILES['set_gz']) ? $_FILES['set_gz']['name'] : $_REQUEST['set_gz']), '.')
+		'smiley_sets_known' => addslashes($modSettings['smiley_sets_known'] . ',' . $name),
+		'smiley_sets_names' => addslashes($modSettings['smiley_sets_names'] . "\n" . strtok(basename(isset($_FILES['set_gz']) ? $_FILES['set_gz']['name'] : $_REQUEST['set_gz']), '.'))
 	));
 
 	cache_put_data('parsing_smileys', null, 480);
@@ -1085,7 +1086,13 @@ function EditMessageIcons()
 			// Do a huge replace ;)
 			$insert = array();
 			foreach ($context['icons'] as $id => $icon)
+			{
+				// Make sure to escape the other icon titles, however if one is being added it's already escaped.
+				if ($id != 0)
+					$icon['title'] = addslashes($icon['title']);
+
 				$insert[] = "($id, $icon[board_id], SUBSTRING('$icon[title]', 1, 80), SUBSTRING('$icon[filename]', 1, 80), $icon[true_order])";
+			}
 
 			db_query("
 				REPLACE INTO {$db_prefix}message_icons

@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1 RC3; ManageMembergroups
+// Version: 1.1; ManageMembergroups
 
 function template_main()
 {
@@ -20,9 +20,9 @@ function template_main()
 	{
 		echo '
 					<tr>
-						<td class="windowbg2">', empty($group['color']) ? $group['name'] : '<span style="color: ' . $group['color'] . '">' . $group['name'] . '</span>', $group['id'] == 1 ? ' (<a href="' . $scripturl . '?action=helpadmin;help=membergroup_administrator" onclick="return reqWin(this.href);">?</a>)' : ($group['id'] == 3 ? ' (<a href="' . $scripturl . '?action=helpadmin;help=membergroup_moderator" onclick="return reqWin(this.href);">?</a>)' : ''), '</td>
+						<td class="windowbg2">', empty($group['color']) ? ( $group['can_search'] ? $group['link'] : $group['name'] ) : '<span style="color: ' . $group['color'] . '">' . ( $group['can_search'] ? $group['link'] : $group['name']) . '</span>', $group['id'] == 1 ? ' (<a href="' . $scripturl . '?action=helpadmin;help=membergroup_administrator" onclick="return reqWin(this.href);">?</a>)' : ($group['id'] == 3 ? ' (<a href="' . $scripturl . '?action=helpadmin;help=membergroup_moderator" onclick="return reqWin(this.href);">?</a>)' : ''), '</td>
 						<td class="windowbg2" align="left">', $group['stars'], '</td>
-						<td class="windowbg" align="center">', $group['can_search'] ? $group['link'] : $group['num_members'], '</td>
+						<td class="windowbg" align="center">', $group['num_members'], '</td>
 						<td class="windowbg2" align="center"><a href="' . $scripturl . '?action=membergroups;sa=edit;group=' . $group['id'] . '">' . $txt['membergroups_modify'] . '</a></td>
 					</tr>';
 	}
@@ -54,9 +54,9 @@ function template_main()
 	{
 		echo '
 					<tr>
-						<td class="windowbg2">', empty($group['color']) ? $group['name'] : '<span style="color: ' . $group['color'] . '">' . $group['name'] . '</span>', '</td>
+						<td class="windowbg2">', empty($group['color']) ? ($group['can_search'] ? $group['link'] : $group['name']) : '<span style="color: ' . $group['color'] . '">' . ($group['can_search'] ? $group['link'] : $group['name']) . '</span>', '</td>
 						<td class="windowbg2" align="left">', $group['stars'], '</td>
-						<td class="windowbg" align="center">', $group['can_search'] ? $group['link'] : $group['num_members'], '</td>
+						<td class="windowbg" align="center">', $group['num_members'], '</td>
 						<td class="windowbg" align="center">', $group['min_posts'], '</td>
 						<td class="windowbg2" align="center"><a href="' . $scripturl . '?action=membergroups;sa=edit;group=' . $group['id'] . '">' . $txt['membergroups_modify'] . '</a></td>
 					</tr>';

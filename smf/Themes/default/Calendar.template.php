@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1 RC3; Calendar
+// Version: 1.1; Calendar
 
 // The main calendar - January, for example.
 function template_main()
@@ -317,7 +317,7 @@ function template_event_post()
 							<tr>
 								<td align="right"><b>', $txt['calendar13'], '</b></td>
 								<td class="smalltext">
-									<select id="board" onchange="this.form.submit();">';
+									<select id="board" name="board" onchange="this.form.submit();">';
 
 		foreach ($context['event']['boards'] as $board)
 			echo '

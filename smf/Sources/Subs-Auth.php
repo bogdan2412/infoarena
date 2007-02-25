@@ -1,25 +1,26 @@
 <?php
-/******************************************************************************
-* Subs-Auth.php                                                               *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* Subs-Auth.php                                                                   *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1                                             *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -75,8 +76,8 @@ if (!defined('SMF'))
 
 	array findMembers(array names, bool use_wildcards = false,
 			bool buddies_only = false, int max = none)
-		- searches members of whom the username, display name, or e-mail adress
-		  match the given pattern of the array names.
+		- searches for members whose username, display name, or e-mail address 
+		  match the given pattern of array names.
 		- accepts wildcards ? and * in the patern if use_wildcards is set.
 		- retrieves a maximum of max members, if passed.
 		- searches only buddies if buddies_only is set.
@@ -461,10 +462,10 @@ function JSMembers()
 		$_REQUEST['start'] = 0;
 
 	// Allow the user to pass the input to be added to to the box.
-	$context['input_box_name'] = isset($_REQUEST['input']) ? $_REQUEST['input'] : 'to';
+	$context['input_box_name'] = isset($_REQUEST['input']) && preg_match('~^[\w-]+$~', $_REQUEST['input']) === 1 ? $_REQUEST['input'] : 'to';
 
 	// Take the delimiter over GET in case it's \n or something.
-	$context['delimiter'] = isset($_REQUEST['delim']) ? stripslashes($_REQUEST['delim']) : ', ';
+	$context['delimiter'] = isset($_REQUEST['delim']) ? $func['htmlspecialchars'](stripslashes($_REQUEST['delim'])) : ', ';
 	$context['quote_results'] = !empty($_REQUEST['quote']);
 
 	// List all the results.
@@ -482,7 +483,7 @@ function JSMembers()
 		$context['results'] = findMembers(array($_REQUEST['search']), true, $context['buddy_search']);
 		$total_results = count($context['results']);
 
-		$context['page_index'] = constructPageIndex($scripturl . '?action=findmember;search=' . $context['last_search'] . ';sesc=' . $context['session_id'] . ';input=' . $context['input_box_name'] . ($context['quote_results'] ? ';quote=1' : '') . ($context['buddy_search'] ? ';buddy' : ''), $_REQUEST['start'], $total_results, 7);
+		$context['page_index'] = constructPageIndex($scripturl . '?action=findmember;search=' . $context['last_search'] . ';sesc=' . $context['session_id'] . ';input=' . $context['input_box_name'] . ($context['quote_results'] ? ';quote=1' : '') . ($context['buddy_search'] ? ';buddies' : ''), $_REQUEST['start'], $total_results, 7);
 
 		// Determine the navigation context (especially useful for the wireless template).
 		$base_url = $scripturl . '?action=findmember;search=' . urlencode($context['last_search']) . (empty($_REQUEST['u']) ? '' : ';u=' . $_REQUEST['u']) . ';sesc=' . $context['session_id'];
@@ -560,7 +561,7 @@ function RequestMembers()
 // This function generates a random password for a user and emails it to them.
 function resetPassword($memID, $username = null)
 {
-	global $db_prefix, $scripturl, $context, $txt, $sourcedir;
+	global $db_prefix, $scripturl, $context, $txt, $sourcedir, $modSettings;
 
 	// Language... and a required file.
 	loadLanguage('Login');

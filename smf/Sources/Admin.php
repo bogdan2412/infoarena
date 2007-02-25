@@ -1,25 +1,26 @@
 <?php
-/******************************************************************************
-* Admin.php                                                                   *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* Admin.php                                                                       *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1                                             *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -79,6 +80,9 @@ if (!defined('SMF'))
 		- loads the view_versions sub template (in the Admin template.)
 		- accessed through ?action=detailedversion.
 
+	void ManageCopyright()
+		// !!!
+
 	void CleanupPermissions()
 		- cleans up file permissions, in the hopes of making things work
 		  smoother and potentially more securely.
@@ -117,8 +121,11 @@ if (!defined('SMF'))
 // The main administration section.
 function Admin()
 {
-	global $sourcedir, $db_prefix, $forum_version, $txt, $scripturl, $context;
-	global $user_info, $_PHPA;
+	global $sourcedir, $db_prefix, $forum_version, $txt, $scripturl, $context, $modSettings;
+	global $user_info, $_PHPA, $boardurl;
+
+	if (isset($_GET['area']) && $_GET['area'] == 'copyright')
+		return ManageCopyright();
 
 	// You have to be able to do at least one of the below to see this page.
 	isAllowedTo(array('admin_forum', 'manage_permissions', 'moderate_forum', 'manage_membergroups', 'manage_bans', 'send_mail', 'edit_news', 'manage_boards', 'manage_smileys', 'manage_attachments'));
@@ -150,14 +157,68 @@ function Admin()
 <i>Simple Machines wants to thank everyone who helped make SMF 1.1 what it is today; shaping and directing our project, all through the thick and the thin. It wouldn\'t have been possible without you.</i><br />
 <div style="margin-top: 1ex;"><i>This includes our users and especially Charter Members - thanks for installing and using our software as well as providing valuable feedback, bug reports, and opinions.</i></div>
 <div style="margin-top: 2ex;"><b>Project Managers:</b> Amacythe, David Recordon, Joseph Fung, and Jeff Lewis.</div>
-<div style="margin-top: 1ex;"><b>Developers:</b> Hendrik Jan &quot;Compuart&quot; Visser, Matt &quot;Grudge&quot; Wolf, Michael "Thantos" Miller, Theodore "Orstio" Hildebrandt, and Unknown W. &quot;[Unknown]&quot; Brackets</div>
-<div style="margin-top: 1ex;"><b>Support Specialists:</b> Ben Scott, Michael &quot;Oldiesmann&quot; Eshom, A&auml;ron van Geffen, Alexandre "Ap2" Patenaude, Andrea Hubacher, Chris Cromer, [darksteel], dtm.exe, Fizzy, Horseman, Huw Ayling-Miller, Jan "Owdy" Eriksson, jerm, Juan "JayBachatero" Hernandez, Justyne, Killer Possum, Kindred, Matthew "Mattitude" Hall, Mediman, Metho, Omar Bazavilvazo, Pitti, redone, Tomer "Lamper" Dean, and xenovanis.</div>
-<div style="margin-top: 1ex;"><b>Mod Developers:</b> snork13, Cristi&aacute;n "Anguz" L&aacute;vaque, Goosemoose, Jack.R.Abbit, James "Cheschire" Yarbro, Jesse "Gobalopper" Reid, Kirby, and vbgamer45.</div>
-<div style="margin-top: 1ex;"><b>Documentation Writers:</b> akabugeyes, eldacar, Jerry, Nave, Matthew "Mattitude" Hall, and Trekkie101.</div>
+<div style="margin-top: 1ex;"><b>Developers:</b> Hendrik Jan &quot;Compuart&quot; Visser, Matt &quot;Grudge&quot; Wolf, Michael &quot;Thantos&quot; Miller, Theodore &quot;Orstio&quot; Hildebrandt, and Unknown W. &quot;[Unknown]&quot; Brackets</div>
+<div style="margin-top: 1ex;"><b>Support Specialists:</b> Ben Scott, Michael &quot;Oldiesmann&quot; Eshom, Jan-Olof &quot;Owdy&quot; Eriksson, A&auml;ron van Geffen, Alexandre &quot;Ap2&quot; Patenaude, Andrea Hubacher, Chris Cromer, [darksteel], dtm.exe, Nick &quot;Fizzy&quot; Dyer, Horseman, Huw Ayling-Miller, jerm, Justyne, kegobeer, Kindred, Matthew &quot;Mattitude&quot; Hall, Mediman, Metho, Omar Bazavilvazo, Pitti, redone, Tomer &quot;Lamper&quot; Dean, Tony, and xenovanis.</div>
+<div style="margin-top: 1ex;"><b>Mod Developers:</b> snork13, Cristi&aacute;n &quot;Anguz&quot; L&aacute;vaque, Goosemoose, Jack.R.Abbit, James &quot;Cheschire&quot; Yarbro, Jesse &quot;Gobalopper&quot; Reid, Juan &quot;JayBachatero&quot; Hernandez, Kirby, vbgamer45, and winrules.</div>
+<div style="margin-top: 1ex;"><b>Documentation Writers:</b> akabugeyes, eldacar, Gary M. &quot;AwwLilMaggie&quot; Gadsdon, Jerry, and Nave.</div>
 <div style="margin-top: 1ex;"><b>Language Coordinators:</b> Daniel Diehl and Adam &quot;Bostasp&quot; Southall.</div>
-<div style="margin-top: 1ex;"><b>Graphic Designers:</b> Bjoern "Bloc" Kristiansen, Alienine (Adrian), A.M.A, babylonking, BlackouT, Burpee, diplomat, Eren "forsakenlad" Yasarkurt, Hyper Piranha, Killer Possum, Mystica, Nico "aliencowfarm" Boer, Philip "Meriadoc" Renich and Tippmaster.</div>
-<div style="margin-top: 1ex;"><b>Site team:</b> Douglas, dschwab9, and Tim.</div>
+<div style="margin-top: 1ex;"><b>Graphic Designers:</b> Bjoern &quot;Bloc&quot; Kristiansen, Alienine (Adrian), A.M.A, babylonking, BlackouT, Burpee, diplomat, Eren &quot;forsakenlad&quot; Yasarkurt, Hyper Piranha, Killer Possum, Mystica, Nico &quot;aliencowfarm&quot; Boer, Philip &quot;Meriadoc&quot; Renich and Tippmaster.</div>
+<div style="margin-top: 1ex;"><b>Site team:</b> dschwab9 and Tim.</div>
+<div style="margin-top: 1ex;"><b>Marketing:</b> Douglas &quot;The Bear&quot; Hazard, RickC and Trekkie101.</div>
 <div style="margin-top: 1ex;">And for anyone we may have missed, thank you!</div>';
+
+	// Copyright?
+	if (!empty($modSettings['copy_settings']) || !empty($modSettings['copyright_key']))
+	{
+		if (empty($modSettings['copy_settings']))
+			$modSettings['copy_settings'] = 'a,0';
+
+		// Not done it yet...
+		if (empty($_SESSION['copy_expire']))
+		{
+			list ($key, $expires) = explode(',', $modSettings['copy_settings']);
+			// Get the expired date.
+			$fp = @fsockopen("www.simplemachines.org", 80, $errno, $errstr, 1);
+			if ($fp)
+			{
+				$out = "GET /smf/copyright/check_copyright.php?site=" . base64_encode($boardurl) . "&key=" . $key . "&version=" . base64_encode($forum_version) . " HTTP/1.1\r\n";
+				$out .= "Host: www.simplemachines.org\r\n";
+				$out .= "Connection: Close\r\n\r\n";
+				fwrite($fp, $out);
+
+				$return_data = '';
+				while (!feof($fp))
+					$return_data .= fgets($fp, 128);
+				fclose($fp);
+
+				// Get the expire date.
+				$return_data = substr($return_data, strpos($return_data, 'STARTCOPY') + 9);
+				$return_data = trim(substr($return_data, 0, strpos($return_data, 'ENDCOPY')));
+
+				if ($return_data != 'void')
+				{
+					list ($_SESSION['copy_expire'], $modSettings['copyright_key']) = explode('|', $return_data);
+					$_SESSION['copy_key'] = $key;
+					$modSettings['copy_settings'] = $key . ',' . (int) $return_data;
+					updateSettings(array('copy_settings' => $modSettings['copy_settings'], 'copyright_key' => $modSettings['copyright_key']));
+				}
+				else
+				{
+					$_SESSION['copy_expire'] = '';
+					db_query("
+						DELETE FROM {$db_prefix}settings
+						WHERE variable = 'copy_settings'
+							OR variable = 'copyright_key'", __FILE__, __LINE__);
+				}
+			}
+		}
+
+		if ($_SESSION['copy_expire'] && $_SESSION['copy_expire'] > time())
+		{
+			$context['copyright_expires'] = (int) (($_SESSION['copy_expire'] - time()) / 3600 / 24);
+			$context['copyright_key'] = $_SESSION['copy_key'];
+		}
+	}
 
 	// This makes it easier to get the latest news with your time format.
 	$context['time_format'] = urlencode($user_info['time_format']);
@@ -271,7 +332,7 @@ function OptimizeTables()
 			SHOW TABLES
 			FROM `$db_name`", __FILE__, __LINE__);
 		while ($table = mysql_fetch_row($result))
-			$tables[] = array('table_name' => $row[0]);
+			$tables[] = array('table_name' => $table[0]);
 		mysql_free_result($result);
 	}
 	else
@@ -736,6 +797,59 @@ function VersionDetail()
 	$context['page_title'] = $txt[429];
 }
 
+// Allow users to remove their copyright.
+function ManageCopyright()
+{
+	global $forum_version, $txt, $sourcedir, $context, $boardurl, $modSettings;
+
+	isAllowedTo('admin_forum');
+
+	if (isset($_POST['copy_code']))
+	{
+		checkSession('post');
+
+		$_POST['copy_code'] = urlencode($_POST['copy_code']);
+
+		// Check the actual code.
+		$fp = @fsockopen("www.simplemachines.org", 80, $errno, $errstr);
+		if ($fp)
+		{
+			$out = "GET /smf/copyright/check_copyright.php?site=" . base64_encode($boardurl) . "&key=" . $_POST['copy_code'] . "&version=" . base64_encode($forum_version) . " HTTP/1.1\r\n";
+			$out .= "Host: www.simplemachines.org\r\n";
+			$out .= "Connection: Close\r\n\r\n";
+			fwrite($fp, $out);
+
+			$return_data = '';
+			while (!feof($fp))
+				$return_data .= fgets($fp, 128);
+			fclose($fp);
+
+			// Get the data back
+			$return_data = substr($return_data, strpos($return_data, 'STARTCOPY') + 9);
+			$return_data = trim(substr($return_data, 0, strpos($return_data, 'ENDCOPY')));
+
+			if ($return_data != 'void')
+			{
+				echo $return_data;
+				list ($_SESSION['copy_expire'], $modSettings['copyright_key']) = explode('|', $return_data);
+				$_SESSION['copy_key'] = $key;
+				$modSettings['copy_settings'] = $key . ',' . (int) $return_data;
+				updateSettings(array('copy_settings' => $modSettings['copy_settings'], 'copyright_key' => $modSettings['copyright_key']));
+				redirectexit('action=admin');
+			}
+			else
+			{
+				fatal_lang_error('copyright_failed');
+			}
+		}
+	}
+
+	adminIndex('index');
+
+	$context['sub_template'] = 'manage_copyright';
+	$context['page_title'] = $txt['copyright_removal'];
+}
+
 // Clean up the permissions one way or another.
 function CleanupPermissions()
 {
@@ -1027,7 +1141,7 @@ function ConvertUtf8()
 		loadLanguage('index', $user_info['language'], true);
 
 		// Show a warning if the character set seems not to be supported.
-		if (!isset($charsets[$context['charset_detected']]))
+		if (!isset($charsets[strtr(strtolower($context['charset_detected']), array('utf' => 'UTF', 'iso' => 'ISO'))]))
 		{
 			$context['charset_warning'] = sprintf($txt['utf8_charset_not_supported'], $txt['lang_character_set']);
 

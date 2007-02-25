@@ -1,25 +1,26 @@
 <?php
-/******************************************************************************
-* Search.php                                                                  *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* Search.php                                                                      *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1.2                                           *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -94,6 +95,15 @@ function PlushSearch1()
 		$context['search_params']['search'] = htmlspecialchars($context['search_params']['search']);
 	if (isset($context['search_params']['userspec']))
 		$context['search_params']['userspec'] = htmlspecialchars(stripslashes($context['search_params']['userspec']));
+	if (!empty($context['search_params']['searchtype']))
+		$context['search_params']['searchtype'] = 2;
+	if (!empty($context['search_params']['minage']))
+		$context['search_params']['minage'] = (int) $context['search_params']['minage'];
+	if (!empty($context['search_params']['maxage']))
+		$context['search_params']['maxage'] = (int) $context['search_params']['maxage'];
+
+	$context['search_params']['show_complete'] = !empty($context['search_params']['show_complete']);
+	$context['search_params']['subject_only'] = !empty($context['search_params']['subject_only']);
 
 	// Load the error text strings if there were errors in the search.
 	if (!empty($context['search_errors']))
@@ -347,7 +357,7 @@ function PlushSearch2()
 	}
 
 	// Default the user name to a wildcard matching every user (*).
-	if (!empty($search_params['user_spec']) || (!empty($_REQUEST['userspec']) && $_REQUEST['userspec'] != '*'))
+	if (!empty($search_params['userspec']) || (!empty($_REQUEST['userspec']) && $_REQUEST['userspec'] != '*'))
 		$search_params['userspec'] = isset($search_params['userspec']) ? $search_params['userspec'] : $_REQUEST['userspec'];
 
 	// If there's no specific user, then don't mention it in the main query.
@@ -479,7 +489,7 @@ function PlushSearch2()
 	$search_params['sort_dir'] = !empty($search_params['sort_dir']) && $search_params['sort_dir'] == 'asc' ? 'asc' : 'desc';
 
 	// Determine some values needed to calculate the relevance.
-	$minMsg = (int) (1 - $recentPercentage) * $modSettings['maxMsgID'];
+	$minMsg = (int) ((1 - $recentPercentage) * $modSettings['maxMsgID']);
 	$recentMsg = $modSettings['maxMsgID'] - $minMsg;
 
 
@@ -506,7 +516,7 @@ function PlushSearch2()
 		$context['search_errors']['invalid_search_string'] = true;
 
 	// Change non-word characters into spaces.
-	$stripped_query = preg_replace('~([\x0B\0' . ($context['utf8'] ? '\x{C2A0}' : '\xA0') . '\t\r\s\n(){}\\[\\]<>!@$%^*.,:+=`\~\?/\\\\]|&(amp|lt|gt|quot);)+~' . ($context['utf8'] ? 'u' : ''), ' ', $search_params['search']);
+	$stripped_query = preg_replace('~([\x0B\0' . ($context['utf8'] ? ($context['server']['complex_preg_chars'] ? '\x{A0}' : pack('C*', 0xC2, 0xA0)) : '\xA0') . '\t\r\s\n(){}\\[\\]<>!@$%^*.,:+=`\~\?/\\\\]|&(amp|lt|gt|quot);)+~' . ($context['utf8'] ? 'u' : ''), ' ', $search_params['search']);
 
 	// Make the query lower case. It's gonna be case insensitive anyway.
 	$stripped_query = un_htmlspecialchars($func['strtolower']($stripped_query));
@@ -996,7 +1006,7 @@ function PlushSearch2()
 					DROP TABLE IF EXISTS {$db_prefix}tmp_log_search_topics", __FILE__, __LINE__);
 				$createTemporary = db_query("
 					CREATE TEMPORARY TABLE {$db_prefix}tmp_log_search_topics (
-						ID_TOPIC mediumint(9) NOT NULL default '0',
+						ID_TOPIC mediumint(8) unsigned NOT NULL default '0',
 						PRIMARY KEY (ID_TOPIC)
 					) TYPE=HEAP", false, false) !== false;
 
@@ -1105,7 +1115,7 @@ function PlushSearch2()
 
 				$createTemporary = db_query("
 					CREATE TEMPORARY TABLE {$db_prefix}tmp_log_search_messages (
-						ID_MSG mediumint(9) NOT NULL default '0',
+						ID_MSG int(10) unsigned NOT NULL default '0',
 						PRIMARY KEY (ID_MSG)
 					) TYPE=HEAP", false, false) !== false;
 
@@ -1310,7 +1320,7 @@ function PlushSearch2()
 				foreach ($main_query['weights'] as $type => $value)
 				{
 					$relevance .= $weight[$type] . ' * ' . $value . ' + ';
-					$new_weight_total += $weight[$weight_factor];
+					$new_weight_total += $weight[$type];
 				}
 				$main_query['select']['relevance'] = substr($relevance, 0, -3) . ") / $new_weight_total AS relevance";
 
@@ -1332,7 +1342,7 @@ function PlushSearch2()
 			}
 
 			// Insert subject-only matches.
-			elseif ($_SESSION['search_cache']['num_results'] < $modSettings['search_max_results'] && $numSubjectResults !== 0)
+			if ($_SESSION['search_cache']['num_results'] < $modSettings['search_max_results'] && $numSubjectResults !== 0)
 			{
 				db_query("
 					INSERT IGNORE INTO {$db_prefix}log_search_results
@@ -1353,9 +1363,9 @@ function PlushSearch2()
 					WHERE lst.ID_TOPIC = t.ID_TOPIC" . (empty($modSettings['search_max_results']) ? '' : "
 					LIMIT " . ($modSettings['search_max_results'] - $_SESSION['search_cache']['num_results'])), __FILE__, __LINE__);
 
-				$_SESSION['search_cache']['num_results'] = db_affected_rows();
+				$_SESSION['search_cache']['num_results'] += db_affected_rows();
 			}
-			else
+			elseif ($_SESSION['search_cache']['num_results'] == -1)
 				$_SESSION['search_cache']['num_results'] = 0;
 		}
 	}
@@ -1628,7 +1638,7 @@ function prepareSearchContext($reset = false)
 		'is_poll' => $modSettings['pollMode'] == '1' && $message['ID_POLL'] > 0,
 		'is_hot' => $message['numReplies'] >= $modSettings['hotTopicPosts'],
 		'is_very_hot' => $message['numReplies'] >= $modSettings['hotTopicVeryPosts'],
-		'posted_in' => $participants[$message['ID_TOPIC']],
+		'posted_in' => !empty($participants[$message['ID_TOPIC']]),
 		'views' => $message['numViews'],
 		'replies' => $message['numReplies'],
 		'can_reply' => in_array($message['ID_BOARD'], $boards_can['post_reply_any']) || in_array(0, $boards_can['post_reply_any']),

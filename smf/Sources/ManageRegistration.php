@@ -1,25 +1,26 @@
 <?php
-/******************************************************************************
-* ManageRegistration.php                                                      *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* ManageRegistration.php                                                          *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1.2                                           *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -155,7 +156,7 @@ function AdminRegister()
 			'email' => $_POST['email'],
 			'password' => $_POST['password'],
 			'password_check' => $_POST['password'],
-			'check_reserved_name' => false,
+			'check_reserved_name' => true,
 			'check_password_strength' => false,
 			'check_email_ban' => false,
 			'send_welcome_email' => isset($_POST['emailPassword']),
@@ -283,7 +284,7 @@ function AdminSettings()
 			'notify_new_registration' => isset($_POST['notify_new_registration']) ? 1 : 0,
 			'send_welcomeEmail' => isset($_POST['send_welcomeEmail']) ? 1 : 0,
 			'password_strength' => (int) $_POST['password_strength'],
-			'disable_visual_verification' => isset($_POST['disable_visual_verification']) ? 1 : 0,
+			'disable_visual_verification' => isset($_POST['visual_verification_type']) ? (int) $_POST['visual_verification_type'] : 0,
 			'coppaAge' => (int) $_POST['coppaAge'],
 			'coppaType' => empty($_POST['coppaType']) ? 0 : (int) $_POST['coppaType'],
 			'coppaPost' => $_POST['coppaPost'],
@@ -297,6 +298,15 @@ function AdminSettings()
 
 	// Turn the postal address into something suitable for a textbox.
 	$context['coppaPost'] = !empty($modSettings['coppaPost']) ? preg_replace('~<br(?: /)?' . '>~', "\n", $modSettings['coppaPost']) : '';
+
+	// Generate a sample registration image.
+	$context['use_graphic_library'] = in_array('gd', get_loaded_extensions());
+	$context['verificiation_image_href'] = $scripturl . '?action=verificationcode;rand=' . md5(rand());
+
+	$character_range = array_merge(range('A', 'H'), array('K', 'M', 'N', 'P'), range('R', 'Z'));
+	$_SESSION['visual_verification_code'] = '';
+	for ($i = 0; $i < 5; $i++)
+		$_SESSION['visual_verification_code'] .= $character_range[array_rand($character_range)];
 }
 
 ?>

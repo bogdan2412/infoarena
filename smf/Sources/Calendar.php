@@ -1,27 +1,28 @@
 <?php
-/******************************************************************************
-* Calendar.php                                                                *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
-/* Original module by Aaron O'Neil - aaron@mud-master.com                     *
-******************************************************************************/
+/**********************************************************************************
+* Calendar.php                                                                    *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1                                             *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+***********************************************************************************
+* Original module by Aaron O'Neil - aaron@mud-master.com                          *
+***********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -82,7 +83,12 @@ if (!defined('SMF'))
 		  link this topic to the calendar.
 
 	void CalendarPost()
-		// !!
+		- processes posting/editing/deleting a calendar event.
+		- calls Post() function if event is linked to a post.
+		- calls calendarInsertEvent() to insert the event if not linked to post.
+		- requires the calendar_post permission to use.
+		- uses the event_post sub template in the Calendar template.
+		- is accessed with ?action=calendar;sa=post.
 */
 
 // Show the calendar.
@@ -351,8 +357,15 @@ function calendarEventArray($low_date, $high_date, $use_permissions = true)
 		$endDate = sscanf($row['endDate'], '%04d-%02d-%02d');
 		$endDate = min(mktime(0, 0, 0, $endDate[1], $endDate[2], $endDate[0]), $high_date_time);
 
+		$lastDate = '';
 		for ($date = $startDate; $date <= $endDate; $date += 86400)
 		{
+			// Attempt to avoid DST problems.
+			//!!! Resolve this properly at some point.
+			if (strftime('%Y-%m-%d', $date) == $lastDate)
+				$date += 3601;
+			$lastDate = strftime('%Y-%m-%d', $date);
+
 			// If we're using permissions (calendar pages?) then just ouput normal contextual style information.
 			if ($use_permissions)
 				$events[strftime('%Y-%m-%d', $date)][] = array(
@@ -580,7 +593,7 @@ function CalendarPost()
 
 		$context['event'] = array(
 			'boards' => array(),
-			'board' => 0,
+			'board' => !empty($modSettings['cal_defaultboard']) ? $modSettings['cal_defaultboard'] : 0,
 			'new' => 1,
 			'eventid' => -1,
 			'year' => isset($_REQUEST['year']) ? $_REQUEST['year'] : $today['year'],

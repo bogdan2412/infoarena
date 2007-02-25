@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1 RC3; Search
+// Version: 1.1.1; Search
 
 function template_main()
 {
@@ -70,7 +70,7 @@ function template_main()
 					</tr>';
 		echo '
 					</table><br /><br />
-					<a href="', $scripturl, '?action=search;advanced" onclick="this.href += \';search=\' + document.searchform.search.value;">', $txt['smf298'], '</a>
+					<a href="', $scripturl, '?action=search;advanced" onclick="this.href += \';search=\' + escape(document.searchform.search.value);">', $txt['smf298'], '</a>
 					<input type="hidden" name="advanced" value="0" />';
 	}
 	else
@@ -88,6 +88,31 @@ function template_main()
 						</tr><tr>
 							<td>
 								<input type="text" name="search"', !empty($context['search_params']['search']) ? ' value="' . $context['search_params']['search'] . '"' : '', ' size="40" />
+								<script language="JavaScript" type="text/javascript"><!-- // --><![CDATA[
+									if (typeof(window.addEventListener) == "undefined")
+									{
+										if (window.attachEvent)
+										{
+											window.addEventListener = function (sEvent, funcHandler, bCapture)
+											{
+												window.attachEvent("on" + sEvent, funcHandler);
+											}
+										}
+										else
+										{
+											window.addEventListener = function (sEvent, funcHandler, bCapture) 
+											{
+												window["on" + sEvent] = funcHandler;
+											}
+										}
+									}
+									function initSearch()
+									{
+										if (document.forms.searchform.search.value.indexOf("%u") != -1)
+											document.forms.searchform.search.value = unescape(document.forms.searchform.search.value);
+									}
+									window.addEventListener("load", initSearch, false);
+								// ]]></script>
 							</td><td style="padding-right: 2ex;">
 								<select name="searchtype">
 									<option value="1"', empty($context['search_params']['searchtype']) ? ' selected="selected"' : '', '>', $txt[343], '</option>
@@ -106,11 +131,11 @@ function template_main()
 		echo '
 						<tr>
 							<td colspan="3"><br />
-								<div style="text-align: left; width: 50%; float: right; margin-right: 2ex;">
+								<div style="text-align: left; width: 45%; float: right; margin-right: 2ex;">
 									<div class="small_header" style="margin-bottom: 2px;"><b>', $txt['search_post_age'], ': </b></div><br />
 									', $txt['search_between'], ' <input type="text" name="minage" value="', empty($context['search_params']['minage']) ? '0' : $context['search_params']['minage'], '" size="5" maxlength="5" />&nbsp;', $txt['search_and'], '&nbsp;<input type="text" name="maxage" value="', empty($context['search_params']['maxage']) ? '9999' : $context['search_params']['maxage'], '" size="5" maxlength="5" /> ', $txt[579], '.
 								</div>
-								<div style="width: 50%;">
+								<div style="width: 45%;">
 									<div class="small_header" style="margin-bottom: 2px;"><b>', $txt['search_options'], ':</b></div>
 									<label for="show_complete"><input type="checkbox" name="show_complete" id="show_complete" value="1"', !empty($context['search_params']['show_complete']) ? ' checked="checked"' : '', ' class="check" /> ', $txt['search_show_complete_messages'], '</label><br />
 									<label for="subject_only"><input type="checkbox" name="subject_only" id="subject_only" value="1"', !empty($context['search_params']['subject_only']) ? ' checked="checked"' : '', ' class="check" /> ', $txt['search_subject_only'], '</label>

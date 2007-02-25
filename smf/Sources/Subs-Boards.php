@@ -1,25 +1,26 @@
 <?php
-/******************************************************************************
-* Subs-Boards.php                                                             *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* Subs-Boards.php                                                                 *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1                                             *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -790,7 +791,7 @@ function QuickModeration()
 // In-topic quick moderation.
 function QuickModeration2()
 {
-	global $sourcedir, $db_prefix, $topic, $board, $ID_MEMBER;
+	global $sourcedir, $db_prefix, $topic, $board, $ID_MEMBER, $modSettings;
 
 	// Check the session = get or post.
 	checkSession('request');
@@ -1159,7 +1160,7 @@ function createBoard($boardOptions)
 // Remove one or more boards.
 function deleteBoards($boards_to_remove, $moveChildrenTo = null)
 {
-	global $db_prefix, $sourcedir, $boards;
+	global $db_prefix, $sourcedir, $boards, $modSettings;
 
 	// No boards to delete? Return!
 	if (empty($boards_to_remove))
@@ -1246,6 +1247,10 @@ function deleteBoards($boards_to_remove, $moveChildrenTo = null)
 	updateStats('message');
 	updateStats('topic');
 	updateStats('calendar');
+
+	// Did they by chance delete the recycle board?  If so deal with that!
+	if (!empty($modSettings['recycle_board']) && in_array($modSettings['recycle_board'], $boards_to_remove))
+		updateSettings(array('recycle_board' => 0, 'recycle_enable' => 0));
 
 	reorderBoards();
 }

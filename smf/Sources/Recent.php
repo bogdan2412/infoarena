@@ -1,25 +1,26 @@
 <?php
-/******************************************************************************
-* Recent.php                                                                  *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* Recent.php                                                                      *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1                                             *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -203,7 +204,7 @@ function RecentPosts()
 		mysql_free_result($request);
 
 		if (empty($boards))
-			fatal_lang_error('error_no_boards_selected');
+			fatal_lang_error('error_no_boards_selected', false);
 
 		$query_this_board = 'b.ID_BOARD IN (' . implode(', ', $boards) . ')';
 
@@ -236,7 +237,7 @@ function RecentPosts()
 		mysql_free_result($request);
 
 		if (empty($boards))
-			fatal_lang_error('error_no_boards_selected');
+			fatal_lang_error('error_no_boards_selected', false);
 
 		$query_this_board = 'b.ID_BOARD IN (' . implode(', ', $boards) . ')';
 
@@ -496,6 +497,9 @@ function UnreadTopics()
 			$boards[] = $row['ID_BOARD'];
 		mysql_free_result($request);
 
+		if (empty($boards))
+			fatal_lang_error('error_no_boards_selected');
+
 		$query_this_board = 'ID_BOARD IN (' . implode(', ', $boards) . ')';
 		$context['querystring_board_limits'] = ';c=' . implode(',', $_REQUEST['c']) . ';start=%d';
 	}
@@ -511,6 +515,9 @@ function UnreadTopics()
 		while ($row = mysql_fetch_assoc($request))
 			$boards[] = $row['ID_BOARD'];
 		mysql_free_result($request);
+
+		if (empty($boards))
+			fatal_lang_error('error_no_boards_selected');
 
 		$query_this_board = 'ID_BOARD IN (' . implode(', ', $boards) . ')';
 		$context['querystring_board_limits'] = ';start=%d';
@@ -726,7 +733,7 @@ function UnreadTopics()
 				LEFT JOIN {$db_prefix}log_mark_read AS lmr ON (lmr.ID_BOARD = t.ID_BOARD AND lmr.ID_MEMBER = $ID_MEMBER)
 			WHERE t.ID_TOPIC = ms.ID_TOPIC
 				AND b.ID_BOARD = t.ID_BOARD
-				AND b.$query_this_board
+				AND t.$query_this_board
 				AND ms.ID_MSG = t.ID_FIRST_MSG
 				AND ml.ID_MSG = t.ID_LAST_MSG
 				AND t.ID_LAST_MSG >= $min_message
@@ -787,7 +794,7 @@ function UnreadTopics()
 				LEFT JOIN {$db_prefix}log_mark_read AS lmr ON (lmr.ID_BOARD = t.ID_BOARD AND lmr.ID_MEMBER = $ID_MEMBER)
 			WHERE t.ID_TOPIC = ms.ID_TOPIC
 				AND b.ID_BOARD = t.ID_BOARD
-				AND b.$query_this_board
+				AND t.$query_this_board
 				AND ms.ID_MSG = t.ID_FIRST_MSG
 				AND ml.ID_MSG = t.ID_LAST_MSG
 				AND t.ID_LAST_MSG >= $min_message

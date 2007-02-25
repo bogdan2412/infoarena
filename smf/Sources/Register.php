@@ -1,25 +1,26 @@
 <?php
-/******************************************************************************
-* Register.php                                                                *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* Register.php                                                                    *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1.2                                           *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -114,7 +115,7 @@ function Register()
 	}
 
 	// Generate a visual verification code to make sure the user is no bot.
-	$context['visual_verification'] = empty($modSettings['disable_visual_verification']);
+	$context['visual_verification'] = empty($modSettings['disable_visual_verification']) || $modSettings['disable_visual_verification'] != 1;
 	if ($context['visual_verification'])
 	{
 		$context['use_graphic_library'] = in_array('gd', get_loaded_extensions());
@@ -167,8 +168,16 @@ function Register2()
 	}
 
 	// Check whether the visual verification code was entered correctly.
-	if (empty($modSettings['disable_visual_verification']) && (empty($_REQUEST['visual_verification_code']) || strtoupper($_REQUEST['visual_verification_code']) !== $_SESSION['visual_verification_code']))
+	if ((empty($modSettings['disable_visual_verification']) || $modSettings['disable_visual_verification'] != 1) && (empty($_REQUEST['visual_verification_code']) || strtoupper($_REQUEST['visual_verification_code']) !== $_SESSION['visual_verification_code']))
+	{
+		$_SESSION['visual_errors'] = isset($_SESSION['visual_errors']) ? $_SESSION['visual_errors'] + 1 : 1;
+		if ($_SESSION['visual_errors'] > 3 && isset($_SESSION['visual_verification_code']))
+			unset($_SESSION['visual_verification_code']);
+
 		fatal_lang_error('visual_verification_failed', false);
+	}
+	elseif (isset($_SESSION['visual_errors']))
+		unset($_SESSION['visual_errors']);
 
 	// Collect all extra registration fields someone might have filled in.
 	$possible_strings = array(
@@ -208,7 +217,7 @@ function Register2()
 	if (isset($_POST['realName']) && (!empty($modSettings['allow_editDisplayName']) || allowedTo('moderate_forum')))
 	{
 		$_POST['realName'] = trim(preg_replace('~[\s]~' . ($context['utf8'] ? 'u' : ''), ' ', $_POST['realName']));
-		if (trim($_POST['realName']) != '' && !isReservedName($_POST['realName'], $memID))
+		if (trim($_POST['realName']) != '' && !isReservedName($_POST['realName'], $memID) && $func['strlen']($_POST['realName']) <= 60)
 			$possible_strings[] = 'realName';
 	}
 
@@ -275,7 +284,7 @@ function Register2()
 	// Include the additional options that might have been filled in.
 	foreach ($possible_strings as $var)
 		if (isset($_POST[$var]))
-			$regOptions['extra_register_vars'][$var] = '\'' . $_POST[$var] . '\'';
+			$regOptions['extra_register_vars'][$var] = '\'' . $func['htmlspecialchars']($_POST[$var]) . '\'';
 	foreach ($possible_ints as $var)
 		if (isset($_POST[$var]))
 			$regOptions['extra_register_vars'][$var] = (int) $_POST[$var];
@@ -524,12 +533,8 @@ function VerificationCode()
 {
 	global $sourcedir, $modSettings, $context, $scripturl;
 
-	// Visual verification needs to be enabled.
-	if (!empty($modSettings['disable_visual_verification']))
-		header('HTTP/1.1 401 Not Authorised');
-
 	// Somehow no code was generated or the session was lost.
-	elseif (empty($_SESSION['visual_verification_code']))
+	if (empty($_SESSION['visual_verification_code']))
 		header('HTTP/1.1 408 - Request Timeout');
 
 	// Show a window that will play the verification code.

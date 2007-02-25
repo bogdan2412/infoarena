@@ -1,25 +1,26 @@
 <?php
-/******************************************************************************
-* Profile.php                                                                 *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* Profile.php                                                                     *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1.2                                           *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -471,7 +472,7 @@ function ModifyProfile2()
 		if (isset($_POST['passwrd1']) && $_POST['passwrd1'] != '')
 		{
 			require_once($sourcedir . '/Subs-Auth.php');
-			setLoginCookie(60 * $modSettings['cookieTime'], $memID, sha1(sha1(strtolower($user_profile[$memID]['memberName']) . $_POST['passwrd1']) . $user_profile[$memID]['passwordSalt']));
+			setLoginCookie(60 * $modSettings['cookieTime'], $memID, sha1(sha1(strtolower($user_profile[$memID]['memberName']) . un_htmlspecialchars(stripslashes($_POST['passwrd1']))) . $user_profile[$memID]['passwordSalt']));
 		}
 
 		loadUserSettings();
@@ -661,6 +662,8 @@ function saveProfileChanges(&$profile_vars, &$post_errors, $memID)
 			$_POST['realName'] = trim(preg_replace('~[\s]~' . ($context['utf8'] ? 'u' : ''), ' ', $_POST['realName']));
 			if (trim($_POST['realName']) == '')
 				$post_errors[] = 'no_name';
+			elseif ($func['strlen']($_POST['realName']) > 60)
+				$post_errors[] = 'name_too_long';
 			else
 			{
 				require_once($sourcedir . '/Subs-Members.php');
@@ -745,7 +748,7 @@ function saveProfileChanges(&$profile_vars, &$post_errors, $memID)
 				$post_errors[] = 'password_' . $passwordErrors;
 
 			// Set up the new password variable... ready for storage.
-			$profile_vars['passwd'] = '\'' . sha1(strtolower($old_profile['memberName']) . addslashes(un_htmlspecialchars(stripslashes($_POST['passwrd1'])))) . '\'';
+			$profile_vars['passwd'] = '\'' . sha1(strtolower($old_profile['memberName']) . un_htmlspecialchars(stripslashes($_POST['passwrd1']))) . '\'';
 		}
 
 		if (isset($_POST['secretQuestion']))
@@ -1206,7 +1209,7 @@ function summary($memID)
 	if (allowedTo('moderate_forum'))
 	{
 		// Can they edit the ban?
-		$context['can_edit_ban'] = AllowedTo('manage_bans');
+		$context['can_edit_ban'] = allowedTo('manage_bans');
 
 		$ban_query = array();
 		$ban_query[] = "ID_MEMBER = " . $context['member']['id'];
@@ -1607,23 +1610,18 @@ function statPanel($memID)
 	$context['num_polls'] = comma_format($context['num_polls']);
 	$context['num_votes'] = comma_format($context['num_votes']);
 
-	// Most popular boards by posts / activity.  We should include all posts, but that isn't practical.
-	// !!!SLOW This query uses a filesort. Adding an ID_MEMBER key to messages would greatly reduce the load. The current key (participation) opens up the scope to all the messages from the topics the member has posted in. It would also allow the removal of the topics table.
+	// Grab the board this member posted in most often.
 	$result = db_query("
 		SELECT
-			b.ID_BOARD, b.name, COUNT(*) AS messageCount" . ($modSettings['totalMessages'] <= 100000 ? ",
-			b.numPosts" : '') . "
-		FROM ({$db_prefix}messages AS m, {$db_prefix}boards AS b, {$db_prefix}topics AS t)
+			b.ID_BOARD, b.name, b.numPosts, COUNT(*) AS messageCount
+		FROM ({$db_prefix}messages AS m, {$db_prefix}boards AS b)
 		WHERE m.ID_MEMBER = $memID
-			AND b.ID_BOARD = t.ID_BOARD
-			AND t.ID_TOPIC = m.ID_TOPIC
-			AND $user_info[query_see_board]" . ($modSettings['totalMessages'] > 100000 ? "
-			AND m.ID_TOPIC > " . ($modSettings['totalTopics'] - 10000) : '') . "
-		GROUP BY t.ID_BOARD
+			AND b.ID_BOARD = m.ID_BOARD
+			AND $user_info[query_see_board]
+		GROUP BY b.ID_BOARD
 		ORDER BY messageCount DESC
 		LIMIT 10", __FILE__, __LINE__);
 	$context['popular_boards'] = array();
-	$context['board_activity'] = array();
 	$maxPosts = 0;
 	while ($row = mysql_fetch_assoc($result))
 	{
@@ -1636,45 +1634,37 @@ function statPanel($memID)
 			'href' => $scripturl . '?board=' . $row['ID_BOARD'] . '.0',
 			'link' => '<a href="' . $scripturl . '?board=' . $row['ID_BOARD'] . '.0">' . $row['name'] . '</a>',
 			'posts_percent' => 0,
-			'total_posts' => isset($row['numPosts']) ? $row['numPosts'] : 0
+			'total_posts' => $row['numPosts'],
 		);
 	}
 	mysql_free_result($result);
 
-	if ($modSettings['totalMessages'] > 100000 && !empty($context['popular_boards']))
-	{
-		$request = db_query("
-			SELECT ID_BOARD, COUNT(*) + SUM(numReplies) AS messageCount
-			FROM {$db_prefix}topics
-			WHERE ID_TOPIC > " . ($modSettings['totalTopics'] - 10000) . "
-				AND ID_BOARD IN (" . implode(', ', array_keys($context['popular_boards'])) . ")
-			GROUP BY ID_BOARD", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($request))
-			$context['board_activity'][$row['ID_BOARD']] = $row['messageCount'] == 0 ? 0 : comma_format(($context['popular_boards'][$row['ID_BOARD']]['posts'] * 100) / $row['messageCount'], 2);
-		mysql_free_result($request);
-		$context['hide_num_posts'] = true;
-	}
-	else
-	{
-		foreach ($context['popular_boards'] as $ID_BOARD => $board_data)
-			$context['board_activity'][$ID_BOARD] = $board_data['total_posts'] == 0 ? 0 : comma_format(($board_data['posts'] * 100) / $board_data['total_posts'], 2);
-	}
+	// Now that we know the total, calculate the percentage.
+	foreach ($context['popular_boards'] as $ID_BOARD => $board_data)
+		$context['popular_boards'][$ID_BOARD]['posts_percent'] = $board_data['total_posts'] == 0 ? 0 : comma_format(($board_data['posts'] * 100) / $board_data['total_posts'], 2);
 
-	// Sort the boards out...
-	arsort($context['board_activity']);
-
-	foreach ($context['board_activity'] as $ID_BOARD => $dummy)
+	// Now get the 10 boards this user has most often participated in.
+	$result = db_query("
+		SELECT
+			b.ID_BOARD, b.name, IF(COUNT(*) > b.numPosts, 1, COUNT(*) / b.numPosts) * 100 AS percentage
+		FROM ({$db_prefix}messages AS m, {$db_prefix}boards AS b)
+		WHERE m.ID_MEMBER = $memID
+			AND b.ID_BOARD = m.ID_BOARD
+			AND $user_info[query_see_board]
+		GROUP BY b.ID_BOARD
+		ORDER BY percentage DESC
+		LIMIT 10", __FILE__, __LINE__);
+	$context['board_activity'] = array();
+	while ($row = mysql_fetch_assoc($result))
 	{
-		$context['board_activity'][$ID_BOARD] = array(
+		$context['board_activity'][$row['ID_BOARD']] = array(
 			'id' => $ID_BOARD,
-			'href' => $context['popular_boards'][$ID_BOARD]['href'],
-			'link' => $context['popular_boards'][$ID_BOARD]['link'],
-			'percent' => $dummy
+			'href' => $scripturl . '?board=' . $row['ID_BOARD'] . '.0',
+			'link' => '<a href="' . $scripturl . '?board=' . $row['ID_BOARD'] . '.0">' . $row['name'] . '</a>',
+			'percent' => $row['percentage'],
 		);
-
-		if ($maxPosts > 0)
-			$context['popular_boards'][$ID_BOARD]['posts_percent'] = round(($context['popular_boards'][$ID_BOARD]['posts'] * 100) / $maxPosts, 2);
 	}
+	mysql_free_result($result);
 
 	// Posting activity by time.
 	$result = db_query("
@@ -1741,8 +1731,13 @@ function trackUser($memID)
 		// There's no point worrying ourselves with messages made yonks ago, just get recent ones!
 		$min_msg_member = max(0, $max_msg_member - $user_profile[$memID]['posts'] * 3);
 	}
-	
-	$ips = array();
+
+	// Default to at least the ones we know about.
+	$ips = array(
+		$user_profile[$memID]['memberIP'],
+		$user_profile[$memID]['memberIP2'],
+	);
+
 	// Get all IP addresses this user has used for his messages.
 	$request = db_query("
 		SELECT posterIP
@@ -2597,7 +2592,7 @@ function pmprefs($memID)
 // Present a screen to make sure the user wants to be deleted
 function deleteAccount($memID)
 {
-	global $txt, $context, $ID_MEMBER, $modSettings;
+	global $txt, $context, $ID_MEMBER, $modSettings, $user_profile;
 
 	if (!$context['user']['is_owner'])
 		isAllowedTo('profile_remove_any');
@@ -2605,11 +2600,11 @@ function deleteAccount($memID)
 		isAllowedTo('profile_remove_own');
 
 	// Permissions for removing stuff...
-	$context['can_delete_posts'] = !$context['user']['is_owner'] && allowedto('moderate_forum');
+	$context['can_delete_posts'] = !$context['user']['is_owner'] && allowedTo('moderate_forum');
 
 	// Can they do this, or will they need approval?
 	$context['needs_approval'] = $context['user']['is_owner'] && !empty($modSettings['approveAccountDeletion']) && !allowedTo('moderate_forum');
-	$context['page_title'] = $txt['deleteAccount'] . ': ' . $txt[144];
+	$context['page_title'] = $txt['deleteAccount'] . ': ' . $user_profile[$memID]['realName'];
 }
 
 function deleteAccount2($profile_vars, $post_errors, $memID)
@@ -2761,6 +2756,9 @@ function rememberPostData()
 			'choice' => empty($_POST['avatar_choice']) ? 'server_stored' : $_POST['avatar_choice'],
 			'external' => empty($_POST['userpicpersonal']) ? 'http://' : $_POST['userpicpersonal'],
 			'ID_ATTACH' => empty($_POST['ID_ATTACH']) ? '0' : $_POST['ID_ATTACH'],
+			'allow_server_stored' => allowedTo('profile_server_avatar') || !$context['user']['is_owner'],
+			'allow_upload' => allowedTo('profile_upload_avatar') || !$context['user']['is_owner'],
+			'allow_external' => allowedTo('profile_remote_avatar') || !$context['user']['is_owner'],
 		),
 		'karma' => array(
 			'good' => empty($_POST['karmaGood']) ? '0' : $_POST['karmaGood'],

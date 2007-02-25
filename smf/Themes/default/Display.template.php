@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1 RC3; Display
+// Version: 1.1; Display
 
 function template_main()
 {
@@ -662,11 +662,10 @@ echo '
 		</td>
 	</tr>
 </table>';
-
-		if ($context['show_spellchecking'])
-			echo '
-<form action="', $scripturl, '?action=spellcheck" method="post" accept-charset="', $context['character_set'], '" name="spell_form" id="spell_form" target="spellWindow"><input type="hidden" name="spellstring" value="" /></form>';
 	}
+	if ($context['show_spellchecking'])
+		echo '
+<form action="', $scripturl, '?action=spellcheck" method="post" accept-charset="', $context['character_set'], '" name="spell_form" id="spell_form" target="spellWindow"><input type="hidden" name="spellstring" value="" /></form>';
 }
 
 ?>

@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1 RC3; ManageAttachments
+// Version: 1.1; ManageAttachments
 
 function template_manage_files_above()
 {

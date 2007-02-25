@@ -1,25 +1,26 @@
 <?php
-/******************************************************************************
-* Subs.php                                                                    *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* Subs.php                                                                        *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1.2                                           *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -1265,7 +1266,7 @@ function parse_bbc($message, $smileys = true, $cache_id = '')
 			array(
 				'tag' => 'glow',
 				'type' => 'unparsed_commas',
-				'test' => '[#0-9a-z\-]{3,12},([012]\d{1,2}|\d{1,2})(,[^]]+)?\]',
+				'test' => '[#0-9a-zA-Z\-]{3,12},([012]\d{1,2}|\d{1,2})(,[^]]+)?\]',
 				'before' => $context['browser']['is_ie'] ? '<table border="0" cellpadding="0" cellspacing="0" style="display: inline; vertical-align: middle; font: inherit;"><tr><td style="filter: Glow(color=$1, strength=$2); font: inherit;">' : '<span style="background-color: $1;">',
 				'after' => $context['browser']['is_ie'] ? '</td></tr></table> ' : '</span>',
 			),
@@ -1393,7 +1394,7 @@ function parse_bbc($message, $smileys = true, $cache_id = '')
 			array(
 				'tag' => 'php',
 				'type' => 'unparsed_content',
-				'content' => '$1',
+				'content' => '<div class="phpcode">$1</div>',
 				'validate' => isset($disabled['php']) ? null : create_function('&$tag, &$data, $disabled', '
 					if (!isset($disabled[\'php\']))
 					{
@@ -1473,7 +1474,7 @@ function parse_bbc($message, $smileys = true, $cache_id = '')
 			array(
 				'tag' => 'size',
 				'type' => 'unparsed_equals',
-				'test' => '([\d]{1,2}p[xt]|(?:x-)?small(?:er)?|(?:x-)?large[r]?)\]',
+				'test' => '([1-9][\d]?p[xt]|(?:x-)?small(?:er)?|(?:x-)?large[r]?)\]',
 				// !!! line-height
 				'before' => '<span style="font-size: $1; line-height: 1.3em;">',
 				'after' => '</span>',
@@ -1481,7 +1482,7 @@ function parse_bbc($message, $smileys = true, $cache_id = '')
 			array(
 				'tag' => 'size',
 				'type' => 'unparsed_equals',
-				'test' => '[\d]\]',
+				'test' => '[1-9]\]',
 				// !!! line-height
 				'before' => '<font size="$1" style="line-height: 1.3em;">',
 				'after' => '</font>',
@@ -1499,7 +1500,7 @@ function parse_bbc($message, $smileys = true, $cache_id = '')
 			array(
 				'tag' => 'shadow',
 				'type' => 'unparsed_commas',
-				'test' => '[#0-9a-z\-]{3,12},(left|right|top|bottom|[0123]\d{0,2})\]',
+				'test' => '[#0-9a-zA-Z\-]{3,12},(left|right|top|bottom|[0123]\d{0,2})\]',
 				'before' => $context['browser']['is_ie'] ? '<span style="filter: Shadow(color=$1, direction=$2); height: 1.2em;\">' : '<span style="text-shadow: $1 $2">',
 				'after' => '</span>',
 				'validate' => $context['browser']['is_ie'] ? create_function('&$tag, &$data, $disabled', '
@@ -1691,6 +1692,9 @@ function parse_bbc($message, $smileys = true, $cache_id = '')
 	$open_tags = array();
 	$message = strtr($message, array("\n" => '<br />'));
 
+	// The non-breaking-space looks a bit different each time.
+	$non_breaking_space = $context['utf8'] ? ($context['server']['complex_preg_chars'] ? '\x{C2A0}' : chr(0xC2) . chr(0xA0)) : '\xA0';
+
 	$pos = -1;
 	while ($pos !== false)
 	{
@@ -1798,8 +1802,8 @@ function parse_bbc($message, $smileys = true, $cache_id = '')
 					// Next, emails...
 					if (!isset($disabled['email']) && strpos($data, '@') !== false)
 					{
-						$data = preg_replace('~(?<=[\?\s' . ($context['utf8'] ? '\x{C2A0}' : '\xA0') . '\[\]()*\\\;>]|^)([\w\-\.]{1,80}@[\w\-]+\.[\w\-\.]+[\w\-])(?=[?,\s' . ($context['utf8'] ? '\x{C2A0}' : '\xA0') . '\[\]()*\\\]|$|<br />|&nbsp;|&gt;|&lt;|&quot;|&#039;|\.(?:\.|;|&nbsp;|\s|$|<br />))~i' . ($context['utf8'] ? 'u' : ''), '[email]$1[/email]', $data);
-						$data = preg_replace('~(?<=<br />)([\w\-\.]{1,80}@[\w\-]+\.[\w\-\.]+[\w\-])(?=[?\.,;\s' . ($context['utf8'] ? '\x{C2A0}' : '\xA0') . '\[\]()*\\\]|$|<br />|&nbsp;|&gt;|&lt;|&quot;|&#039;)~i' . ($context['utf8'] ? 'u' : ''), '[email]$1[/email]', $data);
+						$data = preg_replace('~(?<=[\?\s' . $non_breaking_space . '\[\]()*\\\;>]|^)([\w\-\.]{1,80}@[\w\-]+\.[\w\-\.]+[\w\-])(?=[?,\s' . $non_breaking_space . '\[\]()*\\\]|$|<br />|&nbsp;|&gt;|&lt;|&quot;|&#039;|\.(?:\.|;|&nbsp;|\s|$|<br />))~' . ($context['utf8'] ? 'u' : ''), '[email]$1[/email]', $data);
+						$data = preg_replace('~(?<=<br />)([\w\-\.]{1,80}@[\w\-]+\.[\w\-\.]+[\w\-])(?=[?\.,;\s' . $non_breaking_space . '\[\]()*\\\]|$|<br />|&nbsp;|&gt;|&lt;|&quot;|&#039;)~' . ($context['utf8'] ? 'u' : ''), '[email]$1[/email]', $data);
 					}
 				}
 			}
@@ -1827,7 +1831,7 @@ function parse_bbc($message, $smileys = true, $cache_id = '')
 					// This is done in a roundabout way because $breaker has "long words" :P.
 					$data = strtr($data, array($breaker => '< >', '&nbsp;' => $context['utf8'] ? "\xC2\xA0" : "\xA0"));
 					$data = preg_replace(
-						'~(?<=[>;:!? ' . ($context['utf8'] ? '\x{C2A0}' : '\xA0') . '\]()]|^)([\w\.]{' . $modSettings['fixLongWords'] . ',})~e' . ($context['utf8'] ? 'u' : ''),
+						'~(?<=[>;:!? ' . $non_breaking_space . '\]()]|^)([\w\.]{' . $modSettings['fixLongWords'] . ',})~e' . ($context['utf8'] ? 'u' : ''),
 						"preg_replace('/(.{" . ($modSettings['fixLongWords'] - 1) . '})/' . ($context['utf8'] ? 'u' : '') . "', '\\\$1< >', '\$1')",
 						$data);
 					$data = strtr($data, array('< >' => $breaker, $context['utf8'] ? "\xC2\xA0" : "\xA0" => '&nbsp;'));
@@ -2360,7 +2364,7 @@ function parse_bbc($message, $smileys = true, $cache_id = '')
 		$message = '&nbsp;' . substr($message, 1);
 
 	// Cleanup whitespace.
-	$message = strtr($message, array('  ' => ' &nbsp;', "\r" => '', "\n" => '<br />', '<br /> ' => '<br />&nbsp;'));
+	$message = strtr($message, array('  ' => ' &nbsp;', "\r" => '', "\n" => '<br />', '<br /> ' => '<br />&nbsp;', '&#13;' => "\n"));
 
 	// Cache the output if it took some time...
 	if (isset($cache_key, $cache_t) && array_sum(explode(' ', microtime())) - array_sum(explode(' ', $cache_t)) > 0.05)
@@ -2414,10 +2418,13 @@ function parsesmileys(&$message)
 				list ($smileysfrom, $smileysto, $smileysdescs) = $temp;
 		}
 
+		// The non-breaking-space is a complex thing...
+		$non_breaking_space = $context['utf8'] ? ($context['server']['complex_preg_chars'] ? '\x{A0}' : pack('C*', 0xC2, 0xA0)) : '\xA0';
+
 		// This smiley regex makes sure it doesn't parse smileys within code tags (so [url=mailto:David@bla.com] doesn't parse the :D smiley)
 		for ($i = 0, $n = count($smileysfrom); $i < $n; $i++)
 		{
-			$smileyfromcache[] = '/(?<=[>:\?\.\s' . ($context['utf8'] ? '\x{C2A0}' : '\xA0') . '[\]()*\\\;]|^)(' . preg_quote($smileysfrom[$i], '/') . '|' . preg_quote(htmlspecialchars($smileysfrom[$i], ENT_QUOTES), '/') . ')(?=[^[:alpha:]0-9]|$)/' . ($context['utf8'] ? 'u' : '');
+			$smileyfromcache[] = '/(?<=[>:\?\.\s' . $non_breaking_space . '[\]()*\\\;]|^)(' . preg_quote($smileysfrom[$i], '/') . '|' . preg_quote(htmlspecialchars($smileysfrom[$i], ENT_QUOTES), '/') . ')(?=[^[:alpha:]0-9]|$)/' . ($context['utf8'] ? 'u' : '');
 			// Escape a bunch of smiley-related characters in the description so it doesn't get a double dose :P.
 			$smileytocache[] = '<img src="' . $modSettings['smileys_url'] . '/' . $user_info['smiley_set'] . '/' . $smileysto[$i] . '" alt="' . strtr(htmlspecialchars($smileysdescs[$i]), array(':' => '&#58;', '(' => '&#40;', ')' => '&#41;', '$' => '&#36;', '[' => '&#091;')) . '" border="0" />';
 		}
@@ -3252,7 +3259,7 @@ function template_header()
 // Show the copyright...
 function theme_copyright($get_it = false)
 {
-	global $forum_copyright, $context, $boardurl, $forum_version, $txt;
+	global $forum_copyright, $context, $boardurl, $forum_version, $txt, $modSettings;
 	static $found = false;
 
 	// DO NOT MODIFY THIS FUNCTION.  DO NOT REMOVE YOUR COPYRIGHT.
@@ -3279,6 +3286,9 @@ function theme_copyright($get_it = false)
 		$forum_copyright = preg_replace('~(<a href="http://www.simplemachines.org/"[^>]+>)</a>~', '$1' . $match[1] . '</a>', $forum_copyright);
 	}
 
+	// Lewis Media no longer holds the copyright.
+	$forum_copyright = str_replace(array('Lewis Media', 'href="http://www.lewismedia.com/"', '2001-'), array('Simple Machines LLC', 'href="http://www.simplemachines.org/about/copyright.php" title="Free Forum Software"', ''), $forum_copyright);
+
 	echo '
 		<span class="smalltext" style="display: inline; visibility: visible; font-family: Verdana, Arial, sans-serif;">';
 
@@ -3286,14 +3296,10 @@ function theme_copyright($get_it = false)
 	{
 		$found = true;
 		echo '
-			<div style="white-space: normal;">The administrator doesn\'t want a copyright notice saying this is copyright 2001-2006 by <a href="http://www.lewismedia.com/" target="_blank">Lewis Media</a>, and named <a href="http://www.simplemachines.org/">SMF</a>, so the forum will honor this request and be quiet.</div>';
+			<div style="white-space: normal;">The administrator doesn\'t want a copyright notice saying this is copyright 2006 - 2007 by <a href="http://www.simplemachines.org/about/copyright.php" target="_blank">Simple Machines LLC</a>, and named <a href="http://www.simplemachines.org/">SMF</a>, so the forum will honor this request and be quiet.</div>';
 	}
 	// If it's in the copyright, and we are outputting it... it's been found.
-	elseif ((strpos($forum_copyright, '<a href="http://www.simplemachines.org/" title="Simple Machines Forum" target="_blank">Powered by SMF') !== false || strpos($forum_copyright, '<a href="http://www.simplemachines.org/" onclick="this.href += \'referer.php?forum=' . urlencode($context['forum_name'] . '|' . $boardurl . '|' . $forum_version) . '\';" target="_blank">SMF') !== false || strpos($forum_copyright, '<a href="http://www.simplemachines.org/" target="_blank">SMF') !== false || strpos($forum_copyright, '<a href="http://www.simplemachines.org/" title="Simple Machines Forum" target="_blank">SMF') !== false) && ((strpos($forum_copyright, '<a href="http://www.simplemachines.org/about/copyright.php" title="Free Forum Software" target="_blank">SMF &copy;') !== false && strpos($forum_copyright, 'Lewis Media</a>') !== false) || strpos($forum_copyright, '<a href="http://www.lewismedia.com/">Lewis Media</a>') !== false || strpos($forum_copyright, '<a href="http://www.lewismedia.com/" target="_blank">Lewis Media</a>') !== false))
-	{
-		$found = true;
-		echo $forum_copyright;
-	}
+	elseif (isset($modSettings['copyright_key']) && sha1($modSettings['copyright_key'] . 'banjo') == '1d01885ece7a9355bdeb22ed107f0ffa8c323026'){$found = true; return;}elseif ((strpos($forum_copyright, '<a href="http://www.simplemachines.org/" title="Simple Machines Forum" target="_blank">Powered by SMF') !== false || strpos($forum_copyright, '<a href="http://www.simplemachines.org/" onclick="this.href += \'referer.php?forum=' . urlencode($context['forum_name'] . '|' . $boardurl . '|' . $forum_version) . '\';" target="_blank">SMF') !== false || strpos($forum_copyright, '<a href="http://www.simplemachines.org/" target="_blank">SMF') !== false || strpos($forum_copyright, '<a href="http://www.simplemachines.org/" title="Simple Machines Forum" target="_blank">SMF') !== false)&&((strpos($forum_copyright, '<a href="http://www.simplemachines.org/about/copyright.php" title="Free Forum Software" target="_blank">SMF &copy;') !== false && (strpos($forum_copyright, 'Lewis Media</a>') !== false || strpos($forum_copyright, 'Simple Machines LLC</a>') !== false)) || strpos($forum_copyright, '<a href="http://www.lewismedia.com/">Lewis Media</a>') !== false || strpos($forum_copyright, '<a href="http://www.lewismedia.com/" target="_blank">Lewis Media</a>') !== false || (strpos($forum_copyright, '<a href="http://www.simplemachines.org/about/copyright.php"') !== false &&	strpos($forum_copyright, 'Simple Machines LLC') !== false))){$found = true; echo $forum_copyright;}
 
 	echo '
 		</span>';
@@ -3325,9 +3331,10 @@ function template_footer()
 		// DOING SO VOIDS YOUR LICENSE AND IS ILLEGAL.
 
 		echo '
-			<div style="text-align: center !important; display: block !important; visibility: visible !important; font-size: xx-large !important; font-weight: bold; color: black !important; background-color: white !important;">
+			<div style="text-align: center !important; display: block !important; visibility: visible !important; font-size: large !important; font-weight: bold; color: black !important; background-color: white !important;">
 				Sorry, the copyright must be in the template.<br />
-				Please notify this ' . "forum's" . ' administrator that this site is using an <span style="color: red;">ILLEGAL</span> copy of <a href="http://www.simplemachines.org/" style="color: black !important; font-size: xx-large !important;">SMF</a>!
+				Please notify this forum\'s administrator that this site is missing the copyright message for <a href="http://www.simplemachines.org/" style="color: black !important; font-size: large !important;">SMF</a> so they can rectify the situation. Display of copyright is a <a href="http://www.simplemachines.org/about/license.php" style="color: red;">legal requirement</a>. For more information on this please visit the <a href="http://www.simplemachines.org">Simple Machines</a> website.', empty($context['user']['is_admin']) ? '' : '<br />
+				Not sure why this message is appearing?  <a href="http://www.simplemachines.org/redirect/index.php?copyright_error">Take a look at some common causes.</a>', '
 			</div>';
 
 		log_error('Copyright removed!!');
@@ -3464,7 +3471,7 @@ function host_from_ip($ip)
 		$host = false;
 
 	// Try the Linux host command, perhaps?
-	if (!isset($host) && strpos(strtolower(PHP_OS), 'win') === false && rand(0, 1) == 1)
+	if (!isset($host) && (strpos(strtolower(PHP_OS), 'win') === false || strpos(strtolower(PHP_OS), 'darwin') !== false) && rand(0, 1) == 1)
 	{
 		if (!isset($modSettings['host_to_dis']))
 			$test = @shell_exec('host -W 1 ' . @escapeshellarg($ip));
@@ -3483,7 +3490,7 @@ function host_from_ip($ip)
 	}
 
 	// This is nslookup; usually only Windows, but possibly some Unix?
-	if (!isset($host) && strpos(strtolower(PHP_OS), 'win') !== false && rand(0, 1) == 1)
+	if (!isset($host) && strpos(strtolower(PHP_OS), 'win') !== false && strpos(strtolower(PHP_OS), 'darwin') === false && rand(0, 1) == 1)
 	{
 		$test = @shell_exec('nslookup -timeout=1 ' . @escapeshellarg($ip));
 		if (strpos($test, 'Non-existent domain') !== false)
@@ -3509,7 +3516,7 @@ function text2words($text, $max_chars = 20, $encrypt = false)
 	global $func, $context;
 
 	// Step 1: Remove entities/things we don't consider words:
-	$words = preg_replace('~([\x0B\0' . ($context['utf8'] ? '\x{C2A0}' : '\xA0') . '\t\r\s\n(){}\\[\\]<>!@$%^*.,:+=`\~\?/\\\\]|&(amp|lt|gt|quot);)+~' . ($context['utf8'] ? 'u' : ''), ' ', strtr($text, array('<br />' => ' ')));
+	$words = preg_replace('~([\x0B\0' . ($context['utf8'] ? ($context['server']['complex_preg_chars'] ? '\x{A0}' : pack('C*', 0xC2, 0xA0)) : '\xA0') . '\t\r\s\n(){}\\[\\]<>!@$%^*.,:+=`\~\?/\\\\]|&(amp|lt|gt|quot);)+~' . ($context['utf8'] ? 'u' : ''), ' ', strtr($text, array('<br />' => ' ')));
 
 	// Step 2: Entities we left to letters, where applicable, lowercase.
 	$words = un_htmlspecialchars($func['strtolower']($words));

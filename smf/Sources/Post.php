@@ -1,25 +1,26 @@
 <?php
-/******************************************************************************
-* Post.php                                                                    *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* Post.php                                                                        *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1.2                                           *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -388,8 +389,11 @@ function Post()
 				else
 				{
 					require_once($sourcedir . '/Subs-Members.php');
-					if (isReservedName(htmlspecialchars($_REQUEST['guestname'])))
+					if (isReservedName(htmlspecialchars($_REQUEST['guestname']), 0, true, false))
+					{
+
 						$context['post_error']['bad_name'] = true;
+					}
 				}
 
 				if (empty($modSettings['guest_post_no_email']))
@@ -969,7 +973,7 @@ function Post()
 				SELECT title, filename
 				FROM {$db_prefix}message_icons
 				WHERE ID_BOARD IN (0, $board)", __FILE__, __LINE__);
-			$context['icons'] = array();
+			$icon_data = array();
 			while ($row = mysql_fetch_assoc($request))
 				$icon_data[] = $row;
 			mysql_free_result($request);
@@ -1319,7 +1323,7 @@ function Post2()
 	{
 		// If user is a guest, make sure the chosen name isn't taken.
 		require_once($sourcedir . '/Subs-Members.php');
-		if (isReservedName($_POST['guestname']) && (!isset($row['posterName']) || $_POST['guestname'] != $row['posterName']))
+		if (isReservedName($_POST['guestname'], 0, true, false) && (!isset($row['posterName']) || $_POST['guestname'] != $row['posterName']))
 			$post_errors[] = 'bad_name';
 	}
 	// If the user isn't a guest, get his or her name and email.
@@ -1788,7 +1792,7 @@ function AnnouncementSend()
 	checkSession();
 
 	// !!! Might need an interface?
-	$chunkSize = 75;
+	$chunkSize = 50;
 	$context['start'] = empty($_REQUEST['start']) ? 0 : (int) $_REQUEST['start'];
 	$groups = array_merge($board_info['groups'], array(1));
 
@@ -2035,11 +2039,12 @@ function QuoteFast()
 		$row = mysql_fetch_assoc($request);
 		mysql_free_result($request);
 
+		// Remove special formatting we don't want anymore.
+		$row['body'] = un_preparsecode($row['body']);
+
 		// Censor the message!
 		censorText($row['body']);
 
-		// Remove special formatting we don't want anymore.
-		un_preparsecode($row['body']);
 		$row['body'] = preg_replace('~<br(?: /)?' . '>~i', "\n", $row['body']);
 
 		// Want to modify a single message by double clicking it?
@@ -2105,7 +2110,8 @@ function JavaScriptModify()
 	$request = db_query("
 			SELECT 
 				t.locked, t.numReplies, t.ID_MEMBER_STARTED, t.ID_FIRST_MSG,
-				m.ID_MSG, m.ID_MEMBER, m.posterTime, m.subject, m.smileysEnabled, m.body
+				m.ID_MSG, m.ID_MEMBER, m.posterTime, m.subject, m.smileysEnabled, m.body,
+				modifiedTime, modifiedName
 			FROM ({$db_prefix}messages AS m, {$db_prefix}topics AS t)
 			WHERE m.ID_MSG = " . (empty($_REQUEST['msg']) ? 't.ID_FIRST_MSG' : (int) $_REQUEST['msg']) . "
 				AND m.ID_TOPIC = $topic
@@ -2228,6 +2234,13 @@ function JavaScriptModify()
 		}
 
 		modifyPost($msgOptions, $topicOptions, $posterOptions);
+
+		// If we didn't change anything this time but had before put back the old info.
+		if (!isset($msgOptions['modify_time']) && !empty($row['modifiedTime']))
+		{
+			$msgOptions['modify_time'] = $row['modifiedTime'];
+			$msgOptions['modify_name'] = $row['modifiedName'];
+		}
 
 		// Changing the first subject updates other subjects to 'Re: new_subject'.
 		if (isset($_POST['subject']) && isset($_REQUEST['change_all_subjects']) && $row['ID_FIRST_MSG'] == $row['ID_MSG'] && !empty($row['numReplies']) && (allowedTo('modify_any') || ($row['ID_MEMBER_STARTED'] == $ID_MEMBER && allowedTo('modify_replies'))))

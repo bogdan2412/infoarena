@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1 RC3; Modlog
+// Version: 1.1; Modlog
 
 function template_main()
 {

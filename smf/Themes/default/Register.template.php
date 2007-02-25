@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1 RC3; Register
+// Version: 1.1.2; Register
 
 // Before registering - get their information.
 function template_before()
@@ -31,30 +31,43 @@ function template_before()
 	echo '
 
 		return true;
-	}
+	}';
 
+	if ($context['require_agreement'])
+		echo '
 	function checkAgree()
 	{
 		document.forms.creator.regSubmit.disabled = isEmptyText(document.forms.creator.user) || isEmptyText(document.forms.creator.email) || isEmptyText(document.forms.creator.passwrd1) || !document.forms.creator.regagree.checked;
-	}';
+		setTimeout("checkAgree();", 1000);
+	}
+	setTimeout("checkAgree();", 1000);';
 
 	if ($context['visual_verification'])
 	{
 		echo '
-		function refreshImages()
-		{';
+	function refreshImages()
+	{
+		// Make sure we are using a new rand code.
+		var new_url = new String("', $context['verificiation_image_href'], '");
+		new_url = new_url.substr(0, new_url.indexOf("rand=") + 5);
+
+		// Quick and dirty way of converting decimal to hex
+		var hexstr = "0123456789abcdef";
+		for(var i=0; i < 32; i++)
+			new_url = new_url + hexstr.substr(Math.floor(Math.random() * 16), 1);';
+
 		if ($context['use_graphic_library'])
 			echo '
-			document.getElementById(\'verificiation_image\').src = \'', $context['verificiation_image_href'], '\';';
+		document.getElementById("verificiation_image").src = new_url;';
 		else
 			echo '
-			document.getElementById(\'verificiation_image_1\').src = \'', $context['verificiation_image_href'], ';letter=1\';
-			document.getElementById(\'verificiation_image_2\').src = \'', $context['verificiation_image_href'], ';letter=2\';
-			document.getElementById(\'verificiation_image_3\').src = \'', $context['verificiation_image_href'], ';letter=3\';
-			document.getElementById(\'verificiation_image_4\').src = \'', $context['verificiation_image_href'], ';letter=4\';
-			document.getElementById(\'verificiation_image_5\').src = \'', $context['verificiation_image_href'], ';letter=5\';';
+		document.getElementById("verificiation_image_1").src = new_url + ";letter=1";
+		document.getElementById("verificiation_image_2").src = new_url + ";letter=2";
+		document.getElementById("verificiation_image_3").src = new_url + ";letter=3";
+		document.getElementById("verificiation_image_4").src = new_url + ";letter=4";
+		document.getElementById("verificiation_image_5").src = new_url + ";letter=5";';
 		echo '
-		}';
+	}';
 	}
 
 	echo '
@@ -128,7 +141,7 @@ function template_before()
 		echo '
 							<input type="text" name="visual_verification_code" size="30" tabindex="', $context['tabindex']++, '" />
 							<div class="smalltext">
-								<a href="', $context['verificiation_image_href'], ';sound" onclick="return reqWin(this.href, 400, 120);">', $txt['visual_verification_sound'], '</a>|<a href="', $scripturl, '?action=register" onclick="refreshImages(); return false;">', $txt['visual_verification_request_new'], '</a>
+								<a href="', $context['verificiation_image_href'], ';sound" onclick="return reqWin(this.href, 400, 120);">', $txt['visual_verification_sound'], '</a> | <a href="', $scripturl, '?action=register" onclick="refreshImages(); return false;">', $txt['visual_verification_request_new'], '</a>
 							</div>
 						</td>
 					</tr>';
@@ -316,7 +329,7 @@ function template_verification_sound()
 		</style>
 	</head>
 	<body style="margin: 1ex;">
-		<div>';
+		<div class="popuptext">';
 	if ($context['browser']['is_ie'])
 		echo '
 			<object classid="clsid:22D6F312-B0F6-11D0-94AB-0080C74C7E95" type="audio/x-wav">
@@ -329,10 +342,11 @@ function template_verification_sound()
 				<a href="', $context['verificiation_sound_href'], ';format=.wav">', $context['verificiation_sound_href'], ';format=.wav</a>
 			</object>';
 	echo '
+			<br />
+			<a href="', $context['verificiation_sound_href'], ';sound">', $txt['visual_verification_sound_again'], '</a><br />
+			<a href="javascript:self.close();">', $txt['visual_verification_sound_close'], '</a><br />
+			<a href="', $context['verificiation_sound_href'], ';format=.wav">', $txt['visual_verification_sound_direct'], '</a>
 		</div>
-		<div align="center"><a href="', $context['verificiation_sound_href'], ';sound">', $txt['visual_verification_sound_again'], '</a></div>
-		<div align="center"><a href="javascript:self.close();">', $txt['visual_verification_sound_close'], '</a></div>
-		<div align="center"><a href="', $context['verificiation_sound_href'], ';format=.wav">', $txt['visual_verification_sound_direct'], '</a></div>
 	</body>
 </html>';
 }
@@ -510,6 +524,19 @@ function template_admin_settings()
 {
 	global $context, $settings, $options, $scripturl, $txt, $modSettings;
 
+	// Javascript for the verification image.
+	if ($context['use_graphic_library'])
+	{
+	echo '
+	<script language="JavaScript" type="text/javascript"><!-- // --><![CDATA[
+		function refreshImages()
+		{
+			var imageType = document.getElementById(\'visual_verification_type_select\').value;
+			document.getElementById(\'verificiation_image\').src = \'', $context['verificiation_image_href'], ';type=\' + imageType;
+		}
+	// ]]></script>';
+	}
+
 	echo '
 	<form action="', $scripturl, '?action=regcenter" method="post" accept-charset="', $context['character_set'], '">
 		<table border="0" cellspacing="1" cellpadding="4" align="center" width="100%" class="tborder">
@@ -573,12 +600,32 @@ function template_admin_settings()
 									<option value="2"', !empty($modSettings['password_strength']) && $modSettings['password_strength'] == 2 ? ' selected="selected"' : '', '>', $txt['admin_setting_password_strength_high'], '</option>
 								</select>
 							</td>
-						</tr><tr class="windowbg2">
+						</tr><tr class="windowbg2" valign="top">
 							<th width="50%" align="right">
-								<label for="disable_visual_verification_check">', $txt['admin_setting_disable_visual_verification'], '</label>:
+								<label for="visual_verification_type_select">
+									', $txt['admin_setting_image_verification_type'], ':<br />
+									<span class="smalltext" style="font-weight: normal;">
+										', $txt['admin_setting_image_verification_type_desc'], '
+									</span>
+								</label>
 							</th>
 							<td width="50%" align="left">
-								<input type="checkbox" name="disable_visual_verification" id="disable_visual_verification_check" ', !empty($modSettings['disable_visual_verification']) ? 'checked="checked"' : '', ' class="check" />
+								<select name="visual_verification_type" id="visual_verification_type_select" ', $context['use_graphic_library'] ? 'onchange="refreshImages();"' : '', '>
+									<option value="1" ', !empty($modSettings['disable_visual_verification']) && $modSettings['disable_visual_verification'] == 1 ? 'selected="selected"' : '', '>', $txt['admin_setting_image_verification_off'], '</option>
+									<option value="2" ', !empty($modSettings['disable_visual_verification']) && $modSettings['disable_visual_verification'] == 2 ? 'selected="selected"' : '', '>', $txt['admin_setting_image_verification_vsimple'], '</option>
+									<option value="3" ', !empty($modSettings['disable_visual_verification']) && $modSettings['disable_visual_verification'] == 3 ? 'selected="selected"' : '', '>', $txt['admin_setting_image_verification_simple'], '</option>
+									<option value="0" ', empty($modSettings['disable_visual_verification']) ? 'selected="selected"' : '', '>', $txt['admin_setting_image_verification_medium'], '</option>
+									<option value="4" ', !empty($modSettings['disable_visual_verification']) && $modSettings['disable_visual_verification'] == 4 ? 'selected="selected"' : '', '>', $txt['admin_setting_image_verification_high'], '</option>
+								</select><br />';
+	if ($context['use_graphic_library'])
+		echo '
+								<img src="', $context['verificiation_image_href'], ';type=', empty($modSettings['disable_visual_verification']) ? 0 : $modSettings['disable_visual_verification'], '" alt="', $txt['admin_setting_image_verification_sample'], '" id="verificiation_image" /><br />';
+	else
+	{
+		echo '
+								<span class="smalltext">', $txt['admin_setting_image_verification_nogd'], '</span>';
+	}
+	echo '
 							</td>
 						</tr><tr class="windowbg2">
 							<td width="100%" colspan="2" align="center">

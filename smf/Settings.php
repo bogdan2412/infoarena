@@ -67,6 +67,3 @@ if (!file_exists($boarddir) && file_exists(dirname(__FILE__) . '/agreement.txt')
 if (!file_exists($sourcedir) && file_exists($boarddir . '/Sources'))
     $sourcedir = $boarddir . '/Sources';
 
-$db_character_set = 'utf8';
-
-?>

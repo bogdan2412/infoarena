@@ -1,25 +1,26 @@
 <?php
-/******************************************************************************
-* ModSettings.php                                                             *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* ModSettings.php                                                                 *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1                                             *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -68,6 +69,10 @@ if (!defined('SMF'))
 
 	 * A text input box.  For floating point values.
 	ie.	array('float', 'nameInModSettingsAndSQL', 'OptionalInputBoxWidth',
+			&$txt['OptionalDescriptionOfTheOption'], 'OptionalReferenceToHelpAdmin'),
+			
+         * A large text input box. Used for textual values spanning multiple lines.
+	ie.	array('large_text', 'nameInModSettingsAndSQL', 'OptionalNumberOfRows',
 			&$txt['OptionalDescriptionOfTheOption'], 'OptionalReferenceToHelpAdmin'),
 
 	 * A check box.  Either one or zero. (boolean)
@@ -175,7 +180,7 @@ function ModifyFeatureSettings2()
 
 function ModifyBasicSettings()
 {
-	global $txt, $scripturl, $context, $settings, $sc;
+	global $txt, $scripturl, $context, $settings, $sc, $modSettings;
 
 	$config_vars = array(
 			// Big Options... polls, sticky, bbc....
@@ -220,18 +225,27 @@ function ModifyBasicSettings()
 		'',
 			// Reporting of personal messages?
 			array('check', 'enableReportPM'),
-			array('int', 'max_pm_recipients'),
 	);
 
 	// Saving?
 	if (isset($_GET['save']))
 	{
-		saveDBSettings($config_vars);
-		redirectexit('action=featuresettings;sa=basic');
+		// Fix PM settings.
+		$_POST['pm_spam_settings'] = (int) $_POST['max_pm_recipients'] . ',' . (int) $_POST['pm_posts_verification'] . ',' . (int) $_POST['pm_posts_per_hour'];
+		$save_vars = $config_vars;
+		$save_vars[] = array('text', 'pm_spam_settings');
 
-		loadUserSettings();
+		saveDBSettings($save_vars);
+
 		writeLog();
+		redirectexit('action=featuresettings;sa=basic');
 	}
+
+	// Hack for PM spam settings.
+	list ($modSettings['max_pm_recipients'], $modSettings['pm_posts_verification'], $modSettings['pm_posts_per_hour']) = explode(',', $modSettings['pm_spam_settings']);
+	$config_vars[] = array('int', 'max_pm_recipients');
+	$config_vars[] = array('int', 'pm_posts_verification');
+	$config_vars[] = array('int', 'pm_posts_per_hour');
 
 	$context['post_url'] = $scripturl . '?action=featuresettings2;save;sa=basic';
 	$context['settings_title'] = $txt['mods_cat_features'];

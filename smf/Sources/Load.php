@@ -1,25 +1,26 @@
 <?php
-/******************************************************************************
-* Load.php                                                                    *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* Load.php                                                                        *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1.2                                           *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -34,10 +35,21 @@ if (!defined('SMF'))
 		  autoOptMaxOnline.
 
 	void loadUserSettings()
-		// !!!
+        - sets up the $user_info array
+        - assigns $user_info['query_see_board'] for what boards the user can see.
+        - first checks for cookie or intergration validation.
+        - uses the current session if no integration function or cookie is found.
+        - checks password length, if member is activated and the login span isn't over.
+        - if validation fails for the user, $ID_MEMBER is set to 0.
+        - updates the last visit time when needed.
 
-	void loadBoard()
-		// !!!
+    void loadBoard()
+        - sets up the $board_info array for current board information.
+        - if cache is enabled, the $board_info array is stored in cache.	
+        - is only used when inside a topic or board.
+        - determines the local moderators for the board.
+        - adds group id 3 if the user is a local moderator for the board they are in.
+        - prevents access if user is not in proper group nor a local moderator of the board.
 
 	void loadPermissions()
 		// !!!
@@ -126,7 +138,7 @@ if (!defined('SMF'))
 function reloadSettings()
 {
 	global $modSettings, $db_prefix, $boarddir, $func, $txt, $db_character_set;
-	global $mysql_set_mode;
+	global $mysql_set_mode, $context;
 
 	// This makes it possible to have SMF automatically change the sql_mode and autocommit if needed.
 	if (isset($mysql_set_mode) && $mysql_set_mode === true)
@@ -160,16 +172,7 @@ function reloadSettings()
 			$modSettings['defaultMaxMembers'] = 30;
 
 		if (!empty($modSettings['cache_enable']))
-		{
-			// To lighten the load, let's clean it up a bit first.  They don't need to be strings.
-			foreach ($modSettings as $k => $v)
-			{
-				if (strlen($v) != 0 && is_numeric($v))
-					$modSettings[$k] = strpos($v, '.') === false ? (int) $v : (float) $v;
-			}
-
 			cache_put_data('modSettings', $modSettings, 90);
-		}
 	}
 
 	// UTF-8 in regular expressions is unsupported on PHP(win) versions < 4.2.3.
@@ -179,6 +182,9 @@ function reloadSettings()
 	$ent_list = empty($modSettings['disableEntityCheck']) ? '&(#\d{1,7}|quot|amp|lt|gt|nbsp);' : '&(#021|quot|amp|lt|gt|nbsp);';
 	$ent_check = empty($modSettings['disableEntityCheck']) ? array('preg_replace(\'~(&#(\d{1,7}|x[0-9a-fA-F]{1,6});)~e\', \'$func[\\\'entity_fix\\\'](\\\'\\2\\\')\', ', ')') : array('', '');
 
+	// Preg_replace can handle complex characters only for higher PHP versions.
+	$space_chars = $utf8 ? (@version_compare(PHP_VERSION, '4.3.3') != -1 ? '\x{A0}\x{2000}-\x{200F}\x{201F}\x{202F}\x{3000}\x{FEFF}' : pack('C*', 0xC2, 0xA0, 0xE2, 0x80, 0x80) . '-' . pack('C*', 0xE2, 0x80, 0x8F, 0xE2, 0x80, 0x9F, 0xE2, 0x80, 0xAF, 0xE2, 0x80, 0x9F, 0xE3, 0x80, 0x80, 0xEF, 0xBB, 0xBF)) : '\xA0';
+	
 	$func = array(
 		'entity_fix' => create_function('$string', '
 			$num = substr($string, 0, 1) === \'x\' ? hexdec(substr($string, 1)) : (int) $string;
@@ -219,7 +225,7 @@ function reloadSettings()
 			return ' . strtr($ent_check[0], array('&' => '&amp;'))  . 'htmlspecialchars($string, $quote_style, ' . ($utf8 ? '\'UTF-8\'' : '$charset') . ')' . $ent_check[1] . ';'),
 		'htmltrim' => create_function('$string', '
 			global $func;
-			return preg_replace(\'~^([ \t\n\r\x0B\x00' . ($utf8 ? '\x{C2A0}' : '\xA0') . ($utf8 && @version_compare(PHP_VERSION, '5.1.0') != -1 ? '\pZ' : '') . ']|&nbsp;)+|([ \t\n\r\x0B\x00' . ($utf8 ? '\x{C2A0}' : '\xA0') . ($utf8 && @version_compare(PHP_VERSION, '5.1.0') != -1 ? '\pZ' : '') . ']|&nbsp;)+$~' . ($utf8 ? 'u' : '') . '\', \'\', ' . implode('$string', $ent_check) . ');'),
+			return preg_replace(\'~^([ \t\n\r\x0B\x00' . $space_chars . ']|&nbsp;)+|([ \t\n\r\x0B\x00' . $space_chars . ']|&nbsp;)+$~' . ($utf8 ? 'u' : '') . '\', \'\', ' . implode('$string', $ent_check) . ');'),
 		'truncate' => create_function('$string, $length', (empty($modSettings['disableEntityCheck']) ? '
 			global $func;
 			$string = ' . implode('$string', $ent_check) . ';' : '') . '
@@ -249,6 +255,10 @@ function reloadSettings()
 				$words[$i] = $func[\'ucfirst\']($words[$i]);
 			return implode(\'\', $words);')) : 'ucwords',
 	);
+
+	// Setting the timezone is a requirement for some functions in PHP >= 5.1.
+	if (isset($modSettings['default_timezone']) && function_exists('date_default_timezone_set'))
+		date_default_timezone_set($modSettings['default_timezone']);
 
 	// Check the load averages?
 	if (!empty($modSettings['loadavg_enable']))
@@ -438,6 +448,8 @@ function loadUserSettings()
 					cache_put_data('user_last_visit-' . $ID_MEMBER, $_SESSION['ID_MSG_LAST_VISIT'], 5 * 3600);
 			}
 		}
+		elseif (empty($_SESSION['ID_MSG_LAST_VISIT']))
+			$_SESSION['ID_MSG_LAST_VISIT'] = $user_settings['ID_MSG_LAST_VISIT'];
 
 		$username = $user_settings['memberName'];
 
@@ -671,7 +683,14 @@ function loadBoard()
 		$_GET['board'] = '';
 		$_GET['topic'] = '';
 
-		if ($user_info['is_guest'])
+		// If it's a prefetching agent, just make clear they're not allowed.
+		if (isset($_SERVER['HTTP_X_MOZ']) && $_SERVER['HTTP_X_MOZ'] == 'prefetch')
+		{
+			ob_end_clean();
+			header('HTTP/1.1 403 Forbidden');
+			die;
+		}
+		elseif ($user_info['is_guest'])
 		{
 			loadLanguage('Errors');
 			is_not_guest($txt['topic_gone']);
@@ -700,7 +719,7 @@ function loadPermissions()
 		asort($cache_groups);
 		$cache_groups = implode(',', $cache_groups);
 
-		if ($modSettings['cache_enable'] >= 2 && ($temp = cache_get_data('permissions:' . $cache_groups . (empty($board) ? '' : ':' . $board), 240)) != null)
+		if ($modSettings['cache_enable'] >= 2 && !empty($board) && ($temp = cache_get_data('permissions:' . $cache_groups . ':' . $board, 240)) != null)
 		{
 			list ($user_info['permissions']) = $temp;
 			banPermissions();
@@ -1307,6 +1326,9 @@ function loadTheme($ID_THEME = 0, $initialize = true)
 		'is_iis' => isset($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS') !== false,
 		'is_apache' => isset($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'], 'Apache') !== false,
 		'is_cgi' => isset($_SERVER['SERVER_SOFTWARE']) && strpos(php_sapi_name(), 'cgi') !== false,
+		'is_windows' => stristr(PHP_OS, 'WIN') !== false,
+		'iso_case_folding' => ord(strtolower(chr(138))) === 154,
+		'complex_preg_chars' => @version_compare(PHP_VERSION, '4.3.3') != -1,
 	);
 	// A bug in some versions of IIS under CGI (older ones) makes cookie setting not work with Location: headers.
 	$context['server']['needs_login_fix'] = $context['server']['is_cgi'];
@@ -1323,6 +1345,8 @@ function loadTheme($ID_THEME = 0, $initialize = true)
 		'is_web_tv' => strpos($_SERVER['HTTP_USER_AGENT'], 'WebTV') !== false,
 		'is_konqueror' => strpos($_SERVER['HTTP_USER_AGENT'], 'Konqueror') !== false,
 		'is_firefox' => strpos($_SERVER['HTTP_USER_AGENT'], 'Firefox') !== false,
+		'is_firefox1' => strpos($_SERVER['HTTP_USER_AGENT'], 'Firefox/1.') !== false,
+		'is_firefox2' => strpos($_SERVER['HTTP_USER_AGENT'], 'Firefox/2.') !== false,
 	);
 
 	$context['browser']['is_gecko'] = strpos($_SERVER['HTTP_USER_AGENT'], 'Gecko') !== false && !$context['browser']['is_safari'] && !$context['browser']['is_konqueror'];

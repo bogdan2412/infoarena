@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1 RC3; ManageBans
+// Version: 1.1; ManageBans
 
 function template_main()
 {
@@ -142,7 +142,7 @@ function template_ban_edit()
 											', $txt['ban_on_username'], ':<br />';
 		if (empty($context['ban_suggestions']['member']['id']))
 			echo '
-											<input type="text" name="user" value="" size="40" onfocus="document.getElementById(\'user_check\').checked = true;" />&nbsp;<a href="', $scripturl, '?action=findmember;input=user;sesc=', $context['session_id'], '" onclick="return reqWin(this.href, 350, 400);"><img src="', $settings['images_url'], '/icons/assist.gif" alt="', $txt['find_members'], '" /></a>';
+											<input type="text" name="user" id="user" value="" size="40" onfocus="document.getElementById(\'user_check\').checked = true;" />&nbsp;<a href="', $scripturl, '?action=findmember;input=user;sesc=', $context['session_id'], '" onclick="return reqWin(this.href, 350, 400);"><img src="', $settings['images_url'], '/icons/assist.gif" alt="', $txt['find_members'], '" /></a>';
 		else
 			echo '
 											', $context['ban_suggestions']['member']['link'], '
@@ -265,7 +265,7 @@ function template_ban_edit()
 
 function template_ban_edit_trigger()
 {
-	global $context, $settings, $options, $scripturl, $txt;
+	global $context, $settings, $options, $scripturl, $txt, $modSettings;
 
 	echo '
 	<form action="', $scripturl, '?action=ban;sa=edit" method="post" accept-charset="', $context['character_set'], '">
@@ -304,7 +304,7 @@ function template_ban_edit_trigger()
 							<td valign="bottom"><input type="radio" name="bantype" value="user_ban"', $context['ban_trigger']['banneduser']['selected'] ? ' checked="checked"' : '', ' /></td>
 							<td align="left" valign="top">
 								', $txt['ban_on_username'], ':<br />
-								<input type="text" name="user" value="', $context['ban_trigger']['banneduser']['value'], '" size="50" onfocus="selectRadioByName(this.form.bantype, \'user_ban\');" />
+								<input type="text" name="user" id="user" value="', $context['ban_trigger']['banneduser']['value'], '" size="50" onfocus="selectRadioByName(this.form.bantype, \'user_ban\');" />
 							</td><td valign="bottom">
 								<a href="', $scripturl, '?action=findmember;input=user;sesc=', $context['session_id'], '" onclick="return reqWin(this.href, 350, 400);"><img src="', $settings['images_url'], '/icons/assist.gif" alt="', $txt['find_members'], '" /></a>
 							</td>

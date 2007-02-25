@@ -1,25 +1,26 @@
 <?php
-/******************************************************************************
-* PersonalMessage.php                                                         *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* PersonalMessage.php                                                             *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1.2                                           *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -605,7 +606,7 @@ function prepareMessageContext($reset = false)
 
 function MessageSearch()
 {
-	global $context, $txt;
+	global $context, $txt, $scripturl, $modSettings;
 
 	if (isset($_REQUEST['params']))
 	{
@@ -624,6 +625,18 @@ function MessageSearch()
 		$context['search_params']['search'] = htmlspecialchars($context['search_params']['search']);
 	if (isset($context['search_params']['userspec']))
 		$context['search_params']['userspec'] = htmlspecialchars(stripslashes($context['search_params']['userspec']));
+
+	if (!empty($context['search_params']['searchtype']))
+		$context['search_params']['searchtype'] = 2;
+
+	if (!empty($context['search_params']['minage']))
+		$context['search_params']['minage'] = (int) $context['search_params']['minage'];
+
+	if (!empty($context['search_params']['maxage']))
+		$context['search_params']['maxage'] = (int) $context['search_params']['maxage'];
+
+	$context['search_params']['subject_only'] = !empty($context['search_params']['subject_only']);
+	$context['search_params']['show_complete'] = !empty($context['search_params']['show_complete']);
 
 	// Create the array of labels to be searched.
 	$context['search_labels'] = array();
@@ -657,6 +670,10 @@ function MessageSearch()
 	$context['simple_search'] = isset($context['search_params']['advanced']) ? empty($context['search_params']['advanced']) : !empty($modSettings['simpleSearch']) && !isset($_REQUEST['advanced']);
 	$context['page_title'] = $txt['pm_search_title'];
 	$context['sub_template'] = 'search';
+	$context['linktree'][] = array(
+		'url' => $scripturl . '?action=pm;sa=search',
+		'name' => $txt['pm_search_bar_title'],
+	);
 }
 
 function MessageSearch2()
@@ -674,7 +691,6 @@ function MessageSearch2()
 	$context['can_send_pm'] = allowedTo('send_pm');
 
 	// Some hardcoded veriables that can be tweaked if required.
-	$recentPercentage = 0.30;
 	$maxMembersToSearch = 500;
 
 	// Extract all the search parameters.
@@ -764,6 +780,35 @@ function MessageSearch2()
 	$search_params['sort'] = !empty($search_params['sort']) && in_array($search_params['sort'], $sort_columns) ? $search_params['sort'] : 'ID_PM';
 	$search_params['sort_dir'] = !empty($search_params['sort_dir']) && $search_params['sort_dir'] == 'asc' ? 'asc' : 'desc';
 
+	// Sort out any labels we may be searching by.
+	$labelQuery = '';
+	if ($context['folder'] == 'inbox' && !empty($search_params['advanced']) && $context['currently_using_labels'])
+	{
+		// Came here from pagination?  Put them back into $_REQUEST for sanitization.
+		if (isset($search_params['labels']))
+			$_REQUEST['searchlabel'] = explode(',', $search_params['labels']);
+
+		// Assuming we have some labels - make them all integers.
+		if (!empty($_REQUEST['searchlabel']) && is_array($_REQUEST['searchlabel']))
+		{
+			foreach ($_REQUEST['searchlabel'] as $key => $id)
+				$_REQUEST['searchlabel'][$key] = (int) $id;
+		}
+		else
+			$_REQUEST['searchlabel'] = array();
+
+		// Now that everything is cleaned up a bit, make the labels a param.
+		$search_params['labels'] = implode(',', $_REQUEST['searchlabel']);
+
+		// No labels selected? That must be an error!
+		if (empty($_REQUEST['searchlabel']))
+			$context['search_errors']['no_labels_selected'] = true;
+		// Otherwise prepare the query!
+		elseif (count($_REQUEST['searchlabel']) != count($context['labels']))
+			$labelQuery = "
+			AND (FIND_IN_SET('" . implode("', pmr.labels) OR FIND_IN_SET('", $_REQUEST['searchlabel']) . "', pmr.labels))";
+	}
+
 	// What are we actually searching for?
 	$search_params['search'] = !empty($search_params['search']) ? $search_params['search'] : (isset($_REQUEST['search']) ? stripslashes($_REQUEST['search']) : '');
 	// If we ain't got nothing - we should error!
@@ -836,32 +881,6 @@ function MessageSearch2()
 	if (isset($context['search_params']['userspec']))
 		$context['search_params']['userspec'] = htmlspecialchars($context['search_params']['userspec']);
 
-	// Sort out any labels we may be searching by.
-	$labelQuery = '';
-	if ($context['folder'] == 'inbox' && !empty($search_params['advanced']) && $context['currently_using_labels'])
-	{
-		// Came here from pagination?  Put them back into $_REQUEST for sanitization.
-		if (isset($context['search_params']['labels']))
-			$_REQUEST['searchlabel'] = $context['search_params']['labels'] == '' ? array() : explode(',', $context['search_params']['labels']);
-
-		// Assuming we have some labels - make them all integers.
-		if (!empty($_REQUEST['searchlabel']) && is_array($_REQUEST['searchlabel']))
-		{
-			foreach ($_REQUEST['searchlabel'] as $key => $id)
-				$_REQUEST['searchlabel'][$key] = (int) $id;
-		}
-		else
-			$_REQUEST['searchlabel'] = array();
-
-		// No labels selected? That must be an error!
-		if (empty($_REQUEST['searchlabel']))
-			$context['search_errors']['no_labels_selected'] = true;
-		// Otherwise prepare the query!
-		elseif (count($_REQUEST['searchlabel']) != count($context['labels']))
-			$labelQuery = "
-			AND FIND_IN_SET('" . implode("', pmr.labels) AND FIND_IN_SET('", $_REQUEST['searchlabel']) . "', pmr.labels)";
-	}
-
 	// Now we have all the parameters, combine them together for pagination and the like...
 	$context['params'] = array();
 	foreach ($search_params as $k => $v)
@@ -893,6 +912,20 @@ function MessageSearch2()
 		return MessageSearch();
 	}
 
+	// Get the amount of results.
+	$request = db_query("
+		SELECT COUNT(*)
+		FROM ({$db_prefix}pm_recipients AS pmr, {$db_prefix}personal_messages AS pm)
+		WHERE pm.ID_PM = pmr.ID_PM" . ($context['folder'] == 'inbox' ? "
+			AND pmr.ID_MEMBER = $ID_MEMBER
+			AND pmr.deleted = 0" : "
+			AND pm.ID_MEMBER_FROM = $ID_MEMBER
+			AND pm.deletedBySender = 0") . "
+			$userQuery$labelQuery
+			AND ($searchQuery)", __FILE__, __LINE__);
+	list ($numResults) = mysql_fetch_row($request);
+	mysql_free_result($request);
+
 	// Get all the matching messages... using standard search only (No caching and the like!)
 	// !!! This doesn't support outbox searching yet.
 	$request = db_query("
@@ -922,7 +955,7 @@ function MessageSearch2()
 		loadMemberData($posters);
 
 	// Sort out the page index.
-	$context['page_index'] = constructPageIndex($scripturl . '?action=pm;sa=search2;params=' . $context['params'], $_GET['start'], count($foundMessages), $modSettings['search_results_per_page'], false);
+	$context['page_index'] = constructPageIndex($scripturl . '?action=pm;sa=search2;params=' . $context['params'], $_GET['start'], $numResults, $modSettings['search_results_per_page'], false);
 
 	$context['message_labels'] = array();
 	$context['message_replied'] = array();
@@ -993,7 +1026,7 @@ function MessageSearch2()
 			// Parse out any BBC...
 			$row['body'] = parse_bbc($row['body'], true, 'pm' . $row['ID_PM']);
 
-			$href = $scripturl . '?action=pm;f=' . $context['folder'] . (isset($context['first_label'][$row['ID_PM']]) ? ';l=' . $context['first_label'][$row['ID_PM']] : '') . ';pmid='. $row['ID_PM'] . '#' . $row['ID_PM'];
+			$href = $scripturl . '?action=pm;f=' . $context['folder'] . (isset($context['first_label'][$row['ID_PM']]) ? ';l=' . $context['first_label'][$row['ID_PM']] : '') . ';pmid='. $row['ID_PM'] . '#msg' . $row['ID_PM'];
 			$context['personal_messages'][] = array(
 				'id' => $row['ID_PM'],
 				'member' => &$memberContext[$row['ID_MEMBER_FROM']],
@@ -1016,6 +1049,10 @@ function MessageSearch2()
 	$context['page_title'] = $txt['pm_search_title'];
 	$context['sub_template'] = 'search_results';
 	$context['pm_area'] = 'search';
+	$context['linktree'][] = array(
+		'url' => $scripturl . '?action=pm;sa=search',
+		'name' => $txt['pm_search_bar_title'],
+	);
 }
 
 // Send a new message?
@@ -1036,12 +1073,41 @@ function MessagePost()
 		$context['sub_template'] = 'send';
 	}
 
+	// Extract out the spam settings - cause it's neat.
+	list ($modSettings['max_pm_recipients'], $modSettings['pm_posts_verification'], $modSettings['pm_posts_per_hour']) = explode(',', $modSettings['pm_spam_settings']);
+
 	$context['show_spellchecking'] = !empty($modSettings['enableSpellChecking']) && function_exists('pspell_new');
 
 	// Set the title...
 	$context['page_title'] = $txt[148];
 
 	$context['reply'] = isset($_REQUEST['pmsg']) || isset($_REQUEST['quote']);
+
+	// Check whether we've gone over the limit of messages we can send per hour.
+	if (!empty($modSettings['pm_posts_per_hour']) && !allowedTo(array('admin_forum', 'moderate_forum', 'send_mail')))
+	{
+		// How many have they sent this last hour?
+		$request = db_query("
+			SELECT COUNT(pr.ID_PM) AS postCount
+			FROM ({$db_prefix}personal_messages AS pm, {$db_prefix}pm_recipients AS pr)
+			WHERE pm.ID_MEMBER_FROM = $ID_MEMBER
+				AND pm.msgtime > " . (time() - 3600) . "
+				AND pr.ID_PM = pm.ID_PM", __FILE__, __LINE__);
+		list ($postCount) = mysql_fetch_row($request);
+		mysql_free_result($request);
+
+		if (!empty($postCount) && $postCount >= $modSettings['pm_posts_per_hour'])
+		{
+			// Excempt moderators.
+			$request = db_query("
+				SELECT ID_MEMBER
+				FROM {$db_prefix}moderators
+				WHERE ID_MEMBER = $ID_MEMBER", __FILE__, __LINE__);
+			if (mysql_num_rows($request) == 0)
+				fatal_error(sprintf($txt['pm_too_many_per_hour'], $modSettings['pm_posts_per_hour']));
+			mysql_free_result($request);
+		}
+	}
 
 	// Quoting/Replying to a message?
 	if (!empty($_REQUEST['pmsg']))
@@ -1184,6 +1250,21 @@ function MessagePost()
 		'name' => $txt[321]
 	);
 
+	$context['visual_verification'] = !$user_info['is_admin'] && !empty($modSettings['pm_posts_verification']) && $user_info['posts'] < $modSettings['pm_posts_verification'];
+	if ($context['visual_verification'])
+	{
+		$context['use_graphic_library'] = in_array('gd', get_loaded_extensions());
+		$context['verificiation_image_href'] = $scripturl . '?action=verificationcode;rand=' . md5(rand());
+
+		// Skip I, J, L, O, Q, S and Z.
+		$character_range = array_merge(range('A', 'H'), array('K', 'M', 'N', 'P'), range('R', 'Z'));
+
+		// Generate a new code.
+		$_SESSION['visual_verification_code'] = '';
+		for ($i = 0; $i < 5; $i++)
+			$_SESSION['visual_verification_code'] .= $character_range[array_rand($character_range)];
+	}
+
 	// Register this form and get a sequence number in $context.
 	checkSubmitOnce('register');
 }
@@ -1192,7 +1273,7 @@ function MessagePost()
 function messagePostError($error_types, $to, $bcc)
 {
 	global $txt, $context, $scripturl, $modSettings, $db_prefix, $ID_MEMBER;
-	global $func;
+	global $func, $user_info;
 
 	$context['show_spellchecking'] = !empty($modSettings['enableSpellChecking']) && function_exists('pspell_new');
 
@@ -1269,6 +1350,14 @@ function messagePostError($error_types, $to, $bcc)
 			$context['post_error']['messages'][] = $txt['error_' . $error_type];
 	}
 
+	// Check whether we need to show the code again.
+	$context['visual_verification'] = !$user_info['is_admin'] && !empty($modSettings['pm_posts_verification']) && $user_info['posts'] < $modSettings['pm_posts_verification'];
+	if ($context['visual_verification'])
+	{
+		$context['use_graphic_library'] = in_array('gd', get_loaded_extensions());
+		$context['verificiation_image_href'] = $scripturl . '?action=verificationcode;rand=' . md5(rand());
+	}
+
 	// No check for the previous submission is needed.
 	checkSubmitOnce('free');
 
@@ -1287,6 +1376,35 @@ function MessagePost2()
 
 	if (loadLanguage('PersonalMessage', '', false) === false)
 		loadLanguage('InstantMessage');
+
+	// Extract out the spam settings - it saves database space!
+	list ($modSettings['max_pm_recipients'], $modSettings['pm_posts_verification'], $modSettings['pm_posts_per_hour']) = explode(',', $modSettings['pm_spam_settings']);
+
+	// Check whether we've gone over the limit of messages we can send per hour - fatal error if fails!
+	if (!empty($modSettings['pm_posts_per_hour']) && !allowedTo(array('admin_forum', 'moderate_forum', 'send_mail')))
+	{
+		// How many messages have they sent this last hour?
+		$request = db_query("
+			SELECT COUNT(pr.ID_PM) AS postCount
+			FROM ({$db_prefix}personal_messages AS pm, {$db_prefix}pm_recipients AS pr)
+			WHERE pm.ID_MEMBER_FROM = $ID_MEMBER
+				AND pm.msgtime > " . (time() - 3600) . "
+				AND pr.ID_PM = pm.ID_PM", __FILE__, __LINE__);
+		list ($postCount) = mysql_fetch_row($request);
+		mysql_free_result($request);
+
+		if (!empty($postCount) && $postCount >= $modSettings['pm_posts_per_hour'])
+		{
+			// Excempt moderators.
+			$request = db_query("
+				SELECT ID_MEMBER
+				FROM {$db_prefix}moderators
+				WHERE ID_MEMBER = $ID_MEMBER", __FILE__, __LINE__);
+			if (mysql_num_rows($request) == 0)
+				fatal_error(sprintf($txt['pm_too_many_per_hour'], $modSettings['pm_posts_per_hour']));
+			mysql_free_result($request);
+		}
+	}
 
 	// Initialize the errors we're about to make.
 	$post_errors = array();
@@ -1308,6 +1426,10 @@ function MessagePost2()
 		$post_errors[] = 'long_message';
 	if (empty($_REQUEST['to']) && empty($_REQUEST['bcc']) && empty($_REQUEST['u']))
 		$post_errors[] = 'no_to';
+
+	// Wrong verification code?
+	if (!$user_info['is_admin'] && !empty($modSettings['pm_posts_verification']) && $user_info['posts'] < $modSettings['pm_posts_verification'] && (empty($_REQUEST['visual_verification_code']) || strtoupper($_REQUEST['visual_verification_code']) !== $_SESSION['visual_verification_code']))
+		$post_errors[] = 'wrong_verification_code';
 
 	// If they did, give a chance to make ammends.
 	if (!empty($post_errors))
@@ -1332,7 +1454,7 @@ function MessagePost2()
 		$context['page_title'] = $txt[507] . ' - ' . $context['preview_subject'];
 
 		// Pretend they messed up :P.
-		return messagePostError(array(), htmlspecialchars($_REQUEST['to']), htmlspecialchars($_REQUEST['bcc']));
+		return messagePostError(array(), $func['htmlspecialchars']($_REQUEST['to']), $func['htmlspecialchars']($_REQUEST['bcc']));
 	}
 
 	// Protect from message spamming.
@@ -1420,7 +1542,7 @@ function MessagePost2()
 	}
 
 	// Before we send the PM, let's make sure we don't have an abuse of numbers.
-	if (!empty($modSettings['max_pm_recipients']) && count($recipients['to']) + count($recipients['bcc']) > $modSettings['max_pm_recipients'] && !AllowedTo(array('moderate_forum', 'send_mail', 'admin_forum')))
+	if (!empty($modSettings['max_pm_recipients']) && count($recipients['to']) + count($recipients['bcc']) > $modSettings['max_pm_recipients'] && !allowedTo(array('moderate_forum', 'send_mail', 'admin_forum')))
 	{
 		$context['send_log'] = array(
 			'sent' => array(),
@@ -1447,7 +1569,6 @@ function MessagePost2()
 			$post_errors[] = 'bad_' . $rec_type;
 		foreach ($rec as $i => $member)
 		{
-			$input[$rec_type][$i] = un_htmlspecialchars($member);
 			$context['send_log']['failed'][] = sprintf($txt['pm_error_user_not_found'], $input[$rec_type][$i]);
 		}
 	}
@@ -1798,7 +1919,7 @@ function deleteMessages($personal_messages, $folder = null, $owner = null)
 // Mark personal messages read.
 function markMessages($personal_messages = null, $label = null, $owner = null)
 {
-	global $ID_MEMBER, $db_prefix, $context;
+	global $ID_MEMBER, $db_prefix, $context, $user_info;
 
 	if ($owner === null)
 		$owner = $ID_MEMBER;
@@ -1914,7 +2035,7 @@ function ManageLabels()
 				{
 					$_POST['label_name'][$id] = trim(strtr($func['htmlspecialchars']($_POST['label_name'][$id]), array(',' => '&#044;')));
 
-					if ($func['strlen']($strlen_label) > 30)
+					if ($func['strlen']($_POST['label_name'][$id]) > 30)
 						$_POST['label_name'][$id] = $func['substr']($_POST['label_name'][$id], 0, 30);
 					if ($_POST['label_name'][$id] != '')
 					{
@@ -1950,7 +2071,8 @@ function ManageLabels()
 			$request = db_query("
 				SELECT ID_PM, labels
 				FROM {$db_prefix}pm_recipients
-				WHERE FIND_IN_SET('" . implode("', labels) OR FIND_IN_SET('", $searchArray) . "', labels)", __FILE__, __LINE__);
+				WHERE FIND_IN_SET('" . implode("', labels) OR FIND_IN_SET('", $searchArray) . "', labels)
+					AND ID_MEMBER = $ID_MEMBER", __FILE__, __LINE__);
 			while ($row = mysql_fetch_assoc($request))
 			{
 				// Do the long task of updating them...

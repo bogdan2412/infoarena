@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1 RC3; ManageCalendar
+// Version: 1.1; ManageCalendar
 
 function template_manage_holidays()
 {

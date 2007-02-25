@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1 RC3; Combat
+// Version: 1.1; Combat
 
 // This is a fix for the image stuff, lovely....
 if (!isset($context['html_headers']))

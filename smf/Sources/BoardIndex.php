@@ -1,25 +1,26 @@
 <?php
-/******************************************************************************
-* BoardIndex.php                                                              *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-******************************************************************************/
+/**********************************************************************************
+* BoardIndex.php                                                                  *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1                                             *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+**********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -408,14 +409,12 @@ function BoardIndex()
 			$context['latest_posts'] = getLastPosts($settings['number_recent_posts']);
 			cache_put_data('boardindex-latest_posts:' . md5($user_info['query_see_board'] . $user_info['language']), $context['latest_posts'], 180);
 		}
+
 		// We have to clean up the cached data a bit.
-		else
+		foreach ($context['latest_posts'] as $k => $post)
 		{
-			foreach ($context['latest_posts'] as $k => $post)
-			{
-				$context['latest_posts'][$k]['time'] = timeformat($post['raw_timestamp']);
-				$context['latest_posts'][$k]['timestamp'] = forum_time(true, $post['raw_timestamp']);
-			}
+			$context['latest_posts'][$k]['time'] = timeformat($post['raw_timestamp']);
+			$context['latest_posts'][$k]['timestamp'] = forum_time(true, $post['raw_timestamp']);
 		}
 	}
 
@@ -426,7 +425,7 @@ function BoardIndex()
 	$context['show_who'] = allowedTo('who_view') && !empty($modSettings['who_enabled']);
 
 	// Set some permission related settings.
-	$context['show_login_bar'] = $user_info['is_guest'] && empty($modSettings['enableVBStyleLogin']);
+	$context['show_login_bar'] = $user_info['is_guest'] && !empty($modSettings['enableVBStyleLogin']);
 	$context['show_calendar'] = allowedTo('calendar_view') && !empty($modSettings['cal_enabled']);
 
 	// Load the calendar?

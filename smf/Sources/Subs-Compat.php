@@ -1,30 +1,31 @@
 <?php
-/******************************************************************************
-* Subs-Compat.php                                                             *
-*******************************************************************************
-* SMF: Simple Machines Forum                                                  *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                *
-* =========================================================================== *
-* Software Version:           SMF 1.1 RC3                                     *
-* Software by:                Simple Machines (http://www.simplemachines.org) *
-* Copyright 2001-2006 by:     Lewis Media (http://www.lewismedia.com)         *
-* Support, News, Updates at:  http://www.simplemachines.org                   *
-*******************************************************************************
-* This program is free software; you may redistribute it and/or modify it     *
-* under the terms of the provided license as published by Lewis Media.        *
-*                                                                             *
-* This program is distributed in the hope that it is and will be useful,      *
-* but WITHOUT ANY WARRANTIES; without even any implied warranty of            *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                        *
-*                                                                             *
-* See the "license.txt" file for details of the Simple Machines license.      *
-* The latest version can always be found at http://www.simplemachines.org.    *
-*******************************************************************************
-* SHA-1 implementation based on work copyright 2000 - 2002 by Paul Johnston.  *
-* Contributions also from: Greg Holt, Andrew Kepert, Ydnar, and Lostinet.     *
-* Code licensed under the BSD license.  Please see this site for details:     *
-* http://pajhome.org.uk/crypt/md5                                             *
-******************************************************************************/
+/**********************************************************************************
+* Subs-Compat.php                                                                 *
+***********************************************************************************
+* SMF: Simple Machines Forum                                                      *
+* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
+* =============================================================================== *
+* Software Version:           SMF 1.1.2                                           *
+* Software by:                Simple Machines (http://www.simplemachines.org)     *
+* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
+* Support, News, Updates at:  http://www.simplemachines.org                       *
+***********************************************************************************
+* This program is free software; you may redistribute it and/or modify it under   *
+* the terms of the provided license as published by Simple Machines LLC.          *
+*                                                                                 *
+* This program is distributed in the hope that it is and will be useful, but      *
+* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+*                                                                                 *
+* See the "license.txt" file for details of the Simple Machines license.          *
+* The latest version can always be found at http://www.simplemachines.org.        *
+***********************************************************************************
+* SHA-1 implementation based on work copyright 2000 - 2002 by Paul Johnston.      *
+* Contributions also from: Greg Holt, Andrew Kepert, Ydnar, and Lostinet.         *
+* Code licensed under the BSD license.  Please see this site for details:         *
+* http://pajhome.org.uk/crypt/md5                                                 *
+***********************************************************************************/
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -71,9 +72,9 @@ if (!function_exists('file_get_contents'))
 }
 
 // Define the sha1 function, if it doesn't exist (but the built in one would be faster.)
-if (!function_exists('sha1'))
+if (1 == 1)
 {
-	function sha1($str)
+	function sha1_smf($str)
 	{
 		// If we have mhash loaded in, use it instead!
 		if (function_exists('mhash') && defined('MHASH_SHA1'))
@@ -162,6 +163,14 @@ if (!function_exists('sha1'))
 			$a = $num >> (32 - $cnt);
 
 		return ($num << $cnt) | $a;
+	}
+
+	if (!function_exists('sha1'))
+	{
+		function sha1($str)
+		{
+			return sha1_smf($str);
+		}
 	}
 }
 

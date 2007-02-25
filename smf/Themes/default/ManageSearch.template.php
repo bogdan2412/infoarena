@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1 RC3; ManageSearch
+// Version: 1.1; ManageSearch
 
 function template_modify_settings()
 {
