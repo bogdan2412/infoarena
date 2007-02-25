@@ -11,7 +11,7 @@ function copy_grader_file($task, $filename, $target)
 // Copy a grader file over to some other location.
 // This will download the file from the server and cache it.
 //
-// FIXME: Don't cache if www runs locally.
+// Return success value.
 function copy_attachment_file($pagename, $filename, $target)
 {
     $pagename = normalize_page_name($pagename);
@@ -54,7 +54,7 @@ function copy_attachment_file($pagename, $filename, $target)
         curl_setopt($curl, CURLOPT_FAILONERROR, true);
         //curl_setopt($curl, CURLOPT_VERBOSE, true);
 
-        log_print("Downloading new version of $pagename/$filename...");
+        //log_print("Downloading new version of $pagename/$filename...");
         if (!curl_exec($curl)) {
             log_warn("Failed curl download for $pagename/$filename.");
             log_warn("Curl says: ".curl_error($curl));
@@ -66,9 +66,9 @@ function copy_attachment_file($pagename, $filename, $target)
             return false;
         }
 
-        log_print("Downloaded new version of $pagename/$filename.");
+        //log_print("Downloaded new version of $pagename/$filename.");
     } else {
-        log_print("Using cached $pagename/$filename");
+        //log_print("Using cached $pagename/$filename");
     }
     if (!copy($cachefname, $target)) {
         log_warn("Failed copying grader file $pagename/$filename");

@@ -6,20 +6,25 @@ function milisleep($ms) {
 }
 
 // Delete and remake a directory.
+// Return success value.
 function clean_dir($dir)
 {
     system("rm -rf " . $dir, $res);
-    system("mkdir -m 0777 -p " . $dir, $res);
-    if ($res) {
-        log_print("Failed cleaning up directory $dir");
+    if (mkdir($dir, 0777, true) === false) {
+        log_warn("Failed re-creating directory $dir");
         return false;
     }
-    log_print("Cleaned up directory $dir");
+    if (chmod($dir, 0777) == false) {
+        log_warn("Failed chmod 0777 directory $dir");
+        return false;
+    }
     return true;
 }
 
 // Compile a certain file.
-// Returns success value.
+// Returns success value, and a friendly error message in $compiler_message.
+//
+// Can currently handle C, C++ and FreePascal
 function compile_file($input_file_name, $output_file_name, &$compiler_message)
 {
     $compiler_message = false;
@@ -31,14 +36,14 @@ function compile_file($input_file_name, $output_file_name, &$compiler_message)
             'fpc' => 'fpc -O2 -Xs %file_name%',
     );
     if (!preg_match("/^(.*)\.(c|cpp|pas|fpc)$/i", $input_file_name, $matches)) {
-        log_print("Can't figure out compiler for file $input_file_name");
+        $compiler_message = "Nu am putut sa determin compilatorul ".
+                "pentru '$input_file_name'.";
         return false;
     }
     $exe_name = $matches[1];
     $extension = $matches[2];
-    log_print("Compiling file '$input_file_name' extension '$extension'");
     if (!isset($compiler_lines[$extension])) {
-        log_warn("Can't find compiler line for extension $extension");
+        $compiler_message = "Nu stiu cum sa compiler fisiere '$extension'";
         return false;
     }
 
@@ -47,28 +52,18 @@ function compile_file($input_file_name, $output_file_name, &$compiler_message)
     $cmdline = preg_replace('/%exe_name%/', $exe_name, $cmdline);
 
     // Running compiler
-    //log_print("Running $cmdline");
-    @system("$cmdline 2>&1 | head -n 25 &> compiler.log");
+    $compiler_message = shell_exec("$cmdline 2>&1 | head -n 25");
 
     // This is the BEST way to determine if compilation worked.
     $res = is_executable($exe_name);
 
-    // Get compiler messages.
-    $compiler_message = file_get_contents('compiler.log');
-    if ($compiler_message === false) {
-        log_print("Failed getting compiler messages");
-        $compiler_message = false;
-        return false;
-    }
-
+    // Rename to $output_file_name.
     if ($exe_name != $output_file_name) {
         if (!@rename($exe_name, $output_file_name)) {
-            log_warn("Failed renaming $exe_name to $output_file_name");
-            $compiler_message = false;
+            log_error("Failed renaming $exe_name to $output_file_name");
             return false;
         }
     }
-    log_print("Compiler " . ($res ? 'succeeded' : 'failed') . " and said:\n$compiler_message\n");
 
     return $res;
 }
@@ -161,7 +156,7 @@ function jail_run($program, $jaildir, $time, $memory, $capture_std = false)
     }
     //$cmdline .= " --verbose";
 
-    log_print("Running $cmdline");
+    //log_print("Running $cmdline");
     $message = shell_exec($cmdline);
 
     $result = jrun_parse_message($message);

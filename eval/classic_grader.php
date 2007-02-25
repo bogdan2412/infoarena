@@ -10,23 +10,18 @@ function classic_task_grade_job($task, $tparams, $job) {
     log_assert_valid(task_validate($task));
     log_assert_valid(task_validate_parameters($task['type'], $tparams));
 
-    // Clean temp dir
-    if (!clean_dir(IA_ROOT_DIR.'eval/temp/')) {
-        log_warn("Can't clean to temp dir.");
-        return jobresult_system_error();
-    }
-
-    // chdir to temp dir.
-    if (!@chdir(IA_ROOT_DIR.'eval/temp/')) {
-        log_warn("Can't chdir to temp dir.");
-        return jobresult_system_error();
-    }
+    // Clean temp dir and chdir
+    $ret = clean_dir(IA_ROOT_DIR.'eval/temp/');
+    log_assert($ret, "Can't clean to temp dir.");
+    $ret = chdir(IA_ROOT_DIR.'eval/temp/');
+    log_assert($ret, "Can't chdir to temp dir.");
 
     // Compile custom evaluator.
     // Don't send system error, send custom message
     if ($tparams['evaluator'] !== '') {
         if (!copy_grader_file($task, $tparams['evaluator'],
                 IA_ROOT_DIR.'eval/temp/'.$tparams['evaluator'])) {
+            log_print('Task eval not found');
             $result['message'] = 'Eroare in setarile problemei';
             $result['log'] = "Lipseste evaluatorul problemei.\n";
             $result['log'] .= "Ar trebui sa existe un atasament".
@@ -36,23 +31,20 @@ function classic_task_grade_job($task, $tparams, $job) {
         }
 
         if (!compile_file($tparams['evaluator'], 'eval', $compiler_messages)) {
+            log_print('Task eval compile error');
             $result['message'] = 'Eroare de compilare in evaluator';
             $result['log'] = "Eroare de compilare:\n" . $compiler_messages;
             return $result;
         }
     } else {
-        log_print("Unique output, no evaluator!");
+        //log_print("Unique output, no evaluator!");
     }
 
     // Compile user source.
-    if (false === @file_put_contents("user." . $job['compiler_id'], $job['file_contents'])) {
-        log_warn("Can't write user file on disk.");
-        return jobresult_system_error();
-    }
+    $ret = @file_put_contents("user." . $job['compiler_id'], $job['file_contents']);
+    //log_assert($ret, "Failed putting user file on disk");
     if (!compile_file("user." . $job['compiler_id'], 'user', $compiler_messages)) {
-        if ($compiler_messages === false) {
-            return jobresult_system_error();
-        }
+        log_print('User program compile error');
         $result['message'] = "Eroare de compilare";
         $result['log'] = "Eroare de compilare:\n" . $compiler_messages;
         return $result;
@@ -71,46 +63,37 @@ function classic_task_grade_job($task, $tparams, $job) {
 
         $userfile = "user_{$job['id']}_{$testno}";
 
-        if (!@chdir(IA_ROOT_DIR.'eval/temp/')) {
-            log_warn("Can't chdir to ia root dir.");
-            return jobresult_system_error();
-        }
-        if (!clean_dir($jaildir)) {
-            return jobresult_system_error();
-        }
-        if (!@chdir($jaildir)) {
-            log_warn("Can't chdir to jail dir.");
-            return jobresult_system_error();
-        }
+        // Clean and chdir to jail dir.
+        $ret = clean_dir($jaildir);
+        log_assert($ret, "Can't clean jail dir.");
+        $ret = chdir($jaildir);
+        log_assert($ret, "Can't chdir to jail dir.");
 
+        // Download grader file.
         if (!copy_grader_file($task, 'test' . $testno . '.in', $infile)) {
+            log_print("Test $testno: input not found");
             $result['message'] = 'Eroare in teste';
             $result['score'] = 0;
-            $result['log'] = "Lipseste intrarea testul $testno.\n";
+            $result['log'] = "Lipseste intrarea testului $testno.\n";
             $result['log'] .= "Ar trebui sa existe un atasament".
                     " 'grader_test$testno.in' ".
                     "la pagina cu enuntul problemei";
             return $result;
         }
 
-        if (!@copy(IA_ROOT_DIR.'eval/temp/user', $jaildir . $userfile)) {
-            log_warn("Failed copying user program");
-            return jobresult_system_error();
-        }
-        @system("chmod a+x $userfile", $res);
-        if ($res) {
-            log_warn("Failed to chmod a+x user program");
-            return jobresult_system_error();
-        }
+        $ret = copy(IA_ROOT_DIR.'eval/temp/user', $jaildir . $userfile);
+        log_assert($ret, "Failed copying user program");
+        $ret = chmod($userfile, 0555);
+        log_assert("Failed to chmod a+x user program");
      
         // Run user program.
         $jrunres = jail_run($userfile, $jaildir, $tparams['timelimit'] * 1000, $tparams['memlimit']);
-        log_print("JRUN user: ".$jrunres['result'].": ".$jrunres['message']);
-        if ($jrunres['result'] == 'ERROR') {
-            return jobresult_system_error();
-        } else if ($jrunres['result'] == 'FAIL') {
+        log_assert($jrunres['result'] != 'ERROR', "Error in jrun.");
+        if ($jrunres['result'] == 'FAIL') {
+            log_print("Test $testno: User program failed: {$jrunres['message']} ".
+                        "{$jrunres['time']}ms {$jrunres['memory']}kb");
             $result['log'] .= "eroare: timp {$jrunres['time']}ms: mem {$jrunres['memory']}kb: {$jrunres['message']}: 0 puncte";
-            log_print("");
+            // User program failed on this test. Bye bye.
             continue;
         } else {
             $result['log'] .= "ok: timp {$jrunres['time']}ms: mem {$jrunres['memory']}kb: ";
@@ -119,6 +102,7 @@ function classic_task_grade_job($task, $tparams, $job) {
         // Copy ok file, if used.
         if ($tparams['okfiles']) {
             if (!copy_grader_file($task , 'test' . $testno . '.ok', $okfile)) {
+                log_print("Test $testno: .ok file not found");
                 $result['message'] = 'Eroare in teste';
                 $result['score'] = 0;
                 $result['log'] = "Lipseste fisierul .ok al testului $testno.\n";
@@ -134,39 +118,35 @@ function classic_task_grade_job($task, $tparams, $job) {
             if (is_readable($outfile)) {
                 $diff_output = shell_exec("diff -qBbEa $outfile $okfile");
                 if ($diff_output == '') {
-                    log_print("output and okfile match");
+                    log_print("Test $testno: Diff eval: Files identical"); 
                     $score = 100 / $tparams['tests'];
                     $result['score'] += $score;
                     $result['log'] .= "OK: $score puncte";
                 } else {
-                    log_print("output and okfile don't match");
-                    //log_print(file_get_contents($outfile)." != ".file_get_contents($okfile));
+                    log_print("Test $testno: Diff eval: Files differ"); 
                     $result['log'] .= "Incorect: 0 puncte";
                 }
             } else {
+                log_print("Test $testno: Diff eval: output missing"); 
                 $result['log'] .= "Fisier de iesire lipsa: 0 puncte";
             }
         } else {
             // Custom grader.
-            if (!@copy(IA_ROOT_DIR . 'eval/temp/eval', $jaildir . 'eval')) {
-                log_warn("Failed copying custom grader");
-                return jobresult_system_error();
-            }
-            @system("chmod a+x eval", $res);
-            if ($res) {
-                log_warn("Failed to chmod a+x custom grader");
-                return jobresult_system_error();
-            }
+            $ret = copy(IA_ROOT_DIR . 'eval/temp/eval', $jaildir . 'eval');
+            log_assert($ret, "Failed copying custom grader");
+            $ret = chmod('eval', 0555);
+            log_assert("Failed to chmod a+x user program");
 
-            // Run grader, and check result
+            // Run task eval, and check result
             $jrunres = jail_run('eval', $jaildir,
-                IA_JUDGE_TASK_EVAL_TIMELIMIT,
-                IA_JUDGE_TASK_EVAL_MEMLIMIT,
-                true);
-            log_print("JRUN grader: ".$jrunres['result'].": ".$jrunres['message']);
-            if ($jrunres['result'] == 'ERROR') {
-                return jobresult_system_error();
-            } else if ($jrunres['result'] == 'FAIL') {
+                    IA_JUDGE_TASK_EVAL_TIMELIMIT,
+                    IA_JUDGE_TASK_EVAL_MEMLIMIT,
+                    true);
+            log_assert($jrunres['result'] != 'ERROR', "Error in jrun");
+
+            // Task eval is not allowed to fail.
+            if ($jrunres['result'] == 'FAIL') {
+                log_print("Test $testno: Task eval failed");
                 $result['message'] = 'Eroare in evaluator';
                 $result['score'] = 0;
                 $result['log'] = "A aparut o eroare in rularea evaluatorului ".
@@ -180,22 +160,26 @@ function classic_task_grade_job($task, $tparams, $job) {
             $jrunres['stdout'] = trim($jrunres['stdout']);
             if ($jrunres['stdout'] === '') {
                 log_warn("Grader didn't return stdout, assuming 0 points");
+                $score = 0;
             } else if (!is_whole_number($jrunres['stdout'])) {
+                log_print("Test $testno: Task eval score broken");
                 $result['message'] = 'Eroare in evaluator';
                 $result['score'] = 0;
                 $result['log'] = "Evaluatorul nu a returnat un numar la stdout ".
                         "pe testul $testno (se ignora spatii, newline, etc)";
                 return $result;
+            } else {
+                $score = (int)$jrunres['stdout'];
             }
-            $score = (int)$jrunres['stdout'];
 
             // Get message.
             $message = $jrunres['stderr'];
             if (!preg_match("/^([^\n]*)$/i", $message, $match)) {
-                log_error("Broken grader message?");
+                log_error("Broken preg_match???");
             }
             $message = $match[1];
             if (strpos("\n", $message) || strlen($message) > 100) {
+                log_print("Test $testno: Task eval message broken");
                 $result['message'] = 'Eroare in evaluator';
                 $result['score'] = 0;
                 $result['log'] = "Evaluatorul a returnat un mesaj mai lung de 100 ".
@@ -204,12 +188,10 @@ function classic_task_grade_job($task, $tparams, $job) {
             }
 
             // log.
-            log_print("Grader gave $score points and said $message");
+            log_print("Test $testno: Eval gave $score points and said $message");
             $result['score'] += $score;
             $result['log'] .= "$message: $score puncte";
         }
-
-        log_print("");
     }
 
     $result['message'] = 'Evaluare completa';

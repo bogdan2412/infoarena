@@ -20,79 +20,44 @@ require_once(IA_ROOT_DIR.'eval/classic_grader.php');
 
 error_reporting(0xFFFF);
 
-// Create a job_result for a system error
-function jobresult_system_error()
-{
-    return array(
-            'log' => '
-Eroare de sistem.
-Va rugam sa postati pe forum si sa mentionati id-ul job-ului.',
-            'message' => 'System error',
-            'score' => 0,
-    );
-}
-
 // Send job result.
-function job_send_result($jobid, $jobresult)
-{
-    if ($jobresult['message'] == "Eroare de sistem") {
-        log_warn("System error on job $jobid");
-    }
-    log_print("Sending job $jobid msg {$jobresult['message']} score {$jobresult['score']}");
+function job_send_result($jobid, $jobresult) {
+    log_print("Sending result for job #{$jobid} ".
+            "score {$jobresult['score']} message {$jobresult['message']}");
+    log_print("");
     job_update($jobid, 'done', $jobresult['message'], $jobresult['log'], $jobresult['score']);
-
-    log_print("");
-    log_print("");
-}
-
-// Evaluates job. Returns job result.
-function job_eval($job)
-{
-    if (!chdir(IA_ROOT_DIR.'eval/')) {
-        log_print("Can't chdir to eval dir");
-        return jobresult_system_error();
-    }
-    
-    // Get task
-    $task = task_get($job['task_id']);
-    if (!$task) {
-        log_print("Nu am putut lua task-ul " . $job['task_id']);
-        return jobresult_system_error();
-    }
-
-    // Get task parameters.
-    $task_parameters = task_get_parameters($job['task_id']);
-    if (!$task_parameters) {
-        log_print("Nu am putut lua parametrii task-ului " . $job['task_id']);
-        return jobresult_system_error();
-    }
-
-    // Make the grader and execute it.
-    if ($task['type'] == 'classic') {
-        log_print("Grading {$task['id']}, type {$task['type']}");
-        return classic_task_grade_job($task, $task_parameters, $job);
-    } else {
-        log_print("Nu stiu sa evaluez task-uri de tip ".$task['type']);
-        return jobresult_system_error();
-    }
 }
 
 // This function handles a certain job.
-// This is the main job function.
 function job_handle($job) {
-    log_print("- -- --- ---- ----- Handling job " . $job['id']);
     // Evaluating, mark as processing.
     // FIXME: do it in query.
     job_update($job['id'], 'processing');
-    $job_result = job_eval($job);
-    if ($job_result == null) {
-        log_print("Bug in get_job_result");
-        $job_result = jobresult_system_error();
-    }
-    log_assert(getattr($job_result, "message"));
 
+    // Get task
+    $task = task_get($job['task_id']);
+    log_assert(!is_null($task), "Nu am gasit task-ul " . $job['task_id']);
+
+    // Get task parameters.
+    $task_parameters = task_get_parameters($job['task_id']);
+    log_assert(!is_null($task_parameters),
+            "Nu am putut paramtetrii task-ul " . $job['task_id']);
+
+    // Make the grader and execute it.
+    if ($task['type'] == 'classic') {
+        log_print("Job #{$job['id']} task {$task['id']} type {$task['type']}");
+        $job_result = classic_task_grade_job($task, $task_parameters, $job);
+    } else {
+        log_error("Nu stiu sa evaluez task-uri de tip ".$task['type']);
+    }
+
+    // Send job result and update score magic.
     job_send_result($job['id'], $job_result);
-    score_update_for_job($job_result['score'], $job['submit_time'], $job['user_id'], $job['task_id']);
+    score_update_for_job(
+            $job_result['score'],
+            $job['submit_time'],
+            $job['user_id'],
+            $job['task_id']);
 }
 
 // Main loop. It works by polling the sql server
@@ -115,6 +80,7 @@ function judge_main_loop() {
         }
         if ($round = round_get_round_to_wait()) {
             round_event_wait($round);
+            continue;
         }
         if ($job = job_get_next_job()) {
             job_handle($job);
