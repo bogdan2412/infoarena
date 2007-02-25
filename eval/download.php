@@ -26,15 +26,19 @@ function copy_attachment_file($pagename, $filename, $target)
     }
 
     // Make grader dir, in case it doesn't exit.
-    @mkdir(IA_GRADER_CACHE_DIR . $pagename . '/', 0700, true);
+    @mkdir(IA_ROOT_DIR.'eval/grader_cache/'.$pagename.'/', 0700, true);
     // My cached version timestamp
-    $cachefname = IA_GRADER_CACHE_DIR . $pagename . '/' . $filename;
+    $cachefname = IA_ROOT_DIR.'eval/grader_cache/'.$pagename.'/'.$filename;
 
     clearstatcache();
+    // Check modification time and file size.
     $cachemtime = @filemtime($cachefname);
     $servermtime = db_date_parse($att['timestamp']);
+    $cachefsize = @filesize($cachefname);
+    $serverfsize = $att['size'];
 
-    if ($cachemtime === null || $cachemtime < $servermtime) {
+    if ($cachemtime === false || $cachemtime < $servermtime ||
+        $cachefsize === false || $cachefsize != $att['size']) {
         $curl = curl_init();
         // Can't use url_attachment here because it's in www.
         curl_setopt($curl, CURLOPT_URL, IA_URL . "$pagename?action=download&file=$filename");

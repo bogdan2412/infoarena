@@ -20,7 +20,7 @@ function clean_dir($dir)
 
 // Compile a certain file.
 // Returns success value.
-function compile_file($file_name, &$compiler_message)
+function compile_file($input_file_name, $output_file_name, &$compiler_message)
 {
     $compiler_message = false;
     $compiler_lines = array(
@@ -30,20 +30,20 @@ function compile_file($file_name, &$compiler_message)
             'pas' => 'fpc -O2 -Xs %file_name%',
             'fpc' => 'fpc -O2 -Xs %file_name%',
     );
-    if (!preg_match("/^(.*)\.(c|cpp|pas|fpc)$/i", $file_name, $matches)) {
-        log_print("Can't figure out compiler for file $file_name");
+    if (!preg_match("/^(.*)\.(c|cpp|pas|fpc)$/i", $input_file_name, $matches)) {
+        log_print("Can't figure out compiler for file $input_file_name");
         return false;
     }
     $exe_name = $matches[1];
     $extension = $matches[2];
-    log_print("Compiling file '$file_name' extension '$extension'");
+    log_print("Compiling file '$input_file_name' extension '$extension'");
     if (!isset($compiler_lines[$extension])) {
         log_warn("Can't find compiler line for extension $extension");
         return false;
     }
 
     $cmdline = $compiler_lines[$extension];
-    $cmdline = preg_replace('/%file_name%/', $file_name, $cmdline);
+    $cmdline = preg_replace('/%file_name%/', $input_file_name, $cmdline);
     $cmdline = preg_replace('/%exe_name%/', $exe_name, $cmdline);
 
     // Running compiler
@@ -60,7 +60,15 @@ function compile_file($file_name, &$compiler_message)
         $compiler_message = false;
         return false;
     }
-    //log_print("Compiler " . ($res ? 'succeeded' : 'failed') . " and said:\n$compiler_message\n");
+
+    if ($exe_name != $output_file_name) {
+        if (!@rename($exe_name, $output_file_name)) {
+            log_warn("Failed renaming $exe_name to $output_file_name");
+            $compiler_message = false;
+            return false;
+        }
+    }
+    log_print("Compiler " . ($res ? 'succeeded' : 'failed') . " and said:\n$compiler_message\n");
 
     return $res;
 }
@@ -126,19 +134,20 @@ function jail_run($program, $jaildir, $time, $memory, $capture_std = false)
 {
     log_assert(is_whole_number($time));
     log_assert(is_whole_number($memory));
-    $cmdline = IA_JRUN_EXE;
+    $cmdline = IA_ROOT_DIR . 'jrun/jrun';
     $cmdline .= " --prog=./" . $program;
     $cmdline .= " --dir=" . $jaildir;
     $cmdline .= " --chroot";
-    $cmdline .= " --block-syscalls-file=" . IA_JRUN_DIR . 'bad_syscalls';
-    if (defined('IA_EVAL_JAIL_NICE') && IA_EVAL_JAIL_NICE != 0) {
-        $cmdline .= " --nice=" . IA_EVAL_JAIL_NICE;
+    //$cmdline .= " --verbose";
+    $cmdline .= " --block-syscalls-file=" . IA_ROOT_DIR . 'jrun/bad_syscalls';
+    if (defined('IA_JUDGE_JRUN_NICE') && IA_JUDGE_JRUN_NICE != 0) {
+        $cmdline .= " --nice=" . IA_JUDGE_JRUN_NICE;
     }
-    if (defined('IA_EVAL_JAIL_UID')) {
-        $cmdline .= " --uid=" . IA_EVAL_JAIL_UID;
+    if (defined('IA_JUDGE_JRUN_UID')) {
+        $cmdline .= " --uid=" . IA_JUDGE_JRUN_UID;
     }
-    if (defined('IA_EVAL_JAIL_GID')) {
-        $cmdline .= " --gid=" . IA_EVAL_JAIL_GID;
+    if (defined('IA_JUDGE_JRUN_GID')) {
+        $cmdline .= " --gid=" . IA_JUDGE_JRUN_GID;
     }
     if ($capture_std) {
         $cmdline .= " --redirect-stdout=jailed_stdout";
@@ -160,20 +169,23 @@ function jail_run($program, $jaildir, $time, $memory, $capture_std = false)
         return jrun_make_error('Failed executing jail');
     }
 
-    if ($capture_std) {
-        $result['stdout'] = file_get_contents($jaildir.'jailed_stdout');
+    if ($result['result'] == 'OK' && $capture_std) {
+        $result['stdout'] = @file_get_contents($jaildir.'jailed_stdout');
         if ($result['stdout'] === false) {
             return jrun_make_error('Failed reading captured stdout');
         }
-        $result['stderr'] = file_get_contents($jaildir.'jailed_stderr');
+        $result['stderr'] = @file_get_contents($jaildir.'jailed_stderr');
         if ($result['stderr'] === false) {
             return jrun_make_error('Failed reading captured stderr');
         }
     }
 
-    if ($result['message'] == 'ok') {
-        log_assert($result['time'] < $time, "JRun says ok, but reports time > timelimit");
-        log_assert($result['memory'] < $memory, "JRun says ok, but reports memory > memlimit");
+    if ($result['result'] == 'OK') {
+        if ($result['time'] > $time || $result['memory'] > $memory) {
+            log_print_r($result);
+            log_print("time $time memory $memory limits");
+            log_error("JRun says ok, but limits broken");
+        }
     }
 
     return $result;

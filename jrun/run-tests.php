@@ -1,20 +1,16 @@
 #! /usr/bin/env php
 <?php
 
+require_once(dirname($argv[0]) . "/../config.php");
+require_once(IA_ROOT_DIR . 'common/log.php');
+
 // Config options.
 $jail_dir = "jail";
 $exe_name = "prog";
-$extra_args = "--nice -5 --block-syscalls-file=bad_syscalls";
-$extra_args = "--nice -5 --block-syscalls-file=bad_syscalls --verbose";
-$extra_args = "--uid 65534 --gid 65534 --block-syscalls-file=bad_syscalls --verbose";
-$extra_args = "--uid 65534 --gid 65534 --block-syscalls-file=bad_syscalls";
-
-// Exit with an error message.
-function error($message)
-{
-    print($message);
-    exit(0);
-}
+$extra_args = "--block-syscalls-file=bad_syscalls --chroot --verbose";
+//$extra_args = "--nice -5 --block-syscalls-file=bad_syscalls --verbose";
+//$extra_args = "--uid 65534 --gid 65534 --block-syscalls-file=bad_syscalls --verbose";
+//$extra_args = "--uid 65534 --gid 65534 --block-syscalls-file=bad_syscalls";
 
 // Parse a source file
 // Returns the arguments to run the jail with and the expected response.
@@ -23,19 +19,15 @@ function parse_source($filename, &$test_args, &$test_exp_res)
 {
     $test_args = $test_exp_res = null;
     foreach (file("$filename") as $line) {
-        $pos = strpos($line, "JRUN_ARGS =");
-        if ($pos !== FALSE) {
-            $test_args = substr($line, $pos + strlen("JRUN_ARGS =") + 1);
+        if (preg_match("/\/\/ JRUN_ARGS =(.*)$/", $line, $matches)) {
+            $test_args = trim($matches[1]);
         }
-        $pos = strpos($line, "JRUN_RES =");
-        if ($pos !== FALSE) {
-            $test_exp_res = substr($line, $pos + strlen("JRUN_RES =") + 1);
+        if (preg_match("/\/\/ JRUN_RES =(.*)$/", $line, $matches)) {
+            $test_exp_res = trim($matches[1]);
         }
     }
-    $test_args = trim($test_args);
-    $test_exp_res = trim($test_exp_res);
     if ($test_args === null || $test_exp_res === null) {
-        error("$filename doesn't mention JRUN_ARGS and JRUN_RES\n");
+        log_error("$filename doesn't mention JRUN_ARGS and JRUN_RES\n");
     }
 }
 
@@ -46,10 +38,10 @@ function compile_source($source, $exe)
     } else if (strpos($source, ".c") === strlen($source) - 2) {
         system("gcc -Wall -lm -O2 $source -o $exe", $ret);
     } else {
-        error("Can't compile $source, unknown file extension\n");
+        log_error("Can't compile $source, unknown file extension\n");
     }
     if ($ret) {
-        error("Compilation error on $source\n");
+        log_error("Compilation error on $source\n");
     }
 }
 
@@ -66,11 +58,11 @@ function jail_run($filename, $args)
     compile_source($filename, "$jail_dir/$exe_name");
 
     $cmd = "./jrun --dir=$jail_dir --prog=$exe_name $args";
-    print("Executing $cmd\n");
 
+    log_print("Running $cmd");
     $res = shell_exec($cmd);
     system("rm -rf $jail_dir");
-    return $res;
+    return trim($res);
 }
 
 // Run one test.
@@ -80,7 +72,7 @@ function run_test($filename)
     global $extra_args;
 
     if (!file_exists($filename)) {
-        error("$filename doesn't exists.\n");
+        log_error("$filename doesn't exists.\n");
     }
 
     parse_source($filename, &$test_args, &$test_exp_res);
@@ -89,12 +81,13 @@ function run_test($filename)
     if (!preg_match("/^$test_exp_res$/", $test_res)) {
         $result = false;
         print("FAIL: $filename\n");
+        print("wanted: $test_exp_res\n");
+        print("got: $test_res\n");
     } else {
         $result = true;
         print("OK: $filename\n");
+        print("got: $test_res\n");
     }
-    print("wanted: $test_exp_res\n");
-    print("got: $test_res\n");
 
     return $result;
 }
@@ -136,6 +129,6 @@ do {
     } else {
         print("Invalid arguments\n");
     }
-} while (false);
+} while (true);
 
 ?>

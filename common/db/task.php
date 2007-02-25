@@ -4,8 +4,12 @@ require_once(IA_ROOT_DIR . "common/db/db.php");
 require_once(IA_ROOT_DIR . "common/task.php");
 require_once(IA_ROOT_DIR . "common/db/parameter.php");
 
+// Add $task to cache if not null, return $task.
 function _task_cache_add($task) {
-    mem_cache_set("task-by-id:{$task['id']}", $task);
+    if (!is_null($task)) {
+        log_assert_valid(task_validate($task));
+        mem_cache_set("task-by-id:{$task['id']}", $task);
+    }
     return $task;
 }
 
@@ -24,7 +28,9 @@ function task_get($task_id) {
 
     $query = sprintf("SELECT * FROM ia_task WHERE `id` = '%s'",
                      db_escape($task_id));
-    return _task_cache_add(db_fetch($query));
+
+    // This way nulls (missing tasks) get cached too.
+    return mem_cache_set("task-by-id:$task_id", db_fetch($query));
 }
 
 // create new task

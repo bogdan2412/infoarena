@@ -10,48 +10,26 @@ require_once(dirname($argv[0]) . '/../config.php');
 define("IA_JUDGE_USERNAME", 'eval');
 define("IA_JUDGE_PASSWORD", 'eval');
 
-// The directory used as the jail.
-define("IA_EVAL_DIR", IA_ROOT_DIR . 'eval/');
-
-// The directory with the grader files.
-define("IA_GRADER_CACHE_DIR", IA_EVAL_DIR . 'grader_cache/');
-
 // Poll interval, in miliseconds.
-define("IA_EVAL_POLL_INTERVAL", 100);
-
-// The directory with the grader files.
-
-// Path to the jrun executable
-define("IA_JRUN_DIR", IA_ROOT_DIR . 'jrun/');
-
-// Path to the jrun executable
-define("IA_JRUN_EXE", IA_JRUN_DIR . 'jrun');
-
-// The directory used as the jail.
-define("IA_EVAL_TEMP_DIR", IA_EVAL_DIR . 'temp/');
-
-// The directory used as the jail.
-define("IA_EVAL_JAIL_DIR", IA_EVAL_DIR . 'jail/');
-
-// Saved jails go here.
-define("IA_EVAL_JAILS_DIR", IA_EVAL_DIR . 'jails/');
+define("IA_JUDGE_POLL_INTERVAL", 100);
 
 // The user to run unsafe code as. This defaults to nobody.
-define("IA_EVAL_JAIL_UID", 65534);
+define("IA_JUDGE_JRUN_UID", 65534);
 
 // The group to run unsafe code as. This defaults to nobody.
-define("IA_EVAL_JAIL_GID", 65534);
+define("IA_JUDGE_JRUN_GID", 65534);
 
 // Niceness to run the unsafe code. 0 disables.
-define("IA_EVAL_JAIL_NICE", 0);
+define("IA_JUDGE_JRUN_NICE", 0);
 
 // Time limit for graders.
-define("IA_EVAL_TASK_GRADER_TIMELIMIT", 5000);
+define("IA_JUDGE_TASK_EVAL_TIMELIMIT", 5000);
 
 // Memory limit for graders.
-define("IA_EVAL_TASK_GRADER_MEMLIMIT", 64000);
+define("IA_JUDGE_TASK_EVAL_MEMLIMIT", 64000);
 
 // Add log timestamps.
+// FIXME: horrible hack.
 define("IA_LOG_TIMESTAMP_FORMAT", "Y-m-d H:i:s");
 
 ?>

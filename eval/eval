@@ -48,7 +48,7 @@ function job_send_result($jobid, $jobresult)
 // Evaluates job. Returns job result.
 function job_eval($job)
 {
-    if (!chdir(IA_EVAL_DIR)) {
+    if (!chdir(IA_ROOT_DIR.'eval/')) {
         log_print("Can't chdir to eval dir");
         return jobresult_system_error();
     }
@@ -67,20 +67,10 @@ function job_eval($job)
         return jobresult_system_error();
     }
 
-    // Check task and task parameters
-    if (task_validate($task)) {
-        log_print("Task invalid");
-        return jobresult_system_error();
-    }
-    if (task_validate_parameters($task['type'], $task_parameters)) {
-        log_print("Parametri de task invalid");
-        return jobresult_system_error();
-    }
-
     // Make the grader and execute it.
     if ($task['type'] == 'classic') {
         log_print("Grading {$task['id']}, type {$task['type']}");
-        return task_grade_job_classic($task, $task_parameters, $job);
+        return classic_task_grade_job($task, $task_parameters, $job);
     } else {
         log_print("Nu stiu sa evaluez task-uri de tip ".$task['type']);
         return jobresult_system_error();
@@ -105,13 +95,13 @@ function job_handle($job) {
     score_update_for_job($job_result['score'], $job['submit_time'], $job['user_id'], $job['task_id']);
 }
 
-// Main evaluation loop. It works by polling the sql server
-// every IA_EVAL_POLL_INTERVAL
-function eval_main_loop() {
+// Main loop. It works by polling the sql server
+// every IA_judge_POLL_INTERVAL
+function judge_main_loop() {
     db_connect();
 
     log_print("");
-    log_print("Eval started");
+    log_print("Judge started");
     log_print("");
 
     while (1) {
@@ -130,10 +120,11 @@ function eval_main_loop() {
             job_handle($job);
             continue;
         }
-        milisleep(IA_EVAL_POLL_INTERVAL);
+        milisleep(IA_JUDGE_POLL_INTERVAL);
     }
 }
 
+// Parse options. FIXME: php's built-in getopt is dumb
 $options = getopt("dl:");
 
 if (array_key_exists('d', $options)) {
@@ -144,10 +135,11 @@ if (array_key_exists('d', $options)) {
     file_put_contents(IA_ROOT_DIR . 'eval/eval.pid', getmypid() . "\n");
 }
 
+// FIXME: Is there a better way to redirect output? No freopen in php.
 if (array_key_exists('l', $options)) {
     ini_set('error_log', $options['l']);
 }
 
-eval_main_loop();
+judge_main_loop();
 
 ?>

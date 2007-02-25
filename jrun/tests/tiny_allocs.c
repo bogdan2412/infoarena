@@ -9,11 +9,14 @@
 int main(void)
 {
     int used = 0;
-    int q;
+    int q, i;
     while (used < 1000000) {
         q = 50;
         used += q;
-        malloc(q);
+        char *z = malloc(q);
+        for (i = 0; i < q; ++i) {
+            ++z[i];
+        }
     }
     return 0;
 }
