@@ -1,5 +1,7 @@
 <?php
-// Version: 1.1 RC3; Post
+// Version: 1.1; Post
+
+// Versiunea în limba română cu diacritice www.smf.ro
 
 $txt[25] = 'Scrie răspuns';
 $txt[71] = 'Imaginea ataşata mesajului';

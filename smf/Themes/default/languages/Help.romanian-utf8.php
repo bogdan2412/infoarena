@@ -1,8 +1,9 @@
 <?php
-// Version: 1.1 RC3; Help
+// Version: 1.1; Help
+
+// Versiunea în limba română cu diacritice www.smf.ro - în lucru
 
 global $helptxt;
-
 $helptxt = array();
 
 $txt[1006] = 'Inchide fereastra';

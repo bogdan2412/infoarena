@@ -1,5 +1,7 @@
 <?php
-// Version: 1.1 RC3; ManageMembers
+// Version: 1.1; ManageMembers
+
+// Versiunea în limba română cu diacritice www.smf.ro
 
 $txt['membergroups_title'] = 'Organizează şi aranjează Grupurile de Utilizatori';
 $txt['membergroups_description'] = 'Grupurile de utilizatori sunt utilizatori care au aceleaşi setări pentru permisiuni, mod de prezentare şi drepturi de acces. Unele grupuri de utilizatori sunt bazate pe numărul de mesaje scrise. Atribuirea unui utilizator la un anumit grup se face din panoul Profil personal al utilizatorului respectiv, modificănd setările contului.';
@@ -58,7 +60,7 @@ $txt['admin_browse_awaiting_approval'] = 'Asteaptă aprobarea  <span style="font
 $txt['admin_browse_awaiting_activate'] = 'Asteaptă activarea <span style="font-weight: normal">(%d)</span>';
 
 $txt['admin_browse_username'] = 'Nume de utilizator';
-$txt['admin_browse_email'] = 'Adresa de e-mail';
+$txt['admin_browse_email'] = 'Adresa de email';
 $txt['admin_browse_ip'] = 'Adresa IP';
 $txt['admin_browse_registered'] = 'Inregistrat';
 $txt['admin_browse_id'] = 'ID';
@@ -73,9 +75,9 @@ $txt['admin_browse_w_approve'] = 'Aprobă';
 $txt['admin_browse_w_activate'] = 'Activează';
 $txt['admin_browse_w_delete'] = 'Şterge';
 $txt['admin_browse_w_reject'] = 'Refuză';
-$txt['admin_browse_w_remind'] = 'Reaminteste';
+$txt['admin_browse_w_remind'] = 'Reaminteşte';
 $txt['admin_browse_w_approve_deletion'] = 'Aprobă (Şterge contul)';
-$txt['admin_browse_w_email'] = 'şi trimite e-mail';
+$txt['admin_browse_w_email'] = 'şi trimite email';
 $txt['admin_browse_w_approve_require_activate'] = 'Aprobă şi asteaptă activarea';
 
 $txt['admin_browse_filter_by'] = 'Filtrează după';
@@ -86,8 +88,8 @@ $txt['admin_browse_filter_type_3'] = 'Conturi noi neaprobate';
 $txt['admin_browse_filter_type_4'] = 'Conturi şterse neaprobate';
 $txt['admin_browse_filter_type_5'] = 'Conturi neaprobate pe motiv de "Vârstă prea mică"';
 
-$txt['admin_browse_outstanding'] = 'Membri remarcabili (Outstanding members=';
-$txt['admin_browse_outstanding_days_1'] = 'Pentru toţi utilizatorii care s-au înregistrat înainte de ';
+$txt['admin_browse_outstanding'] = 'Utilizatori neactivaţi';
+$txt['admin_browse_outstanding_days_1'] = 'Pentru toţi utilizatorii neactivaţi care s-au înregistrat acum mai mult de';
 $txt['admin_browse_outstanding_days_2'] = 'zile';
 $txt['admin_browse_outstanding_perform'] = 'Efectuează următoarea acţiune';
 $txt['admin_browse_outstanding_go'] = 'Efectuează!';

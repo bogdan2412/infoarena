@@ -1,18 +1,20 @@
 <?php
-// Version: 1.1 RC3; PersonalMessage
+// Version: 1.1; PersonalMessage
 
-$txt[143] = 'SecŢiunea cu mesaje personale';
+// Versiunea în limba română cu diacritice www.smf.ro
+
+$txt[143] = 'Secţiunea cu mesaje personale';
 $txt[148] = 'Trimite mesajul';
 $txt[150] = 'Către';
-$txt[1502] = 'Si către';
-$txt[316] = 'Primite';
-$txt[320] = 'Trimise';
+$txt[1502] = 'Şi către';
+$txt[316] = 'Mesaje primite';
+$txt[320] = 'Mesaje trimise';
 $txt[321] = 'Mesaj nou';
 $txt[411] = 'Şterge mesajul';
 // Don't translate "PMBOX" în this string.
 $txt[412] = 'Şterge toate mesajele din PMBOX';
 $txt[413] = 'Eşti sigur că vrei să ştergi toate mesajele?';
-$txt[535] = 'Destinatar';
+$txt[535] = 'Către';
 // Don't translate the word "SUBJECT" here, as it is used to format the message - use numeric entities as well.
 $txt[561] = 'Mesaj personal nou: SUBJECT';
 // Don't translate SENDER or MESSAGE în this language string; they are replaced with the corresponding text - use numeric entities too.
@@ -29,13 +31,14 @@ $txt['reply_to_all'] = 'Răspunde tuturor';
 $txt['pm_capacity'] = 'Capacitate';
 $txt['pm_currently_using'] = '%s mesaje, %s%% plin.';
 
-$txt['pm_error_user_not_found'] = 'Nu gasesc utilizatorul cu numele \'%s\'.';
+$txt['pm_error_user_not_found'] = 'Nu găsesc utilizatorul cu numele \'%s\'.';
 $txt['pm_error_ignored_by_user'] = 'Utilizatorul \'%s\' a blocat mesajele personale de la tine.';
 $txt['pm_error_data_limit_reached'] = 'Mesajul nu a putut fi trimis către \'%s\' deoarece acesta are casuţa plină!';
 $txt['pm_successfully_sent'] = 'Mesajul a fost trimis cu succes către \'%s\'.';
 $txt['pm_too_many_recipients'] = 'Nu poţi trimite un mesaj personal la mai mult de %d destinatari în acelaşi timp.';
+$txt['pm_too_many_per_hour'] = 'Ai depăşit numărul maxim de %d mesaje personale pe oră.';
 $txt['pm_send_report'] = 'Trimite raportul';
-$txt['pm_save_outbox'] = 'Salvează o copie în Trimise';
+$txt['pm_save_outbox'] = 'Salvează o copie în Mesaje trimise';
 $txt['pm_undisclosed_recipients'] = 'Destinatari neprecizaţi';
 
 $txt['pm_read'] = 'Citit';
@@ -45,7 +48,7 @@ $txt['pm_replied'] = 'Răspuns către';
 $txt['pm_prune'] = 'Curaţa mesajele';
 $txt['pm_prune_desc1'] = 'Şterge toate mesajele personale mai vechi de';
 $txt['pm_prune_desc2'] = 'zile.';
-$txt['pm_prune_warning'] = 'Eşti sigur că vrei să-ţi cureti mesajele personale?';
+$txt['pm_prune_warning'] = 'Eşti sigur că vrei să-ţi cureţi mesajele personale?';
 
 // Actions Drop Down.
 $txt['pm_actions_title'] = 'Acţiuni viitoare';
@@ -55,7 +58,7 @@ $txt['pm_actions_go'] = 'Trimite';
 
 // Manage Labels Screen.
 $txt['pm_apply'] = 'Aplică';
-$txt['pm_manage_labels'] = 'Organizează etichetele';
+$txt['pm_manage_labels'] = 'Aranjează etichetele';
 $txt['pm_labels_delete'] = 'Eşti sigur ca vrei să ştergi etichetele selectate?';
 $txt['pm_labels_desc'] = 'Aici poţi adauga, edita şi şterge etichetele folosite în casuţa de mesaje personale.';
 $txt['pm_label_add_new'] = 'Adaugă o eticheta';
@@ -79,9 +82,9 @@ $txt['pm_preferences'] = 'Preferinte';
 $txt['pm_is_replied_to'] = 'Ai trimis mai departe sau ai răspuns la acest mesaj.';
 
 // Reporting messages.
-$txt['pm_report_to_admin'] = 'Reclamă administratorului';
-$txt['pm_report_title'] = 'Reclama Mesajul Personal';
-$txt['pm_report_desc'] = 'Din aceasta pagină poţi reclama un mesaj personal primit de tine la administratorii forumului. Te rugăm să scrii motivele pentru care reclami acest mesaj, astfel încat acestea vor fi ataşate la transcrierea indentica a mesajului.';
+$txt['pm_report_to_admin'] = 'Reclamă la administrator';
+$txt['pm_report_title'] = 'Reclamă Mesajul Personal';
+$txt['pm_report_desc'] = 'Din aceasta pagină poţi reclama un mesaj personal primit de tine la administratorii forumului. Te rugăm să scrii motivele pentru care reclami acest mesaj, deoarece acestea vor fi ataşate la transcrierea indentica a mesajului.';
 $txt['pm_report_admins'] = 'Administratori la care le trimiti mesajul';
 $txt['pm_report_all_admins'] = 'Trimite la toti administratorii forumului';
 $txt['pm_report_reason'] = 'Motivul pentru care reclami acest mesaj';
@@ -96,11 +99,11 @@ $txt['pm_report_pm_hidden'] = '%d destinatar(i) invizibil(i)';
 $txt['pm_report_pm_unedited_below'] = 'In continuare este transcrierea originală a mesajului raportat:';
 $txt['pm_report_pm_sent'] = 'Trimis:';
 
-$txt['pm_report_done'] = 'Mulţumim pentru ca ne-ai trimis acest raport. Vei avea un răspuns de la echipa de adminstratori căt mai curănd.';
-$txt['pm_report_return'] = 'Intoarce-te la Primite';
+$txt['pm_report_done'] = 'Mulţumim pentru ca ai raportat aceste mesaje personal. Vei avea un răspuns de la echipa de adminstratori căt mai curănd.';
+$txt['pm_report_return'] = 'Intoarce-te la Mesaje primite';
 
 $txt['pm_search_title'] = 'Caută în mesajele personale';
-$txt['pm_search_bar_title'] = 'Caută Mesajele';
+$txt['pm_search_bar_title'] = 'Caută mesajele';
 $txt['pm_search_text'] = 'Caută după';
 $txt['pm_search_go'] = 'Caută';
 $txt['pm_search_advanced'] = 'Cautăre avansată';
@@ -123,5 +126,9 @@ $txt['pm_search_none_found'] = 'Nu am găsit mesaje';
 $txt['pm_search_orderby_relevant_first'] = 'Cele mai relevante întăi';
 $txt['pm_search_orderby_recent_first'] = 'Cele mai recente întăi';
 $txt['pm_search_orderby_old_first'] = 'Cele mai vechi întăi';
+
+$txt['pm_visual_verification_label'] = 'Verificare';
+$txt['pm_visual_verification_desc'] = 'Pentru a trimite acest mesaj personal trebuie sa introduci codul vizual din imaginea de mai sus.';
+$txt['pm_visual_verification_listen'] = 'Ascultă literele';
 
 ?>

@@ -1,5 +1,7 @@
 <?php
-// Version: 1.1 RC3; Profile
+// Version: 1.1; Profile
+
+// Versiunea în limba română cu diacritice www.smf.ro
 
 $txt[80] = 'Nu ai permisiunea de a modifica profilul acestei persoane.';
 $txt[83] = 'Nume Website propriu';
@@ -12,7 +14,7 @@ $txt[113] = 'Starea curentă:';
 $txt[228] = 'Text personal';
 $txt[229] = 'Poza personalizată';
 $txt[232] = 'Pictura/Text';
-$txt[329] = 'Resetează Formularul';
+$txt[329] = 'Resetează formularul';
 $txt[349] = 'Limba preferată';
 $txt[420] = 'Vârsta';
 $txt[422] = '(nici o poză)';
@@ -33,7 +35,7 @@ $txt[564] = 'Luna (MM)';
 $txt[565] = 'Ziua (DD)';
 $txt[566] = 'Anul (YYYY)';
 $txt[596] = 'Pentru o mai bună securitate, ar trebui să foloseşti şase sau mai multe caractere cu o combinaţie de litere, cifre şi simboluri.';
-$txt[597] = 'Informatii suplimentare';
+$txt[597] = 'Informaţii suplimentare';
 $txt[598] = 'Aceasta trebuie să fie inclusă dacă indici o adresă URL mai jos.';
 $txt[599] = 'Aceasta trebuie să fie o adresa URL completă.';
 $txt[600] = 'Acesta este nr tău de la ICQ.';
@@ -47,8 +49,8 @@ $txt[741] = 'Ora curentă în forum';
 $txt[749] = 'Câmpul \'Numărul de mesaje\' poate conţine doar numere.';
 
 $txt['smf225'] = 'Limba';
-$txt['smf227'] = 'Imaginea Avatar este prea mare, te rog să o redimensionezi şi să încerci din nou (maxim';
-$txt['smf233'] = 'Data de inregistrare este incorecta, un exemplu corect:';
+$txt['smf227'] = 'Imaginea avatar este prea mare, te rog să o redimensionezi şi să încerci din nou (maxim';
+$txt['smf233'] = 'Data de înregistrare este incorecta, un exemplu corect:';
 $txt['smf237'] = 'Adresa ta pentru MSN messenger';
 $txt['smf241'] = 'Parola curentă';
 $txt['smf243'] = 'Nu ai completat parola curentă.';
@@ -59,9 +61,9 @@ $txt['timeoffset_autodetect'] = '(detectează automat)';
 
 $txt['pswd1'] = 'Intrebarea secretă';
 $txt['secret_desc'] = 'Pentru a ajuta la recuperarea parolei, introdu aici o întrebare la care <b>numai tu</b> cunoşti răspunsul.';
-$txt['secret_desc2'] = 'Alege cu grija, nu cred ca doreşti ca altcineva să ghiceasca răspunsul!';
-$txt['pswd2'] = 'Raspuns';
-$txt['pswd3'] = 'Test: întreabă-mă întrebarea mea';
+$txt['secret_desc2'] = 'Alege cu grija această întrebare, nu cred ca doreşti ca altcineva să ghiceasca răspunsul!';
+$txt['pswd2'] = 'Răspuns';
+$txt['pswd3'] = 'Test: afişează întrebarea mea secretă';
 $txt['pswd4'] = 'Nu poţi să-ţi recuperezi parola, însa poţi să setezi una nouă urmarind legatura din email-ul care ţi-a fost trimis. Deasemeni ai opţiunea de a seta o parola noua, răspunzînd la întrebarea secretă.';
 $txt['pswd5'] = 'Ne pare rău dar nu ai indicat o combinaţie validă pentru întrebarea secreta şi răspuns în profilul tău. Te rog să dai click pe butonul înapoi (back) în browser şi foloseşte metoda implicita de recuperare a parolei.';
 $txt['pswd6'] = 'Te rog să introduci răspunsul la întrebarea ta şi parola pe care vrei să o folosesti. Parola va fi schimbata cu cea indicată, dacă răspunzi corect la întrebare.';
@@ -74,9 +76,9 @@ $txt['theme2'] = 'Preferinte relativ la Teme';
 $txt['theme_forum_default'] = 'Implicit pentru Forum';
 $txt['theme_forum_default_desc'] = 'Aceasta este tema implicită, ceea ce înseamnă că tema aleasă se va schimba odată cu setările administratorului pentru forumul pe care îl vizitezi.';
 
-$txt['profileConfirm'] = 'Esti sigur că vrei să ştergi acest utilizator?';
+$txt['profileConfirm'] = 'Eşti sigur că vrei să ştergi acest utilizator?';
 
-$txt['title1'] = 'Titul personalizat';
+$txt['title1'] = 'Titlul personalizat';
 
 $txt['lastLoggedIn'] = 'Activ ultima dată';
 
@@ -85,12 +87,12 @@ $txt['notifyX1'] = 'Salvează setările';
 $txt['notifyXAnn4'] = 'Primeşte anunţurile din forum şi notificările importante prin email.';
 $txt['notifyXOnce1'] = 'Primeşte notificare de răspuns doar pentru primul răspuns necitit.';
 $txt['auto_notify'] = 'Primeşte notificări atunci când scrii un mesaj sau răspunzi la un subiect.';
-$txt['notify_send_types'] = 'Pentru subiectele şi forumurile unde am cerut notificări, opreşte-le';
-$txt['notify_send_type_everything'] = 'Răspunsuri şi acţiuni de moderare';
-$txt['notify_send_type_everything_own'] = 'Doar acţiuni de moderare, dacă eu am pornit acel subiect';
-$txt['notify_send_type_only_replies'] = 'Doar răspunsuri';
-$txt['notify_send_type_nothing'] = 'Nimic';
-$txt['notify_send_body'] = 'Atunci când trimiţi notificarea la un răspuns, trimite mesajul în email (dar te rog să nu răspunzi la aceste email)';
+$txt['notify_send_types'] = 'Pentru subiectele şi forumurile unde m-am abonat anunţă-mă la';
+$txt['notify_send_type_everything'] = 'răspunsuri şi acţiuni de moderare';
+$txt['notify_send_type_everything_own'] = 'acţiuni de moderare, dacă eu am pornit acel subiect';
+$txt['notify_send_type_only_replies'] = 'răspunsuri';
+$txt['notify_send_type_nothing'] = 'nimic';
+$txt['notify_send_body'] = 'Atunci când primesc notificarea la un răspuns, trimite-mi mesajul în email (dar te rog să nu răspunzi la aceste email)';
 
 $txt['notifications_topics'] = 'Notificări curente pentru subiecte';
 $txt['notifications_topics_list'] = 'Tu eşti anunţat despre răspunsuri la următoarele subiecte';
@@ -99,10 +101,10 @@ $txt['notifications_topics_howto'] = 'Pentru a primi notificări despre un subie
 $txt['notifications_boards'] = 'Notificări curente pentru forumuri';
 $txt['notifications_boards_list'] = 'Tu eşti anunţat despre noi subiecte scrise în următoarele forumuri';
 $txt['notifications_boards_none'] = 'Momentan tu nu primeşti notificări de la nici un forum.';
-$txt['notifications_boards_howto'] = 'Pentru a primi notificări de la un forum anumit, click pe butonul &quot;anunţa&quot; în pagina principala a forumului respectiv.';
+$txt['notifications_boards_howto'] = 'Pentru a primi notificări de la un forum anumit, click pe butonul &quot;anunţă&quot; în pagina principala a forumului respectiv.';
 $txt['notifications_update'] = 'Dezabonează-mă';
 
-$txt[325] = 'Lista cu cei pe care îi ignori';
+$txt[325] = 'Lista cu utilizatori ignoraţi';
 $txt[326] = 'Adauga un nume de utilizator pe fiecare linie.<br /> Sau introdu * pentru a ignora toate mesajele.';
 $txt[327] = 'Anunţă-mă prim email de fiecare data cand primesc un mesaj personal:';
 $txt['email_notify_never'] = 'Niciodată';
@@ -113,7 +115,7 @@ $txt['statPanel_showStats'] = 'Statistici pentru utilizator: ';
 $txt['statPanel_users_votes'] = 'Numărul de voturi acordate';
 $txt['statPanel_users_polls'] = 'Numărul de sondaje create';
 $txt['statPanel_total_time_online'] = 'Timp total petrecut online';
-$txt['statPanel_noPosts'] = 'Nici o postare despre care să vorbim!';
+$txt['statPanel_noPosts'] = 'Nici o mesaj scris!';
 $txt['statPanel_generalStats'] = 'Statistici generale';
 $txt['statPanel_posts'] = 'mesaje';
 $txt['statPanel_topics'] = 'subiecte';
@@ -123,7 +125,7 @@ $txt['statPanel_votes'] = 'voturi';
 $txt['statPanel_polls'] = 'sondaje';
 $txt['statPanel_topBoards'] = 'Cel mai activ forum dupa mesaje';
 $txt['statPanel_topBoardsActivity'] = 'Cel mai activ forum dupa activitate';
-$txt['statPanel_activityTime'] = 'Repartiţia mesajelor în timpul zilei';
+$txt['statPanel_activityTime'] = 'Distribuţia mesajelor scrise în timpul zilei';
 $txt['statPanel_timeOfDay'] = 'Ora zilei';
 $txt['statPanel_show'] = 'Afişează statistici generale pentru acest utilizator';
 
@@ -137,22 +139,22 @@ $txt['deleteAccount_topics'] = 'Subiecte şi mesaje';
 $txt['deleteAccount_confirm'] = 'esti sigur că vrei să ştergi acest cont?';
 $txt['deleteAccount_approval'] = 'Fii atent! Moderatorii forumului trebuie să aprobe ştergerea acestui cont înainte de a fi eliminat.';
 
-$txt['profileInfo'] = 'Informatii despre profil';
+$txt['profileInfo'] = 'Informaţii despre profil';
 $txt['summary'] = 'Sumar';
-$txt['showPosts'] = 'Afişează Mesaje';
-$txt['statPanel'] = 'Afişează Statistici';
-$txt['editBuddies'] = 'Editează Amici';
-$txt['trackUser'] = 'Urmăreşte Utilizatorul';
+$txt['showPosts'] = 'Afişează mesaje';
+$txt['statPanel'] = 'Afişează statistici';
+$txt['editBuddies'] = 'Editează amici';
+$txt['trackUser'] = 'Urmăreşte utilizatorul';
 $txt['trackIP'] = 'Urmăreşte IP';
 
 $txt['profileEdit'] = 'Modifică profilul';
 $txt['account'] = 'Setări relative la cont';
-$txt['account_info'] = 'Acestea sunt setările contului. Aceasta pagina contine toate informaţiile critice care te identifică în acest forum. Din motive de securitate va trebui să completezi parola curentă pentru a modifica aceste informaţii.';
+$txt['account_info'] = 'Acestea sunt setările contului. Aceasta pagină conţine toate informaţiile critice care te identifică în acest forum. Din motive de securitate va trebui să completezi parola curentă pentru a modifica aceste informaţii.';
 $txt['forumProfile'] = 'Informaţii relative la profilul din forum';
 $txt['forumProfile_info'] = 'Poţi schimba informaţiile personale în acesta pagină. Aceste informaţii vor fi afişate în  ' . $context['forum_name'] . '. Dacă nu eşti de-acord cu afişarea acestor informaţii cel mai simplu este să sari peste ele - acestea nu sunt absolut necesare.';
 $txt['theme'] = 'Preferinţe pentru afişare şi layout';
 $txt['theme_info'] = 'Această secţiune îţi permite să personalizezi afişarea şi layout din forum.';
-$txt['notification'] = 'Notificari şi email';
+$txt['notification'] = 'Notificări şi email';
 $txt['notification_info'] = 'SMF îţi permite să fii anunţat despre răspunsuri la mesaje, mesaje noi scrise şi anunţuri din forum. Poţi schimba aceste setări aici sau să revezi mesajele şi subiectele din forumurile pentru care primeşti acum notificări.';
 $txt['pmprefs'] = 'Opţiuni pentru Mesaje Personale';
 $txt['pmprefs_info'] = 'Ceilalţi utilizatori ai  ' . $context['forum_name'] . ' pot să te contacteze personal, dar uneori poţi alege să ignori unii din ei. Această pagina îţi permite să setezi asta, printre alte opţiuni.';
@@ -255,11 +257,11 @@ $txt['show_children'] = 'Afişează subforumurile pe fiecare pagină nu doar pe 
 $txt['show_no_avatars'] = 'Nu afişa avatarul celorlalţi utilizatori.';
 $txt['show_no_signatures'] = 'Nu afişa semnatura celorlalţi utilizatori.';
 $txt['show_no_censored'] = 'Lasă cuvintele necenzurate.';
-$txt['calendar_start_day'] = 'Prima zi a saptamanii din calendar';
+$txt['calendar_start_day'] = 'Prima zi a săptămânii din calendar';
 $txt['display_quick_reply'] = 'Foloseste răspuns rapid cand afişezi subiectele: ';
 $txt['display_quick_reply1'] = 'nu afişa deloc';
-$txt['display_quick_reply2'] = 'nu afişa, implicit';
-$txt['display_quick_reply3'] = 'afişează, implicit';
+$txt['display_quick_reply2'] = 'afişează, implicit restrâns';
+$txt['display_quick_reply3'] = 'afişează, implicit extins';
 $txt['display_quick_mod'] = 'Afişează moderarea-rapida în pagina index de mesaje ca ';
 $txt['display_quick_mod_none'] = 'nu afişa.';
 $txt['display_quick_mod_check'] = 'checkboxes.';
@@ -274,7 +276,7 @@ $txt['whois_ripe'] = 'RIPE (Europa, Orientul Mijlociu şi unele regiuni din Afri
 
 $txt['moderator_why_missing'] = 'de ce nu este moderator aici?';
 $txt['username_change'] = 'schimbă';
-$txt['username_warning'] = 'Pentru a schimba numele de utilizator al acestui membru, forumul trebuie să reseteze deasemeni şi parola acestuia. Acestea vor fi trimise prin email la utilizator.';
+$txt['username_warning'] = 'Pentru a schimba numele de utilizator al acestui membru, din motive de securitate, forumul va reseta deasemeni şi parola acestuia. Acestea vor fi trimise prin email la utilizator.';
 
 $txt['showPermissions'] = 'Afişează permisiuni';
 $txt['showPermissions_given'] = 'Data de';

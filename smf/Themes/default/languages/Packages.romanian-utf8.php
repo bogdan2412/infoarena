@@ -1,5 +1,7 @@
 <?php
-// Version: 1.1 RC3; Packages
+// Version: 1.1; Packages
+
+// Versiunea în limba română cu diacritice www.smf.ro
 
 $txt['smf154'] = 'Procedează';
 $txt['smf160'] = 'Fişierele modificărilor au fost decomprimate, însă această modificare vine cu un script PHP care trebuie executat înainte pentru ca modificarea să funcţioneze';
@@ -113,6 +115,8 @@ $txt['package_bytes'] = 'bytes';
 
 $txt['package_action_missing'] = '<b style="color: red;">Fişierul nu a fost găsit!</b>';
 $txt['package_action_error'] = '<b style="color: red;">Eroare: modification parse error</b>';
+$txt['package_action_skipping'] = '<b>Fişier sărit</b>';
+
 $txt['package_action_failure'] = '<b style="color: red;">Test eşuat</b>';
 $txt['package_action_success'] = '<b>Test reuşit</b>';
 
@@ -123,15 +127,15 @@ $txt['package_uninstall_cannot'] = 'Acest pachet nu poate fi dezinstalat, deoare
 $txt['package_install_options'] = 'Optiuni la instalare';
 $txt['package_install_options_ftp_why'] = 'Folosind Managerul de Pachete şi functionalitatea FTP a acestuia poţi elimina modificarea manuală a atributelor fişierelor (în special writable) de pe server, managerul va face acest lucru pentru tine.<br />Aici poţi seta valorile implicite pentru unele cămpuri.';
 $txt['package_install_options_ftp_server'] = 'Server FTP';
-$txt['package_install_options_ftp_port'] = 'Port';
-$txt['package_install_options_ftp_user'] = 'Username';
+$txt['package_install_options_ftp_port'] = 'Port FTP';
+$txt['package_install_options_ftp_user'] = 'Utilizator FTP';
 $txt['package_install_options_make_backups'] = 'Creează versiunea de backup a fişierelor înlocuite cu o tilda (~) la sfărşitul numelui.';
 
 $txt['package_ftp_necessary'] = 'Informaţii FTP necesare';
-$txt['package_ftp_why'] = 'Unele din fişierele folosite de Managerul de Pachete nu au atributul writable.  Aceastea trebuie să fie schimbate folosind FTP şi instructiunea chmod sau poate nu există si atunci trebuiesc creeate aceste directoare şi fişiere.  Informaţiile FTP pot fi memorate temporar pentru o folosire adecvata de către Managerul de Pachete.';
-$txt['package_ftp_why_download'] = 'Pentru download de pachete, directorul Packages şi fişierele din el trebuie să fie writable - şi nu sunt în acest moment.  Managerul de Pachete poate folosi informatiile FTP pentru a regla asta.';
+$txt['package_ftp_why'] = 'Unele din fişierele folosite de Managerul de Pachete nu au atributul writable.  Aceastea trebuie să fie schimbate folosind FTP şi instructiunea chmod sau poate nu există si atunci fişierele trebuiesc creeate.  Informaţiile FTP pot fi memorate temporar pentru o folosire adecvată de către Managerul de Pachete.';
+$txt['package_ftp_why_download'] = 'Pentru download de pachete, directorul Packages şi fişierele conţinute trebuie să fie writable - şi nu sunt în acest moment.  Managerul de Pachete poate folosi informatiile FTP pentru a regla asta.';
 $txt['package_ftp_server'] = 'Server FTP';
-$txt['package_ftp_port'] = 'Port';
+$txt['package_ftp_port'] = 'Port FTP';
 $txt['package_ftp_username'] = 'Username pentru FTP';
 $txt['package_ftp_password'] = 'Password FTP';
 $txt['package_ftp_path'] = 'Calea locala către SMF';

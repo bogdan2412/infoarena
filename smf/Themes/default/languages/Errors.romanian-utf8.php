@@ -1,9 +1,11 @@
 <?php
-// Version: 1.1 RC3; Errors
+// Version: 1.1.2; Errors
+
+// Versiunea în limba română cu diacritice www.smf.ro
 
 $txt[1] = 'Nu îţi este permis să accesezi această secţiune';
 
-$txt[73] = 'Doar moderatorii pot folosi funcţia de ştergere directă, te rugăm să ştergi acest mesaj prin funcţia Modifica.';
+$txt[73] = 'Doar moderatorii pot folosi funcţia de ştergere directă, te rugăm să ştergi acest mesaj prin funcţia Modifică.';
 $txt[75] = 'Nu ai completat câmpul nume. Este necesar.';
 $txt[76] = 'Nu ai completat câmpul email. Este necesar.';
 $txt[90] = 'Acest subiect este blocat, nu ai permisiunea de a scrie sau modifica mesaje...';
@@ -14,7 +16,7 @@ $txt[134] = 'Nu îţi este permis să muţi subiecte...';
 $txt[138] = 'Acest serviciu este accesibil doar pentru utilizatori înregistraţi ...';
 $txt[165] = 'Pentru a scrie mesaje trebuie să fii autentificat. Dacă nu ai un cont, te rugăm să te <a href="' . $scripturl . '?action=register">înregistrezi</a>.';
 $txt[213] = 'Parolele scrise nu sunt identice.';
-$txt[223] = 'Ne pare rău, trebuie să te înregistrezi pentru a folosi aceasta proprietate.';
+$txt[223] = 'Ne pare rău, trebuie să te înregistrezi pentru a folosi această proprietate.';
 $txt[241] = 'Caractere invalide au fost folosite în Parola.';
 $txt[242] = 'Caractere invalide au fost folosite în Nume.';
 $txt[243] = 'Caractere invalide au fost folosite în email.';
@@ -41,13 +43,13 @@ $txt['smf263'] = 'Ai indicat un ID de subiect inexistent.';
 $txt['smf268'] = 'Nu poţi separa un subiect la primul mesaj.';
 $txt['smf270'] = 'Acest subiect are doar un mesaj şi nu poate fi împărţit.';
 $txt['smf271'] = 'nici un mesaj selectat';
-$txt['smf271b'] = 'Imposibil de a împărţi. Ai selectat toate mesajele.';
+$txt['smf271b'] = 'Imposibil de a împărţi subiectul. Ai selectat toate mesajele.';
 $txt['smf272'] = 'Imposibil de a găsi mesajele.';
 $txt['smf273'] = 'Imposibil de a insera acest subiect.';
 $txt['smf289'] = 'Ai ales un nume de utilizator al unui moderator deja existent. te rugăm să alegi un altul.';
 $txt['smf304'] = 'Sesiunea ta a expirat în timp ce scriai. Mergi înapoi (apasă Back) în browser şi încearcă din nou.';
 $txt['smf305'] = 'Sesiune ta nu a putut fi verificata.  te rugăm să ieşi şi să te autentifici din nou. Apoi incearca din nou.';
-$txt['smf306'] = 'Nu am putut să verific adresa URL de referinta. te rugăm să mergi înapoi şi să încerci din nou.';
+$txt['smf306'] = 'Nu am putut să verific adresa URL de referinta. Te rugăm să mergi înapoi şi să încerci din nou.';
 
 $txt['cannot_admin_forum'] = 'Nu ai dreptul de a administra acest forum.';
 $txt['cannot_announce_topic'] = 'Nu ai permisiunea de a anunţa subiecte pe acest forum.';
@@ -112,7 +114,7 @@ $txt['cannot_delete_replies'] = 'Ne pare rău, dar nu poţi elimina aceste mesaj
 $txt['cannot_delete_any'] = 'Ştergerea oricarui mesaj în acest forum nu este permisa.';
 $txt['cannot_report_any'] = 'Nu ai permisiunea să raportezi mesaje în acest forum.';
 $txt['cannot_search_posts'] = 'Nu ai permisiunea să cauţi dupa mesaje în acest forum.';
-$txt['cannot_send_mail'] = 'Nu ai permisunea de a trimite email către toti.';
+$txt['cannot_send_mail'] = 'Nu ai permisunea de a trimite email către toţi.';
 $txt['cannot_send_topic'] = 'Ne pare rău, dar administratorul a dezactivat trimiterea de subiecte prin email în acest forum.';
 $txt['cannot_split_any'] = 'Imparţirea oricărui subiect este interzisă în acest forum.';
 $txt['cannot_view_attachments'] = 'Nu îţi este permis să faci download sau să vezi fişierele ataşate în acest forum.';
@@ -157,10 +159,10 @@ $txt['moveto_noboards'] = 'Nu există nici un forum pentru a muta acest subiect!
 $txt['already_activated'] = 'Contul tău a fost deja activat.';
 $txt['still_awaiting_approval'] = 'Contul tău astapta încă aprobarea adminstratorului.';
 
-$txt['invalid_email'] = 'Adresa email/gama de adrese invalidă. <br />Exemplu de adresa validă: user.rau@siterau.com.<br />Exemplu de gama de adrese validă: *@*.siterau.com';
+$txt['invalid_email'] = 'Adresa email/gama de adrese invalidă. <br />Exemplu de adresa validă: user.rau@siterau.com.<br />Exemplu de gamă de adrese validă: *@*.siterau.com';
 $txt['invalid_expiration_date'] = 'Data de expirare nu este valabilă.';
-$txt['invalid_hostname'] = 'Host name invalid/gama de host name.<br />Exemplu de host name valid: proxy4.badhost.com<br />Exemplu de gama de host name: *.badhost.com';
-$txt['invalid_ip'] = 'Invalid IP/gama de IP.<br />Exemplu de IP valid: 127.0.0.1<br />Exemplu de gama de IP valida: 127.0.0-20.*';
+$txt['invalid_hostname'] = 'Host name invalid/gama de host name.<br />Exemplu de host name valid: proxy4.badhost.com<br />Exemplu de gamă de host name: *.badhost.com';
+$txt['invalid_ip'] = 'Invalid IP/gama de IP.<br />Exemplu de IP valid: 127.0.0.1<br />Exemplu de gamă de IP valida: 127.0.0-20.*';
 $txt['invalid_username'] = 'Numele nu a fost găsit';
 $txt['no_ban_admin'] = 'Nu poţi bana un adminstrator - mai întâi trebuie să-l degradezi!';
 $txt['no_bantype_selected'] = 'Nu ai selectat tipul de ban.';
@@ -174,7 +176,7 @@ $txt['login_threshold_fail'] = 'Ne pare rău, ai depasit numarul de încercari d
 $txt['who_off'] = 'Nu poţi vedea lista utilizatorilor online acum deoarece acesta facilitate este dezactivată.';
 
 $txt['merge_create_topic_failed'] = 'Eroare la crearea de subiecte noi.';
-$txt['merge_need_more_topics'] = 'Pentru a lipi subiectele ai nevoie de cel puţin două subiecte.';
+$txt['merge_need_more_topics'] = 'Pentru a lipi subiecte ai nevoie de cel puţin două subiecte.';
 
 $txt['spamWaitTime_broken'] = 'Ultimul mesaj de la IP tău a fost acum mai puţin de %d secunde. Te rugăm să încerci mai tarziu.';
 $txt['registerWaitTime_broken'] = 'Tocmai ce te-ai înregistrat acum %d secunde!';
@@ -190,7 +192,7 @@ $txt['rtm_not_own'] = 'Nu poţi raporta propriul mesaj la moderator, este ilogic
 
 $txt['no_dump_database'] = 'Doar administratorii pot face backup la baza de date!';
 $txt['pm_not_yours'] = 'Mesajul personal pe care încerci să-l citezi nu este al tău sau nu există, mergi înapoi şi încearcă din nou.';
-$txt['mangled_post'] = 'Eroare: form data modificata - mergi înapoi (back) şi încearcă din nou.';
+$txt['mangled_post'] = 'Eroare: form data modificated - mergi înapoi (back) şi încearcă din nou.';
 $txt['quoted_post_deleted'] = 'mesajul pe care încerci să-l citezi nu există, a fost şters sau nu mai îţi este accesibil.';
 
 $txt['register_only_once'] = 'Ne pare rău, dar nu poţi să înregistrezi mai multe conturi de la acelasi calculator în acelasi timp.';
@@ -199,35 +201,35 @@ $txt['error_long_name'] = 'Numele pe care ai vrut să-l utilizezi este prea lung
 $txt['error_no_name'] = 'Nu ai specificat nici un nume.';
 $txt['error_bad_name'] = 'Numele specificat de tine nu poate fi utilizat, deoarece conţine un nume rezervat.';
 $txt['error_no_email'] = 'Nu ai specificat adresa de email.';
-$txt['error_bad_email'] = 'Ai scris o adresă invalidă de email.';
+$txt['error_bad_email'] = 'Ai specificat o adresă invalidă de email.';
 $txt['error_no_event'] = 'Nu ai scris numele evenimentului.';
 $txt['error_no_subject'] = 'Nu ai completat subiectul.';
 $txt['error_no_question'] = 'Nu ai scris nici o întrebare în acest sondaj.';
-$txt['error_no_message'] = 'Ai lăsat corpul mesajului gol.';
+$txt['error_no_message'] = 'Nu ai scris nimic în mesaj.';
 $txt['error_long_message'] = 'Mesajul tău este mai mare decât maximul admis (' . $modSettings['max_messageLength'] . ' caractere).';
 $txt['error_session_timeout'] = 'Sesiunea ta a expirat în timp ce scriai. Încearcă să retrimiţi mesajul tău.';
 $txt['error_no_to'] = 'Nu ai specificat destinatarul.';
-$txt['error_bad_to'] = 'Unul sau mai multi \'către\' - destinatari nu a putut fi găsit.';
-$txt['error_bad_bcc'] = 'Unul sau mai multi \'si către \' - destinatari nu au putut fi găsiţi.';
-$txt['error_form_already_submitted'] = 'Deja ai trimis acest mesaj! Poate ai apasat din greseala dublu-click, sau încearcă refresh.';
+$txt['error_bad_to'] = 'Unul sau mai mulţi \'către\' - destinatari nu a putut fi găsit.';
+$txt['error_bad_bcc'] = 'Unul sau mai mulţi \'si către \' - destinatari nu au putut fi găsiţi.';
+$txt['error_form_already_submitted'] = 'Deja ai trimis acest mesaj! Probabil ai apasat din greseala dublu-click, sau ai încearcat refresh.';
 $txt['error_poll_few'] = 'Trebuie să ai cel puţin două opţiuni!';
 
-$txt['smiley_not_found'] = 'Zămbetul nu a fost găsit.';
-$txt['smiley_has_no_code'] = 'Nu ai dat nici un cod pentru acest zămbet.';
-$txt['smiley_has_no_filename'] = 'Nu ai indicat nici un fişier pentru acest zămbet.';
-$txt['smiley_not_unique'] = 'Un zămbet cu acest cod deja există.';
-$txt['smiley_set_already_exists'] = 'Un set de zămbete cu aceasta adresa URL deja există.';
-$txt['smiley_set_not_found'] = 'Setul de zămbete nu a fost găsit.';
-$txt['smiley_set_path_already_used'] = 'Adresa URL a acestui set de zămbete este deja folosită de către un alt set de zămbete.';
-$txt['smiley_set_unable_to_import'] = 'Imposibil de a importa acest set de zămbete. Directorul este invalid sau nu a putut fi accesat.';
+$txt['smiley_not_found'] = 'Zâmbetul nu a fost găsit.';
+$txt['smiley_has_no_code'] = 'Nu ai dat nici un cod pentru acest zâmbet.';
+$txt['smiley_has_no_filename'] = 'Nu ai indicat nici un fişier pentru acest zâmbet.';
+$txt['smiley_not_unique'] = 'Un zâmbet cu acest cod deja există.';
+$txt['smiley_set_already_exists'] = 'Un set de zâmbete cu aceasta adresa URL deja există.';
+$txt['smiley_set_not_found'] = 'Setul de zâmbete nu a fost găsit.';
+$txt['smiley_set_path_already_used'] = 'Adresa URL a acestui set de zâmbete este deja folosită de către un alt set de zâmbete.';
+$txt['smiley_set_unable_to_import'] = 'Imposibil de a importa acest set de zâmbete. Directorul este invalid sau nu a putut fi accesat.';
 
 $txt['smileys_upload_error'] = 'Eroare la încărcarea fişierului.';
-$txt['smileys_upload_error_blank'] = 'Toate seturile de zămbete trebuie să aibă o imagine!';
-$txt['smileys_upload_error_name'] = 'Toate zămbetele trebuie să aibă acelaşi nume de fişier!';
+$txt['smileys_upload_error_blank'] = 'Toate seturile de zâmbete trebuie să aibă o imagine!';
+$txt['smileys_upload_error_name'] = 'Toate zâmbetele trebuie să aibă acelaşi nume de fişier!';
 $txt['smileys_upload_error_illegal'] = 'Tip ilegal.';
 
-$txt['search_invalid_weights'] = 'Relevanţa căutarilor nu a fost corect configurată. Cel puţin una din relevanţe trebuie să fie diferită de zero. Te rugăm să raportezi această eroare la un administrator.';
-$txt['unable_to_create_temporary'] = 'Funcţia căutare nu a putut crea tabela temporară.  Încearcă din nou.';
+$txt['search_invalid_weights'] = 'Relevanţa căutărilor nu a fost corect configurată. Cel puţin una din relevanţe trebuie să fie diferită de zero. Te rugăm să raportezi această eroare la un administrator.';
+$txt['unable_to_create_temporary'] = 'Funcţia căutare nu a putut crea tabela temporară. Încearcă din nou.';
 
 $txt['package_no_file'] = 'Imposibil de a găsi fişierul pachet!';
 $txt['packageget_unable'] = 'Imposibil de a mă conecta la server.  Te rugăm încearcă <a href="%s" target="_blank">aceasta adresa URL</a> în loc.';
@@ -246,8 +248,8 @@ $txt['at_least_one_admin'] = 'Trebuie să existe cel putin un administrator pe f
 $txt['attachment_not_found'] = 'Fişierul ataşat nu a fost găsit.';
 
 $txt['error_no_boards_selected'] = 'Nu ai selectat nici un forum valid!';
-$txt['error_invalid_search_string'] = 'Ai uitat cumva să scrii ceea ce cauţi?';
-$txt['error_query_not_specific_enough'] = 'Cererea nu a fost destul de specifică. Nu a fost găsit nici un rezultat.';
+$txt['error_invalid_search_string'] = 'Ai uitat cumva să specifici ceea ce cauţi?';
+$txt['error_query_not_specific_enough'] = 'Cererea ta nu a fost destul de specifică. Nu a fost găsit nici un rezultat.';
 $txt['error_no_messages_in_time_frame'] = 'Nu au fost găsite mesaje în intervalul de timp specificat';
 $txt['error_no_labels_selected'] = 'Nu ai selectat nici o etichetă!';
 
@@ -255,6 +257,7 @@ $txt['profile_errors_occurred'] = 'Următoarele erori au apărut când am încer
 $txt['profile_error_bad_offset'] = 'Intervalul de timp este în afara gamei.';
 $txt['profile_error_no_name'] = 'Câmpul nume a fost lăsat necompletat.';
 $txt['profile_error_name_taken'] = 'Numele de utilizator selectat este deja utilizat';
+$txt['profile_error_name_too_long'] = 'Numele ales este prea lung. Nu poate să depăşească 60 de caractere.';
 $txt['profile_error_no_email'] = 'Câmpul email a fost lăsat necompletat';
 $txt['profile_error_bad_email'] = 'Nu ai introdus o adresa de email valida';
 $txt['profile_error_email_taken'] = 'Un alt utilizator este deja înregistrat cu această adresa de email';
@@ -286,6 +289,6 @@ $txt['loadavg_allunread_disabled'] = 'Resursele serverului sunt momentan puterni
 $txt['loadavg_unreadreplies_disabled'] = 'Acest server este momentan foarte încărcat.  Te rugăm să încerci dupa o scurtă perioadă de timp.';
 $txt['loadavg_show_posts_disabled'] = 'Te rugăm să încerci mai tarziu.  Mesajele acestui utilizator nu sunt accesibile datorită încărcării mari a serverului.';
 
-$txt['visual_verification_failed'] = 'Literele introduse de tine nu corespund cu cele afişate in fotografie.';
+$txt['visual_verification_failed'] = 'Literele introduse de tine nu corespund cu cele afişate în fotografie.';
 
 ?>

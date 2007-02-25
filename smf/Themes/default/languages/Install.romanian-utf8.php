@@ -1,5 +1,7 @@
 <?php
-// Version: 1.1 RC3; Install
+// Version: 1.1; Install
+
+// Versiunea în limba română cu diacritice www.smf.ro
 
 // These should be the same as those în index.language.php.
 $txt['lang_character_set'] = 'UTF-8';
@@ -9,18 +11,18 @@ $txt['smf_installer'] = 'SMF Interfaţa de Instalare';
 $txt['installer_language'] = 'Limba';
 $txt['installer_language_set'] = 'Setează';
 $txt['congratulations'] = 'Felicitări, instalarea este terminată!';
-$txt['congratulations_help'] = 'Dacă ai nevoie de ajutor sau forumul SMF nu mai funcţionează corect, adu-ţi aminte de paginile <a href="http://www.simplemachines.org/community/index.php" target="_blank">help in english</a>.';
+$txt['congratulations_help'] = 'Dacă ai nevoie de ajutor sau forumul SMF nu mai funcţionează corect, adu-ţi aminte de paginile <a href="http://www.simplemachines.org/community/index.php" target="_blank">help in english</a> şi <a href="http://www.smf.ro/index.php" target="_blank">ajutor în română/a>.';
 $txt['still_writable'] = 'Directorul în care ai instalat forumul este în continuare writable. Este o bună idee să utilizezi comanda chmod în FTP şi să-i scoţi atributul writable din motive de securitate.';
 $txt['delete_installer'] = 'Click aici pentru a şterge fişierul install.php acum.';
 $txt['delete_installer_maybe'] = '<i>(nu funcţionează pe toate serverele.)</i>';
 $txt['go_to_your_forum'] = 'Acum poţi vedea <a href="%s">forumul tău proaspăt instalat</a> şi să începi să-l utilizezi. Mai întăi asigură-te ca eşti autentificat, după care poţi accesa Centru de Administrare.';
-$txt['good_luck'] = 'Baftă Maximă!<br />Simple Machines';
+$txt['good_luck'] = 'Baftă Maximă!<br />Simple Machines Forum şi SMF Romania (versiunea în limba română)';
 
 $txt['user_refresh_install'] = 'Forum Refresh';
 $txt['user_refresh_install_desc'] = 'In timpul instalarii (folosind detaliile introduse de tine), s-a găsit că una sau mai multe dintre tabelele necesare a fi create deja există.<br />Orice tabelă care lipseşte va fi recreata cu datele implicite, însa nici o dată nu a fost ştearsă sau rescrisă în tabelele deja existente.';
 
 $txt['default_topic_subject'] = 'Bine ai venit! SMF!';
-$txt['default_topic_message'] = 'Salut! Ai instalat Simple Machines Forum cu interfaţa în limba română!<br /><br />Sperăm că vei gasi uşoară funcţionarea şi administrarea şi te vei bucura folosind acest forum.&nbsp; Pentru orice problemă [url=http://www.simplemachines.org/community/index.php]help in english[/url].<br /><br />Mulţumim!<br />Simple Machines Forum';
+$txt['default_topic_message'] = 'Salut! Ai instalat Simple Machines Forum cu interfaţa în limba română!<br /><br />Sperăm că vei gasi uşoară funcţionarea şi administrarea şi te vei bucura folosind acest forum.&nbsp; Pentru orice problemă [url=http://www.simplemachines.org/community/index.php]help in english[/url] sau [url=http://www.smf.ro/index.php]ajutor în română[/url].<br /><br />Mulţumim!<br />Simple Machines Forum şi SMF Romania';
 $txt['default_board_name'] = 'Discuţii Generale';
 $txt['default_board_description'] = 'Eşti liber să vorbesti despre orice în aceast forum.';
 $txt['default_category_name'] = 'Categoria Generală';

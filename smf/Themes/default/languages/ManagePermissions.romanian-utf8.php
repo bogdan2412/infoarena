@@ -1,5 +1,7 @@
 <?php
-// Version: 1.1 RC3; ManagePermissions
+// Version: 1.1; ManagePermissions
+
+// Versiunea în limba română cu diacritice www.smf.ro
 
 $txt['permissions_title'] = 'Organizează Permisiunile';
 $txt['permissions_modify'] = 'Modifică';
@@ -13,7 +15,7 @@ $txt['permissions_local'] = 'Local';
 
 $txt['permissions_groups'] = 'Permisiuni pe grupuri de utilizatori';
 $txt['permissions_all'] = 'toate';
-$txt['permissions_none'] = 'nici unul';
+$txt['permissions_none'] = 'nici una';
 $txt['permissions_set_permissions'] = 'Setează permisiunile';
 
 $txt['permissions_with_selection'] = 'Cu cele selectate';
@@ -49,7 +51,7 @@ $txt['permissions_option_desc'] = 'Pentru fiecare permisiune poţi alege fie \'P
 
 $txt['permissiongroup_general'] = 'General';
 $txt['permissionname_view_stats'] = 'Afişează statisticile forumului';
-$txt['permissionhelp_view_stats'] = 'Statistice forumului din acesta pagină, sunt un sumar al tuturor statisticilor, cum ar fi, număr de utilizatori, media zilnică de mesaje şi alte câteva statistici de genul Cele mai multe 10. Activând aceasta permisiune, adaugă o legatură în josul paginii principale (\'[Mai multe statistici]\').';
+$txt['permissionhelp_view_stats'] = 'Statisticile forumului din acesta pagină, sunt un sumar al tuturor statisticilor, cum ar fi, număr de utilizatori, media zilnică de mesaje şi alte câteva clasamente de genul Cele mai multe 10. Activând aceasta permisiune, adaugă o legatură în josul paginii principale (\'[Mai multe statistici]\').';
 $txt['permissionname_view_mlist'] = 'Afişează lista de utilizatori';
 $txt['permissionhelp_view_mlist'] = 'Lista de utilizatori afişează toţi utilizatorii înregistraţi în forum. Această listă poate fi sortată şi aranjată şi deasemeni se poate căuta în ea. Lista de utilizatori este o legatură din josul paginii principale şi din statistici făcând click pe numărul de utilizatori.';
 $txt['permissionname_who_view'] = 'Afişează Cine este Online';
@@ -57,9 +59,9 @@ $txt['permissionhelp_who_view'] = 'Cine este Online afişează toţi utilizatori
 $txt['permissionname_search_posts'] = 'Caută după subiecte şi mesaje';
 $txt['permissionhelp_search_posts'] = 'Permisiunea Caută permite utilizatorilor să caute în toate forumurile în care au acces. Când permisunea de Cautăre este activată, un buton \'Caută\' va fi adaugat în bara de butoane a forumului.';
 $txt['permissionname_karma_edit'] = 'Schimbă popularitatea altor utilizatori.';
-$txt['permissionhelp_karma_edit'] = 'Karma este o funcţie care afişează popularitatea unui utilizator. Pentru a activa aceasta funcţie, trebuie să fie activată în \'Optiuni şi Facilităţi\'. Aceasta permisiune permite unui grup de utilizatori să voteze o dată. Nu are efect pentru Vizitatori.';
+$txt['permissionhelp_karma_edit'] = 'Karma este o funcţie care afişează popularitatea unui utilizator. Pentru a activa aceasta funcţie, trebuie să fie activată în \'Optiuni şi Facilităţi\'. Această permisiune permite unui grup de utilizatori să voteze o dată. Nu are efect pentru Vizitatori.';
 
-$txt['permissiongroup_pm'] = 'Mesagerie personala';
+$txt['permissiongroup_pm'] = 'Mesagerie personală';
 $txt['permissionname_pm_read'] = 'Citeşte mesaje personale';
 $txt['permissionhelp_pm_read'] = 'Acestă permisiune dă dreptul utilizatorilor să acceseze secţiunea Mesaje personale şi să îşi citească mesajele primite. Fără această permisiune, un utilizator nu este capabil să trimită mesaje.';
 $txt['permissionname_pm_send'] = 'Trimite mesaje personale';
@@ -77,25 +79,25 @@ $txt['permissionname_calendar_edit_any'] = 'Orice eveniment';
 
 $txt['permissiongroup_maintenance'] = 'Administrarea Forumului';
 $txt['permissionname_admin_forum'] = 'Administrează forumul şi baza de date';
-$txt['permissionhelp_admin_forum'] = 'Aceasta permisiune da unui utilizator dreptul de a:<ul><li>schimba forumurile, baza de date şi setările pentru teme</li><li>organiza pachete de modificări</li><li>să folosească uneltele pentru întreţinere a forumului şi bazei de date</li><li>să vadă erorile şi logul de moderare</li></ul> Foloseşte această permisiune cu grijă deoarece este foarte puternică.';
+$txt['permissionhelp_admin_forum'] = 'Această permisiune da unui utilizator dreptul de a:<ul><li>schimba forumurile, baza de date şi setările pentru teme</li><li>organiza pachete de modificări</li><li>să folosească uneltele pentru întreţinere a forumului şi bazei de date</li><li>să vadă erorile şi logul de moderare</li></ul> Foloseşte această permisiune cu grijă deoarece este foarte puternică.';
 $txt['permissionname_manage_boards'] = 'Organizează forumurile şi  categoriile';
-$txt['permissionhelp_manage_boards'] = 'Aceasta permisiune permite crearea, editarea şi eliminarea forumurilor şi categoriilor.';
+$txt['permissionhelp_manage_boards'] = 'Această permisiune permite crearea, editarea şi eliminarea forumurilor şi categoriilor.';
 $txt['permissionname_manage_attachments'] = 'Organizează fişiere ataşate şi avataruri';
-$txt['permissionhelp_manage_attachments'] = 'Aceasta permisiune conferă acces la centrul de administrare al fişierelor ataşate, unde toate fişierele ataşate şi avatarurile sunt listate şi pot fi şterse.';
+$txt['permissionhelp_manage_attachments'] = 'Această permisiune conferă acces la centrul de administrare al fişierelor ataşate, unde toate fişierele ataşate şi avatarurile sunt listate şi pot fi şterse.';
 $txt['permissionname_manage_smileys'] = 'Organizează zămbetele';
 $txt['permissionhelp_manage_smileys'] = 'Aceasta permite accesul la centrul de administrare al zămbetelor. Aici se pot crea, adauga şi elimina seturi de zămbete.';
 $txt['permissionname_edit_news'] = 'Editează ştiri';
-$txt['permissionhelp_edit_news'] = 'Functia Ştiri permite ca o ştire aleatorie să fie afişată pe fiecare pagină. Pentru a fi utilizată această funcţie trebuie să fie activată în setările forumului.';
+$txt['permissionhelp_edit_news'] = 'Funcţia Ştiri permite ca o ştire aleatorie să fie afişată pe fiecare pagină. Pentru a putea utiliza această funcţie, ea trebuie să fie activată în setările forumului.';
 
 $txt['permissiongroup_member_admin'] = 'Administrarea utilizatorilor';
 $txt['permissionname_moderate_forum'] = 'Moderează utilizatorii forumului';
-$txt['permissionhelp_moderate_forum'] = 'Aceastaă permisiune include toate funcţiile de moderarea a utilizatorilor:<ul><li>acces la organizarea înregistrarilor</li><li>acces la ecranul de vizualizat/şters utilizatori</li><li>profil extins, inclusiv urmărirea după IP, după utilizator şi starea ascuns/online</li><li>activarea conturilor</li><li>primeşte notificări de aprobare şi aprobă conturi</li><li>imunitate la ignorarea de mesaje personale</li><li>alte căteva mici lucruri</li></ul>';
+$txt['permissionhelp_moderate_forum'] = 'Această permisiune include toate funcţiile de moderarea a utilizatorilor:<ul><li>acces la organizarea înregistrărilor</li><li>acces la ecranul de vizualizat/şters utilizatori</li><li>profil extins, inclusiv urmărirea după IP, după utilizator şi starea ascuns/online</li><li>activarea conturilor</li><li>primeşte notificări de aprobare şi aprobă conturi</li><li>imunitate la ignorarea de mesaje personale</li><li>alte căteva mici lucruri</li></ul>';
 $txt['permissionname_manage_membergroups'] = 'Organizează şi atribuie grupuri de utilizatori';
 $txt['permissionhelp_manage_membergroups'] = 'Această permisiune dă dreptul unui utilizator să editeze grupuri de utilizatori şi să atribuie utilizatorii la grupuri.';
 $txt['permissionname_manage_permissions'] = 'Organizează permisiuni';
-$txt['permissionhelp_manage_permissions'] = 'Acestă permisune dă dreptul unui utilizator să editeze toate permisiunile unui grup, global sau individual pe forumuri.';
+$txt['permissionhelp_manage_permissions'] = 'Acestă permisiune dă dreptul unui utilizator să editeze toate permisiunile unui grup, global sau individual pe forumuri.';
 $txt['permissionname_manage_bans'] = 'Organizează lista de ban';
-$txt['permissionhelp_manage_bans'] = 'Acestă permisiune dă dreptul unui utilizator să adauge sau să elimine un ban în lista, un utilizator sau o adresa IP, hostnames şi adresa email. De asemenea îi este permis să vizualizeze logul de utilizatori banaţi care încearcă să se autentifice.';
+$txt['permissionhelp_manage_bans'] = 'Acestă permisiune dă dreptul unui utilizator să adauge sau să elimine un ban în lista, un utilizator sau o adresa IP, hostname şi adresa email. De asemenea îi este permis să vizualizeze logul de utilizatori banaţi care încearcă să se autentifice.';
 $txt['permissionname_send_mail'] = 'Trimite un email către toţi utilizatorii forumului';
 $txt['permissionhelp_send_mail'] = 'Mass email către toţi utilizatorii forumului sau doar la un grup de utilizatori, prin email sau mesaj personal (ultima necesită permisunea  \'Trimite mesaje personale\' ).';
 
@@ -113,15 +115,15 @@ $txt['permissionhelp_profile_extra'] = 'Setările suplimentare din profil includ
 $txt['permissionname_profile_extra_own'] = 'Profil personal';
 $txt['permissionname_profile_extra_any'] = 'Orice profil';
 $txt['permissionname_profile_title'] = 'Editează titlul personalizat';
-$txt['permissionhelp_profile_title'] = 'Titlul personalizat este afişat pe pagina de subiecte sub profilul fiecarui utilizator care are un titlu personalizat.';
+$txt['permissionhelp_profile_title'] = 'Titlul personalizat este afişat pe pagina de subiecte sub profilul fiecărui utilizator care are un titlu personalizat.';
 $txt['permissionname_profile_title_own'] = 'Profil personal';
 $txt['permissionname_profile_title_any'] = 'Orice profil';
 $txt['permissionname_profile_remove'] = 'Şterge contul';
-$txt['permissionhelp_profile_remove'] = 'Aceasta permite unui utilizator să şteargă contul personal, când este setat pe \'Cont Propriu\'.';
+$txt['permissionhelp_profile_remove'] = 'Aceasta permite unui utilizator să şteargă contul personal, când este setat pe \'Cont propriu\'.';
 $txt['permissionname_profile_remove_own'] = 'Cont propriu';
 $txt['permissionname_profile_remove_any'] = 'Orice cont';
 $txt['permissionname_profile_server_avatar'] = 'Alege un avatar de pe server';
-$txt['permissionhelp_profile_server_avatar'] = 'Dacă este permis, aceasta va da posibilitatea utilizatorilor să aleaga un avatar din colecţia de pe server.';
+$txt['permissionhelp_profile_server_avatar'] = 'Dacă este permis, aceasta va da posibilitatea utilizatorilor să aleagă un avatar din colecţia de pe server.';
 $txt['permissionname_profile_upload_avatar'] = 'Incarcă un avatar pe server';
 $txt['permissionhelp_profile_upload_avatar'] = 'Acestă permisiune va da posibilitatea unui utilizator să încarce (upload) un avatar personal pe server.';
 $txt['permissionname_profile_remote_avatar'] = 'Alege un avatar remote';
@@ -129,7 +131,7 @@ $txt['permissionhelp_profile_remote_avatar'] = 'Deoarece avatarul influenţează
 
 $txt['permissiongroup_general_board'] = 'General';
 $txt['permissionname_moderate_board'] = 'Moderează Forum';
-$txt['permissionhelp_moderate_board'] = 'Permisiunea de a modera forumuri adaugă câteva mici permisiuni care fac dintr-un moderator un moderator adevarat. Permisiunea include răspunsul la subiecte blocate, schimbarea duratei de timp până la expirarea sondajelor şi vizualizarea rezultatelor sondajelor.';
+$txt['permissionhelp_moderate_board'] = 'Permisiunea de a modera forumuri adaugă câteva mici permisiuni care fac dintr-un moderator un moderator adevărat. Permisiunea include răspunsul la subiecte blocate, schimbarea duratei de timp până la expirarea sondajelor şi vizualizarea rezultatelor sondajelor.';
 
 $txt['permissiongroup_topic'] = 'Subiecte';
 $txt['permissionname_post_new'] = 'Scrie noi subiecte';
@@ -162,8 +164,8 @@ $txt['permissionname_modify_replies'] = 'Modifică răspunsuri la subiectele pro
 $txt['permissionhelp_modify_replies'] = 'Această permisiune dă dreptul unui utilizator care a pornit un subiect să editeze toate răspunsurile la acel subiect.';
 $txt['permissionname_delete_replies'] = 'Şterge răspunsuri la subiectele proprii';
 $txt['permissionhelp_delete_replies'] = 'Această permisune dă dreptul unui utilizator care a pornit un subiect să şteargă toate răspunsurile la subiectul său.';
-$txt['permissionname_announce_topic'] = 'Anunţă subiect';
-$txt['permissionhelp_announce_topic'] = 'Aceasta permite unui utiliyator să trimită un email de anunţ despre un subiect la toţi utilizatorii sau doar la un grup de utilizatori selectat.';
+$txt['permissionname_announce_topic'] = 'Anunţă subiectul';
+$txt['permissionhelp_announce_topic'] = 'Aceasta permite unui utilizator să trimită un email de anunţ despre un subiect la toţi utilizatorii sau doar la un grup de utilizatori selectat.';
 
 $txt['permissiongroup_post'] = 'Mesaje';
 $txt['permissionname_delete'] = 'Şterge mesajele';
@@ -181,15 +183,15 @@ $txt['permissiongroup_poll'] = 'Sondaje';
 $txt['permissionname_poll_view'] = 'Vizualizează sondaje';
 $txt['permissionhelp_poll_view'] = 'Aceasta permite unui utilizator să vadă sondajele dintr-un subiect. Fără acesta el va vedea doar subiectul.';
 $txt['permissionname_poll_vote'] = 'Votează în sondaje';
-$txt['permissionhelp_poll_vote'] = 'Aceasta permisiune dă dreptul unui utilizator înregistrat să voteze o dată. Nu se aplica la vizitatori.';
+$txt['permissionhelp_poll_vote'] = 'Această permisiune dă dreptul unui utilizator înregistrat să voteze o dată. Nu se aplica la vizitatori.';
 $txt['permissionname_poll_post'] = 'Porneşte sondaje';
-$txt['permissionhelp_poll_post'] = 'Acesta permisiune dă dreptul unui utilizator să iniţieze un sondaj nou.';
+$txt['permissionhelp_poll_post'] = 'Acestă permisiune dă dreptul unui utilizator să iniţieze un sondaj nou.';
 $txt['permissionname_poll_add'] = 'Adaugă sondaj la subiecte';
 $txt['permissionhelp_poll_add'] = 'Aceasta permite adăugarea unui sondaj după ce subiectul a fost scris. Necesită drepturi suficiente de a edita primul mesaj dintr-un subiect.';
 $txt['permissionname_poll_add_own'] = 'Subiecte proprii';
 $txt['permissionname_poll_add_any'] = 'Orice subiecte';
 $txt['permissionname_poll_edit'] = 'Editează sondaj';
-$txt['permissionhelp_poll_edit'] = 'Aceasta permisiune dă dreptul să se editeze opţiunile dintr-un sondaj sau să se reseteze acel sondaj. Pentru a modifica numărul maxim de voturi şi data expirării, utilizatorul necesită permisiunea \'Moderează forum\' .';
+$txt['permissionhelp_poll_edit'] = 'Această permisiune dă dreptul să se editeze opţiunile dintr-un sondaj sau să se reseteze acel sondaj. Pentru a modifica numărul maxim de voturi şi data expirării, utilizatorul necesită permisiunea \'Moderează forum\' .';
 $txt['permissionname_poll_edit_own'] = 'Sondaje proprii';
 $txt['permissionname_poll_edit_any'] = 'Orice sondaj';
 $txt['permissionname_poll_lock'] = 'Blochează sondaj';
@@ -224,7 +226,7 @@ $txt['permission_disable_deny_warning'] = 'Dezactivând aceasta va modifica perm
 $txt['permission_by_membergroup_desc'] = 'Aici poţi seta toate permisiunile globale pentru fiecare grup de utilizatori. Aceste permisiuni sunt valabile în forumuri care nu au fost schimbate către permisiuni locale în secţiunea \'Permisiuni pe forum\'.';
 $txt['permission_by_board_desc'] = 'Aici poţi seta dacă un forum foloseşte permisiunile globale sau are un regim special. Folosind permisiuni locale pentru un forum, poţi seta permisiuni pentru fiecare grup de utilizatori.';
 $txt['permission_settings_desc'] = 'Aici poţi seta cine are dreptul de a altera permisiunile celorlalţi, atât cât de sofisticat este sistemul de permisiuni.';
-$txt['permission_settings_enable_postgroups'] = 'Activează permisiuni bazate pe numărul de mesaje scrise';
+$txt['permission_settings_enable_postgroups'] = 'Activează permisiunile bazate pe numărul de mesaje scrise';
 // Escape any single quotes în here twice.. 'it\'s' -> 'it\\\'s'.
 $txt['permission_disable_postgroups_warning'] = 'Dezactivând aceasta vei elimina permisiunile acordate în acest moment la grupuri pe baza numărului de mesaje scrise.';
 $txt['permission_settings_enable_by_board'] = 'Activează permisiunile avansate per-forum';

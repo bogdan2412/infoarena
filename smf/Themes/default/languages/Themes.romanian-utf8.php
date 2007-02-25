@@ -1,5 +1,7 @@
 <?php
-// Version: 1.1 RC3; Themes
+// Version: 1.1; Themes
+
+// Versiunea în limba română cu diacritice www.smf.ro
 
 $txt['themeadmin_explain'] = 'Temele reprezintă diferite interfeţe grafice pentru forum.  Setările urmatoare afectează selectarea acestora, respectiv ce teme utilizează vizitatorii şi utilizatorii înregistrati.';
 
@@ -56,22 +58,22 @@ $txt['allow_no_censored'] = 'Permite utilizatorilor să dezactiveze cenzura cuvi
 $txt['who_display_viewing'] = 'Afişează cine se uita la forum şi la mesaje';
 $txt['who_display_viewing_off'] = 'Nu afişa';
 $txt['who_display_viewing_numbers'] = 'Afişează doar numărul utilizatorilor';
-$txt['who_display_viewing_names'] = 'Afisează numele utilizatorilor';
+$txt['who_display_viewing_names'] = 'Afişează numele utilizatorilor';
 $txt['smf93'] = 'Dezactivează postările recente';
 $txt['smf94'] = 'Activează mesajul unic';
 $txt['smf95'] = 'Activează mesajele multiple';
 $txt['smf105'] = 'Activează legaturile într-o singură linie';
 $txt['smf106'] = 'Aceasta activare va duce la afişarea locaţiei într-o singură line în loc de metoda cu trei linii.';
 $txt['smf200'] = 'Activează style SP1 pentru statisticile în pagina principală';
-$txt[382] = 'Afisează ultimul utilizator înregistrat în pagina principală';
-$txt[383] = 'Afisează ultima modificare pentru mesajele modificate';
-$txt[384] = 'Afisează avatarul utilizatorului în vizualizarea mesajului';
-$txt[385] = 'Afisează textul personal în afişarea mesajului';
-$txt[386] = 'Afisează sexul utilizatorului în afişarea mesajului?';
-$txt[387] = 'Afisează ştirile cu efectul fader în pagina principala?';
-$txt[510] = 'Afisează bara pentru lista de utilizatori în pagina principala?';
-$txt[522] = 'Afisează poziţia curentă în forum ca legatură (link) în loc de text?';
-$txt[523] = 'Afisează butonul pentru vizualizat profilul sub mesaj?';
+$txt[382] = 'Afişează ultimul utilizator înregistrat în pagina principală';
+$txt[383] = 'Afişează ultima modificare pentru mesajele modificate';
+$txt[384] = 'Afişează avatarul utilizatorului în vizualizarea mesajului';
+$txt[385] = 'Afişează textul personal în afişarea mesajului';
+$txt[386] = 'Afişează sexul utilizatorului în afişarea mesajului?';
+$txt[387] = 'Afişează ştirile cu efectul fader în pagina principala?';
+$txt[510] = 'Afişează bara pentru lista de utilizatori în pagina principala?';
+$txt[522] = 'Afişează poziţia curentă în forum ca legatură (link) în loc de text?';
+$txt[523] = 'Afişează butonul pentru vizualizat profilul sub mesaj?';
 $txt[618] = 'Activează şi afişează butonul "Marchează citit" ?';
 $txt['header_logo_url'] = 'Adresa URL a imaginii logo:';
 $txt['header_logo_url_desc'] = '(lasa gol pentru a a afişa numele forumului sau logo implicit.)';

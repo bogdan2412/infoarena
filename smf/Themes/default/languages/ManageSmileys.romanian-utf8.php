@@ -1,5 +1,7 @@
 <?php
-// Version: 1.1 RC3; ManageSmileys
+// Version: 1.1; ManageSmileys
+
+// Versiunea în limba română cu diacritice www.smf.ro
 
 $txt['smiley_sets'] = 'Seturi de zămbete';
 $txt['smiley_sets_enable'] = 'Activează selectarea setului de zămbete de către utilizatori';

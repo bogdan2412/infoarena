@@ -1,5 +1,7 @@
 <?php
-// Version: 1.1 RC3; Reports
+// Version: 1.1; Reports
+
+// Versiunea în limba română cu diacritice www.smf.ro
 
 $txt['generate_reports_desc'] = 'Din această secţiune poţi genera o gamă de rapoarte care să te ajute în administrarea forumului. Doar trebuie să urmaresti cu atenţie paşii de mai jos pentru a selecta opţiunile pe care le doresti';
 $txt['generate_reports_continue'] = 'Continuă';
@@ -24,7 +26,7 @@ $txt['board_perms_permission'] = 'Permisiuni';
 $txt['board_perms_allow'] = 'Permis';
 $txt['board_perms_deny'] = 'Interzis';
 $txt['board_perms_name_announce_topic'] = 'Anunta subiecte';
-$txt['board_perms_name_delete_any'] = 'Şterge orice mesaj';
+$txt['board_perms_name_delete_orice'] = 'Şterge orice mesaj';
 $txt['board_perms_name_delete_own'] = 'Şterge mesaje proprii';
 $txt['board_perms_name_delete_replies'] = 'Şterge răspunsuri la subiectele proprii';
 $txt['board_perms_name_lock_any'] = 'Blochează orice subiect';

@@ -1,5 +1,7 @@
 <?php
-// Version: 1.1 RC3; Search
+// Version: 1.1; Search
+
+// Versiunea în limba română cu diacritice www.smf.ro
 
 $txt[183] = 'Setează parametrii pentru căutare';
 $txt[189] = 'Alege un forum în care cauţi sau selectează toate';
@@ -94,6 +96,7 @@ $txt['search_double_index'] = 'Ai creat două indexuri diferite pentru mesajele 
 
 $txt['search_error_indexed_chars'] = 'Număr de caractere invalid pentru a crea indexul. Minim 3 caractere sunt necesare pentru un index utilizabil.';
 $txt['search_error_max_percentage'] = 'Procentaj de cuvinte care pot fi sărite prea mic. Foloseste o valoare de minim 5%.';
+
 
 $txt['search_adjust_query'] = 'Revizuieste parametrii căutarii';
 $txt['search_adjust_submit'] = 'Revizuieste căutarea';

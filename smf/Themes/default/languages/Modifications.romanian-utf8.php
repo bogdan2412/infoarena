@@ -1,4 +1,4 @@
 <?php
-// Version: 1.1 RC3; Modifications
+// Version: 1.1; Modifications
 
 ?>

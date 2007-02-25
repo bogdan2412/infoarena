@@ -1,7 +1,9 @@
 <?php
-// Version: 1.1 RC3; Login
+// Version: 1.1.2; Login
 
-$txt[37] = 'Nu ai completat câmpul Numele Utilizatorului.';
+// Versiunea în limba română cu diacritice www.smf.ro
+
+$txt[37] = 'Nu ai completat numele utilizatorului.';
 $txt[38] = 'Nu ai introdus nici o parolă.';
 $txt[39] = 'Parola incorectă';
 $txt[98] = 'Alege un nume de utilizator';
@@ -66,7 +68,7 @@ $txt['coppa_not_completed2'] = 'Doreşti mai multe detalii?';
 $txt['awaiting_delete_account'] = 'Contul tău a fost marcat pentru ştergere!<br />Dacă doreşti să-ţi restabilesti contul te rugăm să vizitezi &quot;Reactivarea contului&quot; şi apoi să te autentifici din nou.';
 $txt['undelete_account'] = 'Reactivează contul meu';
 
-$txt['change_email_success'] = 'Adresa ta de email a fost schimbată şi astfel un nou email de activare a fost trimis la ea.';
+$txt['change_email_success'] = 'Adresa ta de email a fost schimbată şi astfel un nou mesaj necesar pentru reactivare a fost trimis la această nouă adresă.';
 $txt['resend_email_success'] = 'Un nou email pentru activare a fost trimis.';
 // Use numeric entities în the below three strings.
 $txt['change_password'] = 'Parola nouă';
@@ -79,7 +81,7 @@ $txt['maintenance3'] = 'Acest forum este în întreţinere.';
 $txt['register_agree'] = 'Te rugăm să citeţti şi să accepţi condiţiile de mai jos înainte de a te înregistra.';
 $txt['register_passwords_differ_js'] = 'Cele doua parole introduse nu sunt identice!';
 
-$txt['approval_after_registration'] = 'Îţi multumim pentru înregistrare. Administratorul trebuie să aprobe înregistrarea ta înainte de a putea utiliza contul. Vei primi un mesaj email curând cu privire la decizia administratorului.';
+$txt['approval_after_registration'] = 'Îţi mulţumim pentru înregistrare. Administratorul trebuie să aprobe înregistrarea ta înainte de a putea utiliza contul. Vei primi un mesaj email curând cu privire la decizia administratorului.';
 
 $txt['admin_settings_desc'] = 'Aici poţi schimba setările cu privire la înregistrarea de noi membri.';
 
@@ -96,11 +98,19 @@ $txt['admin_setting_password_strength_low'] = 'Scazută - 4 caractere minim';
 $txt['admin_setting_password_strength_medium'] = 'Medie - nu poate conţine numele de utilizator';
 $txt['admin_setting_password_strength_high'] = 'Mare - combinaţie de diferite caractere';
 
-$txt['admin_setting_disable_visual_verification'] = 'Dezactivează verificarea vizuală la înregistrare';
+$txt['admin_setting_image_verification_type'] = 'Nivelul de dificultate a imaginii pentru verificarea vizuala';
+$txt['admin_setting_image_verification_type_desc'] = 'Cu cât mai complexă este imaginea cu atât mai greu va fi pentru roboţi să reuşească înregistrarea';
+$txt['admin_setting_image_verification_off'] = 'Dezactivat';
+$txt['admin_setting_image_verification_vsimple'] = 'Foarte simplu - Text clar suprapus pe o imagine';
+$txt['admin_setting_image_verification_simple'] = 'Simplu - Litere colorate suprapuse, fără zgomot';
+$txt['admin_setting_image_verification_medium'] = 'Mediu - Litere colorate suprapuse, cu zgomot';
+$txt['admin_setting_image_verification_high'] = 'Ridicat  - Litere deformate, zgomot crescut';
+$txt['admin_setting_image_verification_sample'] = 'Exemplu';
+$txt['admin_setting_image_verification_nogd'] = '<b>Notă:</b> deoarece aceste server nu are bibliotecile GD instalate, diferitele grade de complexitate nu vor avea efect.';
 
 $txt['admin_setting_coppaAge'] = 'Vârsta sub care se aplică restricţiile la înregistrare';
 $txt['admin_setting_coppaAge_desc'] = '(Setează 0 pentru dezactivare)';
-$txt['admin_setting_coppaType'] = 'Acţiune în cazul unui utilizator sub vârsta minima care se înregistrează';
+$txt['admin_setting_coppaType'] = 'Acţiune în cazul unui utilizator sub vârsta minimă care se înregistrează';
 $txt['admin_setting_coppaType_reject'] = 'Nu permite înregistrarea!';
 $txt['admin_setting_coppaType_approval'] = 'Cere aprobarea părintelui/tutorelui';
 $txt['admin_setting_coppaPost'] = 'Adresa poştala unde să fie trimis acordul parinţilor';
@@ -120,8 +130,8 @@ $txt['admin_register_password_desc'] = 'Parola pentru noul utilizator';
 $txt['admin_register_email_detail'] = 'Trimite pe email noua parola la utilizator';
 $txt['admin_register_email_detail_desc'] = 'Adresa de email este necesară chiar dacă este nebifată';
 $txt['admin_register_email_activate'] = 'Cere utilizatorului să-şi activeze contul';
-$txt['admin_register_group'] = 'Grupul de utilizatori primar';
-$txt['admin_register_group_desc'] = 'Grupul de utilizatori de care vor aparţine noii utilizatori';
+$txt['admin_register_group'] = 'Grupul primar de utilizatori';
+$txt['admin_register_group_desc'] = 'Grupul de utilizatori de care vor aparţine iniţial noii utilizatori';
 $txt['admin_register_group_none'] = '(nici un grup primar)';
 $txt['admin_register_done'] = 'Utilizatorul %s a fost înregistrat cu succes!';
 
@@ -130,7 +140,7 @@ $txt['admin_browse_register_new'] = 'Inregistrează un utilizator nou';
 // Use numeric entities în the below three strings.
 $txt['admin_notify_subject'] = 'Un nou utilizator s-a înregistrat';
 $txt['admin_notify_profile'] = '%s tocmai s-a înregistrat ca nou membru al forumului tău. Click pe legătura de mai jos pentru a vedea profilul său.';
-$txt['admin_notify_approval'] = 'Inainte ca acest membru să poata scrie mesaje el trebuie să aiba contul aprobat. Click pe legatura de mai jos pentru a merge la interfaţa de aprobare.';
+$txt['admin_notify_approval'] = 'Inainte ca acest membru să poată scrie mesaje el trebuie să aiba contul aprobat. Click pe legatura de mai jos pentru a merge la interfaţa de aprobare.';
 
 $txt['coppa_title'] = 'Forum cu restricţii de vârstă';
 $txt['coppa_after_registration'] = 'Îţi mulţumim pentru înregistrarea în ' . $context['forum_name'] . '.<br /><br />Deoarece tu eşti sub limita de vârsta pentru acest forum, limită care este de {MINIMUM_AGE}, este necesar legal
@@ -149,11 +159,11 @@ $txt['coppa_form_date'] = 'Data';
 $txt['coppa_form_body'] = 'Subsemnatul {PARENT_NAME},<br /><br />îmi dau acordul pentru ca {CHILD_NAME} (numele copilului) să devină membru înregistrat al forumului: ' . $context['forum_name'] . ', cu urmatorul nume de utilizator: {USER_NAME}.<br /><br />Inţeleg şi accept ca unele informaţii personale introduse de {USER_NAME} pot fi văzute de către ceilalţi utilizatori ai forumului.<br /><br />Semnătura:<br />{PARENT_NAME} (Părinte/Tutore).';
 
 $txt['visual_verification_label'] = 'Verificare vizuală';
-$txt['visual_verification_description'] = 'Introdu literele afişate in fotografie';
-$txt['visual_verification_sound'] = 'Ascută literele';
+$txt['visual_verification_description'] = 'Introdu literele afişate în fotografie';
+$txt['visual_verification_sound'] = 'Ascultă literele';
 $txt['visual_verification_sound_again'] = 'Ascultă din nou';
 $txt['visual_verification_sound_close'] = 'Inchide fereastra';
 $txt['visual_verification_request_new'] = 'Cere o altă fotografie';
-$txt['visual_verification_sound_direct'] = 'Ai probleme în a auzi asta? Incearcă link-ul direct către ea.';
+$txt['visual_verification_sound_direct'] = 'Ai probleme în a auzi literele? Incearcă link-ul direct.';
 
 ?>

@@ -1,7 +1,9 @@
 <?php
-// Version: 1.1 RC3; ModSettings
+// Version: 1.1; ModSettings
 
-$txt['smf3'] = 'Această pagină îţi oferă posibilitatea să schimbi setările modificărilor, caracteristicilor şi căteva opţiuni de bază în forum. Vezi <a href="' . $scripturl . '?action=theme;sa=settings;th=' . $settings['theme_id'] . ';sesc=' . $context['session_id'] . '">setări pentru teme</a> pentru mai multe opţiuni.  Click iconul de ajutor pentru mai multe informaţii despre o setare anume.';
+// Versiunea în limba română cu diacritice www.smf.ro
+
+$txt['smf3'] = 'Această pagină îţi oferă posibilitatea să schimbi setările, unele caracteristici şi căteva opţiuni de bază în forum. Vezi <a href="' . $scripturl . '?action=theme;sa=settings;th=' . $settings['theme_id'] . ';sesc=' . $context['session_id'] . '">setări pentru teme</a> pentru mai multe opţiuni. Click iconul de ajutor pentru mai multe informaţii despre o setare anume.';
 
 $txt['mods_cat_features'] = 'Caracteristici de bază';
 $txt['pollMode'] = 'Mod sondaj';
@@ -9,7 +11,7 @@ $txt['smf34'] = 'Dezactivează sondaj';
 $txt['smf32'] = 'Activează sondaj';
 $txt['smf33'] = 'Afişează sondajele existente ca subiecte';
 $txt['allow_guestAccess'] = 'Permite vizitatorilor să vadă forumul';
-$txt['userLanguage'] = 'Activează suportul pentru selectarea limbii de către utilizatori';
+$txt['userLanguage'] = 'Activează selectarea limbii de către utilizatori';
 $txt['allow_editDisplayName'] = 'Permite utilizatorilor să editeze numele afişat?';
 $txt['allow_hideOnline'] = 'Permite altora decât admin să ascundă starea online?';
 $txt['allow_hideEmail'] = 'Permite utilizatorilor să ascundă email propriu celorlalţi în afară de admin?';
@@ -51,6 +53,9 @@ $txt['smtp_host'] = 'server SMTP';
 $txt['smtp_port'] = 'port SMTP';
 $txt['smtp_username'] = 'utilizatorul SMTP';
 $txt['smtp_password'] = 'parola SMTP';
+$txt['pm_posts_verification'] = 'Numărul de mesaje sub care utilizatorul trebuie să introducă codul vizual atunci când trimiste mesaje personale.<div class="smalltext">(0 pentru nelimitat, administratorii sunt exceptaţi)</div>';
+$txt['pm_posts_per_hour'] = 'Numărul de mesaje personale pe care un utilizator le poate trimite în interval de o oră. <div class="smalltext">(0 pentru nelimitat, moderatorii sunt exceptaţi)</div>';
+
 $txt['enableReportPM'] = 'Activează raportarea mesajelor personale';
 $txt['max_pm_recipients'] = 'Numărul maxim de destinatari permişi pentru un mesaj personal.<div class="smalltext">(0 pentru nelimitat, administratorii sunt exclusi)</div>';
 
@@ -72,7 +77,7 @@ $txt['who_enabled'] = 'Activează lista Cine e online';
 
 $txt['smf293'] = 'Popularitate';
 $txt['karmaMode'] = 'Mod popularitate';
-$txt['smf64'] = 'Dezactivează/Activează totalurile la popularitate, activează Popularitate pozitiv/negativ';
+$txt['smf64'] = 'Dezactivează karma|Activează karma per total|Activează karma pozitiv/negativ';
 $txt['karmaMinPosts'] = 'Setează numărul minim de mesaje necesare pentru a putea modifica popularitatea altora';
 $txt['karmaWaitTime'] = 'Setează timpul de aşteptare în ore';
 $txt['karmaTimeRestrictAdmins'] = 'Restrictionează administratorii la timpul de aşteptare';

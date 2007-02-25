@@ -1,7 +1,9 @@
 <?php
-// Version: 1.1 RC3; index
+// Version: 1.1.2; index
 
 global $forum_copyright, $forum_version, $webmaster_email;
+
+// Versiunea în limba română cu diacritice www.smf.ro
 
 // Locale (strftime, pspell_new) and spelling. (pspell_new, can be left as '' normally.)
 // For more information see:
@@ -10,7 +12,7 @@ global $forum_copyright, $forum_version, $webmaster_email;
 // Again, SPELLING SHOULD BE '' 99% OF THE TIME!!  Please read this!
 $txt['lang_locale'] = 'ro_RO.utf8';
 $txt['lang_dictionary'] = 'ro';
-$txt['lang_spelling'] = 'romănă';
+$txt['lang_spelling'] = 'română';
 
 // Character set and right to left?
 $txt['lang_character_set'] = 'UTF-8';
@@ -60,29 +62,29 @@ $txt[63] = 'Elimină subiectul';
 $txt[64] = 'Subiecte';
 $txt[66] = 'Modifică mesajul';
 $txt[68] = 'Nume';
-$txt[69] = 'Adresa de mail';
+$txt[69] = 'Adresa de email';
 $txt[70] = 'Titlul';
 $txt[72] = 'Mesaj';
 
 $txt[79] = 'Profil pe forum';
 
-$txt[81] = 'Alege o parola';
+$txt[81] = 'Alege o parolă';
 $txt[82] = 'Verifică parola';
 $txt[87] = 'Rang';
 
-$txt[92] = 'Vezi profilul lui';
+$txt[92] = 'Vezi profilul utilizatorului';
 $txt[94] = 'Total';
 $txt[95] = 'Mesaje';
 $txt[96] = 'Site personal';
 $txt[97] = 'Creează un cont';
 
 $txt[101] = 'Index-ul mesajului';
-$txt[102] = 'Noutaţi';
+$txt[102] = 'Noutăţi';
 $txt[103] = 'Forum Home';
 
 $txt[104] = 'Blochează/Deblochează subiectul';
 $txt[105] = 'Mesaj';
-$txt[106] = 'A aparut o eroare!';
+$txt[106] = 'A apărut o eroare!';
 $txt[107] = 'la';
 $txt[108] = 'Ieşire';
 $txt[109] = 'Creat de';
@@ -94,33 +96,33 @@ $txt[118] = 'Subiect';
 $txt[119] = 'Ajutor';
 $txt[121] = 'Elimină mesajul';
 $txt[125] = 'Avertizare';
-$txt[126] = 'Vrei să fii avertizat printr-un mail dacă apar răspunsuri la acest subiect?';
+$txt[126] = 'Vrei să fii avertizat printr-un email dacă apar răspunsuri la acest subiect?';
 // Use numeric entities în the below string.
-$txt[130] = "Mulţumim,\nEchipa " . $context['forum_name'] . '';
+$txt[130] = " \nEchipa " . $context['forum_name'] . '';
 $txt[131] = 'Avertizare la răspunsuri';
 $txt[132] = 'Mută subiectul';
-$txt[133] = 'Mută la';
+$txt[133] = 'Mută în';
 $txt[139] = 'Pagini';
 $txt[140] = 'Utilizatori activi în ultimele ' . $modSettings['lastActive'] . ' minute';
 $txt[144] = 'Mesaje personale';
 $txt[145] = 'Răspunde folosind un citat';
 $txt[146] = 'Răspunde';
 
-$txt[151] = 'Nu există mesaje...';
+$txt[151] = 'Nu sunt mesaje...';
 $txt[152] = 'ai';
 $txt[153] = 'mesaje';
-$txt[154] = 'Elimină acest mesaj';
+$txt[154] = 'Şterge acest mesaj';
 
 $txt[158] = 'Utilizatori prezenţi';
 $txt[159] = 'Mesaje personale';
-$txt[160] = 'Mergi la';
-$txt[161] = 'du-te';
+$txt[160] = 'Schimbă forumul';
+$txt[161] = 'Schimbă';
 $txt[162] = 'Eşti sigur că vrei să elimini acest subiect?';
-$txt[163] = 'Da, sunt sigur!';
-$txt[164] = 'Nu, nu sunt sigur!';
+$txt[163] = 'Da!';
+$txt[164] = 'Nu!';
 
 $txt[166] = 'Rezultatele căutarii';
-$txt[167] = 'Căutărea este terminată';
+$txt[167] = 'Căutarea este terminată';
 $txt[170] = 'Nu există nici un rezultat';
 $txt[176] = 'din';
 
@@ -136,12 +138,12 @@ $txt[200] = 'Diverse criterii de căutare în lista utilizatorilor înregistraţ
 $txt[201] = 'Bine ai venit!';
 $txt[208] = 'Centrul de administrare';
 $txt[211] = 'Ultima modificare';
-$txt[212] = 'Vrei să nu mai fii avertizat prin mail dacă apar răspunsuri la acest subiect?';
+$txt[212] = 'Vrei să nu mai fii avertizat prin email dacă apar răspunsuri la acest subiect?';
 
 $txt[214] = 'Mesaje recente';
 
 $txt[227] = 'Locaţia';
-$txt[231] = 'Sexul';
+$txt[231] = 'Gen';
 $txt[233] = 'Cont creat la';
 
 $txt[234] = 'Vezi cele mai recente mesaje';
@@ -153,7 +155,7 @@ $txt[239] = 'Femeie';
 $txt[240] = 'Ai introdus caractere nepermise la numele de utilizator.';
 
 $txt['welcome_guest'] = 'Bine ai venit, <b>' . $txt[28] . '</b>. Trebuie <a href="' . $scripturl . '?action=login">să te autentifici</a> sau <a href="' . $scripturl . '?action=register">să îţi creezi un cont</a>.';
-$txt['welcome_guest_activate'] = '<br />Ai pierdut sau nu ai primit mailul care conţine <a href="' . $scripturl . '?action=activate">codul de activare al contului?</a>';
+$txt['welcome_guest_activate'] = '<br />Ai pierdut sau nu ai primit emailul care conţine <a href="' . $scripturl . '?action=activate">codul de activare al contului?</a>';
 $txt['hello_member'] = 'Salut,';
 // Use numeric entities în the below string.
 $txt['hello_guest'] = 'Bine ai venit,';
@@ -191,13 +193,13 @@ $txt[300] = 'Marchează subiectele din această secţiune ca fiind citite';
 $txt[301] = 'Vizite';
 $txt[302] = 'Nou';
 
-$txt[303] = 'Vezi toţi membrii';
+$txt[303] = 'Afişează toţi utilizatorii';
 $txt[305] = 'Vezi';
-$txt[307] = 'Mail';
+$txt[307] = 'Email';
 
-$txt[308] = 'Afişează membrii';
+$txt[308] = 'Afişează utilizatorii';
 $txt[309] = 'din';
-$txt[310] = 'totalul membrilor';
+$txt[310] = 'numărul total de utilizatori';
 $txt[311] = 'la';
 $txt[315] = 'Ai uitat parola?';
 
@@ -216,7 +218,7 @@ $txt[334] = 'Nu sunt mesaje noi';
 
 $txt['sendtopic_send'] = 'Trimite!';
 
-$txt[371] = 'Timpul alocat a expirat!';
+$txt[371] = 'Diferenţa de timp faţă de ora oficiala a forumului';
 $txt[377] = 'sau';
 
 $txt[398] = 'Nu există nici un rezultat';
@@ -243,8 +245,8 @@ $txt[471] = 'mesaj';
 $txt[473] = 'Acest nume de utilizator a fost deja utilizat';
 
 $txt[488] = 'Utilizatori care au cont';
-$txt[489] = 'Numar de mesaje';
-$txt[490] = 'Numar de subiecte';
+$txt[489] = 'Număr de mesaje';
+$txt[490] = 'Număr de subiecte';
 
 $txt[497] = 'Timp de conectare';
 
@@ -311,21 +313,21 @@ $txt['sendtopic_comment'] = 'Scrie şi un mic text drept comentariu';
 // Use numeric entities în the below string.
 $txt['sendtopic2'] = 'A fost adăugat urmatorul comentariu legat de acest subiect';
 
-$txt[721] = 'Vrei ca adresa ta de mail să nu fie publică?';
+$txt[721] = 'Vrei ca adresa ta de email să nu fie publică?';
 
 $txt[737] = 'Selectează toate';
 
 // Use numeric entities în the below string.
 $txt[1001] = 'Eroare în baza de date';
-$txt[1002] = 'Dacă după o nouă încercare mai apare această eroare trebuie să contactezi Administratorul.';
+$txt[1002] = 'Dacă după o nouă încercare mai apare această eroare te rugăm să contactezi Administratorul.';
 $txt[1003] = 'Fişier';
 $txt[1004] = 'Linie';
 // Use numeric entities în the below string.
-$txt[1005] = 'SMF a detectat o eroare în baza de date şi a încercat să o remedieze. Dacă tot mai apar probleme sau primeşti mesaje pe mail trebuie să contactezi administratorul.';
-$txt['database_error_versions'] = '<b>Observaţie:</b> Baza de date are nevoie <em>may</em> de o înnoire. Fişierele forumului actual sunt la versiunea ' . $forum_version . ', iar baza de date este la versiunea ' . $modSettings['smfVersion'] . 'Erorile precedente pot disparea dacă vei utiliza ultima versiune a fişierului upgrade.php.';
-$txt['template_parse_error'] = 'template parse error';
+$txt[1005] = 'SMF a detectat o eroare în baza de date şi a încercat să o remedieze. Dacă tot mai apar probleme sau primeşti mesaje pe email trebuie să contactezi administratorul.';
+$txt['database_error_versions'] = '<b>Observaţie:</b> Baza de date are nevoie <em>may</em> de o înnoire. Momentan fişierele forumului sunt la versiunea ' . $forum_version . ', iar baza de date este la versiunea ' . $modSettings['smfVersion'] . 'Erorile precedente pot disparea dacă vei utiliza ultima versiune a fişierului upgrade.php.';
+$txt['template_parse_error'] = 'Eroare la fişierul template - template parse error';
 $txt['template_parse_error_message'] = 'Au apărut cateva disfuncţionalitati temporare legate de partea grafica a forumului. Dacă după o noua încercare acest mesaj mai apare atunci contactează imediat Administratorul.<br /><br />Mai încearcă şi <a href="javascript:location.reload();">apăsând aici</a>.';
-$txt['template_parse_error_details'] = 'A aparut o problema legată de <tt><b>%1$s</b></tt> partea grafică sau de fişierul de limbă. Verifică ortografia şi mai încearcă. Nu uita: aceste semne (<tt>\'</tt>) au nevoie de ajutorul unei bare oblice (<tt>\\</tt>). Pentru a cunoaşte mai multe detalii despre aceste erori PHP, încearcă <a href="' . $boardurl . '%1$s">accesarea directă a fişierului</a>.<br /><br />Mai poţi încerca <a href="javascript:location.reload();">reîncărcând pagina</a> sau <a href="' . $scripturl . '?theme=1">în lipsa temei grafice</a>.';
+$txt['template_parse_error_details'] = 'A apărut o problema legată de <tt><b>%1$s</b></tt> partea grafică sau de fişierul de limbă. Verifică ortografia şi mai încearcă. Nu uita: aceste semne (<tt>\'</tt>) au nevoie de ajutorul unei bare oblice (<tt>\\</tt>). Pentru a cunoaşte mai multe detalii despre aceste erori PHP, încearcă <a href="' . $boardurl . '%1$s">accesarea directă a fişierului</a>.<br /><br />Mai poţi încerca <a href="javascript:location.reload();">reîncărcând pagina</a> sau <a href="' . $scripturl . '?theme=1">în lipsa temei grafice</a>.';
 
 $txt['smf10'] = '<b>Astăzi</b> la ';
 $txt['smf10b'] = '<b>Ieri</b> la ';
@@ -371,35 +373,35 @@ $txt['smf252'] = 'Lipeşte subiectele';
 $txt['smf254'] = 'Titlul noului subiect';
 $txt['smf255'] = 'Secţionează numai acest subiect.';
 $txt['smf256'] = 'Secţionează subiectul după şi include acest mesaj.';
-$txt['smf257'] = 'Alege mesajele destinate sectionării.';
+$txt['smf257'] = 'Alege mesajele destinate secţionării.';
 $txt['smf258'] = 'Subiect nou';
-$txt['smf259'] = 'Subiectul a fost sectionat în două noi subiecte.';
+$txt['smf259'] = 'Subiectul iniţial a fost secţionat în două noi subiecte.';
 $txt['smf260'] = 'Subiectul original';
 $txt['smf261'] = 'Selectează mesajele pe care vrei să le separi.';
 $txt['smf264'] = 'Subiectele au fost lipite.';
 $txt['smf265'] = 'Subiectul nou creat prin lipire';
 $txt['smf266'] = 'Subiecte pe care vrei să le lipeşti';
-$txt['smf267'] = 'Sectiunea unde vrei să îl muti';
-$txt['smf269'] = 'Subiectul în care vrei să îl ataşezi';
-$txt['smf274'] = 'Eşti sigur ca vrei să efectuezi lipirea';
+$txt['smf267'] = 'Secţiunea unde vrei să îl muţi';
+$txt['smf269'] = 'Subiectul la care vrei să îl ataşezi';
+$txt['smf274'] = 'Eşti sigur că vrei să efectuezi lipirea';
 $txt['smf275'] = 'cu';
-$txt['smf276'] = 'Aceasta acţiune va combina mesajele din două subiecte într-un singur subiect. Mesajele vor fi aranjate în funcţie de data la care au fost create şi cel mai vechi mesaj va deveni primul în subiectul apărut după operaţia de lipire.';
+$txt['smf276'] = 'Această acţiune va combina mesajele din două subiecte într-un singur subiect. Mesajele vor fi aranjate în funcţie de data la care au fost create şi cel mai vechi mesaj va deveni primul în subiectul nou apărut după operaţia de lipire.';
 
 $txt['smf277'] = 'Marchează ca IMPORTANT';
 $txt['smf278'] = 'Deselectează';
 $txt['smf279'] = 'Blochează subiectul';
 $txt['smf280'] = 'Deblochează subiectul';
 
-$txt['smf298'] = 'Cautăre detaliată';
+$txt['smf298'] = 'Căutare detaliată';
 
 $txt['smf299'] = 'RISC MAJOR DE SECURITATE:';
-$txt['smf300'] = 'Nu ai eliminat ';
+$txt['smf300'] = 'Nu ai şters ';
 
-$txt['smf301'] = 'Pagina creată în ';
+$txt['smf301'] = 'Pagină creată în ';
 $txt['smf302'] = ' secunde cu ';
 $txt['smf302b'] = ' cereri.';
 
-$txt['smf315'] = 'Foloseşte această opţiune pentru a face o sesizare către Administrator/Moderatori avand ca subiect mesajele cu un continut contrar regulamentului.<br /><i>Fii atent că adresa ta de email va fi afişată la moderatori dacă utilizezi această opţiune.</i>';
+$txt['smf315'] = 'Foloseşte această opţiune pentru a face o sesizare către Administrator/Moderatori avand ca subiect mesajele cu un conţinut contrar regulamentului.<br /><i>Fii atent că adresa ta de email va fi afişată la moderatori dacă utilizezi această opţiune.</i>';
 
 $txt['online2'] = 'Conectat';
 $txt['online3'] = 'Deconectat';
@@ -411,14 +413,14 @@ $txt['topbottom4'] = 'In sus';
 $txt['topbottom5'] = 'In jos';
 
 $forum_copyright = '<a href="http://www.simplemachines.org/" title="Simple Machines Forum" target="_blank">Powered by ' . $forum_version . '</a> | 
-<a href="http://www.simplemachines.org/about/copyright.php" title="Free Forum Software" target="_blank">SMF &copy; 2001-2006, Lewis Media</a>';
+<a href="http://www.simplemachines.org/about/copyright.php" title="Free Forum Software" target="_blank">SMF &copy; 2006-2007, Simple Machines LLC</a> <br /> <a href="http://www.smf.ro/" title="Traducerea în limba română" target="_blank"> Traducerea în limba română &copy;  2006-2007 www.smf.ro</a>';
 
 $txt['calendar3'] = 'Zile de naştere:';
 $txt['calendar4'] = 'Evenimente:';
-$txt['calendar3b'] = 'Următoarele aniversări:';
+$txt['calendar3b'] =  'Aniversările următoare:';
 $txt['calendar4b'] = 'Evenimentele următoare:';
 // Prompt for holidays în the calendar, leave blank to just display the holiday's name.
-$txt['calendar5'] = '';
+$txt['calendar5'] = ''; 
 $txt['calendar9'] = 'Luna:';
 $txt['calendar10'] = 'Anul:';
 $txt['calendar11'] = 'Ziua:';
@@ -431,34 +433,34 @@ $txt['calendar23'] = 'Adaugă un eveniment';
 $txt['calendar24'] = 'Calendar';
 $txt['calendar37'] = 'Către calendar';
 $txt['calendar43'] = 'Către evenimente';
-$txt['calendar47'] = 'Viitoare evenimente';
+$txt['calendar47'] = 'Evenimentele viitoare';
 $txt['calendar47b'] = 'Evenimentele de azi';
-$txt['calendar51'] = 'Săptamana';
+$txt['calendar51'] = 'Săptămâna';
 $txt['calendar54'] = 'Număr de zile:';
 $txt['calendar_how_edit'] = 'cum modifici acest eveniment?';
 $txt['calendar_link_event'] = 'Legătura între eveniment şi subiect:';
-$txt['calendar_confirm_delete'] = 'Eşti sigur ca vrei să ştergi acest eveniment?';
+$txt['calendar_confirm_delete'] = 'Eşti sigur că vrei să ştergi acest eveniment?';
 $txt['calendar_linked_events'] = 'Legături la rubrica de evenimente';
 
-$txt['moveTopic1'] = 'Adaugă un mesaj de redirectionare';
+$txt['moveTopic1'] = 'Adaugă un mesaj de redirecţionare';
 $txt['moveTopic2'] = 'Schimbă titlul subiectului';
 $txt['moveTopic3'] = 'Subiect nou';
 $txt['moveTopic4'] = 'Schimbă titlul tuturor mesajelor';
 
 $txt['theme_template_error'] = 'Eroare la \'%s\' tema grafică.';
-$txt['theme_language_error'] = 'Eroare la \'%s\' fişierul de limba.';
+$txt['theme_language_error'] = 'Eroare la \'%s\' fişierul de limbă.';
 
-$txt['parent_boards'] = 'Subcategorii';
+$txt['parent_boards'] = 'Secţiuni';
 
-$txt['smtp_no_connect'] = 'Legătura esuată cu serverul SMTP';
+$txt['smtp_no_connect'] = 'Legătura eşuată cu serverul SMTP';
 $txt['smtp_port_ssl'] = 'Portul setat pentru SMTP nu este corect; ar trebui să fie 465 pentru server SSL.';
 $txt['smtp_bad_response'] = 'Eroare în recepţia codurilor serverului de email';
-$txt['smtp_error'] = 'Mailul nu a fost trimis. Eroarea este: ';
-$txt['mail_send_unable'] = 'Este imposibil să se trimita un mail la aceasta adresa \'%s\'';
+$txt['smtp_error'] = 'Emailul nu a fost trimis. Eroarea este: ';
+$txt['mail_send_unable'] = 'Este imposibil să se trimita un email la această adresă \'%s\'';
 
 $txt['mlist_search'] = 'Caută după numele de utilizator';
 $txt['mlist_search2'] = 'Caută din nou';
-$txt['mlist_search_email'] = 'Caută după adresa de mail';
+$txt['mlist_search_email'] = 'Caută după adresa de email';
 $txt['mlist_search_messenger'] = 'Caută după numele de YM';
 $txt['mlist_search_group'] = 'Caută după rang';
 $txt['mlist_search_name'] = 'Caută după nume';
@@ -476,12 +478,12 @@ $txt['never'] = 'Niciodată';
 $txt['more'] = 'mai mult';
 
 $txt['hostname'] = 'Gazda';
-$txt['you_are_post_banned'] = 'Din pacate %s, acestui utilizator i s-a retras dreptul de a scrie mesaje.';
+$txt['you_are_post_banned'] = 'Din pacate %s, acestui utilizator i-a fost retras dreptul de a scrie mesaje.';
 $txt['ban_reason'] = 'Motiv';
 
 $txt['tables_optimized'] = 'Baza de date este optimizată';
 
-$txt['add_poll'] = 'Crează un sondaj';
+$txt['add_poll'] = 'Sondaj nou';
 $txt['poll_options6'] = 'Nu poţi adauga mai mult de %s opţiuni.';
 $txt['poll_remove'] = 'Elimină sondajul';
 $txt['poll_remove_warn'] = 'Eşti sigur că doresti să elimini sondajul din acest subiect?';
@@ -491,14 +493,14 @@ $txt['poll_expired_on'] = 'Votare încheiata';
 $txt['poll_change_vote'] = 'Elimină votul';
 $txt['poll_return_vote'] = 'Opţiunile votării';
 
-$txt['quick_mod_remove'] = 'Elimină ceea ce e selectat';
-$txt['quick_mod_lock'] = 'Inchide/blochează ceea ce e selectat';
-$txt['quick_mod_sticky'] = 'Marchează ceea ce e selectat';
+$txt['quick_mod_remove'] = 'Şterge ceea ce e selectat';
+$txt['quick_mod_lock'] = 'Blochează ceea ce e selectat';
+$txt['quick_mod_sticky'] = 'Marchează ca important -sticky- ceea ce e selectat';
 $txt['quick_mod_move'] = 'Mută ceea ce e selectat în';
 $txt['quick_mod_merge'] = 'Lipeşte ceea ce e selectat';
 $txt['quick_mod_markread'] = 'Marchează ca citit ceea ce e selectat';
-$txt['quick_mod_go'] = 'Du-te!';
-$txt['quickmod_confirm'] = 'Eşti sigur ca vrei să efectuezi această operaţie??';
+$txt['quick_mod_go'] = 'Execută!';
+$txt['quickmod_confirm'] = 'Eşti sigur ca vrei să efectuezi această operaţie???';
 
 $txt['spell_check'] = 'Verifică ortografia';
 
@@ -506,8 +508,8 @@ $txt['quick_reply_1'] = 'Răspuns rapid';
 $txt['quick_reply_2'] = 'Şi la opţiunea <i>răspuns rapid</i> poţi folosi coduri şi zămbete; avantajul acestei opţiuni este ca răspunsul la un subiect se poate trimite mai repede.';
 $txt['quick_reply_warning'] = 'ATENŢIE: acest subiect este blocat!<br />Numai administratorul şi moderatorii pot scrie.';
 
-$txt['notification_enable_board'] = 'Eşti sigur că vrei să fii avertizat când se scriu subiecte noi în acestă categorie?';
-$txt['notification_disable_board'] = 'Eşti sigur că nu vrei să fii avertizat când se scriu subiecte noi în acestă categorie?';
+$txt['notification_enable_board'] = 'Eşti sigur că vrei să fii avertizat când se scriu subiecte noi în acest forum?';
+$txt['notification_disable_board'] = 'Eşti sigur că nu vrei să fii avertizat când se scriu subiecte noi în acest forum?';
 $txt['notification_enable_topic'] = 'Eşti sigur că vrei să fii avertizat când se scriu mesaje noi în acest subiect?';
 $txt['notification_disable_topic'] = 'Eşti sigur că nu vrei să fii avertizat când se scriu mesaje noi în acest subiect?';
 
@@ -540,22 +542,22 @@ $txt['buddies'] = 'Amici';
 $txt['most_online_ever'] = 'Cei mai mulţi utilizatori online în total';
 $txt['most_online_today'] = 'Cei mai mulţi utilizatori online astăzi';
 
-$txt['merge_select_target_board'] = 'Selectează destinaţia subiectelor lipite';
+$txt['merge_select_target_board'] = 'Selectează forumul destinaţie pentru subiectelor lipite';
 $txt['merge_select_poll'] = 'Selectează sondajul pe care vrei să îl ataşezi subiectelor lipite';
 $txt['merge_topic_list'] = 'Selectează subiectele pe care vrei să le lipeşti';
 $txt['merge_select_subject'] = 'Alege titlul subiectelor lipite';
 $txt['merge_custom_subject'] = 'Titlul preferat';
 $txt['merge_enforce_subject'] = 'Schimbă titlul tuturor mesajelor';
-$txt['merge_include_notifications'] = 'Incluzi avertizări?';
+$txt['merge_include_notifications'] = 'Include avertizările?';
 $txt['merge_check'] = 'Lipesc?';
 $txt['merge_no_poll'] = 'Fără sondaj';
 
-$txt['response_prefix'] = 'Raspuns: ';
-$txt['current_icon'] = 'Imagine actuala';
+$txt['response_prefix'] = 'Răspuns: ';
+$txt['current_icon'] = 'Imagine actuală';
 
 $txt['smileys_current'] = 'Setul actual de imagini';
 $txt['smileys_none'] = 'Fără imagini/zămbete';
-$txt['smileys_forum_board_default'] = 'Forum/Categorii lipsa';
+$txt['smileys_forum_board_default'] = 'Forum/Categorii lipsă';
 
 $txt['search_results'] = 'Rezultatele căutării';
 $txt['search_no_results'] = 'Nici un rezultat';
@@ -574,8 +576,8 @@ $txt['approve_member'] = 'un utilizator înregistrat';
 $txt['approve_members'] = 'utilizatori înregistraţi';
 $txt['approve_members_waiting'] = 'aşteaptă aprobarea contului.';
 
-$txt['notifyboard_turnon'] = 'Vrei să primeşti o avertizare prin email când se scriu subiecte noi în această categorie?';
-$txt['notifyboard_turnoff'] = 'Eşti sigur ca nu vrei să fii avertizat când se scriu subiecte noi în această categorie?';
+$txt['notifyboard_turnon'] = 'Vrei să primeşti o avertizare prin email când se scriu subiecte noi în aceast forum?';
+$txt['notifyboard_turnoff'] = 'Eşti sigur ca nu vrei să fii avertizat când se scriu subiecte noi în aceast forum?';
 
 $txt['activate_code'] = 'Codul de activare al contului tău este';
 
@@ -595,16 +597,16 @@ $txt['change_color'] = 'Schimbă culoarea';
 $txt['quickmod_delete_selected'] = 'Şterge ceea ce e selectat';
 
 // In this string, don't use entities. (&amp;, etc.)
-$txt['show_personal_messages'] = 'Ai primit unul sau mai multe mesaje personale.\\nVrei să le citesti acum (într-o nouă fereastră)?';
+$txt['show_personal_messages'] = 'Ai primit unul sau mai multe mesaje personale.\\nVrei să le citeşti acum (într-o nouă fereastră)?';
 
-$txt['previous_next_back'] = '&laquo; precedent';
-$txt['previous_next_forward'] = 'următor &raquo;';
+$txt['previous_next_back'] = '&laquo; mesajul precedent';
+$txt['previous_next_forward'] = 'următorul mesaj &raquo;';
 
 $txt['movetopic_auto_board'] = '[FORUM]';
 $txt['movetopic_auto_topic'] = '[ADRESA SUBIECT]';
 $txt['movetopic_default'] = 'Acest subiect a fost mutat în ' . $txt['movetopic_auto_board'] . ".\n\n" . $txt['movetopic_auto_topic'];
 
-$txt['upshrink_description'] = 'Ascunde sau afisează antetul.';
+$txt['upshrink_description'] = 'Ascunde sau afişează antetul.';
 
 $txt['mark_unread'] = 'Marchează ca necitit';
 
@@ -627,6 +629,6 @@ $txt['mark_read_short'] = 'Marchează citite';
 $txt['pm_short'] = 'Mesaje personale';
 $txt['hello_member_ndt'] = 'Salut';
 
-$txt['ajax_in_progress'] = 'Incarcă ...';
+$txt['ajax_in_progress'] = ' Se încarcă ...';
 
 ?>
