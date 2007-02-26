@@ -7,7 +7,6 @@ require_once(dirname($argv[0]) . "/utilities.php");
 
 // URLs to benchmark
 $benchmark_urls = array(
-    IA_URL . "utilizator/domino?action=stats",
     IA_URL . "utilizator/domino?action=download&file=avatar&resize=L32x32",
     IA_URL . "/template/preoni-2006?action=download&file=hlogo.gif",
     IA_URL . "utilizator/domino",
@@ -23,29 +22,34 @@ $benchmark_urls = array(
     IA_URL . "utilizator/domino?action=stats",
 );
 
-// number of tests
-$benchmark_n = 200;
+// parse options
+// -n number_tests -c concurrency
+$options = getopt("n:c:");
+$benchmark_n = getattr($options, 'n', 200);
+$benchmark_c = getattr($options, 'c', 1);
 
 // benchmark command line
-$benchmark_cmd = "ab -n {$benchmark_n} %url% | grep \"Requests per second:\""
-                 ." | cut -c21- | xargs echo | cut -f1 -d \" \"";
+$benchmark_cmd = "ab -n {$benchmark_n} -c $benchmark_c %url% 2>&1";
 
 // run benchmarks
 log_print("Running {$benchmark_n} tests for each URL");
 foreach ($benchmark_urls as $url) {
     $cmd = str_replace("%url%", escapeshellarg($url), $benchmark_cmd);
 
-    // run benchmark & capture output
-    $handle = popen($cmd, 'r');
-    $buffer = fscanf($handle, "%s");
-    pclose($handle);
-    if (!$buffer) {
-        log_error("Command returned no output!\n{$cmd}");
-    }
-    $buffer = $buffer[0];
+    $output = shell_exec($cmd);
+
+    $ret = preg_match('/Requests per second:\s*([0-9.]+)\s/', $output, $match);
+    log_assert($ret, "Failed parsing ab output");
+    $req = $match[1];
+    $req_unit = 'reqs/s';
+
+    $ret = preg_match('/Transfer rate:\s*([0-9.]+)/', $output, $match);
+    log_assert($ret, "Failed parsing ab output");
+    $trans = $match[1];
+    $trans_unit = 'kb/s';
 
     // pretty print
-    log_print($url."\t".$buffer."\treq/s");
+    log_print("$url\t$req $req_unit\t$trans $trans_unit");
 }
 
 ?>

@@ -368,8 +368,8 @@ The basic layout of the homepage is as follows:
 
 .news .item .date {
     float: left;
-    width: 35px;
-    padding: 5px;
+    width: 40px;
+    padding: 2px;
     font-family: Arial, Helvetica, sans-serif;
     text-align: center;
     font-size: 8.5pt;
@@ -892,6 +892,10 @@ th {
 
 .inlineSubmit .form input, .inlineSubmit .form label {
     display: inline;
+}
+
+.inlineSubmit #form_compiler {
+    width: 9em;
 }
 
 /* gallery macro */
