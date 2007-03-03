@@ -70,10 +70,10 @@ function http_cache_check($last_modified, $cache_age = IA_CLIENT_CACHE_AGE) {
         // Client's cache is up to date, yey!
         header('Last-Modified: '.gmdate('D, d M Y H:i:s', $last_modified)
                .' GMT', true, 304);
-        // log_print('CACHE: Client hit');
+        //log_print('CACHE: Client hit');
         die();
     } else {
-        // log_print('CACHE: Client miss');
+        //log_print('CACHE: Client miss');
         // Client's cache is missing / out-dated
         header('Last-Modified: '.gmdate('D, d M Y H:i:s', $last_modified)
                .' GMT', true, 200);
@@ -84,14 +84,9 @@ function http_cache_check($last_modified, $cache_age = IA_CLIENT_CACHE_AGE) {
 // NOTE: cache check enabled by default
 // WARNING: this function does not return
 function http_serve($disk_file_name, $http_file_name, $mime_type = null, $cache_check = true) {
-    // Open file
-    $fp = fopen($disk_file_name, "rb");
-    log_assert($fp);
-    $stat = fstat($fp);
-    log_assert(is_array($stat), "fstat failed");
-
+    // Cache magic.
     if ($cache_check) {
-        http_cache_check($stat['mtime']);
+        http_cache_check(filemtime($disk_file_name));
     }
 
     // HTTP headers.
@@ -100,11 +95,15 @@ function http_serve($disk_file_name, $http_file_name, $mime_type = null, $cache_
     }
     header("Content-Disposition: inline; filename="
            .urlencode($http_file_name).";");
-    header("Content-Length: " . $stat['size']);
+    $fsize = filesize($disk_file_name);
+    header("Content-Length: " . $fsize);
+
+    $fp = fopen($disk_file_name, "rb");
+    log_assert($fp);
 
     // Serve file
     $written = fpassthru($fp);
-    if ($written != $stat['size']) {
+    if ($written != $fsize) {
         log_error("fpassthru failed somehow.");
     }
     fclose($fp);

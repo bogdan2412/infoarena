@@ -111,11 +111,16 @@ define("IA_ENABLE_DB_CACHE", true);
 // If false then create_function_cached_cached is the same as create_function_cached
 define("IA_ENABLE_CREATE_FUNCTION_CACHE", true);
 
+
 // Disable memory cache by default because it requires additional stuff
 define("IA_MEM_CACHE_METHOD", "none");
 
 // Default TTL for cache items.
-define("IA_MEM_CACHE_DURATION", 300);
+define("IA_MEM_CACHE_EXPIRATION", 3600);
+
+// Round TTL. Smaller because of evaluator.
+define("IA_MEM_CACHE_ROUND_EXPIRATION", 10);
+
 
 // Logging options. Anything else in normal operation is a bug.
 // Filling error_log on a production machine sucks.

@@ -152,7 +152,8 @@ function email_tags_callback($matches) {
             // when user is not rated, expand tag to nothing
             if ((int)$recipient['rating_cache']) {
                 return 'Rating-ul tau este '
-                       .rating_scale($recipient['rating_cache']).".\n";
+                       .rating_scale($recipient['rating_cache'])." (din 1000)"
+                       .".\n";
             }
             else {
                 return '';

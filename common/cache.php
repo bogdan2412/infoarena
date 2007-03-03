@@ -118,7 +118,7 @@ if (IA_MEM_CACHE_METHOD == 'none') {
         return false;
     }
 
-    function mem_cache_set($cache_id, $object, $ttl = IA_MEM_CACHE_DURATION) {
+    function mem_cache_set($cache_id, $object, $ttl = IA_MEM_CACHE_EXPIRATION) {
         return $object;
     }
 
@@ -147,7 +147,7 @@ if (IA_MEM_CACHE_METHOD == 'none') {
         }
     }
 
-    function mem_cache_set($cache_id, $object, $ttl = IA_MEM_CACHE_DURATION) {
+    function mem_cache_set($cache_id, $object, $ttl = IA_MEM_CACHE_EXPIRATION) {
         log_assert($object !== 'false', "Can't cache false values");
         eaccelerator_put($cache_id, serialize($object), $ttl);
 
@@ -196,7 +196,7 @@ if (IA_MEM_CACHE_METHOD == 'none') {
         }
     }
 
-    function mem_cache_set($cache_id, $object, $ttl = IA_MEM_CACHE_DURATION) {
+    function mem_cache_set($cache_id, $object, $ttl = IA_MEM_CACHE_EXPIRATION) {
         global $_memcache;
         log_assert($object !== 'false', "Can't cache false values");
         memcache_set($_memcache, $cache_id, serialize($object), 0, $ttl);

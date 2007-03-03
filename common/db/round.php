@@ -4,7 +4,7 @@ require_once(IA_ROOT_DIR."common/db/db.php");
 require_once(IA_ROOT_DIR."common/db/parameter.php");
 
 function _round_cache_add($round) {
-    mem_cache_set("round-by-id:{$round['id']}", $round);
+    mem_cache_set("round-by-id:{$round['id']}", $round, IA_MEM_CACHE_ROUND_EXPIRATION);
     return $round;
 }
 

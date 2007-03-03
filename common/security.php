@@ -257,11 +257,11 @@ function security_attach($user, $action, $attach) {
         }
         $action = $newaction;
     }
-    
+   
     // Speed hack: avatars are always visible. This is good.
-    if ($action == 'attach-view' && $att_name = 'avatar' &&
-            strstr($att_page, IA_USER_TEXTBLOCK_PREFIX) === 0) {
-        log_print("Speed hack, attachments always visible");
+    if ($action == 'attach-download' && $att_name = 'avatar' &&
+            strstr($att_page, IA_USER_TEXTBLOCK_PREFIX) === $att_page) {
+        //log_print("Speed hack, attachments always visible");
         return true;
     }
 
