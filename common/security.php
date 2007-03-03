@@ -245,15 +245,27 @@ function security_textblock($user, $action, $textblock) {
 // Jump to security_textblock.
 // FIXME: attach-grader?
 function security_attach($user, $action, $attach) {
-    //log_print_r($attach);
+
+    $att_name = strtolower($attach['name']);
+    $att_page = normalize_page_name($attach['page']);
+
     // HACK: magic prefix.
-    if (preg_match('/^grader\_/', $attach['name'])) {
+    if (preg_match('/^grader\_/', $att_name)) {
         $newaction = preg_replace('/^attach/', 'grader', $action);
         if (IA_LOG_SECURITY) {
             log_print("SECURITY: CONVERTING $action to $newaction");
         }
         $action = $newaction;
     }
+    
+    // Speed hack: avatars are always visible. This is good.
+    if ($action == 'attach-view' && $att_name = 'avatar' &&
+            strstr($att_page, IA_USER_TEXTBLOCK_PREFIX) === 0) {
+        log_print("Speed hack, attachments always visible");
+        return true;
+    }
+
+    // Forward to textblock.
     $tb = textblock_get_revision($attach['page']);
     if (!$tb) {
         log_print_r($attach);

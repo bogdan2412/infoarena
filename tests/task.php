@@ -26,15 +26,15 @@ $res = curl_test(array(
         'url' => url_task_create(),
         'user' => 'test_helper1',
         'post' => array(
-                'id' => 'teSt_Task1',
+                'id' => 'test_task1',
                 'type' => 'classic',
 )));
-log_assert_equal($res['url'], url_absolute(url_task_edit('teSt_Task1')));
+log_assert_equal($res['url'], url_absolute(url_task_edit('test_task1')));
 
 // Our edit forms pick up defaults for missing post fields. Helps with testing.
 log_print("Helper1 changes task title, author, source, it's ok");
 $res = curl_test(array(
-        'url' => url_task_edit('teSt_Task1'),
+        'url' => url_task_edit('test_task1'),
         'user' => 'test_helper1',
         'post' => array(
                 'title' => 'xzx-task1-title-xzx',
@@ -82,7 +82,7 @@ log_assert(strstr($res['content'], 'xzx-task1-source-xzx'));
 
 log_print("Helper1 tries to make task visible, fails");
 $res = curl_test(array(
-        'url' => url_task_edit('teSt_Task1'),
+        'url' => url_task_edit('test_task1'),
         'user' => 'test_helper1',
         'post' => array(
                 'hidden' => 0,
@@ -101,7 +101,7 @@ log_assert(!strstr($res['content'], 'xzx-task1-source-xzx'));
 
 log_print("Admin makes task visible, ok");
 $res = curl_test(array(
-        'url' => url_task_edit('teSt_Task1'),
+        'url' => url_task_edit('test_task1'),
         'user' => 'test_admin',
         'post' => array(
                 'hidden' => 0,
@@ -186,7 +186,7 @@ log_assert_equal($res['content'],  'xzx-grader-changed-xzx');
 
 log_print("Helper1 tries to make task hidden, fails");
 $res = curl_test(array(
-        'url' => url_task_edit('teSt_Task1'),
+        'url' => url_task_edit('test_task1'),
         'user' => 'test_helper1',
         'post' => array(
                 'hidden' => 1,
@@ -205,7 +205,7 @@ log_assert(strstr($res['content'], 'xzx-task1-source-xzx'));
 
 log_print("Helper2 tries to look at edit page, can't");
 $res = curl_test(array(
-        'url' => url_task_edit('teSt_Task1'),
+        'url' => url_task_edit('test_task1'),
         'user' => 'test_helper2',
 ));
 log_assert($res['url'] == url_absolute(url_home()));
@@ -215,10 +215,10 @@ log_assert(!strstr($res['content'], 'xzx-task1-source-xzx'));
 
 log_print("Helper1 looks at task edit page, doesn't even see security flipper");
 $res = curl_test(array(
-        'url' => url_task_edit('teSt_Task1'),
+        'url' => url_task_edit('test_task1'),
         'user' => 'test_helper1',
 ));
-log_assert_equal($res['url'], url_absolute(url_task_edit('teSt_Task1')));
+log_assert_equal($res['url'], url_absolute(url_task_edit('test_task1')));
 log_assert(strstr($res['content'], 'xzx-task1-title-xzx'));
 log_assert(strstr($res['content'], 'xzx-task1-author-xzx'));
 log_assert(strstr($res['content'], 'xzx-task1-source-xzx'));
