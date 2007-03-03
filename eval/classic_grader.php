@@ -170,6 +170,13 @@ function classic_task_grade_job($task, $tparams, $job) {
                 return $result;
             } else {
                 $score = (int)$jrunres['stdout'];
+                if ($score > IA_JUDGE_MAX_SCORE) {
+                    log_print("Test $testno: Task eval score toohigh");
+                    $result['message'] = 'Eroare in evaluator';
+                    $result['score'] = 0;
+                    $result['log'] = "Evaluatorul a returnat un scor prea mare.";
+                    return $result;
+                }
             }
 
             // Get message.
@@ -195,7 +202,13 @@ function classic_task_grade_job($task, $tparams, $job) {
     }
 
     $result['message'] = 'Evaluare completa';
-    $result['log'] .= "\n\nPunctaj total: {$result['score']}\n";
+    if ($result['score'] > IA_JUDGE_MAX_SCORE) {
+        $result['message'] = 'Eroare in evaluator';
+        $result['score'] = 0;
+        $result['log'] .= "\n\nEvaluatorul a returnat un scor prea mare.";
+    } else {
+        $result['log'] .= "\n\nPunctaj total: {$result['score']}\n";
+    }
 
     return $result;
 }
