@@ -24,7 +24,7 @@ function macro_tasksubmit($args) {
         return macro_error("Invalid task identifier");
     }
 
-    if (identity_anonymous()) {
+    if (identity_is_anonymous()) {
         $url = htmlentities(url_login());
         return macro_message("Trebuie sa te autentifici pentru a trimite solutii. <a href=\"{$url}\">Click aici</a>", true);
     }

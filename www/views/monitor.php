@@ -13,7 +13,7 @@ $tabs = array();
 $selected = null;
 
 // my-jobs tab
-if (!identity_anonymous()) {
+if (!identity_is_anonymous()) {
     $tabs['mine'] = format_link(url_monitor($user_name), 'Solutiile mele');
     if ($user_name == $user_filter) {
         $selected = 'mine';

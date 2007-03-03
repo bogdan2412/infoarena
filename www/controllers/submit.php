@@ -6,10 +6,7 @@ require_once(IA_ROOT_DIR . "common/db/job.php");
 
 // Big bad submit controller.
 function controller_submit() {
-    if (identity_anonymous()) {
-        flash_error('Mai intai trebuie sa te autentifici.');
-        redirect(url_login());
-    }
+    identity_require_login();
 
     $values = array();
     $errors = array();

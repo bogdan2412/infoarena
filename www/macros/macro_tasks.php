@@ -67,7 +67,7 @@ function macro_tasks($args) {
 
 
     $scores = !is_null(getattr($args, 'score'));
-    if (identity_anonymous() || $scores == false) {
+    if (identity_is_anonymous() || $scores == false) {
         $user_id = null;
     } else {
         $user_id = identity_get_user_id();

@@ -22,41 +22,45 @@ require_once(IA_ROOT_DIR."common/security.php");
 $identity_user = null;
 
 // Returns whether current user is anonymous
-function identity_anonymous($identity = null) {
-    if (is_null($identity)) {
-        global $identity_user;
-        return is_null($identity_user);
-    }
-    else {
-        return is_null($identity);
+function identity_is_anonymous() {
+    global $identity_user;
+    return is_null($identity_user);
+}
+
+// Get user_id for current user, or null if anonymous
+function identity_get_user_id() {
+    global $identity_user;
+    if (is_null($identity_user)) {
+        return null;
+    } else {
+        return $identity_user['id'];
     }
 }
 
-// Get user_id for current user.
-function identity_get_user_id() {
-    log_assert(!identity_anonymous(), 'Check identity_anonymous first');
+// Returns remote user's username or NULL if anonymous
+function identity_get_username() {
     global $identity_user;
-    return $identity_user['id'];
+    if (is_null($identity_user)) {
+        return null;
+    } else {
+        return $identity_user['username'];
+    }
 }
 
 // Check whether current user (or any other arbitrary user) can perform
 // a given action (onto an object)
 // This is a wrapper for the more-generic, session-independent permission
 // module.
-function identity_can($action, $object, $identity = null) {
-    if (is_null($identity)) {
-        global $identity_user;
-        $identity = $identity_user;
-    }
-    return security_query($identity, $action, $object);
+function identity_can($action, $object) {
+    global $identity_user;
+    return security_query($identity_user, $action, $object);
 }
 
 // Require login first.
 // It makes a lot of sense to separate this from security. No matter what
 // dumb little security.php might say, some things absolutely require login.
-function identity_require_login()
-{
-    if (identity_anonymous()) {
+function identity_require_login() {
+    if (identity_is_anonymous()) {
         flash_error("Mai intai trebuie sa te autentifici.");
 
         // save current URL. We redirect to here right after logging in
@@ -68,27 +72,18 @@ function identity_require_login()
 // This function is similar to identity_can(), except that it automatically
 // redirects to the login page and displays a generic message when faced
 // with insufficient privileges.
-//
-// Leave $errorMessage set to null and it will automatically display a generic
-// error message.
-//
-// FIXME: message not used, lol.
-function identity_require($action, $object = null, $message = null,
-                          $identity = null)
-{
-    $can = identity_can($action, $object, $identity);
+function identity_require($action, $object = null) {
+    $can = identity_can($action, $object);
     if (!$can) {
-        if (identity_anonymous()) {
+        if (identity_is_anonymous()) {
             // when user is anonymous, send it to login page
             // and redirect it back after login
 
             flash_error("Mai intai trebuie sa te autentifici.");
-
             // save current URL. We redirect to here right after logging in
             $_SESSION['_ia_redirect'] = IA_URL_HOST.$_SERVER['REQUEST_URI'];
             redirect(url_login());
-        }
-        else {
+        } else {
             // User doesn't have enough priviledges, tell him to fuck off.
             flash_error('Nu ai permisiuni suficiente pentru a executa aceasta '
                         .'actiune! Te redirectez ...');
@@ -110,8 +105,7 @@ function init_php_session($remember_user = false) {
         session_cache_limiter('private');
         session_cache_expire(IA_SESSION_LIFETIME_SECONDS / 60);
         session_set_cookie_params(IA_SESSION_LIFETIME_SECONDS, '/', IA_COOKIE_DOMAIN);
-    }
-    else {
+    } else {
         session_set_cookie_params(0, '/', IA_COOKIE_DOMAIN);
     }
     session_start();
@@ -124,9 +118,14 @@ function identity_from_session() {
 
     if (isset($_SESSION['_ia_identity'])) {
         // log_print('Restoring identity from PHP session');
-        $identity = unserialize($_SESSION['_ia_identity']);
-    }
-    else {
+        $username = $_SESSION['_ia_identity'];
+
+        $identity = user_get_by_username($username);
+        if (!$identity) {
+            log_warn("Closing broken session");
+            identity_end_session();
+        }
+    } else {
         $identity = null;
     }
 
@@ -149,14 +148,14 @@ function identity_from_http() {
         }
 
         return $user;
-    }
-    else {
+    } else {
         // nobody is trying to authenticate via HTTP
         return null;
     }
 }
 
-// wraps all authentication entry points
+// Wraps all authentication entry points
+// Return identity_user.
 function identity_restore() {
     global $identity_user;
 
@@ -170,12 +169,7 @@ function identity_restore() {
 
     if ($identity_user) {
         log_assert(is_array($identity_user) && getattr($identity_user, 'id'),
-                   'Invalid user object found in PHP session store!');
-        //log_print('IDENTITY Remote user: '.$identity_user['username']);
-        //print_r($_COOKIE);
-        //print_r($_SESSION);
-    } else {
-        //log_print('IDENTITY Anonymous remote user');
+                   'Invalid user object, identity code broke!');
     }
 
     return $identity_user;
@@ -188,13 +182,13 @@ function identity_restore() {
 function identity_start_session($user, $remember_user = false) {
     session_write_close();
     init_php_session($remember_user);
-    $_SESSION['_ia_identity'] = serialize($user);
+    $_SESSION['_ia_identity'] = $user['username'];
 }
 
 // Update session information. Use this if you change data of current
 // remote user.
 function identity_update_session($user) {
-    $_SESSION['_ia_identity'] = serialize($user);
+    $_SESSION['_ia_identity'] = $user['username'];
 }
 
 // Terminate session for current user.
@@ -204,17 +198,6 @@ function identity_end_session() {
     }
     session_write_close();
     init_php_session();
-}
-
-// Returns remote user's username or NULL if anonymous
-function identity_username() {
-    global $identity_user;
-    if (is_null($identity_user)) {
-        return null;
-    }
-    else {
-        return $identity_user['username'];
-    }
 }
 
 ?>

@@ -19,7 +19,7 @@ function ia_template_header() {
         <input type="submit" value="Cauta &raquo;"/>
     </form>
     -->
-    <?php if (!identity_anonymous()) { $username = $identity_user['username']; ?>
+    <?php if (!identity_is_anonymous()) { $username = $identity_user['username']; ?>
         <div id="userbox">
         <?= format_link(url_user_profile($username, true), format_user_avatar($username, 50, 50, true), false) ?>
             <span class="user">
@@ -66,7 +66,7 @@ function ia_template_topnav($selected = 'infoarena', $smf_admin = false) {
         <?= format_link(url_forum() . "?action=calendar", "calendar") ?>
         <?= getattr($post, 'calendar') ?>
     </li>
-<?php if (identity_anonymous()) { ?>
+<?php if (identity_is_anonymous()) { ?>
     <li>
         <?= getattr($pre, 'login')?>
         <?= format_link(url_login(), "autentificare") ?>
