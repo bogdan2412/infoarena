@@ -42,7 +42,7 @@ function macro_stars($args) {
         $url = url_absolute(url_static("images/stars/{$type}-{$img}.png"));
         $html .= "<img src=\"".htmlentities($url)."\"/>";
     }
-    $html .= "</span><br/><br/>";
+    $html .= "</span>";
 
     return $html;
 }
