@@ -1,4 +1,4 @@
-<?
+<?php 
 
 require_once(IA_ROOT_DIR . "www/format/pager.php");
 require_once(IA_ROOT_DIR . "common/db/job.php");

@@ -1,4 +1,4 @@
-<?php
+<?php php
 require_once(IA_ROOT_DIR.'www/views/utilities.php');
 include('header.php');
 ?>

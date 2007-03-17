@@ -39,14 +39,14 @@ function is_db_date($string) {
 //
 // returns unix timestamp or FALSE upon error
 function db_date_parse($string) {
-    $res = strptime($string, '%Y-%m-%d %T');
-
-    if (!$res) {
+    $ret = preg_match('/^(\\d{4})-(\\d{2})-(\\d{2}) (\\d{2}):(\\d{2}):(\\d{2})$/',
+                      $string, $matches);
+    if (!$ret) {
         return false;
     }
 
-    return mktime($res['tm_hour'], $res['tm_min'], $res['tm_sec'],
-                  1, $res['tm_yday']+1, $res['tm_year']+1900);
+    return mktime($matches[4], $matches[5], $matches[6],
+                  $matches[2], $matches[3], $matches[1]);
 }
 
 // formats unix timestamp as a datetime parameter value, suitable for SQL.

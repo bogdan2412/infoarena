@@ -1,4 +1,4 @@
-<?
+<?php 
 
 require_once(IA_ROOT_DIR."common/db/db.php");
 require_once(IA_ROOT_DIR."common/db/attachment.php");
