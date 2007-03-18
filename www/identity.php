@@ -27,6 +27,12 @@ function identity_is_anonymous() {
     return is_null($identity_user);
 }
 
+// Get current user, or null if anonymous.
+function identity_get_user() {
+    global $identity_user;
+    return $identity_user;
+}
+
 // Get user_id for current user, or null if anonymous
 function identity_get_user_id() {
     global $identity_user;

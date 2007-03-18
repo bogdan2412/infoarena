@@ -1,8 +1,6 @@
 <?php
 
-require_once(IA_ROOT_DIR . "common/db/round.php");
-require_once(IA_ROOT_DIR . "common/db/task.php");
-require_once(IA_ROOT_DIR . "common/db/job.php");
+require_once(IA_ROOT_DIR . "common/job.php");
 
 // Big bad submit controller.
 function controller_submit() {
@@ -17,51 +15,20 @@ function controller_submit() {
             'compiler_id' => getattr($_POST, 'compiler_id')
         );
 
-        // Check task
-        if ((!is_task_id($values['task_id'])) ||
-            (!$task = task_get($values['task_id']))) {
-            $errors['task_id'] = 'Alege problema la care doresti sa trimiti '
-                                 .'solutie.';
-        } else {
-            // require permissions
-            identity_require('task-submit', $task);
-
-            // Check compiler.
-            $valid_compilers = array('c', 'cpp', 'fpc');
-            if (array_search($values['compiler_id'], $valid_compilers) === false) {
-                $errors['compiler_id'] = 'Compilator invalid!';
-            }
-
-            // Check uploaded solution
-            if (isset($_FILES['solution'])) {
-                if (is_uploaded_file($_FILES['solution']['tmp_name'])) {
-                    if (IA_SUBMISSION_MAXSIZE >= $_FILES['solution']['size']) {
-                        $file_path = $_FILES['solution']['tmp_name'];
-                        $file_buffer = file_get_contents($file_path);
-                    }
-                    else {
-                        $errors['solution'] =
-                            'Fisierul atasat depaseste dimensiunea maxima '.
-                            'admisa: '.((int)IA_SUBMISSION_MAXSIZE/1024).'KB!';
-                    }
-                } else {
-                    $errors['solution'] = '
-                        Fisierul atasat nu a putut fi citit! Incearca din nou.
-                        Daca problema persista te rugam sa <a href="' .
-                        htmlentities(url_textblock('contact')).'">contactezi administratorul</a>.';
-                }
-            } else {
-                $errors['solution'] = 'Ataseaza fisierul solutie.';
-            }
+        // Check uploaded solution
+        if (isset($_FILES['solution']) && is_uploaded_file($_FILES['solution']['tmp_name'])) {
+            $values['solution'] = file_get_contents($_FILES['solution']['tmp_name']);
         }
+
+        identity_require_login();
+        $errors = safe_job_submit($values, identity_get_user());
 
         // The end.
         if ($errors) {
+            log_print_r($errors);
             flash_error('NU am salvat solutia trimisa! Unul sau mai multe campuri
                          nu au fost completate corect.');
         } else {
-            job_create($task['id'], identity_get_user_id(),
-                       $values['compiler_id'], $file_buffer);
             flash('Solutia a fost salvata.');
             redirect(getattr($_SERVER, 'HTTP_REFERER', url_submit()));
         }

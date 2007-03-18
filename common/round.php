@@ -113,6 +113,7 @@ function round_event_start($round) {
     log_assert_valid(round_validate($round));
     log_print("CONTEST LOGIC: Starting round {$round['id']}.");
     $round['state'] = 'running';
+    $round['allow_eval'] = 0;
     round_update($round);
     round_unhide_all_tasks($round['id']);
 }
@@ -122,6 +123,7 @@ function round_event_stop($round) {
     log_assert_valid(round_validate($round));
     log_print("CONTEST LOGIC: Stopping round {$round['id']}.");
     $round['state'] = 'complete';
+    $round['allow_eval'] = 1;
     round_update($round);
 }
 
@@ -130,6 +132,7 @@ function round_event_wait($round) {
     log_assert_valid(round_validate($round));
     log_print("CONTEST LOGIC: Stand-by for round {$round['id']}.");
     $round['state'] = 'waiting';
+    $round['allow_eval'] = 0;
     round_update($round);
     round_hide_all_tasks($round['id']);
 }

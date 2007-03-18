@@ -2,33 +2,52 @@
 
 require_once(IA_ROOT_DIR."common/db/db.php");
 
-/**
- * Job
- */
+/*function db_format_field_list($fields) {
+    return $result;
+    foreach ($fields as $k => $v) {
+        if ($result != '') {
+            $result .= ', ';
+        }
+        if (is_array($v)) {
+            $result .= "`{$v[0]}`.`{$v[1]}`";
+        } else {
+            $result .= "`{$v}`";
+        }
+        if (is_string($k)) {
+            $result .= " AS `$k`";
+        }
+    }
+    return $result;
+}*/
 
 // Creates new eval job
-// FIXME: check args.
-function job_create($task_id, $user_id, $compiler_id, $file_contents) {
-    $query = "
+function job_create($task_id, $round_id, $user_id, $compiler_id, $file_contents) {
+    $query = <<<SQL
         INSERT INTO ia_job
-            (task_id, user_id, compiler_id, file_contents, `submit_time`)
-        VALUES ('%s', '%s', '%s', '%s', '%s')
-    ";
-    $query = sprintf($query, db_escape($task_id),
-                     db_escape($user_id), db_escape($compiler_id),
-                     db_escape($file_contents),
-                     db_escape(db_date_format()));
+            (`task_id`, `round_id`, `user_id`, `compiler_id`, `file_contents`, `submit_time`)
+        VALUES (%s, %s, %s, %s, %s, %s)
+SQL;
+    $query = sprintf($query,
+            db_quote($task_id), db_quote($round_id), db_quote($user_id),
+            db_quote($compiler_id), db_quote($file_contents), db_quote(db_date_format()));
     return db_query($query);
 }
 
 // Get something for the evaluator to do.
 // Null if nothing is found.
 function job_get_next_job() {
-    $query = "
-        SELECT * FROM ia_job
-        WHERE `status` != 'done'
-        ORDER BY `submit_time` ASC LIMIT 1
-    ";
+    $query = <<<SQL
+SELECT `job`.`id`, `job`.`user_id`, `job`.`task_id`, `job`.`round_id`,
+       `job`.`compiler_id`, `job`.`status`, `job`.`submit_time`,
+       `job`.`eval_message`, `job`.`score`, `job`.`file_contents`
+    FROM `ia_job` AS `job`
+    INNER JOIN `ia_user` AS `user` ON `user`.`id` = `job`.`user_id`
+    INNER JOIN `ia_round` AS `round` ON `round`.`id` = `job`.`round_id`
+    WHERE (`status` != 'done')
+      AND ((`round`.`allow_eval` = TRUE) OR
+           (`user`.`security_level` = 'admin'))
+    ORDER BY `submit_time` ASC LIMIT 1
+SQL;
     return db_fetch($query);
 }
 
@@ -66,19 +85,23 @@ function job_update($job_id,
 
 function job_get_by_id($job_id, $contents = false) {
     log_assert(is_whole_number($job_id));
-    $field_list = "job.`id`, job.`user_id`, `task_id`, `compiler_id`, `status`,
-                   `submit_time`, `eval_message`, `score`, `eval_log`,
-                   task.`page_name` as task_page_name, task.`title` as task_title,
-                   task.`hidden` as task_hidden, task.`user_id` as task_owner_id,  
-                   user.`username` as user_name, user.`full_name` as user_fullname";
+    $field_list = "`job`.`id`, job.`user_id`, `job`.`compiler_id`, `job`.`status`,
+                   `job`.`submit_time`, `job`.`eval_message`, `job`.`score`, `job`.`eval_log`,
+                   `user`.`username` as `user_name`, `user`.`full_name` as `user_fullname`,
+                   `task`.`id` AS `task_id`,
+                   `task`.`page_name` AS `task_page_name`, task.`title` AS `task_title`,
+                   `task`.`hidden` AS `task_hidden`, `task`.`user_id` AS `task_owner_id`,
+                   `round`.`id` AS `round_id`,
+                   `round`.`page_name` AS `round_page_name`, `round`.`title` AS `round_title`";
     if ($contents) {
         $field_list .= ", job.file_contents";
     }
     $query = sprintf("
               SELECT $field_list 
               FROM ia_job AS job
-              LEFT JOIN ia_task AS task ON job.`task_id` = `task`.`id`
-              LEFT JOIN ia_user AS user ON job.`user_id` = `user`.`id`
+              LEFT JOIN `ia_task` AS `task` ON `job`.`task_id` = `task`.`id`
+              LEFT JOIN `ia_user` AS `user` ON `job`.`user_id` = `user`.`id`
+              LEFT JOIN `ia_round` AS `round` ON `job`.`round_id` = `round`.`id`
               WHERE `job`.`id` = %d", $job_id);
     return db_fetch($query);
 }
@@ -91,14 +114,18 @@ function job_get_range($start, $range, $task = null, $user = null) {
     log_assert($start >= 0);
     log_assert($range >= 0);
     $query = <<<SQL
-SELECT `job`.`id`, `job`.`user_id`, `task_id`, `compiler_id`, `status`,
-       `submit_time`, `eval_message`, `score`,
-       `task`.`page_name` as `task_page_name`, task.`title` as `task_title`,
-       `task`.`hidden` as `task_hidden`, `task`.`user_id` as `task_owner_id`,
-       `user`.`username` as `user_name`, `user`.`full_name` as `user_fullname`
+SELECT `job`.`id`, `job`.`user_id`, `job`.`compiler_id`, `job`.`status`,
+       `job`.`submit_time`, `job`.`eval_message`, `job`.`score`,
+       `user`.`username` AS `user_name`, `user`.`full_name` AS `user_fullname`,
+       `task`.`id` AS `task_id`,
+       `task`.`page_name` AS `task_page_name`, task.`title` AS `task_title`,
+       `task`.`hidden` AS `task_hidden`, `task`.`user_id` AS `task_owner_id`,
+       `round`.`id` AS `round_id`,
+       `round`.`page_name` AS `round_page_name`, `round`.`title` AS `round_title`
       FROM `ia_job` AS `job`
-      LEFT JOIN `ia_task` AS `task` ON job.`task_id` = `task`.`id`
-      LEFT JOIN `ia_user` AS `user` ON job.`user_id` = `user`.`id`
+      LEFT JOIN `ia_user` AS `user` ON `job`.`user_id` = `user`.`id`
+      LEFT JOIN `ia_task` AS `task` ON `job`.`task_id` = `task`.`id`
+      LEFT JOIN `ia_round` AS `round` ON `job`.`round_id` = `round`.`id`
 SQL;
     if (!is_null($task)) {
         $query .= sprintf(" WHERE job.`task_id` = '%s'", db_escape($task));

@@ -133,6 +133,7 @@ function security_simplify_action($action)
         // Special actions fall through
         // FIXME: As few as possible.
         case 'task-submit':
+        case 'round-submit':
         case 'round-view-tasks':
         case 'round-register':
         case 'user-editprofile':
@@ -407,6 +408,19 @@ function security_round($user, $action, $round) {
             // FIXME: improve round registration logic
             $is_waiting = $round['state'] == 'waiting';
             return $is_waiting || $is_admin;
+
+        case 'round-submit':
+            // FIXME: This sucks.
+            // FIXME: job_get_submit_targets
+            $rparams = round_get_parameters($round['id']);
+            $time = time();
+            $rstart = db_date_parse($round['start_time']);
+            $rduration = getattr($rparams, 'duration', 10000000) * 60 * 60;
+            if ($time >= $rstart && $time <= $rstart + $rduration) {
+                return true;
+            } else {
+                return false;
+            }
 
         default:
             log_error('Invalid round action: '.$action);

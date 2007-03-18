@@ -44,8 +44,8 @@ function job_handle($job) {
             "Nu am putut paramtetrii task-ul " . $job['task_id']);
 
     // Make the grader and execute it.
+    log_print("Job #{$job['id']} task {$task['id']} round {$job['round_id']} type {$task['type']}");
     if ($task['type'] == 'classic') {
-        log_print("Job #{$job['id']} task {$task['id']} type {$task['type']}");
         $job_result = classic_task_grade_job($task, $task_parameters, $job);
     } else {
         log_error("Nu stiu sa evaluez task-uri de tip ".$task['type']);

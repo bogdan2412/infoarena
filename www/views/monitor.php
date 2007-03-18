@@ -43,40 +43,47 @@ if (1 < count($tabs)) {
 
 if (!$jobs) {
     print "<div class=\"notice\">Nici o solutie in coada de evaluare</div>";
-}
-else {
-        // For the score column.
-        function format_state($row) {
-            $url = url_job_detail($row['id']);
-            if ($row['status'] == 'done') {
-                $msg = htmlentities(sprintf("%s: %s puncte",
-                        $row['eval_message'], $row['score']));
-                $msg = "<span style=\"job-status-done\">$msg</span>";
-                return format_link($url, $msg, false);
-            }
-            if ($row['status'] == 'processing') {
-                // FIXME: animation? :)
-                $msg = '<span class="job-status-processing">se evalueaza</span>';
-                return format_link($url, $msg, false);
-            }
-            if ($row['status'] == 'waiting') {
-                $msg = '<span style="job-stats-waiting">in asteptare</span>';
-                return format_link($url, $msg, false);
-            }
-            log_error("Invalid job status");
+} else {
+    // For the score column.
+    function format_state($row) {
+        $url = url_job_detail($row['id']);
+        if ($row['status'] == 'done') {
+            $msg = htmlentities(sprintf("%s: %s puncte",
+                    $row['eval_message'], $row['score']));
+            $msg = "<span style=\"job-status-done\">$msg</span>";
+            return format_link($url, $msg, false);
         }
+        if ($row['status'] == 'processing') {
+            // FIXME: animation? :)
+            $msg = '<span class="job-status-processing">se evalueaza</span>';
+            return format_link($url, $msg, false);
+        }
+        if ($row['status'] == 'waiting') {
+            $msg = '<span style="job-stats-waiting">in asteptare</span>';
+            return format_link($url, $msg, false);
+        }
+        log_error("Invalid job status");
+    }
 
-        // For the task column.
-        function format_task_link($row) {
-            return format_link(
-                    url_textblock($row['task_page_name']),
-                    $row['task_title']);
-        }
+    // For the task column.
+    function format_task_link($row) {
+        return format_link(
+                url_textblock($row['task_page_name']),
+                $row['task_title']);
+    }
 
-        // For the detail column.
-        function format_jobdetail_link($val) {
-            return format_link(url_job_detail($val), "#$val");
-        }
+    // For the round column.
+    function format_round_link($row) {
+    //    return $row['round_id'];
+        return format_link(
+                url_textblock($row['round_page_name']),
+                $row['round_title']);
+    }
+
+    // For the detail column.
+    function format_jobdetail_link($val) {
+        return format_link(url_job_detail($val), "#$val");
+    }
 
     $column_infos = array(
         array(
@@ -93,6 +100,10 @@ else {
         array(
             'title' => 'Problema',
             'rowform' => 'format_task_link',
+        ),
+        array(
+            'title' => 'Runda',
+            'rowform' => 'format_round_link',
         ),
         array(
             'title' => 'Data',
