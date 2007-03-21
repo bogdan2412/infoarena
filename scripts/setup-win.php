@@ -1,43 +1,7 @@
-#! /usr/bin/env php
 <?php
 
-// Duplicated, this script has no includes.
-
-// Asks the user a question.
-// $default is the default answer
-function read_line($question, $default = null) {
-    if ($default === null) {
-        echo "$question ";
-    } else {
-        echo "$question"." (default:$default) ";
-    }
-    $r = trim(fgets(STDIN));
-    if ($r == "") {
-        $r = $default;
-    }
-    return $r;
-}
-
-// Same as read_line, but returns true/false.
-// default must be true/false, or null.
-function read_bool($question, $default = null) {
-    while (true) {
-        if ($default === null) {
-            $answer = read_line($question);
-        } else if ($default) {
-            $answer = read_line($question, "yes");
-        } else {
-            $answer = read_line($question, "no");
-        }
-        if (preg_match("/^(true|y|yes|da)$/i", $answer)) {
-            return true;
-        }
-        if (preg_match("/^(false|n|no|nu)$/i", $answer)) {
-            return false;
-        }
-        echo "Answer with true/false/yes/no/etc.\n";
-    }
-}
+// required by forum-fix
+require_once(dirname($argv[0]) . "/utilities.php");
 
 // Add slashes to a string.
 function slash_string($string, $start, $end)
@@ -92,7 +56,6 @@ print("Please write all the paths with '/' (Linux like)\n\n");
 // Initialize config vars.
 $config_vars = array();
 $config_vars['IA_ROOT_DIR'] = str_replace('\\', '/', realpath(dirname($argv[0]) . '/../') . '\\');
-//$config_vars['IA_ROOT_DIR'] = realpath(dirname($argv[0]) . '/../') . '\\';
 $config_vars['IA_URL_HOST'] = 'http://localhost';
 $config_vars['IA_URL_PREFIX'] = '/infoarena2-dev/';
 $config_vars['IA_DB_HOST'] = 'localhost';
@@ -172,7 +135,7 @@ if ($dblink && read_bool("Should I try to import the sample database?", true)) {
             $config_vars['IA_DB_PASS'],
             $config_vars['IA_DB_HOST'],
             $config_vars['IA_DB_NAME'],
-            $config_vars['IA_ROOT_DIR'] . "db.sql");
+            '"' . $config_vars['IA_ROOT_DIR'] . "db.sql" . '"');
     print("Running $cmd\n");
     system($cmd);
 }
@@ -181,11 +144,6 @@ if ($dblink && read_bool("Should I try to import the sample database?", true)) {
 if (read_bool("Should I try to configure apache for you?", true)) {
     $sitename = slash_string($config_vars['IA_URL_PREFIX'], false, false);
     $sitename = read_line("Site name?", $sitename);
-
-    $username = null;
-    if (preg_match('/\/home\/([^\/]*)/', IA_ROOT, $matches)) {
-        $username = $matches[1];
-    }
 
     // edit httpd.conf
     while (true) {
@@ -200,9 +158,10 @@ if (read_bool("Should I try to configure apache for you?", true)) {
                 break;
             }
         } else {
-            fprintf($apachef, "\n%s\n", file_get_contents($ia_root.'apache.conf'));
+            fprintf($apachef, "\n%s\n", file_get_contents($ia_root. 'apache.conf'));
             fclose($apachef);
             print("httpd.conf file written\n");
+            print("Please restart apache after this in order for changes to take effect\n");
             break;
         }
     }
@@ -210,8 +169,11 @@ if (read_bool("Should I try to configure apache for you?", true)) {
 
 // FIXME: configure forum
 if (read_bool("Should I try to configure the forum (ugly db stuff)?", true)) {
-    system("{$ia_root}scripts/forum-fix");
+    include("forum-fix-win");
 }
+printf("---\n");
 
 print("FIXME: forum is not completely functional\n");
 print("FIXME: eval won't work, but it doesn't matter.\n");
+
+print("\nDone. Please read coding standards. Happy coding!\n");
