@@ -33,7 +33,7 @@ function macro_rankings($args) {
         array(
             'title' => 'Pozitie',
             'key' => 'pos',
-            'rowform' => create_function_cached('$row', 'return $row["position"];'),
+            'rowform' => create_function_cached('$row', 'return $row["ranking"];'),
             'css_class' => 'number rank'
         ),
         array(

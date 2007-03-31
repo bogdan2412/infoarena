@@ -19,7 +19,7 @@ function macro_toprated($args) {
     $args['param_prefix'] = 'toprated_';
     $options = pager_init_options($args);
 
-    $rankings = get_users_by_rating_range($options['first_entry'], $options['display_entries']);
+    $rankings = get_users_by_rating_range($options['first_entry'], $options['display_entries'], true);
 
     $column_infos = array(
         array(

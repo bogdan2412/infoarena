@@ -3,6 +3,7 @@
 require_once(IA_ROOT_DIR."common/db/db.php");
 require_once(IA_ROOT_DIR."common/db/round.php");
 require_once(IA_ROOT_DIR."common/parameter.php");
+require_once(IA_ROOT_DIR."common/rating.php");
 
 // Escape an array of strings.
 function db_escape_array($array)
@@ -82,7 +83,7 @@ function score_build_query($score, $user, $task, $round)
 // $user, $task, $round can be null, string or an array.
 // If null it's ignored, otherwise only scores for those users/tasks/rounds
 // are counted.
-function score_get_range($score_name, $user, $task, $round, $groupby = "user_id", $start = 0, $count = 999999, $numbered = false)
+function score_get_range($score_name, $user, $task, $round, $groupby = "user_id", $start = 0, $count = 999999, $with_rankings = false)
 {
     log_assert(is_score_name($score_name));
     $where = score_build_where_clauses($user, $task, $round);
@@ -97,9 +98,35 @@ function score_get_range($score_name, $user, $task, $round, $groupby = "user_id"
             ORDER BY `score` DESC LIMIT %s, %s",
             join($where, " AND "), $groupby, $start, $count);
     $scores = db_fetch_all($query);
-    if ($numbered) {
-        for ($i = 0; $i < count($scores); ++$i) {
-            $scores[$i]['position'] = $i + $start + 1;
+
+    if ($with_rankings && count($scores)) {
+        $first_score = $scores[0]['score'];
+
+        // We need to count all users with a greater score than the first user
+        // in the requested range.
+        $where = score_build_where_clauses($user, $task, $round);
+        $where[] = sprintf("ia_score.`name` = '%s'", db_escape($score_name));
+        $query = sprintf("SELECT SUM(`score`) as score 
+                          FROM ia_score
+                          WHERE %s GROUP BY %s
+                          HAVING score > %s",
+                         join($where, " AND "), $groupby, $first_score);
+        $users_before = db_num_rows(db_query($query));
+
+        // store rankings in result
+        $scores[0]['ranking'] = $users_before + 1;
+        $equal_scores = $start - $users_before + 1;
+        for ($i = 1; $i < count($scores); ++$i) {
+            $last_row = $scores[$i - 1];
+            $row =& $scores[$i];
+            if ($row['score'] == $last_row['score']) {
+                $row['ranking'] = $last_row['ranking'];
+                $equal_scores = $equal_scores + 1;
+            }
+            else {
+                $row['ranking'] = $last_row['ranking'] + $equal_scores;
+                $equal_scores = 1;
+            }
         }
     }
 
@@ -363,7 +390,7 @@ function rating_distribution($bucket_size) {
 }
 
 // Get top rated users list.
-function get_users_by_rating_range($start, $count)
+function get_users_by_rating_range($start, $count, $with_rankings = false)
 {
     $query = "SELECT *
         FROM ia_user
@@ -373,11 +400,35 @@ function get_users_by_rating_range($start, $count)
         LIMIT %s, %s
     ";
     $query = sprintf($query, $start, $count);
-    $tab = db_fetch_all($query);
-    for ($i = 0; $i < count($tab); ++$i) {
-        $tab[$i]['position'] = $start + $i + 1;
+    $rows = db_fetch_all($query);
+
+    if ($with_rankings && count($rows)) {
+        $query = sprintf("SELECT `rating_cache` as rating_cache
+                          FROM ia_user
+                          WHERE rating_cache > 1.5 + 3 * ROUND(%s/3)
+                          AND security_level != 'admin'",
+                         $rows[0]['rating_cache']);
+
+        $users_before = db_num_rows(db_query($query));
+
+
+        $rows[0]['position'] = $users_before + 1;
+        $equal_scores = $start - $users_before + 1;          
+        for ($i = 1; $i < count($rows); ++$i) {
+            $last_row = $rows[$i - 1];
+            $row =& $rows[$i];
+            if (rating_scale($row['rating_cache']) == rating_scale($last_row['rating_cache'])) {
+                $row['position'] = $last_row['position'];
+                $equal_scores = $equal_scores + 1;
+            }
+            else {
+                $row['position'] = $last_row['position'] + $equal_scores;
+                $equal_scores = 1;
+            }
+        }
     }
-    return $tab;
+
+    return $rows;
 }
 
 // Count function for get_users_by_rating_range.
