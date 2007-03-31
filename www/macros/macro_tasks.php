@@ -43,6 +43,7 @@ function task_row_style($row) {
 // FIXME: security. Only reveals task names, but still...
 function macro_tasks($args) {
     $options = pager_init_options($args);
+    $options['show_count'] = true;
 
     $round_id = getattr($args, 'round_id');
     if (!$round_id) {

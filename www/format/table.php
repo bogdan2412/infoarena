@@ -57,7 +57,12 @@ function format_table($data, $column_infos = null, $options = null)
         return false;
     }
 
+    $total_entries = getattr($options, 'total_entries', 0);
     $result = "";
+    $show_count = getattr($options, 'show_count', false);    
+    if ($show_count) {
+	$result = "Exista " . $total_entries . " rezultate<br>" . $result;
+    }
 
     // Paging.
     if (getattr($options, 'pager_style', 'none') != 'none') {

@@ -18,6 +18,7 @@ require_once(IA_ROOT_DIR . "common/db/score.php");
 function macro_rankings($args) {
     $args['param_prefix'] = 'rankings_';
     $options = pager_init_options($args);
+    $options['show_count'] = true;
 
     // Rounds parameters
     $roundstr = getattr($args, 'rounds', '');

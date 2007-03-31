@@ -8,6 +8,7 @@
 //  * total_entries     : Total number of entries.
 //  * url_args          : Base arguments for the url function. Defaults to _GET.
 //  * param_prefix      : Prefix for url parameters.
+//  * show_count	: Show number of entries. true / false
 //
 // Certain style might have their own additional args:
 //  * style = standard:
@@ -74,7 +75,7 @@ function pager_init_options($args = null)
 // Call this on a pager options struct to find out if you need to send 'total_entries'
 // This is just an optimization, total_entries can't hurt.
 function pager_needs_total_entries($options) {
-    return $options['pager_style'] == 'standard';
+    return $options['pager_style'] == 'standard' || getattr($options, 'show_count', false);
 }
 
 // Format pager.
@@ -92,6 +93,7 @@ function _format_standard_pager_link($options, $number) {
     $url_args = getattr($options, 'url_args', $_GET);
     $param_prefix = getattr($options, 'param_prefix', '');
     $display_entries = getattr($options, 'display_entries', IA_PAGER_DEFAULT_DISPLAY_ENTRIES);
+    $url_args['show_count'] = getattr($options, 'show_count', false);
 
     $url_args[$param_prefix.'first_entry'] = $number * $display_entries;
     ++$number;
@@ -126,7 +128,9 @@ function format_standard_pager($options)
     if ($totpages == 1) {
         return "";
     }
-    $result = "Vezi pagina: ";
+
+    $result = "";
+    $result .= "Vezi pagina: ";
     if ($curpage < 8) {
         for ($i = 0; $i < $curpage; ++$i) {
             $result .= _format_standard_pager_link($options, $i);
