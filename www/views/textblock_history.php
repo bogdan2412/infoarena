@@ -11,9 +11,13 @@ require_once(IA_ROOT_DIR . "www/format/format.php");
 function format_textblock_revision($row) {
     global $page_name;
     $rev_id = $row['revision_id'];
+    return "#$rev_id";
+}
+
+function format_textblock_title($row) {
+    global $page_name;
     $title = $row['title'];
-    $url = url_textblock_revision($page_name, $rev_id);
-    return format_link($url, "#$rev_id: $title");
+    return "$title";
 }
 
 function format_operations($row)
@@ -22,11 +26,13 @@ function format_operations($row)
     $diffurl = url_textblock_diff($page_name, $row['revision_id'], $total_entries);
     $resturl = url_textblock_restore($page_name, $row['revision_id']);
     $delurl = url_textblock_delete_revision($page_name, $row['revision_id']);
+    $vizurl = url_textblock_revision($page_name, $row['revision_id']);
     if ($row['revision_id'] == $total_entries) {
         return '<strong>Ultima versiune</strong>';
     } else {
         return  '['. format_link($diffurl, "Compara") .'] '.
-                '['. format_link($resturl, "Incarca") .'] '.
+                '['. format_link($resturl, "Inlocuieste") .'] '.
+                '['. format_link($vizurl, "Vezi") .'] '.
                 '['. format_link($delurl, "Sterge") .']';
     }
 }
@@ -34,8 +40,13 @@ function format_operations($row)
 $column_infos = array(
     array(
         'title' => 'Revizia',
-        'key' => 'title',
+        'key' => 'revizion',
         'rowform' => 'format_textblock_revision'
+    ),
+    array(
+        'title' => 'Titlu',
+        'key' => 'title',
+        'rowform' => 'format_textblock_title'
     ),
     array(
         'title' => 'Utilizator',
