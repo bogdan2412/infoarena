@@ -1,6 +1,7 @@
 <?php
 
 require_once(IA_ROOT_DIR . "common/db/task.php");
+require_once(IA_ROOT_DIR . "common/db/user.php");
 
 // Displays a task field, be it a hard-coded field such as task author or a grader parameter such as `timelimit`.
 // NOTE: The macro employs a simple caching mechanism (via static variables, cache expires at the end of the request)
@@ -60,6 +61,21 @@ function macro_taskparam($args) {
 
         case 'id':
             return htmlentities($task['id']);
+
+        case 'owner':	    
+	    if( $task['user_id']=='0' ) {
+		return '';
+	    }
+	    $user = user_get_by_id( $task['user_id'] );	    
+            return htmlentities($user['full_name']);
+
+        case 'formatted_owner':
+	    if( $task['user_id']=='0' ) {
+		return '';
+	    }
+	    $user = user_get_by_id( $task['user_id'] );
+	    return format_user_tiny($user['username'], $user['full_name'],
+		                    $user['rating_cache']);
 
         default:
             if (!isset($params[$param])) {
