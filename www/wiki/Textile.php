@@ -3191,7 +3191,7 @@ class Textile {
     $depth = 6;
     $nested_tags = substr(str_repeat('(?:</?[A-Za-z0-9:]+ \s? (?:[^<>]|', $depth), 0, -1)
       . str_repeat(')*>)', $depth);
-    $match = '(?s: <! ( -- .*? -- \s* )+ > )|  # comment '.
+    $match = '(?s: <! ( -- .*? -- \s* )+ > )|'.# XML comment
 /*
               (?s: <\? .*? \?> )|              # processing instruction
               (?s: <% .*? %> )|                # ASP-like

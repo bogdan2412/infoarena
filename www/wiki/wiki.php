@@ -78,7 +78,7 @@ function wiki_process_textblock($tb) {
     log_assert_valid(textblock_validate($tb));
 
     if (!IA_TEXTILE_CACHE_ENABLE) {
-        return wiki_process_macros(wiki_process_textile($tb['text']));
+        return wiki_process_text($tb['text']);
     } else {
         $cache_id = preg_replace('/[^a-z0-9\.\-_]/i', '_', $tb['name']) . '_' .
                    db_date_parse($tb['timestamp']);
