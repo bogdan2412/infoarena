@@ -113,7 +113,7 @@ function controller_task_details($task_id) {
 
     // Create view.
     $view = array();
-    $view['title'] = "Editare $task_id";
+    $view['title'] = $task_id;
     $view['page_name'] = url_task_edit($task_id);
     $view['task_id'] = $task_id;
     $view['task'] = $task;

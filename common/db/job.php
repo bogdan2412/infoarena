@@ -115,7 +115,7 @@ function job_get_range($start, $range, $task = null, $user = null) {
     log_assert($range >= 0);
     $query = <<<SQL
 SELECT `job`.`id`, `job`.`user_id`, `job`.`compiler_id`, `job`.`status`,
-       `job`.`submit_time`, `job`.`eval_message`, `job`.`score`,
+       `job`.`submit_time`, `job`.`eval_message`, `job`.`score`, `job`.`eval_log`,
        `user`.`username` AS `user_name`, `user`.`full_name` AS `user_fullname`,
        `task`.`id` AS `task_id`,
        `task`.`page_name` AS `task_page_name`, task.`title` AS `task_title`,
@@ -162,6 +162,29 @@ function job_get_count($task = null, $user = null) {
 
     $res = db_fetch($query);
     return $res['cnt'];
+}
+
+// Updates ia_job_test table
+function job_test_update($job_id, $test_number, $test_group, $exec_time, $mem_limit,
+                         $grader_exec_time, $grader_mem_limit, $points, $grader_msg) {
+    $query = sprintf("DELETE FROM ia_job_test WHERE job_id = '%s' AND test_number = '%s'",
+                     db_escape($job_id), db_escape($test_number));
+    $query = sprintf("INSERT INTO ia_job_test
+                     (job_id, test_number, test_group, exec_time, mem_used, 
+                      grader_exec_time, grader_mem_used, points, grader_message)
+                     VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
+                     db_escape($job_id), db_escape($test_number), db_escape($test_group),
+                     db_escape($exec_time), db_escape($mem_limit), db_escape($grader_exec_time),
+                     db_escape($grader_mem_limit), db_escape($points), db_escape($grader_msg));
+    return db_query($query);
+}
+
+// Returns an array of test informations for a job, ordered by test group
+function job_test_get_all($job_id) {
+    $query = sprintf("SELECT * FROM `ia_job_test` 
+                      WHERE job_id = '%s' ORDER BY test_group, test_number",
+                     db_escape($job_id));  
+    return db_fetch_all($query);
 }
 
 ?>

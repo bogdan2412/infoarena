@@ -45,7 +45,7 @@ function task_create($task, $task_params) {
 
         // Copy templates.
         require_once(IA_ROOT_DIR . "common/textblock.php");
-        $replace = array("task_id" => $task['id']);
+        $replace = array("task_id" => $task['id'], "task_title" => ucfirst($task['id']));
         textblock_copy_replace("template/newtask", $task['page_name'],
                 $replace, "task: {$task['id']}", $task['user_id']);
 

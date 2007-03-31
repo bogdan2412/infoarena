@@ -43,7 +43,7 @@ function compile_file($input_file_name, $output_file_name, &$compiler_message)
     $exe_name = $matches[1];
     $extension = $matches[2];
     if (!isset($compiler_lines[$extension])) {
-        $compiler_message = "Nu stiu cum sa compiler fisiere '$extension'";
+        $compiler_message = "Nu stiu cum sa compilez fisiere '$extension'";
         return false;
     }
 

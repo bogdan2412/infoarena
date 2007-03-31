@@ -52,7 +52,7 @@ $form_fields = array(
 
 ?>
 
-<h1><?= htmlentities(getattr($view, 'title')) ?></h1>
+<h1>Editare <a href="<?= htmlentities(url_task($view['task_id'])) ?>"><?= htmlentities($view['title']) ?></a></h1>
 
 <form action="<?= htmlentities(url_task_edit($task_id)) ?>"
       method="post"
