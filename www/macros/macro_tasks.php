@@ -75,6 +75,7 @@ function macro_tasks($args) {
 
     $show_numbers = getattr($args, 'show_numbers', false);
     $show_authors = getattr($args, 'show_authors', true);
+    $show_sources = getattr($args, 'show_sources', true);
 
     // get round tasks
     $tasks = round_get_tasks($round_id,
@@ -105,6 +106,13 @@ function macro_tasks($args) {
                 'title' => 'Autor',
                 'css_class' => 'author',
                 'key' => 'author',
+        );
+    }
+    if ($show_sources) {
+        $column_infos[] = array(
+                'title' => 'Sursa',
+                'css_class' => 'source',
+                'key' => 'source',
         );
     }
     if (!is_null($user_id)) {
