@@ -111,7 +111,8 @@ function format_standard_pager($options)
 {
     log_assert($options['pager_style'] == "standard");
     $first_entry = getattr($options, 'first_entry', 0);
-    $total_entries = $options['total_entries'];
+    $total_entries = getattr($options, 'total_entries', 0);
+    $show_count = getattr($options, 'show_count', false);    
     $display_entries = getattr($options, 'display_entries', IA_PAGER_DEFAULT_DISPLAY_ENTRIES);
     $surround_pages = getattr($options, 'surround_pages', 5);
     $access_keys = getattr($options, 'use_digit_access_keys', true);
@@ -125,11 +126,23 @@ function format_standard_pager($options)
     $curpage = (int)($first_entry / $display_entries);
     $totpages = (int)(($total_entries + $display_entries - 1) / $display_entries);
 
+    $result = "";
     if ($totpages == 1) {
-        return "";
+        return $result;
     }
 
-    $result = "";
+    if ($show_count) {
+	$result = '<span class="count">';
+	$result .= $total_entries;
+	if (1 != $total_entries) {
+	    $result .= " rezultate";
+	}
+	else {
+	    $result .= " rezultat";
+	}
+	$result .= "</span> ";
+    }
+
     $result .= "Vezi pagina: ";
     if ($curpage < 8) {
         for ($i = 0; $i < $curpage; ++$i) {

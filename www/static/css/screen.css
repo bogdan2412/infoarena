@@ -221,7 +221,6 @@ The basic layout of the homepage is as follows:
     display:block;
 }
 
-
 /* Wikipage options (actions) */
 #wikiOps {
     font-size:8pt;
@@ -1056,6 +1055,10 @@ td.rating, th.rating {
 }
 .pager a:hover {
     background-color: silver;
+}
+.pager .count {
+    float: right;
+    font-size: small;
 }
 
 /* user count */
