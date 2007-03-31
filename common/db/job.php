@@ -106,59 +106,116 @@ function job_get_by_id($job_id, $contents = false) {
     return db_fetch($query);
 }
 
-// Get a range of jobs, ordered by submit time.
-// Returns an array, use this like list($jobs, $count) = 
-function job_get_range($start, $range, $task = null, $user = null) {
+// Returns an ugly where clause array. Yuck!
+function job_get_range_wheres($filter) {
+    $task = getattr($filter, 'task');
+    $user = getattr($filter, 'user'); 
+    $round = getattr($filter, 'round');
+    $job_begin = getattr($filter, 'job_begin');
+    $job_end = getattr($filter, 'job_end');
+    $time_begin = getattr($filter, 'time_begin');
+    $time_end = getattr($filter, 'time_end');
+    $compiler = getattr($filter, 'compiler');
+    $status = getattr($filter, 'status');
+    $score_begin = getattr($filter, 'score_begin');
+    $score_end = getattr($filter, 'score_end'); 
+    $eval_msg = getattr($filter, 'eval_msg');
+    $task_hidden = getattr($filter, 'task_hidden'); 
+
+    $wheres = array("TRUE");
+    if (!is_null($task)) {
+        $wheres[] = sprintf("`task_id` = '%s'", db_escape($task));
+    }
+    if (!is_null($user)) {
+        $wheres[] = sprintf("`user`.`username` = '%s'", db_escape($user));
+    }
+    if (!is_null($round)) {
+        $wheres[] = sprintf("`round_id` = '%s'", db_escape($round));
+    }
+    if (!is_null($job_begin) && is_whole_number($job_begin)) {
+        $wheres[] = sprintf("`job`.`id` >= '%s'", db_escape($job_begin));
+    }
+    if (!is_null($job_end) && is_whole_number($job_end)) {
+        $wheres[] = sprintf("`job`.`id` <= '%s'", db_escape($job_end));
+    }
+    if (!is_null($time_begin) && strtotime($time_begin) !== false) {
+        $time_begin = db_date_format(strtotime($time_begin));
+        $wheres[] = sprintf("`job`.`submit_time` >= '%s'", db_escape($time_begin));
+    }
+    if (!is_null($time_end) && strtotime($time_end) !== false) {
+        $time_end = db_date_format(strtotime($time_end));
+        $wheres[] = sprintf("`job`.`submit_time` <= '%s'", db_escape($time_end));
+    }
+    if (!is_null($compiler)) {
+        $wheres[] = sprintf("`job`.`compiler_id` = '%s'", db_escape($compiler));
+    }
+    if (!is_null($status)) {
+        $wheres[] = sprintf("`job`.`status` = '%s'", db_escape($status));
+    }
+    if (!is_null($score_begin) && is_whole_number($score_begin)) {
+        $wheres[] = sprintf("`job`.`score` >= '%s'", db_escape($score_begin));
+    }
+    if (!is_null($score_end) && is_whole_number($score_end)) {
+        $wheres[] = sprintf("`job`.`score` <= '%s'", db_escape($score_end));
+    }
+    if (!is_null($eval_msg)) {
+        $wheres[] = sprintf("`job`.`eval_message` LIKE '%s%%'", db_escape($eval_msg));
+    }
+    if (!is_null($task_hidden)) {
+        $wheres[] = sprintf("`task`.`hidden` = '%s'", db_escape($task_hidden));
+    }
+
+    return $wheres;
+}
+
+// Get a range of jobs, ordered by submit time. Really awesome filters!
+function job_get_range($filter, $start, $range) {
     log_assert(is_whole_number($start));
     log_assert(is_whole_number($range));
     log_assert($start >= 0);
     log_assert($range >= 0);
     $query = <<<SQL
-SELECT `job`.`id`, `job`.`user_id`, `job`.`compiler_id`, `job`.`status`,
-       `job`.`submit_time`, `job`.`eval_message`, `job`.`score`, `job`.`eval_log`,
-       `user`.`username` AS `user_name`, `user`.`full_name` AS `user_fullname`,
-       `task`.`id` AS `task_id`,
-       `task`.`page_name` AS `task_page_name`, task.`title` AS `task_title`,
-       `task`.`hidden` AS `task_hidden`, `task`.`user_id` AS `task_owner_id`,
-       `round`.`id` AS `round_id`,
-       `round`.`page_name` AS `round_page_name`, `round`.`title` AS `round_title`
+SELECT `job`.`id`,
+       `job`.`user_id` as `user_id`,
+       `job`.`round_id` as `round_id`,
+       `job`.`task_id` as `task_id`, 
+       `job`.`submit_time`, 
+       `job`.`compiler_id`, 
+       `job`.`status`,
+       `job`.`score`, 
+       `job`.`eval_message`, 
+       `user`.`username` AS `user_name`, 
+       `user`.`full_name` AS `user_fullname`,
+       `task`.`page_name` AS `task_page_name`, 
+       `task`.`title` AS `task_title`,
+       `task`.`hidden` AS `task_hidden`, 
+       `task`.`user_id` AS `task_owner_id`,
+       `round`.`page_name` AS `round_page_name`, 
+       `round`.`title` AS `round_title`
       FROM `ia_job` AS `job`
       LEFT JOIN `ia_user` AS `user` ON `job`.`user_id` = `user`.`id`
       LEFT JOIN `ia_task` AS `task` ON `job`.`task_id` = `task`.`id`
       LEFT JOIN `ia_round` AS `round` ON `job`.`round_id` = `round`.`id`
 SQL;
-    if (!is_null($task)) {
-        $query .= sprintf(" WHERE job.`task_id` = '%s'", db_escape($task));
-    }
-    if (!is_null($user)) {
-        if (is_null($task)) {         
-            $query .= " WHERE ";
-        } 
-        else {
-            $query .= " AND ";
-        }
-        $query .= sprintf("user.`username` = '%s'", db_escape($user));
-    }
-    $query .= sprintf(" ORDER BY job.`submit_time` DESC LIMIT %s, %s", $start, $range);
+
+    $wheres = job_get_range_wheres($filter);
+    $query .= "WHERE (".implode(") AND (", $wheres).")";
+    $query .= sprintf(" ORDER BY `job`.`submit_time` DESC LIMIT %s, %s", $start, $range);
 
     return db_fetch_all($query);
 }
 
-function job_get_count($task = null, $user = null) {
-    $joins = array();
-    $wheres = array("TRUE"); 
-    if (!is_null($task)) {
-        $wheres[] = sprintf("job.`task_id` = '%s'", db_escape($task));
-    }
-    if (!is_null($user)) {
-        $joins[] = "LEFT JOIN `ia_user` AS `user` ON job.`user_id` = `user`.`id`";
-        $wheres[] = sprintf("user.`username` = '%s'", db_escape($user));
-    }
+function job_get_count($filter) {
+    $query = <<<SQL
+SELECT COUNT(*) as `cnt`
+      FROM `ia_job` AS `job`
+      LEFT JOIN `ia_user` AS `user` ON `job`.`user_id` = `user`.`id`
+      LEFT JOIN `ia_task` AS `task` ON `job`.`task_id` = `task`.`id`
+      LEFT JOIN `ia_round` AS `round` ON `job`.`round_id` = `round`.`id`
+SQL;
 
-    $query = "SELECT COUNT(*) as `cnt`".
-            "\nFROM `ia_job` AS `job`".
-            "\n".implode(' ', $joins).
-            "\nWHERE (".implode(') AND (', $wheres).')';
+    $wheres = job_get_range_wheres($filter);
+    $query .= "WHERE (".implode(") AND (", $wheres).")";
 
     $res = db_fetch($query);
     return $res['cnt'];

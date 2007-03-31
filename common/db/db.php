@@ -38,15 +38,25 @@ function is_db_date($string) {
 // i.e.: 2006-11-27 23:59:59
 //
 // returns unix timestamp or FALSE upon error
+// NOTE: We cannot use strptime() since it doesn't work on windows
 function db_date_parse($string) {
+    // maybe it's a date&time
     $ret = preg_match('/^(\\d{4})-(\\d{2})-(\\d{2}) (\\d{2}):(\\d{2}):(\\d{2})$/',
                       $string, $matches);
-    if (!$ret) {
-        return false;
+    if ($ret) {
+        return mktime($matches[4], $matches[5], $matches[6],
+                      $matches[2], $matches[3], $matches[1]);
     }
 
-    return mktime($matches[4], $matches[5], $matches[6],
-                  $matches[2], $matches[3], $matches[1]);
+    // probably just a date
+    $ret = preg_match('/^(\\d{4})-(\\d{2})-(\\d{2})$/',
+                      $string, $matches);
+    if ($ret) {
+        return mktime(12, 0, 0, $matches[2], $matches[3], $matches[1]);
+    }
+
+    // unknown date format
+    return false;
 }
 
 // formats unix timestamp as a datetime parameter value, suitable for SQL.

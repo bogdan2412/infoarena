@@ -13,6 +13,7 @@ $tabs = array();
 $selected = null;
 
 // my-jobs tab
+$user_filter = getattr($view['filter'], 'user');
 if (!identity_is_anonymous()) {
     $tabs['mine'] = format_link(url_monitor($user_name), 'Solutiile mele');
     if ($user_name == $user_filter) {
@@ -27,7 +28,7 @@ if (is_null($selected)) {
 }
 
 // custom-user filter tab
-if ($user_filter && $user_filter != $user_name) {
+if ($user_filter && $user_name != $user_filter) {
     $tabs['custom'] = format_link(url_monitor($user_filter),
                                   'Trimise de "'.$user_filter.'"');
     $selected = 'custom';
