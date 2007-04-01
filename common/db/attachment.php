@@ -73,6 +73,7 @@ function attachment_update($id, $name, $size, $mime_type, $page, $user_id) {
             'mime_type' => $mime_type,
             'page' => $page,
             'user_id' => $user_id,
+            'timestamp' => db_date_format(),
     );
 
     db_update('ia_file', $attachment, '`id` = '.db_quote($id));
