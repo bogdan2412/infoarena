@@ -1,5 +1,5 @@
-    /* Basic styles */
-    * {
+/* Basic styles */
+* {
     margin:0;
     padding:0;
 }
@@ -910,6 +910,12 @@ th {
 
 .inlineSubmit #form_compiler {
     width: 9em;
+}
+
+/* reeval form */
+
+.reeval {
+    float: right;
 }
 
 /* gallery macro */

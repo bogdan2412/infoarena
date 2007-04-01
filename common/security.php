@@ -26,7 +26,7 @@ require_once(IA_ROOT_DIR."common/db/round.php");
 function security_query($user, $action, $object) {
     list($group, $subaction) = explode('-', $action, 2);
 
-    log_assert(is_array($object), '$object must be an array');
+    log_assert(is_array($object) || is_null($object), '$object must be an array or null');
     // Log security checking.
     $username = getattr($user, 'username', 'null');
     $usersec = getattr($user, 'security_level', 'anonymous');
@@ -127,6 +127,7 @@ function security_simplify_action($action)
         // Admin stuff:
         case 'task-change-security':
         case 'textblock-change-security':
+        case 'job-reeval':  
         case 'simple-critical':
             return 'simple-critical';
 
@@ -139,6 +140,7 @@ function security_simplify_action($action)
         case 'user-editprofile':
         case 'user-change-security':
         case 'job-view':
+        case 'job-eval':
         case 'job-download': 
             return $action;
 
@@ -444,7 +446,7 @@ function security_macro($user, $action, $args) {
 }
 
 // FIXME: implement job security.
-// * job-view-source
+// * job-download (this should be job-view-source) 
 // * job-view
 //
 // There is no job-eval, jobs are evaluated on the spot, we check job-view instead.
@@ -452,7 +454,6 @@ function security_job($user, $action, $job) {
     $usersec = getattr($user, 'security_level', 'anonymous');
     $is_admin = $usersec == 'admin';
     $is_owner = ($job['user_id'] == $user['id']);
-    //FIXME: I'm not sure this belongs here, but it's an easy way out :|
     $is_task_owner = ($job['task_owner_id'] == $user['id'] && $usersec == 'helper');
     $can_view_job = ($job['task_hidden'] == false) || $is_task_owner || $is_admin;
 
@@ -467,6 +468,9 @@ function security_job($user, $action, $job) {
     }
 
     switch ($action) {
+        case 'simple-critical':
+            return $is_admin;
+
         case 'job-view':
             return $can_view_job;
 

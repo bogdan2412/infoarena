@@ -75,7 +75,7 @@ ia_template_topnav($topnav_select, $smf_admin);
         <li><a href="<?= htmlentities(url_textblock('despre-infoarena')) ?>">Despre infoarena</a></li>
         <li><a href="<?= htmlentities(url_textblock('documentatie')) ?>">Documentatie</a></li>
         <li class="separator"><hr/></li>
-        <li><?= format_link_access(url_monitor(identity_get_username()), "Monitorul de evaluare", 'm') ?></li>
+        <li><?= format_link_access(url_monitor(array('user' => identity_get_username())), "Monitorul de evaluare", 'm') ?></li>
         <?php if (!identity_is_anonymous()) { ?>
         <li><a href="<?= htmlentities(url_submit()) ?>"><strong>Trimite solutii</strong></a></li>
         <li><?= format_link_access(url_account(), "Contul meu", 'c') ?></li>

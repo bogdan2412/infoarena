@@ -121,6 +121,11 @@ function is_task_id($task_id) {
            strlen($task_id) < 64;
 }
 
+// Check job id
+function is_job_id($job_id) {
+    return is_whole_number($job_id);
+}
+
 // Check user name
 function is_user_name($user_name) {
     return preg_match('/^'.IA_RE_USER_NAME.'$/xi', $user_name) &&

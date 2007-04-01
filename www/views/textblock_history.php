@@ -26,13 +26,13 @@ function format_operations($row)
     $diffurl = url_textblock_diff($page_name, $row['revision_id'], $total_entries);
     $resturl = url_textblock_restore($page_name, $row['revision_id']);
     $delurl = url_textblock_delete_revision($page_name, $row['revision_id']);
-    $vizurl = url_textblock_revision($page_name, $row['revision_id']);
+    $viewurl = url_textblock_revision($page_name, $row['revision_id']);
     if ($row['revision_id'] == $total_entries) {
         return '<strong>Ultima versiune</strong>';
     } else {
         return  '['. format_link($diffurl, "Compara") .'] '.
                 '['. format_link($resturl, "Inlocuieste") .'] '.
-                '['. format_link($vizurl, "Vezi") .'] '.
+                '['. format_link($viewurl, "Vezi") .'] '.
                 '['. format_link($delurl, "Sterge") .']';
     }
 }
@@ -40,7 +40,7 @@ function format_operations($row)
 $column_infos = array(
     array(
         'title' => 'Revizia',
-        'key' => 'revizion',
+        'key' => 'revision',
         'rowform' => 'format_textblock_revision'
     ),
     array(

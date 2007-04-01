@@ -47,7 +47,7 @@ $action = request('action', 'view');
 $directmaps = array_flip(array('register', 'news_feed', 'changes',
                                'login', 'logout', 'json', 'job_detail',
                                'monitor', 'submit', 'userinfo', 'plot',
-                               'unsubscribe', 'resetpass'
+                               'unsubscribe', 'resetpass', 'reeval'
 ));
 //
 // Here comes the big url mapper.

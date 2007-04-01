@@ -24,8 +24,9 @@ $query = "CREATE TABLE `ia_job_test` (
 
 db_query($query);
 
-$job_count = job_get_count();
-$jobs = job_get_range(0, $job_count);
+$filter = array();
+$job_count = job_get_count($filter);
+$jobs = job_get_range($filter, 0, $job_count);
 
 foreach ($jobs as $job) {
     echo "Procesez job-ul ".$job['id']." -> ".$job['task_id']."...\n";

@@ -259,13 +259,18 @@ function url_submit() {
     return url_complex("submit", array());
 }
 
-function url_monitor($username = null) {
-    if (is_null($username)) {
-        return url_complex("monitor");
+function url_monitor($filters = null) {
+    if (is_null($filters)) {
+        $filters = array();
     }
-    else {
-        return url_complex("monitor", array('user' => $username));
+    return url_complex("monitor", $filters);
+}
+
+function url_reeval($filters = null) {
+    if (is_null($filters)) {
+        $filters = array();
     }
+    return url_complex("reeval", $filters);
 }
 
 function url_job_detail($job_id) {

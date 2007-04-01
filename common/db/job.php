@@ -53,11 +53,8 @@ SQL;
 
 // Update job status.
 // Null parameters doesn't update.
-function job_update($job_id,
-        $status = null,
-        $eval_message = null,
-        $eval_log = null,
-        $score = null) {
+function job_update($job_id, $status = null,  $eval_message = null,
+                    $eval_log = null, $score = null) {
     log_assert(is_whole_number($job_id));
 
     // Build set statements.
@@ -106,21 +103,22 @@ function job_get_by_id($job_id, $contents = false) {
     return db_fetch($query);
 }
 
-// Returns an ugly where clause array. Yuck!
-function job_get_range_wheres($filter) {
-    $task = getattr($filter, 'task');
-    $user = getattr($filter, 'user'); 
-    $round = getattr($filter, 'round');
-    $job_begin = getattr($filter, 'job_begin');
-    $job_end = getattr($filter, 'job_end');
-    $time_begin = getattr($filter, 'time_begin');
-    $time_end = getattr($filter, 'time_end');
-    $compiler = getattr($filter, 'compiler');
-    $status = getattr($filter, 'status');
-    $score_begin = getattr($filter, 'score_begin');
-    $score_end = getattr($filter, 'score_end'); 
-    $eval_msg = getattr($filter, 'eval_msg');
-    $task_hidden = getattr($filter, 'task_hidden'); 
+// Returns a where clause array based on complex filterss. 
+function job_get_range_wheres($filters) {
+    $task = getattr($filters, 'task');
+    $user = getattr($filters, 'user'); 
+    $round = getattr($filters, 'round');
+    $job_begin = getattr($filters, 'job_begin');
+    $job_end = getattr($filters, 'job_end');
+    $job_id = getattr($filters, 'job_id');
+    $time_begin = getattr($filters, 'time_begin');
+    $time_end = getattr($filters, 'time_end');
+    $compiler = getattr($filters, 'compiler');
+    $status = getattr($filters, 'status');
+    $score_begin = getattr($filters, 'score_begin');
+    $score_end = getattr($filters, 'score_end'); 
+    $eval_msg = getattr($filters, 'eval_msg');
+    $task_hidden = getattr($filters, 'task_hidden'); 
 
     $wheres = array("TRUE");
     if (!is_null($task)) {
@@ -137,6 +135,9 @@ function job_get_range_wheres($filter) {
     }
     if (!is_null($job_end) && is_whole_number($job_end)) {
         $wheres[] = sprintf("`job`.`id` <= '%s'", db_escape($job_end));
+    }
+    if (!is_null($job_id) && is_whole_number($job_id)) {
+        $wheres[] = sprintf("`job`.`id` = '%s'", db_escape($job_id));
     }
     if (!is_null($time_begin) && strtotime($time_begin) !== false) {
         $time_begin = db_date_format(strtotime($time_begin));
@@ -168,8 +169,8 @@ function job_get_range_wheres($filter) {
     return $wheres;
 }
 
-// Get a range of jobs, ordered by submit time. Really awesome filters!
-function job_get_range($filter, $start, $range) {
+// Get a range of jobs, ordered by submit time. Really awesome filterss!
+function job_get_range($filters, $start, $range) {
     log_assert(is_whole_number($start));
     log_assert(is_whole_number($range));
     log_assert($start >= 0);
@@ -183,7 +184,8 @@ SELECT `job`.`id`,
        `job`.`compiler_id`, 
        `job`.`status`,
        `job`.`score`, 
-       `job`.`eval_message`, 
+       `job`.`eval_message`,
+       `job`.`eval_log`,
        `user`.`username` AS `user_name`, 
        `user`.`full_name` AS `user_fullname`,
        `task`.`page_name` AS `task_page_name`, 
@@ -198,14 +200,15 @@ SELECT `job`.`id`,
       LEFT JOIN `ia_round` AS `round` ON `job`.`round_id` = `round`.`id`
 SQL;
 
-    $wheres = job_get_range_wheres($filter);
-    $query .= "WHERE (".implode(") AND (", $wheres).")";
+    $wheres = job_get_range_wheres($filters);
+    $query .= " WHERE (".implode(") AND (", $wheres).")";
     $query .= sprintf(" ORDER BY `job`.`submit_time` DESC LIMIT %s, %s", $start, $range);
 
     return db_fetch_all($query);
 }
 
-function job_get_count($filter) {
+// Counts jobs based on complex filterss
+function job_get_count($filters) {
     $query = <<<SQL
 SELECT COUNT(*) as `cnt`
       FROM `ia_job` AS `job`
@@ -214,11 +217,25 @@ SELECT COUNT(*) as `cnt`
       LEFT JOIN `ia_round` AS `round` ON `job`.`round_id` = `round`.`id`
 SQL;
 
-    $wheres = job_get_range_wheres($filter);
-    $query .= "WHERE (".implode(") AND (", $wheres).")";
+    $wheres = job_get_range_wheres($filters);
+    $query .= " WHERE (".implode(") AND (", $wheres).")";
 
     $res = db_fetch($query);
     return $res['cnt'];
+}
+
+// Re-eval a bunch of jobs based on complex filterss
+function job_reeval($filters) {
+    $query = <<<SQL
+UPDATE `ia_job` AS `job`
+       LEFT JOIN `ia_user` AS `user` ON `job`.`user_id` = `user`.`id`
+       LEFT JOIN `ia_task` AS `task` ON `job`.`task_id` = `task`.`id`
+       LEFT JOIN `ia_round` AS `round` ON `job`.`round_id` = `round`.`id`
+SET `job`.`status` = "waiting"
+SQL;
+    $wheres = job_get_range_wheres($filters);
+    $query .= " WHERE (".implode(") AND (", $wheres).")";
+    return db_query($query);
 }
 
 // Updates ia_job_test table
@@ -226,6 +243,7 @@ function job_test_update($job_id, $test_number, $test_group, $exec_time, $mem_li
                          $grader_exec_time, $grader_mem_limit, $points, $grader_msg) {
     $query = sprintf("DELETE FROM ia_job_test WHERE job_id = '%s' AND test_number = '%s'",
                      db_escape($job_id), db_escape($test_number));
+    db_query($query);
     $query = sprintf("INSERT INTO ia_job_test
                      (job_id, test_number, test_group, exec_time, mem_used, 
                       grader_exec_time, grader_mem_used, points, grader_message)

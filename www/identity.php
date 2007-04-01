@@ -57,7 +57,7 @@ function identity_get_username() {
 // a given action (onto an object)
 // This is a wrapper for the more-generic, session-independent permission
 // module.
-function identity_can($action, $object) {
+function identity_can($action, $object = null) {
     global $identity_user;
     return security_query($identity_user, $action, $object);
 }

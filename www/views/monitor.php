@@ -7,16 +7,25 @@ require_once(IA_ROOT_DIR."www/format/form.php");
 
 include('header.php');
 
+if (identity_can('job-reeval') && $view['total_entries'] <= IA_REEVAL_MAXJOBS) { 
+
+    echo '<form enctype="multipart/form-data" action="'.htmlentities(url_reeval($view['filters'])).'" 
+           method="post" class="reeval" id="job_reeval">';
+    echo '<ul class="form hollyfix"><li id="field_submit">';
+    echo '<input type="submit" class="button important" value="Re-evalueaza!" id="form_reeval" />';
+    echo '</li></ul></form>';
+}
+
 echo '<h1>'.htmlentities($view['title']).'</h1>';
 
 $tabs = array();
 $selected = null;
 
 // my-jobs tab
-$user_filter = getattr($view['filter'], 'user');
+$user_filters = getattr($view['filters'], 'user');
 if (!identity_is_anonymous()) {
-    $tabs['mine'] = format_link(url_monitor($user_name), 'Solutiile mele');
-    if ($user_name == $user_filter) {
+    $tabs['mine'] = format_link(url_monitor(array('user' => $user_name)), 'Solutiile mele');
+    if ($user_name == $user_filters) {
         $selected = 'mine';
     }
 }
@@ -27,10 +36,10 @@ if (is_null($selected)) {
     $selected = 'all';
 }
 
-// custom-user filter tab
-if ($user_filter && $user_name != $user_filter) {
-    $tabs['custom'] = format_link(url_monitor($user_filter),
-                                  'Trimise de "'.$user_filter.'"');
+// custom-user filters tab
+if ($user_filters && $user_name != $user_filters) {
+    $tabs['custom'] = format_link(url_monitor(array('user' => $user_name)),
+                                  'Trimise de "'.$user_filters.'"');
     $selected = 'custom';
 }
 
@@ -84,6 +93,11 @@ if (!$jobs) {
     // For the detail column.
     function format_jobdetail_link($val) {
         return format_link(url_job_detail($val), "#$val");
+    }
+
+    // For the reeval column.
+    function format_reeval_link($job_id) {
+        
     }
 
     $column_infos = array(
