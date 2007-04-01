@@ -82,6 +82,9 @@ if (strpos($db_prefix, '.') === false) {
 }
 @mysql_select_db($db_name, $db_connection);
 
+// restore infoarena session (if such a session exists)
+identity_restore();
+
 // Load installed 'Mods' settings.
 reloadSettings();
 // Clean the request variables.

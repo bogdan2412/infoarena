@@ -74,6 +74,9 @@ else
 if (!$db_connection || !@mysql_select_db($db_name, $db_connection))
 	db_fatal_error();
 
+// restore infoarena session (if such a session exists)
+identity_restore();
+
 // Load the settings from the settings table, and perform operations like optimizing.
 reloadSettings();
 // Clean the request variables, add slashes, etc.

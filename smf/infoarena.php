@@ -35,9 +35,6 @@ function ia_verify_user() {
     global $identity_user;
     global $db_prefix;
 
-    // restore infoarena session (if such a session exists)
-    identity_restore();
-
     if (!$identity_user) {
         // When infoarena session is no longer active,
         // destroy any SMF session still hanging active
