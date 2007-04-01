@@ -18,7 +18,7 @@ require_once(IA_ROOT_DIR . "common/db/score.php");
 function macro_toprated($args) {
     $args['param_prefix'] = 'toprated_';
     $options = pager_init_options($args);
-    $options['show_count'] = true; 
+    $options['show_count'] = true;
 
     $rankings = get_users_by_rating_range($options['first_entry'], $options['display_entries'], true);
 

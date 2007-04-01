@@ -47,6 +47,9 @@ function url_from_args($args)
     // Actual args.
     $first = true;
     foreach ($args as $k => $v) {
+        if (is_null($v)) {
+            continue;
+        }
         if ($k != 'page') {
             $url .= ($first ? "?" : "&");
             $first = false;
