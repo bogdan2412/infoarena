@@ -326,11 +326,11 @@ function db_query($db_string, $file = "", $line = -1)
 	if (isset($db_show_debug) && $db_show_debug === true)
 		$db_cache[$db_count]['t'] = array_sum(explode(' ', microtime())) - array_sum(explode(' ', $st));
 
-    // update infoarena execution stats
-    if (IA_DEVELOPMENT_MODE) {
-        global $execution_stats;
-        $execution_stats['queries']++;
-    }
+	// update infoarena execution stats
+	if (IA_DEVELOPMENT_MODE) {
+		global $execution_stats;
+		$execution_stats['queries']++;
+	}
 
 	return $ret;
 }
