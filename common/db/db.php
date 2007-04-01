@@ -1,9 +1,8 @@
 <?php
 // This module contains various database-related functions and routines.
 
-// When including infoarena API from SMF, it is required to skip this
-// module as it clashes with SMF's db_* functions.
-// FIXME: Find a better hack
+// To avoid some name clashes with SMF, we have an alternate database API
+// when working inside SMF.
 if (defined("IA_FROM_SMF")) {
     require_once(IA_ROOT_DIR."common/db/db_smf_mysql.php");
 }
