@@ -167,32 +167,34 @@
 }
 
 /* color-coded user ratings */
-#main a.user_1, #main a.user_2, #main a.user_3, #main a.user_4 {
+/* put some extra work to override SMF CSS */
+a.rating-badge-1, a.rating-badge-2, a.rating-badge-3, a.rating-badge-4,
+a.rating-badge-1:link, a.rating-badge-2:link, a.rating-badge-3:link, a.rating-badge-4:link {
     font-size: 12pt;
     font-weight: normal;
     padding: 0 0 0 .1em;
     margin: .1em .1em .1em 0;
     border: 1px solid white;
 }
-#main a.user_1:hover, #main a.user_2:hover, #main a.user_3:hover, #main a.user_4:hover {
+a.rating-badge-1:hover, a.rating-badge-2:hover, a.rating-badge-3:hover, a.rating-badge-4:hover {
     border: 1px solid gray;
     text-decoration: none;
 }
-a.user_3 { color: #00a900; }
-a.user_2 { color: #ddcc00; }
-a.user_1 { color: #ee0000; }
-#main a.user_3:hover { border-color: #00a900; }
-#main a.user_2:hover { border-color: #ddcc00; }
-#main a.user_1:hover { border-color: #ee0000; }
-#header a.user_1, #header a.user_2, #header a.user_3 {
+a.rating-badge-3:link { color: #00a900; }
+a.rating-badge-2:link { color: #ddcc00; }
+a.rating-badge-1:link { color: #ee0000; }
+a.rating-badge-3:hover { border-color: #00a900; }
+a.rating-badge-2:hover { border-color: #ddcc00; }
+a.rating-badge-1:hover { border-color: #ee0000; }
+#header a.rating-badge-1, #header a.rating-badge-2, #header a.rating-badge-3 {
     padding-right: .1em;
     margin-right: .1em;
     border: 0;
     font-size: 12pt;
 }
-#header a.user_3 { color: #00a900; }
-#header a.user_2 { color: #ddcc00; }
-#header a.user_1 { color: #ee0000; }
+#header a.rating-badge-3 { color: #00a900; }
+#header a.rating-badge-2 { color: #ddcc00; }
+#header a.rating-badge-1 { color: #ee0000; }
 
 /* stuff displayed in development mode */
 #log, #log_active {

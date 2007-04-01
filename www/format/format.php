@@ -201,7 +201,7 @@ function format_user_ratingbadge($username, $rating) {
         $rating = rating_scale($rating);
         $att = array(
             'title' => 'Rating '.htmlentities($username).': '.$rating,
-            'class' => 'user_'.$class,
+            'class' => 'rating-badge-'.$class,
         );
         return format_link(url_user_rating($username), '&bull;', false, $att);
     }

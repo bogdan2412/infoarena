@@ -885,8 +885,9 @@ function loadMemberData($users, $is_name = false, $set = 'normal')
 	{
 		// Load the member's data.
 		$request = db_query("
-			SELECT$select_columns
+			SELECT$select_columns, ia_user.rating_cache AS `rating_cache`
 			FROM {$db_prefix}members AS mem$select_tables
+            LEFT JOIN ia_user ON ia_user.username = mem.memberName
 			WHERE mem." . ($is_name ? 'memberName' : 'ID_MEMBER') . (count($users) == 1 ? " = '" . current($users) . "'" : " IN ('" . implode("', '", $users) . "')"), __FILE__, __LINE__);
 		$new_loaded_ids = array();
 		while ($row = mysql_fetch_assoc($request))
@@ -1016,7 +1017,7 @@ function loadMemberContext($user)
 		'buddies' => $buddy_list,
 		'title' => !empty($modSettings['titlesEnable']) ? $profile['usertitle'] : '',
 		'href' => $scripturl . '?action=profile;u=' . $profile['ID_MEMBER'],
-		'link' => '<a href="' . $scripturl . '?action=profile;u=' . $profile['ID_MEMBER'] . '" title="' . $txt[92] . ' ' . $profile['realName'] . '">' . $profile['realName'] . '</a>',
+		'link' => format_user_ratingbadge($profile['memberName'], $profile['rating_cache']).'<a href="' . $scripturl . '?action=profile;u=' . $profile['ID_MEMBER'] . '" title="' . $txt[92] . ' ' . $profile['realName'] . '">' . $profile['memberName'] . '</a>',
 		'email' => &$profile['emailAddress'],
 		'hide_email' => $profile['emailAddress'] == '' || (!empty($modSettings['guest_hideContacts']) && $user_info['is_guest']) || (!empty($profile['hideEmail']) && !empty($modSettings['allow_hideEmail']) && !allowedTo('moderate_forum') && $ID_MEMBER != $profile['ID_MEMBER']),
 		'email_public' => (empty($profile['hideEmail']) || empty($modSettings['allow_hideEmail'])) && (empty($modSettings['guest_hideContacts']) || !$user_info['is_guest']),
