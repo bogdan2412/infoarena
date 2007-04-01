@@ -6,11 +6,6 @@
 // Here is the essential configuration. You only need to modify this
 // to get it working.
 
-// Enable this when working on your own local copy. It gives you a few
-// debugging & profiling tools. Additionally, it disables Google Analytics
-// or other external resources.
-define("IA_DEVELOPMENT_MODE", true);
-
 // This is the subversion checkout directory. include trailing slash.
 define("IA_ROOT_DIR", '--write-me-IA_ROOT_DIR--');
 
@@ -38,6 +33,11 @@ define("IA_URL_PREFIX", "--write-me-IA_URL_PREFIX--");
 // Congratulations! You're done with the essential configuration.
 // --------------------------------------------------------------
 // There are some more settings to adjust but they are optional.
+
+// Enable this when working on your own local copy. It gives you a few
+// debugging & profiling tools. Additionally, it disables Google Analytics
+// or other external resources.
+define("IA_DEVELOPMENT_MODE", true);
 
 // Determine if script is runing in an HTTP environment. Otherwise it is
 // probably running in CLI mode. Don't change it.

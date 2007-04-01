@@ -26,7 +26,8 @@ require_once(IA_ROOT_DIR."common/db/round.php");
 function security_query($user, $action, $object) {
     list($group, $subaction) = explode('-', $action, 2);
 
-    log_assert(is_array($object) || is_null($object), '$object must be an array or null');
+    log_assert(is_array($object) || is_null($object),
+               '$object must be an array or null');
     // Log security checking.
     $username = getattr($user, 'username', 'null');
     $usersec = getattr($user, 'security_level', 'anonymous');
@@ -260,7 +261,7 @@ function security_attach($user, $action, $attach) {
         }
         $action = $newaction;
     }
-   
+
     // Speed hack: avatars are always visible. This is good.
     if ($action == 'attach-download' && $att_name = 'avatar' &&
             strstr($att_page, IA_USER_TEXTBLOCK_PREFIX) === $att_page) {
@@ -393,7 +394,7 @@ function security_round($user, $action, $round) {
     switch ($action) {
         case 'simple-view':
             return true;
-        
+
         case 'round-view-tasks':
             return $round['state'] != 'waiting' || $is_admin;
 
@@ -433,8 +434,9 @@ function security_macro($user, $action, $args) {
     $usersec = getattr($user, 'security_level', 'anonymous');
 
     switch ($action) {
-        case 'macro-debug':
         case 'macro-grep':
+            return true;
+        case 'macro-debug':
         case 'macro-remotebox':
             // only administrators can execute these macros 
             return $usersec == 'admin';
