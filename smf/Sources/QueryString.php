@@ -424,9 +424,6 @@ function validate_unicode__recursive($var)
 function ob_sessrewrite($buffer) {
 	global $scripturl, $modSettings, $user_info, $context;
 
-	// disabled for infoarena integration
-	return $buffer;
-
 	// If $scripturl is set to nothing, or the SID is not defined (SSI?) just quit.
 	if ($scripturl == '' || !defined('SID'))
 		return $buffer;
