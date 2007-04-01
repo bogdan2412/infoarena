@@ -1,6 +1,6 @@
 <?php
 
-// Hacked template to integrate in infoarena 2 
+// Hacked template to integrate in infoarena
 
 // Version: 1.1; index
 

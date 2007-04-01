@@ -5,12 +5,11 @@
 // module as it clashes with SMF's db_* functions.
 // FIXME: Find a better hack
 if (defined("IA_FROM_SMF")) {
-    return;
+    require_once(IA_ROOT_DIR."common/db/db_smf_mysql.php");
 }
-
-// We currently use mysql
-// This also connects to mysql server
-require_once(IA_ROOT_DIR."common/db/db_mysql.php");
+else {
+    require_once(IA_ROOT_DIR."common/db/db_mysql.php");
+}
 
 // Executes query, fetches the all result rows
 function db_fetch_all($query) {
@@ -217,6 +216,50 @@ function news_count($prefix = null) {
                       db_escape($prefix));
     $tmp = db_fetch($query);
     return $tmp['cnt'];
+}
+
+// Quotes a variable so it can be safely placed inside an SQL query.
+// This will surround strings with quotes and leave integers alone.
+//
+// NOTE: this function is always safe to concat inline.
+function db_quote($arg) {
+    if (is_null($arg)) {
+        return 'NULL';
+    } else if (is_string($arg)) {
+        return "'" . db_escape($arg) . "'";
+    } else if (is_numeric($arg)) {
+        // FIXME: is_numeric guarantees mysql safety?
+        // FIXME: does it also guarantee that mysql can parse it?
+        return (string)$arg;
+        //return "'" . db_escape((string)$arg) . "'";
+    } else if (is_bool($arg)) {
+        if ($arg) {
+            return 'TRUE';
+        } else {
+            return 'FALSE';
+        }
+    } else if (is_array($arg) || is_object($arg) || is_resource($arg) || is_callable($arg)) {
+        log_error("Can't db_quote complex objects");
+        return (string)$arg;
+    } else {
+        log_error("Unknown object type?");
+    }
+}
+
+// Executes query, fetches only FIRST result row
+function db_fetch($query) {
+    $result = db_query($query, true);
+    if ($result) {
+        $row = db_next_row($result);
+        if ($row === false) {
+            db_free($result);
+            return null;
+        }
+        db_free($result);
+        return $row;
+    } else {
+        return null;
+    }
 }
 
 ?>

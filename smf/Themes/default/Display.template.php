@@ -321,7 +321,9 @@ function template_main()
 			// Show avatars, images, etc.?
 			if (!empty($settings['show_user_images']) && empty($options['show_no_avatars']) && !empty($message['member']['avatar']['image']))
 				echo '
-								<div style="overflow: auto; width: 100%;">', $message['member']['avatar']['image'], '</div><br />';
+								<div style="overflow: hidden; width: 100%;">
+                                    <a href="', htmlentities($message['member']['avatar']['url']), '" title="',htmlentities($message['member']['name']), '">',
+                                    $message['member']['avatar']['image'], '</a></div><br />';
 
 			// Show their personal text?
 			if (!empty($settings['show_blurb']) && $message['member']['blurb'] != '')

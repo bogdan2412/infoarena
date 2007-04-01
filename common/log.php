@@ -1,12 +1,5 @@
 <?php
 
-// When including infoarena API from SMF, it is required to skip this
-// module as it clashes with SMF's log_* functions.
-// FIXME: Find a better hack, this is retarded.
-if (defined("IA_FROM_SMF")) {
-    return;
-}
-
 // This file contains a simple logging/debug api. You should always use these
 // functions instead of print, print_r and echo.
 //
@@ -125,15 +118,20 @@ function log_warn($message, $include_origin = false) {
     trigger_error_split($message, E_USER_WARNING);
 }
 
-// Use this when you hit a serious problem, and can't recover.
-// You might want to use log_warn() instead.
-function log_error($message, $include_origin = false) {
-    if ($include_origin) {
-        $message = format_message_backtrace($message);
+if (!defined("IA_FROM_SMF")) {
+    // SMF already defines `log_error`. The function signature is *almost*
+    // the same so why not use it? :) PHP style
+
+    // Use this when you hit a serious problem, and can't recover.
+    // You might want to use log_warn() instead.
+    function log_error($message, $include_origin = false) {
+        if ($include_origin) {
+            $message = format_message_backtrace($message);
+        }
+        // Splitting makes no sense for fatal errors because the first line makes
+        // make the script die().
+        trigger_error($message, E_USER_ERROR);
     }
-    // Splitting makes no sense for fatal errors because the first line makes
-    // make the script die().
-    trigger_error($message, E_USER_ERROR);
 }
 
 // Print a complete backtrace, using log_print.

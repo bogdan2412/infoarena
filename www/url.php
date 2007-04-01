@@ -189,10 +189,6 @@ function url_resetpass_confirm($username, $key) {
     return url_complex('confirm/'.$username, array('c' => $key));
 }
 
-function url_user_info($username) {
-    return url_complex('userinfo/' . $username, array());
-}
-
 function url_user_profile($username) {
     return url_complex(IA_USER_TEXTBLOCK_PREFIX . $username, array());
 }

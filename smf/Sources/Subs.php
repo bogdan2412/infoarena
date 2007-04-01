@@ -235,7 +235,7 @@ if (!defined('SMF'))
 */
 
 // Do a query.  Takes care of errors too.
-function db_query($db_string, $file, $line)
+function db_query($db_string, $file = "", $line = -1)
 {
 	global $db_cache, $db_count, $db_connection, $db_show_debug, $modSettings;
 
@@ -325,6 +325,12 @@ function db_query($db_string, $file, $line)
 	// Debugging.
 	if (isset($db_show_debug) && $db_show_debug === true)
 		$db_cache[$db_count]['t'] = array_sum(explode(' ', microtime())) - array_sum(explode(' ', $st));
+
+    // update infoarena execution stats
+    if (IA_DEVELOPMENT_MODE) {
+        global $execution_stats;
+        $execution_stats['queries']++;
+    }
 
 	return $ret;
 }
