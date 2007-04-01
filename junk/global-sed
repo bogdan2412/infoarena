@@ -1,0 +1,9 @@
+#! /bin/sh
+
+for f in *.php *.php.sample scripts/* \
+         */*.php */*.php.sample \
+         */*/*.php */*/*/*php ; do
+        echo $f
+        sed "$1" < $f > tmp
+        mv tmp $f
+done

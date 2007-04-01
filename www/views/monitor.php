@@ -133,7 +133,7 @@
     );
     $options = array(
         'css_class' => 'monitor',
-	'show_count' => true,
+        'show_count' => true,
         'display_entries' => $view['display_entries'],
         'total_entries' => $view['total_entries'],
         'first_entry' => $view['first_entry'],

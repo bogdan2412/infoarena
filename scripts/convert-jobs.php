@@ -5,6 +5,8 @@ require_once(dirname($argv[0]) . "/utilities.php");
 require_once(IA_ROOT_DIR."common/db/task.php");
 require_once(IA_ROOT_DIR."common/db/job.php");
 
+ini_set("memory_limit", "128M");
+
 db_connect();
 
 $query = "DROP TABLE IF EXISTS `ia_job_test`";
@@ -29,13 +31,13 @@ $job_count = job_get_count($filter);
 $jobs = job_get_range($filter, 0, $job_count);
 
 foreach ($jobs as $job) {
-    echo "Procesez job-ul ".$job['id']." -> ".$job['task_id']."...\n";
+    log_print("Procesez job-ul ".$job['id']." -> ".$job['task_id']."...");
     $job_id = $job['id'];
     $eval_log = $job['eval_log'];
     $task_id = $job['task_id'];
     if (!is_task_id($task_id)) {
         continue;
-   }
+    }
     $task_params = task_get_parameters($task_id);
     $test_count = $task_params['tests'];
     $test_groups = task_get_testgroups($task_params);
