@@ -122,13 +122,13 @@ function job_get_range_wheres($filters) {
 
     $wheres = array("TRUE");
     if (!is_null($task)) {
-        $wheres[] = sprintf("`task_id` = '%s'", db_escape($task));
+        $wheres[] = sprintf("`task`.`id` = '%s'", db_escape($task));
     }
     if (!is_null($user)) {
         $wheres[] = sprintf("`user`.`username` = '%s'", db_escape($user));
     }
     if (!is_null($round)) {
-        $wheres[] = sprintf("`round_id` = '%s'", db_escape($round));
+        $wheres[] = sprintf("`round`.id` = '%s'", db_escape($round));
     }
     if (!is_null($job_begin) && is_whole_number($job_begin)) {
         $wheres[] = sprintf("`job`.`id` >= '%s'", db_escape($job_begin));

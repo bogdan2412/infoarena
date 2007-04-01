@@ -1,6 +1,6 @@
 <?php
 require_once(IA_ROOT_DIR."common/db/job.php");
-require_once("job_filters.php");
+require_once(IA_ROOT_DIR."www/controllers/job_filters.php");
 
 function controller_reeval() {
     identity_require('job-reeval');

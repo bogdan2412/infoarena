@@ -1,78 +1,79 @@
-<?php
+    <?php
 
-require_once(IA_ROOT_DIR.'www/format/table.php');
-require_once(IA_ROOT_DIR.'www/format/format.php');
-require_once(IA_ROOT_DIR.'www/format/list.php');
-require_once(IA_ROOT_DIR."www/format/form.php");
+    require_once(IA_ROOT_DIR.'www/format/table.php');
+    require_once(IA_ROOT_DIR.'www/format/format.php');
+    require_once(IA_ROOT_DIR.'www/format/list.php');
+    require_once(IA_ROOT_DIR."www/format/form.php");
 
-include('header.php');
+    include('header.php');
 
-if (identity_can('job-reeval') && $view['total_entries'] <= IA_REEVAL_MAXJOBS) { 
+    if (identity_can('job-reeval') && $view['total_entries'] <= IA_REEVAL_MAXJOBS) { 
 
-    echo '<form enctype="multipart/form-data" action="'.htmlentities(url_reeval($view['filters'])).'" 
-           method="post" class="reeval" id="job_reeval">';
-    echo '<ul class="form hollyfix"><li id="field_submit">';
-    echo '<input type="submit" class="button important" value="Re-evalueaza!" id="form_reeval" />';
-    echo '</li></ul></form>';
-}
-
-echo '<h1>'.htmlentities($view['title']).'</h1>';
-
-$tabs = array();
-$selected = null;
-
-// my-jobs tab
-$user_filters = getattr($view['filters'], 'user');
-if (!identity_is_anonymous()) {
-    $tabs['mine'] = format_link(url_monitor(array('user' => $user_name)), 'Solutiile mele');
-    if ($user_name == $user_filters) {
-        $selected = 'mine';
+        echo '<form enctype="multipart/form-data" action="'.htmlentities(url_reeval($view['filters'])).'" 
+                   method="post" class="reeval" id="job_reeval" onsubmit="return confirm(\'Se vor reevalua '.
+                   htmlentities($view['total_entries']).' job-uri! Continuam?\')">';
+        echo '<ul class="form hollyfix"><li id="field_submit">';
+        echo '<input type="submit" class="button important" value="Re-evalueaza!" id="form_reeval" />';
+        echo '</li></ul></form>';
     }
-}
 
-// all-jobs tab
-$tabs['all'] = format_link(url_monitor(), 'Toate solutiile');
-if (is_null($selected)) {
-    $selected = 'all';
-}
+    echo '<h1>'.htmlentities($view['title']).'</h1>';
 
-// custom-user filters tab
-if ($user_filters && $user_name != $user_filters) {
-    $tabs['custom'] = format_link(url_monitor(array('user' => $user_name)),
-                                  'Trimise de "'.$user_filters.'"');
-    $selected = 'custom';
-}
+    $tabs = array();
+    $selected = null;
 
-if (1 < count($tabs)) {
-    // mark 'active' tab
-    $tabs[$selected] = array($tabs[$selected],
-                             array('class' => 'active'));
-    // display tabs
-    echo format_ul($tabs, 'htabs');
-}
-
-if (!$jobs) {
-    print "<div class=\"notice\">Nici o solutie in coada de evaluare</div>";
-} else {
-    // For the score column.
-    function format_state($row) {
-        $url = url_job_detail($row['id']);
-        if ($row['status'] == 'done') {
-            $msg = htmlentities(sprintf("%s: %s puncte",
-                    $row['eval_message'], $row['score']));
-            $msg = "<span style=\"job-status-done\">$msg</span>";
-            return format_link($url, $msg, false);
+    // my-jobs tab
+    $user_filters = getattr($view['filters'], 'user');
+    if (!identity_is_anonymous()) {
+        $tabs['mine'] = format_link(url_monitor(array('user' => $user_name)), 'Solutiile mele');
+        if ($user_name == $user_filters) {
+            $selected = 'mine';
         }
-        if ($row['status'] == 'processing') {
-            // FIXME: animation? :)
-            $msg = '<span class="job-status-processing">se evalueaza</span>';
-            return format_link($url, $msg, false);
-        }
-        if ($row['status'] == 'waiting') {
-            $msg = '<span style="job-stats-waiting">in asteptare</span>';
-            return format_link($url, $msg, false);
-        }
-        log_error("Invalid job status");
+    }
+
+    // all-jobs tab
+    $tabs['all'] = format_link(url_monitor(), 'Toate solutiile');
+    if (is_null($selected)) {
+        $selected = 'all';
+    }
+
+    // custom-user filters tab
+    if ($user_filters && $user_name != $user_filters) {
+        $tabs['custom'] = format_link(url_monitor(array('user' => $user_name)),
+                                      'Trimise de "'.$user_filters.'"');
+        $selected = 'custom';
+    }
+
+    if (1 < count($tabs)) {
+        // mark 'active' tab
+        $tabs[$selected] = array($tabs[$selected],
+                                 array('class' => 'active'));
+        // display tabs
+        echo format_ul($tabs, 'htabs');
+    }
+
+    if (!$jobs) {
+        print "<div class=\"notice\">Nici o solutie in coada de evaluare</div>";
+    } else {
+        // For the score column.
+        function format_state($row) {
+            $url = url_job_detail($row['id']);
+            if ($row['status'] == 'done') {
+                $msg = htmlentities(sprintf("%s: %s puncte",
+                        $row['eval_message'], $row['score']));
+                $msg = "<span style=\"job-status-done\">$msg</span>";
+                return format_link($url, $msg, false);
+            }
+            if ($row['status'] == 'processing') {
+                // FIXME: animation? :)
+                $msg = '<span class="job-status-processing">se evalueaza</span>';
+                return format_link($url, $msg, false);
+            }
+            if ($row['status'] == 'waiting') {
+                $msg = '<span style="job-stats-waiting">in asteptare</span>';
+                return format_link($url, $msg, false);
+            }
+            log_error("Invalid job status");
     }
 
     // For the task column.
