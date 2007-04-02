@@ -73,10 +73,18 @@ function safe_job_submit($args, $user) {
             job_create($args['task_id'], $args['round_id'], $user['id'],
                     $args['compiler_id'], $args['solution']);
         } else {
-            foreach (task_get_parent_rounds($args['task_id']) as $round_id) {
-                if (security_query($user, 'round-submit', round_get($round_id))) {
-                    job_create($args['task_id'], $round_id, $user['id'],
-                            $args['compiler_id'], $args['solution']);
+            $parent_rounds = task_get_parent_rounds($args['task_id']);
+            if (count($parent_rounds) === 0) {
+                // some jobs just don't have a round
+                job_create($args['task_id'], '', $user['id'],
+                        $args['compiler_id'], $args['solution']);
+            }
+            else {
+                foreach ($parent_rounds as $round_id) {
+                    if (security_query($user, 'round-submit', round_get($round_id))) {
+                        job_create($args['task_id'], $round_id, $user['id'],
+                                $args['compiler_id'], $args['solution']);
+                    }
                 }
             }
         }

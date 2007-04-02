@@ -359,6 +359,9 @@ function security_task($user, $action, $task) {
             if ($usersec == 'anonymous') {
                 return false;
             }
+            if ($is_owner || $is_admin) {
+                return true;
+            }
             $is_running = false;
             $rounds = task_get_parent_rounds($task['id']);
             foreach ($rounds as $round_id) {
@@ -369,7 +372,7 @@ function security_task($user, $action, $task) {
                 $is_running = true;
                 break;
             }
-            return ($task['hidden'] == false && $is_running) || $is_owner || $is_admin;
+            return ($task['hidden'] == false && $is_running);
 
         default:
             log_error('Invalid task action: '.$action);

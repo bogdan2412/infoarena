@@ -42,9 +42,10 @@ SELECT `job`.`id`, `job`.`user_id`, `job`.`task_id`, `job`.`round_id`,
        `job`.`eval_message`, `job`.`score`, `job`.`file_contents`
     FROM `ia_job` AS `job`
     INNER JOIN `ia_user` AS `user` ON `user`.`id` = `job`.`user_id`
-    INNER JOIN `ia_round` AS `round` ON `round`.`id` = `job`.`round_id`
+    LEFT JOIN `ia_round` AS `round` ON `round`.`id` = `job`.`round_id`
     WHERE (`status` != 'done')
       AND ((`round`.`allow_eval` = TRUE) OR
+           (`round`.`id` IS NULL) OR
            (`user`.`security_level` = 'admin'))
     ORDER BY `submit_time` ASC LIMIT 1
 SQL;
@@ -162,8 +163,8 @@ function job_get_range_wheres($filters) {
     if (!is_null($eval_msg)) {
         $wheres[] = sprintf("`job`.`eval_message` LIKE '%s%%'", db_escape($eval_msg));
     }
-    if (!is_null($task_hidden)) {
-        $wheres[] = sprintf("`task`.`hidden` = '%s'", db_escape($task_hidden));
+    if (!is_null($task_hidden) && is_whole_number($task_hidden)) {
+        $wheres[] = sprintf("`task`.`hidden` = %s", db_escape($task_hidden));
     }
 
     return $wheres;
