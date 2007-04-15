@@ -180,9 +180,9 @@ a.rating-badge-1:hover, a.rating-badge-2:hover, a.rating-badge-3:hover, a.rating
     border: 1px solid gray;
     text-decoration: none;
 }
-a.rating-badge-3:link { color: #00a900; }
-a.rating-badge-2:link { color: #ddcc00; }
-a.rating-badge-1:link { color: #ee0000; }
+a.rating-badge-3:link, a.rating-badge-3:visited { color: #00a900; }
+a.rating-badge-2:link, a.rating-badge-2:visited { color: #ddcc00; }
+a.rating-badge-1:link, a.rating-badge-1:visited { color: #ee0000; }
 a.rating-badge-3:hover { border-color: #00a900; }
 a.rating-badge-2:hover { border-color: #ddcc00; }
 a.rating-badge-1:hover { border-color: #ee0000; }
