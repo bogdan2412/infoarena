@@ -49,7 +49,7 @@
             log_print('User program compile error');
             log_print($compiler_messages);
             $result['message'] = "Eroare de compilare";
-            $result['log'] = "Eroare de compilare:\n" . $compiler_messages;
+            $result['log'] = "Eroare de compilare in evaluator:\n" . $compiler_messages;
             return $result;
         } else {
             $result['log'] = "Compilare:\n" . $compiler_messages . "\n";
