@@ -10,18 +10,45 @@ CREATE PROCEDURE convert_round(test_run BOOLEAN) BEGIN
         `title` varchar(64) collate latin1_general_ci default NULL,
         `page_name` varchar(64) collate latin1_general_ci default NULL,
         `state` enum('running','waiting','complete') collate latin1_general_ci NOT NULL default 'waiting',
-        `start_time` datetime default NULL,
         `type` enum('classic','archive') collate latin1_general_ci NOT NULL,
-        `allow_eval` BOOLEAN NOT NULL default TRUE,
+        `start_time` datetime default NULL,
+        `end_time` datetime default NULL,
+        `rating_timestamp` datetime DEFAULT NULL,
+        `allow_eval` BOOLEAN NOT NULL,
+        `allow_submit` BOOLEAN NOT NULL,
+        `affects_rating` BOOLEAN NOT NULL,
         PRIMARY KEY  (`id`)
     );
 
+    -- Copy data.
     INSERT INTO `ia_round_new` (`id`, `title`, `page_name`,
-            `state`, `start_time`, `type`, `allow_eval`)
-        SELECT `id`, `title`, `page_name`, `state`, `start_time`, `type`, 1
-        FROM `ia_round`;
+            `state`, `type`, `start_time`,
+            `end_time`, `rating_timestamp`, `allow_eval`, `allow_submit`, `affects_rating`)
+        SELECT `id`, `title`, `page_name`, `state`, `type`,`start_time`,
+            DATE_ADD(`round`.`start_time`, INTERVAL 
+                (SELECT `param`.`value` FROM `ia_parameter_value` AS `param`
+                    WHERE `param`.`object_type` = 'round'
+                        AND `param`.`object_id` = `round`.`id`
+                        AND `param`.`parameter_id` = 'duration'
+                    LIMIT 1) HOUR) AS `end_time`,
+            (SELECT FROM_UNIXTIME(`param`.`value`) FROM `ia_parameter_value` AS `param`
+                WHERE `param`.`object_type` = 'round'
+                    AND `param`.`object_id` = `round`.`id`
+                    AND `param`.`parameter_id` = 'rating_timestamp'
+                LIMIT 1) AS `rating_timestamp`,
+            TRUE as `allow_eval`,
+            `id` = 'arhiva' AS `allow_submit`,
+            (SELECT `param`.`value` FROM `ia_parameter_value` AS `param`
+                WHERE `param`.`object_type` = 'round'
+                    AND `param`.`object_id` = `round`.`id`
+                    AND `param`.`parameter_id` = 'rating_update'
+                LIMIT 1) AS `affects_rating`
+        FROM `ia_round` AS `round`;
 
+    -- Replace old table, delete from ia_parameter_value
     IF NOT test_run THEN
+        DELETE FROM `ia_parameter_value`
+            WHERE `object_type` = 'round';
         DROP TABLE `ia_round`;
         RENAME TABLE `ia_round_new` TO `ia_round`;
     END IF;
@@ -63,13 +90,7 @@ CREATE PROCEDURE convert_job(test_run BOOLEAN) BEGIN
                 ON `round`.`id` = `round_task`.`round_id`
                 AND `round`.`type` = 'classic'
                 AND `job`.`submit_time` > `round`.`start_time`
-                AND `job`.`submit_time` < 
-                    DATE_ADD(`round`.`start_time`, INTERVAL 
-                        (SELECT `param`.`value` FROM `ia_parameter_value` AS `param`
-                            WHERE `param`.`object_type` = 'round'
-                                AND `param`.`object_id` = `round`.`id`
-                                AND `param`.`parameter_id` = 'duration'
-                            LIMIT 1) HOUR)
+                AND `job`.`submit_time` < `round`.`end_time`
             ORDER BY `submit_time` ASC;
 
     -- Assign jobs with null round_id to archive.                    
@@ -180,8 +201,8 @@ CREATE PROCEDURE convert_score(test_run BOOLEAN) BEGIN
     END IF;
 END //
 
-CALL convert_round(0) //
-CALL convert_job(0) //
+--CALL convert_round(0) //
+--CALL convert_job(0) //
 --CALL convert_score(1) //
 
 DROP PROCEDURE convert_round //
