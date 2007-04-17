@@ -61,6 +61,11 @@ db_query("DELETE ia_job FROM ia_job ".
 $del_job_count = db_query_value("SELECT COUNT(*) FROM ia_job") - 100;
 db_query("DELETE FROM ia_job ORDER BY RAND() LIMIT $del_job_count");
 
+// Delete orphan job tests
+db_query("DELETE ia_job_test FROM ia_job_test ".
+        "LEFT JOIN ia_job on ia_job_test.job_id = ia_job.id ".
+        "WHERE (ia_job.id IS NULL)");
+
 // Delete private pages
 db_query("DELETE FROM `ia_textblock` WHERE security='private'");
 
