@@ -87,7 +87,7 @@ function tag_exists($obj, $obj_id, $tag_name) {
     return true;
 }
 
-function tag_to_object($obj, $obj_id, $tag_name) {
+function tag_add($obj, $obj_id, $tag_name) {
     log_assert(is_taggable($obj));
     log_assert(is_tag_name($tag_name));
     if (tag_exists($obj, $obj_id, $tag_name)) {

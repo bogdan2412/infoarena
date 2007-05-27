@@ -4,6 +4,7 @@ require_once(IA_ROOT_DIR."common/db/db.php");
 require_once(IA_ROOT_DIR."common/db/smf.php");
 require_once(IA_ROOT_DIR."common/user.php");
 require_once(IA_ROOT_DIR."common/cache.php");
+require_once(IA_ROOT_DIR."common/db/tags.php");
 
 // Add an user to the cache, or update if already there.
 // Nothing happens if null is passed.
@@ -250,6 +251,14 @@ function user_submitted_rounds($user_id) {
     $query = sprintf($query, $user_id);
 
     return db_fetch_all($query);
+}
+
+function user_add_tag($user_id, $tag_name) {
+    tag_add("user", $user_id, $tag_name);
+}
+
+function user_get_tags($tag_names) {
+    return tag_get_objects("user", $tag_names);
 }
 
 ?>
