@@ -33,8 +33,8 @@ define("IA_RE_NORMAL_PAGE_NAME", '
 // Short identifiers. FIXME: limit length here too?
 define("IA_RE_ROUND_ID", '[a-z0-9][a-z0-9_\-\.]*');
 define("IA_RE_TASK_ID", '(?-i:[a-z0-9][a-z0-9_\-\.]*)');
+define("IA_RE_TAG_NAME", '[_@a-z0-9][a-z0-9_\-\.\@]*');
 define("IA_RE_SCORE_NAME", '[a-z0-9][a-z0-9_\-\.]*');
-
 define("IA_RE_USER_NAME", '[_@a-z0-9][a-z0-9_\-\.\@]*');
 
 // Valid email. A complete check is not possible, see
@@ -135,6 +135,17 @@ function is_user_name($user_name) {
 // Check user full name (John Smith sr.)
 function is_user_full_name($user_full_name) {
     return preg_match('/^'.IA_RE_USER_FULL_NAME.'$/xi', $user_full_name);
+}
+
+// Check tag name
+function is_tag_name($tag_name) {
+    return preg_match('/^'.IA_RE_TAG_NAME.'$/xi', $tag_name) &&
+           strlen($tag_name) < 64;
+}
+
+// Taggable objects
+function is_taggable($obj) {
+    return $obj == 'user' || $obj == 'task' || $obj == 'round';
 }
 
 // Cached version of create_function_cached.

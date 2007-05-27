@@ -4,12 +4,14 @@ require_once(IA_ROOT_DIR.'www/wiki/wiki.php');
 require_once(IA_ROOT_DIR.'www/format/format.php');
 require_once(IA_ROOT_DIR.'www/format/list.php');
 
+require_once(IA_ROOT_DIR.'common/tags.php');
+
 $username = $user['username'];
 
 // site header
 include('header.php');
 
-// display user info accross all user profile pages
+// display user info across all user profile pages
 echo wiki_include($template_userheader, array('user' => $username));
 
 // show profile tabs
