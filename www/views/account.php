@@ -60,15 +60,6 @@ if (array_key_exists('security_level', $form_values)) {
     </ul>
 </fieldset>
 
-<!-- Hack for valid html (autocomplete is not in the spec). -->
-<script language="JavaScript" type="text/javascript">
-<!--
-    document.getElementById("form_passwordold").setAttribute("autocomplete", "off");
-    document.getElementById("form_password").setAttribute("autocomplete", "off");
-    document.getElementById("form_password2").setAttribute("autocomplete", "off");
--->
-</script>
-
 <fieldset>
     <legend>Schimba avatar</legend>
     <ul class="form">
