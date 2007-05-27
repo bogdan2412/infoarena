@@ -62,11 +62,6 @@ div.loading img {
     border: 1px dotted silver;
 }
 
-table td.number, table th.number {
-    text-align: right;
-}
-
-/* sidebar2 (right) */
 #sidebar2 {
     float: right;
     width: 15em;
@@ -1107,3 +1102,45 @@ table.registered-users {
     width: 95%;
 }
 
+/* dataset filtering form */
+
+.dataset-filters {
+    background: #efd;
+    border: 1px solid olive;
+    margin: 3pt;
+    padding: 3pt;
+    font-size: x-small;
+}
+
+ul.filters {
+    height: 150px;
+    overflow: auto;
+}
+
+ul.filters li.filter {
+    width: 40%;
+    float: left;
+    list-style-type: none;
+    vertical-align: middle;
+    margin: .25em 0 .25em 2em;
+    white-space: nowrap;
+}
+
+ul.filters li.filter label {
+    width: 8em;
+    overflow: hidden;
+    float: left;
+}
+
+ul.filters li.filter select.op {
+    width: 7em;
+    text-align: center;
+}
+
+ul.filters li.filter input {
+    width: 14em;
+}
+
+ul.filters li.submit {
+    clear: left;
+}

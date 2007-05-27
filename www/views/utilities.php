@@ -100,19 +100,4 @@ function view_form_field_tr($field_info, $field_name) {
     $return .= "<tr id=\"field_$field_name\">\n$row</tr>\n";
 }
 
-// Formats a simple form text field
-// FIXME: obliterate
-function view_form_text_field($field, $info) {
-    global $form_values;
-    global $form_errors;
-    return format_form_field(array(
-            'type' => 'string',
-            'default' => '',
-            'name' => $info
-        ), $field,
-        getattr($form_values, $field),
-        getattr($form_errors, $field)
-    );
-}
-
 ?>

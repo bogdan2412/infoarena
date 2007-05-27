@@ -164,6 +164,16 @@ function create_function_cached($args, $code) {
     return $_cache[$key];
 }
 
+// Unroll iterator, stores result in array
+function unroll(Iterator $iterator) {
+    $collect = array();
+    foreach ($iterator as $entry) {
+        $collect[] = $entry;
+    }
+
+    return $collect;
+}
+
 // Checks system requirements.
 // This will fail early if something is missing.
 function check_requirements()

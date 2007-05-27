@@ -227,3 +227,32 @@ span.star-rating {
     white-space: nowrap;
 }
 
+/* tables */
+table th .sort-field a {
+    color: black;
+    font-weight: normal;
+    padding: 0 .3em 0 .3em;
+    text-decoration: none;
+}
+
+table th .sort-field a:hover {
+    color: white;
+    background-color: #006699;
+}
+
+table th .sort-field-active a {
+    color: white;
+    background-color: #006699;
+}
+
+table th .sort-field-active a:hover {
+    color: #006699;
+    background-color: white;
+}
+
+/* datagrids */
+
+td.number, th.number, td.date, th.date {
+    text-align: right;
+}
+

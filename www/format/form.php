@@ -5,7 +5,7 @@ require_once(IA_ROOT_DIR.'www/format/format.php');
 // Validate field information
 // Form information is an array with the following:
 //
-//      'type': integer, float, string, bool, enum, set
+//      'type': integer, float, string, bool, enum, set, datetime
 // Enum and set also require a set of possible values. The different
 // between them is that set can take multiple values. Bool looks *very*
 // similar to an enum.
@@ -127,19 +127,24 @@ function format_form_field_inner_editor(
         }
 
         // Generate html
-        $res = format_open_tag('select', $select_attribs);
-        foreach ($values as $val => $content) {
-            // Format and append option tags.
-            $option_attribs = array();
-            $option_attribs['value'] = $val;
-            if (in_array($val, $field_value)) {
-                $option_attribs['selected'] = 'selected';
-            }
-            $res .= format_tag('option', $content, $option_attribs);
-        }
-        $res .= '</select>';
+        $res = format_select_box($values, $field_value, $select_attribs);
         return $res;
     }
+}
+
+// Format SELECT tag
+function format_select_box($options, $selected_options = array(), $tag_attribs = array()) {
+    $html_buffer = format_open_tag('select', $tag_attribs);
+    foreach ($options as $val => $content) {
+        $option_attribs = array('value' => $val);
+        if (in_array($val, $selected_options)) {
+            $option_attribs['selected'] = 'selected';
+        }
+        $html_buffer .= format_tag('option', $content, $option_attribs);
+    }
+    $html_buffer .= '</select>';
+
+    return $html_buffer;
 }
 
 // Format a certain form field. Returns something like

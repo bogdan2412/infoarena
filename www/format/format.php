@@ -14,6 +14,9 @@ function format_attribs($attribs = array())
 
     $result = "";
     foreach ($attribs as $k => $v) {
+        if (is_null($v))
+            continue;
+
         log_assert(preg_match("/[a-z][a-z_0-9]*/", $k), "Invalid attrib '$k'");
         if ($result == "") {
             $result .= "$k=\"".htmlentities($v)."\"";
@@ -118,8 +121,7 @@ function format_user_link($user_name, $user_fullname, $rating = null) {
     }
 
     $rbadge = format_user_ratingbadge($user_name, $rating);
-    return format_link(url_user_profile($user_name), $rbadge.$user_fullname,
-                       true, $attr);
+    return $rbadge.format_link(url_user_profile($user_name), $user_fullname, false, $attr);
 }
 
 // Format a tiny user link, with a 16x16 avatar.

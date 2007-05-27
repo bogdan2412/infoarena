@@ -165,9 +165,7 @@ function log_var_dump($var)
 // print_r to the log.
 function log_print_r($var)
 {
-    ob_start();
-    print_r($var);
-    $msg = ob_get_clean();
+    $msg = print_r($var, true);
     log_print($msg);
 }
 
