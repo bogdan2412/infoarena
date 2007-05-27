@@ -3,6 +3,7 @@
 
 require_once(dirname($argv[0]) . "/utilities.php");
 require_once(IA_ROOT_DIR.'common/schema.php');
+require_once(IA_ROOT_DIR.'common/array_path.php');
 
 test_cleanup();
 test_prepare();
@@ -17,26 +18,45 @@ function test_array_validate($data, $schema, $expected_errors)
     $passed = true;
     $real_errors = array_validate($data, $schema);
     for ($i = 0; $i < count($real_errors); ++$i) {
-        if ($i >= count($expected_errors)) {
-            log_print("ERROR: Unexpected error {$real_errors[$i]}.");
-            $passed = false;
-            continue;
+        $real_errors[$i] = $real_errors[$i]['path'];
+    }
+
+    // PHP is retarded and needs a strictly positive number of elements.
+    if (count($expected_errors)) {
+        $matched = array_fill(0, count($expected_errors), false);
+    } else {
+        $matched = array();
+    }
+
+    for ($i = 0; $i < count($real_errors); ++$i) {
+        $found = false;
+        for ($j = 0; $j < count($expected_errors); ++$j) {
+            if ($matched[$j]) {
+                continue;
+            }
+            if (count($real_errors[$i]) == count($expected_errors[$j])) {
+                for ($k = 0; $k < count($real_errors[$i]); ++$k) {
+                    if ($real_errors[$i][$k] != $expected_errors[$j][$k]) {
+                        break;
+                    }
+                }
+                if ($k == count($real_errors[$i])) {
+                    $matched[$j] = $found = true;
+                    break;
+                }
+            }
         }
-        if (count($expected_errors) > 0 && $expected_errors[$i][0] == '/') {
-            if (!preg_match($expected_errors[$i], $real_errors[$i])) {
-                log_print("ERROR: Resulting error `{$real_errors[$i]}` didn't match expected pattern `{$expected_errors[$i]}`.");
-                $passed = false;
-            }
-        } else {
-            if ($expected_errors[$i] !== $real_errors[$i]) {
-                log_print("ERROR: Resulting error `{$real_errors[$i]}` different from `{$expected_errors[$i]}`.");
-                $passed = false;
-            }
+        if (!$found) {
+            log_print("ERROR: Unmatched real error path " . array_path_join($real_errors[$i]));
+            $passed = false;
         }
     }
-    for (; $i < count($expected_errors); ++$i) {
-        log_print("ERROR: Missing error with pattern {$expected_errors[$i]}.");
-        $passwd = false;
+    for ($j = 0; $j < count($expected_errors); ++$j) {
+        if (!$matched[$j]) {
+            log_print("ERROR: Unmatched expected error path " .
+                    array_path_join($expected_errors[$i]));
+            $passed = false;
+        }
     }
     if ($passed) {
         log_print("OK: Test passed.");
@@ -64,7 +84,7 @@ test_array_validate(
     ),
     $schema,
     array(
-        '[1]: Not a string.',
+        array(1),
     )
 );
 
@@ -99,9 +119,9 @@ test_array_validate(
     ),
     $schema,
     array(
-        '.email: Doesn\'t match pattern /@/.',
-        '.age: Not an integer.',
-        '/\.birth: Not a date.*/',
+        array('email'),
+        array('age'),
+        array('birth'),
     )
 );
 
@@ -135,9 +155,9 @@ test_array_validate(
     ),
     $schema,
     array(
-        '[1].naem: Key naem undefined.',
-        '[1].name: Required key name missing.',
-        '[2].mail: Key mail undefined.',
+        array(1, 'naem'),
+        array(1, 'name'),
+        array(2, 'mail'),
     )
 );
 
@@ -185,8 +205,8 @@ test_array_validate(
     ),
     $schema,
     array(
-        '.employees[0].code: Not an integer.',
-        '.employees[1].mail: Key mail undefined.',
+        array('employees', 0, 'code'),
+        array('employees', 1, 'mail'),
     )
 );
 
@@ -236,7 +256,8 @@ test_array_validate(
         ),
     ),
     $schema,
-    array()
+    array(
+    )
 );
 test_array_validate(
     array(
@@ -260,14 +281,14 @@ test_array_validate(
     ),
     $schema,
     array(
-        '[0].email: Doesn\'t match pattern /@/.',
-        '[0].password: Length out of range, 6 < 8.',
-        '[0].age: Not an integer.',
-        '[0].blood: Invalid value \'a\'',
-        "[1]['given-name']: Key given-name undefined.",
-        "[1]['family-name']: Key family-name undefined.",
-        "[1].age: Value out of range, 15 < 18.",
-        "/\[1\]\.birth: Not a date/",
-        "[1].name: Required key name missing.",
+        array(0, 'email'),
+        array(0, 'password'),
+        array(0, 'age'),
+        array(0, 'blood'),
+        array(1, 'given-name'),
+        array(1, 'family-name'),
+        array(1, 'age'),
+        array(1, 'birth'),
+        array(1, 'name'),
     )
 );
