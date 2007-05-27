@@ -26,7 +26,7 @@ function array_validate($data, $schema)
 {
     $errors = array();
 
-    // Default type is str. 
+    // Default type is str.
     $type = getattr($schema, 'type', 'str');
 
     if ($type == 'seq') {
@@ -47,7 +47,7 @@ function array_validate($data, $schema)
             ++$index;
             $value_errors = array_validate($v, $value_schema);
             foreach ($value_errors as $value_error) {
-                $errors[] = array_path_prepend($k, $value_error); 
+                $errors[] = array_path_prepend($k, $value_error);
             }
         }
         return $errors;
