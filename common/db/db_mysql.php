@@ -56,7 +56,7 @@ function db_affected_rows() {
 function db_query($query, $unbuffered = false) {
     global $dbLink;
 
-    db_keepalive();
+//    db_keepalive();
 
     // Disable unbuffered queries.
     if (!IA_DB_MYSQL_UNBUFFERED_QUERY) {
@@ -72,7 +72,7 @@ function db_query($query, $unbuffered = false) {
 
     if (!$result) {
         log_print("Query: '$query'");
-//        log_error("MYSQL error: ".mysql_error($dbLink));
+        log_error("MYSQL error: ".mysql_error($dbLink));
     } else {
         // Print query info.
         //log_backtrace();
