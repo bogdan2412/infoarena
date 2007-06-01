@@ -15,6 +15,16 @@ function db_connect() {
     }
 }
 
+// Keeps the database link up and running
+function db_keepalive() {
+    global $dbLink;
+
+    while (!$dbLink) {
+        db_connect();
+        sleep(30);
+    }
+}
+
 // Escapes a string to be safely included in a query.
 function db_escape($str) {
     return mysql_real_escape_string($str);
@@ -46,6 +56,8 @@ function db_affected_rows() {
 function db_query($query, $unbuffered = false) {
     global $dbLink;
 
+    db_keepalive();
+
     // Disable unbuffered queries.
     if (!IA_DB_MYSQL_UNBUFFERED_QUERY) {
         $unbuffered = false;
@@ -60,7 +72,7 @@ function db_query($query, $unbuffered = false) {
 
     if (!$result) {
         log_print("Query: '$query'");
-        log_error("MYSQL error: ".mysql_error($dbLink));
+//        log_error("MYSQL error: ".mysql_error($dbLink));
     } else {
         // Print query info.
         //log_backtrace();

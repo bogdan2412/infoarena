@@ -12,6 +12,7 @@ function controller_monitor() {
     $view['filters'] = job_get_filters();
     $view['user_name'] = getattr($identity_user, 'username');
     // First row.
+    // FIXME: shouldn't this constant be in config.php? 
     $options = pager_init_options(array('display_entries' => 25));
 
     $view['title'] = 'Monitorul de evaluare';

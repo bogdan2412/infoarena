@@ -1,6 +1,7 @@
 <?php
 require_once(IA_ROOT_DIR.'www/views/utilities.php');
 include('header.php');
+include('tags_header.php');
 ?>
 
 <h1><?= htmlentities($view['title']) ?></h1>
@@ -22,7 +23,7 @@ include('header.php');
 
 </div>
 
-<form enctype="multipart/form-data" action="<?= htmlentities($action) ?>" method="post" class="profile clear">
+<form enctype="multipart/form-data" action="<?= htmlentities($action) ?>" method="post" class="profile clear" <?= tag_form_event() ?>>
 <fieldset>
     <legend><img src="<?= htmlentities(url_static('images/icons/key.gif')) ?>" alt="!" /> Informatii legate de securitate</legend>
     <ul class="form">
@@ -43,6 +44,12 @@ include('header.php');
             <?= ferr_span('password2') ?>
             <input type="password" name='password2' id="form_password2" />
         </li>
+        <li>
+            <label for='form_tags'>Tag-uri</label>
+            <?= ferr_span('tags') ?>
+            <?= tag_input_box() ?>
+        </li>
+
 <?
 if (array_key_exists('security_level', $form_values)) {
     echo view_form_field_li(array(

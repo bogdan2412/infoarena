@@ -1,5 +1,7 @@
 <?php
 
+require_once(IA_ROOT_DIR."common/tags.php");
+
 // validates registration input data (wrapper for validate_data)
 function validate_register_data($data) {
     return validate_user_data($data, true, null);
@@ -112,6 +114,8 @@ function validate_user_data($data, $register, $user = null) {
             $errors['security_level'] = "Nivel de securitate invalid";
         }
     }
+
+    validate_tag_data($data, $errors);
 
     return $errors;
 }

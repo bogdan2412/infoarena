@@ -253,12 +253,4 @@ function user_submitted_rounds($user_id) {
     return db_fetch_all($query);
 }
 
-function user_add_tag($user_id, $tag_name) {
-    tag_add("user", $user_id, $tag_name);
-}
-
-function user_get_tags($tag_names) {
-    return tag_get_objects("user", $tag_names);
-}
-
 ?>

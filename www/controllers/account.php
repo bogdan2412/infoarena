@@ -65,6 +65,7 @@ function controller_account($username = null) {
         $data['full_name'] = trim(request('full_name', $user['full_name']));
         $data['email'] = trim(request('email', $user['email']));
         $data['newsletter'] = request('newsletter', false) ? 1 : 0;
+        $data['tags'] = trim(request('tags'));
 
         // Security level, only if allowed.
         $data['security_level'] = request('security_level', $user['security_level']);
@@ -142,6 +143,7 @@ function controller_account($username = null) {
             $new_user['email'] = $data['email'];
             $new_user['newsletter'] = $data['newsletter'];
             $new_user['security_level'] = $data['security_level'];
+            $new_user['tags'] = $data['tags'];
 
             // update database entry
             user_update($new_user);

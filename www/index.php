@@ -44,6 +44,7 @@ $action = request('action', 'view');
 
 // Direct mapping list
 // Note: array_flip() flips keys with values in a dictionary.
+// FIXME: change this to Romanian!
 $directmaps = array_flip(array('register', 'news_feed', 'changes',
                                'login', 'logout', 'json', 'job_detail',
                                'monitor', 'submit', 'userinfo', 'plot',
