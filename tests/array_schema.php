@@ -2,7 +2,7 @@
 <?php
 
 require_once(dirname($argv[0]) . "/utilities.php");
-require_once(IA_ROOT_DIR.'common/schema.php');
+require_once(IA_ROOT_DIR.'common/array_schema.php');
 require_once(IA_ROOT_DIR.'common/array_path.php');
 
 test_cleanup();
