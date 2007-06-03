@@ -17,7 +17,9 @@ function test_array_validate($data, $schema, $expected_errors)
 {
     $passed = true;
     $real_errors = array_validate($data, $schema);
+    $real_error_messages = array();
     for ($i = 0; $i < count($real_errors); ++$i) {
+        $real_error_messages[$i] = $real_errors[$i]['message'];
         $real_errors[$i] = $real_errors[$i]['path'];
     }
 
@@ -47,14 +49,15 @@ function test_array_validate($data, $schema, $expected_errors)
             }
         }
         if (!$found) {
-            log_print("ERROR: Unmatched real error path " . array_path_join($real_errors[$i]));
+            log_print("ERROR: Unmatched real error path " . array_path_join($real_errors[$i]) .
+                    " Message: " . $real_error_messages[$i]);
             $passed = false;
         }
     }
     for ($j = 0; $j < count($expected_errors); ++$j) {
         if (!$matched[$j]) {
             log_print("ERROR: Unmatched expected error path " .
-                    array_path_join($expected_errors[$i]));
+                    array_path_join($expected_errors[$j]));
             $passed = false;
         }
     }
@@ -67,8 +70,8 @@ function test_array_validate($data, $schema, $expected_errors)
 
 log_print("TEST: Sequence of string.");
 $schema = array(
-    'type' => 'seq',
-    'sequence' => array('type' => 'str'),
+    'type' => 'sequence',
+    'values' => array('type' => 'string'),
 );
 test_array_validate(
     array(
@@ -91,10 +94,10 @@ test_array_validate(
 
 log_print("TEST: mapping of scalar");
 $schema = array(
-    'type' => 'map',
-    'mapping' => array(
-        'name' => array('type' => 'str', 'required' => true),
-        'email' => array('type' => 'str', 'pattern' => '/@/'),
+    'type' => 'struct',
+    'fields' => array(
+        'name' => array('type' => 'string', 'null' => false),
+        'email' => array('type' => 'string', 'pattern' => '/@/'),
         'age' => array('type' => 'int'),
         'birth' => array('type' => 'date'),
     ),
@@ -126,14 +129,15 @@ test_array_validate(
 );
 
 
-log_print("TEST: sequence of mapping, valid");
+log_print("TEST: sequence of mapping.");
 $schema = array(
-    'type' => 'seq',
-    'sequence' => array(
-        'type' => 'map',
-        'mapping' => array(
-            'name' => array('type' => 'str', 'required' => true),
-            'email' => array('type' => 'str'),
+    'type' => 'sequence',
+    'values' => array(
+        'type' => 'struct',
+        'sealed' => true,
+        'fields' => array(
+            'name' => array('type' => 'string', 'null' => false),
+            'email' => array('type' => 'string', 'null' => true),
         ),
     ),
 );
@@ -164,18 +168,19 @@ test_array_validate(
 
 log_print("TEST: mapping of sequence of mapping, valid");
 $schema = array(
-    'type' => 'map',
-    'mapping' => array(
-        'company' => array('type' => 'str', 'required' => true),
-        'email' => array('type' => 'str'),
+    'type' => 'struct',
+    'fields' => array(
+        'company' => array('type' => 'string', 'null' => false),
+        'email' => array('type' => 'string'),
         'employees' => array(
-            'type' => 'seq',
-            'sequence' => array(
-                'type' => 'map',
-                'mapping' => array(
-                    'code' => array('type' => 'int', 'required' => true),
-                    'name' => array('type' => 'str', 'required' => true),
-                    'email' => array('type' => 'str'),
+            'type' => 'sequence',
+            'values' => array(
+                'type' => 'struct',
+                'sealed' => 'true',
+                'fields' => array(
+                    'code' => array('type' => 'int', 'null' => false),
+                    'name' => array('type' => 'string', 'null' => false),
+                    'email' => array('type' => 'string', 'null' => true),
                 ),
             ),
         ),
@@ -213,14 +218,15 @@ test_array_validate(
 
 log_print('TEST: Rule examples');
 $schema = array(
-    'type' => 'seq',
-    'sequence' => array(
-        'type' => 'map',
-        'mapping' => array(
-            'name' => array('type' => 'str', 'required' => true),
-            'email' => array('type' => 'str', 'required' => true, 'pattern' => '/@/'),
+    'type' => 'sequence',
+    'values' => array(
+        'type' => 'struct',
+        'sealed' => true,
+        'fields' => array(
+            'name' => array('type' => 'string', 'null' => false),
+            'email' => array('type' => 'string', 'null' => false, 'pattern' => '/@/'),
             'password' => array(
-                'type' => 'str',
+                'type' => 'string',
                 'length' => array('max' => 16, 'min' => 8),
             ),
             'age' => array(
@@ -228,11 +234,11 @@ $schema = array(
                 'range' => array('max' => 30, 'min' => 18),
             ),
             'blood' => array(
-                'type' => 'str',
+                'type' => 'string',
                 'enum' => array('A', 'B', 'O', 'AB'),
             ),
             'birth' => array('type' => 'date'),
-            'memo' => array('type' => 'any'),
+            'memo' => array('type' => 'any', 'null' => 'true'),
         ),
     ),
 );

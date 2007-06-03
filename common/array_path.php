@@ -24,7 +24,7 @@ function array_path_join($steps)
     $result = '';
     foreach ($steps as $step) {
         if (is_string($step)) {
-            if (preg_match('/^[a-z_][a-z0-9_]*$/i', $prefix)) {
+            if (preg_match('/^[a-z_][a-z0-9_]*$/i', $step)) {
                 $result .= $step;
             } else {
                 $result .= "['$step']";
