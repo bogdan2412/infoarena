@@ -51,10 +51,93 @@ function array_get($data, $path, $default = null)
     }
 }
 
-// Make a tiny local validation error.
-function _local_error($message)
+// Get the schema for an array schema. Sadly this is implemented using
+// 'type' => 'any' and a callback. How ironic.
+function array_schema_get_schema()
 {
-    return array('path' => array(), 'message' => $message);
+    return array(
+        'type' => 'any',
+        'callback' => '_array_schema_schema_validate_callback',
+    );
+}
+
+// Callback for array schema schema validation.
+// That is, this function validates an array schema.
+// FIXME: Make a node type for typed_struct?
+function _array_schema_schema_validate_callback($data, $schema)
+{
+    static $fields = null;
+    if ($fields == null) {
+       $number_range = array(
+            'type' => 'struct',
+            'null' => 'true',
+            'fields' => array(
+                'min' => array('type' => 'number', 'null' => true),
+                'max' => array('type' => 'number', 'null' => true),
+                'min-ex' => array('type' => 'number', 'null' => true),
+                'max-ex' => array('type' => 'number', 'null' => true),
+            )
+        );
+        $fields = array(
+            'struct' => array('fields' => array_schema_get_schema()),
+            'sequence' => array('values' => array_schema_get_schema()),
+            'mapping' => array('values' => array_schema_get_schema()),
+            'string' => array(
+                'length' => array(
+                    // String length range min/max values have to be ints.
+                    'type' => 'struct',
+                    'null' => 'true',
+                    'fields' => array(
+                        'min' => array('type' => 'int', 'null' => true),
+                        'max' => array('type' => 'int', 'null' => true),
+                        'min-ex' => array('type' => 'int', 'null' => true),
+                        'max-ex' => array('type' => 'int', 'null' => true),
+                    )
+                ),
+                'pattern' => array(
+                    'type' => 'string',
+                    'null' => true,
+                ),
+                'enum' => array(
+                    'type' => 'sequence',
+                    'null' => 'true',
+                    'values' => array('type' => 'string'),
+                ),
+            ),
+            'int' => array('range' => $number_range),
+            'float' => array('range' => $number_range),
+            'number' => array('range' => $number_range),
+            'date' => array(
+                'range' => array(
+                    'type' => 'struct',
+                    'fields' => array(
+                        'min' => array('type' => 'date', 'null' => true),
+                        'max' => array('type' => 'date', 'null' => true),
+                        'min-ex' => array('type' => 'date', 'null' => true),
+                        'max-ex' => array('type' => 'date', 'null' => true),
+                    ),
+                ),
+            ),
+            'bool' => array(''),
+            'any' => array('')
+        );
+    }
+
+    if (!is_array($data)) {
+        return (array)_local_error("Schema must be an array.");
+    }
+    $type = array_get($data, 'type', 'string');
+    if (!is_string($type)) {
+        return (array)_local_error("Invalid schema node type $type.");
+    }
+    $type_schema_fields = array_get($fields, $type);
+    if (is_null($type_schema_fields)) {
+        return (array)_local_error("Unknown schema node type '$type'.");
+    }
+    return array_validate($data, array(
+        'type' => 'struct',
+        'fields' => $type_schema_fields,
+    ));
 }
 
 // Validate a data hash against a schema.
@@ -83,6 +166,7 @@ function array_validate($data, $schema)
         'string' => '_array_validate_string',
         'int' => '_array_validate_number',
         'float' => '_array_validate_number',
+        'number' => '_array_validate_number',
         'date' => '_array_validate_date',
         'any' => '_array_validate_any',
     );
@@ -227,20 +311,38 @@ function _array_validate_string($data, $schema)
     $errors = array();
 
     // Check length
-    if (array_get($schema, 'length') != null) {
-        $errors = array_merge($errors, _array_validate_string_length($data, $schema['length']));
+    if (array_get($schema, 'length') !== null) {
+        $range = $schema['length'];
+        $len = strlen($data);
+
+        // Max value, inclusive
+        if (!is_null($max = array_get($range, 'max')) && $len > $max) {
+            $errors[] = _local_error("Length out of range, $len > $max.");
+        }
+        // Min value, inclusive
+        if (!is_null($min = array_get($range, 'min')) && $len < $min) {
+            $errors[] = _local_error("Length out of range, $len < $min.");
+        }
+        // Max value, exclusive
+        if (!is_null($maxex = array_get($range, 'max-ex')) && $len >= $maxex) {
+            $errors[] = _local_error("Length out of range, $len >= $maxex.");
+        }
+        // Min value, exclusive
+        if (!is_null($minex = array_get($range, 'min-ex')) && $len <= $minex) {
+            $errors[] = _local_error("Length out of range, $len <= $minex.");
+        }
     }
 
     // Check enum values.
     // FIXME: flipping the array if too slow, better ideas?
-    if (array_get($schema, 'enum') != null) {
+    if (array_get($schema, 'enum') !== null) {
         if (!array_key_exists($data, array_flip($schema['enum']))) {
             $errors[] = _local_error("Invalid enum value '$data'");
         }
     }
 
     // Check string regular expression patterns.
-    if (array_get($schema, 'pattern') != null) {
+    if (array_get($schema, 'pattern') !== null) {
         if (!preg_match($schema['pattern'], $data)) {
             $errors[] = _local_error("Doesn't match pattern {$schema['pattern']}.");
         }
@@ -249,56 +351,8 @@ function _array_validate_string($data, $schema)
     return $errors;
 }
 
-// Validate string length. Long and boring.
-function _array_validate_string_length($value, $range)
-{
-    $errors = array();
-    $len = strlen($value);
-
-    // Max value, inclusive
-    if (array_key_exists('max', $range)) {
-        $max = $range['max'];
-        if (!is_int($max)) {
-            log_error("Invalid length max value; not an int.");
-        } else if ($len > $max) {
-            $errors[] = _local_error(": Length out of range, $len > $max.");
-        }
-    }
-
-    // Min value, inclusive
-    if (array_key_exists('min', $range)) {
-        $min = $range['min'];
-        if (!is_int($min)) {
-            log_error("Invalid length min value; not an int.");
-        } else if ($len < $min) {
-            $errors[] = _local_error(": Length out of range, $len < $min.");
-        }
-    }
-
-    // Max value, exclusive
-    if (array_key_exists('max-ex', $range)) {
-        $max = $range['max'];
-        if (!is_int($max)) {
-            log_error("Invalid length max exclusive value; not an int.");
-        } else if ($len >= $max) {
-            $errors[] = _local_error(": Length out of range, $len >= $max.");
-        }
-    }
-
-    // Min value, exclusive
-    if (array_key_exists('min-ex', $range)) {
-        $min = $range['min'];
-        if (!is_int($min)) {
-            log_error("Invalid length min exclusive value; not an int.");
-        } else if ($len <= $min) {
-            $errors[] = _local_error(": Length out of range, $len <= $min.");
-        }
-    }
-
-    return $errors;
-}
-
 // Validate numbers (ints or floats).
+// There are 3 types actually: ints, floats or "numbers", which means either.
 // $schema can have a 'range' field.
 function _array_validate_number($data, $schema)
 {
@@ -313,61 +367,33 @@ function _array_validate_number($data, $schema)
         if (!is_float($data)) {
             return array(_local_error("Not a float."));
         }
+    } elseif ($type == 'number') {
+        if (!is_float($data) && !is_int($data)) {
+            return array(_local_error("Not a number, neither int not float."));
+        }
     } else {
         log_error("Invalid type '$type' for _array_validate_number.");
     }
 
-    // Check Ranges
-    if (array_get($schema, 'range') != null) {
-        return _array_validate_number_range($data, $schema['range']);
-    } else {
-        return array();
-    }
-}
-
-// Validate ranges for int and float fields.
-// This function is long and boring.
-function _array_validate_number_range($value, $range)
-{
     $errors = array();
 
-    // Max value, inclusive
-    if (array_key_exists('max', $range)) {
-        $max = $range['max'];
-        if (!is_int($max) && !is_float($max)) {
-            log_error("Invalid range max value; not an int or float");
-        } else if ($value > $max) {
-            $errors[] = _local_error(": Value out of range, $value > $max.");
+    // Check Ranges
+    if (!is_null($range = array_get($schema, 'range'))) {
+        // Max value, inclusive
+        if (!is_null($max = array_get($range, 'max')) && $data > $max) {
+            $errors[] = _local_error("Value out of range, $data > $max.");
         }
-    }
-
-    // Min value, inclusive
-    if (array_key_exists('min', $range)) {
-        $min = $range['min'];
-        if (!is_int($min) && !is_float($min)) {
-            log_error("Invalid range min value; not an int or float.");
-        } else if ($value < $min) {
-            $errors[] = _local_error(": Value out of range, $value < $min.");
+        // Min value, inclusive
+        if (!is_null($min = array_get($range, 'min')) && $data < $min) {
+            $errors[] = _local_error("Value out of range, $data < $min.");
         }
-    }
-
-    // Max value, exclusive
-    if (array_key_exists('max-ex', $range)) {
-        $max = $range['max'];
-        if (!is_int($max) && !is_float($max)) {
-            log_error("Invalid range max exclusive value; not an int or float.");
-        } else if ($value >= $max) {
-            $errors[] = _local_error(": Value out of range, $value >= $max.");
+        // Max value, exclusive
+        if (!is_null($maxex = array_get($range, 'max-ex')) && $data >= $maxex) {
+            $errors[] = _local_error("Value out of range, $data >= $maxex.");
         }
-    }
-
-    // Min value, exclusive
-    if (array_key_exists('min-ex', $range)) {
-        $min = $range['min'];
-        if (!is_int($min) && !is_float($min)) {
-            log_error("Invalid range min exclusive value; not an int or float.");
-        } else if ($value <= $min) {
-            $errors[] = _local_error(": Value out of range, $value <= $min.");
+        // Min value, exclusive
+        if (!is_null($minex = array_get($range, 'min-ex')) && $data <= $minex) {
+            $errors[] = _local_error("Value out of range, $data <= $minex.");
         }
     }
 
@@ -409,6 +435,12 @@ function _array_validate_bool($data, $schema)
 function _array_validate_any($data, $schema)
 {
     return array();
+}
+
+// Make a tiny local validation error.
+function _local_error($message)
+{
+    return array('path' => array(), 'message' => $message);
 }
 
 ?>

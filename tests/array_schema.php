@@ -15,6 +15,13 @@ test_prepare();
 // FIXME: Error ordering logic is confusing.
 function test_array_validate($data, $schema, $expected_errors)
 {
+    $schema_errors = array_validate($schema, array_schema_get_schema());
+    if ($schema_errors != null) {
+        log_print("Invalid schema");
+        log_print_r($schema_errors);
+        log_die();
+    }
+
     $passed = true;
     $real_errors = array_validate($data, $schema);
     $real_error_messages = array();
