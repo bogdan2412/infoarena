@@ -128,6 +128,9 @@ function security_simplify_action($action)
         // Admin stuff:
         case 'task-change-security':
         case 'textblock-change-security':
+        case 'task-tag':
+        case 'round-tag':
+        case 'textblock-tag':
         case 'job-reeval':  
         case 'simple-critical':
             return 'simple-critical';
@@ -140,6 +143,7 @@ function security_simplify_action($action)
         case 'round-register':
         case 'user-editprofile':
         case 'user-change-security':
+        case 'user-tag':
         case 'job-view':
         case 'job-eval':
         case 'job-download': 
@@ -307,6 +311,7 @@ function security_user($user, $action, $target_user) {
 
         // FIXME: haaaaack.
         case 'user-change-security':
+        case 'user-tag':
             return $is_admin;
 
         // Nobody is allowed here. This includes moving/deleting user's own

@@ -65,7 +65,6 @@ function controller_account($username = null) {
         $data['full_name'] = trim(request('full_name', $user['full_name']));
         $data['email'] = trim(request('email', $user['email']));
         $data['newsletter'] = request('newsletter', false) ? 1 : 0;
-        $data['tags'] = trim(request('tags'));
 
         // Security level, only if allowed.
         $data['security_level'] = request('security_level', $user['security_level']);
@@ -74,6 +73,10 @@ function controller_account($username = null) {
         }
 
         $errors = validate_profile_data($data, $user);
+
+        // validate tag data
+        $data['tags'] = tag_split(request('tags', ""));
+        tag_validate($data, $errors);
 
         // validate avatar
         // FIXME: This should leverage attachment creation code
@@ -143,7 +146,6 @@ function controller_account($username = null) {
             $new_user['email'] = $data['email'];
             $new_user['newsletter'] = $data['newsletter'];
             $new_user['security_level'] = $data['security_level'];
-            $new_user['tags'] = $data['tags'];
 
             // update database entry
             user_update($new_user);
@@ -155,15 +157,23 @@ function controller_account($username = null) {
                 identity_update_session($identity_user);
             }
 
+            // update tags info
+            if (identity_can('user-tag', $new_user)) {
+                tag_update("user", $new_user['id'], $data['tags']);
+            }
+            $data['tags'] = tag_build_list("user", $new_user['id']);
+
             // done. redirect to same page so user has a strong confirmation
             // of data being saved
             flash("Modificarile au fost salvate!");
         } else {
+            $data['tags'] = tag_build_list("user", $user['id']);
             flash_error('Am intalnit probleme. Verifica datele introduse.');
         }
     } else {
         // form is displayed for the first time. Fill in default values
         $data = $user;
+        $data['tags'] = tag_build_list("user", $user['id']);
 
         // unset some fields we do not $data to carry
         unset($data['id']);

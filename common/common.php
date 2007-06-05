@@ -137,6 +137,11 @@ function is_user_full_name($user_full_name) {
     return preg_match('/^'.IA_RE_USER_FULL_NAME.'$/xi', $user_full_name);
 }
 
+// Check tag id
+function is_tag_id($tag_id) {
+    return is_whole_number($tag_id);
+}
+
 // Check tag name
 function is_tag_name($tag_name) {
     return preg_match('/^'.IA_RE_TAG_NAME.'$/xi', $tag_name) &&
@@ -145,7 +150,7 @@ function is_tag_name($tag_name) {
 
 // Taggable objects
 function is_taggable($obj) {
-    return $obj == 'user' || $obj == 'task' || $obj == 'round';
+    return $obj == 'user' || $obj == 'task' || $obj == 'round' || $obj == 'textblock';
 }
 
 // Cached version of create_function_cached.

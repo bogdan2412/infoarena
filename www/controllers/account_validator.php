@@ -115,8 +115,6 @@ function validate_user_data($data, $register, $user = null) {
         }
     }
 
-    validate_tag_data($data, $errors);
-
     return $errors;
 }
 

@@ -16,7 +16,7 @@ include('tags_header.php');
 <div class="section">
 <h3>Ce se intampla cu datele mele?</h3>
 <ul>
-    <li>Adresa de e-mail <strong>nu</strong> se va afisa pe site si nu va fi divulgata altor parti.</li>
+<li>Adresa de e-mail <strong>nu</strong> se va afisa pe site si nu va fi divulgata altor parti.</li>
     <li>Numele tau complet va aparea in clasamente.</li>
 </ul>
 </div>
@@ -24,6 +24,7 @@ include('tags_header.php');
 </div>
 
 <form enctype="multipart/form-data" action="<?= htmlentities($action) ?>" method="post" class="profile clear" <?= tag_form_event() ?>>
+
 <fieldset>
     <legend><img src="<?= htmlentities(url_static('images/icons/key.gif')) ?>" alt="!" /> Informatii legate de securitate</legend>
     <ul class="form">
@@ -44,11 +45,6 @@ include('tags_header.php');
             <?= ferr_span('password2') ?>
             <input type="password" name='password2' id="form_password2" />
         </li>
-        <li>
-            <label for='form_tags'>Tag-uri</label>
-            <?= ferr_span('tags') ?>
-            <?= tag_input_box() ?>
-        </li>
 
 <?
 if (array_key_exists('security_level', $form_values)) {
@@ -68,6 +64,32 @@ if (array_key_exists('security_level', $form_values)) {
 </fieldset>
 
 <fieldset>
+    <legend>Schimba informatii personale</legend>
+    <ul class="form">
+    <?php if (identity_can('user-tag', $view['user'])) { ?>
+        <li>
+            <label for='form_tags'>Tag-uri</label>
+            <?= ferr_span('tags') ?>
+            <?= tag_input_box(fval('tags')) ?>
+            <span class="fieldHelp"><a href="documentatie/tag-uri">Ce sunt tag-urile?</a></span>
+        </li>
+    <?php } ?>
+        </li>
+            <label for="form_name">Nume complet</label>
+            <?= ferr_span('full_name') ?>
+            <input type="text" name="full_name" value="<?= fval('full_name') ?>" id="form_name" />
+            <span class="fieldHelp">Conturile cu nume gresite sau false vor fi dezactivate</span>
+        </li>
+        <li>
+            <label for="form_email">Adresa e-mail</label>
+            <?= ferr_span('email') ?>
+            <input type="text" name="email" value="<?= fval('email') ?>" id="form_email" />
+            <span class="fieldHelp">Aici vei primi (in caz ca doresti) mesaje de la alti utilizatori, noutati infoarena</span>
+        </li>
+    </ul>
+</fieldset>
+
+<fieldset>
     <legend>Schimba avatar</legend>
     <ul class="form">
         <li>
@@ -82,24 +104,6 @@ if (array_key_exists('security_level', $form_values)) {
             <?= ferr_span('avatar') ?>
             <input type="file" name="avatar" id="form_avatar" />
             <span class="fieldHelp">O poza in format JPEG, PNG sau GIF, dimensiune maxima <?= IA_AVATAR_MAXSIZE/1024 . "KB" ?></span>
-        </li>
-    </ul>
-</fieldset>
-
-<fieldset>
-    <legend>Schimba informatii personale</legend>
-    <ul class="form">
-        <li>
-            <label for="form_name">Nume complet</label>
-            <?= ferr_span('full_name') ?>
-            <input type="text" name="full_name" value="<?= fval('full_name') ?>" id="form_name" />
-            <span class="fieldHelp">Conturile cu nume gresite sau false vor fi dezactivate</span>
-        </li>
-        <li>
-            <label for="form_email">Adresa e-mail</label>
-            <?= ferr_span('email') ?>
-            <input type="text" name="email" value="<?= fval('email') ?>" id="form_email" />
-            <span class="fieldHelp">Aici vei primi (in caz ca doresti) mesaje de la alti utilizatori, noutati infoarena</span>
         </li>
     </ul>
 </fieldset>

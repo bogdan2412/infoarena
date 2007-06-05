@@ -44,4 +44,13 @@ $query = "CREATE TABLE `ia_task_tags` (
   PRIMARY KEY (`tag_id`, `task_id`), KEY (`task_id`, `tag_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE latin1_general_ci;";
 db_query($query);
+
+$query = "DROP TABLE IF EXISTS `ia_textblock_tags`";
+db_query($query);
+$query = "CREATE TABLE `ia_textblock_tags` (
+  `tag_id` int(11) NOT NULL,
+  `textblock_id` varchar(64) default NULL, 
+  PRIMARY KEY (`tag_id`, `textblock_id`), KEY (`textblock_id`, `tag_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE latin1_general_ci;";
+db_query($query);
 ?>
