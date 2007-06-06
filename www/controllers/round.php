@@ -4,6 +4,7 @@ require_once(IA_ROOT_DIR."common/db/db.php");
 require_once(IA_ROOT_DIR."common/db/round.php");
 require_once(IA_ROOT_DIR."common/db/task.php");
 require_once(IA_ROOT_DIR."common/round.php");
+require_once(IA_ROOT_DIR."common/tags.php");
 
 // Displays form to either create a new round or edit an existing one.
 // This form does not edit round content (its associated textblock)
@@ -81,6 +82,9 @@ function controller_round_details($round_id) {
         }
     }
 
+    // Tag data
+    $values['tags'] = request('tags', tag_build_list("round", $round_id));
+
     // Validate the monkey.
 
     // Build new round
@@ -136,6 +140,9 @@ function controller_round_details($round_id) {
     // Always copy timestamp for ratings
     $new_round_params['rating_timestamp'] = db_date_parse($new_round['start_time']);
 
+    // Handle tags
+    tag_validate($values, $errors);
+
     // If posting with no errors then do the db monkey
     if (request_is_post() && !$errors) {
         // FIXME: error handling? Is that even remotely possible in php?
@@ -143,6 +150,10 @@ function controller_round_details($round_id) {
         round_update($new_round);
         round_update_parameters($round_id, $new_round_params);
         round_update_task_list($round_id, $new_round_tasks);
+
+        if (identity_can('round-tag', $new_round)) {
+            tag_update("round", $new_round['id'], $values['tags']);
+        }
 
         flash("Runda a fost modificata cu succes.");
         redirect(url_round_edit($round_id));

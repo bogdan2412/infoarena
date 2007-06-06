@@ -1,6 +1,7 @@
 <?php
 
 require_once(IA_ROOT_DIR . "common/db/textblock.php");
+require_once(IA_ROOT_DIR . "common/tags.php");
 
 // Edit a textblock
 function controller_textblock_edit($page_name) {
@@ -30,6 +31,7 @@ function controller_textblock_edit($page_name) {
     $values['text'] = request('text', $page['text']);
     $values['title'] = request('title', $page['title']);
     $values['security'] = request('security', $page['security']);
+    $values['tags'] = request('tags', tag_build_list("textblock", $page_name));
 
     if (request_is_post()) {
         // Get new page
@@ -47,11 +49,17 @@ function controller_textblock_edit($page_name) {
             identity_require('textblock-change-security', $page);
         }
 
+        // Handle tags
+        tag_validate($values, $errors);
+
         // It worked
         if (!$errors) {
             textblock_add_revision($new_page['name'], $new_page['title'],
                                    $new_page['text'], $new_page['user_id'],
                                    $new_page['security']);
+            if (identity_can('textblock-tag', $new_page)) {
+                tag_update("textblock", $new_page['name'], $values['tags']);
+            }
             flash('Am actualizat continutul');
             redirect(url_textblock($page_name));
         }
@@ -66,6 +74,7 @@ function controller_textblock_edit($page_name) {
     // Create view.
     $view = array();
     $view['title'] = $big_title;
+    $view['page'] = $page;
     $view['page_name'] = $page_name;
     $view['form_values'] = $values;
     $view['form_errors'] = $errors;

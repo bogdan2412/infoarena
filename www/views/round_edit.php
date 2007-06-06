@@ -11,6 +11,7 @@ $view['head'] .= "<script type=\"text/javascript\" src=\"" . htmlentities(url_st
 require_once(IA_ROOT_DIR."common/round.php");
 require_once(IA_ROOT_DIR."www/format/form.php");
 include('views/header.php');
+include('views/tags_header.php');
 
 // Validate $view values.
 log_assert(is_array($all_tasks));
@@ -59,7 +60,7 @@ $form_fields = array(
 );
 ?>
 
-<h1>Editare runda '<?= htmlentities($round['title']) ?>'</h1>
+<h1>Editare runda "<?= htmlentities($round['title']) ?>"</h1>
 
 <?php if ($round['state'] == 'running') { ?>
     <div class="warning">
@@ -73,13 +74,16 @@ $form_fields = array(
     </div>
 <?php } ?>
 
-<form action="<?= htmlentities(getattr($view, 'action')) ?>" method="post" class="task">
+<form action="<?= htmlentities(getattr($view, 'action')) ?>" method="post" class="task" <?= tag_form_event() ?>>
  <fieldset>
   <legend>Informatii generale</legend>
   <ul class="form">
    <?= view_form_field_li($form_fields['title'], 'title') ?>
    <?= view_form_field_li($form_fields['page_name'], 'page_name') ?>
    <?= view_form_field_li($form_fields['start_time'], 'start_time') ?>
+   <? if (identity_can('round-tag', $round)) { ?>
+      <?= tag_format_input_box(fval('tags')) ?>
+   <? } ?>
    <?= view_form_field_li($form_fields['tasks'], 'tasks') ?>
   </ul>
  </fieldset>

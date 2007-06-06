@@ -2,6 +2,7 @@
 
 require_once(IA_ROOT_DIR . "common/db/task.php");
 require_once(IA_ROOT_DIR . "common/task.php");
+require_once(IA_ROOT_DIR . "common/tags.php");
 
 // Displays form to either create a new task or edit an existing one.
 // This form does not edit task content (its associated textblock)
@@ -61,6 +62,9 @@ function controller_task_details($task_id) {
         }
     }
 
+    // Tag data
+    $values['tags'] = request('tags', tag_build_list("task", $task_id));
+    
     // Validate the monkey.
     if (request_is_post()) {
         // Build new task
@@ -100,11 +104,18 @@ function controller_task_details($task_id) {
             }
         }
 
+        // Handle tags
+        tag_validate($values, $errors);
+
         // If no errors then do the db monkey
         if (!$errors) {
             // FIXME: error handling? Is that even remotely possible in php?
             task_update_parameters($task_id, $new_task_params);
             task_update($new_task);
+
+            if (identity_can('task-tag', $new_task)) {
+                tag_update("task", $new_task['id'], $values['tags']);
+            }
 
             flash("Task-ul a fost modificat cu succes.");
             redirect(url_task_edit($task_id));

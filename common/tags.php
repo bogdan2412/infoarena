@@ -20,6 +20,7 @@ function tag_validate($data, &$errors) {
     if (is_null($tags)) {
         return;
     }
+    $tags = tag_split($tags);
     foreach ($tags as $tag) {
         if (!is_tag_name($tag)) {
             $errors['tags'] = "Cel putin un tag este gresit";
@@ -37,9 +38,10 @@ function tag_build_list($obj, $obj_id) {
     return implode(", ", $tag_names);
 }
 
-function tag_update($obj, $obj_id, $tag_names) {
+function tag_update($obj, $obj_id, $tag_data) {
     tag_clear($obj, $obj_id);
-    foreach ($tag_names as $tag_name) {
+    $tag_data = tag_split($tag_data);
+    foreach ($tag_data as $tag_name) {
         $tag_id = tag_assign_id($tag_name);
         tag_add($obj, $obj_id, $tag_id);
     }

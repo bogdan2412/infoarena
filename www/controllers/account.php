@@ -75,7 +75,7 @@ function controller_account($username = null) {
         $errors = validate_profile_data($data, $user);
 
         // validate tag data
-        $data['tags'] = tag_split(request('tags', ""));
+        $data['tags'] = request('tags', tag_build_list("user", $user['id']));
         tag_validate($data, $errors);
 
         // validate avatar
@@ -167,7 +167,6 @@ function controller_account($username = null) {
             // of data being saved
             flash("Modificarile au fost salvate!");
         } else {
-            $data['tags'] = tag_build_list("user", $user['id']);
             flash_error('Am intalnit probleme. Verifica datele introduse.');
         }
     } else {

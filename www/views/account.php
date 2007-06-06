@@ -66,14 +66,9 @@ if (array_key_exists('security_level', $form_values)) {
 <fieldset>
     <legend>Schimba informatii personale</legend>
     <ul class="form">
-    <?php if (identity_can('user-tag', $view['user'])) { ?>
-        <li>
-            <label for='form_tags'>Tag-uri</label>
-            <?= ferr_span('tags') ?>
-            <?= tag_input_box(fval('tags')) ?>
-            <span class="fieldHelp"><a href="documentatie/tag-uri">Ce sunt tag-urile?</a></span>
-        </li>
-    <?php } ?>
+    <? if (identity_can('user-tag', $view['user'])) { ?>
+        <?= tag_format_input_box(fval('tags')) ?>
+    <? } ?>
         </li>
             <label for="form_name">Nume complet</label>
             <?= ferr_span('full_name') ?>

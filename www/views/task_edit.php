@@ -1,11 +1,13 @@
 <?php
 require_once(IA_ROOT_DIR."common/task.php");
+require_once(IA_ROOT_DIR."common/tags.php");
 require_once(IA_ROOT_DIR."www/format/form.php");
 
 $view['head'] = getattr($view, 'head').
     "<script type=\"text/javascript\" src=\"" . htmlentities(url_static("js/parameditor.js")) . "\"></script>";
 
 include('views/header.php');
+include('views/tags_header.php');
 
 // Validate task.
 log_assert_valid(task_validate($task));
@@ -56,7 +58,8 @@ $form_fields = array(
 
 <form action="<?= htmlentities(url_task_edit($task_id)) ?>"
       method="post"
-      class="task">
+      class="task"
+      <?= tag_form_event() ?>>
     <fieldset>
     <legend>Despre problema</legend>
     <ul class="form">
@@ -65,7 +68,10 @@ $form_fields = array(
         <?= view_form_field_li($form_fields['author'], 'author') ?>
         <?= view_form_field_li($form_fields['source'], 'source') ?>
         <? if (identity_can('task-change-security', $task)) { ?> 
-        <?= view_form_field_li($form_fields['hidden'], 'hidden') ?>
+           <?= view_form_field_li($form_fields['hidden'], 'hidden') ?>
+        <? } ?>
+        <? if (identity_can('task-tag', $task)) { ?>
+           <?= tag_format_input_box(fval('tags')) ?>
         <? } ?>
     </ul>
     </fieldset>
