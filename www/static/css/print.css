@@ -1,0 +1,29 @@
+#header, #sidebar, #topnav, #breadcrumbs, #wikiOps, #log {
+    display: none;
+}
+
+#main, #content_small {
+    margin: 0;
+    background: white;
+    border: 0;
+}
+
+.inlineSubmit, #remotebox {
+    display: none;
+}
+
+#footer {
+    margin: 1em 0 0 0;
+    background: white;
+    text-align: left;
+}
+
+#footer li {
+    display: none;
+}
+
+#footer ul li.copyright {
+    display: block;
+    float: left;
+    list-style-type: none;
+}
