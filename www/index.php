@@ -47,9 +47,8 @@ $action = request('action', 'view');
 // FIXME: change this to Romanian!
 $directmaps = array_flip(array('register', 'news_feed', 'changes',
                                'login', 'logout', 'json', 'job_detail',
-                               'monitor', 'submit', 'userinfo', 'plot',
-                               'unsubscribe', 'resetpass', 'reeval'
-));
+                               'monitor', 'projector', 'submit', 'userinfo',
+                               'plot', 'unsubscribe', 'resetpass', 'reeval'));
 //
 // Here comes the big url mapper.
 // We include in the if statement to avoid an extra parsing load.
