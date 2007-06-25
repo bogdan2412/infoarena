@@ -104,10 +104,29 @@ function job_get_by_id($job_id, $contents = false) {
     return db_fetch($query);
 }
 
-// Returns a where clause array based on complex filterss. 
+// Return list of JOIN clauses for given filters
+function job_get_table_joins($filters) {
+    $sql = "";
+
+    if (getattr($filters, 'task_hidden')) {
+        $sql .= "\nLEFT JOIN `ia_task` AS `task`
+                    ON `job`.`task_id` = `task`.`id`";
+    }
+
+    if (getattr($filters, 'user')) {
+        $sql .= "\nLEFT JOIN `ia_user` AS `user`
+                    ON `job`.`user_id` = `user`.`id`";
+    }
+
+    return $sql;
+}
+
+// Returns a where clause array based on complex filters.
 function job_get_range_wheres($filters) {
+    $user = getattr($filters, 'user');
+    $task_hidden = getattr($filters, 'task_hidden');
+
     $task = getattr($filters, 'task');
-    $user = getattr($filters, 'user'); 
     $round = getattr($filters, 'round');
     $job_begin = getattr($filters, 'job_begin');
     $job_end = getattr($filters, 'job_end');
@@ -117,19 +136,18 @@ function job_get_range_wheres($filters) {
     $compiler = getattr($filters, 'compiler');
     $status = getattr($filters, 'status');
     $score_begin = getattr($filters, 'score_begin');
-    $score_end = getattr($filters, 'score_end'); 
+    $score_end = getattr($filters, 'score_end');
     $eval_msg = getattr($filters, 'eval_msg');
-    $task_hidden = getattr($filters, 'task_hidden'); 
 
     $wheres = array("TRUE");
     if (!is_null($task)) {
-        $wheres[] = sprintf("`task`.`id` = '%s'", db_escape($task));
+        $wheres[] = sprintf("`job`.`task_id` = '%s'", db_escape($task));
     }
     if (!is_null($user)) {
         $wheres[] = sprintf("`user`.`username` = '%s'", db_escape($user));
     }
     if (!is_null($round)) {
-        $wheres[] = sprintf("`round`.id` = '%s'", db_escape($round));
+        $wheres[] = sprintf("`job`.`round_id` = '%s'", db_escape($round));
     }
     if (!is_null($job_begin) && is_whole_number($job_begin)) {
         $wheres[] = sprintf("`job`.`id` >= '%s'", db_escape($job_begin));
@@ -213,10 +231,9 @@ function job_get_count($filters) {
     $query = <<<SQL
 SELECT COUNT(*) as `cnt`
       FROM `ia_job` AS `job`
-      LEFT JOIN `ia_user` AS `user` ON `job`.`user_id` = `user`.`id`
-      LEFT JOIN `ia_task` AS `task` ON `job`.`task_id` = `task`.`id`
-      LEFT JOIN `ia_round` AS `round` ON `job`.`round_id` = `round`.`id`
 SQL;
+
+    $query .= job_get_table_joins($filters);
 
     $wheres = job_get_range_wheres($filters);
     $query .= " WHERE (".implode(") AND (", $wheres).")";
