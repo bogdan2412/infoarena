@@ -35,6 +35,7 @@ if (isset($form_errors) || isset($form_values)) {
     <link type="text/css" rel="stylesheet" href="<?= htmlentities(url_static('css/tabber.css')) ?>"/>
     <link type="text/css" rel="stylesheet" href="<?= htmlentities(url_static('css/SyntaxHighlighter.css')) ?>"/>
     <link type="text/css" rel="stylesheet" href="<?= htmlentities(url_static('css/print.css')) ?>" media="print" />
+    <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon">
     <script type="text/javascript" src="<?= htmlentities(url_static('js/config.js.php')) ?>"></script>
     <script type="text/javascript" src="<?= htmlentities(url_static('js/MochiKit.js')) ?>"></script>
     <script type="text/javascript" src="<?= htmlentities(url_static('js/default.js')) ?>"></script>

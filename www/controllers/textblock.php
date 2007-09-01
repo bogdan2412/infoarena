@@ -53,7 +53,8 @@ function controller_textblock_view($page_name, $rev_num = null) {
     if ($crpage) {
         // FIXME: hack to properly display latest revision.
         // Checks if $rev_num is the latest.
-        if ($rev_num && $rev_num != textblock_get_revision_count($page_name)) {
+        $rev_count = textblock_get_revision_count($page_name);
+        if ($rev_num && $rev_num != $rev_count) {
             identity_require("textblock-history", $crpage);
             $page = textblock_get_revision($page_name, $rev_num);
 
@@ -78,6 +79,8 @@ function controller_textblock_view($page_name, $rev_num = null) {
     $view = array();
     $view['title'] = $page['title'];
     $view['revision'] = $rev_num;
+    $view['revision_count'] = $rev_count;
+
     $view['page_name'] = $page['name'];
     $view['textblock'] = $page;
 
@@ -108,7 +111,7 @@ function controller_textblock_diff($page_name) {
         flash_error("Reviziile sunt identice");
         redirect(url_textblock($page_name));
     }
-    if ($revfrom_id < 1 || $revfrom_id < 1 || $revfrom_id > 100000 || $revfrom_id > 100000) {
+    if ($revfrom_id < 1 || $revto_id < 1) {
         flash_error("Reviziile sunt invalide");
         redirect(url_textblock($page_name));
     }

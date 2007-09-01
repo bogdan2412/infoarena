@@ -1,5 +1,6 @@
 #! /usr/bin/env php
 <?php
+// Initialize tag database tables for users, rounds, tasks and textblocks
 
 require_once(dirname($argv[0]) . "/utilities.php");
 require_once(IA_ROOT_DIR."common/db/user.php");

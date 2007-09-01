@@ -1,6 +1,7 @@
 <?php
 
 require_once(IA_ROOT_DIR."common/db/db.php");
+require_once(IA_ROOT_DIR."www/wiki/wiki.php");
 
 // News rss.
 // FIXME: stupid hack.
@@ -10,7 +11,7 @@ function controller_news_feed($page_name) {
     $view['channel']['link'] = url_absolute(url_textblock('news'));
     $view['channel']['description'] = 'Ultimele stiri de pe http://infoarena.ro';
     $view['channel']['language'] = 'ro-ro';
-    $view['channel']['copyright'] = '&copy; 2006 - Asociatia infoarena';
+    $view['channel']['copyright'] = '&copy; 2007 - Asociatia infoarena';
 
     $news = news_get_range(0, IA_MAX_FEED_ITEMS);
     for ($i = 0; $i < count($news); $i++) {

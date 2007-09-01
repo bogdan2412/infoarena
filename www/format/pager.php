@@ -2,13 +2,14 @@
 // This file contains various paging functions.
 //
 // A pager_options hash contains the following members:
-//  * pager_style       : Pager style. none or standard.
-//  * first_entry       : First entry to display.
-//  * display_entries   : How many entries are displayed at once.
-//  * total_entries     : Total number of entries.
-//  * url_args          : Base arguments for the url function. Defaults to _GET.
-//  * param_prefix      : Prefix for url parameters.
-//  * show_count	: Show number of entries. true / false
+//  * pager_style           : Pager style. none or standard.
+//  * first_entry           : First entry to display.
+//  * display_entries       : How many entries are displayed at once.
+//  * total_entries         : Total number of entries.
+//  * url_args              : Base arguments for the url function. Defaults to _GET.
+//  * param_prefix          : Prefix for url parameters.
+//  * show_count	        : Show number of entries. true / false
+//  * show_display_entries  : Shows "results per page" links
 //
 // Certain style might have their own additional args:
 //  * style = standard:
@@ -93,17 +94,22 @@ function _format_standard_pager_link($options, $number) {
     $url_args = getattr($options, 'url_args', $_GET);
     $param_prefix = getattr($options, 'param_prefix', '');
     $display_entries = getattr($options, 'display_entries', IA_PAGER_DEFAULT_DISPLAY_ENTRIES);
-    $url_args['show_count'] = getattr($options, 'show_count', false);
-
-    $url_args[$param_prefix.'first_entry'] = $number * $display_entries;
-    ++$number;
+    $url_args[$param_prefix.'first_entry'] = ($number - 1) * $display_entries;
     $access_keys = getattr($options, 'use_digit_access_keys', true);
     $args = array();
     if ($access_keys && $number >= 0 && $number <= 9) {
         $args['accesskey'] = $number;
     }
 
-    return format_link(url_from_args($url_args), $number, false, $args) . ' ';
+    return format_link(url_from_args($url_args), $number, false, $args);
+}
+
+// Internal for format_standard_pager
+function _format_standard_pager_link_with_text($options, $text) {
+    $url_args = getattr($options, 'url_args', $_GET);
+    $url_args['display_entries'] = $options['display_entries'];
+
+    return format_link(url_from_args($url_args), $text, false, array());
 }
 
 // Formats a standard pager. Used by format_table.
@@ -112,7 +118,8 @@ function format_standard_pager($options)
     log_assert($options['pager_style'] == "standard");
     $first_entry = getattr($options, 'first_entry', 0);
     $total_entries = getattr($options, 'total_entries', 0);
-    $show_count = getattr($options, 'show_count', false);    
+    $show_count = getattr($options, 'show_count', false);   
+    $show_display_entries = getattr($options, 'show_display_entries', false); 
     $display_entries = getattr($options, 'display_entries', IA_PAGER_DEFAULT_DISPLAY_ENTRIES);
     $surround_pages = getattr($options, 'surround_pages', 5);
     $access_keys = getattr($options, 'use_digit_access_keys', true);
@@ -127,49 +134,58 @@ function format_standard_pager($options)
     $totpages = (int)(($total_entries + $display_entries - 1) / $display_entries);
 
     $result = "";
-    if ($totpages == 1) {
-        return $result;
-    }
 
-    if ($show_count) {
-	$result = '<span class="count">';
-	$result .= $total_entries;
-	if (1 != $total_entries) {
-	    $result .= " rezultate";
-	}
-	else {
-	    $result .= " rezultat";
-	}
-	$result .= "</span> ";
+
+    if ($show_display_entries) {
+        //FIXME: hardcoded numbers are bad
+        $result .= '<span class="entries-per-page">(';
+        $result .= _format_standard_pager_link_with_text(array('display_entries' => '25') + $options, '25')."|";
+        $result .= _format_standard_pager_link_with_text(array('display_entries' => '50') + $options, '50')."|";
+        $result .= _format_standard_pager_link_with_text(array('display_entries' => '100') + $options, '100')."|";
+        $result .= _format_standard_pager_link_with_text(array('display_entries' => '250') + $options, '250')."|";
+        $result .= _format_standard_pager_link_with_text(array('display_entries' => '500') + $options, '500');
+        $result .= ")</span>";
     }
 
     $result .= "Vezi pagina: ";
     if ($curpage < 8) {
         for ($i = 0; $i < $curpage; ++$i) {
-            $result .= _format_standard_pager_link($options, $i);
+            $result .= _format_standard_pager_link($options, $i + 1);
         }
     } else {
         for ($i = 0; $i < $surround_pages; ++$i) {
-            $result .= _format_standard_pager_link($options, $i);
+            $result .= _format_standard_pager_link($options, $i + 1);
         }
         $result .= "... ";
         for ($i = $curpage - $surround_pages; $i < $curpage; ++$i) {
-            $result .= _format_standard_pager_link($options, $i);
+            $result .= _format_standard_pager_link($options, $i + 1);
         }
     }
     $result .= '<span class="selected"><strong>'.($curpage + 1)."</strong></span> ";
     if ($totpages - $curpage < 3 + 2 * $surround_pages) {
         for ($i = $curpage + 1; $i < $totpages; ++$i) {
-            $result .= _format_standard_pager_link($options, $i);
+            $result .= _format_standard_pager_link($options, $i + 1);
         }
     } else {
         for ($i = $curpage + 1; $i <= $curpage + $surround_pages; ++$i) {
-            $result .= _format_standard_pager_link($options, $i);
+            $result .= _format_standard_pager_link($options, $i + 1);
         }
         $result .= "... ";
         for ($i = $totpages - $surround_pages; $i < $totpages; ++$i) {
-            $result .= _format_standard_pager_link($options, $i);
+            $result .= _format_standard_pager_link($options, $i + 1);
         }
+    }
+
+    if ($show_count) {
+        $result .= '<span class="count">&nbsp;(';
+        $result .= $total_entries;
+        if (1 != $total_entries) {
+            $result .= " rezultate";
+        }
+        else {
+            $result .= " rezultat";
+        }
+        $result .= ")</span> ";
     }
 
     return $result;

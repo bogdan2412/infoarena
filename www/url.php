@@ -144,6 +144,11 @@ function url_attachment_delete($page_name, $file_name) {
     ));
 }
 
+function url_attachment_rename($page_name) {
+    log_assert(is_page_name($page_name));
+    return url_complex($page_name, array('action' => 'attach-rename'));
+}
+
 function url_image_resize($page, $file, $resize)
 {
     if ($resize) {

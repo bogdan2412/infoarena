@@ -157,6 +157,11 @@ else if ($action == 'attach-del') {
     require_once(IA_ROOT_DIR.'www/controllers/attachment.php');
     controller_attachment_delete($page);
 }
+//  - attachment rename
+else if ($action == 'attach-rename') {
+    require_once(IA_ROOT_DIR.'www/controllers/attachment.php');
+    controller_attachment_rename($page, $_POST['old_name'], $_POST['new_name']);
+}
 //  - attachment download
 else if ($action == 'download') {
     if (request('resize')) {

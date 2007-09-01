@@ -112,6 +112,7 @@ function security_simplify_action($action)
         case 'textblock-move':
         case 'attach-overwrite':
         case 'attach-delete':
+        case 'attach-rename':
         case 'task-edit':
         case 'task-create':
         case 'task-delete':
@@ -256,6 +257,19 @@ function security_attach($user, $action, $attach) {
 
     $att_name = strtolower($attach['name']);
     $att_page = normalize_page_name($attach['page']);
+    $usersec = getattr($user, 'security_level', 'anonymous');
+    $is_admin = $usersec == 'admin';
+    $is_self = $attach['user_id'] == $user['id'];
+
+    // Log query response.
+    $action = security_simplify_action($action);
+    $level = ($is_admin ? 'admin' : ($is_self ? 'self' : 'other'));
+    $objid = $attach['user_id'];
+    if (IA_LOG_SECURITY) {
+        log_print("SECURITY QUERY USER: ".
+                  "($level, $action, $objid): ".
+                  "(level, action, object)");
+    }
 
     // HACK: magic prefix.
     if (preg_match('/^grader\_/', $att_name)) {
@@ -269,8 +283,12 @@ function security_attach($user, $action, $attach) {
     // Speed hack: avatars are always visible. This is good.
     if ($action == 'attach-download' && $att_name = 'avatar' &&
             strstr($att_page, IA_USER_TEXTBLOCK_PREFIX) === $att_page) {
-        //log_print("Speed hack, attachments always visible");
         return true;
+    }
+
+    // We allow ireversable edits for attachments if they are your attachments 
+    if ($action == 'simple-edit') {
+        return $is_admin || $is_self;
     }
 
     // Forward to textblock.
@@ -422,6 +440,9 @@ function security_round($user, $action, $round) {
         case 'round-submit':
             // FIXME: This sucks.
             // FIXME: job_get_submit_targets
+            if ($is_admin) {
+                return true;
+            }
             $rparams = round_get_parameters($round['id']);
             $time = time();
             $rstart = db_date_parse($round['start_time']);

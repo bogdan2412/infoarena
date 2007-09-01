@@ -1,10 +1,10 @@
 <div class="ad">
-    <p>
-        Concursuri in desfasurare:<br/>
-        <a href="<?= url_textblock('preoni-2007') ?>">preONI 2007</a>
-    </p>
-
-    <p style="margin-top: 2em">
-        <a href="<?= url_textblock('implica-te') ?>"><img alt="star" src="<?= url_static("images/stars/small-full.png") ?>" /><strong>Fii un bun <em>infoarenaut</em>! Implica-te!</strong></a>
-    </p>
+<?php
+$sidebar = textblock_get_revision(IA_SIDEBAR_PAGE);
+if ($sidebar) {
+    echo '<div class="wiki_text_block">';
+    echo wiki_process_textblock($sidebar);
+    echo '</div>';
+}
+?>
 </div>

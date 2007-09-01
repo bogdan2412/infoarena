@@ -1,28 +1,35 @@
 <?php include('header.php'); ?>
 
-<h1><?= htmlentities($title) ?></h1>
+<h1>Ataseaza la pagina <?= format_link(url_textblock($view['page_name']), $view['page_name']) ?></h1>
 
 <form enctype="multipart/form-data"
       action="<?= htmlentities(url_attachment_new($page_name)) ?>"
       method="post"
       class="clear">
 <fieldset>
-    <legend>Alege fisier</legend>
+    <legend>Alege fisier </legend>
     <ul class="form">
         <li>
             <label for="form_file_name">Fisier</label>
             <?= ferr_span('file_name') ?>
             <?= ferr_span('file_size') ?>
-            <input type="file" name="file_name" value="<?= fval('file_name') ?>" id="form_file_name" />
+            <input type="hidden" name="MAX_FILE_SIZE" value="<?= IA_ATTACH_MAXSIZE ?>" />
+            <input type="file" name="file_name" value="<?= fval('file_name') ?>" id="form_file_name" size="50"/>
 
             <span class="fieldHelp">Dimensiunea maxima admisa este de <?= IA_ATTACH_MAXSIZE/1024/1024 ?>MB.</span>
             <span class="fieldHelp">Numele fisierului nu poate contine spatii.</span>
         </li>
 
+        <br/>
         <li>
             <input type="checkbox" name="autoextract" value="1" <?= fval_checkbox('autoextract') ?> id="form_autoextract" class="checkbox" />
             <label class="checkbox" for="form_autoextract">Expandeaza arhiva .zip</label>
             <span class="fieldHelp">Trimite o arhiva ZIP cu unul sau mai multe fisiere. Se va crea cate un atasament pentru fiecare fisier din arhiva.</span>
+        </li>
+
+        <br/>
+        <li>
+            <span class="fieldHelp"><?= format_link(url_attachment_list($page_name), "Listeaza celelalte atasamente...") ?></span>
         </li>
     </ul>
 </fieldset>

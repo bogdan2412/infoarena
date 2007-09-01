@@ -1,5 +1,6 @@
 <?php
 
+require_once(IA_ROOT_DIR."www/format/pager.php");
 require_once(IA_ROOT_DIR."common/db/textblock.php");
 require_once(IA_ROOT_DIR."common/db/attachment.php");
 require_once(IA_ROOT_DIR.'www/controllers/zip_attachment.php');
@@ -22,9 +23,20 @@ function controller_attachment_list($page_name) {
     identity_require('textblock-list-attach', $page);
 
     $view = array();
-    $view['attach_list'] = attachment_get_all($page_name);
+    $options = pager_init_options();
+
+    $attach_list = attachment_get_all($page_name, "%", $options['first_entry'], 
+                                      $options['display_entries']);
+    //FIXME: hack for numbering
+    for ($i = 0; $i < count($attach_list); ++$i) {
+        $attach_list[$i]['id'] = $options['first_entry'] + $i + 1; 
+    }
+    $view['attach_list'] = $attach_list;
     $view['page_name'] = $page['name'];
     $view['title'] = 'Atasamentele paginii '.$page['title'];
+    $view['total_entries'] = attachment_get_count($page_name);
+    $view['first_entry'] = $options['first_entry'];
+    $view['display_entries'] = $options['display_entries'];
 
     execute_view_die('views/listattach.php', $view);
 }
@@ -59,6 +71,11 @@ function controller_attachment_submit($page_name) {
     $view['title'] = 'Ataseaza la pagina '.$page_name;
     $form_values = array();
     $form_errors = array();
+
+    if (!isset($_FILES['file_name'])) {
+        flash_error("Eroare! Nu s-a putut atasa fisierul.");
+        redirect(url_textblock($page_name));
+    }
 
     // Process upload data.
     $form_values['file_name'] = basename($_FILES['file_name']['name']);
@@ -248,8 +265,42 @@ function controller_attachment_delete($page_name) {
     flash('Fisierul '.$file_name.' a fost sters cu succes.');
     redirect(url_textblock($page_name));
 }
+    
+function controller_attachment_rename($page_name, $old_name, $new_name) { 
+    if (!is_attachment_name($old_name)) { 
+        flash_error('Nume invalid.'); 
+        redirect(url_textblock($page_name)); 
+    } 
 
-// Check for attachment validity and proper permissions.
+    // don't be redundant
+    if ($old_name == $new_name) {
+        redirect(url_attachment_list($page_name));
+    }
+
+    $old_attach = attachment_get($old_name, $page_name); 
+    identity_require('attach-rename', $old_attach); 
+    if (!$old_attach) { 
+        flash_error('Fisierul nu exista.'); 
+        redirect(url_textblock($page_name)); 
+    } 
+
+    $new_attach = attachment_get($new_name, $page_name); 
+    if ($new_attach) { 
+        flash_error("Exista deja un fisier cu numele $new_name atasat paginii $page_name."); 
+        redirect(url_textblock($page_name)); 
+    }; 
+  
+    // Rename in data base. 
+    if (!attachment_rename($old_attach, $new_name)) { 
+        flash_error('Nu am reusit sa redenumesc fisierul.'); 
+        redirect(url_textblock($page_name)); 
+    } 
+  
+    // Everything went ok
+    flash('Fisierul '.$old_name.' a fost redenumit cu succes in '.$new_name); 
+    redirect(url_textblock($page_name)); 
+} 
+
 // Does NOT print error message. Instead it returns HTTP 403/404.
 //
 // Returns attachment model

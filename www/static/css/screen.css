@@ -147,7 +147,6 @@ The basic layout of the homepage is as follows:
 }
 
 #sidebar .ad {
-    text-align: center;
     padding: 1em 1em 1em 0;
     margin-top: 1em;
 }
@@ -453,6 +452,7 @@ div.warning {
     background-position: 2px 50%;
     background-repeat: no-repeat;
     width: 55%;
+    position: relative;
 }
 
 div.notice {
@@ -471,7 +471,7 @@ form {
 }
 
 input[type='text'], input[type='password'], select {
-    width: 200px;
+    width: 150px;
 }
 
 #sidebar input[type='text'], #sidebar input[type='password'], #sidebar select {
@@ -1052,14 +1052,19 @@ td.rating, th.rating {
 
 /* pager (paginator) */
 .pager a, .pager strong {
-    padding: .2em .5em .2em .5em;
+    padding: .1em .3em .0em .3em;
 }
 .pager a:hover {
     background-color: silver;
 }
 .pager .count {
+    font-size: small;
+}
+
+.pager .entries-per-page {
     float: right;
     font-size: small;
+    height: 15px;
 }
 
 /* user count */

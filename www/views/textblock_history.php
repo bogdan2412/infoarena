@@ -72,6 +72,8 @@ $options = array(
     'total_entries' => $total_entries,
     'first_entry' => $first_entry,
     'pager_style' => 'standard',
+    'show_display_entries' => true,
+    'show_count' => true,
     'surround_pages' => 3,
 );
 
@@ -79,4 +81,4 @@ echo format_table($revisions, $column_infos, $options);
 
 ?>
 
-<?php include('footer.php'); ?>
+<?php include('footer.php'); ?> 

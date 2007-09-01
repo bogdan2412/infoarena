@@ -30,19 +30,18 @@ function controller_changes($page_name) {
         $view['channel']['link'] = url_absolute(url_changes());
         $view['channel']['description'] = 'Ultimele modificari din wiki-ul http://infoarena.ro';
         $view['channel']['language'] = 'ro-ro'; 
-        $view['channel']['copyright'] = '2006 - asociatia infoarena';
+        $view['channel']['copyright'] = '2007 - asociatia infoarena';
 
         $view['item'] = array();
 
         foreach ($revisions as $rev) {
-            //log_print_r($rev);
             $item = array();
             $item['title'] = sprintf("%s modificat de %s",
                     $rev['title'] , $rev['user_name']);
 
             $userlink = format_user_tiny($rev['user_name'], $rev['user_fullname']);
             $pagelink = format_link(url_textblock($rev['name'], true), $rev['title']);
-            $diffurl = url_textblock_diff($rev['name'], $rev['revision_id'], $rev['revision_id'] - 1);
+            $diffurl = url_textblock_diff($rev['name'], $rev['revision_id'] - 1, $rev['revision_id']);
             $difflink = format_link($diffurl, "modificari");
             $tstamp = format_date($rev['timestamp']);
             $item['description'] = "La data de $tstamp pagina $pagelink a fost modificata de $userlink($difflink).";
