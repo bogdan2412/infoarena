@@ -85,8 +85,7 @@ function security_query($user, $action, $object) {
 
 // This function simplifies $action.
 // It's not an error to pass an already simplified action.
-function security_simplify_action($action)
-{
+function security_simplify_action($action) {
     switch ($action) {
         // View access.
         case 'textblock-view':
@@ -122,6 +121,7 @@ function security_simplify_action($action)
         case 'textblock-delete':
         case 'grader-overwrite':
         case 'grader-delete':
+        case 'grader-rename':
         case 'grader-download':
         case 'simple-edit':
             return 'simple-edit';
@@ -255,18 +255,17 @@ function security_textblock($user, $action, $textblock) {
 // FIXME: attach-grader?
 function security_attach($user, $action, $attach) {
 
-    $att_name = strtolower($attach['name']);
+    $att_name = $attach['name'];
     $att_page = normalize_page_name($attach['page']);
     $usersec = getattr($user, 'security_level', 'anonymous');
     $is_admin = $usersec == 'admin';
-    $is_self = $attach['user_id'] == $user['id'];
+    $is_owner = $attach['user_id'] == $user['id'];
 
     // Log query response.
-    $action = security_simplify_action($action);
-    $level = ($is_admin ? 'admin' : ($is_self ? 'self' : 'other'));
+    $level = ($is_admin ? 'admin' : ($is_owner ? 'owner' : 'other'));
     $objid = $attach['user_id'];
     if (IA_LOG_SECURITY) {
-        log_print("SECURITY QUERY USER: ".
+        log_print("SECURITY QUERY ATTACH: ".
                   "($level, $action, $objid): ".
                   "(level, action, object)");
     }
@@ -284,11 +283,6 @@ function security_attach($user, $action, $attach) {
     if ($action == 'attach-download' && $att_name = 'avatar' &&
             strstr($att_page, IA_USER_TEXTBLOCK_PREFIX) === $att_page) {
         return true;
-    }
-
-    // We allow ireversable edits for attachments if they are your attachments 
-    if ($action == 'simple-edit') {
-        return $is_admin || $is_self;
     }
 
     // Forward to textblock.

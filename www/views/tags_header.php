@@ -31,7 +31,7 @@ function tag_format_input_box($value = null, $width = "50", $name = "tags") {
 }
 ?>
 
-<link rel="stylesheet" type="text/css" href="<?= htmlentities(url_static("css/wick.css")) ?>">
+<link rel="stylesheet" type="text/css" href="<?= htmlentities(url_static("css/wick.css")) ?> " />
 <script type="text/javascript" language="JavaScript">
 function checkForm() {
     answer = true;

@@ -315,7 +315,8 @@ function try_attachment_get($page_name, $file_name) {
         die_http_error();
     }
     if (!identity_can('attach-download', $attach)) {
-        die_http_error();
+        flash_error('Nu aveti permisiuni pentru a descarca fisierul '.$file_name);
+        redirect(url_textblock($page_name));
     }
 
     $real_name = attachment_get_filepath($attach);
