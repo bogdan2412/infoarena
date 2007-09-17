@@ -66,7 +66,7 @@ function curl_test($args)
     $res['content'] = $content;
     curl_close($ch);
    
-    if (getattr($args, 'validate_html', true)) {
+    if (getattr($args, 'validate_html', false)) {
         validate_html($content);
     }
 

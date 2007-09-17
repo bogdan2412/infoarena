@@ -267,7 +267,7 @@ function controller_attachment_delete($page_name) {
 }
     
 function controller_attachment_rename($page_name, $old_name, $new_name) { 
-    if (!is_attachment_name($old_name)) { 
+    if (!is_attachment_name($old_name) || !is_attachment_name($new_name)) { 
         flash_error('Nume invalid.'); 
         redirect(url_textblock($page_name)); 
     } 
