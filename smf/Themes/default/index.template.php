@@ -86,6 +86,7 @@ function template_main_above()
 
 	// The ?fin11 part of this link is just here to make sure browsers don't cache it wrongly.
 	echo '
+    <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
 	<link rel="stylesheet" type="text/css" href="', IA_URL, 'static/css/sitewide.css" />
 	<link rel="stylesheet" type="text/css" href="', $settings['theme_url'], '/style.css?fin11" />
 	<link rel="stylesheet" type="text/css" href="', $settings['default_theme_url'], '/print.css?fin11" media="print" />';
