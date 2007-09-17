@@ -25,7 +25,7 @@ function tag_format_input_box($value = null, $width = "50", $name = "tags") {
     }
     $output .= ' />';
     $output .= '<script type="text/javascript" language="JavaScript" src="'.
-                htmlentities(url_static("js/wick.js")).'" />';
+                htmlentities(url_static("js/wick.js")).'"></script>';
     $output .= "</label></li>";
     return $output;
 }
