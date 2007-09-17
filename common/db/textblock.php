@@ -207,6 +207,7 @@ function textblock_delete($page_name) {
     $atts = attachment_get_all($page_name);
     foreach ($atts as $att) {
         if (!attachment_delete($att)) {
+            log_warn('Could not delete attachment from '.$page_name);
             return false;
         }
     }

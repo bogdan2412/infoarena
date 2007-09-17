@@ -74,7 +74,7 @@ function ia_template_topnav($selected = 'infoarena', $smf_admin = false) {
     </li>
     <li>
         <?= getattr($pre, 'register')?>
-        <?= format_link(url_login(), "inregistare") ?>
+        <?= format_link(url_register(), "inregistare") ?>
         <?= getattr($post, 'register') ?>
     </li>
 <?php } else { ?>

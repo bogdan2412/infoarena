@@ -213,6 +213,16 @@ SELECT `job`.`id`,
        `task`.`user_id` AS `task_owner_id`,
        `round`.`page_name` AS `round_page_name`, 
        `round`.`title` AS `round_title`
+#       (CASE WHEN `status` = 'processing' THEN
+#                (SELECT `value` FROM `ia_parameter_value`
+#                 WHERE `ia_parameter_value`.`object_id` = `task_id` AND
+#                       `ia_parameter_value`.`object_type` = 'task' AND
+#                       `ia_parameter_value`.`parameter_id` = 'tests')
+#                ELSE NULL END) AS `total_tests`,
+#       (CASE WHEN `status` = 'processing' THEN
+#                (SELECT COUNT(*) FROM `ia_job_test`
+#                 WHERE `ia_job_test`.`job_id` = `job`.`id`)
+#                ELSE NULL END) AS `done_tests`
       FROM `ia_job` AS `job`
       LEFT JOIN `ia_user` AS `user` ON `job`.`user_id` = `user`.`id`
       LEFT JOIN `ia_task` AS `task` ON `job`.`task_id` = `task`.`id`

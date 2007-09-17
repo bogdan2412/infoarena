@@ -178,9 +178,10 @@ function controller_account($username = null) {
         unset($data['id']);
         unset($data['username']);
         unset($data['password']);
-        if (!identity_can('user-change-security', $user)) {
-            unset($data['security_level']);
-        }
+    }
+
+    if (!identity_can('user-change-security', $user)) {
+        unset($data['security_level']);
     }
 
     // attach form is displayed for the first time or validation error occurred

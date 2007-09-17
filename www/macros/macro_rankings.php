@@ -27,7 +27,7 @@ function macro_rankings($args) {
     }
     $rounds = preg_split('/\s*\|\s*/', $roundstr);
 
-    // FIXME: user/ task parameters.
+    // FIXME: user / task parameters.
     $rankings = score_get_range("score", null, null, $rounds, "user_id", $options['first_entry'], $options['display_entries'], true);
 
     $column_infos = array(
@@ -50,6 +50,7 @@ function macro_rankings($args) {
             'css_class' => 'number score'
         ),
     );
+
     if (pager_needs_total_entries($options)) {
         $options['total_entries'] = score_get_count("score", null, null, $rounds, 'user_id');
     }

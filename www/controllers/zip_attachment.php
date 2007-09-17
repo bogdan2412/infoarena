@@ -30,7 +30,8 @@ function get_zipped_attachments($filename) {
             }
 
             // append to list
-            $attachments[] = array('name' => $aname, 'size' => $stat['size'], 'zipindex' => $i);
+            $attachments[] = array('name' => $aname, 'size' => $stat['size'],
+                                   'zipindex' => $i);
             $namehash[$aname] = true;
         }
         $zip->close();
