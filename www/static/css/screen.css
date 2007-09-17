@@ -287,7 +287,7 @@ The basic layout of the homepage is as follows:
 /* sidebar :: login box */
 #login {
     padding: 0;
-    margin: 2em 1em 2em 0;
+    margin: 1em 1em 2em 0;
 }
 
 #login fieldset {
@@ -306,6 +306,26 @@ The basic layout of the homepage is as follows:
 
 #login label {
     font-weight: normal;
+}
+
+/* Sidebar :: search box */
+#google-search {
+    padding: 0;
+    margin: 1em 1em 2em 0;
+}
+
+#google-search fieldset {
+    width: 150px;
+    margin: 0;
+    padding: .5em .5em 0 .5em;
+    border-bottom: 0;
+    border-left: 0;
+    border-right: 0;
+}
+
+#google-search p {
+    padding-left: .7em;
+    margin: 0;
 }
 
 /* Main (content) */

@@ -82,7 +82,11 @@ ia_template_topnav($topnav_select, $smf_admin);
         <li><a href="<?= htmlentities(url_submit()) ?>"><strong>Trimite solutii</strong></a></li>
         <li><?= format_link_access(url_account(), "Contul meu", 'c') ?></li>
         <?php } ?>
-    </ul>
+        </ul>
+
+    <div id="google-search">
+        <?php include(IA_ROOT_DIR.'www/views/google_search.php'); ?>
+    </div>
 
     <?php if (identity_is_anonymous()) { ?>
     <div id="login">

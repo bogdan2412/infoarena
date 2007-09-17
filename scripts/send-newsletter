@@ -13,6 +13,7 @@ db_connect();
 
 // config
 define("IA_NEWSLETTER_FROM", "Cristian George Strat <cristian@infoarena.ro>");
+// define("IA_NEWSLETTER_FROM", "Crestez Dan Leonard <cdleonard@gmail.com>");
 // how many emails to send at once (with no delay)
 define("IA_BURST_LENGTH", 25);
 // pause (milliseconds i.e. 10^-3) between bursts.
@@ -53,7 +54,7 @@ function list_get($list_id) {
 
         case 'test':
             // a small set of users. meant for testing
-            $usernames = array('wickedman', 'gigikent', 'Freja');
+            $usernames = array('wickedman', 'fluffy');
             $query = "SELECT * FROM ia_user
                       WHERE username IN ('".join("', '", $usernames)."')
                       ORDER BY full_name";
