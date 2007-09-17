@@ -75,14 +75,14 @@ if (!$jobs) {
         if ($row['status'] == 'processing') {
             $msg = '<img src="'.url_static('images/indicator.gif').'" />';
             $msg .= '<span class="job-status-processing">se evalueaza';
-            if (array_key_exists('done_tests', $row)) {
-                $done = $row['done_tests'];
-                $total = $row['total_tests'];
-                if ($done < $total) {
-                    ++$done;
-                }
-                $msg .= '(' . $done . '/' . $total . ')';
-            }
+//            if (array_key_exists('done_tests', $row)) {
+//                $done = $row['done_tests'];
+//                $total = $row['total_tests'];
+//                if ($done < $total) {
+//                    ++$done;
+//                }
+//                $msg .= '(' . $done . '/' . $total . ')';
+//            }
             $msg .= '</span>';
             return format_link($url, $msg, false);
         }
