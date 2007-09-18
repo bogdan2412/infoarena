@@ -799,10 +799,10 @@ class Textile {
       // content by default
       $str = preg_replace_callback('{(<blockcode(?: [^>]+)?>)(.+?)(</blockcode>)}s',
                                    $this->_cb('"\n\n" . $me->_repl($me->repl[0], $m[1] . $me->encode_html($m[2], 1) . $m[3]) . "\n\n"'), $str);
-
-      // preserve PHPish, ASPish code
-      $str = preg_replace_callback('!(<([\?%]).*?(\2)>)!s', $this->_cb('$me->_repl($me->repl[0], $m[1])'), $str);
     }
+
+    // LaTeX code
+    $str = preg_replace_callback('!(<([\?])(.*?)(\2)>)!s', $this->_cb('$me->_repl($me->repl[0], $me->format_latex(array("text" => $m[3])))'), $str);
 
     // pass through and remove links that follow this format
     // [id_without_spaces (optional title text)]url
@@ -2038,6 +2038,10 @@ class Textile {
     return $pre . $str . $post;
   } // function format_block
 
+  function format_latex($args) {
+      return $args['text'];
+  }
+
   /**
    * Takes the Textile link attributes and transforms them into
    * a hyperlink.
@@ -3191,11 +3195,9 @@ class Textile {
     $depth = 6;
     $nested_tags = substr(str_repeat('(?:</?[A-Za-z0-9:]+ \s? (?:[^<>]|', $depth), 0, -1)
       . str_repeat(')*>)', $depth);
-    $match = '(?s: <! ( -- .*? -- \s* )+ > )|'.# XML comment
-/*
-              (?s: <\? .*? \?> )|              # processing instruction
-              (?s: <% .*? %> )|                # ASP-like
-*/
+    $match = '(?s: <! ( -- .*? -- \s* )+ > )|'.  # XML comment
+             '(?s: <\? .*? \?> )|'.              # LaTeX code
+//             '(?s: <\% .*? \%> )|'.                # ASP-like
              '(?:' . $nested_tags . ')|
               (?:' . $this->codere . ')';     // nested tags
 

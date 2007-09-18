@@ -20,6 +20,7 @@ function controller_user_view($username, $action, $revision = null) {
         'title' => $user['full_name'].' ('.$user['username'].')',
         'page_name' => $page_name,
 	    'revision' => $revision,
+        'revision_count' => textblock_get_revision_count($page_name),
         'action' => $action,
         'user' => $user,
         'topnav_select' => 'profile',

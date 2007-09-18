@@ -94,6 +94,7 @@ function _format_standard_pager_link($options, $number) {
     $url_args = getattr($options, 'url_args', $_GET);
     $param_prefix = getattr($options, 'param_prefix', '');
     $display_entries = getattr($options, 'display_entries', IA_PAGER_DEFAULT_DISPLAY_ENTRIES);
+    $url_args[$param_prefix.'display_entries'] = $display_entries;
     $url_args[$param_prefix.'first_entry'] = ($number - 1) * $display_entries;
     $access_keys = getattr($options, 'use_digit_access_keys', true);
     $args = array();

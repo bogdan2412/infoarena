@@ -2,6 +2,7 @@
 
 @require_once(IA_ROOT_DIR."www/wiki/Textile.php");
 require_once(IA_ROOT_DIR."common/attachment.php");
+require_once(IA_ROOT_DIR."www/wiki/latex/latex.php");
 
 class MyTextile extends Textile {
     // FIXME: If you see a pointless textile error try tweaking this value.
@@ -178,6 +179,19 @@ class MyTextile extends Textile {
         return $res;
     }
 
+    function format_latex($args) {
+        $str = getattr($args, 'text', '');
+        if ($this->error_reporting_level === false) {
+            return latex_content($str);
+        }
+        error_reporting($this->error_reporting_level);
+
+        $res = latex_content($str);
+        $res = getattr($args, 'pre', '').$res.getattr($args, 'post', '');
+        error_reporting($this->my_error_reporting);
+        return $res;
+    }
+
     // Wrap around do_format_link, restore errors.
     function format_link($args) {
         if ($this->error_reporting_level === false) {
@@ -195,8 +209,7 @@ class MyTextile extends Textile {
     }
 
     // Disabled, sorry.
-    function image_size($filename)
-    {
+    function image_size($filename) {
         return null;
     }
 

@@ -156,7 +156,7 @@ if (!$jobs) {
         'first_entry' => $view['first_entry'],
         'pager_style' => 'standard',
         'surround_pages' => 3,
-        'url_args' => $filters + array('page' => 'monitor'),
+        'url_args' => $view['filters'] + array('page' => 'monitor'),
     );
 
     print format_table($jobs, $column_infos, $options);
@@ -166,7 +166,7 @@ if (!$jobs) {
 // intensive page.
 
 if (!$display_only_table) {
-    $monitor_params = array('only_table' => 1, 'first_entry' => $first_entry);
+    $monitor_params = array('only_table' => 1, 'first_entry' => $first_entry, 'display_entries' => $view['display_entries']);
     $url_monitor = url_absolute(url_complex('monitor', $view['filters'] + $monitor_params));
 
 ?>
