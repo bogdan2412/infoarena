@@ -202,6 +202,7 @@ class LatexRender {
         $string .= "\usepackage{amsmath}\n";
         $string .= "\usepackage{amsfonts}\n";
         $string .= "\usepackage{amssymb}\n";
+        $string .= "\usepackage{color}\n";
         $string .= "\pagestyle{empty}\n";
 	$string .= "\\newsavebox{\formulabox}\n";
 	$string .= "\\newlength{\formulawidth}\n";
