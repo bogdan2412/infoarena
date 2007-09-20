@@ -434,9 +434,6 @@ function security_round($user, $action, $round) {
         case 'round-submit':
             // FIXME: This sucks.
             // FIXME: job_get_submit_targets
-            if ($is_admin) {
-                return true;
-            }
             $rparams = round_get_parameters($round['id']);
             $time = time();
             $rstart = db_date_parse($round['start_time']);
