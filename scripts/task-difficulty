@@ -1,0 +1,113 @@
+#! /usr/bin/env php
+<?php
+
+
+require_once(dirname($argv[0]) . "/utilities.php");
+
+require_once(IA_ROOT_DIR."www/config.php");
+require_once(IA_ROOT_DIR."common/db/round.php");
+require_once(IA_ROOT_DIR."common/db/score.php");
+db_connect();
+
+
+// Groups $rows by column $pivot, creating an array (or a dictionary indexed by $subpivot) of
+// `value elements` for each unique group.
+//
+// Each `value element` is either:
+//   - value of column $valueCol,       when $valueCol is string
+//   - whole row                        anything else (e.g. null)
+//
+// Additionally, each cluster array/dictionary may be reduced to a single column value by
+// specifying $reduceClusterToCol
+function cluster_rows($rows, $pivot, $valueCol = null, $subpivot = null, $reduceClusterToCol = null) {
+    $clusters = array();
+
+    foreach ($rows as $row) {
+        // create cluster
+        if (!isset($clusters[$row[$pivot]])) {
+            $clusters[$row[$pivot]] = array();
+        }
+        // element value
+        if (is_string($valueCol)) {
+            $value = $row[$valueCol];
+        }
+        else {
+            $value = $row;
+        }
+        // append element
+        if (is_null($subpivot)) {
+            $clusters[$row[$pivot]][] = $value;
+        }
+        else {
+            $clusters[$row[$pivot]][$row[$subpivot]] = $value;
+        }
+    }
+
+    // reduce cluster elements to single values
+    if (!is_null($reduceClusterToCol)) {
+        foreach ($clusters as $k => $cluster) {
+            $clusters[$k] = getattr($cluster, $reduceClusterToCol);
+        }
+    }
+
+    return $clusters;
+}
+
+
+
+$query = "SELECT id FROM ia_task WHERE hidden = 0";
+$tasks = array_values(cluster_rows(db_fetch_all($query), 'id', 'id', null, 0));
+
+$diff = array();
+foreach ($tasks as $task) {
+    $query = <<<SQL
+        SELECT COUNT(*)
+        FROM ia_score
+        LEFT JOIN ia_user ON ia_user.id = user_id
+        WHERE rating_cache > 0 AND ia_score.name='score' AND round_id='arhiva'
+                AND task_id='%s'
+SQL;
+    $sample_space = (int)db_query_value(sprintf($query, db_escape($task)));
+    if ($sample_space < 50) {
+        $diff[] = array('task_id' => $task,
+                        'diff' => -1);
+        continue;
+    }
+
+    $sample_space = round($sample_space / 3.5);
+
+    $query = <<<SQL
+        SELECT AVG(rating_cache) FROM (
+            SELECT rating_cache
+            FROM ia_score
+            LEFT JOIN ia_user ON ia_user.id = user_id
+            WHERE rating_cache > 0 AND ia_score.name='score' AND round_id='arhiva'
+                    AND task_id='%s'
+            ORDER BY rating_cache
+            LIMIT %d
+        ) samples
+SQL;
+    $difficulty = db_query_value(sprintf($query, db_escape($task), $sample_space));
+    if ($difficulty) {
+        $diff[] = array('task_id' => $task,
+                        'diff' => $difficulty);
+    }
+}
+
+function diffcmp($a, $b) {
+    if ($a['diff'] < $b['diff'])
+        return -1;
+    else
+        return 1;
+}
+
+usort($diff, 'diffcmp');
+
+foreach ($diff as $row) {
+    if (-1 == $row['diff']) {
+        continue;
+    }
+    echo sprintf("%-15s%f", $row['task_id'], $row['diff']), "\n";
+}
+
+?>
