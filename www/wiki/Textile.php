@@ -802,7 +802,7 @@ class Textile {
     }
 
     // LaTeX code
-    $str = preg_replace_callback('!(<([\?])(.*?)(\2)>)!s', $this->_cb('$me->_repl($me->repl[0], $me->format_latex(array("text" => $m[3])))'), $str);
+    $str = preg_replace_callback('!((<tex>)(.*?)(<\/tex>))!si', $this->_cb('$me->_repl($me->repl[0], $me->format_latex(array("text" => $m[3])))'), $str);
 
     // pass through and remove links that follow this format
     // [id_without_spaces (optional title text)]url
@@ -3196,7 +3196,7 @@ class Textile {
     $nested_tags = substr(str_repeat('(?:</?[A-Za-z0-9:]+ \s? (?:[^<>]|', $depth), 0, -1)
       . str_repeat(')*>)', $depth);
     $match = '(?s: <! ( -- .*? -- \s* )+ > )|'.  # XML comment
-             '(?s: <\? .*? \?> )|'.              # LaTeX code
+             '(?s: <tex> .*? <\/tex> )|'.              # LaTeX code
 //             '(?s: <\% .*? \%> )|'.                # ASP-like
              '(?:' . $nested_tags . ')|
               (?:' . $this->codere . ')';     // nested tags
