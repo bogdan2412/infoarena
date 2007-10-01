@@ -43,6 +43,10 @@ function textblock_validate($tb) {
         $errors['timestamp'] = 'Timestamp invalid.';
     }
 
+    if (!is_db_date(getattr($tb, 'creation_timestamp', db_date_format()))) {
+        $errors['creation_timestamp'] = 'Timestamp invalid.';
+    }
+
     if (!is_textblock_security_descriptor(getattr($tb, 'security'))) {
         $errors['security'] = "Descriptor de securitate gresit.";
     }

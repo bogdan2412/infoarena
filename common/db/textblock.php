@@ -12,8 +12,8 @@ require_once(IA_ROOT_DIR."common/textblock.php");
 // Add a new revision
 // FIXME: hash parameter?
 function textblock_add_revision(
-        $name, $title, $content, $user_id,
-        $security = "public", $timestamp = null) {
+        $name, $title, $content, $user_id, $security = "public", 
+        $creation_timestamp = null, $timestamp = null) {
     $name = normalize_page_name($name);
     $tb = array(
             'name' => $name,
@@ -22,6 +22,7 @@ function textblock_add_revision(
             'user_id' => $user_id,
             'security' => $security,
             'timestamp' => $timestamp,
+            'creation_timestamp' => $creation_timestamp,
     );
     log_assert_valid(textblock_validate($tb));
 
@@ -41,17 +42,22 @@ function textblock_add_revision(
     db_query($query);
 
     // Evil.
+    if ($creation_timestamp === null) {
+        $creation_timestamp = db_date_format();
+    } else {
+        log_assert(is_db_date($creation_timestamp), "Invalid timestamp");
+    }
     if ($timestamp === null) {
         $timestamp = db_date_format();
     } else {
         log_assert(is_db_date($timestamp), "Invalid timestamp");
     }
     $query = sprintf("INSERT INTO ia_textblock
-                        (name, `text`, `title`, `timestamp`, `user_id`, `security`)
-                      VALUES ('%s', '%s', '%s', '%s', '%s', '%s')",
+                        (name, `text`, `title`, `creation_timestamp`, `timestamp`, `user_id`, `security`)
+                      VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s')",
                      db_escape($name), db_escape($content),
-                     db_escape($title), db_escape($timestamp),
-                     db_escape($user_id), db_escape($security));
+                     db_escape($title), db_escape($creation_timestamp), 
+                     db_escape($timestamp), db_escape($user_id), db_escape($security));
     return db_query($query);
 }
 
@@ -60,7 +66,7 @@ function textblock_complex_query($options)
 {
     //log_print_r($options);
 
-    $field_list = "`name`, `title`, `timestamp`, `security`, `user_id`";
+    $field_list = "`name`, `title`, `creation_timestamp`, `timestamp`, `security`, `user_id`";
 
     // Select content.
     if (getattr($options, 'content', false) == true) {
@@ -188,7 +194,7 @@ function textblock_get_revision_count($name) {
 
 // Grep through textblocks. This is mostly a hack needed for macro_grep.php
 function textblock_grep($substr, $page) {
-    $query = sprintf("SELECT `name`, `title`, `timestamp`, `user_id`, `security`
+    $query = sprintf("SELECT `name`, `title`, `creation_timestamp`, `timestamp`, `user_id`, `security`
                       FROM ia_textblock
                       WHERE `name` LIKE '%s' AND
                             (`text` LIKE '%s' OR `title` LIKE '%s')

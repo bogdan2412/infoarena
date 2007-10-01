@@ -32,6 +32,7 @@ function controller_textblock_edit($page_name) {
     $values['title'] = request('title', $page['title']);
     $values['security'] = request('security', $page['security']);
     $values['tags'] = request('tags', tag_build_list("textblock", $page_name));
+    $values['creation_timestamp'] = getattr($page, 'creation_timestamp');
 
     if (request_is_post()) {
         // Get new page
@@ -39,6 +40,7 @@ function controller_textblock_edit($page_name) {
         $new_page['text'] = $values['text'];
         $new_page['title'] = $values['title'];
         $new_page['security'] = $values['security'];
+        $new_page['creation_timestamp'] = $values['creation_timestamp'];
         $new_page['user_id'] = identity_get_user_id();
 
         // Validate new page
@@ -56,7 +58,7 @@ function controller_textblock_edit($page_name) {
         if (!$errors) {
             textblock_add_revision($new_page['name'], $new_page['title'],
                                    $new_page['text'], $new_page['user_id'],
-                                   $new_page['security']);
+                                   $new_page['security'], $new_page['creation_timestamp']);
             if (identity_can('textblock-tag', $new_page)) {
                 tag_update("textblock", $new_page['name'], $values['tags']);
             }
