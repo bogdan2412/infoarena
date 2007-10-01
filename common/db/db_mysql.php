@@ -6,6 +6,7 @@ function db_connect() {
     global $dbLink;
     // Repetitive include guard. Is this really needed?
     log_assert(!isset($dbLink), "Already connected to the database.");
+    $old_errorlevel = error_reporting(0);
     // log_print("connecting to database");
     if (!$dbLink = mysql_connect(IA_DB_HOST, IA_DB_USER, IA_DB_PASS)) {
         log_error('Cannot connect to database: '.mysql_error());
@@ -13,16 +14,27 @@ function db_connect() {
     if (!mysql_select_db(IA_DB_NAME, $dbLink)) {
         log_error('Cannot select database.');
     }
+    error_reporting($old_errorlevel);
 }
 
 // Keeps the database link up and running
 function db_keepalive() {
     global $dbLink;
 
-    while (!$dbLink) {
-        db_connect();
-        sleep(30);
+    // Are we already connected?
+    if (is_resource($dbLink) && mysql_ping($dbLink)) {
+        return false;
     }
+    while (!is_resource($dbLink) || !mysql_ping($dbLink)) {
+        if (is_resource($dbLink)) {
+            mysql_close($dbLink);
+        }
+        $dbLink = null;
+        db_connect();
+        // Wait for 1 second
+        sleep(1);
+    }
+    return true;
 }
 
 // Escapes a string to be safely included in a query.
@@ -56,8 +68,6 @@ function db_affected_rows() {
 function db_query($query, $unbuffered = false) {
     global $dbLink;
 
-//    db_keepalive();
-
     // Disable unbuffered queries.
     if (!IA_DB_MYSQL_UNBUFFERED_QUERY) {
         $unbuffered = false;
@@ -71,6 +81,11 @@ function db_query($query, $unbuffered = false) {
     }
 
     if (!$result) {
+        // Query falied. Have we lost connection?
+        if (db_keepalive()) {
+            // Try query again
+            return db_query($query, $unbuffered);
+        }
         log_print("Query: '$query'");
         log_error("MYSQL error: ".mysql_error($dbLink));
     } else {
