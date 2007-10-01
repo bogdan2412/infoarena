@@ -108,7 +108,8 @@ function _format_standard_pager_link($options, $number) {
 // Internal for format_standard_pager
 function _format_standard_pager_link_with_text($options, $text) {
     $url_args = getattr($options, 'url_args', $_GET);
-    $url_args['display_entries'] = $options['display_entries'];
+    $param_prefix = getattr($options, 'param_prefix', '');
+    $url_args[$param_prefix.'display_entries'] = $options['display_entries'];
 
     return format_link(url_from_args($url_args), $text, false, array());
 }

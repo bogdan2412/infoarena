@@ -545,6 +545,10 @@ input.button:active {
     font-weight: normal;
 }
 
+fieldset img {
+    vertical-align: middle;
+}
+
 fieldset {
     padding: 0 1em 1em 1em;
     margin: 0 1em 1em 1em;

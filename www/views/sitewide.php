@@ -13,12 +13,6 @@ function ia_template_header() {
     global $identity_user;
 ?>
 <div id="header" class="clear">
-    <!-- Search feature not ready yet
-    <form id="search" action="get">
-        <input type="text" id="inputbox" />
-        <input type="submit" value="Cauta &raquo;"/>
-    </form>
-    -->
     <?php if (!identity_is_anonymous()) { $username = $identity_user['username']; ?>
         <div id="userbox">
         <?= format_link(url_user_profile($username, true), format_user_avatar($username, 50, 50, true), false) ?>

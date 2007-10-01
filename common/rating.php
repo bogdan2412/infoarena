@@ -40,6 +40,8 @@ define("IA_RATING_Q", log(10.0) / 400.0);
 define("IA_RATING_MAX_CHUNK", 10);
 // tweak rating increases to avoid unusual behavior for huge contents
 define("IA_RATING_TWEAK_PERIOD", 3);
+define("IA_MIN_SCALED_RATING", 0);
+define("IA_MAX_SCALED_RATING", 1000);
 
 // number square
 function sqr($number) {
@@ -235,7 +237,8 @@ function rating_update(&$users, $user_scores, $timestamp) {
 // NOTE: This is used only when displaying ratings to users.
 // NOTE: Currently used by www/format/* and scripts/send-newsletter.
 function rating_scale($absolute_rating) {
-    return round($absolute_rating / 3.0);
+    return min(max(IA_MIN_SCALED_RATING, round($absolute_rating / 3.0)), 
+                   IA_MAX_SCALED_RATING);
 }
 
 ?>

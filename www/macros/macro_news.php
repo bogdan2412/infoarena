@@ -11,8 +11,11 @@ function macro_news($args) {
     $options = pager_init_options($args);
     $subpages = news_get_range($options['first_entry'], $options['display_entries'], $prefix);
     $options['total_entries'] = news_count($prefix);
+    $options['show_count'] = true;
+    $options['show_display_entries'] = true;
 
     $res = '<div class="news">';
+    $res .= format_pager($options);
     foreach ($subpages as $subpage) {
         $res .= '<div class="item">';
         $res .= '<span class="date">'.htmlentities(date('d M Y', strtotime($subpage['timestamp']))).'</span>';

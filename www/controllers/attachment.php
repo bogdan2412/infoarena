@@ -203,11 +203,15 @@ function controller_attachment_submit($page_name) {
                 log_error("Failed moving attachment to final storage ".
                     "(from {$file_att['disk_name']} to $disk_name)");
             }
+            // we convert text files to Linux format
+            if (is_textfile($file_att['type'])) {
+                dos_to_unix($disk_name);          
+            }
         }
     }
 
     // custom error message for simple (single) file uploads
-    if (!$form_errors && !$autoextract && 0>=$attach_okcount) {
+    if (!$form_errors && !$autoextract && 0 >= $attach_okcount) {
         $form_errors['file_name'] = 'Fisierul nu a putut fi atasat! Eroare necunoscuta ...';
     }
 

@@ -70,16 +70,16 @@ function judge_main_loop() {
     log_print("");
 
     while (1) {
-        if ($round = round_get_round_to_stop()) {
-            round_event_stop($round);
+        if ($round = round_get_round_to_wait()) {
+            round_event_wait($round);
             continue;
         }
         if ($round = round_get_round_to_start()) {
             round_event_start($round);
             continue;
         }
-        if ($round = round_get_round_to_wait()) {
-            round_event_wait($round);
+        if ($round = round_get_round_to_stop()) {
+            round_event_stop($round);
             continue;
         }
         if ($job = job_get_next_job()) {

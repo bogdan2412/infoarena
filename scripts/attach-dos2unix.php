@@ -5,6 +5,7 @@
 // having the same file in the attach folder. This script tries to fix this behavior.
 
 require_once(dirname($argv[0]) . "/utilities.php");
+require_once(IA_ROOT_DIR."common/attachment.php");
 require_once(IA_ROOT_DIR."common/db/attachment.php");
 
 ini_set("memory_limit", "128M");
@@ -20,24 +21,15 @@ function attachment_get_bad_filepath($attach) {
 db_connect();
 $query = "SELECT * FROM ia_file;";
 $attachments = db_fetch_all($query);
-$fixed = $errors = 0;
+$fixed = 0;
 
 log_print("Exista ".count($attachments)." atasamente...");
 foreach ($attachments as $attach) {
-    if ($attach['name'] == strtolower($attach['name'])) {
+    if (!is_textfile($attach['mime_type'])) {
         continue;
     }
-    log_print('Verific '.$attach['page'].'\\'.$attach['name']);
-    $bad_name = attachment_get_bad_filepath($attach);
-    if (file_exists($bad_name)) {
-        log_print('Repar '.$attach['page'].'\\'.$attach['name']);
-        $good_name = attachment_get_filepath($attach);
-        if (!@rename($bad_name, $good_name)) {
-            log_error("Eroare la redenumire!");
-            $errors++;
-        }
-        $fixed++;
-    }
+    log_print('Repar '.$attach['page'].'\\'.$attach['name']);
+    dos_to_unix(attachment_get_filepath($attach));
+    $fixed++;
 }
 log_print("S-au reparat ".$fixed." atasamente!");
-log_print("Au avut loc ".$errors." erori!");

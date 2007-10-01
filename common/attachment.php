@@ -109,4 +109,12 @@ function resize_coordinates($width, $height, $resize) {
     }
 }
 
+function is_textfile($mime_type) {
+    return substr($mime_type, 0, 5) == "text/";
+}
+
+function dos_to_unix($file_path) {
+    system("dos2unix ".$file_path);
+}
+
 ?>
