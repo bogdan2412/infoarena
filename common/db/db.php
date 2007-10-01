@@ -202,7 +202,7 @@ function news_get_range($start, $range, $prefix = null) {
                         *
                       FROM ia_textblock
                       WHERE `name` LIKE 'stiri/%s%%'
-                      ORDER BY ia_textblock.`timestamp` DESC
+                      ORDER BY ia_textblock.`creation_timestamp` DESC
                       LIMIT %s, %s",
                      db_escape($prefix), db_quote((int)$start), db_quote((int)$range));
     return db_fetch_all($query);
