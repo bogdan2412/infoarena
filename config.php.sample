@@ -21,6 +21,9 @@ define("IA_DB_USER", '--write-me-IA_DB_USER--');
 // Database password
 define("IA_DB_PASS", '--write-me-IA_DB_PASS--');
 
+// Keep database connection alive when lost
+define("IA_DB_KEEP_ALIVE", false);
+
 // Web host. This is probably localhost. no trailing slash here
 define("IA_URL_HOST", "--write-me-IA_URL_HOST--");
 

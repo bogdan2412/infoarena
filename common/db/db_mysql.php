@@ -6,6 +6,7 @@ function db_connect() {
     global $dbLink;
     // Repetitive include guard. Is this really needed?
     log_assert(!isset($dbLink), "Already connected to the database.");
+
     $old_errorlevel = error_reporting(0);
     // log_print("connecting to database");
     if (!$dbLink = mysql_connect(IA_DB_HOST, IA_DB_USER, IA_DB_PASS)) {
@@ -17,15 +18,24 @@ function db_connect() {
     error_reporting($old_errorlevel);
 }
 
-// Keeps the database link up and running
-function db_keepalive() {
+function db_isalive() {
     global $dbLink;
 
     // Are we already connected?
     if (is_resource($dbLink) && mysql_ping($dbLink)) {
+        return true;
+    }
+    return false;
+}
+
+// Keeps the database link up and running
+function db_keepalive() {
+    global $dbLink;
+
+    if (db_isalive()) {
         return false;
     }
-    while (!is_resource($dbLink) || !mysql_ping($dbLink)) {
+    while (!db_isalive()) {
         if (is_resource($dbLink)) {
             mysql_close($dbLink);
         }
@@ -68,6 +78,11 @@ function db_affected_rows() {
 function db_query($query, $unbuffered = false) {
     global $dbLink;
 
+    // Make sure we are connected.
+    if (IA_DB_KEEP_ALIVE) {
+        db_keepalive();
+    }
+
     // Disable unbuffered queries.
     if (!IA_DB_MYSQL_UNBUFFERED_QUERY) {
         $unbuffered = false;
@@ -82,7 +97,7 @@ function db_query($query, $unbuffered = false) {
 
     if (!$result) {
         // Query falied. Have we lost connection?
-        if (db_keepalive()) {
+        if (IA_DB_KEEP_ALIVE && db_keepalive()) {
             // Try query again
             return db_query($query, $unbuffered);
         }
