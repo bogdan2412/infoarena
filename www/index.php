@@ -56,14 +56,14 @@ $directmaps = array_flip(array('register', 'news_feed', 'changes',
 // We include in the if statement to avoid an extra parsing load.
 //
 
-// Trivial direct mappings.
+// Trivial direct mappings
 if (isset($directmaps[$urlstart])) {
     require_once(IA_ROOT_DIR."www/controllers/{$urlstart}.php");
     $fname = "controller_{$urlstart}";
     $fname($page_id);
 }
 
-// Account edit page.
+// Account edit page
 else if ($urlstart == 'account') {
     require_once(IA_ROOT_DIR.'www/controllers/account.php');
     controller_account(getattr($pagepath, 1));
@@ -75,7 +75,7 @@ else if ($page == 'admin/problema-noua') {
     controller_task_create();
 }
 
-// Task detail editor.
+// Task detail editor
 else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'problema') {
     $obj_id = implode("/", array_slice($pagepath, 2));
     require_once(IA_ROOT_DIR.'www/controllers/task.php');
@@ -88,26 +88,49 @@ else if ($page == 'admin/runda-noua') {
     controller_round_create();
 }
 
-// Round detail editor.
+// Round detail editor
 else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'runda') {
     $obj_id = implode("/", array_slice($pagepath, 2));
     require_once(IA_ROOT_DIR.'www/controllers/round.php');
     controller_round_details($obj_id);
 }
 
-// Round registration. 
-// FIXME: This should not be hardcoded.
+// Round registration 
 else if ($urlstart == 'inregistrare-runda') {
     $obj_id = implode("/", array_slice($pagepath, 1));
     require_once(IA_ROOT_DIR.'www/controllers/round_register.php');
     controller_round_register($obj_id);
 }
 
-// FIXME: This should not be hardcoded.
+// Round registered users
 else if ($urlstart == 'lista-inregistrare') {
     $obj_id = implode("/", array_slice($pagepath, 1));
     require_once(IA_ROOT_DIR.'www/controllers/round_register.php');
     controller_round_register_view($obj_id);
+}
+
+// Blog RSS feed
+else if ($page == 'blog' && $action == 'rss') {
+    require_once(IA_ROOT_DIR.'www/controllers/blog.php');
+    controller_blog_feed();
+}
+
+// Blog index
+else if ($page == 'blog') {
+    require_once(IA_ROOT_DIR.'www/controllers/blog.php');
+    controller_blog_index();
+}
+
+// Blog edit
+else if ($urlstart == 'blog' && $action == 'edit') {
+    require_once(IA_ROOT_DIR.'www/controllers/textblock_edit.php');
+    controller_textblock_edit($page, 'protected');
+}
+
+// Blog view
+else if ($urlstart == 'blog' && $action == 'view') {
+    require_once(IA_ROOT_DIR.'www/controllers/blog.php');
+    controller_blog_view($page, request('revision'));
 }
 
 // textblock controllers
@@ -185,11 +208,12 @@ else if ('confirm' == $urlstart) {
 }
 
 // user profile, view personal page / statistics / rating evolution
-else if (IA_USER_TEXTBLOCK_PREFIX==$urlstart.'/' &&
-        ('view' == $action || 'rating' == $action || 'stats' == $action )) {
+else if (IA_USER_TEXTBLOCK_PREFIX == $urlstart.'/' &&
+         ('view' == $action || 'rating' == $action || 'stats' == $action )) {
     require_once(IA_ROOT_DIR.'www/controllers/user.php');
     controller_user_view($page_id, $action, request('revision'));
 }
+
 
 // general textblock view
 else if ($action == 'view') {

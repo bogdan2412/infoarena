@@ -62,4 +62,7 @@ define("IA_IMAGE_RESIZE_MAX_HEIGHT", 800);
 // Sidebar ad
 define("IA_SIDEBAR_PAGE", "sidebar-ad");
 
+// Blog sidebar
+define("IA_BLOG_SIDEBAR", "blog-sidebar");
+
 ?>

@@ -51,6 +51,11 @@ function ia_template_topnav($selected = 'infoarena', $smf_admin = false) {
         <?= getattr($post, 'infoarena') ?>
     </li>
     <li>
+        <?= getattr($pre, 'blog') ?>
+        <?= format_link_access(url_blog(), "blog", 'b') ?>
+        <?= getattr($post, 'blog') ?>
+    </li>
+    <li>
         <?= getattr($pre, 'forum') ?>
         <?= format_link_access(url_forum(), "forum", 'f') ?>
         <?= getattr($post, 'forum') ?>

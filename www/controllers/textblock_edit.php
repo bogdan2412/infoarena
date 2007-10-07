@@ -4,7 +4,7 @@ require_once(IA_ROOT_DIR . "common/db/textblock.php");
 require_once(IA_ROOT_DIR . "common/tags.php");
 
 // Edit a textblock
-function controller_textblock_edit($page_name) {
+function controller_textblock_edit($page_name, $security = 'public') {
     // Need login for user id. No, really.
     identity_require_login();
 
@@ -19,7 +19,7 @@ function controller_textblock_edit($page_name) {
                 'name' => $page_name,
                 'title' => $page_name,
                 'text' => "Scrie aici despre " . $page_name,
-                'security' => 'public',
+                'security' => $security,
                 'user_id' => identity_get_user_id(),
         );
         identity_require('textblock-create', $page);
@@ -33,6 +33,7 @@ function controller_textblock_edit($page_name) {
     $values['security'] = request('security', $page['security']);
     $values['tags'] = request('tags', tag_build_list("textblock", $page_name));
     $values['creation_timestamp'] = getattr($page, 'creation_timestamp');
+    $values['timestamp'] = getattr($page, 'timestamp');
 
     if (request_is_post()) {
         // Get new page
@@ -41,6 +42,7 @@ function controller_textblock_edit($page_name) {
         $new_page['title'] = $values['title'];
         $new_page['security'] = $values['security'];
         $new_page['creation_timestamp'] = $values['creation_timestamp'];
+        $new_page['timestamp'] = $values['timestamp'];
         $new_page['user_id'] = identity_get_user_id();
 
         // Validate new page
@@ -58,7 +60,8 @@ function controller_textblock_edit($page_name) {
         if (!$errors) {
             textblock_add_revision($new_page['name'], $new_page['title'],
                                    $new_page['text'], $new_page['user_id'],
-                                   $new_page['security'], $new_page['creation_timestamp']);
+                                   $new_page['security'], $new_page['timestamp'],
+                                   $new_page['creation_timestamp']);
             if (identity_can('textblock-tag', $new_page)) {
                 tag_update("textblock", $new_page['name'], $values['tags']);
             }

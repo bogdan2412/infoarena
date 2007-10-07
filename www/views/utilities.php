@@ -61,11 +61,13 @@ function ferr_span($param_name, $escape_html = true) {
 
 // Parse and print a textblock. Use this to insert dynamic textblocks
 // inside static templates / views.
-function wiki_include($page_name, $template_args = null) {
+function wiki_include($page_name, $template_args = null, $div = true) {
     $textblock = textblock_get_revision($page_name);
     log_assert($textblock, "Nu am gasit $page_name");
 
-    echo '<div class="wiki_text_block">';
+    if ($div) {
+        echo '<div class="wiki_text_block">';
+    }
     if (!is_null($template_args)) {
         textblock_template_replace($textblock, $template_args);
         // No caching, we're using template magic.
@@ -73,8 +75,9 @@ function wiki_include($page_name, $template_args = null) {
     } else {
         echo wiki_process_textblock($textblock);
     }
-    echo '</div>';
-
+    if ($div) {
+        echo '</div>';
+    }
 }
 
 // Format a field as a li. Uses global form_values/errors.

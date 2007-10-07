@@ -75,9 +75,16 @@ function textblock_copy_replace($srcprefix, $dstprefix, $replace, $security, $us
             $textblock['security'] = $security;
         }
         $textblock['name'] = preg_replace('/^'.preg_quote($srcprefix, '/').'/i', $dstprefix, $textblock['name']);
-        //log_print("Adding {$textblock['name']}");
+
+        //FIXME: hack to keep creation_timestamp correct when textblock already exists
+        $first_textblock = textblock_get_revision($textblock['name']);
+        if (!$first_textblock) {
+            $first_textblock['creation_timestamp'] = null;
+        }
+
         textblock_add_revision($textblock['name'], $textblock['title'],
-                $textblock['text'], $user_id, $textblock['security']);
+                $textblock['text'], $user_id, $textblock['security'],
+                null, $first_textblock['creation_timestamp']);
     }
 }
 

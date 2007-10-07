@@ -13,7 +13,7 @@ require_once(IA_ROOT_DIR."common/textblock.php");
 // FIXME: hash parameter?
 function textblock_add_revision(
         $name, $title, $content, $user_id, $security = "public", 
-        $creation_timestamp = null, $timestamp = null) {
+        $timestamp = null, $creation_timestamp = null) {
     $name = normalize_page_name($name);
     $tb = array(
             'name' => $name,
@@ -113,7 +113,8 @@ function textblock_complex_query($options)
 // Get a certain revision of a textblock. Parameters:
 //  $name:      Textblock name.
 //  $rev_num:   Revision number. Latest if null(default).
-function textblock_get_revision($name, $rev_num = null)
+//  $username:  Get user name info.
+function textblock_get_revision($name, $rev_num = null, $username = false)
 {
     $name = normalize_page_name($name);
     log_assert(is_normal_page_name($name));
@@ -122,13 +123,13 @@ function textblock_get_revision($name, $rev_num = null)
         $res = textblock_complex_query(array(
                 'page_name' => $name,
                 'content' => true,
-                'username' => false,
+                'username' => $username,
         ));
     } else {
         $res = textblock_complex_query(array(
                 'page_name' => $name,
                 'content' => true,
-                'username' => false,
+                'username' => $username,
                 'history' => true,
                 'limit_start' => (int)$rev_num - 1,
                 'limit_count' => 1,

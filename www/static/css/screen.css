@@ -218,6 +218,7 @@ The basic layout of the homepage is as follows:
 /* Wikipage options (actions) */
 #wikiOps {
     font-size:8pt;
+    float: right;
 }
 
 #wikiOps ul {
@@ -345,6 +346,61 @@ The basic layout of the homepage is as follows:
     border-bottom: 1px solid #eee;
 }
 
+/* Blog */
+.blog {
+    max-width: 600px;
+}
+
+#main .blog h1 a {
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-size: 13pt;
+    font-weight: normal;
+}
+
+
+.blog-list li {
+    list-style-type: none;
+    text-indent: -2em;
+}
+
+.blog-list li:before {
+    content: "\00BB \0020";
+}
+
+.blog-list li a:hover {
+    color: green;
+    text-decoration: none;
+}
+
+.blog .item {
+    margin-bottom: 3em;
+    width: 100%;
+}
+
+.blog .item .wiki_text_block {
+    line-height: 1.5em;
+}
+
+.blog .item .date {
+    float: right;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 8.5pt;
+    margin: 5px 0px 5px 0;
+    color: #060;
+}
+
+.blog-sidebar {
+    border: 1px solid silver;
+    width: 190px;
+    position: relative;
+    float: right;
+    padding-left: 0.5em;
+    -moz-border-radius-bottomleft:8px;
+    -moz-border-radius-bottomright:8px;
+    -moz-border-radius-topleft:8px;
+    -moz-border-radius-topright:8px;
+}
+
 /* News */
 .news {
     /*width:340px;
@@ -412,17 +468,16 @@ The basic layout of the homepage is as follows:
 
 /* Horizontal strap (i.e. "Vezi arhiva stiri") */
 .strap {
-    padding:5px 26px;
+    padding:5px 5px;
+    padding-left: 25px;
     background: #f6f6f6 url(../images/documents_16.gif) no-repeat 5px center ;
-    margin-top:-14px;
-    text-align:right;
     font-size:11px;
+    -moz-border-radius-bottomleft:8px;
+    -moz-border-radius-bottomright:8px;
+    -moz-border-radius-topleft:8px;
+    -moz-border-radius-topright:8px;
     color:#555;
-}
-
-.strap a {
-    font-weight:bold;
-    text-transform:uppercase;
+    line-height: 1.5em;
 }
 
 /* Macros */
@@ -465,8 +520,8 @@ div.flashError {
 
 div.warning {
     color: black;
-    margin: 0em 0em 0em 0em;
-    padding: .2em .2em .2em 20px;
+    margin-top: -0.2em;
+    padding-left: 20px;
     border: 1px solid olive;
     background-image: url('../images/icons/notice.gif');
     background-position: 2px 50%;
@@ -645,6 +700,7 @@ form.round li#field_tasks select {
     margin: .5em 0 .5em 0;
     display: block;
 }
+
 
 /* Wiki text block */
 .wiki_text_block {

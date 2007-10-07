@@ -45,9 +45,16 @@ function tag_build_where($obj, $tag_ids, $parent_table = null) {
     if (is_null($parent_table)) {
         $parent_table = "ia_".db_escape($obj);
     }
-    $where = sprintf("(SELECT COUNT(*) FROM ia_%s_tags WHERE %s.id = %s_id ".
-                     "AND tag_id IN (%s)) = %d", db_quote($obj), db_escape($obj), 
-                      db_escape($parent_table), implode(", ", $tag_ids), count($tag_ids));
+    if ($obj == 'textblock') {
+        $field = 'name';
+    } else {
+        $field = 'id';
+    }
+    $where = sprintf("(SELECT COUNT(*) FROM ia_%s_tags WHERE %s_id = %s.%s".
+                     " AND tag_id IN (%s)) = %d", 
+                     db_escape($obj), db_escape($obj), 
+                     db_escape($parent_table), db_escape($field), 
+                     implode(", ", $tag_ids), count($tag_ids));
     return $where;
 }
 
@@ -70,6 +77,10 @@ function tag_get_objects($obj, $tag_ids, $content = true) {
     if ($content) {
         $fields = "*";
     }
+    else 
+    if ($obj == 'textblock') {
+        $fields = "name";
+    }
     else {
         $fields = "id";
     }
@@ -83,7 +94,7 @@ function tag_count_objects($obj, $tag_ids) {
     log_assert(is_taggable($obj));
     log_assert(is_array($tag_ids));
     $query = sprintf("SELECT COUNT(*) as `cnt` FROM ia_%s WHERE %s", db_escape($obj), 
-                     tag_build_where($obj, $tag_names));
+                     tag_build_where($obj, $tag_ids));
     $result = db_fetch($query);
     return $result['cnt'];
 }

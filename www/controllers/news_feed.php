@@ -11,7 +11,7 @@ function controller_news_feed($page_name) {
     $view['channel']['link'] = url_absolute(url_textblock('news'));
     $view['channel']['description'] = 'Ultimele stiri de pe http://infoarena.ro';
     $view['channel']['language'] = 'ro-ro';
-    $view['channel']['copyright'] = '&copy; 2007 - Asociatia infoarena';
+    $view['channel']['copyright'] = '&#169; 2007 - Asociatia infoarena';
 
     $news = news_get_range(0, IA_MAX_FEED_ITEMS);
     for ($i = 0; $i < count($news); $i++) {
@@ -19,8 +19,8 @@ function controller_news_feed($page_name) {
         $view['item'][$i]['description'] = wiki_process_textblock_recursive($news[$i]);
         $view['item'][$i]['pubDate'] = date('r',
                                             strtotime($news[$i]['timestamp']));
-        $view['item'][$i]['guid'] = sha1($news[$i]['name'] . 
-                                         $news[$i]['timestamp']);
+        $view['item'][$i]['guid']['value'] = sha1($news[$i]['name'].$news[$i]['timestamp']);
+        $view['item'][$i]['guid']['isPermalink'] = 'false';
 
         // since *some* RSS readers mark items as read according to LINK
         // rather than GUID, make sure every change to a news article yields
