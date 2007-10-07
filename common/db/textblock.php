@@ -1,6 +1,7 @@
 <?php 
 
 require_once(IA_ROOT_DIR."common/db/db.php");
+require_once(IA_ROOT_DIR."common/db/tags.php");
 require_once(IA_ROOT_DIR."common/db/attachment.php");
 require_once(IA_ROOT_DIR."common/security.php");
 require_once(IA_ROOT_DIR."common/textblock.php");
@@ -218,6 +219,7 @@ function textblock_delete($page_name) {
             return false;
         }
     }
+    tag_clear('textblock', $page_name);
     db_query("DELETE FROM `ia_textblock_revision` WHERE `name` = '$pageesc'");
     db_query("DELETE FROM `ia_textblock` WHERE `name` = '$pageesc'");
     if (db_affected_rows() != 1) {
