@@ -35,6 +35,7 @@ function controller_blog_feed() {
 function controller_blog_index() {
     // Build view
     $view = array();
+    $view['topnav_select'] = 'blog';
     $view['title'] = 'Blog';
     
     // Pager options
@@ -94,6 +95,7 @@ function controller_blog_view($page_name, $rev_num = null) {
 
     // Build view.
     $view = array();
+    $view['topnav_select'] = 'blog';
     $view['title'] = $page['title'];
     $view['revision'] = $rev_num;
     $view['revision_count'] = $rev_count;
