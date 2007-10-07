@@ -33,7 +33,7 @@ function controller_textblock_edit($page_name, $security = 'public') {
     $values['security'] = request('security', $page['security']);
     $values['tags'] = request('tags', tag_build_list("textblock", $page_name));
     $values['creation_timestamp'] = getattr($page, 'creation_timestamp');
-    $values['timestamp'] = getattr($page, 'timestamp');
+    $values['timestamp'] = null;
 
     if (request_is_post()) {
         // Get new page
