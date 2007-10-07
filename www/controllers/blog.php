@@ -10,7 +10,7 @@ require_once(IA_ROOT_DIR . "www/wiki/wiki.php");
 function controller_blog_feed() {
     $view = array();
     $view['channel']['title'] = 'Blog infoarena';
-    $view['channel']['link'] = url_blog();
+    $view['channel']['link'] = url_absolute(url_blog());
     $view['channel']['description'] = 'Ultimele insemnari de pe blog-ul infoarena';
     $view['channel']['language'] = 'ro-ro';
     $view['channel']['copyright'] = '&#169; 2007 - Asociatia infoarena';
@@ -21,7 +21,7 @@ function controller_blog_feed() {
         $view['item'][$i]['description'] = wiki_process_textblock_recursive($blog[$i]);
         $view['item'][$i]['pubDate'] = date('r', strtotime($blog[$i]['timestamp']));
         $view['item'][$i]['guid']['value'] = sha1($blog[$i]['name'].$blog[$i]['timestamp']);
-        $view['item'][$i]['guid']['isPermalink'] = 'false';
+        $view['item'][$i]['guid']['isPermaLink'] = 'false';
 
         // since *some* RSS readers mark items as read according to LINK
         // rather than GUID, make sure every change to a blog article yields

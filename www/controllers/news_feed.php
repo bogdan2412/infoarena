@@ -20,7 +20,7 @@ function controller_news_feed($page_name) {
         $view['item'][$i]['pubDate'] = date('r',
                                             strtotime($news[$i]['timestamp']));
         $view['item'][$i]['guid']['value'] = sha1($news[$i]['name'].$news[$i]['timestamp']);
-        $view['item'][$i]['guid']['isPermalink'] = 'false';
+        $view['item'][$i]['guid']['isPermaLink'] = 'false';
 
         // since *some* RSS readers mark items as read according to LINK
         // rather than GUID, make sure every change to a news article yields
