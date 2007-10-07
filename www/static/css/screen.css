@@ -348,7 +348,7 @@ The basic layout of the homepage is as follows:
 
 /* Blog */
 .blog {
-    max-width: 600px;
+    width: 600px;
 }
 
 #main .blog h1 a {
@@ -360,7 +360,7 @@ The basic layout of the homepage is as follows:
 
 .blog-list li {
     list-style-type: none;
-    text-indent: -2em;
+    text-indent: -2.5em;
 }
 
 .blog-list li:before {
