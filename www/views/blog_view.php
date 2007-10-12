@@ -21,6 +21,7 @@ if (getattr($view, 'revision')) {
 // blog content
 echo '<div class="wiki_text_block">';
 echo '<div class="blog">';
+echo '<h1>'.$textblock['title'].'</h1>';
 echo wiki_process_textblock($textblock);
 echo '<div class="strap">';
 echo '<strong>Categorii: </strong>';
@@ -28,7 +29,7 @@ foreach ($tags as $tag) {
     echo format_link(url_blog($tag['tag_name']), $tag['tag_name'], true).' ';
 }
 echo '<br/>';
-echo 'Creat la '.htmlentities($first_textblock['creation_timestamp']).'de '.format_user_link($first_textblock["user_name"], $first_textblock["user_fullname"]);
+echo 'Creat la '.htmlentities($first_textblock['creation_timestamp']).' de '.format_user_link($first_textblock["user_name"], $first_textblock["user_fullname"]);
 echo '</div>';
 echo '</div>';
 echo '</div>';

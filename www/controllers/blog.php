@@ -19,14 +19,14 @@ function controller_blog_feed() {
     for ($i = 0; $i < count($blog); $i++) {
         $view['item'][$i]['title'] = strip_tags($blog[$i]['title']);
         $view['item'][$i]['description'] = wiki_process_textblock_recursive($blog[$i]);
-        $view['item'][$i]['pubDate'] = date('r', strtotime($blog[$i]['timestamp']));
-        $view['item'][$i]['guid']['value'] = sha1($blog[$i]['name'].$blog[$i]['timestamp']);
+        $view['item'][$i]['pubDate'] = date('r', strtotime($blog[$i]['creation_timestamp']));
+        $view['item'][$i]['guid']['value'] = sha1($blog[$i]['name'].$blog[$i]['creation_timestamp']);
         $view['item'][$i]['guid']['isPermaLink'] = 'false';
 
         // since *some* RSS readers mark items as read according to LINK
         // rather than GUID, make sure every change to a blog article yields
         // a unique link
-        $view['item'][$i]['link'] = url_absolute(url_textblock($blog[$i]['name'])).'#'.$view['item'][$i]['guid'];
+        $view['item'][$i]['link'] = url_absolute(url_textblock($blog[$i]['name'])).'#'.$view['item'][$i]['guid']['value'];
     }
 
     execute_view_die('views/rss.php', $view);
@@ -36,7 +36,7 @@ function controller_blog_index() {
     // Build view
     $view = array();
     $view['topnav_select'] = 'blog';
-    $view['title'] = 'Blog';
+    $view['title'] = 'infoarena - Blog';
     
     // Pager options
     $args['display_entries'] = request('display_entries', 10);

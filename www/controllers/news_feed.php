@@ -18,8 +18,8 @@ function controller_news_feed($page_name) {
         $view['item'][$i]['title'] = $news[$i]['title'];
         $view['item'][$i]['description'] = wiki_process_textblock_recursive($news[$i]);
         $view['item'][$i]['pubDate'] = date('r',
-                                            strtotime($news[$i]['timestamp']));
-        $view['item'][$i]['guid']['value'] = sha1($news[$i]['name'].$news[$i]['timestamp']);
+                                            strtotime($news[$i]['creation_timestamp']));
+        $view['item'][$i]['guid']['value'] = sha1($news[$i]['name'].$news[$i]['creation_timestamp']);
         $view['item'][$i]['guid']['isPermaLink'] = 'false';
 
         // since *some* RSS readers mark items as read according to LINK
