@@ -27,7 +27,7 @@ function controller_news_feed($page_name) {
         // a unique link
         $view['item'][$i]['link'] = url_absolute(
                 url_textblock($news[$i]['name'])).
-                '#'.$view['item'][$i]['guid'];
+                '#'.$view['item'][$i]['guid']['value'];
     }
 
     execute_view_die('views/rss.php', $view);
