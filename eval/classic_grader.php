@@ -197,7 +197,7 @@ function classic_task_grade_job($task, $tparams, $job) {
 
                 // Get message.
                 $message = $jrunres['stderr'];
-                if (!preg_match("/^([^\n]*)$/i", $message, $match)) {
+                if (!preg_match("/^([^\n]*)/i", $message, $match)) {
                     log_error("Broken preg_match???");
                 }
                 $message = $match[1];
