@@ -339,7 +339,7 @@ The basic layout of the homepage is as follows:
 }
 
 #main h2 {
-    font-family: Arial, Tahoma, sans-serif;
+    font-family: Georgia, "Times New Roman", Times, serif;
     font-size: 14pt;
     font-weight: normal;
     margin: .2em 0 0 0;
@@ -360,7 +360,7 @@ The basic layout of the homepage is as follows:
 
 .blog-list li {
     list-style-type: none;
-    text-indent: -2.5em;
+    text-indent: -1em;
 }
 
 .blog-list li:before {
@@ -703,12 +703,8 @@ form.round li#field_tasks select {
 
 
 /* Wiki text block */
-.wiki_text_block {
-    line-height: 2em;
-}
-
 .wiki_text_block a.wiki_link_external {
-    color: green;
+    color: #009966;
 }
 
 .wiki_text_block a.wiki_link_missing {
@@ -717,7 +713,7 @@ form.round li#field_tasks select {
 
 .wiki_text_block ul, .wiki_text_block ol {
     line-height: 1.5em;
-    margin: 0 .5em 1em 3em;
+    margin: 0 .5em .5em 2em;
 }
 
 .wiki_text_block ul {
@@ -728,11 +724,15 @@ form.round li#field_tasks select {
     margin: 0;
 }
 
-#main .wiki_text_block h2, .wiki_text_block h3, .wiki_text_block h4 {
+#main .wiki_text_block h1 .wiki_text_block h2, .wiki_text_block h3, .wiki_text_block h4 {
     font-family: Arial, Tahoma, sans-serif;
     font-size: 1.5em;
     font-weight: normal;
     margin: .5em 0 0 0;
+}
+
+.wiki_text_block p {
+    margin-bottom: 1em;
 }
 
 .wiki_text_block h2 {
