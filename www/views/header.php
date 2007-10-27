@@ -28,6 +28,7 @@ if (isset($form_errors) || isset($form_values)) {
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="verify-v1" content="j9UCDYvsDL2pLtkJDDkE4HnHVmXakgvz30vOyIJ+6cI=" />
     <title><?= htmlentities(getattr($view, 'title')) ?></title>
 
     <link type="text/css" rel="stylesheet" href="<?= htmlentities(url_static('css/sitewide.css')) ?>"/>
@@ -51,7 +52,6 @@ if (isset($form_errors) || isset($form_values)) {
     <?= getattr($view, 'head') ?>
 </head>
 <body<?= getattr($view, 'body_onload') ? ' onload="' . htmlentities(getattr($view, 'body_onload')) . '"' : '' ?>>
-
 <div id="page">
 
 <?php
