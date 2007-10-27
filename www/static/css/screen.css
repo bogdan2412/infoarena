@@ -725,27 +725,28 @@ form.round li#field_tasks select {
 }
 
 #main .wiki_text_block h1 .wiki_text_block h2, .wiki_text_block h3, .wiki_text_block h4 {
-    font-family: Arial, Tahoma, sans-serif;
+    font-family: serif;
     font-size: 1.5em;
     font-weight: normal;
     margin: .5em 0 0 0;
 }
 
 .wiki_text_block p {
+    margin-top: 0.75em;
+    margin-bottom: 0.75em;
+}
+
+#main .wiki_text_block h2 {
+    border-bottom: 1px solid #eee;
     margin-bottom: 1em;
 }
 
-.wiki_text_block h2 {
-    border-bottom: 1px solid #eee;
+#main .wiki_text_block h3 {
+    font-size: 1.4em;
 }
 
-.wiki_text_block h3 {
-    font-size: 1.3em;
-}
-
-.wiki_text_block h4 {
+#main .wiki_text_block h4 {
     font-size: 1.2em;
-    font-style: italic;
 }
 
 .wiki_text_block ol {
