@@ -51,7 +51,7 @@ if (isset($form_errors) || isset($form_values)) {
 
     <?= getattr($view, 'head') ?>
 </head>
-<body<?= getattr($view, 'body_onload') ? ' onload="' . htmlentities(getattr($view, 'body_onload')) . '"' : '' ?>>
+<body id="infoarena" <?= getattr($view, 'body_onload') ? ' onload="' . htmlentities(getattr($view, 'body_onload')) . '"' : '' ?>>
 <div id="page">
 
 <?php

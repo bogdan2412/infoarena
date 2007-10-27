@@ -176,7 +176,7 @@ function template_main_above()
 			}
 		// ]]></script>
 </head>
-<body>';
+<body id="infoarena">';
 /*
 ?>
 <div id="header">

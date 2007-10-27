@@ -132,13 +132,14 @@ The basic layout of the homepage is as follows:
 
 #page {
     min-width:750px;
-    margin:0 20px;
+    margin:0 0px;
     text-align:left;
 }
 
 #content_small {
-    background:url(../images/main_small.jpg) repeat-y ;
     clear: both;
+    margin-left: 20px;
+    background: url(../images/main_small.jpg) repeat-y ;
 }
 
 #sidebar {
@@ -703,6 +704,10 @@ form.round li#field_tasks select {
 
 
 /* Wiki text block */
+.wiki_text_block {
+    max-width: 600px;
+}
+
 .wiki_text_block a.wiki_link_external {
     color: #009966;
 }

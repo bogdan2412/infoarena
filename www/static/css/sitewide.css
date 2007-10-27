@@ -1,4 +1,15 @@
+/* infoarena body */
+body#infoarena {
+    padding: 0;
+    margin: 0;
+}
+
+#infoarena #bodyarea {
+    margin-left: 20px;
+    margin-right: 20px;
+}
 /* site header */
+
 #header {
     height: 64px;
     border-bottom: 1px solid #333;
