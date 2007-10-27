@@ -5,7 +5,7 @@
 }
 
 body {
-    font-family:Verdana, Arial, Helvetica, sans-serif;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size:12px;
     line-height:1.5;
     text-align:center;
@@ -329,34 +329,39 @@ The basic layout of the homepage is as follows:
     margin: 0;
 }
 
-/* Main (content) */
-#main h1 {
+/* Headers */
+#main h1, #main h2, #main h3 {
     font-family: Georgia, "Times New Roman", Times, serif;
-    font-size: 17pt;
     font-weight: normal;
+}
+
+#main h1 {
+    font-size: 18pt;
     margin: .2em 0 .7em 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #ddd;
 }
 
 #main h2 {
-    font-family: Georgia, "Times New Roman", Times, serif;
-    font-size: 14pt;
-    font-weight: normal;
+    font-size: 15pt;
     margin: .2em 0 0 0;
     border-bottom: 1px solid #eee;
 }
 
+#main h3 {
+    font-size: 12pt;
+    margin: .2em 0 0 0;
+    border-bottom: none;
+}
+
 /* Blog */
+/* Blog headers are smaller. */
+#main .blog h1 {
+    font-size: 13pt;
+}
+
 .blog {
     width: 600px;
 }
-
-#main .blog h1 a {
-    font-family: Georgia, "Times New Roman", Times, serif;
-    font-size: 13pt;
-    font-weight: normal;
-}
-
 
 .blog-list li {
     list-style-type: none;
@@ -409,18 +414,13 @@ The basic layout of the homepage is as follows:
     margin-top: 1em;
 }
 
-* html .news {
-    height: 1%;
+#main .news h1 {
+    font-size: 13pt;
+    margin-left: 55px;
 }
 
-#main .news h1 {
-    font-family: Georgia, "Times New Roman", Times, serif;
-    color: green;
-    font-size: 13pt;
-    font-weight: normal;
-    border: 0;
-    margin: 0;
-    margin-left: 55px;
+* html .news {
+    height: 1%;
 }
 
 .news .item {
@@ -724,29 +724,9 @@ form.round li#field_tasks select {
     margin: 0;
 }
 
-#main .wiki_text_block h1 .wiki_text_block h2, .wiki_text_block h3, .wiki_text_block h4 {
-    font-family: serif;
-    font-size: 1.5em;
-    font-weight: normal;
-    margin: .5em 0 0 0;
-}
-
 .wiki_text_block p {
-    margin-top: 0.75em;
-    margin-bottom: 0.75em;
-}
-
-#main .wiki_text_block h2 {
-    border-bottom: 1px solid #eee;
-    margin-bottom: 1em;
-}
-
-#main .wiki_text_block h3 {
-    font-size: 1.4em;
-}
-
-#main .wiki_text_block h4 {
-    font-size: 1.2em;
+    margin-top: 0.85em;
+    margin-bottom: 0.85em;
 }
 
 .wiki_text_block ol {
@@ -755,6 +735,7 @@ form.round li#field_tasks select {
 
 .wiki_text_block table {
     margin: .5em;
+    line-height: 2em;
     width: 95%; /* IE FIX */
 }
 
