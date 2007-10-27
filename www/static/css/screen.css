@@ -356,7 +356,7 @@ The basic layout of the homepage is as follows:
 
 /* Blog */
 /* Blog headers are smaller. */
-#main .blog h1 {
+#main .blog .item  h1 {
     font-size: 13pt;
 }
 
@@ -374,8 +374,6 @@ The basic layout of the homepage is as follows:
 }
 
 .blog-list li a:hover {
-    color: green;
-    text-decoration: none;
 }
 
 .blog .item {
@@ -415,7 +413,7 @@ The basic layout of the homepage is as follows:
     margin-top: 1em;
 }
 
-#main .news h1 {
+#main .news .item h1 {
     font-size: 13pt;
     margin-left: 55px;
 }
@@ -709,7 +707,7 @@ form.round li#field_tasks select {
 }
 
 .wiki_text_block a.wiki_link_external {
-    color: #009966;
+    color: #3399CC;
 }
 
 .wiki_text_block a.wiki_link_missing {
