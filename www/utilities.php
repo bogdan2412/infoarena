@@ -34,6 +34,8 @@ function redirect($absolute_url) {
 
 // Checks if the referer is the same as the host
 function http_referer_check() {
+    return true;
+    //FIXME: this is broken
     $HTTP_REFERER = getattr($_SERVER, 'HTTP_REFERER');
     $HTTP_HOST = getattr($_SERVER, 'HTTP_HOST');
     return $HTTP_REFERER==null || substr($HTTP_REFERER, 0, (strlen($HTTP_HOST)+7)) == "http://".$HTTP_HOST;
