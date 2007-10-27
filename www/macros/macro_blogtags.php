@@ -8,6 +8,7 @@ function macro_blogtags($args) {
     foreach ($blog_tags as $tag) {
         $html .= '<li>';
         $html .= format_link(url_blog($tag['name']), $tag['name']);
+        $html .=' ('.$tag['cnt'].')';
         $html .= '</li>';
     }
     $html .= '</ul>';
