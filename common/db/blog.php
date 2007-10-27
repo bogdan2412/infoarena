@@ -37,9 +37,11 @@ function blog_count($tag_name) {
 }
 
 function blog_get_tags() {
-    $query = "SELECT name FROM ia_tags WHERE id IN 
+    $query = "SELECT name, 
+                     (SELECT COUNT(*) FROM ia_textblock_tags WHERE tag_id = id AND textblock_id LIKE 'blog/%%') AS cnt
+              FROM ia_tags WHERE id IN 
               (SELECT DISTINCT tag_id FROM ia_textblock_tags WHERE textblock_id LIKE 'blog/%%')
-              ORDER BY name";
+              ORDER BY cnt DESC, name";
     return db_fetch_all($query);
 }
 ?>
