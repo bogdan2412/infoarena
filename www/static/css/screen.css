@@ -367,6 +367,7 @@ The basic layout of the homepage is as follows:
 .blog-list li {
     list-style-type: none;
     text-indent: -1em;
+    font-size: 11px;
 }
 
 .blog-list li:before {
@@ -416,6 +417,7 @@ The basic layout of the homepage is as follows:
 #main .news .item h1 {
     font-size: 13pt;
     margin-left: 55px;
+    border: none;
 }
 
 * html .news {

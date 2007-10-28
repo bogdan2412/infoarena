@@ -41,7 +41,7 @@ function blog_get_tags() {
                      (SELECT COUNT(*) FROM ia_textblock_tags WHERE tag_id = id AND textblock_id LIKE 'blog/%%') AS cnt
               FROM ia_tags WHERE id IN 
               (SELECT DISTINCT tag_id FROM ia_textblock_tags WHERE textblock_id LIKE 'blog/%%')
-              ORDER BY cnt DESC, name";
+              ORDER BY name";
     return db_fetch_all($query);
 }
 ?>
