@@ -337,19 +337,19 @@ The basic layout of the homepage is as follows:
 }
 
 #main h1 {
-    font-size: 18pt;
+    font-size: 19pt;
     margin: .2em 0 .7em 0;
     border-bottom: 1px solid #ddd;
 }
 
 #main h2 {
-    font-size: 15pt;
+    font-size: 16pt;
     margin: .2em 0 0 0;
     border-bottom: 1px solid #eee;
 }
 
 #main h3 {
-    font-size: 12pt;
+    font-size: 13pt;
     margin: .2em 0 0 0;
     border-bottom: none;
 }
@@ -368,6 +368,7 @@ The basic layout of the homepage is as follows:
     list-style-type: none;
     text-indent: -1em;
     font-size: 11px;
+    line-height: 1.3em;
 }
 
 .blog-list li:before {
@@ -804,6 +805,10 @@ form.round li#field_tasks select {
     margin: .5em;
     padding: .5em;
     background-color: #f0f0f0;
+    -moz-border-radius-bottomleft:8px;
+    -moz-border-radius-bottomright:8px;
+    -moz-border-radius-topleft:8px;
+    -moz-border-radius-topright:8px;
 }
 
 .vmenu li {
@@ -833,7 +838,6 @@ form.round li#field_tasks select {
 }
 
 .vmenu li a:visited {
-    border-right: 2px solid white;
 }
 
 /* horizontal tabs */
