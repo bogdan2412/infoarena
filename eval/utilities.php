@@ -54,8 +54,10 @@ function compile_file($input_file_name, $output_file_name, &$compiler_message)
     // Running compiler
     $compiler_message = shell_exec("$cmdline 2>&1 | head -n 25");
 
-    // This is the BEST way to determine if compilation worked.
-    $res = is_executable($exe_name);
+    // This is the BEST way to fail on compilation errors.
+    if (!is_executable($exe_name)) {
+        return false;
+    }
 
     // Rename to $output_file_name.
     if ($exe_name != $output_file_name) {
@@ -65,7 +67,8 @@ function compile_file($input_file_name, $output_file_name, &$compiler_message)
         }
     }
 
-    return $res;
+    // Hooray!
+    return true;
 }
 
 // Parses jrun output.
