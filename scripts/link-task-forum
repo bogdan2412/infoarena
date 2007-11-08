@@ -18,21 +18,25 @@ function link_task($task, $page, $topic, $verbose = false) {
     $content = $page['text'];
 
     // do we already have the macro there?
-    $pattern = '/==\ *smftopic\(topic_id="\ *([0-9]*).*0*\ *"\)\ *==/i';
+    $pattern = '/==\ *smftopic\(\ *topic_id="\ *([0-9]*).*0*\ *"\ *\)\ *==/i';
     if (preg_match($pattern, $content, $matches)) {
         $topic_id = $matches[1];
         // WTF, wrong topic?
-        if ($topic_id != $topic['ID_TOPIC']) {
-            log_warn($task['id'].': Topic-ul vechi "'.$topic_id.'" este diferit de cel gasit: "'.$topic['ID_TOPIC'].'"!');
+        if ($topic_id == $topic['ID_TOPIC']) {
+            if ($verbose) {
+                log_print('"'.$task['id'].'" era deja legat de topic-ul "'.$topic['subject'].'".');
+            }
+            return false;
         }
-        $replacement = "\n==SmfTopic(topic_id=\"".$topic['ID_TOPIC']."\")==\n";
+        log_warn($task['id'].': Topic-ul vechi "'.$topic_id.'" este diferit de cel gasit: "'.$topic['ID_TOPIC'].'"!');
+        $replacement = "==SmfTopic(topic_id=\"".$topic['ID_TOPIC']."\")==";
         $content = preg_replace($pattern, $replacement, $content);
     }
     else {
         if (stristr($content, 'SmfTopic')) {
             log_warn('Eroare de regexp pentru "'.$task['id'].'"!');
         }
-        $content .= "\n==SmfTopic(topic_id=\"".$topic['ID_TOPIC']."\")==\n";
+        $content .= "\n\n==SmfTopic(topic_id=\"".$topic['ID_TOPIC']."\")==\n";
     }
 
     // Build new page
@@ -122,6 +126,7 @@ foreach ($tasks as $task) {
 
     if (!$found) {
         // number in forum might be wrong
+        log_warn('Numarul pentru problema "'.$task['id'].'" este gresit!');
         $str1 = strtoupper($task['id']);
         $str2 = strtoupper($page['title']);
         for ($i = count($topics)-1; $i >= 0; --$i) {
@@ -141,6 +146,6 @@ foreach ($tasks as $task) {
         $total++;
     }
 }
-log_print('*** S-au potrivit '.$total.' probleme!');
+log_print('*** S-au modificat '.$total.' probleme!');
 
 ?>
