@@ -68,7 +68,7 @@ ia_template_topnav($topnav_select, $smf_admin);
     <ul id="nav" class="clear">
         <li><a href="<?= htmlentities(url_home()) ?>">Home</a></li>
         <li><?= format_link_access(url_textblock('arhiva'), "Arhiva de probleme", 'a') ?></li>
-        <li><a href="<?= htmlentities(url_textblock('concursuri')) ?>">Concursuri online</a></li>
+        <li><a href="<?= htmlentities(url_textblock('concursuri')) ?>">Concursuri</a></li>
         <li><a href="<?= htmlentities(url_textblock('clasament-rating')) ?>">Clasament</a></li>
         <li><a href="<?= htmlentities(url_textblock('articole')) ?>">Articole</a></li>
         <li><a href="<?= htmlentities(url_textblock('downloads')) ?>">Downloads</a></li>

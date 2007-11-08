@@ -31,6 +31,7 @@ else {
 
     $options = array(
         'pager_style' => 'standard',
+        'show_count' => true,
         'css_class'   => 'registered-users'
     );
     print format_table($view['users'], $column_infos, $options + $view);
