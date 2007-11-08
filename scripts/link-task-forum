@@ -1,0 +1,146 @@
+#! /usr/bin/env php
+<?php
+require_once(dirname($argv[0]) . "/utilities.php");
+require_once(IA_ROOT_DIR."common/db/task.php");
+require_once(IA_ROOT_DIR."common/textblock.php");
+
+function match($a, $b) {
+    $len_a = strlen($a); 
+    $len_b = strlen($b);
+    for ($i = 0, $j = -1; $i < $len_b; ++$i) {
+        for (++$j; $j < $len_a && $a[$j] != $b[$i]; ++$j);
+        if ($j == $len_a) return false;
+    }
+    return true;
+}
+
+function link_task($task, $page, $topic, $verbose = false) {
+    $content = $page['text'];
+
+    // do we already have the macro there?
+    $pattern = '/==\ *smftopic\(topic_id="\ *([0-9]*).*0*\ *"\)\ *==/i';
+    if (preg_match($pattern, $content, $matches)) {
+        $topic_id = $matches[1];
+        // WTF, wrong topic?
+        if ($topic_id != $topic['ID_TOPIC']) {
+            log_warn($task['id'].': Topic-ul vechi "'.$topic_id.'" este diferit de cel gasit: "'.$topic['ID_TOPIC'].'"!');
+        }
+        $replacement = "\n==SmfTopic(topic_id=\"".$topic['ID_TOPIC']."\")==\n";
+        $content = preg_replace($pattern, $replacement, $content);
+    }
+    else {
+        if (stristr($content, 'SmfTopic')) {
+            log_warn('Eroare de regexp pentru "'.$task['id'].'"!');
+        }
+        $content .= "\n==SmfTopic(topic_id=\"".$topic['ID_TOPIC']."\")==\n";
+    }
+
+    // Build new page
+    $new_page['name'] = $task['page_name'];
+    $new_page['text'] = $content;
+    $new_page['title'] = $page['title'];
+    $new_page['security'] = $page['security'];
+    $new_page['creation_timestamp'] = $page['creation_timestamp'];
+    $new_page['timestamp'] = null;
+    $new_page['user_id'] = 1; // update as "domino" :)
+
+    // It worked
+    if (!textblock_validate($new_page)) {
+        textblock_add_revision($new_page['name'], $new_page['title'],
+                               $new_page['text'], $new_page['user_id'],
+                               $new_page['security'], $new_page['timestamp'],
+                               $new_page['creation_timestamp']);
+    } else {
+        log_error('Eroare la validarea textblock-ului!');
+        return false;
+    }
+
+    if ($verbose) {
+        log_print('Am legat "'.$task['id'].'" de topic-ul "'.$topic['subject'].'".');
+    }
+    return true;
+}
+
+ini_set("memory_limit", "128M");
+
+db_connect();
+
+// validate argv
+log_assert($argc >= 3, "Expecting arguments: round board [verbose]");
+$round = $argv[1];
+$board = $argv[2];
+$verbose = getattr($argv, 3, false);
+
+// get subjects from board
+$query = sprintf("SELECT msg_in.ID_TOPIC, msg_in.subject FROM ia_smf_topics top_out 
+                  LEFT JOIN ia_smf_messages msg_in ON
+                  msg_in.ID_MSG = (SELECT MIN(ID_MSG) FROM ia_smf_messages msg_in WHERE msg_in.ID_TOPIC = top_out.ID_TOPIC) 
+                  WHERE top_out.ID_BOARD = %d AND locked = 0", 
+                  db_escape($board));
+// uppercase topic subject
+$topics = db_fetch_all($query);
+foreach ($topics as &$topic) {
+    $topic['subject'] = strtoupper($topic['subject']);
+}
+
+// get tasks
+$total = 0;
+$tasks = task_get_all();
+
+// try to match each task
+foreach ($tasks as $task) {
+    // does this task belong to the round we want?
+    $parent_rounds = task_get_parent_rounds($task['id']);
+    $found = false;
+    foreach ($parent_rounds as $round_id) {
+        if ($round_id == $round) {
+            $found = true;
+        }
+    }
+    if (!$found) {
+        continue;
+    }
+
+    // match based on task id
+    $str1 = strtoupper(($task['order']-1).$task['id']);
+    
+    // match based on textblock title
+    $page = textblock_get_revision($task['page_name']);
+    if (!$page) {
+        log_warn("Lipseste pagina pentru ".$task['id']."!");
+        continue;
+    }
+    $str2 = strtoupper(($task['order']-1).$page['title']);
+
+    $found = null;
+    for ($i = count($topics)-1; $i >= 0; --$i) {
+        if (match($topics[$i]['subject'], $str1) || match($topics[$i]['subject'], $str2)) {
+            $found = $topics[$i];
+            break;
+        }
+    }
+
+    if (!$found) {
+        // number in forum might be wrong
+        $str1 = strtoupper($task['id']);
+        $str2 = strtoupper($page['title']);
+        for ($i = count($topics)-1; $i >= 0; --$i) {
+            if (match($topics[$i]['subject'], $str1) || match($topics[$i]['subject'], $str2)) {
+                $found = $topics[$i];
+                break;
+            }
+        }
+    }
+
+    if (!$found) {
+        log_warn('Nu am gasit topic pentru "'.$task['id']."\"!");
+        continue;
+    }
+
+    if (link_task($task, $page, $found, $verbose)) {
+        $total++;
+    }
+}
+log_print('*** S-au potrivit '.$total.' probleme!');
+
+?>
