@@ -3,7 +3,7 @@
 require_once(IA_ROOT_DIR."common/db/db.php");
 
 function macro_preoni_tasks($args) {
-    if (!identity_can('macro-grep')) {
+    if (!identity_can('macro-preoni')) {
         return macro_permission_error();
     }
     

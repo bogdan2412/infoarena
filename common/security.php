@@ -458,6 +458,7 @@ function security_macro($user, $action, $args) {
             return true;
         case 'macro-debug':
         case 'macro-remotebox':
+        case 'macro-preoni':
             // only administrators can execute these macros 
             return $usersec == 'admin';
 
