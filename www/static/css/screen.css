@@ -756,8 +756,8 @@ form.round li#field_tasks select {
 }
 
 .wiki_text_block table.layout th {
-    font-family: Arial, Tahoma, sans-serif;
-    font-size: 1.3em;
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-size: 13pt;
     font-weight: normal;
     background-color: white;    
 }
