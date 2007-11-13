@@ -6,11 +6,11 @@
 
 body {
     font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size:12px;
-    line-height:1.5;
-    text-align:center;
-    color:#222;
-    background-color:white;
+    font-size: 10pt;
+    line-height: 1.5;
+    text-align: center;
+    color: #222;
+    background-color: white;
 }
 
 a {
@@ -131,9 +131,9 @@ The basic layout of the homepage is as follows:
 */
 
 #page {
-    min-width:750px;
-    margin:0 0px;
-    text-align:left;
+    min-width: 750px;
+    margin: 0;
+    text-align: left;
 }
 
 #content_small {
@@ -153,124 +153,122 @@ The basic layout of the homepage is as follows:
 }
 
 #main {
-    /*width:549px;
-    float:right;*/
-    background:#fff url(../images/main_tile.jpg) repeat-x top;
-    padding:15px;
-    margin-left:191px;
-    border-left:1px solid #d0d0d0;
+    /*float:right;*/
+    background: #fff url(../images/main_tile.jpg) repeat-x top;
+    padding: 15px;
+    margin-left: 191px;
+    border-left: 1px solid #d0d0d0;
 }
 
 #miscbox {
-    width:188px;
+    width: 188px;
     float:right;
     /*border:1px solid #D3D1C6;*/
 }
 
 #upcoming {
-    margin-bottom:10px;
+    margin-bottom: 10px;
 }
 
 #upcoming, #newprobs {
-    padding:5px;
-    background:#fc0 url(../images/upcoming.jpg) no-repeat bottom left;
-    border:1px solid #fc0;
+    padding: 5px;
+    background: #fc0 url(../images/upcoming.jpg) no-repeat bottom left;
+    border: 1px solid #fc0;
 }
 
 #upcoming ul, #newprobs ul {
-    border:1px solid #fc0;
-    padding:5px;
-    background:#fff;
+    border: 1px solid #fc0;
+    padding: 5px;
+    background: #fff;
 }
 
 #upcoming h2, #newprobs h2 {
-    text-transform:uppercase;
-    font-size:14px;
-    font-weight:bold;
-    color:#840;
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: bold;
+    color: #840;
 }
 
 #upcoming li, #newprobs li {
-    border-bottom:1px solid #cecece;
-    display:block;
-    background:#fff url(../images/misc_li.jpg) no-repeat center bottom;
+    border-bottom: 1px solid #cecece;
+    display: block;
+    background: #fff url(../images/misc_li.jpg) no-repeat center bottom;
 }
 
 #upcoming a, #newprobs a {
-    text-decoration:none;
-    display:block;
-    line-height:1.1;
+    text-decoration: none;
+    display: block;
+    line-height: 1.1;
 }
 
 #upcoming a, #newprobs a {
-    padding:5px;
-    font-size:11px;
+    padding: 5px;
+    font-size: 11px;
 }
 
 #upcoming a:hover, #newprobs a:hover {
-    text-decoration:underline;
-    background:#F8F8EF;
+    text-decoration: underline;
+    background: #F8F8EF;
 }
 
 #upcoming a span {
-    display:block;
+    display: block;
 }
 
 /* Wikipage options (actions) */
 #wikiOps {
-    font-size:8pt;
+    font-size: 8pt;
+}
+
+#wikiOps ul {
+    background: url(../images/wiki.jpg) repeat-x bottom left;
+}
+
+#wikiOps ul {
     float: right;
 }
 
-#wikiOps ul {
-    background:url(../images/wiki.jpg) repeat-x bottom left;
-}
-
-#wikiOps ul {
-    float:right;
-}
-
 #wikiOps li {
-    display:block;
-    float:left;
+    display: block;
+    float: left;
 }
 
 #wikiOps li a {
-    display:block;
-    padding:3px 4px;
+    display: block;
+    padding: 3px 4px;
 }
 
-#wikiOps li a:hover {
-    background:#fff;
+#wikiOps li a: hover {
+    background: #fff;
 }
 
 #wikiOps li.current a {
-    background:#fff;
-    font-weight:bold;
+    background: #fff;
+    font-weight: bold;
 }
 
 /* Sidebar :: Main menu */
 #nav {
-    margin-right:10px;
+    margin-right: 10px;
 }
 
 #nav li {
-    display:block;
+    display: block;
     font-size: 10pt;
 }
 
 #nav li a {
-    display:block;
+    display: block;
     width: 80%;
     padding: 3px 15px;
-    color:#6A6A6B;
-    text-decoration:none;
-    background:url(../images/bullet.gif) no-repeat 3px center ;
+    color: #6A6A6B;
+    text-decoration: none;
+    background: url(../images/bullet.gif) no-repeat 3px center ;
 }
 
 #nav li a:hover {
-    color:#333;
-    background:#FFEFB1 url(../images/bullet.gif) no-repeat 3px center ;
+    color: #333;
+    background: #FFEFB1 url(../images/bullet.gif) no-repeat 3px center ;
 }
 
 #nav li.separator {
@@ -361,7 +359,7 @@ The basic layout of the homepage is as follows:
 }
 
 .blog {
-    width: 600px;
+    width: 540px;
 }
 
 .blog-list li {
@@ -400,6 +398,7 @@ The basic layout of the homepage is as follows:
     width: 190px;
     position: relative;
     float: right;
+    clear: right;
     padding-left: 0.5em;
     -moz-border-radius-bottomleft:8px;
     -moz-border-radius-bottomright:8px;
@@ -1220,3 +1219,4 @@ ul.filters li.filter input {
 ul.filters li.submit {
     clear: left;
 }
+
