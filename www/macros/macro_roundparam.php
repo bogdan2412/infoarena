@@ -17,6 +17,7 @@ require_once(IA_ROOT_DIR . "common/db/round.php");
 function macro_roundparam($args) {
     $round_id = getattr($args, 'round_id');
     $param = getattr($args, 'param');
+    $strong = getattr($args, 'strong', false);
 
     // validate arguments
     if (!$round_id) {
@@ -44,26 +45,38 @@ function macro_roundparam($args) {
     }
 
     // serve desired value
+    if ($strong) {
+        $html = '<strong>';
+    } else {
+        $html = '';
+    }
     switch ($param) {
         case 'title':
-            return htmlentities($round['title']);
+            $html .= htmlentities($round['title']);
+            break;
 
         case 'start_time':
-            return format_date($round['start_time']);
+            $html .= format_date($round['start_time']);
+            break;
 
         case 'id':
-            return htmlentities($round['id']);
+            $html .= htmlentities($round['id']);
+            break;
 
         default:
             if (!isset($params[$param])) {
                 if (isset($args['default_value'])) {
-                    return htmlentities($args['default_value']);
+                    $html .= htmlentities($args['default_value']);
                 } else {
-                    return macro_error("Round doesn't have parameter '$param'");
+                    $html .= macro_error("Round doesn't have parameter '$param'");
                 }
             } else {
-                return htmlentities($params[$param]);
+                $html .= htmlentities($params[$param]);
             }
     }
+    if ($strong) {
+        $html .= '</strong>';
+    }
+    return $html;
 }
 ?>

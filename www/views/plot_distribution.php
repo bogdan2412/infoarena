@@ -28,7 +28,7 @@ set title \"Distributie rating (".IA_URL.")\" 0,-.5
 set style line 1 lt 1 lw 4 pt 3 ps 0.5
 set style line 2 lt 7 lw 6 pt 7 ps 1.0
 set style line 3 lt 11 lw 3
-set xrange [350:800]
+set xrange [350:960]
 
 set xtics 50
 set xtic rotate by -35

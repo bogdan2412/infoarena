@@ -36,24 +36,43 @@ function macro_roundregister($args) {
     }
     else {
         // too late?
-        if ('waiting' != $round['state']) {
+        if ('waiting' == $round['state']) {
+            $class = "round-register";
+            $msg = "<p>Nu esti inscris la "
+                   ."<em>".htmlentities($round['title'])."</em>!   "
+                   ."Daca vrei sa ti se modifice modifice rating-ul dupa "
+                   ."acest concurs trebuie sa te inscrii pana la ora "
+                   .format_date($round['start_time'], "%H:%M, %d&nbsp;%b&nbsp;%Y.")."</p>"
+                   ."<p><a href=\"".htmlentities(url_round_register($round['id']))."\">"
+                   ."<strong>Inscrie-te acum!</strong></a> &nbsp; "
+                   ." <a href=\"".htmlentities(url_round_register_view($round['id']))."\">"
+                   ."Vezi cine e inscris"
+                   ."</a></p>"
+                   ."<p>Poti sa participi la concurs si fara sa te inscrii "
+                   ."insa nu ti se va schimba rating-ul.</p>";
+        }
+        elseif ('running' == $round['state']) {
             $class = "round-expired";
-            $msg = "Nu se mai pot face inscrieri la <em>{$round['title']}</em>."
-                   ." Inscrierile s-au inchis la ora "
-                   .format_date($round['start_time'], "%H:%M, %d&nbsp;%b&nbsp;%Y.")
+            $msg = "<p>Nu se mai pot face inscrieri la "
+                   ."<em>".htmlentities($round['title'])."</em> "
+                   ."<strong><em>insa mai poti participa</em></strong>.</p>"
+                   ."<p>Trebuia sa te inscrii inainte de ora "
+                   .format_date($round['start_time'], "%H:%M, %d&nbsp;%b&nbsp;%Y")
+                   ." daca vroiai sa ti se modifice rating-ul la finalul "
+                   ."rundei. Acum poti sa participi dar nu ti se va modifica "
+                   ."rating-ul.</p>"
                    ."<p><a href=\"".htmlentities(url_round_register_view($round['id']))."\">"
                    ."Vezi cine s-a inscris"
                    ."</a></p>";
         }
         else {
-            $class = "round-register";
-            $msg = "Nu esti inscris la <em>{$round['title']}</em>! Ca sa participi"
-                   ." la aceasta runda trebuie sa te inscrii pana la ora "
-                   .format_date($round['start_time'], "%H:%M, %d&nbsp;%b&nbsp;%Y.")
-                   ."<p><a href=\"".htmlentities(url_round_register($round['id']))."\">"
-                   ."<strong>Inscrie-te acum!</strong></a> &nbsp; "
-                   ." <a href=\"".htmlentities(url_round_register_view($round['id']))."\">"
-                   ."Vezi cine e inscris"
+            // 'complete' == $round['state']
+            $class = "round-expired";
+            $msg = "<p>Nu se mai pot face inscrieri la "
+                   ."<em>".htmlentities($round['title'])."</em>. "
+                   ."Runda s-a incheiat.</p>"
+                   ."<p><a href=\"".htmlentities(url_round_register_view($round['id']))."\">"
+                   ."Vezi cine s-a inscris"
                    ."</a></p>";
         }
     }
