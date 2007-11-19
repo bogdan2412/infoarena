@@ -798,7 +798,7 @@ form.round li#field_tasks select {
 
 /* table of contents */
 .wiki_text_block ul.toc {
-    width: 13em;
+    width: 15em;
     margin-left: 0px;
     border: 1px solid #AAAAAA;
     background-color: #F9F9F9;
@@ -813,6 +813,7 @@ form.round li#field_tasks select {
 
 /* vertical menu */
 .vmenu {
+    float: right;
     border: 1px solid silver;
     width: 13em;
     margin: .5em;
@@ -826,6 +827,7 @@ form.round li#field_tasks select {
 
 .vmenu li {
     margin-left: 1em;
+    list-style-type: none;
 }
 
 .vmenu li.section {
