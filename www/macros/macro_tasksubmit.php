@@ -38,7 +38,7 @@ function macro_tasksubmit($args) {
     ob_start();
 ?>
 
-<a href="<?= htmlentities(url_monitor()."?task=".$task['id']."&user=".$identity_user['username']) ?>">Vezi solutiile trimise</a>
+<a href="<?= htmlentities(url_monitor()."?task=".$task['id']."&user=".$identity_user['username']) ?>">Vezi solutiile trimise de tine</a>
 
 <form enctype="multipart/form-data" action="<?= htmlentities(url_submit()) ?>" method="post" class="inlineSubmit" id="task_submit">
 
