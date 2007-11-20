@@ -14,6 +14,7 @@ function blog_get_range($tag_name, $start, $range) {
     }
     $query = sprintf("SELECT * FROM ia_textblock 
                       WHERE %s AND name LIKE 'blog/%%' 
+                      AND security <> 'private'
                       ORDER BY ia_textblock.creation_timestamp DESC
                       LIMIT %s, %s", 
                      $where, db_quote((int)$start), db_quote((int)$range));
@@ -30,8 +31,9 @@ function blog_count($tag_name) {
     } else {
         $where = "TRUE";
     }
-    $query = sprintf("SELECT COUNT(*) as `cnt` FROM ia_textblock WHERE %s AND
-                      name LIKE 'blog/%%'", $where);
+    $query = sprintf("SELECT COUNT(*) as `cnt` FROM ia_textblock WHERE %s
+                      AND name LIKE 'blog/%%'
+                      AND security <> 'private'", $where);
     $result = db_fetch($query);
     return $result['cnt'];
 }

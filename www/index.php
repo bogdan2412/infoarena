@@ -124,7 +124,7 @@ else if ($page == 'blog') {
 // Blog edit
 else if ($urlstart == 'blog' && $action == 'edit') {
     require_once(IA_ROOT_DIR.'www/controllers/textblock_edit.php');
-    controller_textblock_edit($page, 'protected');
+    controller_textblock_edit($page, 'private');
 }
 
 // Blog view
