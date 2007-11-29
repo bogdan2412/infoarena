@@ -2,6 +2,7 @@
 
 require_once(IA_ROOT_DIR . "common/db/task.php");
 require_once(IA_ROOT_DIR . "common/db/user.php");
+require_once(IA_ROOT_DIR."www/format/format.php");
 
 // Displays a task field, be it a hard-coded field such as task author or a grader parameter such as `timelimit`.
 // NOTE: The macro employs a simple caching mechanism (via static variables, cache expires at the end of the request)
