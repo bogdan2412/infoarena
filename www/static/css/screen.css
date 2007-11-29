@@ -1234,3 +1234,50 @@ ul.filters li.submit {
     clear: left;
 }
 
+/* comment thread */
+.comments {
+    padding: 1em;
+}
+
+.comment {
+    margin: 1em 0 1em 0;
+    padding: 1em;
+}
+
+.comment .timestamp {
+    display: block;
+    font-size: .85em;
+    float: right;
+}
+
+.comment .body {
+    margin: .75em;
+}
+
+.comment .header {
+    border-bottom: 1px solid #f0f0f0;
+    background-color: #fafafa;
+    padding: .2em;
+    -moz-border-radius: 5px;
+}
+
+.comments .comment-author {
+    border: 2px solid green;
+}
+
+.comments .comment-author .header {
+    background-color: #e7ffe7;
+    border-bottom: 1px solid green;
+}
+
+.comments .toolbar {
+    margin: 1em 0 1em 0;
+    padding: .75em;
+    background-color: #fafafa;
+    -moz-border-radius: 5px;
+}
+
+.comments .toolbar a {
+    font-weight: bold;
+}
+
