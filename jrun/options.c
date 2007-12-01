@@ -203,9 +203,9 @@ void jrun_parse_options(int argc, char *argv[])
         exit(-1);
     }
 
-    // Default wall_time is time_limit + 1 second.
+    // Default wall_time is time_limit + 5 seconds.
     if (jopt.wall_time_limit == -1 && jopt.time_limit) {
-        jopt.wall_time_limit = jopt.time_limit + 1000;
+        jopt.wall_time_limit = jopt.time_limit + 5000;
     }
 
     // We can't follow forks. We suck.
