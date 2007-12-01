@@ -65,7 +65,11 @@ function classic_task_grade_job($task, $tparams, $job) {
     foreach ($test_groups as $group) {
         $group_idx++;
         foreach ($group as $testno) {
-            $jaildir = IA_ROOT_DIR . 'eval/jail/';
+            if (IA_JUDGE_KEEP_JAILS) {
+                $jaildir = IA_ROOT_DIR . "eval/jail/{$job['id']}-{$testno}/";
+            } else {
+                $jaildir = IA_ROOT_DIR . "eval/jail/";
+            }
             $infile = $jaildir.$task['id'].'.in';
             $outfile = $jaildir.$task['id'].'.out';
             $okfile = $jaildir.$task['id'].'.ok';

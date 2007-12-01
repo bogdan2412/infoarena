@@ -31,6 +31,10 @@ define("IA_JUDGE_TASK_EVAL_MEMLIMIT", 64000);
 // Memory limit for graders.
 define("IA_JUDGE_MAX_SCORE", 100);
 
+// If true then keep all jails forever.
+// This is useful in finding judge bugs.
+define("IA_JUDGE_KEEP_JAILS", true);
+
 // Add log timestamps.
 // FIXME: horrible hack.
 define("IA_LOG_TIMESTAMP_FORMAT", "Y-m-d H:i:s");
