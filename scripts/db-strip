@@ -31,11 +31,19 @@ db_query("UPDATE ia_job SET file_contents='--gone--'");
 // Delete hidden tasks
 db_query("DELETE FROM ia_task where hidden = 1");
 
+// Only keep first 50 tasks. Keep the dump small.
+$del_task_count = db_query_value("SELECT COUNT(0) FROM ia_task") - 50;
+if ($del_task_count > 0) {
+    db_query("DELETE FROM ia_task ORDER BY `order` LIMIT $del_task_count");
+}
+
 // Delete extra users. Only kill mortals
 $del_user_count = db_query_value("SELECT COUNT(*) FROM ia_user") - 100;
-db_query("DELETE FROM ia_user ".
-         "WHERE security_level = 'normal' ".
-         "ORDER BY RAND() LIMIT $del_user_count");
+if ($del_user_count > 0) {
+    db_query("DELETE FROM ia_user ".
+             "WHERE security_level = 'normal' ".
+             "ORDER BY RAND() LIMIT $del_user_count");
+}
 
 // Delete orphan smf members
 db_query("DELETE ia_smf_members FROM ia_smf_members ".
@@ -59,7 +67,9 @@ db_query("DELETE ia_job FROM ia_job ".
 
 // Delete extra jobs.
 $del_job_count = db_query_value("SELECT COUNT(*) FROM ia_job") - 100;
-db_query("DELETE FROM ia_job ORDER BY RAND() LIMIT $del_job_count");
+if ($del_job_count > 0) {
+    db_query("DELETE FROM ia_job ORDER BY RAND() LIMIT $del_job_count");
+}
 
 // Delete orphan job tests
 db_query("DELETE ia_job_test FROM ia_job_test ".
@@ -87,9 +97,11 @@ db_query("DELETE `ia_textblock_revision` FROM ia_textblock_revision ".
          "WHERE ia_textblock.name IS NULL");
 
 // Erase worthless history.
-$revision_limit = db_query_value("SELECT COUNT(*) FROM ia_textblock_revision") - 500;
-db_query("DELETE FROM ia_textblock_revision ".
-         "ORDER BY RAND() LIMIT $revision_limit");
+$del_revision_count = db_query_value("SELECT COUNT(*) FROM ia_textblock_revision") - 500;
+if ($del_revision_count > 0) {
+    db_query("DELETE FROM ia_textblock_revision ".
+             "ORDER BY RAND() LIMIT $del_revision_count");
+}
 
 // Censor forum. FIXME: only censor private stuff.
 // We could look inside smf and only delete some things, but it's fucking hard.
