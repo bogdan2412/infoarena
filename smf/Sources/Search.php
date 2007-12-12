@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.2                                           *
+* Software Version:           SMF 1.1.4                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -365,7 +365,7 @@ function PlushSearch2()
 		$userQuery = '';
 	else
 	{
-		$userString = strtr($func['htmlspecialchars'](stripslashes($search_params['userspec']), ENT_QUOTES), array('&quot;' => '"'));
+		$userString = strtr(addslashes($func['htmlspecialchars'](stripslashes($search_params['userspec']), ENT_QUOTES)), array('&quot;' => '"'));
 		$userString = strtr($userString, array('%' => '\%', '_' => '\_', '*' => '%', '?' => '_'));
 
 		preg_match_all('~"([^"]+)"~', $userString, $matches);
@@ -402,6 +402,10 @@ function PlushSearch2()
 	// If the boards were passed by URL (params=), temporarily put them back in $_REQUEST.
 	if (!empty($search_params['brd']) && is_array($search_params['brd']))
 		$_REQUEST['brd'] = $search_params['brd'];
+
+	// Ensure that brd is an array.
+	if (!is_array($_REQUEST['brd']) && !empty($_REQUEST['brd']))
+		$_REQUEST['brd'] = strpos($_REQUEST['brd'], ',') !== false ? explode(',', $_REQUEST['brd']) : array($_REQUEST['brd']);
 
 	// Make sure all boards are integers.
 	if (!empty($_REQUEST['brd']))

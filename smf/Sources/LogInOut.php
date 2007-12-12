@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.2                                           *
+* Software Version:           SMF 1.1.3                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -99,7 +99,7 @@ function Login2()
 
 	if (isset($_GET['sa']) && $_GET['sa'] == 'salt' && !$user_info['is_guest'])
 	{
-		if (isset($_COOKIE[$cookiename]))
+		if (isset($_COOKIE[$cookiename]) && preg_match('~^a:[34]:\{i:0;(i:\d{1,6}|s:[1-8]:"\d{1,8}");i:1;s:(0|40):"([a-fA-F0-9]{40})?";i:2;[id]:\d{1,14};(i:3;i:\d;)?\}$~', $_COOKIE[$cookiename]) === 1)
 			list (, , $timeout) = @unserialize($_COOKIE[$cookiename]);
 		elseif (isset($_SESSION['login_' . $cookiename]))
 			list (, , $timeout) = @unserialize(stripslashes($_SESSION['login_' . $cookiename]));

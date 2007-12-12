@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.2                                           *
+* Software Version:           SMF 1.1.4                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -735,7 +735,7 @@ function MessageSearch2()
 		$userQuery = '';
 	else
 	{
-		$userString = strtr($func['htmlspecialchars'](stripslashes($search_params['userspec']), ENT_QUOTES), array('&quot;' => '"'));
+		$userString = strtr(addslashes($func['htmlspecialchars'](stripslashes($search_params['userspec']), ENT_QUOTES)), array('&quot;' => '"'));
 		$userString = strtr($userString, array('%' => '\%', '_' => '\_', '*' => '%', '?' => '_'));
 
 		preg_match_all('~"([^"]+)"~', $userString, $matches);
@@ -2213,15 +2213,15 @@ function ReportMessage()
 				// Make the body.
 				$report_body = str_replace(array('{REPORTER}', '{SENDER}'), array(un_htmlspecialchars($user_info['name']), $memberFromName), $txt['pm_report_pm_user_sent']);
 				// !!! I don't think this handles slashes in the reason properly.
-				$report_body .= "\n[b]$_REQUEST[reason][/b]\n\n";
+				$report_body .= stripslashes("\n[b]$_REQUEST[reason][/b]\n\n");
 				if (!empty($recipients))
 					$report_body .= $txt['pm_report_pm_other_recipients'] . " " . implode(', ', $recipients) . "\n\n";
 				$report_body .= $txt['pm_report_pm_unedited_below'] . "\n[quote author=" . (empty($memberFromID) ? '&quot;' . $memberFromName . '&quot;' : $memberFromName . ' link=action=profile;u=' . $memberFromID . ' date=' . $time) . "]\n" . un_htmlspecialchars($body) . '[/quote]';
 
 				// Plonk it in the array ;)
 				$messagesToSend[$cur_language] = array(
-					'subject' => ($func['strpos']($subject, $txt['pm_report_pm_subject']) === false ? $txt['pm_report_pm_subject'] : '') . $subject,
-					'body' => $report_body,
+					'subject' => addslashes(($func['strpos']($subject, $txt['pm_report_pm_subject']) === false ? $txt['pm_report_pm_subject'] : '') . $subject),
+					'body' => addslashes($report_body),
 					'recipients' => array(
 						'to' => array(),
 						'bcc' => array()

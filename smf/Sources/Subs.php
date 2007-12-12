@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.2                                           *
+* Software Version:           SMF 1.1.4                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -289,7 +289,7 @@ function db_query($db_string, $file = "", $line = -1)
 
 				$pos = $pos2 + 1;
 			}
-			$clean .= '%s';
+			$clean .= ' %s ';
 
 			$old_pos = $pos + 1;
 		}
@@ -303,7 +303,7 @@ function db_query($db_string, $file = "", $line = -1)
 		elseif (strpos($clean, '/*') > 2 || strpos($clean, '--') !== false || strpos($clean, ';') !== false)
 			$fail = true;
 		// Trying to change passwords, slow us down, or something?
-		elseif (strpos($clean, 'set password') !== false && preg_match('~(^|[^a-z])set password($|[^[a-z])~s', $clean) != 0)
+		elseif (strpos($clean, 'sleep') !== false && preg_match('~(^|[^a-z])sleep($|[^[a-z])~s', $clean) != 0)
 			$fail = true;
 		elseif (strpos($clean, 'benchmark') !== false && preg_match('~(^|[^a-z])benchmark($|[^[a-z])~s', $clean) != 0)
 			$fail = true;
@@ -457,7 +457,7 @@ function updateStats($type, $parameter1 = null, $parameter2 = null)
 
 			if (!empty($inserts))
 				db_query("
-					INSERT INTO {$db_prefix}log_search_subjects
+					INSERT IGNORE INTO {$db_prefix}log_search_subjects
 						(word, ID_TOPIC)
 					VALUES (" . implode('),
 						(', array_unique($inserts)) . ")", __FILE__, __LINE__);
@@ -1624,9 +1624,9 @@ function parse_bbc($message, $smileys = true, $cache_id = '')
 
 		// Inside these tags autolink is not recommendable.
 		$no_autolink_tags = array(
-			'url', 
-			'iurl', 
-			'ftp', 
+			'url',
+			'iurl',
+			'ftp',
 			'email',
 		);
 
@@ -1793,6 +1793,13 @@ function parse_bbc($message, $smileys = true, $cache_id = '')
 						if (in_array($open_tag['tag'], $no_autolink_tags))
 							$no_autolink_area = true;
 				}
+
+				// Don't go backwards.
+				//!!! Don't think is the real solution....
+				$lastAutoPos = isset($lastAutoPos) ? $lastAutoPos : 0;
+				if ($pos < $lastAutoPos)
+					$no_autolink_area = true;
+				$lastAutoPos = $pos;
 
 				if (!$no_autolink_area)
 				{
@@ -2614,7 +2621,7 @@ function redirectexit($setLocation = '', $refresh = false)
 		$modSettings['integrate_redirect']($setLocation, $refresh);
 
 	// We send a Refresh header only in special cases because Location looks better. (and is quicker...)
-	if ($refresh)
+	if ($refresh && !WIRELESS)
 		header('Refresh: 0; URL=' . strtr($setLocation, array(' ' => '%20', ';' => '%3b')));
 	else
 		header('Location: ' . str_replace(' ', '%20', $setLocation));
@@ -3488,7 +3495,7 @@ function host_from_ip($ip)
 		if (strpos($test, 'not found') !== false)
 			$host = '';
 		// Invalid server option?
-		elseif (strpos($test, 'invalid option') && !isset($modSettings['host_to_dis']))
+		elseif ((strpos($test, 'invalid option') || strpos($test, 'Invalid query name 1')) && !isset($modSettings['host_to_dis']))
 			updateSettings(array('host_to_dis' => 1));
 		// Maybe it found something, after all?
 		elseif (preg_match('~\s([^\s]+?)\.\s~', $test, $match) == 1)

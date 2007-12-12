@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.2                                           *
+* Software Version:           SMF 1.1.4                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -34,7 +34,7 @@
 	with the URL index.php?action=action-in-url.  Relatively simple, no?
 */
 
-$forum_version = 'SMF 1.1.2';
+$forum_version = 'SMF 1.1.4';
 
 // Get everything started up...
 define('SMF', 1);
@@ -177,10 +177,10 @@ function smf_main()
 	if (!empty($maintenance) && !allowedTo('admin_forum'))
 	{
 		// You can only login.... otherwise, you're getting the "maintenance mode" display.
-		if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'login2')
+		if (isset($_REQUEST['action']) && ($_REQUEST['action'] == 'login2' || $_REQUEST['action'] == 'logout'))
 		{
 			require_once($sourcedir . '/LogInOut.php');
-			return 'Login2';
+			return $_REQUEST['action'] == 'login2' ? 'Login2' : 'Logout';
 		}
 		// Don't even try it, sonny.
 		else

@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1                                             *
+* Software Version:           SMF 1.1.3                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -117,7 +117,7 @@ function setLoginCookie($cookie_length, $id, $password = '')
 
 	// The cookie may already exist, and have been set with different options.
 	$cookie_state = (empty($modSettings['localCookies']) ? 0 : 1) | (empty($modSettings['globalCookies']) ? 0 : 2);
-	if (isset($_COOKIE[$cookiename]))
+	if (isset($_COOKIE[$cookiename]) && preg_match('~^a:[34]:\{i:0;(i:\d{1,6}|s:[1-8]:"\d{1,8}");i:1;s:(0|40):"([a-fA-F0-9]{40})?";i:2;[id]:\d{1,14};(i:3;i:\d;)?\}$~', $_COOKIE[$cookiename]) === 1)
 	{
 		$array = @unserialize($_COOKIE[$cookiename]);
 
@@ -164,7 +164,40 @@ function setLoginCookie($cookie_length, $id, $password = '')
 	}
 
 	$_COOKIE[$cookiename] = $data;
-	$_SESSION['login_' . $cookiename] = $data;
+
+	// Make sure the user logs in with a new session ID.
+	if (!isset($_SESSION['login_' . $cookiename]) || $_SESSION['login_' . $cookiename] !== $data)
+	{
+		// Backup and remove the old session.
+		$oldSessionData = $_SESSION;
+		$_SESSION = array();
+		session_destroy();
+
+		// Recreate and restore the new session.
+		loadSession();
+		session_regenerate_id();
+		$_SESSION = $oldSessionData;
+
+		// Version 4.3.2 didn't store the cookie of the new session.
+		if (version_compare(PHP_VERSION, '4.3.2') === 0)
+			setcookie(session_name(), session_id(), time() + $cookie_length, $cookie_url[1], '', 0);
+
+		$_SESSION['login_' . $cookiename] = $data;
+	}
+}
+
+// PHP < 4.3.2 doesn't have this function
+if (!function_exists('session_regenerate_id'))
+{
+	function session_regenerate_id()
+	{
+		// Too late to change the session now.
+		if (headers_sent())
+			return false;
+
+		session_id(strtolower(md5(uniqid(rand(), true))));
+		return true;
+	}
 }
 
 // Get the domain and path for the cookie...
@@ -180,16 +213,17 @@ function url_parts($local, $global)
 		$parsed_url['path'] = '';
 
 	// Globalize cookies across domains (filter out IP-addresses)?
-	if ($global && preg_match('~^\d{1,3}(\.\d{1,3}){3}$~', $parsed_url['host']) == 0)
-	{
-		// If we can't figure it out, just skip it.
-		if (preg_match('~(?:[^\.]+\.)?([^\.]{2,}\..+)\z~i', $parsed_url['host'], $parts) == 1)
+	if ($global && preg_match('~^\d{1,3}(\.\d{1,3}){3}$~', $parsed_url['host']) == 0 && preg_match('~(?:[^\.]+\.)?([^\.]{2,}\..+)\z~i', $parsed_url['host'], $parts) == 1)
 			$parsed_url['host'] = '.' . $parts[1];
-	}
-	// We shouldn't use a host at all if both options are off.
-	elseif (!$local)
-		$parsed_url['host'] = '';
 
+	// We shouldn't use a host at all if both options are off.
+	elseif (!$local && !$global)
+		$parsed_url['host'] = '';
+		
+	// The host also shouldn't be set if there aren't any dots in it.
+	elseif (!isset($parsed_url['host']) || strpos($parsed_url['host'], '.') === false)
+		$parsed_url['host'] = '';
+	
 	return array($parsed_url['host'], $parsed_url['path'] . '/');
 }
 

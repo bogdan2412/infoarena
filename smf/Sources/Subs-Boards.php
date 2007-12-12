@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1                                             *
+* Software Version:           SMF 1.1.4                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -1024,7 +1024,7 @@ function modifyBoard($board_id, &$boardOptions)
 		if (isset($boardOptions['moderator_string']) && trim($boardOptions['moderator_string']) != '')
 		{
 			// Divvy out the usernames, remove extra space.
-			$moderator_string = strtr($func['htmlspecialchars'](stripslashes($boardOptions['moderator_string']), ENT_QUOTES), array('&quot;' => '"'));
+			$moderator_string = strtr(addslashes($func['htmlspecialchars'](stripslashes($boardOptions['moderator_string']), ENT_QUOTES)), array('&quot;' => '"'));
 			preg_match_all('~"([^"]+)"~', $moderator_string, $matches);
 			$moderators = array_merge($matches[1], explode(',', preg_replace('~"([^"]+)"~', '', $moderator_string)));
 			for ($k = 0, $n = count($moderators); $k < $n; $k++)

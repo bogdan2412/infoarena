@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.2                                           *
+* Software Version:           SMF 1.1.4                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -573,7 +573,7 @@ function saveProfileChanges(&$profile_vars, &$post_errors, $memID)
 		else
 			unset($_POST['birthdate']);
 	}
-	elseif (isset($_POST['bday1'], $_POST['bday2']) && $_POST['bday1'] > 0 && $_POST['bday2'] > 0)
+	elseif (isset($_POST['bday1'], $_POST['bday2'], $_POST['bday3']) && $_POST['bday1'] > 0 && $_POST['bday2'] > 0)
 		$_POST['birthdate'] = checkdate($_POST['bday1'], $_POST['bday2'], $_POST['bday3'] < 4 ? 4 : $_POST['bday3']) ? sprintf('%04d-%02d-%02d', $_POST['bday3'] < 4 ? 4 : $_POST['bday3'], $_POST['bday1'], $_POST['bday2']) : '0001-01-01';
 	elseif (isset($_POST['bday1']) || isset($_POST['bday2']) || isset($_POST['bday3']))
 		$_POST['birthdate'] = '0001-01-01';
@@ -650,6 +650,7 @@ function saveProfileChanges(&$profile_vars, &$post_errors, $memID)
 		if (strlen($_POST['signature']) > 65534)
 			$_POST['signature'] = addslashes($func['truncate'](stripslashes($_POST['signature']), 65534));
 
+		$_POST['signature'] = strtr($_POST['signature'], array('&quot;' => '\\&quot;', '&#039;' => '\\&#39;', '&#39;' => '\\&#39;'));
 		preparsecode($_POST['signature']);
 	}
 
@@ -1500,7 +1501,7 @@ function editBuddies($memID)
 	elseif (isset($_POST['new_buddy']))
 	{
 		// Prepare the string for extraction...
-		$_POST['new_buddy'] = strtr($func['htmlspecialchars'](stripslashes($_POST['new_buddy']), ENT_QUOTES), array('&quot;' => '"'));
+		$_POST['new_buddy'] = strtr(addslashes($func['htmlspecialchars'](stripslashes($_POST['new_buddy']), ENT_QUOTES)), array('&quot;' => '"'));
 		preg_match_all('~"([^"]+)"~', $_POST['new_buddy'], $matches);
 		$new_buddies = array_unique(array_merge($matches[1], explode(',', preg_replace('~"([^"]+)"~', '', $_POST['new_buddy']))));
 

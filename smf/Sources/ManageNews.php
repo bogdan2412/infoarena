@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.2                                           *
+* Software Version:           SMF 1.1.4                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -296,23 +296,36 @@ function ComposeMailing()
 	$condition = isset($_POST['email_force']) ? '' : '
 				AND mem.notifyAnnouncements = 1';
 
+
 	// Get a list of all full banned users.  Use their Username and email to find them.  Only get the ones that can't login to turn off notification.
 	$request = db_query("
-		SELECT mem.ID_MEMBER
+		SELECT DISTINCT mem.ID_MEMBER
 		FROM {$db_prefix}ban_groups AS bg
-		LEFT JOIN {$db_prefix}ban_items AS bi ON (bg.ID_BAN_GROUP = bi.ID_BAN_GROUP)
-		LEFT JOIN {$db_prefix}members AS mem ON (bi.ID_MEMBER = mem.ID_MEMBER OR mem.emailAddress LIKE bi.email_address)
-		WHERE (bg.cannot_access = 1 OR bg.cannot_login = 1) AND (ISNULL(bg.expire_time) OR bg.expire_time > " . time() . ")
-			AND NOT ISNULL(mem.ID_MEMBER)
-		GROUP BY mem.ID_MEMBER", __FILE__, __LINE__);
-			
-	$banMembers = array();
-	while ($row = mysql_fetch_row($request))
-		list ($banMembers[]) = $row;
-	mysql_free_result($request);
+		INNER JOIN {$db_prefix}ban_items AS bi ON (bg.ID_BAN_GROUP = bi.ID_BAN_GROUP)
+		INNER JOIN {$db_prefix}members AS mem ON (bi.ID_MEMBER = mem.ID_MEMBER)
+		WHERE (bg.cannot_access = 1 OR bg.cannot_login = 1)
+			AND (ISNULL(bg.expire_time) OR bg.expire_time > " . time() . ")", __FILE__, __LINE__);
+	$condition_array = array();
+	$members = array();
+	while ($row = mysql_fetch_assoc($request))
+		$members[] = $row['ID_MEMBER'];
+	if (!empty($members))
+		$condition_array[] = 'mem.ID_MEMBER NOT IN (' . implode(', ', $members) . ')';
 
-	$condition .= empty($banMembers) ? '' : '
-				AND mem.ID_MEMBER NOT IN (' . implode(', ', $banMembers) . ')';
+	$request = db_query("
+		SELECT DISTINCT bi.email_address
+		FROM {$db_prefix}ban_items AS bi
+		INNER JOIN {$db_prefix}ban_groups AS bg ON (bg.ID_BAN_GROUP = bi.ID_BAN_GROUP)
+		WHERE (bg.cannot_access = 1 OR bg.cannot_login = 1)
+			AND (ISNULL(bg.expire_time) OR bg.expire_time > " . time() . ")
+			AND bi.email_address != ''", __FILE__, __LINE__);
+	while ($row = mysql_fetch_assoc($request))
+		$condition_array[] = "mem.emailAddress NOT LIKE '" . $row['email_address'] . "'";
+
+	if (!empty($condition_array))
+		$condition .= '
+				AND ' . implode('
+				AND ', $condition_array);
 
 	// Did they select moderators too?
 	if (!empty($_POST['who']) && in_array(3, $_POST['who']))

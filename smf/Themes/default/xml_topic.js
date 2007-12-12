@@ -155,8 +155,8 @@ function modify_done(XMLDoc)
 		if (subject.getAttribute("is_first") == 1)
 		{
 			var subject_top = smf_template_top_subject.replace(/%subject%/, subject_text);
-			subject_text = subject_text.replace(/\{&dollarfix;\$\}/g,"$");
-			setInnerHTML(document.getElementById("top_subject"), subject_text);
+			subject_top = subject_top.replace(/\{&dollarfix;\$\}/g,"$");
+			setInnerHTML(document.getElementById("top_subject"), subject_top);
 		}
 
 		// Show this message as "modified on x by y".

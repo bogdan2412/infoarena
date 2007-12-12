@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1                                             *
+* Software Version:           SMF 1.1.4                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -25,7 +25,7 @@ if (!defined('SMF'))
 	die('Hacking attempt...');
 
 /*	This file does a lot of important stuff.  Mainly, this means it handles
-	the query string, request variables, and session management.  It contains
+		the query string, request variables, and session management.  It contains
 	the following functions:
 
 	void cleanRequest()
@@ -96,7 +96,7 @@ function cleanRequest()
 		die('Invalid request variable.');
 
 	// Same goes for numeric keys.
-	foreach (array_merge(array_keys($_REQUEST), array_keys($_FILES)) as $key)
+	foreach (array_merge(array_keys($_POST), array_keys($_GET), array_keys($_FILES)) as $key)
 		if (is_numeric($key))
 			die('Invalid request variable.');
 
@@ -170,7 +170,7 @@ function cleanRequest()
 	}
 
 	// Add entities to GET.  This is kinda like the slashes on everything else.
-	$_GET = htmlspecialchars__recursive($_GET);
+	$_GET = addslashes__recursive(htmlspecialchars__recursive($_GET));
 
 	// Clean up after annoying ini settings.  (magic_quotes_gpc might be off...)
 	if (get_magic_quotes_gpc() == 0 && empty($modSettings['integrate_magic_quotes']))
@@ -313,7 +313,7 @@ function cleanRequest()
 }
 
 // Adds slashes to the array/variable.  Uses two underscores to guard against overloading.
-function addslashes__recursive($var)
+function addslashes__recursive($var, $level = 0)
 {
 	if (!is_array($var))
 		return addslashes($var);
@@ -323,13 +323,13 @@ function addslashes__recursive($var)
 
 	// Add slashes to every element, even the indexes!
 	foreach ($var as $k => $v)
-		$new_var[addslashes($k)] = addslashes__recursive($v);
+		$new_var[addslashes($k)] = $level > 25 ? null : addslashes__recursive($v, $level + 1);
 
 	return $new_var;
 }
 
 // Adds html entities to the array/variable.  Uses two underscores to guard against overloading.
-function htmlspecialchars__recursive($var)
+function htmlspecialchars__recursive($var, $level = 0)
 {
 	global $func;
 
@@ -337,11 +337,14 @@ function htmlspecialchars__recursive($var)
 		return isset($func) ? $func['htmlspecialchars']($var, ENT_QUOTES) : htmlspecialchars($var, ENT_QUOTES);
 
 	// Add the htmlspecialchars to every element.
-	return array_map('htmlspecialchars__recursive', $var);
+	foreach ($var as $k => $v)
+		$var[$k] = $level > 25 ? null : htmlspecialchars__recursive($v, $level + 1);
+
+	return $var;
 }
 
 // Removes url stuff from the array/variable.  Uses two underscores to guard against overloading.
-function urldecode__recursive($var)
+function urldecode__recursive($var, $level = 0)
 {
 	if (!is_array($var))
 		return urldecode($var);
@@ -351,12 +354,12 @@ function urldecode__recursive($var)
 
 	// Add the htmlspecialchars to every element.
 	foreach ($var as $k => $v)
-		$new_var[urldecode($k)] = urldecode__recursive($v);
+		$new_var[urldecode($k)] = $level > 25 ? null : urldecode__recursive($v, $level + 1);
 
 	return $new_var;
 }
 // Strips the slashes off any array or variable.  Two underscores for the normal reason.
-function stripslashes__recursive($var)
+function stripslashes__recursive($var, $level = 0)
 {
 	if (!is_array($var))
 		return stripslashes($var);
@@ -366,13 +369,13 @@ function stripslashes__recursive($var)
 
 	// Strip the slashes from every element.
 	foreach ($var as $k => $v)
-		$new_var[stripslashes($k)] = stripslashes__recursive($v);
+		$var[stripslashes($k)] = $level > 25 ? null : stripslashes__recursive($v, $level + 1);
 
-	return $new_var;
+	return $var;
 }
 
 // Trim a string including the HTML space, character 160.
-function htmltrim__recursive($var)
+function htmltrim__recursive($var, $level = 0)
 {
 	global $func;
 
@@ -381,7 +384,10 @@ function htmltrim__recursive($var)
 		return isset($func) ? $func['htmltrim']($var) : trim($var, " \t\n\r\x0B\0\xA0");
 
 	// Go through all the elements and remove the whitespace.
-	return array_map('htmltrim__recursive', $var);
+	foreach ($var as $k => $v)
+		$new_var[$k] = $level > 25 ? null : htmltrim__recursive($v, $level + 1);
+
+	return $new_var;
 }
 
 // !!!

@@ -1,5 +1,98 @@
 Changes go downward, months go upward.  Please scroll to the bottom for a legend.
-Changelog started January 1, 2004; Currently at $Revision: 1.2111.2.432 $.
+Changelog started January 1, 2004; Currently at $Revision: 1.2111.2.470 $.
+
+SMF 1.1.4                                                                    ???
+================================================================================
+September 2007
+--------------------------------------------------------------------------------
+ ! Some Mambo installations don't handle objects the same as others. (Mambo bridge/smf.php)
+ ! Set up the bridge config panel to handle input from third party tabs. (Mambo bridge/admin.smf.php)
+ + Use the integrate_verify_user hook for authentication in Xoops. (Xoops bridge/index.php)
+ ! Some input values didn't get escaped properly - reported by Michael Brooks. (ManageMembergroups.php, PersonalMessages.php, Post.php, Profile.php, QueryString.php, Search.php, Subs-Boards.php, Subs.php)
+ ! Some attachment filenames didn't get escaped properly. (Display.php, ManageAttachments.php)
+ ! Function for fixing list and table tags wasn't working as expected. (Subs-Post.php)
+ ! Wireless devices running Internet Explorer don't like refresh header. (Subs.php)
+
+August 2007
+--------------------------------------------------------------------------------
+ ! Make sure it's hard to force an error with a silly URL. (Post.php, Subs-Post.php)
+ ! If using an old version of host which doesn't support the -W command don't call it. (Subs.php)
+ ! Allow users to log out in maintenance mode. (index.php)
+ ! Change the email date format to use -0000 to better comply with the RFC. (Subs-Post.php)
+ ! Check GET and POST instead of REQUEST for numeric keys. (QueryString.php)
+ ! Fixed editing grace period inconsistancies within the post script. (Post.php)
+
+
+July 2007
+--------------------------------------------------------------------------------
+ ! Inline modification of a board which had moderators was not working correctly. (Post.php)
+ ! The ComposeMailing flag wasn't always being set right when sending out news letters. (ManageNews.php)
+ ! Take out the inline style of the login module so that admins can use CSS to format (Mambo bridge/mod_smf_login.php)
+ ! Some non-SEF URLs were not generated with entities (Mambo bridge/smf.php)
+ ! Stop CDATA blocks breaking preview/quick modify. (Post.php)
+
+
+SMF 1.1.3                                                                    ???
+================================================================================
+July 2007
+--------------------------------------------------------------------------------
+ ! Mambo bridge was hanging on login with bridge login module. (Mambo bridge/mod_smf_login.php)
+ ! Missing global in bridge integration arrays. (Mambo bridge/smf_integration_arrays.php, smf.php)
+ ! Mambo doesn't pass the password check variable on to mambots. (Mambo bridge/SMF_register.php)
+
+
+June 2007
+--------------------------------------------------------------------------------
+ ! Reporting a personal message needed some more sanitation. (PersonalMessage.php)
+ ! Sending newsletters could cause a timeout on large boards. (ManageNews.php)
+ ! Session fixation could in rare cases be applied - reported by David Vieira-Kurz. (Subs-Auth.php)
+ ! Prevent recursive functions causing a stack overflow in PHP. (QueryString.php)
+ * Quick edit wasn't updating the subject correctly if it was the first message. (xml_topic.js)
+ ! MySQL's utf8 collation mapped some characters as equal causing a database insert on posting a topic to go wrong in rare cases. (Subs.php)
+ ! The HTML tag wasn't being properly escaped in the signature. (Subs-Post.php)
+ ! Ensure locked topics aren't being editted by those without permission. (Post.php, xml_topic.js)
+ ! Ensure bday3 is also set when checking birthdates. (Profile.php)
+ ! Cookies were in some cases not stored on localhost. (Subs-Auth.php)
+
+
+May 2007
+--------------------------------------------------------------------------------
+ ! ManageBans.php is required for changing ban status. (Mambo bridge/SMF_user_ban.php, SMF_user_unban.php)
+ + Changed Mambo bridge to use new configuration object instead of $mosConfig variables. (Mambo bridge/several files)
+ ! The login authenticator bot in Mambo was not logging in users. (Mambo bridge/SMF_login.php)
+ ! Make sure the bridge doesn't rewrite the password in case of reserved names. (Mambo bridge/SMF_Register.php)
+ + Have the bridge rewrite XML feeds to SEF URLs. (Mambo/Joomla bridges/smf.php)
+ ! Update bridge version info. (Mambo/Joomla bridge/several files)
+ + Added integrate_change_member_data, integrate_reset_pass, and integrate_delete_member hooks to Xoops bridge. (Xoops bridge/index.php)
+ ! Updated Xoops bridge version. (Xoops bridge/xoops_version.php)
+ + Added ability for admin to set specific URLs for login and logout redirection in Joomla bridge. (Mambo/Joomla bridge/several files)
+ + Added Users Extended registration option to Mambo/Joomla bridge. (Mambo/Joomla bridge/several files)
+ ! Cleaned up code that creates registration rewrites. (Mambo/Joomla bridge/smf.php, mod_smf_login.php, smf_integration_arrays.php)
+
+
+April 2007
+--------------------------------------------------------------------------------
+ ! Allow the brd search paramter to be used in the url as a non array. (Search.php)
+ ! mktree could potentially get itself into a loop. (Subs-Package.php)
+ ! Attempt to stop loops on BBC parsing. (Subs.php)
+ ! Sanitize input from the Joomla bridge registration, as the javascript check doesn't necessarily take care of it all. (Mambo/Joomla bridge/smf_registration.php)
+ + Added AEC compatibility to Joomla bridge. (several files)
+ ! Some HTML header information was missing from Joomla headers. (Mambo/Joomla bridges/smf.php, SMF_header_include.php)
+ ! Fixed an undefined constant in e107 bridge language files. (e107 bridge/admin_smf_config.php, English.php, French.php)
+ + Added mambots for several Mambo integration events. (Mambo 4.6 bridge/several files)
+ ! Make sure the Mambo admin panel can populate the group arrays (Mambo 4.6 bridge/admin.smf.php)
+
+
+March 2007
+--------------------------------------------------------------------------------
+ ! Joomla bridge was removing some semi-colons in URLs instead of converting them to SEF. (Joomla bridge/smf.php)
+ ! Made bridged outgoing emails smarter when converting URLs. (Mambo/Joomla bridges/smf.php)
+ ! Bridge wasn't using UTF-8 language files appropriately in certain circumstances (Joomla bridge/mod_smf_login.php, smf.php)
+ ! Mambo 4.6 sometimes loads arrays as objects, invalidating output. (Mambo 4.6 bridge/admin.smf.php)
+ ! Updated bridge version information (Joomla bridge/smf.xml)
+ ! PHP 5.2.0 breaks the package manager. (Subs-Package.php)
+ ! Searching for the end position in the package manager could fail. (Subs-Package.php)
+
 
 SMF 1.1.2                                                       10 February 2007
 ================================================================================
@@ -18,6 +111,7 @@ February 2007
  ! Always send an alternative plain us-ascii text version of the body along with each mail for basic support of older mail clients. (Subs-Post.php)
  ! Convert non-ascii characters to entities for mails sent to yahoo addresses to assure characters are being displayed properly in yahoo's client. (Subs-Post.php)
  ! People upgrading from non-sha1 supporting PHP to new sha1 supporting PHP were having problems. (Subs-Compat.php, LogInOut.php)
+ & Fixed minor typos (Manual language files, Login language files)
 
 
 January 2007

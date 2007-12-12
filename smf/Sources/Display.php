@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.2                                           *
+* Software Version:           SMF 1.1.4                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -912,7 +912,7 @@ function prepareDisplayContext($reset = false)
 		'body' => $message['body'],
 		'new' => empty($message['isRead']),
 		'first_new' => isset($context['start_from']) && $context['start_from'] == $counter,
-		'can_modify' => allowedTo('modify_any') || (allowedTo('modify_replies') && $context['user']['started']) || (allowedTo('modify_own') && $message['ID_MEMBER'] == $ID_MEMBER && (empty($modSettings['edit_disable_time']) || $message['posterTime'] + $modSettings['edit_disable_time'] * 60 > time())),
+		'can_modify' => (!$context['is_locked'] || allowedTo('moderate_board')) && (allowedTo('modify_any') || (allowedTo('modify_replies') && $context['user']['started']) || (allowedTo('modify_own') && $message['ID_MEMBER'] == $ID_MEMBER && (empty($modSettings['edit_disable_time']) || $message['posterTime'] + $modSettings['edit_disable_time'] * 60 > time()))),
 		'can_remove' => allowedTo('delete_any') || (allowedTo('delete_replies') && $context['user']['started']) || (allowedTo('delete_own') && $message['ID_MEMBER'] == $ID_MEMBER && (empty($modSettings['edit_disable_time']) || $message['posterTime'] + $modSettings['edit_disable_time'] * 60 > time())),
 		'can_see_ip' => allowedTo('moderate_forum') || ($message['ID_MEMBER'] == $ID_MEMBER && !empty($ID_MEMBER)),
 	);
@@ -1143,12 +1143,12 @@ function loadAttachmentContext($ID_MSG)
 		{
 			$attachmentData[$i] = array(
 				'id' => $attachment['ID_ATTACH'],
-				'name' => $attachment['filename'],
+				'name' => htmlspecialchars($attachment['filename']),
 				'downloads' => $attachment['downloads'],
 				'size' => round($attachment['filesize'] / 1024, 2) . ' ' . $txt['smf211'],
 				'byte_size' => $attachment['filesize'],
 				'href' => $scripturl . '?action=dlattach;topic=' . $topic . '.0;attach=' . $attachment['ID_ATTACH'],
-				'link' => '<a href="' . $scripturl . '?action=dlattach;topic=' . $topic . '.0;attach=' . $attachment['ID_ATTACH'] . '">' . $attachment['filename'] . '</a>',
+				'link' => '<a href="' . $scripturl . '?action=dlattach;topic=' . $topic . '.0;attach=' . $attachment['ID_ATTACH'] . '">' . htmlspecialchars($attachment['filename']) . '</a>',
 				'is_image' => !empty($attachment['width']) && !empty($attachment['height']) && !empty($modSettings['attachmentShowImages'])
 			);
 

@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.2                                           *
+* Software Version:           SMF 1.1.4                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -224,7 +224,7 @@ function Post()
 
 		// Start loading up the event info.
 		$context['event'] = array();
-		$context['event']['title'] = isset($_REQUEST['evtitle']) ? $_REQUEST['evtitle'] : '';
+		$context['event']['title'] = isset($_REQUEST['evtitle']) ? htmlspecialchars(stripslashes($_REQUEST['evtitle'])) : '';
 
 		$context['event']['id'] = isset($_REQUEST['eventid']) ? (int) $_REQUEST['eventid'] : -1;
 		$context['event']['new'] = $context['event']['id'] == -1;
@@ -530,6 +530,10 @@ function Post()
 			}
 			else
 				$context['preview_subject'] = '<i>' . $txt[24] . '</i>';
+
+			// Protect any CDATA blocks.
+			if (isset($_REQUEST['xml']))
+				$context['preview_message'] = strtr($context['preview_message'], array(']]>' => ']]]]><![CDATA[>'));
 		}
 
 		// Set up the checkboxes.
@@ -565,7 +569,7 @@ function Post()
 			}
 
 			// Allow moderators to change names....
-			if (allowedTo('moderate_forum'))
+			if (allowedTo('moderate_forum') && !empty($topic))
 			{
 				$request = db_query("
 					SELECT ID_MEMBER, posterName, posterEmail
@@ -1202,7 +1206,7 @@ function Post2()
 
 		if ($row['ID_MEMBER'] == $ID_MEMBER && !allowedTo('modify_any'))
 		{
-			if (!empty($modSettings['edit_disable_time']) && $row['posterTime'] + $modSettings['edit_disable_time'] * 60 < time())
+			if (!empty($modSettings['edit_disable_time']) && $row['posterTime'] + ($modSettings['edit_disable_time'] + 5) * 60 < time())
 				fatal_lang_error('modify_post_time_passed', false);
 			elseif ($row['ID_MEMBER_POSTER'] == $ID_MEMBER && !allowedTo('modify_own'))
 				isAllowedTo('modify_replies');
@@ -2024,16 +2028,21 @@ function QuoteFast()
 
 	include_once($sourcedir . '/Subs-Post.php');
 
+	$moderate_boards = boardsAllowedTo('moderate_board');
+
 	$request = db_query("
-		SELECT IFNULL(mem.realName, m.posterName) AS posterName, m.posterTime, m.body, m.ID_TOPIC, m.subject
-		FROM ({$db_prefix}messages AS m, {$db_prefix}boards AS b)
+		SELECT IFNULL(mem.realName, m.posterName) AS posterName, m.posterTime, m.body, m.ID_TOPIC, m.subject, t.locked
+		FROM ({$db_prefix}messages AS m, {$db_prefix}boards AS b, {$db_prefix}topics AS t)
 			LEFT JOIN {$db_prefix}members AS mem ON (mem.ID_MEMBER = m.ID_MEMBER)
 		WHERE m.ID_MSG = " . (int) $_REQUEST['quote'] . "
 			AND b.ID_BOARD = m.ID_BOARD
-			AND $user_info[query_see_board]
+			AND t.ID_TOPIC = m.ID_TOPIC
+			AND $user_info[query_see_board]" . (!isset($_REQUEST['modify']) || (!empty($moderate_boards) && $moderate_boards[0] == 0) ? '' : '
+ 			AND (t.locked = 0' . (empty($moderate_boards) ? '' : ' OR b.ID_BOARD IN (' . implode(', ', $moderate_boards) . ')') . ')') . "
 		LIMIT 1", __FILE__, __LINE__);
 	$context['close_window'] = mysql_num_rows($request) == 0;
 
+	$context['sub_template'] = 'quotefast';
 	if (mysql_num_rows($request) != 0)
 	{
 		$row = mysql_fetch_assoc($request);
@@ -2090,8 +2099,6 @@ function QuoteFast()
 			'mozilla' => '',
 			'text' => '',
 		);
-
-	$context['sub_template'] = 'quotefast';
 }
 
 function JavaScriptModify()
@@ -2111,7 +2118,7 @@ function JavaScriptModify()
 			SELECT 
 				t.locked, t.numReplies, t.ID_MEMBER_STARTED, t.ID_FIRST_MSG,
 				m.ID_MSG, m.ID_MEMBER, m.posterTime, m.subject, m.smileysEnabled, m.body,
-				modifiedTime, modifiedName
+				m.modifiedTime, m.modifiedName
 			FROM ({$db_prefix}messages AS m, {$db_prefix}topics AS t)
 			WHERE m.ID_MSG = " . (empty($_REQUEST['msg']) ? 't.ID_FIRST_MSG' : (int) $_REQUEST['msg']) . "
 				AND m.ID_TOPIC = $topic
@@ -2124,6 +2131,9 @@ function JavaScriptModify()
 	// Change either body or subject requires permissions to modify messages.
 	if (isset($_POST['message']) || isset($_POST['subject']) || isset($_POST['icon']))
 	{
+		if (!empty($row['locked']))
+			isAllowedTo('moderate_board');
+
 		if ($row['ID_MEMBER'] == $ID_MEMBER && !allowedTo('modify_any'))
 		{
 			if (!empty($modSettings['edit_disable_time']) && $row['posterTime'] + ($modSettings['edit_disable_time'] + 5) * 60 < time())
@@ -2285,7 +2295,7 @@ function JavaScriptModify()
 				),
 				'subject' => stripslashes($msgOptions['subject']),
 				'first_in_topic' => $row['ID_MSG'] == $row['ID_FIRST_MSG'],
-				'body' => stripslashes($msgOptions['body']),
+				'body' => strtr(stripslashes($msgOptions['body']), array(']]>' => ']]]]><![CDATA[>')),
 			);
 
 			censorText($context['message']['subject']);
