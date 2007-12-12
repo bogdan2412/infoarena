@@ -64,9 +64,10 @@ div.loading img {
 
 #sidebar2 {
     float: right;
-    width: 15em;
-    padding: 1em;
+    width: 20em;
+    padding: 0.8em;
     background-color: #B7D285;
+    -moz-border-radius: 10px;
 }
 
 #sidebar2 h3 {
@@ -916,7 +917,7 @@ ul.htabs {
 .job-eval-tests td, .job-eval-tests th {
     border: 1px solid silver;
     vertical-align: middle;
-    padding: .2em;
+    padding: .1em;
 }
 
 .job-eval-tests tr.odd td {
@@ -931,7 +932,7 @@ ul.htabs {
     font-weight: bold;
     background-color: white;
     background-color: lightgray;
-    padding: .4em;
+    padding: .1em;
 }
 
 .total_score {
