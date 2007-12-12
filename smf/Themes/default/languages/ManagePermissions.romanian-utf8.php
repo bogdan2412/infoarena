@@ -2,7 +2,6 @@
 // Version: 1.1; ManagePermissions
 
 // Versiunea în limba română cu diacritice www.smf.ro
-
 $txt['permissions_title'] = 'Organizează Permisiunile';
 $txt['permissions_modify'] = 'Modifică';
 $txt['permissions_access'] = 'Acces';

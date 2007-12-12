@@ -2,7 +2,6 @@
 // Version: 1.1; Who
 
 // Versiunea în limba română cu diacritice www.smf.ro
-
 $txt['who_hidden'] = '<em>Nimic, sau nu poţi vedea acţiunile sale</em>';
 $txt['who_unknown'] = '<em>Acţiune necunoscută</em>';
 $txt['who_user'] = 'Utilizator';
@@ -53,7 +52,8 @@ $txt['whopost_quotefast'] = 'Citează un mesaj de la &quot;<a href="' . $scriptu
 $txt['whoadmin_detailedversion'] = 'Execută o verificare în detaliu a versiunilor.';
 $txt['whoadmin_dumpdb'] = 'Face un backup la baza de date.';
 $txt['whoadmin_editagreement'] = 'Editează agreementul pentru înregistrare.';
-$txt['whoadmin_featureModSettings'] = 'Editează facilităţile şi setările forumului.';
+// Untranslated!
+$txt['whoadmin_featuresettings'] = 'Editing forum features and options.';
 $txt['whoadmin_modlog'] = 'Citeşte logul de moderare.';
 $txt['whoadmin_serversettings'] = 'Editează setările forumului.';
 $txt['whoadmin_packageget'] = 'Aduce pachete de modificări.';

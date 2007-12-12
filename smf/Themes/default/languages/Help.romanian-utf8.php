@@ -1,9 +1,9 @@
 <?php
 // Version: 1.1; Help
 
-// Versiunea în limba română cu diacritice www.smf.ro - în lucru
-
 global $helptxt;
+
+// Versiunea în limba română cu diacritice www.smf.ro - în lucru
 $helptxt = array();
 
 $txt[1006] = 'Inchide fereastra';
@@ -329,6 +329,10 @@ $helptxt['recycle_enable'] = '&quot;Recycles&quot; deleted topics and posts to t
 
 $helptxt['enableReportPM'] = 'This option allows your users to report personal messages they receive to the administration team. This may be useful in helping to track down any abuse of the personal messaging system.';
 $helptxt['max_pm_recipients'] = 'This option allows you to set the maximum amount of recipients allowed in a personal message sent by a forum member. This may be used to help stop spam abuse of the PM system. Note that users with permission to send newsletters are exempt from this restriction. Set to zero for no limit.';
+// Untranslated!
+$helptxt['pm_posts_verification'] = 'This setting will force users to enter a code shown on a verification image each time they are sending a personal message. Only users with a post count below the number set will need to enter the code - this should help combat automated spamming scripts.';
+// Untranslated!
+$helptxt['pm_posts_per_hour'] = 'This will limit the number of personal messages which may be sent by a user in a one hour period. This does not affect admins or moderators.';
 
 $helptxt['default_personalText'] = 'Sets the default text a user will have as their &quot;personal text.&quot;';
 

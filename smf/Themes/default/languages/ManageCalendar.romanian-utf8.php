@@ -2,7 +2,6 @@
 // Version: 1.1; ManageCalendar
 
 // Versiunea în limba română cu diacritice www.smf.ro
-
 $txt['calendar_desc'] = 'Aici poţi modifica toate aspectele funcţiei calendar.';
 
 // Calendar Settings

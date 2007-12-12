@@ -2,7 +2,6 @@
 // Version: 1.1; Stats
 
 // Versiunea în limba română cu diacritice www.smf.ro
-
 $txt[888] = 'Cei mai mulţi online';
 
 $txt['smf_stats_1'] = 'Statistici';

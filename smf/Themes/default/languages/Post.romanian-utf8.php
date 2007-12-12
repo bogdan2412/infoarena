@@ -2,7 +2,6 @@
 // Version: 1.1; Post
 
 // Versiunea în limba română cu diacritice www.smf.ro
-
 $txt[25] = 'Scrie răspuns';
 $txt[71] = 'Imaginea ataşata mesajului';
 $txt[77] = 'Câmpul Subiect nu a fost completat! Este obligatoriu!';

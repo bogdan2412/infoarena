@@ -2,7 +2,6 @@
 // Version: 1.1; Wireless
 
 // Versiunea în limba română www.smf.ro
-
 $txt['wireless_error_home'] = 'Pagina Principală';
 $txt['wireless_error_notyet'] = 'Ne pare rău, dar acestă secţiune nu este disponibilă pentru utilizatorii wireless în acest moment.';
 

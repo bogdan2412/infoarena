@@ -2,7 +2,6 @@
 // Version: 1.1; ModSettings
 
 // Versiunea în limba română cu diacritice www.smf.ro
-
 $txt['smf3'] = 'Această pagină îţi oferă posibilitatea să schimbi setările, unele caracteristici şi căteva opţiuni de bază în forum. Vezi <a href="' . $scripturl . '?action=theme;sa=settings;th=' . $settings['theme_id'] . ';sesc=' . $context['session_id'] . '">setări pentru teme</a> pentru mai multe opţiuni. Click iconul de ajutor pentru mai multe informaţii despre o setare anume.';
 
 $txt['mods_cat_features'] = 'Caracteristici de bază';
@@ -53,11 +52,11 @@ $txt['smtp_host'] = 'server SMTP';
 $txt['smtp_port'] = 'port SMTP';
 $txt['smtp_username'] = 'utilizatorul SMTP';
 $txt['smtp_password'] = 'parola SMTP';
-$txt['pm_posts_verification'] = 'Numărul de mesaje sub care utilizatorul trebuie să introducă codul vizual atunci când trimiste mesaje personale.<div class="smalltext">(0 pentru nelimitat, administratorii sunt exceptaţi)</div>';
-$txt['pm_posts_per_hour'] = 'Numărul de mesaje personale pe care un utilizator le poate trimite în interval de o oră. <div class="smalltext">(0 pentru nelimitat, moderatorii sunt exceptaţi)</div>';
 
 $txt['enableReportPM'] = 'Activează raportarea mesajelor personale';
 $txt['max_pm_recipients'] = 'Numărul maxim de destinatari permişi pentru un mesaj personal.<div class="smalltext">(0 pentru nelimitat, administratorii sunt exclusi)</div>';
+$txt['pm_posts_verification'] = 'Numărul de mesaje sub care utilizatorul trebuie să introducă codul vizual atunci când trimiste mesaje personale.<div class="smalltext">(0 pentru nelimitat, administratorii sunt exceptaţi)</div>';
+$txt['pm_posts_per_hour'] = 'Numărul de mesaje personale pe care un utilizator le poate trimite în interval de o oră. <div class="smalltext">(0 pentru nelimitat, moderatorii sunt exceptaţi)</div>';
 
 $txt['mods_cat_layout'] = 'Layout şi Opţiuni';
 $txt['compactTopicPagesEnable'] = 'Limitează numărul de legături către paginile afişate';

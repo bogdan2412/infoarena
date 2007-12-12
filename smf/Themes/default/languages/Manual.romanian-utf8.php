@@ -2,11 +2,9 @@
 // Version: 1.1; Manual
 
 // Versiunea în limba română cu diacritice www.smf.ro
-
 /* Everything în this file is for the Simple Machines help manual
    If you are looking at translating this into another language please
    visit the Simple Machines website for tools to assist! */
-
 // Entries for template: index.
 $txt['manual_index_visit_simple_machines'] = 'Vizitează site-ul Simple Machines pentru ajutor în limba engleză şi site-ul smf.ro pentru ajutor în limba română!';
 

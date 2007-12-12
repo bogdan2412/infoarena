@@ -2,7 +2,6 @@
 // Version: 1.1; Install
 
 // Versiunea în limba română cu diacritice www.smf.ro
-
 // These should be the same as those în index.language.php.
 $txt['lang_character_set'] = 'UTF-8';
 $txt['lang_rtl'] = false;

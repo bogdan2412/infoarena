@@ -2,7 +2,6 @@
 // Version: 1.1; Themes
 
 // Versiunea în limba română cu diacritice www.smf.ro
-
 $txt['themeadmin_explain'] = 'Temele reprezintă diferite interfeţe grafice pentru forum.  Setările urmatoare afectează selectarea acestora, respectiv ce teme utilizează vizitatorii şi utilizatorii înregistrati.';
 
 $txt['theme_allow'] = 'Permite utilizatorilor înregistraţi să-şi selecteze propria temă.';

@@ -2,7 +2,6 @@
 // Version: 1.1; Packages
 
 // Versiunea în limba română cu diacritice www.smf.ro
-
 $txt['smf154'] = 'Procedează';
 $txt['smf160'] = 'Fişierele modificărilor au fost decomprimate, însă această modificare vine cu un script PHP care trebuie executat înainte pentru ca modificarea să funcţioneze';
 $txt['smf161'] = 'Rulează';
@@ -115,10 +114,10 @@ $txt['package_bytes'] = 'bytes';
 
 $txt['package_action_missing'] = '<b style="color: red;">Fişierul nu a fost găsit!</b>';
 $txt['package_action_error'] = '<b style="color: red;">Eroare: modification parse error</b>';
-$txt['package_action_skipping'] = '<b>Fişier sărit</b>';
 
 $txt['package_action_failure'] = '<b style="color: red;">Test eşuat</b>';
 $txt['package_action_success'] = '<b>Test reuşit</b>';
+$txt['package_action_skipping'] = '<b>Fişier sărit</b>';
 
 $txt['package_uninstall_actions'] = 'Acţiuni la dezinstalare';
 $txt['package_uninstall_done'] = 'Acest pachet a fost dezinstalat cu success, ar trebui să nu mai aiba efect de-acum înainte.';

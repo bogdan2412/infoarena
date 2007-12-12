@@ -2,7 +2,6 @@
 // Version: 1.1; PersonalMessage
 
 // Versiunea în limba română cu diacritice www.smf.ro
-
 $txt[143] = 'Secţiunea cu mesaje personale';
 $txt[148] = 'Trimite mesajul';
 $txt[150] = 'Către';

@@ -2,7 +2,6 @@
 // Version: 1.1; ManageBoards
 
 // Versiunea în limba română cu diacritice www.smf.ro
-
 $txt[41] = 'Organizează forumurile şi categoriile';
 $txt[43] = 'Aranjează';
 $txt[44] = 'Numele întreg';

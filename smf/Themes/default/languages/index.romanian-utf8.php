@@ -4,7 +4,6 @@
 global $forum_copyright, $forum_version, $webmaster_email;
 
 // Versiunea în limba română cu diacritice www.smf.ro
-
 // Locale (strftime, pspell_new) and spelling. (pspell_new, can be left as '' normally.)
 // For more information see:
 //   - http://www.php.net/function.pspell-new
@@ -66,7 +65,7 @@ $txt[69] = 'Adresa de email';
 $txt[70] = 'Titlul';
 $txt[72] = 'Mesaj';
 
-$txt[79] = 'Profil pe forum';
+$txt[79] = 'Profil';
 
 $txt[81] = 'Alege o parolă';
 $txt[82] = 'Verifică parola';
@@ -80,7 +79,7 @@ $txt[97] = 'Creează un cont';
 
 $txt[101] = 'Index-ul mesajului';
 $txt[102] = 'Noutăţi';
-$txt[103] = 'Forum Home';
+$txt[103] = 'Pagina principală';
 
 $txt[104] = 'Blochează/Deblochează subiectul';
 $txt[105] = 'Mesaj';
@@ -126,7 +125,7 @@ $txt[167] = 'Căutarea este terminată';
 $txt[170] = 'Nu există nici un rezultat';
 $txt[176] = 'din';
 
-$txt[182] = 'Caută în forum';
+$txt[182] = 'Caută';
 $txt[190] = 'Toate';
 
 $txt[193] = 'Inapoi';
@@ -420,7 +419,7 @@ $txt['calendar4'] = 'Evenimente:';
 $txt['calendar3b'] =  'Aniversările următoare:';
 $txt['calendar4b'] = 'Evenimentele următoare:';
 // Prompt for holidays în the calendar, leave blank to just display the holiday's name.
-$txt['calendar5'] = ''; 
+$txt['calendar5'] = '';
 $txt['calendar9'] = 'Luna:';
 $txt['calendar10'] = 'Anul:';
 $txt['calendar11'] = 'Ziua:';
@@ -589,8 +588,8 @@ $txt['find_no_results'] = 'Nu au fost găsite rezultate';
 $txt['find_results'] = 'Rezultate';
 $txt['find_close'] = 'Inchis';
 
-$txt['unread_since_visit'] = 'Mesaje necitite de la ultima autentificare';
-$txt['show_unread_replies'] = 'Raspunsuri noi la mesajele mele';
+$txt['unread_since_visit'] = 'Mesaje necitite de la ultima autentificare.';
+$txt['show_unread_replies'] = 'Raspunsuri noi la mesajele mele.';
 
 $txt['change_color'] = 'Schimbă culoarea';
 

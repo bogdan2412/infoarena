@@ -2,7 +2,6 @@
 // Version: 1.1; Admin
 
 // Versiunea în limba română cu diacritice www.smf.ro
-
 $txt[4] = 'Forumuri';
 $txt[5] = 'Utilizatori';
 $txt[6] = 'Scrisori de anunţ';
@@ -614,7 +613,5 @@ $txt['copyright_removal_desc'] = 'Pentru a elimina copyright din forumul tău SM
 $txt['copyright_code'] = 'Cod Copyright';
 $txt['copyright_failed'] = 'Ne pare rău dar codul introdus nu este valabil. Verifică dacă adresa URL a forumului este identică cu adresa URL introdusă la cumpararea codului.';
 $txt['copyright_proceed'] = 'Procedează';
-
-
 
 ?>

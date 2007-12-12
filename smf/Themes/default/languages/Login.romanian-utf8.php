@@ -2,7 +2,6 @@
 // Version: 1.1.2; Login
 
 // Versiunea în limba română cu diacritice www.smf.ro
-
 $txt[37] = 'Nu ai completat numele utilizatorului.';
 $txt[38] = 'Nu ai introdus nici o parolă.';
 $txt[39] = 'Parola incorectă';

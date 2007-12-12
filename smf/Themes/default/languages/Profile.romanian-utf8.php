@@ -2,7 +2,6 @@
 // Version: 1.1; Profile
 
 // Versiunea în limba română cu diacritice www.smf.ro
-
 $txt[80] = 'Nu ai permisiunea de a modifica profilul acestei persoane.';
 $txt[83] = 'Nume Website propriu';
 $txt[84] = 'URL Website propriu';

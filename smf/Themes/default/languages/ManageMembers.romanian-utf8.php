@@ -2,7 +2,6 @@
 // Version: 1.1; ManageMembers
 
 // Versiunea în limba română cu diacritice www.smf.ro
-
 $txt['membergroups_title'] = 'Organizează şi aranjează Grupurile de Utilizatori';
 $txt['membergroups_description'] = 'Grupurile de utilizatori sunt utilizatori care au aceleaşi setări pentru permisiuni, mod de prezentare şi drepturi de acces. Unele grupuri de utilizatori sunt bazate pe numărul de mesaje scrise. Atribuirea unui utilizator la un anumit grup se face din panoul Profil personal al utilizatorului respectiv, modificănd setările contului.';
 $txt['membergroups_modify'] = 'Modifică';

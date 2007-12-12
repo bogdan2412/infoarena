@@ -2,7 +2,6 @@
 // Version: 1.1.2; Errors
 
 // Versiunea în limba română cu diacritice www.smf.ro
-
 $txt[1] = 'Nu îţi este permis să accesezi această secţiune';
 
 $txt[73] = 'Doar moderatorii pot folosi funcţia de ştergere directă, te rugăm să ştergi acest mesaj prin funcţia Modifică.';
