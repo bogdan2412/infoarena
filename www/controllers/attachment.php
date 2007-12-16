@@ -156,25 +156,6 @@ function controller_attachment_submit($page_name) {
         }
     }
 
-    // move files from temporary locations to their final storage place
-    if (!$form_errors) {
-        for ($i = 0; $i < count($attachments); $i++) {
-            $file_att =& $attachments[$i];
-            if (!isset($file_att['attach_id'])) {
-                continue;
-            }
-            $disk_name = attachment_get_filepath($file_att['attach_obj']);
-            if (!@rename($file_att['disk_name'], $disk_name)) {
-                log_error("Failed moving attachment to final storage ".
-                    "(from {$file_att['disk_name']} to $disk_name)");
-            }
-            // we convert text files to Linux format
-            if (is_textfile($file_att['type'])) {
-                dos_to_unix($disk_name);          
-                $file_att['size'] = filesize($disk_name);
-            }
-        }
-    }
 
     // Create database entries
     $rewrite_count = 0;
@@ -207,6 +188,28 @@ function controller_attachment_submit($page_name) {
                 $file_att['attach_id'] = $attach['id'];
                 $file_att['attach_obj'] = $attach;
                 $attach_okcount++;
+            }
+        }
+    }
+    // move files from temporary locations to their final storage place
+    if (!$form_errors) {
+        for ($i = 0; $i < count($attachments); $i++) {
+            $file_att =& $attachments[$i];
+            if (!isset($file_att['attach_id'])) {
+                continue;
+            }
+            $disk_name = attachment_get_filepath($file_att['attach_obj']);
+            if (!@rename($file_att['disk_name'], $disk_name)) {
+                log_error("Failed moving attachment to final storage ".
+                    "(from {$file_att['disk_name']} to $disk_name)");
+            }
+            // we convert text files to Linux format
+            if (is_textfile($file_att['type'])) {
+                dos_to_unix($disk_name);          
+                $file_att['size'] = filesize($disk_name);
+                $attach = attachment_get($file_att['name'], $page_name);
+                attachment_update($attach['id'], $file_att['name'], $file_att['size'],
+                                  $file_att['type'], $page_name, $identity_user['id']);
             }
         }
     }
