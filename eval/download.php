@@ -5,7 +5,15 @@ require_once(IA_ROOT_DIR . 'common/db/attachment.php');
 
 function copy_grader_file($task, $filename, $target)
 {
-    return copy_attachment_file($task['page_name'], "grader_".$filename, $target);
+    while (true) {
+        $result = copy_attachment_file($task['page_name'], "grader_".$filename, $target);
+        if (!$result) {
+            log_print("Failed download.. sleep and retry");
+            milisleep(1000);
+        } else {
+            return true;
+        }
+    }
 }
 
 // Copy a grader file over to some other location.
@@ -27,6 +35,7 @@ function copy_attachment_file($pagename, $filename, $target)
 
     // Make grader dir, in case it doesn't exit.
     @mkdir(IA_ROOT_DIR.'eval/grader_cache/'.$pagename.'/', 0700, true);
+
     // My cached version timestamp
     $cachefname = IA_ROOT_DIR.'eval/grader_cache/'.$pagename.'/'.$filename;
 
@@ -37,6 +46,8 @@ function copy_attachment_file($pagename, $filename, $target)
     $cachefsize = @filesize($cachefname);
     $serverfsize = $att['size'];
 
+    log_print("Server file mtime $servermtime size $serverfsize");
+    log_print("Cache file mtime $cachemtime size $cachefsize");
     if ($cachemtime === false || $cachemtime < $servermtime ||
         $cachefsize === false || $cachefsize != $att['size']) {
         $curl = curl_init();
@@ -54,7 +65,7 @@ function copy_attachment_file($pagename, $filename, $target)
         curl_setopt($curl, CURLOPT_FAILONERROR, true);
         //curl_setopt($curl, CURLOPT_VERBOSE, true);
 
-        //log_print("Downloading new version of $pagename/$filename...");
+        log_print("Downloading new version of $pagename/$filename...");
         if (!curl_exec($curl)) {
             log_warn("Failed curl download for $pagename/$filename.");
             log_warn("Curl says: ".curl_error($curl));
@@ -66,9 +77,16 @@ function copy_attachment_file($pagename, $filename, $target)
             return false;
         }
 
-        //log_print("Downloaded new version of $pagename/$filename.");
+        clearstatcache();
+        $newcachemtime = @filemtime($cachefname);
+        $newcachefsize = @filesize($cachefname);
+        log_print("Downloaded new file $pagename/$filename, mtime $newcachemtime size $newcachefsize");
+        if ($newcachefsize != $serverfsize) {
+            log_warn("Downloaded file has different size: $newcachefsize != $serverfsize");
+            return false;
+        }
     } else {
-        //log_print("Using cached $pagename/$filename");
+        log_print("Using cached $pagename/$filename");
     }
     if (!copy($cachefname, $target)) {
         log_warn("Failed copying grader file $pagename/$filename");
