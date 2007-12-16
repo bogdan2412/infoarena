@@ -289,7 +289,7 @@ function logging_error_handler($errno, $errstr, $errfile, $errline) {
         error_log("Caught a fatal error, printing a full backtrace");
         log_backtrace(2, false, true);
 
-        if (IA_DEVELOPMENT_MODE && IA_HTTP_ENV) {
+        if (IA_HTTP_ENV && IA_DEVELOPMENT_MODE) {
             $msg = $errstr."\nPrinting full backtrace:\n";
             $backtrace = debug_backtrace();
             for ($i = 1; $i < count($backtrace); ++$i) {
@@ -300,6 +300,9 @@ function logging_error_handler($errno, $errstr, $errfile, $errline) {
             global $execution_stats;
             $msg .= $execution_stats['log_copy'];
             print("<pre>".htmlentities($msg)."</pre>");
+        }
+        if (IA_HTTP_ENV && !IA_DEVELOPMENT_MODE) {
+            header('HTTP/1.0 500 Internal Error');
         }
         die();
     }
