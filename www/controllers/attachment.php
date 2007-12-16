@@ -207,8 +207,7 @@ function controller_attachment_submit($page_name) {
             if (is_textfile($file_att['type'])) {
                 dos_to_unix($disk_name);          
                 $file_att['size'] = filesize($disk_name);
-                $attach = attachment_get($file_att['name'], $page_name);
-                attachment_update($attach['id'], $file_att['name'], $file_att['size'],
+                attachment_update($file_att['attach_id'], $file_att['name'], $file_att['size'],
                                   $file_att['type'], $page_name, $identity_user['id']);
             }
         }
