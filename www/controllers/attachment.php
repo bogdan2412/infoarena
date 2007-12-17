@@ -132,6 +132,7 @@ function controller_attachment_submit($page_name) {
             if (isset($att['disk_name']) || !isset($att['zipindex'])) {
                 continue;
             }
+            
 
             // extract archived file to a tempory file on disk
             $tmpname = tempnam(IA_ROOT_DIR . 'attach/', 'iatmp');
@@ -166,6 +167,11 @@ function controller_attachment_submit($page_name) {
 
             if (!isset($file_att['disk_name'])) {
                 continue;
+            }
+            
+            if (is_textfile($file_att['type'])) {
+                dos_to_unix($file_att['disk_name']);          
+                $file_att['size'] = filesize($file_att['disk_name']);
             }
 
             $attach = attachment_get($file_att['name'], $page_name);
@@ -202,13 +208,6 @@ function controller_attachment_submit($page_name) {
             if (!@rename($file_att['disk_name'], $disk_name)) {
                 log_error("Failed moving attachment to final storage ".
                     "(from {$file_att['disk_name']} to $disk_name)");
-            }
-            // we convert text files to Linux format
-            if (is_textfile($file_att['type'])) {
-                dos_to_unix($disk_name);          
-                $file_att['size'] = filesize($disk_name);
-                attachment_update($file_att['attach_id'], $file_att['name'], $file_att['size'],
-                                  $file_att['type'], $page_name, $identity_user['id']);
             }
         }
     }
