@@ -2,7 +2,7 @@
 include('views/header.php');
 ?>
 
-<h1><?= htmlentities(getattr($view, 'title')) ?></h1>
+<h1>Inregistrare la <?= format_link(url_textblock($round['page_name']), $round['title']) ?></h1>
 
 <?php wiki_include('template/inscriere', array('round' => $round['id'])) ?>
 

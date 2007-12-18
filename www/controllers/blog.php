@@ -32,6 +32,48 @@ function controller_blog_feed() {
     execute_view_die('views/rss.php', $view);
 }
 
+function controller_blog_admin($blog_post) {
+    if (!is_blog_post($blog_post)) {
+        flash_error('Numele paginii este invalid');
+        redirect(url_blog());
+    }
+    
+    $page = textblock_get_revision($blog_post);
+    if (!$page) {
+        flash_error("Pagina nu exista");
+        redirect(url_blog());
+    }
+
+    // Security check
+    identity_require('blog-admin');
+    
+    // Form stuff.
+    $values = array();
+    $errors = array();
+
+    // Fill in form values, and validate
+    $values['topic_id'] = request('topic_id', blog_get_forum_topic($blog_post));
+    if (!is_whole_number($values['topic_id'])) {
+        $errors['topic_id'] = 'Topic-ul trebuie sa fie un numar intreg!';
+    }
+
+    // Update database
+    if (request_is_post() && !$errors) {
+        blog_set_forum_topic($blog_post, $values['topic_id']);
+        flash("Am actualizat informatiile");
+        redirect(url_textblock($blog_post));
+    }
+
+    $view = array();
+    $view['title'] = 'Administrare '.$page['title'];
+    $view['page'] = $page;
+    $view['form_values'] = $values;
+    $view['form_errors'] = $errors;
+
+    execute_view_die("views/blog_admin.php", $view);
+
+}
+
 function controller_blog_index() {
     // Build view
     $view = array();
@@ -46,8 +88,8 @@ function controller_blog_index() {
 
     // Get blog posts
     $view['tag'] = request('tag', "");
-    $view['subpages'] = blog_get_range($view['tag'], $view['options']['first_entry'], $view['options']['display_entries']);
-    $view['options']['total_entries'] = blog_count($view['tag']);
+        $view['subpages'] = blog_get_range($view['tag'], $view['options']['first_entry'], $view['options']['display_entries']);
+        $view['options']['total_entries'] = blog_count($view['tag']);
 
 
     // Get some extra info for blog posts
@@ -56,7 +98,8 @@ function controller_blog_index() {
         $subpage['user_name'] = $first_textblock['user_name'];
         $subpage['user_fullname'] = $first_textblock['user_fullname'];
         $subpage['rating_cache'] = $first_textblock['rating_cache'];
-
+        $subpage['topic_id'] = blog_get_forum_topic($subpage['name']);
+        $subpage['comment_count'] = blog_get_comment_count($subpage['topic_id']);
         $subpage['tags'] = tag_get_names("textblock", $subpage['name']);
     }
     
@@ -96,6 +139,7 @@ function controller_blog_view($page_name, $rev_num = null) {
     // Build view.
     $view = array();
     $view['topnav_select'] = 'blog';
+    $view['topic_id'] = blog_get_forum_topic($page['name']);
     $view['title'] = $page['title'];
     $view['revision'] = $rev_num;
     $view['revision_count'] = $rev_count;

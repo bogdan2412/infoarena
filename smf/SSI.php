@@ -252,7 +252,7 @@ function ssi_commentThread($topicID, $output_method = 'echo')
             ia_user.username, ia_user.full_name, ia_user.rating_cache,
 			IFNULL(mem.realName, m.posterName) AS posterName, " . ($user_info['is_guest'] ? '1 AS isRead, 0 AS new_from' : '
 			IFNULL(lt.ID_MSG, IFNULL(lmr.ID_MSG, 0)) >= m.ID_MSG_MODIFIED AS isRead,
-			IFNULL(lt.ID_MSG, IFNULL(lmr.ID_MSG, -1)) + 1 AS new_from') . ", LEFT(m.body, 384) AS body, m.smileysEnabled
+			IFNULL(lt.ID_MSG, IFNULL(lmr.ID_MSG, -1)) + 1 AS new_from') . ", LEFT(m.body, 666013) AS body, m.smileysEnabled
 		FROM ({$db_prefix}messages AS m, {$db_prefix}boards AS b)
 			LEFT JOIN {$db_prefix}members AS mem ON (mem.ID_MEMBER = m.ID_MEMBER)
 			LEFT JOIN ia_user ON (mem.memberName = ia_user.username)" . (!$user_info['is_guest'] ? "
@@ -268,9 +268,7 @@ function ssi_commentThread($topicID, $output_method = 'echo')
 	$posts = array();
 	while ($row = mysql_fetch_assoc($request))
 	{
-		$row['body'] = strip_tags(strtr(parse_bbc($row['body'], $row['smileysEnabled'], $row['ID_MSG']), array('<br />' => '&#10;')));
-		if ($func['strlen']($row['body']) > 128)
-			$row['body'] = $func['substr']($row['body'], 0, 128) . '...';
+		$row['body'] = parse_bbc($row['body'], $row['smileysEnabled'], $row['ID_MSG']);
 
 		// Censor it!
 		censorText($row['subject']);
@@ -310,7 +308,7 @@ function ssi_commentThread($topicID, $output_method = 'echo')
 		return $posts;
 
 	echo '
-        <div class="comments">';
+        <div class="comments"><a name="comentarii">';
 
     if (0 == count($posts)) {
         echo '
@@ -322,13 +320,14 @@ function ssi_commentThread($topicID, $output_method = 'echo')
     }
     else {
         echo '
-            <h3>', count($posts), ' comentarii</h3>';
+            <h3>'.count($posts), ' comentarii</h3>';
     }
+    echo '</a>';
 
 	foreach ($posts as $post)
 		echo '
 			<div class="comment">
-				<div class="header">
+				<div class="header"
                     <span class="timestamp">
                         ', $post['time'], '
                         ', $post['new'] ? '' : '<a href="' . $scripturl . '?topic=' . $post['topic'] . '.msg' . $post['new_from'] . ';topicseen#new"><img src="' . $settings['images_url'] . '/' . $context['user']['language'] . '/new.gif" alt="' . $txt[302] . '" border="0" /></a>', '

@@ -92,6 +92,11 @@ function url_blog($tag = null) {
     return url_complex('blog');
 }
 
+function url_blog_admin($blog_post) {
+    log_assert(is_blog_post($blog_post));
+    return url_complex("admin/blog/$blog_post");
+}
+
 function url_textblock_diff($page_name, $revfrom, $revto) {
     return url_complex($page_name, array(
             'action' => 'diff',

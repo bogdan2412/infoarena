@@ -1,6 +1,7 @@
 <?php
 
 require_once(IA_ROOT_DIR.'www/wiki/wiki.php');
+require_once(IA_ROOT_DIR.'www/macros/macro_remotebox.php');
 
 // site header
 include('header.php');
@@ -31,6 +32,10 @@ foreach ($tags as $tag) {
 echo '<br/>';
 echo 'Creat la '.htmlentities($first_textblock['creation_timestamp']).' de '.format_user_link($first_textblock["user_name"], $first_textblock["user_fullname"]);
 echo '</div>';
+// blog comments
+if (getattr($view, 'topic_id')) {
+    echo macro_remotebox(array('url' => IA_SMF_URL.'/ia_comments.php?topic_id='.$view['topic_id']), true);
+}
 echo '</div>';
 echo '</div>';
 

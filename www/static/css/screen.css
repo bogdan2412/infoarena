@@ -1237,12 +1237,11 @@ ul.filters li.submit {
 
 /* comment thread */
 .comments {
-    padding: 1em;
 }
 
 .comment {
     margin: 1em 0 1em 0;
-    padding: 1em;
+    padding: 0.1em;
 }
 
 .comment .timestamp {
@@ -1252,14 +1251,14 @@ ul.filters li.submit {
 }
 
 .comment .body {
-    margin: .75em;
+    margin: .5em;
 }
 
 .comment .header {
     border-bottom: 1px solid #f0f0f0;
-    background-color: #fafafa;
+    background-color: #f6f6f6;
     padding: .2em;
-    -moz-border-radius: 5px;
+    -moz-border-radius: 7px;
 }
 
 .comments .comment-author {
@@ -1274,7 +1273,7 @@ ul.filters li.submit {
 .comments .toolbar {
     margin: 1em 0 1em 0;
     padding: .75em;
-    background-color: #fafafa;
+    background-color: #f6f6f6;
     -moz-border-radius: 5px;
 }
 

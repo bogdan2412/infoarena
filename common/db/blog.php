@@ -21,6 +21,32 @@ function blog_get_range($tag_name, $start, $range) {
     return db_fetch_all($query);
 }
 
+function blog_get_forum_topic($name) {
+    $query = sprintf("SELECT topic_id FROM ia_blog_forum
+                      WHERE textblock = '%s'", db_escape($name));
+    $result = db_fetch($query);
+    return $result['topic_id'];
+}
+
+function blog_set_forum_topic($name, $value) {
+    $old_id = blog_get_forum_topic($name);
+    if (is_null($old_id)) {
+        $query = sprintf("INSERT INTO ia_blog_forum (textblock, topic_id)
+                          VALUES (%s, %s)", db_quote($name), db_escape($value));
+    } else {
+        $query = sprintf("UPDATE ia_blog_forum SET topic_id = %s 
+                          WHERE textblock = %s", db_escape($value), db_quote($name));
+    }
+    db_query($query);
+}
+
+function blog_get_comment_count($topic_id) {
+    $query = sprintf("SELECT numReplies FROM ia_smf_topics 
+                      WHERE ID_TOPIC = %d", db_escape($topic_id));
+    $result = db_fetch($query);
+    return $result['numReplies'];
+}
+
 function blog_count($tag_name) {
     if (is_tag_name($tag_name)) {
         $tag_id = tag_get_id($tag_name);

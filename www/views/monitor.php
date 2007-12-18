@@ -143,7 +143,7 @@ if (!$jobs) {
             'valform' => 'format_date',
         ),
         array(
-            'title' => 'Stare (click pentru detalii)',
+            'title' => 'Stare',
             'rowform' => 'format_state',
         ),
     );

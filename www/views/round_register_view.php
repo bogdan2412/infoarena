@@ -5,7 +5,7 @@ require_once(IA_ROOT_DIR . 'www/format/format.php');
 
 include('header.php');
 
-echo '<h1>'.htmlentities($view['title']).'</h1>';
+echo '<h1>Utilizatori inregistrati la '.format_link(url_textblock($round['page_name']), $round['title']).'</h1>';
 
 if (count($view['users']) < 1) {
     echo "<p><strong>Nici un utilizator inscris la aceasta runda&hellip;</strong></p>";

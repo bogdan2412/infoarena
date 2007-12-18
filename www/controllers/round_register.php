@@ -41,7 +41,7 @@ function controller_round_register($round_id) {
         // display form
         $view = array(
             'round' => $round,
-            'title' => "Inregistrare la '".$round['title']."'",
+            'title' => 'Inregistrare la '.$round['title'],
             'action' => url_round_register($round['id']),
         );
         execute_view_die('views/round_register.php', $view);
@@ -67,7 +67,8 @@ function controller_round_register_view($round_id) {
 
     $options = pager_init_options();
     $view = array();
-    $view['title'] = "Utilizatori inregistrati la '".$round['title']."'";
+    $view['title'] = 'Utiliztori inregistrati la '.$round['title'];
+    $view['round'] = $round;
     $view['users'] = round_get_registered_users_range($round['id'], 
                      $options['first_entry'], $options['display_entries']);
     $view['first_entry'] = $options['first_entry'];

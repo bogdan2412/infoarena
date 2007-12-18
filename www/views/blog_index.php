@@ -34,6 +34,12 @@ foreach ($subpages as $subpage) {
     }
     echo "<div class=\"wiki_text_block\">$text</div>";
 
+    // Display comment link
+    echo '<p style="text-align: right;">';
+    echo '<img style="vertical-align: middle;" src="'.url_static('images/comment.png').'"/>';
+    echo '&nbsp;<a href="'.url_textblock($subpage['name']).'#comentarii">Comentarii ('.$subpage['comment_count'].')</a>';
+    echo '</p>';
+
     // Also display tags
     echo '<div class="strap">';
     echo '<strong>Categorii: </strong>';

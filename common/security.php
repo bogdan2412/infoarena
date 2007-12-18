@@ -68,6 +68,10 @@ function security_query($user, $action, $object) {
             $result = security_job($user, $action, $object);
             break;
 
+        case 'blog':
+            $result = security_blog($user, $action, $object);
+            break;
+
         default:
             log_error('Invalid action group: "' . $group . '"');
     }
@@ -134,6 +138,7 @@ function security_simplify_action($action) {
         case 'textblock-tag':
         case 'job-reeval':  
         case 'simple-critical':
+        case 'blog-admin':
             return 'simple-critical';
 
         // Special actions fall through
@@ -466,6 +471,24 @@ function security_macro($user, $action, $args) {
             log_error('Invalid macro action: '.$action);
     }
 }
+
+function security_blog($user, $action, $round) {
+    $usersec = getattr($user, 'security_level', 'anonymous');
+    $is_admin = $usersec == 'admin';
+
+    // Log query response.
+    $action = security_simplify_action($action);
+    $level = ($is_admin ? 'admin' : 'other');
+    $objid = $round['id'];
+    if (IA_LOG_SECURITY) {
+        log_print("SECURITY QUERY BLOG: ".
+                "($level, $action, $objid): ".
+                "(level, action, object)");
+    }
+
+    return $is_admin;
+}
+
 
 // FIXME: implement job security.
 // * job-download (this should be job-view-source) 
