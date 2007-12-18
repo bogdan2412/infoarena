@@ -35,6 +35,9 @@ define("IA_JUDGE_MAX_SCORE", 100);
 // This is useful in finding judge bugs.
 define("IA_JUDGE_KEEP_JAILS", true);
 
+// Retry downloading grader data.
+define("IA_JUDGE_MAX_GRADER_DOWNLOAD_RETRIES", 5);
+
 // Add log timestamps.
 // FIXME: horrible hack.
 define("IA_LOG_TIMESTAMP_FORMAT", "Y-m-d H:i:s");

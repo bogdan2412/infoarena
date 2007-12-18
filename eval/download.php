@@ -5,14 +5,19 @@ require_once(IA_ROOT_DIR . 'common/db/attachment.php');
 
 function copy_grader_file($task, $filename, $target)
 {
+    $attempts = 0;
     while (true) {
         $result = copy_attachment_file($task['page_name'], "grader_".$filename, $target);
-        if (!$result) {
-            log_print("Failed download.. sleep and retry");
-            milisleep(1000);
-        } else {
+        if ($result) {
             return true;
         }
+        if ($result == false && $attempts < IA_JUDGE_MAX_GRADER_DOWNLOAD_RETRIES) {
+            ++$attempts;
+            log_print("Failed downloading grader file... sleep and retry");
+            milisleep(1000);
+            continue;
+        }
+        return false;
     }
 }
 
