@@ -320,14 +320,14 @@ function ssi_commentThread($topicID, $output_method = 'echo')
     }
     else {
         echo '
-            <h3>'.count($posts), ' comentarii</h3>';
+            <h3>', count($posts), ' comentarii</h3>';
     }
     echo '</a>';
 
 	foreach ($posts as $post)
 		echo '
 			<div class="comment">
-				<div class="header"
+				<div class="header">
                     <span class="timestamp">
                         ', $post['time'], '
                         ', $post['new'] ? '' : '<a href="' . $scripturl . '?topic=' . $post['topic'] . '.msg' . $post['new_from'] . ';topicseen#new"><img src="' . $settings['images_url'] . '/' . $context['user']['language'] . '/new.gif" alt="' . $txt[302] . '" border="0" /></a>', '

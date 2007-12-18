@@ -88,8 +88,8 @@ function controller_blog_index() {
 
     // Get blog posts
     $view['tag'] = request('tag', "");
-        $view['subpages'] = blog_get_range($view['tag'], $view['options']['first_entry'], $view['options']['display_entries']);
-        $view['options']['total_entries'] = blog_count($view['tag']);
+    $view['subpages'] = blog_get_range($view['tag'], $view['options']['first_entry'], $view['options']['display_entries']);
+    $view['options']['total_entries'] = blog_count($view['tag']);
 
 
     // Get some extra info for blog posts
