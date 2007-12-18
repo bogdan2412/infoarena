@@ -1235,6 +1235,14 @@ ul.filters li.submit {
     clear: left;
 }
 
+/* quote */
+.quote {
+    border: 1px solid #000000;
+    color: #000000;
+    font-size: x-small;
+    padding: 0.25em;
+}
+
 /* comment thread */
 .comments {
 }

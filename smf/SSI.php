@@ -308,7 +308,7 @@ function ssi_commentThread($topicID, $output_method = 'echo')
 		return $posts;
 
 	echo '
-        <div class="comments"><a name="comentarii">';
+        <div class="comments">';
 
     if (0 == count($posts)) {
         echo '
@@ -322,7 +322,6 @@ function ssi_commentThread($topicID, $output_method = 'echo')
         echo '
             <h3>', count($posts), ' comentarii</h3>';
     }
-    echo '</a>';
 
 	foreach ($posts as $post)
 		echo '

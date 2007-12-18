@@ -588,7 +588,7 @@ $txt['find_no_results'] = 'Nu au fost găsite rezultate';
 $txt['find_results'] = 'Rezultate';
 $txt['find_close'] = 'Inchis';
 
-$txt['unread_since_visit'] = 'Mesaje necitite de la ultima autentificare.';
+$txt['unread_since_visit'] = 'Mesaje necitite de la ultima autentificare';
 $txt['show_unread_replies'] = 'Raspunsuri noi la mesajele mele.';
 
 $txt['change_color'] = 'Schimbă culoarea';

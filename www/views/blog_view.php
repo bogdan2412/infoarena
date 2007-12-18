@@ -33,10 +33,11 @@ echo '<br/>';
 echo 'Creat la '.htmlentities($first_textblock['creation_timestamp']).' de '.format_user_link($first_textblock["user_name"], $first_textblock["user_fullname"]);
 echo '</div>';
 // blog comments
+echo '<div id="comentarii">';
 if (getattr($view, 'topic_id')) {
     echo macro_remotebox(array('url' => IA_SMF_URL.'/ia_comments.php?topic_id='.$view['topic_id']), true);
 }
-echo '</div>';
+echo '</div></div>';
 echo '</div>';
 
 // site footer
