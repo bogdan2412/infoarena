@@ -1245,6 +1245,7 @@ ul.filters li.submit {
 
 /* comment thread */
 .comments {
+    padding: 1em;
 }
 
 .comment {
@@ -1260,6 +1261,7 @@ ul.filters li.submit {
 
 .comment .body {
     margin: .5em;
+    padding: .5em;
 }
 
 .comment .header {

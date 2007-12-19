@@ -345,7 +345,7 @@ function ssi_commentThread($topicID, $output_method = 'echo')
     else {
         echo '
             <h3>Comenteaza si tu!</h3>';
-        $new_post_caption = 'Click aici!';
+        $new_post_caption = 'Lasa un comentariu!';
     }
 
     echo '
