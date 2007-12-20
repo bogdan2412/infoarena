@@ -1715,10 +1715,9 @@ function ssi_recentEvents($max_events = 7, $output_method = 'echo')
 		FROM {$db_prefix}calendar AS cal
 			LEFT JOIN {$db_prefix}boards AS b ON (b.ID_BOARD = cal.ID_BOARD)
 			LEFT JOIN {$db_prefix}topics AS t ON (t.ID_TOPIC = cal.ID_TOPIC)
-		WHERE cal.startDate <= '" . strftime('%Y-%m-%d', forum_time(false)) . "'
-			AND cal.endDate >= '" . strftime('%Y-%m-%d', forum_time(false)) . "'
+		WHERE cal.endDate >= '" . strftime('%Y-%m-%d', forum_time(false)) . "'
 			AND (cal.ID_BOARD = 0 OR $user_info[query_see_board])
-		ORDER BY cal.startDate DESC
+		ORDER BY cal.startDate
 		LIMIT $max_events", __FILE__, __LINE__);
 	$return = array();
 	$duplicates = array();
@@ -1760,18 +1759,25 @@ function ssi_recentEvents($max_events = 7, $output_method = 'echo')
 		return $return;
 
 	// Well the output method is echo.
-	echo '
-			<span style="color: #' . $modSettings['cal_eventcolor'] . ';">' . $txt['calendar4'] . '</span> ';
+    echo '<div class="calendar">';
+    echo '<div class="header">';
+    echo '<a href="'.IA_URL.'/forum?action=calendar">In curand..</a></div>';
 	foreach ($return as $mday => $array)
+    {
+        echo '<div class="date">'.strftime("%A, %d %B", strtotime($mday)).'</div>';
 		foreach ($array as $event)
 		{
-			if ($event['can_edit'])
-				echo '
-				<a href="' . $event['modify_href'] . '" style="color: #FF0000;">*</a> ';
-
-			echo '
-				' . $event['link'] . (!$event['is_last'] ? ', ' : '');
+            echo '<div class="event">';
+			if ($event['can_edit']) {
+				echo '<a href="' . $event['modify_href'] . '" style="color: #FF0000;">&raquo;</a> ';
+            } else {
+                echo '&raquo';
+            }
+			echo '' . $event['link'] . (!$event['is_last'] ? ', ' : '');
+            echo '</div>';
 		}
+    }
+    echo '</div>';
 }
 
 // Load the calendar information. (internal...)
