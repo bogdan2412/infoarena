@@ -59,10 +59,13 @@ define('IA_CACHE_SIZE', 256 * 1024 * 1024);
 define("IA_IMAGE_RESIZE_MAX_WIDTH", 800);
 define("IA_IMAGE_RESIZE_MAX_HEIGHT", 800);
 
-// Sidebar ad
+// Textblock name for sidebar ad
 define("IA_SIDEBAR_PAGE", "sidebar-ad");
 
-// Blog sidebar
+// Textblock name for blog sidebar
 define("IA_BLOG_SIDEBAR", "blog-sidebar");
+
+// LaTeX support
+define("IA_LATEX_ENABLE", true);
 
 ?>

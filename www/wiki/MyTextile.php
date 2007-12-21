@@ -2,7 +2,7 @@
 
 @require_once(IA_ROOT_DIR."www/wiki/Textile.php");
 require_once(IA_ROOT_DIR."common/attachment.php");
-require_once(IA_ROOT_DIR."www/wiki/latex/latex.php");
+require_once(IA_ROOT_DIR."www/wiki/latex.php");
 
 class MyTextile extends Textile {
     // FIXME: If you see a pointless textile error try tweaking this value.
@@ -181,15 +181,24 @@ class MyTextile extends Textile {
 
     function format_latex($args) {
         $str = getattr($args, 'text', '');
-        if ($this->error_reporting_level === false) {
-            return latex_content($str);
+
+        if (IA_LATEX_ENABLE) {
+            $html = latex_content($str);
         }
+        else {
+            $html = macro_error("LaTeX support is disabled.");
+            $html .= "<pre>".htmlentities($str).'</pre>';
+        }
+
+        if ($this->error_reporting_level === false) {
+            return $html;
+        }
+
         error_reporting($this->error_reporting_level);
 
-        $res = latex_content($str);
-        $res = getattr($args, 'pre', '').$res.getattr($args, 'post', '');
+        $html = getattr($args, 'pre', '').$html.getattr($args, 'post', '');
         error_reporting($this->my_error_reporting);
-        return $res;
+        return $html;
     }
 
     // Wrap around do_format_link, restore errors.

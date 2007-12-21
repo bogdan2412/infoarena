@@ -200,6 +200,8 @@ if (running_as_root() &&
     $sitename = read_line("Site name?", $sitename);
     system("chmod g+ws {$ia_root}attach");
     system("chmod g+ws {$ia_root}cache");
+    system("chmod g+ws {$ia_root}www/static/images/tmp");
+    system("chmod g+ws {$ia_root}www/static/images/latex");
 
     $username = null;
     if (preg_match('/\/home\/([^\/]*)/', IA_ROOT, $matches)) {

@@ -39,7 +39,7 @@
 
  function latex_content($text) {
     // adjust this to match your system configuration
-    include_once(IA_ROOT_DIR."www/wiki/latex/class.latexrender.php");
+    include_once(IA_ROOT_DIR."www/wiki/class.latexrender.php");
     $latexrender_path = IA_ROOT_DIR."www/static/images";
     $latexrender_path_http = IA_URL_HOST.IA_URL_PREFIX."static/images";
 
