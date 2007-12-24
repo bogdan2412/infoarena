@@ -1755,7 +1755,7 @@ function ssi_recentEvents($max_events = 7, $output_method = 'echo')
 	foreach ($return as $mday => $array)
 		$return[$mday][count($array) - 1]['is_last'] = true;
 
-	if ($output_method != 'echo' || empty($return))
+	if ($output_method != 'echo')
 		return $return;
 
 	// Well the output method is echo.
@@ -1764,7 +1764,7 @@ function ssi_recentEvents($max_events = 7, $output_method = 'echo')
     echo '<a href="'.IA_URL.'/forum?action=calendar">In curand..</a></div>';
 	foreach ($return as $mday => $array)
     {
-        echo '<div class="date">'.strftime("%A, %d %B", strtotime($mday)).'</div>';
+        echo '<div class="date">'.strftime("%A, %d %b %Y", strtotime($mday)).'</div>';
 		foreach ($array as $event)
 		{
             echo '<div class="event">';

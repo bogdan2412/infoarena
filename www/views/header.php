@@ -2,6 +2,7 @@
 
 require_once(IA_ROOT_DIR.'www/views/sitewide.php');
 require_once(IA_ROOT_DIR.'www/views/utilities.php');
+require_once(IA_ROOT_DIR.'www/macros/macro_calendar.php');
 
 // Basic view checks.
 log_assert(is_array($view));
@@ -86,6 +87,10 @@ ia_template_topnav($topnav_select, $smf_admin);
 
     <div id="google-search">
         <?php include(IA_ROOT_DIR.'www/views/google_search.php'); ?>
+    </div>
+
+    <div id="calendar">
+        <?= macro_calendar() ?>
     </div>
 
     <?php if (identity_is_anonymous()) { ?>
