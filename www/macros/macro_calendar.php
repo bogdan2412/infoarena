@@ -18,6 +18,7 @@ function macro_calendar($args) {
 		LIMIT $max_events");
 	$return = array();
 	$duplicates = array();
+    setlocale(LC_TIME, 'ro_RO.utf8');
     foreach ($result as $row)
 	{
 		// Check if we've already come by an event linked to this same topic with the same title... and don't display it if we have.

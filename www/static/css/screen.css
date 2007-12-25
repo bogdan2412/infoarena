@@ -521,7 +521,6 @@ div.flashError {
 }
 
 div.warning {
-    margin-top: -0.2em;
     padding: 0.4em;
     border: 1px solid #CC0000;
     background-color: #FFDDDD;
