@@ -521,13 +521,10 @@ div.flashError {
 }
 
 div.warning {
-    color: black;
     margin-top: -0.2em;
-    padding-left: 20px;
-    border: 1px solid olive;
-    background-image: url('../images/icons/notice.gif');
-    background-position: 2px 50%;
-    background-repeat: no-repeat;
+    padding: 0.4em;
+    border: 1px solid #CC0000;
+    background-color: #FFDDDD;
     width: 55%;
     position: relative;
 }
