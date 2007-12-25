@@ -90,7 +90,7 @@ ia_template_topnav($topnav_select, $smf_admin);
     </div>
 
     <div id="calendar">
-        <?= macro_calendar() ?>
+        <?= macro_calendar(array()) ?>
     </div>
 
     <?php if (identity_is_anonymous()) { ?>
