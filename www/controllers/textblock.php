@@ -90,8 +90,8 @@ function controller_textblock_diff($page_name) {
     log_assert_valid(textblock_validate($revfrom));
     log_assert_valid(textblock_validate($revto));
 
-    $diff_title = string_diff(array($revfrom['title'], $revto['title']));
-    $diff_content = string_diff(array($revfrom['text'], $revto['text']));
+    $diff_title = diff_inline(array($revfrom['title'], $revto['title']));
+    $diff_content = diff_inline(array($revfrom['text'], $revto['text']));
 
     $view = array();
     $view['page_name'] = $page['name'];

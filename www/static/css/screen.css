@@ -702,6 +702,16 @@ form.round li#field_tasks select {
     margin: .2em .2em;
 }
 
+.diff del {
+    background-color: #EE9999;
+    text-decoration: none;
+}
+
+.diff ins {
+    background-color: #99EE99;
+    text-decoration: none;
+}
+
 
 /* Wiki text block */
 .wiki_text_block {

@@ -17,8 +17,25 @@ function print_diff($diff) {
         foreach ($block as $op) {
             echo '<span class="'.$op['type'].'">';
             foreach ($op['lines'] as $line) {
-                echo str_replace('  ', '&nbsp;&nbsp;', htmlentities($line));
-                echo '<br/>';
+                $output = "";
+                if (!is_array($line)) {
+                    $output = htmlentities($line);
+                } else {
+                    // line contains inline diff
+                    foreach ($line as $chunk) {
+                        if ($chunk['type'] != 'normal') {
+                            $output .= '<'.$chunk['type'].'>';
+                        }
+                        $output .= htmlentities($chunk['string']); 
+                        if ($chunk['type'] != 'normal') {
+                            $output .= '</'.$chunk['type'].'>';
+                        }
+                    }
+                }
+
+                // make sure we display whitespace correctly
+                $output = str_replace('  ', '&nbsp;&nbsp;', $output);
+                echo $output.'<br/>';
             }
             echo '</span>';
         }
