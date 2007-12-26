@@ -11,51 +11,37 @@ include('header.php');
 </h1>
 <?php
 
-function diff_print_color_line($s)
-{
-    if (preg_match("/^(---|\+\+\+)/", $s)) {
-        return;
+function print_diff($diff) {
+    foreach ($diff as $block) {
+        echo '<div class="diff">';
+        foreach ($block as $op) {
+            echo '<span class="'.$op['type'].'">';
+            foreach ($op['lines'] as $line) {
+                echo str_replace('  ', '&nbsp;&nbsp;', htmlentities($line));
+                echo '<br/>';
+            }
+            echo '</span>';
+        }
+        echo '</div>';
     }
-    if (preg_match("/^(@@)/", $s)) {
-        echo "<hr />";
-        return;
-    }
-    if (strlen($s) > 0 && $s[0] == '+') {
-        $class = "added";
-    } else if (strlen($s) > 0 && $s[0] == '-') {
-        $class = "deleted";
-    } else {
-        $class = "normal";
-    }
-    echo "<span class=\"$class\">".htmlentities(substr($s, 1))."</span>";
 }
 
-if (count($view['diff_title']) <= 1) {
+if (empty($view['diff_title'])) {
     echo "<h3>Nu exista diferente intre titluri.</h3>";
 }
 else {
     echo "<h3>Diferente intre titluri:</h3>";
-    echo "<div class=\"diff\">";
-    for ($i = 0; $i+1 < count($view['diff_title']); $i++) {
-        $s = $view['diff_title'][$i];
-        $class = diff_print_color_line($s);
-    }
-    echo "</div>";
+    print_diff($view['diff_title']);
 }
 ?>
 
 <?php
-if (count($view['diff_content']) <= 1) {
+if (empty($view['diff_content'])) {
     echo "<h3>Nu exista diferente intre continut.</h3>";
 }
 else {
     echo "<h3>Diferente intre continut:</h3>";
-    echo '<div class="diff">';
-    for ($i = 0; $i+1 < count($view['diff_content']); $i++) {
-        $s = $view['diff_content'][$i];
-        $class = diff_print_color_line($s);
-    }
-    echo "</div>";
+    print_diff($view['diff_content']);
 }
 ?>
 

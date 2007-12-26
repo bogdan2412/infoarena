@@ -3,43 +3,8 @@
 require_once(IA_ROOT_DIR . "www/format/pager.php");
 require_once(IA_ROOT_DIR . "common/db/textblock.php");
 require_once(IA_ROOT_DIR . "common/textblock.php");
+require_once(IA_ROOT_DIR . "common/diff.php");
 
-// smart ass diff
-function string_diff($string1, $string2) {
-    $name1 = tempnam(IA_ROOT_DIR.'attach/', "ia");
-    $name2 = tempnam(IA_ROOT_DIR.'attach/', "ia");
-    $fp1 = fopen($name1, "w");
-    if (!$fp1) {
-        flash_error("Eroare la comparare!");
-        request(url_home());
-    }
-    $string1 .= "\n";
-    fputs($fp1, $string1);
-    fclose($fp1);
-
-    $fp2 = fopen($name2, "w");
-    if (!$fp2) {
-        flash_error("Eroare la comparare!");
-        request(url_home());
-    }
-    $string2 .= "\n";
-    fputs($fp2, $string2);
-    fclose($fp2);
-
-    ob_start();
-    system("diff -au ".$name1." ".$name2);
-    $ret = ob_get_contents();
-    ob_end_clean();
-    if (!unlink($name1)) {
-        flash_error("Eroare la comparare!");
-        request(url_home());
-    }
-    if (!unlink($name2)) {
-        flash_error("Eroare la comparare!");
-        request(url_home());
-    }
-    return $ret;
-}
 
 // View a plain textblock.
 // That textblock can be owned by something else.
@@ -125,16 +90,16 @@ function controller_textblock_diff($page_name) {
     log_assert_valid(textblock_validate($revfrom));
     log_assert_valid(textblock_validate($revto));
 
-    $diff_title = string_diff($revfrom['title'], $revto['title']);
-    $diff_content = string_diff($revfrom['text'], $revto['text']);
+    $diff_title = string_diff(array($revfrom['title'], $revto['title']));
+    $diff_content = string_diff(array($revfrom['text'], $revto['text']));
 
     $view = array();
     $view['page_name'] = $page['name'];
     $view['title'] = "Diferente pentru $page_name intre reviziile $revfrom_id si $revto_id";
     $view['revfrom_id'] = $revfrom_id;
     $view['revto_id'] = $revto_id;
-    $view['diff_title'] = explode("\n", $diff_title);
-    $view['diff_content'] = explode("\n", $diff_content);
+    $view['diff_title'] = $diff_title;
+    $view['diff_content'] = $diff_content;
     execute_view_die('views/textblock_diff.php', $view);
 }
 

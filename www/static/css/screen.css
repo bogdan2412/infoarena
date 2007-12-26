@@ -682,21 +682,24 @@ form.round li#field_tasks select {
 /* Diff */
 .diff {
     font-family: monospace;
+    border: #999988 solid 1px;  
+    margin-bottom: 1em;
 }
 
 .diff .deleted {
+    background-color: #FFDDDD;
+    border: #CC0000 solid 1px;
     display: block;
-    background-color: #F66;
 }
 
 .diff .added {
+    background-color: #DDFFDD;
+    border: #00AA00 solid 1px;
     display: block;
-    background-color: #6F6;
 }
 
 .diff span {
-    margin: .5em 0 .5em 0;
-    display: block;
+    margin: .2em .2em;
 }
 
 
