@@ -95,26 +95,24 @@ function diff_string($string) {
 function lcs($a, $b) {
     $N = strlen($a);
     $M = strlen($b);
-    $C = array(array($N+1), array($M+1));
+    $C = array(array(2), array($M+1));
 
-    for ($i = 0; $i <= $N; ++$i) {
-        $C[$i][0] = "";
-    }
-    for ($i = 0; $i <= $M; ++$i) {
-        $C[0][$i] = "";
-    }
+    for ($i = 0; $i < 2; ++$i)
+        for ($j = 0; $j <= $M; ++$j)
+            $C[$i][$j] = "";
+    
     for ($i = 1; $i <= $N; ++$i) {
         for ($j = 1; $j <= $M; ++$j) {
             if ($a[$i-1] == $b[$j-1]) {
-                $C[$i][$j] = $C[$i-1][$j-1].$a[$i-1];
-            } else if ($C[$i-1][$j] > $C[$i][$j-1]) {
-                $C[$i][$j] = $C[$i-1][$j];
+                $C[$i%2][$j] = $C[($i-1)%2][$j-1].$a[$i-1];
+            } else if ($C[($i-1)%2][$j] > $C[$i%2][$j-1]) {
+                $C[$i%2][$j] = $C[($i-1)%2][$j];
             } else {
-                $C[$i][$j] = $C[$i][$j-1];
+                $C[$i%2][$j] = $C[$i%2][$j-1];
             }
         }
     }
-    return $C[$N][$M];
+    return $C[$N%2][$M];
 }
 
 function split_string($string, $substring, $op_name) {
