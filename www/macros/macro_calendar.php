@@ -50,7 +50,7 @@ function macro_calendar($args) {
 
     $html = '<div class="calendar">';
     $html .= '<div class="header">';
-    $html .= '<a href="'.IA_URL.'/forum?action=calendar">In curand..</a></div>';
+    $html .= '<a href="'.IA_URL.'forum?action=calendar">In curand...</a></div>';
 	foreach ($return as $mday => $array)
     {
         $html .= '<div class="date">'.strftime("%A, %d %b %Y", strtotime($mday)).'</div>';

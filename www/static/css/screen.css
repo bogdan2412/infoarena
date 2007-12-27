@@ -139,7 +139,7 @@ The basic layout of the homepage is as follows:
 
 #content_small {
     clear: both;
-    margin-left: 20px;
+    margin-left: 10px;
     background: url(../images/main_small.jpg) repeat-y ;
 }
 
@@ -312,7 +312,7 @@ The basic layout of the homepage is as follows:
 /* Sidebar :: search box */
 #google-search {
     padding: 0;
-    margin: 1em 1em 2em 0;
+    margin: .5em .5em .5em 0;
 }
 
 #google-search fieldset {
@@ -1249,10 +1249,9 @@ ul.filters li.submit {
 .calendar {
     border: 1px solid #cccccc;
     background: url(../images/date.png) no-repeat top left;
-    width: 170px;
-    padding-left: 0.5ex;
-    padding-right: 0.5ex;
-    margin: 0pt auto;
+    width: 180px;
+    padding-left: 0.3ex;
+    padding-right: 0.3ex;
     line-height: 1.2em;
     -moz-border-radius: 7px;
 }
