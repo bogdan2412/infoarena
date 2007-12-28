@@ -35,6 +35,9 @@ function print_diff($diff) {
 
                 $output = str_replace("\n", '', $output);
                 $output = str_replace("\r", '', $output);
+                if ($output == "") {
+                    $output = " ";
+                }
                 echo $output."\n";
             }
             echo '</pre>';

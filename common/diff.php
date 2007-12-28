@@ -117,22 +117,21 @@ function lcs($a, $b) {
 
 function split_string($string, $substring, $op_name) {
     // sentinel character
-    $string .= "#";
-    $substring .= "#";
+    $string .= "\n";
+    $substring .= "\n";
     $N = strlen($string);
     $M = strlen($substring);
 
     $result = array();
     for ($i = 0, $j = -1; $i < $M; ++$i) {
         for ($prev = $j++; $j < $N && $string[$j] != $substring[$i]; ++$j);
-        log_assert($j < $N);
-        if ($i == $M-1) {
-            --$j;
-        }
+        log_assert($j < $N && $string[$j] == $substring[$i]);
         if ($j-$prev-1 > 0) {
             $result[] = array('type' => $op_name, 'string' => substr($string, $prev+1, $j-$prev-1));
         }
-        $result[] = array('type' => 'normal', 'string' => $string[$j]);
+        if ($i < $M-1) {
+            $result[] = array('type' => 'normal', 'string' => $string[$j]);
+        }
     }
 
     return $result;
