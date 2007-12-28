@@ -15,7 +15,7 @@ function print_diff($diff) {
     foreach ($diff as $block) {
         echo '<div class="diff">';
         foreach ($block as $op) {
-            echo '<span class="'.$op['type'].'">';
+            echo '<pre class="'.$op['type'].'">';
             foreach ($op['lines'] as $line) {
                 $output = "";
                 if (!is_array($line)) {
@@ -33,11 +33,11 @@ function print_diff($diff) {
                     }
                 }
 
-                // make sure we display whitespace correctly
-                $output = str_replace('  ', '&nbsp;&nbsp;', $output);
-                echo $output.'<br/>';
+                $output = str_replace("\n", '', $output);
+                $output = str_replace("\r", '', $output);
+                echo $output."\n";
             }
-            echo '</span>';
+            echo '</pre>';
         }
         echo '</div>';
     }

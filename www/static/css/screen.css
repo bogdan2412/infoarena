@@ -146,6 +146,7 @@ The basic layout of the homepage is as follows:
 #sidebar {
     width: 191px;
     float: left;
+    border-right: 1px solid #d0d0d0;
 }
 
 #sidebar .ad {
@@ -691,15 +692,23 @@ form.round li#field_tasks select {
     border: #CC0000 solid 1px;
     display: block;
 }
-
+    
 .diff .added {
     background-color: #DDFFDD;
     border: #00AA00 solid 1px;
     display: block;
 }
 
-.diff span {
+.diff .normal {
+    display: block;
+}
+.diff pre {
     margin: .2em .2em;
+    white-space: pre-wrap;       /* css-3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 
 .diff del {
@@ -710,6 +719,7 @@ form.round li#field_tasks select {
 .diff ins {
     background-color: #99EE99;
     text-decoration: none;
+    
 }
 
 

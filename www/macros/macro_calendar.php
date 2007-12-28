@@ -58,7 +58,7 @@ function macro_calendar($args) {
 		{
             $html .= '<div class="event">';
             $html .= '&raquo';
-			$html .=  $event['link'] . (!$event['is_last'] ? ', ' : '');
+			$html .=  $event['link'];
             $html .= '</div>';
 		}
     }
