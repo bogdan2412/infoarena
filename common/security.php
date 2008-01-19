@@ -126,7 +126,6 @@ function security_simplify_action($action) {
         case 'grader-overwrite':
         case 'grader-delete':
         case 'grader-rename':
-        case 'grader-download':
         case 'simple-edit':
             return 'simple-edit';
 
@@ -143,6 +142,7 @@ function security_simplify_action($action) {
 
         // Special actions fall through
         // FIXME: As few as possible.
+        case 'grader-download':
         case 'task-submit':
         case 'round-submit':
         case 'round-view-tasks':
@@ -396,6 +396,14 @@ function security_task($user, $action, $task) {
             }
             return ($task['hidden'] == false && $is_running);
 
+        case 'grader-download':
+            if ($task['open_tests']) {
+                $can_view = $task['hidden'] == false;
+            } else {
+                $can_view = false;
+            }
+            return $can_view || $is_owner || $is_admin;
+
         default:
             log_error('Invalid task action: '.$action);
     }
@@ -501,6 +509,7 @@ function security_job($user, $action, $job) {
     $is_owner = ($job['user_id'] == $user['id']);
     $is_task_owner = ($job['task_owner_id'] == $user['id'] && $usersec == 'helper');
     $can_view_job = ($job['task_hidden'] == false) || $is_task_owner || $is_admin;
+    $can_view_source = ($job['task_open_source'] == true) || $is_task_owner || $is_owner || $is_admin;
 
     // Log query response.
     $action = security_simplify_action($action);
@@ -520,7 +529,7 @@ function security_job($user, $action, $job) {
             return $can_view_job;
 
         case 'job-download': //FIXME: this should be job-view-source, job-download is too confusing
-            return $can_view_job && ($is_admin || $is_owner);
+            return $can_view_job && $can_view_source;
 
         default:
             log_error('Invalid job action: '.$action);

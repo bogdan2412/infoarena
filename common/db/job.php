@@ -89,6 +89,7 @@ function job_get_by_id($job_id, $contents = false) {
                    `task`.`id` AS `task_id`,
                    `task`.`page_name` AS `task_page_name`, task.`title` AS `task_title`,
                    `task`.`hidden` AS `task_hidden`, `task`.`user_id` AS `task_owner_id`,
+                   `task`.`open_source` AS `task_open_source`,
                    `round`.`id` AS `round_id`,
                    `round`.`page_name` AS `round_page_name`, `round`.`title` AS `round_title`";
     if ($contents) {

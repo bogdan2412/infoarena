@@ -37,47 +37,47 @@ function task_get_parameter_infos() {
                         'type' => 'string',
                         'name' => "Grupare teste",
 
-                ),
-                'okfiles' => array(
-                        'description' => "Daca evaluator-ul foloseste fisiere .ok",
-                        'default' => '0',
-                        'type' => 'bool',
-                        'name' => "Foloseste .ok",
-                ),
-                'evaluator' => array(
-                        'description' => "Sursa evaluatorului. Poate fi omis pentru evaluare cu diff",
-                        'default' => 'eval.c',
-                        'type' => 'string',
-                        'name' => "Evaluator",
-                ),
-        ),
-        'output-only' => array(
-                'tests' => array(
-                        'description' => "Numar de teste",
-                        'default' => 10,
-                        'type' => 'integer',
-                        'name' => "Numar de teste",
-                ),
-                'testgroups' => array(
-                        'description' => "Descrierea gruparii testelor.",
-                        'default' => '1;2;3;4;5;6;7;8;9;10',
-                        'type' => 'string',
-                        'name' => "Grupare teste",
-                ),
-                'okfiles' => array(
-                        'description' => "Daca evaluator-ul foloseste fisiere .ok",
-                        'default' => '0',
-                        'type' => 'bool',
-                        'name' => "Foloseste .ok",
-                ),
-                'evaluator' => array(
-                        'description' => "Sursa evaluatorului. Poate fi omis pentru evaluare cu diff",
-                        'default' => 'eval.c',
-                        'type' => 'string',
-                        'name' => "Evaluator",
-                ),
-        ),
-    );
+            ),
+            'okfiles' => array(
+                    'description' => "Daca evaluator-ul foloseste fisiere .ok",
+                    'default' => '0',
+                    'type' => 'bool',
+                    'name' => "Foloseste .ok",
+            ),
+            'evaluator' => array(
+                    'description' => "Sursa evaluatorului. Poate fi omis pentru evaluare cu diff",
+                    'default' => 'eval.c',
+                    'type' => 'string',
+                    'name' => "Evaluator",
+            ),
+    ),
+    'output-only' => array(
+            'tests' => array(
+                    'description' => "Numar de teste",
+                    'default' => 10,
+                    'type' => 'integer',
+                    'name' => "Numar de teste",
+            ),
+            'testgroups' => array(
+                    'description' => "Descrierea gruparii testelor.",
+                    'default' => '1;2;3;4;5;6;7;8;9;10',
+                    'type' => 'string',
+                    'name' => "Grupare teste",
+            ),
+            'okfiles' => array(
+                    'description' => "Daca evaluator-ul foloseste fisiere .ok",
+                    'default' => '0',
+                    'type' => 'bool',
+                    'name' => "Foloseste .ok",
+            ),
+            'evaluator' => array(
+                    'description' => "Sursa evaluatorului. Poate fi omis pentru evaluare cu diff",
+                    'default' => 'eval.c',
+                    'type' => 'string',
+                    'name' => "Evaluator",
+            ),
+    ),
+);
 }
 
 // Initialize a task object
@@ -128,6 +128,16 @@ function task_validate($task) {
     $hidden = getattr($task, 'hidden');
     if ($hidden != '0' && $hidden != '1') {
         $errors['hidden'] = 'Se accepta doar 0/1';
+    }
+
+    $open_source = getattr($task, 'open_source');
+    if ($open_source != '0' && $open_source != '1') {
+        $errors['open_source'] = 'Se accepta doar 0/1';
+    }
+
+    $open_tests = getattr($task, 'open_tests');
+    if ($open_tests != '0' && $open_tests != '1') {
+        $errors['open_tests'] = 'Se accepta doar 0/1';
     }
 
     if (!array_key_exists(getattr($task, 'type'), task_get_types())) {

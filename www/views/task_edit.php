@@ -50,6 +50,14 @@ $form_fields = array(
                 'values' => task_get_types(),
                 'default' => 'classic',
         ),
+        'open_source' => array(
+                'name' => 'Acces liber la surse',
+                'type' => 'bool'
+        ),
+        'open_tests' => array(
+                'name' => 'Acces liber la teste',
+                'type' => 'bool'
+        ),
 );
 
 ?>
@@ -80,6 +88,14 @@ $form_fields = array(
 // FIXME: Field should be generated from task_get_types()
 ?>
     <fieldset>
+    <legend>Acces la surse si teste</legend>
+    <ul class="form">
+        <?= view_form_field_li($form_fields['open_source'], 'open_source') ?>
+        <?= view_form_field_li($form_fields['open_tests'], 'open_tests') ?>
+    </ul>
+    </fieldset>
+
+    <fieldset>
     <legend>Detalii despre evaluare</legend>
     <ul class="form">
         <?= view_form_field_li($form_fields['type'], 'type') ?>
@@ -90,6 +106,7 @@ $form_fields = array(
         </li>
     </ul>
     </fieldset>
+
     <div class="submit">
         <ul class="form">
             <li id="field_submit">
