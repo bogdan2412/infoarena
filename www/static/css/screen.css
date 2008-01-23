@@ -994,6 +994,7 @@ th {
     background-color: #f6f6f6;
     padding: 5px;
     margin: 0;
+    -moz-border-radius: 10px;
 }
 
 .inlineSubmit .form li {

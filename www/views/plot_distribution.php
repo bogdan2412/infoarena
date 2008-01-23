@@ -14,11 +14,12 @@ else {
 
 // gnuplot script
 $script = "
+set terminal postscript noenhanced
 set grid
 
 set rmargin 2
 set lmargin 5
-set tmargin 12
+set tmargin 15
 set bmargin 2
 set xtics nomirror
 set ytics nomirror
@@ -26,18 +27,19 @@ set ytics nomirror
 set title \"Distributie rating (".IA_URL.")\" 0,-.5
 
 set style line 1 lt 1 lw 4 pt 3 ps 0.5
-set style line 2 lt 7 lw 6 pt 7 ps 1.0
-set style line 3 lt 11 lw 3
-set xrange [350:960]
+set style line 2 lt 3 lw 6 pt 7 ps 1.0
+set style line 3 lt 11 lw 6
+set xrange [350:1130]
+set yrange [0:250]
 
-set xtics 50
-set xtic rotate by -35
+set xtics 100
+set xtic rotate by -20
 
 ";
 
 // legend
 $script .= "
-set key left top box 3
+set key right top box 3
 set key width -1.5
 ";
 
@@ -46,15 +48,15 @@ if ($user && $user_rating) {
     $script .= "
 set parametric
 const={$user_rating}
-set trange [0:100]
+set trange [0:250]
 ";
 }
 
 // plot distribution & median
 $script .= "
 plot \\
-    \"%data%\" using 1:2 title \"Concurenti\" with histeps ls 3, \\
-    \"%data%\" using 1:2 smooth bezier title \"Aproximare\" with lines ls 1";
+    \"%data%\" using 1:2 title \"Concurenti\" with impulses ls 3, \\
+    \"%data%\" using 1:2 smooth csplines title \"Aproximare\" with lines ls 1";
 
 // plot user
 if ($user && $user_rating) {
