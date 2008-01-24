@@ -115,6 +115,15 @@ foreach ($tasks as $task) {
         continue;
     }
     $str2 = strtoupper(($task['order']-1).$page['title']);
+    
+    if ($task['order'] <= 10) { 
+        $str1 = "00".$str1; 
+        $str2 = "00".$str2; 
+    }
+    if ($task['order'] > 10 && $task['order'] <= 100) { 
+        $str1 = "0".$str1; 
+        $str2 = "0".$str2; 
+    }
 
     $found = null;
     for ($i = count($topics)-1; $i >= 0; --$i) {
@@ -126,7 +135,7 @@ foreach ($tasks as $task) {
 
     if (!$found) {
         // number in forum might be wrong
-        log_warn('Numarul pentru problema "'.$task['id'].'" este gresit!');
+        log_warn('Numarul pentru problema "'.$task['id'].'" este gresit! Am cautat '.$str1.' si '.$str2);
         $str1 = strtoupper($task['id']);
         $str2 = strtoupper($page['title']);
         for ($i = count($topics)-1; $i >= 0; --$i) {
