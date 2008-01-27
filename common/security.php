@@ -528,7 +528,7 @@ function security_job($user, $action, $job) {
         case 'job-view':
             return $can_view_job;
 
-        case 'job-view-source': //FIXME: this should be job-view-source, job-view-source is too confusing
+        case 'job-view-source': 
             return $can_view_job && $can_view_source;
 
         default:
