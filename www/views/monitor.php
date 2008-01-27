@@ -113,8 +113,18 @@ if (!$jobs) {
         return format_link(url_job_detail($val), "#$val");
     }
 
-    // For the reeval column.
-    function format_reeval_link($job_id) {
+    // For the date column.
+    function format_short_date($val) {
+        return format_date($val, '%e %b %y %H:%M:%S');
+    }
+
+    // For the size column.
+    function format_size($row) {
+        $size = round($row['job_size']/1024, 2)." kb";
+        if (identity_can('job-view-source', $row)) {
+            return format_link(url_job_view_source($row['id']), $size);
+        }
+        return $size;
     }
 
     $column_infos = array(
@@ -138,9 +148,13 @@ if (!$jobs) {
             'rowform' => 'format_round_link',
         ),
         array(
+            'title' => 'Marime',
+            'rowform' => 'format_size',
+        ),
+        array(
             'title' => 'Data',
             'key' => 'submit_time',
-            'valform' => 'format_date',
+            'valform' => 'format_short_date',
         ),
         array(
             'title' => 'Stare',

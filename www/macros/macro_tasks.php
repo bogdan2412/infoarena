@@ -88,6 +88,16 @@ function macro_tasks($args) {
     $options['row_style'] = 'task_row_style';
     $options['css_class'] = 'tasks';
 
+    function format_title($row) {
+        $title = "<span style=\"float:left;\">".format_link(url_textblock($row["page_name"]), $row["title"])."</span>";
+        if ($row['open_source'] || $row['open_tests']) {
+            $title .= "<span style=\"float:right;\">";
+            $title .= format_link(url_task($row['id']), format_img(url_static("images/open_small.png"), ""), false);
+            $title .= "</span>";
+        }
+        return $title;
+    }
+
     $column_infos = array();
     if ($show_numbers) {
         $column_infos[] = array(
@@ -100,8 +110,7 @@ function macro_tasks($args) {
     $column_infos[] = array(
             'title' => 'Titlul problemei',
             'css_class' => 'task',
-            'rowform' => create_function_cached('$row',
-                    'return format_link(url_textblock($row["page_name"]), $row["title"]);'),
+            'rowform' => 'format_title'
     );
     if ($show_authors) {
         $column_infos[] = array(

@@ -85,6 +85,7 @@ function job_get_by_id($job_id, $contents = false) {
     log_assert(is_whole_number($job_id));
     $field_list = "`job`.`id`, job.`user_id`, `job`.`compiler_id`, `job`.`status`,
                    `job`.`submit_time`, `job`.`eval_message`, `job`.`score`, `job`.`eval_log`,
+                   OCTET_LENGTH(`job`.`file_contents`) AS `job_size`,
                    `user`.`username` as `user_name`, `user`.`full_name` as `user_fullname`,
                    `task`.`id` AS `task_id`,
                    `task`.`page_name` AS `task_page_name`, task.`title` AS `task_title`,
@@ -206,12 +207,14 @@ SELECT `job`.`id`,
        `job`.`score`, 
        `job`.`eval_message`,
        `job`.`eval_log`,
+       OCTET_LENGTH(`job`.`file_contents`) AS `job_size`,
        `user`.`username` AS `user_name`, 
        `user`.`full_name` AS `user_fullname`,
        `task`.`page_name` AS `task_page_name`, 
        `task`.`title` AS `task_title`,
        `task`.`hidden` AS `task_hidden`, 
        `task`.`user_id` AS `task_owner_id`,
+       `task`.`open_source` AS `task_open_source`,
        `round`.`page_name` AS `round_page_name`, 
        `round`.`title` AS `round_title`
 #       (CASE WHEN `status` = 'processing' THEN

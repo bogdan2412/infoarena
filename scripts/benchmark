@@ -7,19 +7,20 @@ require_once(dirname($argv[0]) . "/utilities.php");
 
 // URLs to benchmark
 $benchmark_urls = array(
-    IA_URL . "utilizator/domino?action=download&file=avatar&resize=L32x32",
+/*    IA_URL . "utilizator/domino?action=download&file=avatar&resize=L32x32",
     IA_URL . "/template/preoni-2006?action=download&file=hlogo.gif",
     IA_URL . "utilizator/domino",
     IA_URL . "changes",
-    IA_URL . "clasament-rating",
+    IA_URL . "clasament-rating",*/
     IA_URL . "monitor",
-    IA_URL . "links",
+    IA_URL . "monitor?first_entry=113425",
+/*    IA_URL . "links",
     IA_URL . "stiri",
     IA_URL . "problema/adunare",
     IA_URL . "preoni-2007/runda-1/9",
     IA_URL . "unirea-2007/rezultate-9-10",
     IA_URL . "plot/rating?user=gcosmin",
-    IA_URL . "utilizator/domino?action=stats",
+    IA_URL . "utilizator/domino?action=stats",*/
 );
 
 // parse options

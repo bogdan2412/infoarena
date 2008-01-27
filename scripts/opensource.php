@@ -1,3 +1,13 @@
-ALTER TABLE `ia_task` ADD `open_source` BOOL NOT NULL DEFAULT '0',
-     ADD `open_tests` BOOL NOT NULL DEFAULT '0';
+#! /usr/bin/env php
+<?php
+require_once(dirname($argv[0]) . "/utilities.php");
+require_once(IA_ROOT_DIR."common/db/attachment.php");
+
+ini_set("memory_limit", "128M");
+
+db_connect();
+$query = "ALTER TABLE `ia_task` ADD `open_source` BOOL NOT NULL DEFAULT '0',
+          ADD `open_tests` BOOL NOT NULL DEFAULT '0'";
+db_query($query);
+?>
 

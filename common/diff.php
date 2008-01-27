@@ -168,6 +168,5 @@ function diff_inline($string, $op_name = array("del", "ins")) {
     return $diff;
 }
 
-
 ?>
 

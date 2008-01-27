@@ -298,8 +298,8 @@ function url_job_detail($job_id) {
     return url_complex("job_detail/".$job_id, array());
 }
 
-function url_job_download($job_id) {
-    return url_complex("job_detail/".$job_id, array('action' => 'download'));
+function url_job_view_source($job_id) {
+    return url_complex("job_detail/".$job_id, array('action' => 'view-source'));
 }
 
 // Misc urls

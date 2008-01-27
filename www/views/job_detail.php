@@ -33,11 +33,11 @@ $show_groups = ($view['group_count'] < count($view['tests']));
 </tr>
 <tr>
     <th class="round-id">Runda</th>
-    <td class="round-id" colspan="<?= identity_can('job-download', $job) ? 1 : 3 ?>">
+    <td class="round-id" colspan="<?= identity_can('job-view-source', $job) ? 1 : 3 ?>">
     <?= format_link(url_textblock($job['round_page_name']), $job['round_title']) ?></td>
-<?php if (identity_can('job-download', $job)) { ?>
+<?php if (identity_can('job-view-source', $job)) { ?>
     <th class="source">Sursa</th>
-    <td class="source"><?= format_link(url_job_download($job['id']), "Vezi sursa trimisa") ?></td>
+    <td class="source"><?= format_link(url_job_view_source($job['id']), "Vezi sursa") ?></td>
 <?php } ?>
 </tr>
 

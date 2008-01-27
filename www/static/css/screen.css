@@ -88,6 +88,8 @@ div.loading img {
     list-style-type: disc;
 }
 
+
+
 /* block quotes */
 blockquote {
     text-indent: 25px;
@@ -1346,5 +1348,24 @@ ul.filters li.submit {
 
 .comments .toolbar a {
     font-weight: bold;
+}
+
+.banner {
+    border: 0pt none;
+    background-color: rgb(210, 244, 219);
+    padding: 0.3em;
+    display: table;
+    width: 95%;
+    margin: 0em auto;
+    text-align: center;
+    line-height: 2em;
+    -moz-border-radius: 7px;
+         
+}
+
+.report {
+    background: url(../images/report.png) no-repeat scroll center left;
+    float: right;
+    padding-left: 2em;
 }
 

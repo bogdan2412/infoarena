@@ -140,8 +140,7 @@ function controller_task_details($task_id) {
 }
 
 // Creates a task. Minimalist
-function controller_task_create()
-{
+function controller_task_create() {
     global $identity_user;
 
     // Security check. FIXME: sort of a hack.

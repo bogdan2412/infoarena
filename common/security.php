@@ -152,7 +152,7 @@ function security_simplify_action($action) {
         case 'user-tag':
         case 'job-view':
         case 'job-eval':
-        case 'job-download': 
+        case 'job-view-source': 
             return $action;
 
         default:
@@ -499,7 +499,7 @@ function security_blog($user, $action, $round) {
 
 
 // FIXME: implement job security.
-// * job-download (this should be job-view-source) 
+// * job-view-source (this should be job-view-source) 
 // * job-view
 //
 // There is no job-eval, jobs are evaluated on the spot, we check job-view instead.
@@ -528,7 +528,7 @@ function security_job($user, $action, $job) {
         case 'job-view':
             return $can_view_job;
 
-        case 'job-download': //FIXME: this should be job-view-source, job-download is too confusing
+        case 'job-view-source': //FIXME: this should be job-view-source, job-view-source is too confusing
             return $can_view_job && $can_view_source;
 
         default:

@@ -1,5 +1,6 @@
 <?php
 
+require_once(IA_ROOT_DIR . "common/task.php");
 require_once(IA_ROOT_DIR . "common/db/task.php");
 require_once(IA_ROOT_DIR . "common/db/job.php");
 
@@ -7,8 +8,8 @@ function controller_job_detail($job_id) {
     $action = request('action', 'view');
     if ($action == 'view') {
         controller_job_view($job_id);
-    } else if ($action == 'download') {
-        controller_job_download($job_id);
+    } else if ($action == 'view-source') {
+        controller_job_view_source($job_id);
     } else {
         flash_error("Actiune invalida.");
         redirect(url_monitor());
@@ -64,7 +65,8 @@ function controller_job_view($job_id) {
     execute_view('views/job_detail.php', $view);
 }
 
-function controller_job_download($job_id) {
+
+function controller_job_view_source($job_id) {
     if (!is_whole_number($job_id)) {
         flash_error("Numar de job invalid.");
         redirect(url_monitor());
@@ -77,13 +79,20 @@ function controller_job_download($job_id) {
         redirect(url_monitor());
     }
 
-    identity_require('job-download', $job);
+    identity_require('job-view-source', $job);
 
-    header("Content-Type: text/plain");
-    $filename = "{$job['task_id']}_{$job['user_name']}.{$job['compiler_id']}";
-    header("Content-Disposition: inline; filename=".urlencode($filename).";");
-    header('Content-Length: ' . strlen($job['file_contents']));
-    echo $job['file_contents'];
+    $view = array();
+    $view['title'] = 'Cod sursa (job #'.$job_id.')';
+    $view['topic_id'] = task_get_topic($job['task_id']);
+    $view['job'] = $job;
+    $view['lang'] = $job['compiler_id'];
+    if ($view['lang'] == 'c') {
+        $view['lang'] = 'cpp';
+    }
+    if ($view['lang'] == 'fpc') {
+        $view['lang'] = 'delphi';
+    }
+    execute_view('views/job_view_source.php', $view);
 }
 
 ?>

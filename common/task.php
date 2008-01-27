@@ -1,4 +1,6 @@
 <?php
+require_once(IA_ROOT_DIR . "common/textblock.php");
+
 // This module implements task and task-param related stuff.
 
 // Get valid task types.
@@ -297,6 +299,21 @@ function task_validate_parameters($task_type, $parameters) {
         log_error("Bad task_type");
     }
     return $errors;
+}
+
+//FIXME: this is a hack; we should have a database table for this
+function task_get_topic($task_id) {
+    if (!is_task_id($task_id)) {
+        log_error("Invalid task id");
+    }
+
+    // Get task
+    $task = textblock_get_revision("problema/".$task_id);
+    $pattern = '/==\ *smftopic\(\ *topic_id="\ *([0-9]*).*0*\ *"\ *\)\ *==/i';
+    if (preg_match($pattern, $task['text'], $matches)) {
+        return $matches[1];
+    }
+    return null;
 }
 
 ?>
