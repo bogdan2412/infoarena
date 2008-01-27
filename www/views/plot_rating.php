@@ -77,8 +77,7 @@ $scale = ceil(($rating_end-$rating_start)/20);
 foreach ($history as $round_id => $round) {
     $date = date("Y-m-d", $round['timestamp']);
     $rating = rating_scale($round['rating']) + ($i % 2 ? $scale : -$scale);
-    $align = ($i % 2 ? "left" : "right");
-    $align = "left";
+    $align = "right";
     $script .= "set label {$i} \"{$i}\" at \"{$date}\",{$rating} {$align} font \"Helvetica,19\" back tc lt 9\n";
     $i++;
 }

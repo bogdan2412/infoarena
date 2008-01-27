@@ -2,7 +2,7 @@
 require_once(IA_ROOT_DIR.'www/url.php');
 
 function macro_calendar($args) {
-    $max_events = getattr($args, 'limit', 7);
+    $max_events = getattr($args, 'limit', 20);
     $forumurl = url_forum();
 
 	// Find all events which are happening in the near future that the member can see.
@@ -13,7 +13,8 @@ function macro_calendar($args) {
 		FROM ia_smf_calendar AS cal
 			LEFT JOIN ia_smf_boards AS b ON (b.ID_BOARD = cal.ID_BOARD)
 			LEFT JOIN ia_smf_topics AS t ON (t.ID_TOPIC = cal.ID_TOPIC)
-		WHERE cal.endDate >= '" . strftime('%Y-%m-%d', time()) . "'
+		WHERE cal.endDate >= '" . strftime('%Y-%m-%d', time()) . "' AND
+        cal.startDate <= DATE_ADD(NOW(), INTERVAL 7 DAY)
 		ORDER BY cal.startDate
 		LIMIT $max_events");
 	$return = array();
