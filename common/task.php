@@ -195,6 +195,9 @@ function task_get_testgroups($parameters) {
                 }
             }
             if (count($tests) == 1) {
+                if ($tests[0] < 1 || $tests[0] > $test_count) {
+                    return false;
+                }
                 $current_group[] = $tests[0];
                 $used_count[$tests[0]]++;
             }
