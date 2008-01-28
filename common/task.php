@@ -91,6 +91,8 @@ function task_init($task_id, $task_type, $user = null) {
             'hidden' => 1,
             'source' => 'ad-hoc',
             'page_name' => IA_TASK_TEXTBLOCK_PREFIX . $task_id,
+            'open_source' => 0,
+            'open_tests' => 0,
     );
 
     // User stuff. ugly
