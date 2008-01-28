@@ -87,6 +87,7 @@ $form_fields = array(
 <?php
 // FIXME: Field should be generated from task_get_types()
 ?>
+    <? if (identity_can('task-change-open', $task)) { ?> 
     <fieldset>
     <legend>Acces la surse si teste</legend>
     <ul class="form">
@@ -94,6 +95,7 @@ $form_fields = array(
         <?= view_form_field_li($form_fields['open_tests'], 'open_tests') ?>
     </ul>
     </fieldset>
+    <? } ?>
 
     <fieldset>
     <legend>Detalii despre evaluare</legend>

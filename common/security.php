@@ -131,6 +131,7 @@ function security_simplify_action($action) {
 
         // Admin stuff:
         case 'task-change-security':
+        case 'task-change-open':
         case 'textblock-change-security':
         case 'task-tag':
         case 'round-tag':
