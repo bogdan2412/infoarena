@@ -123,6 +123,8 @@ function controller_task_details($task_id) {
 
             flash("Task-ul a fost modificat cu succes.");
             redirect(url_task_edit($task_id));
+        } else {
+            flash_error("Sunt erori in datele introduse.");
         }
     }
 
