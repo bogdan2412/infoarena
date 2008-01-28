@@ -42,7 +42,7 @@ function format_attach_name($row) {
 }
 
 function format_attach_size($row) {
-    $size = number_format((double) $row['size'] / 1024, 2);
+    $size = sprintf("%.2f", $row['size'] / 1024);
     return "$size kb";
 
 }

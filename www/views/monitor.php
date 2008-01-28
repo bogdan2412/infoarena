@@ -120,7 +120,7 @@ if (!$jobs) {
 
     // For the size column.
     function format_size($row) {
-        $size = round($row['job_size']/1024, 2)." kb";
+        $size = sprintf("%.2f", $row['job_size']/1024)." kb";
         if (identity_can('job-view-source', $row)) {
             return format_link(url_job_view_source($row['id']), $size);
         }
