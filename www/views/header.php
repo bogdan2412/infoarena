@@ -33,6 +33,7 @@ if (isset($form_errors) || isset($form_values)) {
     <title><?= htmlentities(getattr($view, 'title')) ?></title>
 
     <link type="text/css" rel="stylesheet" href="<?= htmlentities(url_static('css/sitewide.css')) ?>"/>
+    <link type="text/css" rel="stylesheet" href="<?= htmlentities(url_static('css/iconize.css')) ?>"/>
     <link type="text/css" rel="stylesheet" href="<?= htmlentities(url_static('css/screen.css')) ?>"/>
     <link type="text/css" rel="stylesheet" href="<?= htmlentities(url_static('css/tabber.css')) ?>"/>
     <link type="text/css" rel="stylesheet" href="<?= htmlentities(url_static('css/SyntaxHighlighter.css')) ?>"/>
