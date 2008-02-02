@@ -13,6 +13,16 @@ function format_score_column($val) {
     }
 }
 
+function format_title($row) {
+    $title = "<span style=\"float:left;\">".format_link(url_textblock($row["page_name"]), $row["title"])."</span>";
+    if ($row['open_source'] || $row['open_tests']) {
+        $title .= "<span style=\"float:right;\">";
+        $title .= format_link(url_task($row['id']), format_img(url_static("images/open_small.png"), ""), false);
+        $title .= "</span>";
+    }
+    return $title;
+}
+
 function task_row_style($row) {
     $score = getattr($row, 'score');
     if (is_null($score)) {
@@ -87,16 +97,6 @@ function macro_tasks($args) {
     $options['total_entries'] = round_get_task_count($round_id);
     $options['row_style'] = 'task_row_style';
     $options['css_class'] = 'tasks';
-
-    function format_title($row) {
-        $title = "<span style=\"float:left;\">".format_link(url_textblock($row["page_name"]), $row["title"])."</span>";
-        if ($row['open_source'] || $row['open_tests']) {
-            $title .= "<span style=\"float:right;\">";
-            $title .= format_link(url_task($row['id']), format_img(url_static("images/open_small.png"), ""), false);
-            $title .= "</span>";
-        }
-        return $title;
-    }
 
     $column_infos = array();
     if ($show_numbers) {
