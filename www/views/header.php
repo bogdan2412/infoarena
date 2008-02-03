@@ -12,11 +12,6 @@ log_assert(is_string($view['title']));
 if (isset($form_errors) || isset($form_values)) {
     log_assert(is_array($view['form_errors']));
     log_assert(is_array($view['form_values']));
-    foreach ($form_errors as $k => $v) {
-        if (!array_key_exists($k, $form_values)) {
-            log_error("Form error $k with no form value.");
-        }
-    }
     foreach ($form_values as $k => $v) {
         if (htmlentities($k) != $k) {
             log_error("Form field $k contains special html chars.");
