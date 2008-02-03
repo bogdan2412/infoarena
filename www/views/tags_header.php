@@ -10,8 +10,8 @@ function tag_form_event() {
 // FIXME: Width parameter does not work, I hate CSS
 function tag_format_input_box($value = null, $width = "50", $name = "tags") {
     $esc_name = htmlentities($name);
-    $esc_width = htmlentities($width); 
-    $esc_value = htmlentities($value);
+    $esc_width = htmlentities($width);
+    // presume $value is html-escaped
 
     $output = '<li><label for="form_'.$esc_name.'">Tag-uri</label>';
     $output .= ferr_span($name);
@@ -21,7 +21,7 @@ function tag_format_input_box($value = null, $width = "50", $name = "tags") {
         $output .= ' width="'.$esc_width.'"';
     }
     if (!is_null($value)) {
-        $output .= ' value="'.$esc_value.'"';
+        $output .= ' value="'.$value.'"';
     }
     $output .= ' />';
     $output .= '<script type="text/javascript" language="JavaScript" src="'.
