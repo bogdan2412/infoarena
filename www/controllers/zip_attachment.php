@@ -51,16 +51,17 @@ function extract_zipped_attachment($zip_file, $zip_index, $to_file) {
         return false;
     }
 
-    // FIXME: This should be done with streaming (i.e. avoid the temporary storage)
-    $buffer = $zip->getFromIndex($zip_index);
-    if (false === $buffer) {
-        log_print("[FAILED] to ZIP extract file index @{$zip_index} from archive {$zip_file}");
+    $from_stream = $zip->getStream($zip->getNameIndex($zip_index));
+    if (!$from_stream) {
+        log_print("[FAILED] to open ZIP stream at file index @{$zip_index} ".
+                  "from archive {$zip_file}");
         return false;
     }
 
-    log_print("[SUCCESS] ZIP extract file index @{$zip_index} from archive {$zip_file}");
+    log_print("[SUCCESS] ZIP extract file index @{$zip_index} ".
+              "from archive {$zip_file}");
 
-    return file_put_contents($to_file, $buffer);
+    return file_put_contents($to_file, $from_stream);
 }
 
 ?>
