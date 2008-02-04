@@ -52,6 +52,32 @@ define("IA_RE_ATTACHMENT_NAME", '[a-z0-9][a-z0-9\.\-_]*');
 // External urls. Used by textile.
 define("IA_RE_EXTERNAL_URL", '[a-z]+:\/\/|mailto:[^@]+@[^@]+|[^@]+@[^@]');
 
+// Windows hack for checkdnsrr function.
+// FIXME: Not fully tested!
+if (!function_exists('checkdnsrr')) {
+    log_warn("Function checkdnsrr does not exist. ".
+             "Presuming Windows NT enviroment and reimplementing it.");
+
+    function checkdnsrr($hostName, $recType = "MX")
+    {
+        if (empty($hostName)) {
+            return false;
+        }
+
+        exec("nslookup -type=$recType $hostName", $result);
+        // Check each line to find the one that starts with the host name.
+        // If it exists then the function succeeded.
+        foreach ($result as $line) {
+            if (eregi("^$hostName" ,$line)) {
+                return true;
+            }
+        }
+
+        // Itherwise there was no mail handler for the domain
+        return false;
+    }
+}
+
 // Check if a a variable is a whole number.
 function is_whole_number($x) {
     return is_numeric($x) && $x == intval($x);
@@ -59,7 +85,15 @@ function is_whole_number($x) {
 
 // tell if email address seems to be valid
 function is_valid_email($email) {
-    return preg_match('/^'.IA_RE_EMAIL.'$/xi', $email);
+    if (!preg_match('/^'.IA_RE_EMAIL.'$/xi', $email)) {
+        return false;
+    }
+    $domain = explode("@", $email);
+    $domain = array_pop($domain).'.';
+    if (!checkdnsrr($domain, "MX")) {
+        return false;
+    }
+    return true;
 }
 
 // Normalize a page name. Removes extra slashes and lowercases.
