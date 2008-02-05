@@ -89,7 +89,6 @@ function view_form_field_li($field_info, $field_name) {
             getattr($form_values, $field_name),
             getattr($form_errors, $field_name), false);
     return "<li id=\"field_$field_name\">\n$row</li>\n";
- 
 }
 
 // Format a field as a tr. Uses global form_values/errors.

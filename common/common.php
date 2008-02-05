@@ -73,7 +73,7 @@ if (!function_exists('checkdnsrr')) {
             }
         }
 
-        // Itherwise there was no mail handler for the domain
+        // Otherwise there was no mail handler for the domain
         return false;
     }
 }

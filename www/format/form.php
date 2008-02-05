@@ -94,7 +94,7 @@ function format_form_field_inner_editor(
                 'type' => $input_type,
                 'name' => $field_name,
                 'id' => "form_$field_name",
-                'value' => htmlentities($field_value),
+                'value' => $field_value,
         ));
     } else if ($type == 'bool' || $type == 'enum' || $type == 'set') {
         // All these are handled as a select.
