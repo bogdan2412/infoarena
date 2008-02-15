@@ -34,8 +34,7 @@ function list_get($list_id) {
     switch ($list_id) {
         case 'all':
             // all subscribers that agree to receive newsletters
-            $query = "SELECT * FROM ia_user WHERE newsletter = 1
-                      ORDER BY full_name";
+            $query = "SELECT * FROM ia_user WHERE newsletter = 1";
             return db_fetch_all($query);
 
         case 'admins':
@@ -55,7 +54,7 @@ function list_get($list_id) {
         case 'test':
             // a small set of users. meant for testing
             $usernames = array('wickedman', 'fluffy', 'domino', 'silviug',
-                               'Cosmin');
+                               'Cosmin', 'wick3dman');
             $query = "SELECT * FROM ia_user
                       WHERE username IN ('".join("', '", $usernames)."')
                       ORDER BY full_name";
@@ -154,7 +153,7 @@ function email_tags_callback($matches) {
             // when user is not rated, expand tag to nothing
             if ((int)$recipient['rating_cache']) {
                 return 'Rating-ul tau este '
-                       .rating_scale($recipient['rating_cache'])." (din 1000)"
+                       .rating_scale($recipient['rating_cache'])
                        .".\n";
             }
             else {
@@ -390,6 +389,7 @@ while (true) {
             $i = $skip - 1;
             $count_ok = 0;
             $count_error = 0;
+            $used_destinations = array();
             foreach ($list as $recipient) {
                 // skip some recipients
                 if (0 < $skip) {
@@ -407,6 +407,18 @@ while (true) {
                     log_putch('i');
                     $count_error++;
                     continue;
+                }
+
+                // avoid emailing the same destination, even for
+                // different accounts
+                if (isset($used_destinations[$recipient['email']])) {
+                    nlog($newsletter_id,
+                         $i."\tDUPLICATE\t".recipient_str($recipient));
+                    log_putch('D');
+                    $count_error++;
+                    continue;
+                } else {
+                    $used_destinations[$recipient['email']] = true;
                 }
 
                 // send email
