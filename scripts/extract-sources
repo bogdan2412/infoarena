@@ -1,0 +1,58 @@
+#! /usr/bin/env php
+<?php
+require_once(dirname($argv[0]) . "/utilities.php");
+require_once(IA_ROOT_DIR."common/db/round.php");
+require_once(IA_ROOT_DIR."common/db/job.php");
+
+ini_set("memory_limit", "128M");
+
+// validate argv
+log_assert(4 <= $argc, "Expecting at least two arguments: round user destination (all)");
+$round = $argv[1];
+$user = $argv[2];
+$dest = implode(explode('/', $argv[3]), '/');
+$all = getattr($argv, 4, false);
+
+db_connect();
+$query = sprintf("SELECT id FROM ia_round WHERE id LIKE '%%%s%%'", db_escape($round));
+$rounds = db_fetch_all($query);
+
+$total = 0;
+foreach ($rounds as $round) {
+    $tasks = round_get_tasks($round['id'], 0, null, $user);
+
+    foreach ($tasks as $task) {
+        $filters = array('user' => $user, 
+                         'task' => $task['id'],   
+                         'round' => $round['id']);
+        if ($all) {
+            $range = 666013;
+        } else {
+            $range = 1;
+        }
+        $jobs = job_get_range($filters, 0, $range);
+        $total += count($jobs);
+
+        foreach ($jobs as $job) {
+            $job = job_get_by_id($job['id'], true);
+            $fname = $dest.'/'.$user.'-'.$task['id'];
+            if ($all) {
+                $fname .= '-'.$job['id'];
+            }
+            $fname .= '.'.$job['compiler_id'];
+
+            $fp = @fopen($fname, 'w');
+            if (!$fp) {
+                log_warn("Nu s-a putut deschide fisierul ".$fname);
+                continue;
+            }
+            if (!fwrite($fp, $job['file_contents'])) {
+                log_warn("Nu s-a putut scrie in fisierul ".$fname);
+                continue;
+            }
+            fclose($fp);
+        }
+    }
+}
+log_print("S-au extras ".$total." surse pentru ".$user);
+?>
