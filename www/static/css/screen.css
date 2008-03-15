@@ -253,7 +253,7 @@ The basic layout of the homepage is as follows:
 
 /* Sidebar :: Main menu */
 #nav {
-    margin-right: 10px;
+    margin-right: 2px;
 }
 
 #nav li {
@@ -731,7 +731,7 @@ form.round li#field_tasks select {
 }
 
 .wiki_text_block a.wiki_link_external {
-    color: #5486BB;
+    color: #549DC6;
 	background: transparent url(../images/external.png) no-repeat scroll center right;
     padding-right: 13px;
 }
@@ -912,6 +912,46 @@ ul.htabs {
 .htabs li.active a {
     background: white;
     border-bottom: 1px solid white;
+    text-decoration: underline;
+}
+
+/* horizontal tabs, level 2 */
+ul.htabs-2 {
+    padding: 0.9pt 3pt;
+    margin: 1.5em 0 1em 0;
+    border-bottom: 1px solid #778;
+    font-weight: bold;
+    font-size: .9em;
+    width: 60%;
+}
+
+.htabs-2 li {
+    list-style: none;
+    margin: 0;
+    display: inline;
+}
+
+.htabs-2 li a {
+    padding: 3px 0.5em;
+    border: 1px solid #778;
+    border-bottom: none;
+    background: #DDD;
+    text-decoration: none;
+}
+
+.htabs-2 li a:link { color: #000; }
+.htabs-2 li a:visited { color: #333; }
+
+.htabs-2 li a:hover {
+    color: #000;
+    background: #AAA;
+    border-color: #272;
+}
+
+.htabs-2 li.active a {
+    background: white;
+    border-bottom: 1px solid white;
+    text-decoration:underline;
 }
 
 /* Job details */
