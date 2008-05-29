@@ -254,6 +254,11 @@ function url_task_create() {
     return url_complex("admin/problema-noua");
 }
 
+function url_task_list($filter = null) {
+    $args = $filter ? array('filtru' => $filter) : array();
+    return url_complex("arhiva", $args);
+}
+
 function url_round_edit($round_id) {
     log_assert(is_round_id($round_id));
     return url_complex("admin/runda/$round_id");

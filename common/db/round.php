@@ -76,7 +76,7 @@ function round_update($round) {
 // FIXME: cache tasks.
 //
 // if user_id is non-null a join is done on $score
-function round_get_tasks($round_id, $first = 0, $count = null, $user_id = null, $score_name = null) {
+function round_get_tasks($round_id, $first = 0, $count = null, $user_id = null, $score_name = null, $filter = null) {
     if ($count === null) {
         $count = 666013;
     }
@@ -99,6 +99,7 @@ function round_get_tasks($round_id, $first = 0, $count = null, $user_id = null, 
                           ORDER BY task.`order` LIMIT %d, %d",
                          db_escape($round_id), db_escape($first), db_escape($count));
     } else {
+        $filter_clause = db_get_task_filter_clause($filter, 'score');
         log_assert(is_whole_number($user_id));
         $query = sprintf("SELECT $fields, score.score as score
                           FROM ia_round_task as round_task
@@ -109,18 +110,37 @@ function round_get_tasks($round_id, $first = 0, $count = null, $user_id = null, 
                                 score.round_id = '%s' AND
                                 score.task_id = round_task.task_id
                           WHERE `round_task`.`round_id` = '%s'
+                              AND %s
                           ORDER BY task.`order` LIMIT %d, %d",
                          db_escape($user_id), db_escape($score_name), db_escape($round_id),
-                         db_escape($round_id), db_escape($first), db_escape($count));
+                         db_escape($round_id), db_escape($filter_clause),
+                         db_escape($first), db_escape($count));
     }
     return db_fetch_all($query);
 }
 
-function round_get_task_count($round_id)
+function round_get_task_count($round_id, $user_id, $scores, $filter)
 {
-    $query = sprintf("SELECT COUNT(*) FROM ia_round_task
-                      WHERE `round_id` = '%s'",
-                     db_escape($round_id));
+    if ($user_id && $filter && $scores) {
+        $filter_clause = db_get_task_filter_clause($filter, 'ia_score');
+        $query = sprintf("SELECT COUNT(*) FROM ia_round_task " .
+                         "LEFT JOIN ia_score " .
+                         "ON ia_round_task.round_id = ia_score.round_id " .
+                         "AND ia_round_task.task_id = ia_score.task_id " .
+                         "AND ia_score.user_id = %s " .
+                         "AND ia_score.name = '%s' " .
+                         "WHERE ia_round_task.round_id = '%s' " .
+                         "AND %s",
+                         db_escape($user_id),
+                         db_escape($scores),
+                         db_escape($round_id),
+                         db_escape($filter_clause)
+                         );
+    } else {
+        $query = sprintf("SELECT COUNT(*) FROM ia_round_task
+                         WHERE `round_id` = '%s'",
+                         db_escape($round_id));
+    }
     return db_query_value($query);
 }
 

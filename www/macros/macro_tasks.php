@@ -1,5 +1,6 @@
 <?php
 
+require_once(IA_ROOT_DIR . "www/format/list.php");
 require_once(IA_ROOT_DIR . "www/format/table.php");
 require_once(IA_ROOT_DIR . "www/format/pager.php");
 require_once(IA_ROOT_DIR . "common/db/round.php");
@@ -38,6 +39,21 @@ function task_row_style($row) {
     else {
         return 'tried';
     }
+}
+
+function task_list_tabs($active) {
+    $tabs = array();
+
+    $tab_names = array(IA_TLF_ALL => 'Toate problemele',
+                       IA_TLF_UNSOLVED => 'Nerezolvate',
+                       IA_TLF_TRIED => 'Incercate',
+                       IA_TLF_SOLVED => 'Rezolvate');
+
+    foreach ($tab_names as $id => $text) {
+        $tabs[$id] = format_link(url_task_list($id), $text);
+    }
+    $tabs[$active] = array($tabs[$active], array('class' => 'active'));
+    return format_ul($tabs, 'htabs');
 }
 
 // Lists all tasks attached to a given round
@@ -85,6 +101,11 @@ function macro_tasks($args) {
         $user_id = identity_get_user_id();
     }
 
+    $filter = request('filtru', '');
+    if ($user_id) {
+        $tabs = task_list_tabs($filter);
+    }
+
     $show_numbers = getattr($args, 'show_numbers', false);
     $show_authors = getattr($args, 'show_authors', true);
     $show_sources = getattr($args, 'show_sources', true);
@@ -93,8 +114,10 @@ function macro_tasks($args) {
     $tasks = round_get_tasks($round_id,
              $options['first_entry'],
              $options['display_entries'],
-             $user_id, ($scores ? 'score' : null));
-    $options['total_entries'] = round_get_task_count($round_id);
+             $user_id, ($scores ? 'score' : null),
+             $filter);
+    $options['total_entries'] = round_get_task_count(
+             $round_id, $user_id, ($scores ? 'score' : null), $filter);
     $options['row_style'] = 'task_row_style';
     $options['css_class'] = 'tasks';
 
@@ -135,7 +158,7 @@ function macro_tasks($args) {
         );
     }
 
-    return format_table($tasks, $column_infos, $options);
+    return $tabs.format_table($tasks, $column_infos, $options);
 }
 
 ?>

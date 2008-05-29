@@ -52,6 +52,12 @@ define("IA_RE_ATTACHMENT_NAME", '[a-z0-9][a-z0-9\.\-_]*');
 // External urls. Used by textile.
 define("IA_RE_EXTERNAL_URL", '[a-z]+:\/\/|mailto:[^@]+@[^@]+|[^@]+@[^@]');
 
+// Constants used by the task list filter
+define("IA_TLF_ALL", '');
+define("IA_TLF_UNSOLVED", '1');
+define("IA_TLF_TRIED", '2');
+define("IA_TLF_SOLVED", '3');
+
 // Windows hack for checkdnsrr function.
 // FIXME: Not fully tested!
 if (!function_exists('checkdnsrr')) {

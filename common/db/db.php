@@ -261,4 +261,16 @@ function db_fetch($query) {
     }
 }
 
+function db_get_task_filter_clause($filter, $table_alias) {
+    if ($filter == IA_TLF_SOLVED) {
+        return "{$table_alias}.score = 100";
+    } else if ($filter == IA_TLF_TRIED) {
+        return "{$table_alias}.score < 100";
+    } else if ($filter == IA_TLF_UNSOLVED) {
+        return "{$table_alias}.score is null";
+    } else {
+        return '1';
+    }
+}
+
 ?>
