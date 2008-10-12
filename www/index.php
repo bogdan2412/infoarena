@@ -45,6 +45,8 @@ $action = request('action', 'view');
 // Direct mapping list
 // Note: array_flip() flips keys with values in a dictionary.
 // FIXME: change this to Romanian!
+
+// WARNING: when adding new controllers make sure to update $banned_urls in www/wiki/MyTextile.php
 $directmaps = array_flip(array('register', 'news_feed', 'changes',
                                'login', 'logout', 'json', 'job_detail',
                                'monitor', 'projector', 'submit', 'userinfo',

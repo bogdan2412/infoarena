@@ -127,8 +127,25 @@ class MyTextile extends Textile {
         $extra = $args['extra'];
         $alt = (preg_match("/\([^\)]+\)/", $extra, $match) ? $match[0] : '');
         $args['extra'] = $alt;
+
+        // Catch internal images
+        // To avoid CSRF exploits we restrict all images to textblock attachments
+        $allowed = false;
+        
+        // $allowed_urls and $plot_urls are exceptions to this rule
+        $allowed_urls = array("static/images/stars/small-full.png");
+        $plot_urls = array("plot/rating", "plot/distribution");
+
+        // Check if url begins with IA_URL or IA_URL_PREFIX and remove prefix if so
+        if (substr(strtolower($srcpath), 0, strlen(IA_URL)) == IA_URL) {
+            $args["str"] = $srcpath = substr($srcpath, strlen(IA_URL));
+        } else {
+            if (substr(strtolower($srcpath), 0, strlen(IA_URL_PREFIX)) == IA_URL_PREFIX) {
+                $args["str"] = $srcpath = substr($srcpath, strlen(IA_URL_PREFIX));
+            }
+        }
+
         if (!preg_match('/^'.IA_RE_EXTERNAL_URL.'$/xi', $srcpath)) {
-            // Catch internal images.
             if (preg_match('/^ ('.IA_RE_PAGE_NAME.') \? '.
                            '('.IA_RE_ATTACHMENT_NAME.')'.
                            '$/ix', $srcpath, $matches)) {
@@ -139,8 +156,43 @@ class MyTextile extends Textile {
                     //log_warn("Invalid resize instructions '$extra'");
                     $extra = '';
                 }
-                $args['src'] = htmlentities(url_absolute(url_image_resize($matches[1], $matches[2], $extra))); 
+                $args['src'] = htmlentities(url_absolute(url_image_resize($matches[1], $matches[2], $extra)));
+                $allowed = true;
+
+                // This is a list of banned internal urls, in case someone
+                // tries to trick the regexp with something like !logout?something!
+                $banned_urls = array("register", "news_feed", "changes",
+                                     "login", "logout", "json", "job_detail",
+                                     "monitor", "projector", "submit", "userinfo",
+                                     "search", "unsubscribe", "resetpass", "reeval",
+                                     "account", "admin", "blog",
+                                     "inregistrare-runda", "lista-inregistrare");
+
+                $tmp = explode("?", $srcpath);
+                $srcpath_root = $tmp[0];                  // Strips everything after "?"
+                $tmp = explode("/", $srcpath_root);
+                $srcpath_start = $tmp[0];                 // Strips everything after first "/"
+                foreach ($banned_urls as $url) {
+                    if (strtolower($srcpath_start) == $url) {
+                        $allowed = false;
+                        break;
+                    }
+                }
             }
+        }
+
+        if (in_array(strtolower($srcpath), $allowed_urls)) {
+            $allowed = true;
+        }
+        foreach ($plot_urls as $url) {
+            if (substr(strtolower($srcpath), 0, strlen($url)) == $url) {
+                $allowed = true;
+                break;
+            }
+        }
+     
+        if (!$allowed) {
+            return "<div class=\"macroError\">Imaginile trebuie neaparat sa fie atasamente ale unei pagini</div>";
         }
         //log_print("passing to parent::format image");
         //log_print_r($args);
