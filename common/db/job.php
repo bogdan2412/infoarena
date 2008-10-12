@@ -44,9 +44,6 @@ SELECT `job`.`id`, `job`.`user_id`, `job`.`task_id`, `job`.`round_id`,
     INNER JOIN `ia_user` AS `user` ON `user`.`id` = `job`.`user_id`
     LEFT JOIN `ia_round` AS `round` ON `round`.`id` = `job`.`round_id`
     WHERE (`status` != 'done')
-      AND ((`round`.`allow_eval` = TRUE) OR
-           (`round`.`id` IS NULL) OR
-           (`user`.`security_level` = 'admin'))
     ORDER BY `submit_time` ASC LIMIT 1
 SQL;
     return db_fetch($query);
@@ -93,7 +90,8 @@ function job_get_by_id($job_id, $contents = false) {
                    `task`.`open_source` AS `task_open_source`,
                    `task`.`open_tests` AS `task_open_tests`,
                    `round`.`id` AS `round_id`,
-                   `round`.`page_name` AS `round_page_name`, `round`.`title` AS `round_title`";
+                   `round`.`page_name` AS `round_page_name`, `round`.`title` AS `round_title`,
+                   `round`.`public_eval` AS `round_public_eval`";
     if ($contents) {
         $field_list .= ", job.file_contents";
     }
@@ -119,6 +117,11 @@ function job_get_table_joins($filters) {
     if (getattr($filters, 'user')) {
         $sql .= "\nLEFT JOIN `ia_user` AS `user`
                     ON `job`.`user_id` = `user`.`id`";
+    }
+
+    if (getattr($filters, 'score_begin') || getattr($filters, 'score_end')) {
+        $sql .= "\nLEFT JOIN `ia_round` AS `round`
+                    ON `job`.`round_id` = `round`.`id`";
     }
 
     return $sql;
@@ -176,10 +179,10 @@ function job_get_range_wheres($filters) {
         $wheres[] = sprintf("`job`.`status` = '%s'", db_escape($status));
     }
     if (!is_null($score_begin) && is_whole_number($score_begin)) {
-        $wheres[] = sprintf("`job`.`score` >= '%s'", db_escape($score_begin));
+        $wheres[] = sprintf("(`job`.`score` >= '%s') AND (`round`.`public_eval` = 1)", db_escape($score_begin));
     }
     if (!is_null($score_end) && is_whole_number($score_end)) {
-        $wheres[] = sprintf("`job`.`score` <= '%s'", db_escape($score_end));
+        $wheres[] = sprintf("(`job`.`score` <= '%s') AND (`round`.`public_eval` = 1)", db_escape($score_end));
     }
     if (!is_null($eval_msg)) {
         $wheres[] = sprintf("`job`.`eval_message` LIKE '%s%%'", db_escape($eval_msg));
@@ -199,9 +202,9 @@ function job_get_range($filters, $start, $range) {
     log_assert($range >= 0);
     $query = <<<SQL
 SELECT `job`.`id`,
-       `job`.`user_id` as `user_id`,
-       `job`.`round_id` as `round_id`,
-       `job`.`task_id` as `task_id`, 
+       `job`.`user_id` AS `user_id`,
+       `job`.`round_id` AS `round_id`,
+       `job`.`task_id` AS `task_id`, 
        `job`.`submit_time`, 
        `job`.`compiler_id`, 
        `job`.`status`,
@@ -217,7 +220,8 @@ SELECT `job`.`id`,
        `task`.`user_id` AS `task_owner_id`,
        `task`.`open_source` AS `task_open_source`,
        `round`.`page_name` AS `round_page_name`, 
-       `round`.`title` AS `round_title`
+       `round`.`title` AS `round_title`,
+       `round`.`public_eval` AS `round_public_eval`
 #       (CASE WHEN `status` = 'processing' THEN
 #                (SELECT `value` FROM `ia_parameter_value`
 #                 WHERE `ia_parameter_value`.`object_id` = `task_id` AND
@@ -241,7 +245,7 @@ SQL;
     return db_fetch_all($query);
 }
 
-// Counts jobs based on complex filterss
+// Counts jobs based on complex filters
 function job_get_count($filters) {
     $query = <<<SQL
 SELECT COUNT(*) as `cnt`

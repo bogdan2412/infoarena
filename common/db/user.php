@@ -227,14 +227,13 @@ function user_submitted_tasks($user_id, $solved = true, $failed = true) {
         log_error('You can\'t select nothing.');
     }
 
-    $query = "SELECT *
+    $query = sprintf("SELECT *
         FROM ia_score
         LEFT JOIN ia_task ON ia_task.id = ia_score.task_id
         WHERE ia_score.`name` = 'score' AND ia_score.user_id = '%s'
               AND ia_score.round_id = 'arhiva' AND NOT ia_task.id IS NULL %s
         GROUP BY ia_task.id
-        ORDER BY ia_task.`order`";
-    $query = sprintf($query, $user_id, $where);
+        ORDER BY ia_task.`order`", $user_id, $where);
 
     return db_fetch_all($query);
 }

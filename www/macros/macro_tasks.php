@@ -94,7 +94,7 @@ function macro_tasks($args) {
     }
 
 
-    $scores = !is_null(getattr($args, 'score'));
+    $scores = !is_null(getattr($args, 'score')) && identity_can("round-view-scores", $round);
     if (identity_is_anonymous() || $scores == false) {
         $user_id = null;
     } else {
@@ -102,8 +102,11 @@ function macro_tasks($args) {
     }
 
     $filter = request('filtru', '');
-    if ($user_id) {
+    $tabs = '';
+    if ($user_id && identity_can("round-view-scores", $round)) {
         $tabs = task_list_tabs($filter);
+    } else {
+        $filter = '';
     }
 
     $show_numbers = getattr($args, 'show_numbers', false);

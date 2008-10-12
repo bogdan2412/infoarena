@@ -67,7 +67,8 @@ function round_init($round_id, $round_type, $user = null) {
             'title' => $round_id,
             'page_name' => IA_ROUND_TEXTBLOCK_PREFIX . $round_id,
             'state' => 'waiting',
-            'start_time' => NULL
+            'start_time' => NULL,
+            'public_eval' => (($round_type == 'archive') ? 1 : 0)
     );
 
     log_assert_valid(round_validate($round));
@@ -100,6 +101,10 @@ function round_validate($round) {
         $errors['state'] = "Starea rundei este invalida";
     }
 
+    if (!is_whole_number(getattr($round, 'public_eval'))) {
+        $errors['public_eval'] = "public_eval este invalid";
+    }
+
     // NULL is ok here.
     if (!is_db_date(getattr($round, 'start_time', db_date_format()))) {
         $errors['start_time'] = "Timpul trebuie specificat ca YYYY-MM-DD HH:MM:SS";
@@ -113,7 +118,6 @@ function round_event_start($round) {
     log_assert_valid(round_validate($round));
     log_print("CONTEST LOGIC: Starting round {$round['id']}.");
     $round['state'] = 'running';
-    $round['allow_eval'] = 0;
     round_update($round);
     round_unhide_all_tasks($round['id']);
 }
@@ -123,7 +127,7 @@ function round_event_stop($round) {
     log_assert_valid(round_validate($round));
     log_print("CONTEST LOGIC: Stopping round {$round['id']}.");
     $round['state'] = 'complete';
-    $round['allow_eval'] = 1;
+    $round['public_eval'] = 1;
     round_update($round);
 }
 
@@ -132,7 +136,6 @@ function round_event_wait($round) {
     log_assert_valid(round_validate($round));
     log_print("CONTEST LOGIC: Stand-by for round {$round['id']}.");
     $round['state'] = 'waiting';
-    $round['allow_eval'] = 0;
     round_update($round);
     round_hide_all_tasks($round['id']);
 }

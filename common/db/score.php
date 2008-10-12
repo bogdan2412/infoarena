@@ -60,10 +60,25 @@ function score_build_where_clauses($user, $task, $round)
         }
     }
     if ($round != null) {
+        if (is_string($round))
+            $round = array($round);
+
         if (is_array($round) && count($round) > 0) {
-            $where[] = "(`round_id` IN (" . db_escape_array($round) . "))";
-        } else if (is_string($round)) {
-            $where[] = sprintf("(`round_id` = '%s')", $round);
+            $rounds_where = "(`id` IN (" . db_escape_array($round) . "))";
+            $query = "SELECT `id`, `state`, `public_eval` FROM `ia_round` WHERE " . $rounds_where;
+            $round_objects = db_fetch_all($query);
+            $allowed_round_ids = array();
+            
+            foreach ($round_objects as $round) {
+                if (identity_can('round-view-scores', $round))
+                    $allowed_round_ids[] = $round["id"];
+            }
+
+            if (count($allowed_round_ids) == 0) {
+                $where[] = "(TRUE = FALSE)";
+            } else {
+                $where[] = "(`round_id` IN (" . db_escape_array($allowed_round_ids) . "))";
+            }
         }
     }
 
@@ -91,10 +106,10 @@ function score_get_range($score_name, $user, $task, $round, $groupby = "user_id"
     $query = sprintf("SELECT
                 ia_score.`name` as `score_name`, `user_id`, `task_id`, `round_id`, SUM(`score`) as score, 
                 ia_user.username as user_name, ia_user.full_name as user_full,
-                ia_user.rating_cache AS user_rating
+                ia_user.rating_cache as user_rating
             FROM ia_score
                 LEFT JOIN ia_user ON ia_user.id = ia_score.user_id
-            WHERE %s GROUP BY %s
+            WHERE (%s) GROUP BY %s
             ORDER BY `score` DESC LIMIT %s, %s",
             join($where, " AND "), $groupby, $start, $count);
     $scores = db_fetch_all($query);

@@ -59,6 +59,7 @@ function controller_round_details($round_id) {
     $values['title'] = request('title', $round['title']);
     $values['page_name'] = request('page_name', $round['page_name']);
     $values['start_time'] = request('start_time', $round['start_time']);
+    $values['public_eval'] = request('public_eval', $round['public_eval']);
 
     // Get tasks. SHIT FUCK DAMN;
     // It seems we can't find out if the user submitted anything at all.
@@ -93,6 +94,7 @@ function controller_round_details($round_id) {
     $new_round['title'] = $values['title'];
     $new_round['page_name'] = $values['page_name'];
     $new_round['start_time'] = $values['start_time'];
+    $new_round['public_eval'] = $values['public_eval'];
 
     $errors = round_validate($new_round);
 

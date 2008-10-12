@@ -57,6 +57,12 @@ $form_fields = array(
                 'values' => round_get_types(),
                 'default' => 'classic',
         ),
+        'public_eval' => array(
+                'name' => 'Evaluare publica',
+                'description' => "Concurentii pot vedea scorul obtinut la sursele trimise",
+                'default' => '0',
+                'type' => 'bool',
+        ),
 );
 ?>
 
@@ -91,6 +97,7 @@ $form_fields = array(
   <legend>Parametri</legend>
   <ul class="form">
    <?= view_form_field_li($form_fields['type'], 'type') ?>
+   <?= view_form_field_li($form_fields['public_eval'], 'public_eval') ?>
    <li><hr /></li>
    <li id="field_params">
     <?= format_param_editor_list(

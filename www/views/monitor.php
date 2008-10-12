@@ -67,8 +67,12 @@ if (!$jobs) {
     function format_state($row) {
         $url = url_job_detail($row['id']);
         if ($row['status'] == 'done') {
-            $msg = htmlentities(sprintf("%s: %s puncte",
+            if (identity_can("job-view-score", $row)) {
+                $msg = htmlentities(sprintf("%s: %s puncte",
                     $row['eval_message'], $row['score']));
+            } else {
+                $msg = htmlentities( $row['eval_message'] );
+            }
             $msg = "<span style=\"job-status-done\">$msg</span>";
             return format_link($url, $msg, false);
         }

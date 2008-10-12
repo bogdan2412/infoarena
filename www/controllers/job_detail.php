@@ -35,28 +35,34 @@ function controller_job_view($job_id) {
 
     $view['title'] = 'Borderou de evaluare (job #'.$job_id.')';
     $view['job'] = $job;
-    $view['tests'] = job_test_get_all($job_id);
     $view['group_count'] = 0;
-    foreach ($view['tests'] as $test) {
-        $view['group_count'] = max($view['group_count'], $test['test_group']);
-    }
-    for ($group = 1; $group <= $view['group_count']; $group++) {
-        $view['group_score'][$group] = 0;
-        $view['group_size'][$group] = 0;
-        $solved_group = true;
+    $view['tests'] = array();
+
+    if (identity_can('job-view-score', $job)) {
+        $view['tests'] = job_test_get_all($job_id);
         foreach ($view['tests'] as $test) {
-            if ($test['test_group'] != $group) {
-                continue;
-            }
-            $view['group_score'][$group] += $test['points'];
-            $view['group_size'][$group]++;
-            if (!$test['points']) {
-                $solved_group = false;
-            }
+            $view['group_count'] = max($view['group_count'], $test['test_group']);
         }
-        if (!$solved_group) {
+        for ($group = 1; $group <= $view['group_count']; $group++) {
             $view['group_score'][$group] = 0;
+            $view['group_size'][$group] = 0;
+            $solved_group = true;
+            foreach ($view['tests'] as $test) {
+                if ($test['test_group'] != $group) {
+                    continue;
+                }
+                $view['group_score'][$group] += $test['points'];
+                $view['group_size'][$group]++;
+                if (!$test['points']) {
+                    $solved_group = false;
+                }
+            }
+            if (!$solved_group) {
+                $view['group_score'][$group] = 0;
+            }
         }
+    } else {
+        $view['job']['score'] = "Ascuns";
     }
 
     if (!$view['job']['eval_message']) {

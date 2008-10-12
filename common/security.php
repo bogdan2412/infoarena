@@ -147,13 +147,15 @@ function security_simplify_action($action) {
         case 'task-submit':
         case 'round-submit':
         case 'round-view-tasks':
+        case 'round-view-scores':
         case 'round-register':
         case 'user-editprofile':
         case 'user-change-security':
         case 'user-tag':
         case 'job-view':
         case 'job-eval':
-        case 'job-view-source': 
+        case 'job-view-source':
+        case 'job-view-score':
             return $action;
 
         default:
@@ -431,6 +433,8 @@ function security_round($user, $action, $round) {
 
         case 'round-view-tasks':
             return $round['state'] != 'waiting' || $is_admin;
+        case 'round-view-scores':
+            return $round['public_eval'] == true || $is_admin;;
 
         case 'simple-rev-edit':
         case 'simple-edit':
@@ -511,6 +515,7 @@ function security_job($user, $action, $job) {
     $is_task_owner = ($job['task_owner_id'] == $user['id'] && $usersec == 'helper');
     $can_view_job = ($job['task_hidden'] == false) || $is_task_owner || $is_admin;
     $can_view_source = ($job['task_open_source'] == true) || $is_task_owner || $is_owner || $is_admin;
+    $can_view_score = ($job['round_public_eval'] == true) || $is_task_owner || $is_admin;
 
     // Log query response.
     $action = security_simplify_action($action);
@@ -531,6 +536,9 @@ function security_job($user, $action, $job) {
 
         case 'job-view-source': 
             return $can_view_job && $can_view_source;
+
+        case 'job-view-score':
+            return $can_view_job && $can_view_score;
 
         default:
             log_error('Invalid job action: '.$action);
