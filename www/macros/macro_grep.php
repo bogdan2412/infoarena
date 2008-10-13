@@ -1,6 +1,7 @@
 <?php
 
-require_once(IA_ROOT_DIR."common/db/textblock.php");
+require_once(IA_ROOT_DIR . "common/db/textblock.php");
+require_once(IA_ROOT_DIR . "www/format/format.php");
 
 // FIXME: document this macro
 function macro_grep($args) {
@@ -31,8 +32,7 @@ function macro_grep($args) {
 </ul>
 </div>
 <?php
-    $buffer = ob_get_contents();
-    ob_end_clean();
+    $buffer = ob_get_clean();
 
     return $buffer;
 }
