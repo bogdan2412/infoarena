@@ -298,7 +298,7 @@ SQL;
 SELECT * FROM `ia_round`
     WHERE `state` != 'running' AND 
     `start_time` <= '%s' AND 
-    DATE_ADD(`start_time`, INTERVAL ($duration_subquery) HOUR) > '%s'
+    DATE_ADD(`start_time`, INTERVAL ($duration_subquery) * 60 * 60 SECOND) > '%s'
     LIMIT 1
 SQL;
     return db_fetch(sprintf($query, db_date_format(), db_date_format()));
@@ -322,10 +322,11 @@ SQL;
     $query = <<<SQL
 SELECT *
     FROM `ia_round`
-    WHERE DATE_ADD(`start_time`, INTERVAL ($duration_subquery) HOUR) <= '%s'
+    WHERE DATE_ADD(`start_time`, INTERVAL ($duration_subquery) * 60 * 60 SECOND) <= '%s'
           AND `state` != 'complete'
     LIMIT 1
 SQL;
+
     return db_fetch(sprintf($query, db_date_format()));
 }
 
