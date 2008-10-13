@@ -83,7 +83,7 @@ function job_get_by_id($job_id, $contents = false) {
     $field_list = "`job`.`id`, job.`user_id`, `job`.`compiler_id`, `job`.`status`,
                    `job`.`submit_time`, `job`.`eval_message`, `job`.`score`, `job`.`eval_log`,
                    OCTET_LENGTH(`job`.`file_contents`) AS `job_size`,
-                   `user`.`username` as `user_name`, `user`.`full_name` as `user_fullname`,
+                   `user`.`username` AS `user_name`, `user`.`full_name` AS `user_fullname`,
                    `task`.`id` AS `task_id`,
                    `task`.`page_name` AS `task_page_name`, task.`title` AS `task_title`,
                    `task`.`hidden` AS `task_hidden`, `task`.`user_id` AS `task_owner_id`,
@@ -248,7 +248,7 @@ SQL;
 // Counts jobs based on complex filters
 function job_get_count($filters) {
     $query = <<<SQL
-SELECT COUNT(*) as `cnt`
+SELECT COUNT(*) AS `cnt`
       FROM `ia_job` AS `job`
 SQL;
 

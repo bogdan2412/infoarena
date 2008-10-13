@@ -131,18 +131,14 @@ class MyTextile extends Textile {
         // Catch internal images
         // To avoid CSRF exploits we restrict all images to textblock attachments
         $allowed = false;
-        
-        // $allowed_urls and $plot_urls are exceptions to this rule
-        $allowed_urls = array("static/images/stars/small-full.png");
-        $plot_urls = array("plot/rating", "plot/distribution");
+        // $allowed_urls are exceptions to this rule
+        $allowed_urls = array("static/images/", "plot/rating", "plot/distribution");
 
         // Check if url begins with IA_URL or IA_URL_PREFIX and remove prefix if so
         if (substr(strtolower($srcpath), 0, strlen(IA_URL)) == IA_URL) {
             $args["str"] = $srcpath = substr($srcpath, strlen(IA_URL));
-        } else {
-            if (substr(strtolower($srcpath), 0, strlen(IA_URL_PREFIX)) == IA_URL_PREFIX) {
-                $args["str"] = $srcpath = substr($srcpath, strlen(IA_URL_PREFIX));
-            }
+        } elseif (substr(strtolower($srcpath), 0, strlen(IA_URL_PREFIX)) == IA_URL_PREFIX) {
+            $args["str"] = $srcpath = substr($srcpath, strlen(IA_URL_PREFIX));
         }
 
         if (!preg_match('/^'.IA_RE_EXTERNAL_URL.'$/xi', $srcpath)) {
@@ -171,20 +167,14 @@ class MyTextile extends Textile {
                 $tmp = explode("?", $srcpath);
                 $srcpath_root = $tmp[0];                  // Strips everything after "?"
                 $tmp = explode("/", $srcpath_root);
-                $srcpath_start = $tmp[0];                 // Strips everything after first "/"
-                foreach ($banned_urls as $url) {
-                    if (strtolower($srcpath_start) == $url) {
-                        $allowed = false;
-                        break;
-                    }
+                $srcpath_controller = $tmp[0];            // Strips everything after first "/"
+                if (in_array(strtolower($srcpath_controller), $banned_urls)) {
+                    $allowed = false;
                 }
             }
         }
 
-        if (in_array(strtolower($srcpath), $allowed_urls)) {
-            $allowed = true;
-        }
-        foreach ($plot_urls as $url) {
+        foreach ($allowed_urls as $url) {
             if (substr(strtolower($srcpath), 0, strlen($url)) == $url) {
                 $allowed = true;
                 break;

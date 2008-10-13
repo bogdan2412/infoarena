@@ -70,8 +70,9 @@ function score_build_where_clauses($user, $task, $round)
             $allowed_round_ids = array();
             
             foreach ($round_objects as $round) {
-                if (identity_can('round-view-scores', $round))
+                if (identity_can('round-view-scores', $round)) {
                     $allowed_round_ids[] = $round["id"];
+                }
             }
 
             if (count($allowed_round_ids) == 0) {
@@ -104,12 +105,12 @@ function score_get_range($score_name, $user, $task, $round, $groupby = "user_id"
     $where = score_build_where_clauses($user, $task, $round);
     $where[] = sprintf("ia_score.`name` = '%s'", db_escape($score_name));
     $query = sprintf("SELECT
-                ia_score.`name` as `score_name`, `user_id`, `task_id`, `round_id`, SUM(`score`) as score, 
-                ia_user.username as user_name, ia_user.full_name as user_full,
-                ia_user.rating_cache as user_rating
+                ia_score.`name` AS `score_name`, `user_id`, `task_id`, `round_id`, SUM(`score`) AS score, 
+                ia_user.username AS user_name, ia_user.full_name AS user_full,
+                ia_user.rating_cache AS user_rating
             FROM ia_score
                 LEFT JOIN ia_user ON ia_user.id = ia_score.user_id
-            WHERE (%s) GROUP BY %s
+            WHERE %s GROUP BY %s
             ORDER BY `score` DESC LIMIT %s, %s",
             join($where, " AND "), $groupby, $start, $count);
     $scores = db_fetch_all($query);
@@ -121,7 +122,7 @@ function score_get_range($score_name, $user, $task, $round, $groupby = "user_id"
         // in the requested range.
         $where = score_build_where_clauses($user, $task, $round);
         $where[] = sprintf("ia_score.`name` = '%s'", db_escape($score_name));
-        $query = sprintf("SELECT SUM(`score`) as score 
+        $query = sprintf("SELECT SUM(`score`) AS score 
                           FROM ia_score
                           WHERE %s GROUP BY %s
                           HAVING score > %s",
@@ -158,7 +159,7 @@ function score_get_count($score_name, $user, $task, $round, $groupby) {
     } else {
         $join = "";
     }
-    $query = sprintf("SELECT COUNT(DISTINCT user_id) as `cnt`
+    $query = sprintf("SELECT COUNT(DISTINCT user_id) AS `cnt`
             FROM ia_score $join
             WHERE %s",
             join($where, " AND "), $groupby);
@@ -418,7 +419,7 @@ function get_users_by_rating_range($start, $count, $with_rankings = false)
     $rows = db_fetch_all($query);
 
     if ($with_rankings && count($rows)) {
-        $query = sprintf("SELECT `rating_cache` as rating_cache
+        $query = sprintf("SELECT `rating_cache` AS rating_cache
                           FROM ia_user
                           WHERE rating_cache > 1.5 + 3 * ROUND(%s/3)
                           AND security_level != 'admin'",
@@ -448,7 +449,7 @@ function get_users_by_rating_range($start, $count, $with_rankings = false)
 
 // Count function for get_users_by_rating_range.
 function get_users_by_rating_count() {
-    $query = "SELECT COUNT(*) as `cnt`
+    $query = "SELECT COUNT(*) AS `cnt`
         FROM `ia_user`
         WHERE `rating_cache` > 0
         AND `security_level` != 'admin'";
