@@ -42,17 +42,6 @@ define("IA_URL_PREFIX", "--write-me-IA_URL_PREFIX--");
 // or other external resources.
 define("IA_DEVELOPMENT_MODE", true);
 
-// List of infoarena controllers
-$IA_DIRECT_CONTROLLERS = array('register', 'news_feed', 'changes',
-                               'login', 'logout', 'json', 'job_detail',
-                               'monitor', 'projector', 'submit',
-                               'plot', 'search',
-                               'unsubscribe', 'resetpass', 'reeval');
-
-$IA_CONTROLLERS = array_merge(array('account', 'admin', 'blog', 'forum', 'confirm',
-                                    'inregistrare-runda', 'lista-inregistrare'),
-                              $IA_DIRECT_CONTROLLERS);
-
 // Determine if script is runing in an HTTP environment. Otherwise it is
 // probably running in CLI mode. Don't change it.
 // FIXME: move to common/common.php

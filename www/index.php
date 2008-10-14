@@ -63,7 +63,7 @@ if (in_array($url_root, $IA_CONTROLLERS)) {
 
         // Blog admin
         if ($subcontroller == 'blog') {
-              $obj_id = implode("/", array_slice($page_path, 1));
+            $obj_id = implode("/", array_slice($page_path, 1));
             require_once(IA_ROOT_DIR.'www/controllers/blog.php');
             controller_blog_admin($obj_id);
         }

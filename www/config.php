@@ -68,4 +68,15 @@ define("IA_BLOG_SIDEBAR", "blog-sidebar");
 // LaTeX support
 define("IA_LATEX_ENABLE", true);
 
+// List of infoarena controllers
+$IA_DIRECT_CONTROLLERS = array('register', 'news_feed', 'changes',
+                               'login', 'logout', 'json', 'job_detail',
+                               'monitor', 'projector', 'submit',
+                               'plot', 'search',
+                               'unsubscribe', 'resetpass', 'reeval');
+
+$IA_CONTROLLERS = array_merge(array('account', 'admin', 'blog', 'forum', 'confirm',
+                                    'inregistrare-runda', 'lista-inregistrare'),
+                              $IA_DIRECT_CONTROLLERS);
+
 ?>
