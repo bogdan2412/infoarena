@@ -3196,11 +3196,11 @@ class Textile {
     $nested_tags = substr(str_repeat('(?:</?[A-Za-z0-9:]+ \s? (?:[^<>]|', $depth), 0, -1)
       . str_repeat(')*>)', $depth);
     $match = '(?s: <! ( -- .*? -- \s* )+ > )|'.  # XML comment
-             '(?s: <tex> .*? <\/tex> )|'.              # LaTeX code
-//             '(?s: <\% .*? \%> )|'.                # ASP-like
-             '(?:' . $nested_tags . ')|
-              (?:' . $this->codere . ')';     // nested tags
-
+             '(?s: <tex> .*? <\/tex> )|'.        # LaTeX code
+//             '(?s: <\% .*? \%> )|'.              # ASP-like
+//             '(?:' . $nested_tags . ')|'.        # nested tags
+             '(?s: <textile\#[0-9]+> )|'.
+             '(?:' . $this->codere . ')';
     while (preg_match('{(' . $match . ')}x', substr($str, $pos), $matches, PREG_OFFSET_CAPTURE)) {
       $whole_tag = $matches[1][0];
       $sec_start = $pos + $matches[1][1] + strlen($whole_tag);
