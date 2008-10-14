@@ -68,7 +68,7 @@ function controller_job_view($job_id) {
     if (!$view['job']['eval_message']) {
         $view['job']['eval_message'] = "&nbsp";
     }
-    execute_view('views/job_detail.php', $view);
+    execute_view_die('views/job_detail.php', $view);
 }
 
 
@@ -98,7 +98,7 @@ function controller_job_view_source($job_id) {
     if ($view['lang'] == 'fpc') {
         $view['lang'] = 'delphi';
     }
-    execute_view('views/job_view_source.php', $view);
+    execute_view_die('views/job_view_source.php', $view);
 }
 
 ?>

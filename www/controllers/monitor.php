@@ -22,7 +22,7 @@ function controller_monitor() {
     $view['display_entries'] = request('display_entries', $options['display_entries']);
     $view['display_only_table'] = request('only_table', false);
 
-    execute_view('views/monitor.php', $view);
+    execute_view_die('views/monitor.php', $view);
 }
 
 ?>

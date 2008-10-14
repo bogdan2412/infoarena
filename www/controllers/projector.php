@@ -22,7 +22,7 @@ function controller_projector() {
     $view['display_entries'] = $options['display_entries'];
     $view['display_only_table'] = request('only_table', false);
 
-    execute_view('views/projector.php', $view);
+    execute_view_die('views/projector.php', $view);
 }
 
 ?>

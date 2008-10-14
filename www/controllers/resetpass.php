@@ -89,7 +89,7 @@ Echipa infoarena
     $view['form_errors'] = $errors;
     $view['form_values'] = $data;
     $view['no_sidebar_login'] = true;
-    execute_view('views/resetpass.php', $view);
+    execute_view_die('views/resetpass.php', $view);
 }
 
 // checks confirmation code and resets password

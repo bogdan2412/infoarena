@@ -155,20 +155,15 @@ class MyTextile extends Textile {
                 $args['src'] = htmlentities(url_absolute(url_image_resize($matches[1], $matches[2], $extra)));
                 $allowed = true;
 
-                // This is a list of banned internal urls, in case someone
-                // tries to trick the regexp with something like !logout?something!
-                $banned_urls = array("register", "news_feed", "changes",
-                                     "login", "logout", "json", "job_detail",
-                                     "monitor", "projector", "submit", "userinfo",
-                                     "search", "unsubscribe", "resetpass", "reeval",
-                                     "account", "admin", "blog",
-                                     "inregistrare-runda", "lista-inregistrare");
+                // Test if $srcpath references an internal url that is NOT a textblock
+                // in case someone tries to trick the regexp with something like !logout?something!
 
                 $tmp = explode("?", $srcpath);
                 $srcpath_root = $tmp[0];                  // Strips everything after "?"
                 $tmp = explode("/", $srcpath_root);
                 $srcpath_controller = $tmp[0];            // Strips everything after first "/"
-                if (in_array(strtolower($srcpath_controller), $banned_urls)) {
+                global $IA_CONTROLLERS;
+                if (in_array(strtolower($srcpath_controller), $IA_CONTROLLERS)) {
                     $allowed = false;
                 }
             }
@@ -182,7 +177,7 @@ class MyTextile extends Textile {
         }
      
         if (!$allowed) {
-            return "<div class=\"macroError\">Imaginile trebuie neaparat sa fie atasamente ale unei pagini</div>";
+            return macro_error("Imaginile trebuie neaparat sa fie atasamente ale unei pagini");
         }
         //log_print("passing to parent::format image");
         //log_print_r($args);
