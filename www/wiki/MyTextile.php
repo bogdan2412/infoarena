@@ -3,6 +3,7 @@
 @require_once(IA_ROOT_DIR."www/wiki/Textile.php");
 require_once(IA_ROOT_DIR."common/attachment.php");
 require_once(IA_ROOT_DIR."www/wiki/latex.php");
+require_once(IA_ROOT_DIR."www/wiki/sanitizer.class.php");
 
 class MyTextile extends Textile {
     // FIXME: If you see a pointless textile error try tweaking this value.
@@ -192,7 +193,7 @@ class MyTextile extends Textile {
     function process($content) {
         //log_print("Starting textile");
         $this->error_reporting_level = error_reporting($this->my_error_reporting);
-        $res = parent::process($content);
+        $res = parent::process(html_sanitize($content));
         error_reporting($this->error_reporting_level);
         //log_print("Stopping textile");
         return $res;
