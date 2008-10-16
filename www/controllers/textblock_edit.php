@@ -9,6 +9,7 @@ function controller_textblock_edit($page_name, $security = 'public') {
     identity_require_login();
 
     $page = textblock_get_revision($page_name);
+    $current_revision = textblock_get_revision_count($page_name);
 
     // permission check
     if ($page) {
@@ -56,6 +57,13 @@ function controller_textblock_edit($page_name, $security = 'public') {
         // Handle tags
         tag_validate($values, $errors);
 
+        // Check if page was edited by another user in the meantime
+        if (request('last_revision') != $current_revision) {
+            $errors['was_modified'] = 'Pagina a fost editata intre timp de catre alt utilizator. ' .
+                                      'Revizia pe care o editati avea numarul <b>' . request('last_revision') . '</b>, in timp ce revizia curenta are numarul <b>' . $current_revision . '</b>. ' .
+                                      'Puteti vedea diferentele <a target="_blank" href="' . url_textblock_diff($page_name, (int)request('last_revision'), $current_revision) . '">aici</a>.';
+        }
+
         // It worked
         if (!$errors) {
             textblock_add_revision($new_page['name'], $new_page['title'],
@@ -81,6 +89,7 @@ function controller_textblock_edit($page_name, $security = 'public') {
     $view['title'] = $big_title;
     $view['page'] = $page;
     $view['page_name'] = $page_name;
+    $view['last_revision'] = $current_revision;
     $view['form_values'] = $values;
     $view['form_errors'] = $errors;
 

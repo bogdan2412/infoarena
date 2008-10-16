@@ -9,6 +9,9 @@ include('views/tags_header.php');
 
 <form action="<?= htmlentities(url_textblock_edit($page_name)) ?>" method="post" id="form_wikiedit" <?= tag_form_event() ?>>
 <input type="hidden" id="form_page_name" value="<?= htmlentities(isset($page_name) ? $page_name : '') ?>" />
+<input type="hidden" name="last_revision" value="<?=htmlentities($last_revision)?>" />
+
+<div class="wiki_was_modified"><?= ferr('was_modified', false); ?></div>
 
 <div class="wiki_text_block" id="wiki_preview" style="display: none;"></div>
 <div id="wiki_preview_toolbar" style="display: none;">
