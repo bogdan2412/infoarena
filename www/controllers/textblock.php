@@ -25,7 +25,7 @@ function controller_textblock_view($page_name, $rev_num = null) {
 
             if (!$page) {
                 flash_error("Revizia \"{$rev_num}\" nu exista.");
-                $page = $crpage;
+                redirect(url_textblock($page_name));
             }
         } else {
             identity_require("textblock-view", $crpage);
@@ -33,7 +33,6 @@ function controller_textblock_view($page_name, $rev_num = null) {
         }
     } else {
         // Missing page.
-        // FIXME: what if the user can't create the page?
         flash_error("Nu exista pagina, dar poti sa o creezi ...");
         redirect(url_textblock_edit($page_name));
     }

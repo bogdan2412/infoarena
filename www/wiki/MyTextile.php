@@ -2,6 +2,7 @@
 
 @require_once(IA_ROOT_DIR."www/wiki/Textile.php");
 require_once(IA_ROOT_DIR."common/attachment.php");
+require_once(IA_ROOT_DIR."common/string.php");
 require_once(IA_ROOT_DIR."www/wiki/latex.php");
 
 class MyTextile extends Textile {
@@ -112,6 +113,31 @@ class MyTextile extends Textile {
             } else {
                 $args['url'] = IA_URL . $url;
             }
+
+            // Add a CSS class to missing Wiki links
+            // FIXME: Perhaps cache the names we look up, to speed things up?
+            $text = getattr($args, 'text');
+            if (starts_with($text, '{') && ends_with($text, '}')) {
+                $text = substr($text, 1, -1);  // {text|page} ==> text|page
+            }
+ 
+            // text|page ==> page
+            $parts = explode(':', $text, 2);
+            $page_name = $parts[1];
+           
+            // page#something ==> page
+            $parts = explode('#', $page_name, 2);
+            $page_name = $parts[0];
+
+            // Check if page is a controller
+            $parts = explode('?', $page_name, 2);
+            $parts = explode('/', $parts[0], 2);
+            global $IA_CONTROLLERS;
+            if (!in_array(strtolower($parts[0]), $IA_CONTROLLERS)) {
+                if (!textblock_exists($page_name)) {
+                    $args['clsty'] .= "(wiki_link_missing)";
+                }
+            }
         } else {
             $args['clsty'] .= "(wiki_link_external)";
         }
@@ -134,11 +160,9 @@ class MyTextile extends Textile {
         // $allowed_urls are exceptions to this rule
         $allowed_urls = array("static/images/", "plot/rating", "plot/distribution");
 
-        // Check if url begins with IA_URL or IA_URL_PREFIX and remove prefix if so
-        if (substr(strtolower($srcpath), 0, strlen(IA_URL)) == IA_URL) {
+        // Check if url begins with IA_URL and remove prefix if so
+        if (starts_with($srcpath, IA_URL)) {
             $args["str"] = $srcpath = substr($srcpath, strlen(IA_URL));
-        } elseif (substr(strtolower($srcpath), 0, strlen(IA_URL_PREFIX)) == IA_URL_PREFIX) {
-            $args["str"] = $srcpath = substr($srcpath, strlen(IA_URL_PREFIX));
         }
 
         if (!preg_match('/^'.IA_RE_EXTERNAL_URL.'$/xi', $srcpath)) {
@@ -170,7 +194,7 @@ class MyTextile extends Textile {
         }
 
         foreach ($allowed_urls as $url) {
-            if (substr(strtolower($srcpath), 0, strlen($url)) == $url) {
+            if (starts_with(strtolower($srcpath), IA_URL_PREFIX . $url)) {
                 $allowed = true;
                 break;
             }

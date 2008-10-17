@@ -272,4 +272,15 @@ function textblock_move($old_name, $new_name) {
     }
 }
 
+// Returns true if a textblock with that name exists, false otherwise.
+function textblock_exists($name) {
+    $name = normalize_page_name($name);
+
+    $query = sprintf("SELECT COUNT(*) AS `cnt` FROM ia_textblock
+                      WHERE `name` = '%s'",
+                     db_escape($name));
+    $row = db_fetch($query);
+    return $row['cnt'] != 0;
+}
+
 ?>
