@@ -86,16 +86,27 @@ function http_cache_check($last_modified, $cache_age = IA_CLIENT_CACHE_AGE) {
 // NOTE: cache check enabled by default
 // WARNING: this function does not return
 function http_serve($disk_file_name, $http_file_name, $mime_type = null, $cache_check = true) {
-    // Cache magic.
-    if ($cache_check) {
-        http_cache_check(filemtime($disk_file_name));
+    if (is_null($mime_type)) {
+        $mime_type = "application/octet-stream";
     }
 
-    // HTTP headers.
-    if (!is_null($mime_type)) {
-        header("Content-Type: {$mime_type}");
+    global $IA_SAFE_MIME_TYPES;
+    if (!in_array($mime_type, $IA_SAFE_MIME_TYPES)) {
+        $disposition = "attachment";
+
+        // WARNING: *don't* add cache or the second time an attachment is downloaded in IE it will load inline
+    } else {
+        $disposition = "inline";
+
+        // Cache magic.
+        if ($cache_check) {
+            http_cache_check(filemtime($disk_file_name));
+        }
     }
-    header("Content-Disposition: inline; filename="
+
+    // HTTP headers.  
+    header("Content-Type: {$mime_type}");
+    header("Content-Disposition: {$disposition}; filename="
            .urlencode($http_file_name).";");
     $fsize = filesize($disk_file_name);
     header("Content-Length: " . $fsize);
