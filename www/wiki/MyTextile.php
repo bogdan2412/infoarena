@@ -11,6 +11,7 @@ class MyTextile extends Textile {
 
     function MyTextile($options = array()) {
         @Textile::Textile($options);
+        $this->textblock_list = textblock_list_get();
     }
 
     // Parse and execute a macro (or return an error div).
@@ -108,33 +109,27 @@ class MyTextile extends Textile {
     function do_format_link($args) {
         $url = getattr($args, 'url', '');
         if ($this->is_wiki_link($url)) {
+            $page_name = getattr($args, 'url');
             if (preg_match("/^ ([^\?]+) \? (".IA_RE_ATTACHMENT_NAME.") $/sxi", $url, $matches)) {
                 $args['url'] = url_attachment($matches[1], $matches[2]);
             } else {
                 $args['url'] = IA_URL . $url;
             }
 
-            // Add a CSS class to missing Wiki links
-            // FIXME: Perhaps cache the names we look up, to speed things up?
-            $text = getattr($args, 'text');
-            if (starts_with($text, '{') && ends_with($text, '}')) {
-                $text = substr($text, 1, -1);  // {text|page} ==> text|page
-            }
- 
-            // text|page ==> page
-            $parts = explode(':', $text, 2);
-            $page_name = $parts[1];
-           
+            // Add a CSS class to missing Wiki link
             // page#something ==> page
             $parts = explode('#', $page_name, 2);
             $page_name = $parts[0];
 
-            // Check if page is a controller
+            // page?something ==> page
             $parts = explode('?', $page_name, 2);
-            $parts = explode('/', $parts[0], 2);
+            $page_name = $parts[0];
+
+            // Check if page is a controller
+            $parts = explode('/', $page_name, 2);
             global $IA_CONTROLLERS;
             if (!in_array(strtolower($parts[0]), $IA_CONTROLLERS)) {
-                if (!textblock_exists($page_name)) {
+                if (!isset($this->textblock_list[$page_name])) {
                     $args['clsty'] .= "(wiki_link_missing)";
                 }
             }

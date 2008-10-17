@@ -10,6 +10,29 @@ require_once(IA_ROOT_DIR."common/textblock.php");
 //
 // FIXME: this is beyond retarded, refactor mercilessly.
 
+
+// Get lists of existing textblocks
+function textblock_list_get() {
+    $list = mem_cache_get('textblock-list');
+    if ($list === false) {
+        $query = "SELECT `name` FROM `ia_textblock`";
+        $result = db_fetch_all($query);
+        
+        $list = array();
+        foreach ($result as $textblock) {
+            $list[$textblock["name"]] = "";
+        }
+        mem_cache_set('textblock-list', $list);
+    }
+    return $list;
+}
+
+// Update list of existing textblocks
+function textblock_list_update($list)
+{
+    mem_cache_set('textblock-list', $list);
+}
+
 // Add a new revision
 // FIXME: hash parameter?
 function textblock_add_revision(
@@ -27,20 +50,27 @@ function textblock_add_revision(
     );
     log_assert_valid(textblock_validate($tb));
 
-    // copy current version to revision table
-    $query = sprintf("INSERT INTO ia_textblock_revision
-                        SELECT *
-                        FROM ia_textblock
+    // get current revision
+    $query = sprintf("SELECT * FROM ia_textblock
                       WHERE `name` = '%s'",
                      db_escape($name));
-    db_query($query);
+    $current_revision = db_fetch($query);
 
-    // replace current version
-    $query = sprintf("DELETE FROM ia_textblock
-                      WHERE `name` = '%s'
-                      LIMIT 1",
-                     db_escape($name));
-    db_query($query);
+    if ($current_revision) {
+        // copy current version to revision table
+        db_insert('ia_textblock_revision', $current_revision);
+    
+        // replace current version
+        $query = sprintf("DELETE FROM ia_textblock
+                          WHERE `name` = '%s'
+                          LIMIT 1",
+                         db_escape($name));
+        db_query($query);
+    } else {
+        $textblock_list = textblock_list_get();
+        $textblock_list[$name] = "";
+        textblock_list_update($textblock_list);
+    }
 
     // Evil.
     if ($creation_timestamp === null) {
@@ -220,6 +250,11 @@ function textblock_delete($page_name) {
         }
     }
     tag_clear('textblock', $page_name);
+
+    $textblock_list = textblock_list_get();
+    unset($textblock_list[$page_name]);
+    textblock_list_update($textblock_list);
+
     db_query("DELETE FROM `ia_textblock_revision` WHERE `name` = '$pageesc'");
     db_query("DELETE FROM `ia_textblock` WHERE `name` = '$pageesc'");
     if (db_affected_rows() != 1) {
@@ -260,6 +295,11 @@ function textblock_move($old_name, $new_name) {
                       db_escape($new_name), db_escape($old_name));
     db_query($query);
 
+    $textblock_list = textblock_list_get();
+    unset($textblock_list[$old_name]);
+    $textblock_list[$new_name] = "";
+    textblock_list_update($textblock_list);
+
     // Move attachments on disk. Ooops.
     foreach ($files as $file) {
         $old_filename = attachment_get_filepath($file);
@@ -270,17 +310,6 @@ function textblock_move($old_name, $new_name) {
             log_error("Failed moving attachment from $old_filename to $new_filename");
         }
     }
-}
-
-// Returns true if a textblock with that name exists, false otherwise.
-function textblock_exists($name) {
-    $name = normalize_page_name($name);
-
-    $query = sprintf("SELECT COUNT(*) AS `cnt` FROM ia_textblock
-                      WHERE `name` = '%s'",
-                     db_escape($name));
-    $row = db_fetch($query);
-    return $row['cnt'] != 0;
 }
 
 ?>
