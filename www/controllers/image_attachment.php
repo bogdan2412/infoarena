@@ -10,7 +10,7 @@ require_once(IA_ROOT_DIR.'common/cache.php');
 function controller_attachment_resized_img($page_name, $file_name, $resize) {
     if (!$resize) {
         // no resize information: issue a regular file download
-        controller_attachment_download($page_name, $file_name);
+        controller_attachment_download($page_name, $file_name, true);
     }
 
     // check if image exists

@@ -215,7 +215,7 @@ else if ($action == 'download') {
     } else {
         require_once(IA_ROOT_DIR.'www/controllers/attachment.php');
         // regular file download
-        controller_attachment_download($page, request('file'));
+        controller_attachment_download($page, request('file'), request('safe_only', false) == 'true');
     }
 }
 

@@ -79,4 +79,8 @@ $IA_CONTROLLERS = array_merge(array('account', 'admin', 'blog', 'forum', 'confir
                                     'inregistrare-runda', 'lista-inregistrare'),
                               $IA_DIRECT_CONTROLLERS);
 
+// List of safe MIME types
+// FIXME: add more?
+$IA_SAFE_MIME_TYPES = array('text/plain', 'image/jpeg', 'image/png', 'image/gif');
+
 ?>
