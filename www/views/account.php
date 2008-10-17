@@ -66,9 +66,9 @@ if (array_key_exists('security_level', $form_values)) {
 <fieldset>
     <legend>Schimba informatii personale</legend>
     <ul class="form">
-    <? if (identity_can('user-tag', $view['user'])) { ?>
+    <?php if (identity_can('user-tag', $view['user'])) { ?>
         <?= tag_format_input_box(fval('tags')) ?>
-    <? } ?>
+    <?php } ?>
         </li>
             <label for="form_name">Nume complet</label>
             <?= ferr_span('full_name') ?>

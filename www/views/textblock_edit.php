@@ -11,9 +11,9 @@ include('views/tags_header.php');
 <input type="hidden" id="form_page_name" value="<?= htmlentities(isset($page_name) ? $page_name : '') ?>" />
 <input type="hidden" name="last_revision" value="<?=htmlentities($last_revision)?>" />
 
-<? if (ferr('was_modified', false)) { ?>
+<?php if (ferr('was_modified', false)) { ?>
 <div class="wiki_was_modified"><?= ferr('was_modified', false); ?></div>
-<? } ?>
+<?php } ?>
 
 <div class="wiki_text_block" id="wiki_preview" style="display: none;"></div>
 <div id="wiki_preview_toolbar" style="display: none;">
@@ -35,9 +35,9 @@ include('views/tags_header.php');
         <?= format_link(url_textblock('documentatie/wiki'), "Cum formatez text?") ?>
     </li>
 
-    <? if (identity_can('textblock-tag', $view['page'])) { ?>
+    <?php if (identity_can('textblock-tag', $view['page'])) { ?>
        <?= tag_format_input_box(fval('tags')) ?>
-    <? } ?>
+    <?php } ?>
 
     <?php if (array_key_exists('security', $form_values)) { ?>
     <li id="field_security">

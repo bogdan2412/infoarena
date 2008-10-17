@@ -87,9 +87,9 @@ $form_fields = array(
    <?= view_form_field_li($form_fields['title'], 'title') ?>
    <?= view_form_field_li($form_fields['page_name'], 'page_name') ?>
    <?= view_form_field_li($form_fields['start_time'], 'start_time') ?>
-   <? if (identity_can('round-tag', $round)) { ?>
+   <?php if (identity_can('round-tag', $round)) { ?>
       <?= tag_format_input_box(fval('tags')) ?>
-   <? } ?>
+   <?php } ?>
    <?= view_form_field_li($form_fields['tasks'], 'tasks') ?>
   </ul>
  </fieldset>

@@ -75,19 +75,19 @@ $form_fields = array(
         <?= view_form_field_li($form_fields['page_name'], 'page_name') ?>
         <?= view_form_field_li($form_fields['author'], 'author') ?>
         <?= view_form_field_li($form_fields['source'], 'source') ?>
-        <? if (identity_can('task-change-security', $task)) { ?> 
+        <?php if (identity_can('task-change-security', $task)) { ?> 
            <?= view_form_field_li($form_fields['hidden'], 'hidden') ?>
-        <? } ?>
-        <? if (identity_can('task-tag', $task)) { ?>
+        <?php } ?>
+        <?php if (identity_can('task-tag', $task)) { ?>
            <?= tag_format_input_box(fval('tags')) ?>
-        <? } ?>
+        <?php } ?>
     </ul>
     </fieldset>
 
 <?php
 // FIXME: Field should be generated from task_get_types()
 ?>
-    <? if (identity_can('task-change-open', $task)) { ?> 
+    <?php if (identity_can('task-change-open', $task)) { ?> 
     <fieldset>
     <legend>Acces la surse si teste</legend>
     <ul class="form">
@@ -95,7 +95,7 @@ $form_fields = array(
         <?= view_form_field_li($form_fields['open_tests'], 'open_tests') ?>
     </ul>
     </fieldset>
-    <? } ?>
+    <?php } ?>
 
     <fieldset>
     <legend>Detalii despre evaluare</legend>
