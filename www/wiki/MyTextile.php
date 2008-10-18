@@ -135,9 +135,9 @@ class MyTextile extends Textile {
         // $allowed_urls are exceptions to this rule
         $allowed_urls = array("static/images/", "plot/rating", "plot/distribution");
 
-        // Check if url begins with IA_URL and remove prefix if so
-        if (starts_with($srcpath, IA_URL)) {
-            $args["str"] = $srcpath = substr($srcpath, strlen(IA_URL));
+        // Check if url begins with IA_URL_HOST and remove prefix if so
+        if (starts_with($srcpath, IA_URL_HOST)) {
+            $args["str"] = $srcpath = substr($srcpath, strlen(IA_URL_HOST));
         }
 
         if (!preg_match('/^'.IA_RE_EXTERNAL_URL.'$/xi', $srcpath)) {
