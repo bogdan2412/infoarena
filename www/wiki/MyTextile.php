@@ -11,7 +11,6 @@ class MyTextile extends Textile {
 
     function MyTextile($options = array()) {
         @Textile::Textile($options);
-        $this->textblock_list = textblock_list_get();
     }
 
     // Parse and execute a macro (or return an error div).
@@ -109,29 +108,10 @@ class MyTextile extends Textile {
     function do_format_link($args) {
         $url = getattr($args, 'url', '');
         if ($this->is_wiki_link($url)) {
-            $page_name = getattr($args, 'url');
             if (preg_match("/^ ([^\?]+) \? (".IA_RE_ATTACHMENT_NAME.") $/sxi", $url, $matches)) {
                 $args['url'] = url_attachment($matches[1], $matches[2]);
             } else {
                 $args['url'] = IA_URL . $url;
-            }
-
-            // Add a CSS class to missing Wiki link
-            // page#something ==> page
-            $parts = explode('#', $page_name, 2);
-            $page_name = $parts[0];
-
-            // page?something ==> page
-            $parts = explode('?', $page_name, 2);
-            $page_name = $parts[0];
-
-            // Check if page is a controller
-            $parts = explode('/', $page_name, 2);
-            global $IA_CONTROLLERS;
-            if (!in_array(strtolower($parts[0]), $IA_CONTROLLERS)) {
-                if (!isset($this->textblock_list[$page_name])) {
-                    $args['clsty'] .= "(wiki_link_missing)";
-                }
             }
         } else {
             $args['clsty'] .= "(wiki_link_external)";
