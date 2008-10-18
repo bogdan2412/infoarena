@@ -135,12 +135,15 @@ class MyTextile extends Textile {
         // $allowed_urls are exceptions to this rule
         $allowed_urls = array("static/images/", "plot/rating", "plot/distribution");
 
-        // Check if url begins with IA_URL_HOST and remove prefix if so
-        if (starts_with($srcpath, IA_URL_HOST)) {
-            $args["str"] = $srcpath = substr($srcpath, strlen(IA_URL_HOST));
+        foreach ($allowed_urls as $url) {
+            if (starts_with(strtolower($srcpath), IA_URL . $url) ||
+                starts_with(strtolower($srcpath), IA_URL_PREFIX . $url)) {
+                $allowed = true;
+                break;
+            }
         }
-
-        if (!preg_match('/^'.IA_RE_EXTERNAL_URL.'$/xi', $srcpath)) {
+     
+        if (!$allowed && !preg_match('/^'.IA_RE_EXTERNAL_URL.'$/xi', $srcpath)) {
             if (preg_match('/^ ('.IA_RE_PAGE_NAME.') \? '.
                            '('.IA_RE_ATTACHMENT_NAME.')'.
                            '$/ix', $srcpath, $matches)) {
@@ -168,13 +171,6 @@ class MyTextile extends Textile {
             }
         }
 
-        foreach ($allowed_urls as $url) {
-            if (starts_with(strtolower($srcpath), IA_URL_PREFIX . $url)) {
-                $allowed = true;
-                break;
-            }
-        }
-     
         if (!$allowed) {
             return macro_error("Imaginile trebuie neaparat sa fie atasamente ale unei pagini");
         }
