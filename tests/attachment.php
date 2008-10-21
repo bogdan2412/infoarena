@@ -14,6 +14,7 @@ $res = curl_test(array(
         'post' => array(
                 'text' => "Test page\nxzx-content1-xzx\n",
                 'title' => "Test xzx-title1-xzx",
+                'last_revision' => "0",
 )));
 
 log_print("Dude 1 attaches a sample file");

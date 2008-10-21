@@ -305,3 +305,6 @@ test_array_validate(
         array(1, 'name'),
     )
 );
+
+test_cleanup();
+

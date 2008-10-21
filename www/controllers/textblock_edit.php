@@ -9,12 +9,12 @@ function controller_textblock_edit($page_name, $security = 'public') {
     identity_require_login();
 
     $page = textblock_get_revision($page_name);
-    $current_revision = textblock_get_revision_count($page_name);
 
     // permission check
     if ($page) {
         identity_require('textblock-edit', $page);
         $big_title = "Editare " . $page_name;
+        $current_revision = textblock_get_revision_count($page_name);
     } else {
         $page = array(
                 'name' => $page_name,
@@ -25,6 +25,7 @@ function controller_textblock_edit($page_name, $security = 'public') {
         );
         identity_require('textblock-create', $page);
         $big_title = "Creare " . $page_name;
+        $current_revision = 0;
     }
 
     // Get form data

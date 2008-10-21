@@ -30,7 +30,7 @@ $res = curl_test(array(
                 'password' => $test_password,
                 'password2' => $test_password,
                 'full_name' => "xzx-FULL-NAME-xzx",
-                'email' => "$test_username@test.com",
+                'email' => "$test_username@gmail.com",
                 'tnc' => 1,
         ),
 ));

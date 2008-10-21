@@ -28,6 +28,7 @@ $res = curl_test(array(
         'post' => array(
                 'text' => "Test page\nxzx-content1-xzx\n",
                 'title' => "Test xzx-title1-xzx",
+                'last_revision' => "0",
 )));
 log_assert_equal($res['url'],  url_absolute(
             url_textblock('sandbox/test_page')));
@@ -43,6 +44,7 @@ $res = curl_test(array(
                 'text' => "Test page\nxzx-content2-xzx\n",
                 'title' => "Test xzx-title2-xzx",
                 'security' => "protected",
+                'last_revision' => "1",
 )));
 log_assert_equal($res['url'],  url_absolute(
             url_textblock('sandbox/test_page')));
@@ -57,6 +59,7 @@ $res = curl_test(array(
         'post' => array(
                 'text' => "Test page\nxzx-contentF-xzx\n",
                 'title' => "Test xzx-titleF-xzx",
+                'last_revision' => "2",
 )));
 log_assert_equal($res['url'],  url_absolute(url_home()));
 log_assert(!strstr($res['content'], 'xzx-content2-xzx'));
@@ -82,13 +85,14 @@ $res = curl_test(array(
                 'text' => "Test page\nxzx-content3-xzx\n",
                 'title' => "Test xzx-title3-xzx",
                 'security' => "private",
+                'last_revision' => "2",
 )));
 log_assert_equal($res['url'],  url_absolute(
             url_textblock('sandbox/test_page')));
 log_assert(strstr($res['content'], 'xzx-content3-xzx'));
 log_assert(strstr($res['content'], 'xzx-title3-xzx'));
 
-
+usleep(1000000);
 log_print("Dude 1 can't see page.");
 $res = curl_test(array(
         'url' => url_textblock('sandbox/test_page'),
@@ -119,6 +123,7 @@ $res = curl_test(array(
                 'text' => "Test page\nxzx-content4-xzx\n",
                 'title' => "Test xzx-title4-xzx",
                 'security' => "public",
+                'last_revision' => "3",
 )));
 log_assert_equal($res['url'],  url_absolute(
             url_textblock('sandbox/test_page')));
@@ -147,10 +152,10 @@ $res = curl_test(array(
 ));
 log_assert_equal($res['url'],  url_absolute(
             url_textblock_diff('sandbox/test_page', 1, 2)));
-log_assert(strstr($res['content'], 'xzx-content1-xzx'));
-log_assert(strstr($res['content'], 'xzx-title1-xzx'));
-log_assert(strstr($res['content'], 'xzx-content2-xzx'));
-log_assert(strstr($res['content'], 'xzx-title2-xzx'));
+log_assert(strstr($res['content'], 'xzx-content<del>1</del>-xzx'));
+log_assert(strstr($res['content'], 'xzx-title<del>1</del>-xzx'));
+log_assert(strstr($res['content'], 'xzx-content<ins>2</ins>-xzx'));
+log_assert(strstr($res['content'], 'xzx-title<ins>2</ins>-xzx'));
 
 
 log_print("Dude 2 tries to move to test_page_2, fail");
@@ -222,6 +227,7 @@ $res = curl_test(array(
                 'text' => "Test page\nxzx-private-xzx\n",
                 'title' => "Test xzx-private-xzx",
                 'security' => "protected",
+                'last_revision' => "0",
 )));
 log_assert_equal($res['url'],  url_absolute(
             url_textblock('sandbox/test_page')));

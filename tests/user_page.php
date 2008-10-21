@@ -28,6 +28,7 @@ $res = curl_test(array(
         'post' => array(
             'text' => "h1. New xzx-content-xzx",
             'title' => "New xzx-title-xzx",
+            'last_revision' => "1",
 )));
 log_assert_equal($res['url'],  url_absolute(
             url_user_profile('test_dude1', true)));
@@ -52,6 +53,7 @@ $res = curl_test(array(
         'post' => array(
             'text' => "h1. New yzy-content-yzy",
             'title' => "New yzy-title-yzy",
+            'last_revision' => "2",
 )));
 log_assert($res['url'] != url_absolute(
             url_textblock('utilizator/text_dude1')));
@@ -71,6 +73,7 @@ $res = curl_test(array(
         'post' => array(
             'text' => "New admin-content-admin",
             'title' => "New admin-title-admin",
+            'last_revision' => "1",
 )));
 log_assert_equal($res['url'],  url_absolute(
             url_textblock('utilizator/test_dude2')));
@@ -100,6 +103,7 @@ $res = curl_test(array(
         'post' => array(
             'text' => "My xzx-other-title-xzx",
             'title' => "My xzx-other-content-xzx",
+            'last_revision' => "0",
 )));
 log_assert($res['url'] != url_absolute(
             url_textblock('utilizator/test_dude2/other-page')));
