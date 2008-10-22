@@ -26,7 +26,7 @@ header("Content-type: text/html; charset=utf-8");
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="verify-v1" content="j9UCDYvsDL2pLtkJDDkE4HnHVmXakgvz30vOyIJ+6cI=" />
-    <title><?= htmlentities(getattr($view, 'title')) ?></title>
+    <title><?= htmlentities(getattr($view, 'title'), ENT_COMPAT, "utf-8") ?></title>
 
     <link type="text/css" rel="stylesheet" href="<?= htmlentities(url_static('css/sitewide.css')) ?>"/>
     <link type="text/css" rel="stylesheet" href="<?= htmlentities(url_static('css/iconize.css')) ?>"/>

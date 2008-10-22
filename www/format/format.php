@@ -19,9 +19,9 @@ function format_attribs($attribs = array())
 
         log_assert(preg_match("/[a-z][a-z_0-9]*/", $k), "Invalid attrib '$k'");
         if ($result == "") {
-            $result .= "$k=\"".htmlentities($v)."\"";
+            $result .= "$k=\"".htmlentities($v, ENT_COMPAT, "utf-8")."\"";
         } else {
-            $result .= " $k=\"".htmlentities($v)."\"";
+            $result .= " $k=\"".htmlentities($v, ENT_COMPAT, "utf-8")."\"";
         }
     }
 
@@ -52,7 +52,7 @@ function format_tag($tag, $content = null, $attribs = array(), $escape = true) {
         return "<$tag ".format_attribs($attribs)." />";
     } else {
         if ($escape) {
-            $content = htmlentities($content);
+            $content = htmlentities($content, ENT_COMPAT, "utf-8");
         }
         return "<$tag ".format_attribs($attribs).">$content</$tag>";
     }
@@ -85,7 +85,7 @@ function format_highlight_access_key($string, $key) {
 // Html content not supported because of format_highlight_access_key.
 function format_link_access($url, $content, $key, $attr = array()) {
     $attr['accesskey'] = $key;
-    $content = format_highlight_access_key(htmlentities($content), $key);
+    $content = format_highlight_access_key(htmlentities($content, ENT_COMPAT, "utf-8"), $key);
     return format_link($url, $content, false, $attr);
 }
 
@@ -128,7 +128,7 @@ function format_user_link($user_name, $user_fullname, $rating = null) {
 // FIXME: proper styling
 function format_user_tiny($user_name, $user_fullname, $rating = null) {
     $user_url = htmlentities(url_user_profile($user_name));
-    $user_fullname = htmlentities($user_fullname);
+    $user_fullname = htmlentities($user_fullname, ENT_COMPAT, "utf-8");
 
     $rbadge = format_user_ratingbadge($user_name, $rating);
 
@@ -150,7 +150,7 @@ function format_user_tiny($user_name, $user_fullname, $rating = null) {
 // FIXME: proper styling
 function format_user_normal($user_name, $user_fullname, $rating = null) {
     $user_url = htmlentities(url_user_profile($user_name));
-    $user_fullname = htmlentities($user_fullname);
+    $user_fullname = htmlentities($user_fullname, ENT_COMPAT, "utf-8");
 
     $rbadge = format_user_ratingbadge($user_name, $rating);
 
