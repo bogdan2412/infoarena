@@ -66,7 +66,7 @@ define("IA_SIDEBAR_PAGE", "sidebar-ad");
 define("IA_BLOG_SIDEBAR", "blog-sidebar");
 
 // LaTeX support
-define("IA_LATEX_ENABLE", true);
+define("IA_LATEX_ENABLE", false);
 
 // List of infoarena controllers
 $IA_DIRECT_CONTROLLERS = array('register', 'news_feed', 'changes',

@@ -13,7 +13,7 @@ function fval($param_name, $escape_html = true) {
     }
 
     if ($escape_html) {
-        return htmlentities(getattr($view['form_values'], $param_name));
+        return htmlentities(getattr($view['form_values'], $param_name), ENT_COMPAT, "utf-8");
     } else {
         return getattr($view['form_values'], $param_name);
     }
@@ -42,7 +42,7 @@ function ferr($param_name, $escape_html = true) {
     global $view;
 
     if ($escape_html) {
-        return htmlentities(getattr($view['form_errors'], $param_name));
+        return htmlentities(getattr($view['form_errors'], $param_name), ENT_COMPAT, "utf-8");
     } else {
         return getattr($view['form_errors'], $param_name);
     }

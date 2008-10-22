@@ -14,6 +14,8 @@ function wiki_process_only_textile($content) {
             'disable_html' => true,
             'disable_filters' => true,
             'trim_spaces' => false,
+            'charset' => 'utf-8',
+            'char_encoding' => 0,
             'preserve_spaces' => true,
     );
     $weaver = new MyTextile($options);

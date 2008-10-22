@@ -39,11 +39,8 @@ function diff_string($string) {
         }
     }
 
-    // capture diff output
-    ob_start();
-    system("diff -au ".$name[0]." ".$name[1]);
-    $diff = ob_get_contents();
-    ob_end_clean();
+    // execute diff
+    exec("diff -au ".$name[0]." ".$name[1], $lines);
 
     // delete temporary files
     for ($i = 0; $i < 2; ++$i) {
@@ -53,7 +50,6 @@ function diff_string($string) {
     }
 
     // parse diff output 
-    $lines = explode("\n", $diff);
     $result = array();
     $block_cnt = 0; $op_cnt = -1; 
     foreach ($lines as $line) {

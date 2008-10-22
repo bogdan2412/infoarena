@@ -19,14 +19,14 @@ function print_diff($diff) {
             foreach ($op['lines'] as $line) {
                 $output = "";
                 if (!is_array($line)) {
-                    $output = htmlentities($line);
+                    $output = htmlentities($line, ENT_COMPAT, "utf-8");
                 } else {
                     // line contains inline diff
                     foreach ($line as $chunk) {
                         if ($chunk['type'] != 'normal') {
                             $output .= '<'.$chunk['type'].'>';
                         }
-                        $output .= htmlentities($chunk['string']); 
+                        $output .= htmlentities($chunk['string'], ENT_COMPAT, "utf-8"); 
                         if ($chunk['type'] != 'normal') {
                             $output .= '</'.$chunk['type'].'>';
                         }
