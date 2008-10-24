@@ -164,8 +164,8 @@ class MyTextile extends Textile {
                 $srcpath_root = $tmp[0];                  // Strips everything after "?"
                 $tmp = explode("/", $srcpath_root);
                 $srcpath_controller = $tmp[0];            // Strips everything after first "/"
-                global $IA_CONTROLLERS;
-                if (in_array(strtolower($srcpath_controller), $IA_CONTROLLERS)) {
+                global $IA_NONTEXTBLOCK_CONTROLLERS;
+                if (in_array(strtolower($srcpath_controller), $IA_NONTEXTBLOCK_CONTROLLERS)) {
                     $allowed = false;
                 }
             }

@@ -112,6 +112,13 @@ if (in_array($url_root, $IA_CONTROLLERS)) {
         controller_round_register_view($obj_id);
     }
 
+    // Password reset confirmation
+    if ($url_root == 'confirm') {
+        require_once(IA_ROOT_DIR.'www/controllers/resetpass.php');
+        controller_resetpass_confirm($page_id);
+    }
+
+    // Special textblock controllers
     // Blog controller
     if ($url_root == 'blog')
     {
@@ -138,12 +145,6 @@ if (in_array($url_root, $IA_CONTROLLERS)) {
             require_once(IA_ROOT_DIR.'www/controllers/blog.php');
             controller_blog_view($page, request('revision'));
         }
-    }
-
-    // Password reset confirmation
-    if ($url_root == 'confirm') {
-        require_once(IA_ROOT_DIR.'www/controllers/resetpass.php');
-        controller_resetpass_confirm($page_id);
     }
 }
 
