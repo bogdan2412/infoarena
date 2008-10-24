@@ -126,7 +126,7 @@ if (in_array($url_root, $IA_CONTROLLERS)) {
                 controller_blog_index();
             }
         }
-        
+
         // Blog edit
         if ($action == 'edit') {
             require_once(IA_ROOT_DIR.'www/controllers/textblock_edit.php');
@@ -138,11 +138,6 @@ if (in_array($url_root, $IA_CONTROLLERS)) {
             require_once(IA_ROOT_DIR.'www/controllers/blog.php');
             controller_blog_view($page, request('revision'));
         }
-
-
-        // Invalid url
-        flash_error('URL invalid');
-        redirect(url_blog());
     }
 
     // Password reset confirmation
@@ -155,7 +150,7 @@ if (in_array($url_root, $IA_CONTROLLERS)) {
 // textblock controllers
 // FIXME: quick array of sorts?
 //  - edit textblock
-else if ($action == 'edit') {
+if ($action == 'edit') {
     require_once(IA_ROOT_DIR.'www/controllers/textblock_edit.php');
     controller_textblock_edit($page);
 }
