@@ -4,6 +4,7 @@
 require_once(IA_ROOT_DIR."common/attachment.php");
 require_once(IA_ROOT_DIR."common/string.php");
 require_once(IA_ROOT_DIR."www/wiki/latex.php");
+require_once(IA_ROOT_DIR."www/utilities.php");
 
 class MyTextile extends Textile {
     // FIXME: If you see a pointless textile error try tweaking this value.
@@ -74,7 +75,7 @@ class MyTextile extends Textile {
             // put javascript dp.SyntaxHighlighter at work
             return "\n<div class=\"code\">"
                    ."<textarea name=\"code\" class=\"{$lang}\" cols=\"60\" rows=\"10\">"
-                   .htmlentities($text) . "</textarea></div>\n";
+                   .html_escape($text) . "</textarea></div>\n";
         }
         else {
             return macro_error("Can't handle ==$type| block.");
@@ -154,7 +155,7 @@ class MyTextile extends Textile {
                     //log_warn("Invalid resize instructions '$extra'");
                     $extra = '';
                 }
-                $args['src'] = htmlentities(url_absolute(url_image_resize($matches[1], $matches[2], $extra)));
+                $args['src'] = html_escape(url_absolute(url_image_resize($matches[1], $matches[2], $extra)));
                 $allowed = true;
 
                 // Test if $srcpath references an internal url that is NOT a textblock
@@ -219,7 +220,7 @@ class MyTextile extends Textile {
         }
         else {
             $html = macro_error("LaTeX support is disabled.");
-            $html .= "<pre>".htmlentities($str).'</pre>';
+            $html .= "<pre>".html_escape($str).'</pre>';
         }
 
         if ($this->error_reporting_level === false) {

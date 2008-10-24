@@ -18,7 +18,7 @@ function macro_news($args) {
     $res .= format_pager($options);
     foreach ($subpages as $subpage) {
         $res .= '<div class="item">';
-        $res .= '<span class="date">'.htmlentities(date('d M Y', strtotime($subpage['creation_timestamp']))).'</span>';
+        $res .= '<span class="date">'.html_escape(date('d M Y', strtotime($subpage['creation_timestamp']))).'</span>';
 
         $url = url_textblock($subpage['name']);
         $text = wiki_process_textblock_recursive($subpage);

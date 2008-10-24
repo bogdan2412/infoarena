@@ -2,10 +2,10 @@
 
 require_once(IA_ROOT_DIR."www/url.php");
 
-// Escapes a string from html. Better than html entities because it's
-// shorter and it handles utf-8.
-function xmlesc($arg) {
-    return htmlentities($arg, ENT_COMPAT, 'UTF-8');
+// Wrapper around htmlentities which defaults charset to UTF-8
+function html_escape($string, $quote_style = ENT_COMPAT, $charset = "UTF-8")
+{
+    return htmlentities($string, $quote_style, $charset);
 }
 
 function request($param, $default = null) {

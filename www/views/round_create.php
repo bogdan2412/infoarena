@@ -18,9 +18,9 @@ $form_fields = array(
 
 ?>
 
-<h1><?= htmlentities($title) ?></h1>
+<h1><?= html_escape($title) ?></h1>
 
-<form action="<?= htmlentities(url_round_create()) ?>"
+<form action="<?= html_escape(url_round_create()) ?>"
       method="post"
       class="task create clear">
  <fieldset>

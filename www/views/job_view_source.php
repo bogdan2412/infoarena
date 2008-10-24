@@ -17,14 +17,14 @@ include('header.php');
     <th class="task-id">Problema</th>
     <td class="task-id"><?= format_link(url_textblock($job['task_page_name']), $job['task_title']) ?></td>
     <th class="score">Scor</th>
-    <td class="score"><?= htmlentities($job['score']) ?></td>
+    <td class="score"><?= html_escape($job['score']) ?></td>
 </tr>
 </tr>
 <tr>
     <th class="compiler-id">Compilator</th>
-    <td class="compiler-id"><?= htmlentities($job['compiler_id']) ?></td>
+    <td class="compiler-id"><?= html_escape($job['compiler_id']) ?></td>
     <th class="status">Status</th>
-    <td class="status"><strong><?= htmlentities($job['status']) ?></strong></td>
+    <td class="status"><strong><?= html_escape($job['status']) ?></strong></td>
 </tr>
 <tr>
     <th class="round-id">Runda</th>
@@ -45,7 +45,7 @@ include('header.php');
 <?php
     echo '<div class="code">';
     echo "<textarea name=\"code\" class=\"{$lang}\" cols=\"60\" rows=\"10\">";
-    echo htmlentities($job['file_contents']);
+    echo html_escape($job['file_contents']);
     echo '</textarea></div>';
     include('footer.php');
 ?>

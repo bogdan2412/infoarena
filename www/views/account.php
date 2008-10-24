@@ -4,7 +4,7 @@ include('header.php');
 include('tags_header.php');
 ?>
 
-<h1><?= htmlentities($view['title']) ?></h1>
+<h1><?= html_escape($view['title']) ?></h1>
 
 <div id="sidebar2">
 <div class="section">
@@ -23,10 +23,10 @@ include('tags_header.php');
 
 </div>
 
-<form enctype="multipart/form-data" action="<?= htmlentities($action) ?>" method="post" class="profile clear" <?= tag_form_event() ?>>
+<form enctype="multipart/form-data" action="<?= html_escape($action) ?>" method="post" class="profile clear" <?= tag_form_event() ?>>
 
 <fieldset>
-    <legend><img src="<?= htmlentities(url_static('images/icons/key.gif')) ?>" alt="!" /> Informatii legate de securitate</legend>
+    <legend><img src="<?= html_escape(url_static('images/icons/key.gif')) ?>" alt="!" /> Informatii legate de securitate</legend>
     <ul class="form">
         <li>
             <label for='form_passwordold'>Parola curenta</label>
@@ -91,7 +91,7 @@ if (array_key_exists('security_level', $form_values)) {
             <?php
                 // display avatar
                 $avatar_url = url_user_avatar($user['username'], "150x150");
-                echo '<img class="avatar" src="'.htmlentities($avatar_url).'" alt="avatar"/>';
+                echo '<img class="avatar" src="'.html_escape($avatar_url).'" alt="avatar"/>';
             ?>
         </li>
         <li>

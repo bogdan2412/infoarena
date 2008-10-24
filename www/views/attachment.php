@@ -3,7 +3,7 @@
 <h1>Ataseaza la pagina <?= format_link(url_textblock($view['page_name']), $view['page_name']) ?></h1>
 
 <form enctype="multipart/form-data"
-      action="<?= htmlentities(url_attachment_new($page_name)) ?>"
+      action="<?= html_escape(url_attachment_new($page_name)) ?>"
       method="post"
       class="clear">
 <fieldset>

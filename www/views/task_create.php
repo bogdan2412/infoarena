@@ -19,9 +19,9 @@ $form_fields = array (
 
 ?>
 
-<h1><?= htmlentities($title) ?></h1>
+<h1><?= html_escape($title) ?></h1>
 
-<form action="<?= htmlentities(url_task_create()) ?>" method="post" class="task create clear">
+<form action="<?= html_escape(url_task_create()) ?>" method="post" class="task create clear">
 <fieldset>
 <legend>Informatii initiale</legend>
     <ul class="form">

@@ -1,5 +1,5 @@
 <div class="warning">
-    Atentie! Aceasta pagina nu este actuala (este varianta de la <?= htmlentities($textblock['timestamp']) ?>)</br>
+    Atentie! Aceasta pagina nu este actuala (este varianta de la <?= html_escape($textblock['timestamp']) ?>)</br>
     <?php
     if ($view['revision'] > 1) {
         echo format_link(url_textblock_revision($view['page_name'], $view['revision'] - 1), "Revizia anterioara");

@@ -7,7 +7,7 @@ include('header.php');
 
 <h1>Ultimele modificari de pe infoarena</h1>
 
-<a class="feed" href="<?= htmlentities(url_absolute(url_changes_rss())) ?>" title="RSS Modificari" >RSS</a>
+<a class="feed" href="<?= html_escape(url_absolute(url_changes_rss())) ?>" title="RSS Modificari" >RSS</a>
 
 <ul class="changes">
 <?php foreach ($revisions as $rev) { ?>

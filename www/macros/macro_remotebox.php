@@ -22,7 +22,7 @@ function macro_remotebox($args, $bypass_security = false) {
     $buffer = '';
     $buffer .= '<div id="remotebox">remote content</div>';
     $buffer .= '<script type="text/javascript">RemoteBox_Url="';
-    $buffer .= htmlentities($args['url']);
+    $buffer .= html_escape($args['url']);
     $buffer .= '";</script>';
 
     return $buffer;

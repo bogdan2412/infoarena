@@ -36,7 +36,7 @@ function fieldinfo_validate($finfo) {
                 $errors['values'] = 'Need to specify possible values';
             } else {
                 foreach ($values as $key => $val) {
-                    if (htmlentities($key) != $key) {
+                    if (html_escape($key) != $key) {
                         $errors['values'] = "Bad value '$key'";
                     }
                 }

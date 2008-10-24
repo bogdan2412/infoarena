@@ -1,6 +1,6 @@
 <?php include('header.php'); ?>
 
-<h1><?= htmlentities($view['title']) ?></h1>
+<h1><?= html_escape($view['title']) ?></h1>
 
 <!-- Google Search Result Snippet Begins -->
   <div id="results_010130381492294265836:kw-fmmvpxco"></div>

@@ -137,11 +137,11 @@ $res = curl_test(array(
 ));
 log_assert_equal($res['url'],  url_absolute(
             url_textblock_history('sandbox/test_page')));
-log_assert(strstr($res['content'], htmlentities(
+log_assert(strstr($res['content'], html_escape(
                 url_textblock_diff('sandbox/test_page', 1, 4))));
-log_assert(strstr($res['content'], htmlentities(
+log_assert(strstr($res['content'], html_escape(
                 url_textblock_restore('sandbox/test_page', 2))));
-log_assert(strstr($res['content'], htmlentities(
+log_assert(strstr($res['content'], html_escape(
                 url_textblock_revision('sandbox/test_page', 3))));
 
 
@@ -203,11 +203,11 @@ $res = curl_test(array(
 ));
 log_assert_equal($res['url'],  url_absolute(
             url_textblock_history('sandbox/test_page_2', true)));
-log_assert(strstr($res['content'], htmlentities(
+log_assert(strstr($res['content'], html_escape(
                 url_textblock_diff('sandbox/test_page_2', 1, 4))));
-log_assert(strstr($res['content'], htmlentities(
+log_assert(strstr($res['content'], html_escape(
                 url_textblock_restore('sandbox/test_page_2', 2))));
-log_assert(strstr($res['content'], htmlentities(
+log_assert(strstr($res['content'], html_escape(
                 url_textblock_revision('sandbox/test_page_2', 3))));
 
 

@@ -13,7 +13,7 @@ if (isset($form_errors) || isset($form_values)) {
     log_assert(is_array($view['form_errors']));
     log_assert(is_array($view['form_values']));
     foreach ($form_values as $k => $v) {
-        if (htmlentities($k) != $k) {
+        if (html_escape($k) != $k) {
             log_error("Form field $k contains special html chars.");
         }
     }
@@ -26,30 +26,30 @@ header("Content-type: text/html; charset=utf-8");
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="verify-v1" content="j9UCDYvsDL2pLtkJDDkE4HnHVmXakgvz30vOyIJ+6cI=" />
-    <title><?= htmlentities(getattr($view, 'title'), ENT_COMPAT, "utf-8") ?></title>
+    <title><?= html_escape(getattr($view, 'title')) ?></title>
 
-    <link type="text/css" rel="stylesheet" href="<?= htmlentities(url_static('css/sitewide.css')) ?>"/>
-    <link type="text/css" rel="stylesheet" href="<?= htmlentities(url_static('css/iconize.css')) ?>"/>
-    <link type="text/css" rel="stylesheet" href="<?= htmlentities(url_static('css/screen.css')) ?>"/>
-    <link type="text/css" rel="stylesheet" href="<?= htmlentities(url_static('css/tabber.css')) ?>"/>
-    <link type="text/css" rel="stylesheet" href="<?= htmlentities(url_static('css/SyntaxHighlighter.css')) ?>"/>
-    <link type="text/css" rel="stylesheet" href="<?= htmlentities(url_static('css/print.css')) ?>" media="print" />
+    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/sitewide.css')) ?>"/>
+    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/iconize.css')) ?>"/>
+    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/screen.css')) ?>"/>
+    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/tabber.css')) ?>"/>
+    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/SyntaxHighlighter.css')) ?>"/>
+    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/print.css')) ?>" media="print" />
     <link rel="icon" href="<?= IA_URL."favicon.ico" ?>" type="image/vnd.microsoft.icon" />
-    <script type="text/javascript" src="<?= htmlentities(url_static('js/config.js.php')) ?>"></script>
-    <script type="text/javascript" src="<?= htmlentities(url_static('js/MochiKit.js')) ?>"></script>
-    <script type="text/javascript" src="<?= htmlentities(url_static('js/default.js')) ?>"></script>
-    <script type="text/javascript" src="<?= htmlentities(url_static('js/tabber-minimized.js')) ?>"></script>
-    <script type="text/javascript" src="<?= htmlentities(url_static('js/submit.js')) ?>"></script>
-    <script type="text/javascript" src="<?= htmlentities(url_static('js/remotebox.js')) ?>"></script>
-    <script type="text/javascript" src="<?= htmlentities(url_static('js/sh/shCore.js')) ?>"></script>
-    <script type="text/javascript" src="<?= htmlentities(url_static('js/sh/shBrushCpp.js')) ?>"></script>
-    <script type="text/javascript" src="<?= htmlentities(url_static('js/sh/shBrushDelphi.js')) ?>"></script>
-    <script type="text/javascript" src="<?= htmlentities(url_static('js/sh/shBrushJava.js')) ?>"></script>
-    <script type="text/javascript" src="<?= htmlentities(url_static('js/sh/shInit.js')) ?>"></script>
+    <script type="text/javascript" src="<?= html_escape(url_static('js/config.js.php')) ?>"></script>
+    <script type="text/javascript" src="<?= html_escape(url_static('js/MochiKit.js')) ?>"></script>
+    <script type="text/javascript" src="<?= html_escape(url_static('js/default.js')) ?>"></script>
+    <script type="text/javascript" src="<?= html_escape(url_static('js/tabber-minimized.js')) ?>"></script>
+    <script type="text/javascript" src="<?= html_escape(url_static('js/submit.js')) ?>"></script>
+    <script type="text/javascript" src="<?= html_escape(url_static('js/remotebox.js')) ?>"></script>
+    <script type="text/javascript" src="<?= html_escape(url_static('js/sh/shCore.js')) ?>"></script>
+    <script type="text/javascript" src="<?= html_escape(url_static('js/sh/shBrushCpp.js')) ?>"></script>
+    <script type="text/javascript" src="<?= html_escape(url_static('js/sh/shBrushDelphi.js')) ?>"></script>
+    <script type="text/javascript" src="<?= html_escape(url_static('js/sh/shBrushJava.js')) ?>"></script>
+    <script type="text/javascript" src="<?= html_escape(url_static('js/sh/shInit.js')) ?>"></script>
 
     <?= getattr($view, 'head') ?>
 </head>
-<body id="infoarena" <?= getattr($view, 'body_onload') ? ' onload="' . htmlentities(getattr($view, 'body_onload')) . '"' : '' ?>>
+<body id="infoarena" <?= getattr($view, 'body_onload') ? ' onload="' . html_escape(getattr($view, 'body_onload')) . '"' : '' ?>>
 <div id="page">
 
 <?php
@@ -64,19 +64,19 @@ ia_template_topnav($topnav_select, $smf_admin);
 <div id="content_small" class="clear">
 <div id="sidebar">
     <ul id="nav" class="clear">
-        <li><a href="<?= htmlentities(url_home()) ?>">Home</a></li>
+        <li><a href="<?= html_escape(url_home()) ?>">Home</a></li>
         <li><?= format_link_access(url_textblock('arhiva'), "Arhiva de probleme", 'a') ?></li>
-        <li><a href="<?= htmlentities(url_textblock('concursuri')) ?>">Concursuri</a></li>
-        <li><a href="<?= htmlentities(url_textblock('clasament-rating')) ?>">Clasament</a></li>
-        <li><a href="<?= htmlentities(url_textblock('articole')) ?>">Articole</a></li>
-        <li><a href="<?= htmlentities(url_textblock('downloads')) ?>">Downloads</a></li>
-        <li><a href="<?= htmlentities(url_textblock('links')) ?>">Links</a></li>
-        <li><a href="<?= htmlentities(url_textblock('documentatie')) ?>">Documentatie</a></li>
-        <li><a href="<?= htmlentities(url_textblock('despre-infoarena')) ?>">Despre infoarena</a></li>
+        <li><a href="<?= html_escape(url_textblock('concursuri')) ?>">Concursuri</a></li>
+        <li><a href="<?= html_escape(url_textblock('clasament-rating')) ?>">Clasament</a></li>
+        <li><a href="<?= html_escape(url_textblock('articole')) ?>">Articole</a></li>
+        <li><a href="<?= html_escape(url_textblock('downloads')) ?>">Downloads</a></li>
+        <li><a href="<?= html_escape(url_textblock('links')) ?>">Links</a></li>
+        <li><a href="<?= html_escape(url_textblock('documentatie')) ?>">Documentatie</a></li>
+        <li><a href="<?= html_escape(url_textblock('despre-infoarena')) ?>">Despre infoarena</a></li>
         <li class="separator"><hr/></li>
         <li><?= format_link_access(url_monitor(array('user' => identity_get_username())), "Monitorul de evaluare", 'm') ?></li>
         <?php if (!identity_is_anonymous()) { ?>
-        <li><a href="<?= htmlentities(url_submit()) ?>"><strong>Trimite solutii</strong></a></li>
+        <li><a href="<?= html_escape(url_submit()) ?>"><strong>Trimite solutii</strong></a></li>
         <li><?= format_link_access(url_account(), "Contul meu", 'c') ?></li>
         <?php } ?>
         </ul>
@@ -100,7 +100,7 @@ ia_template_topnav($topnav_select, $smf_admin);
     <?php } ?>
     <p class="user-count"><?php echo user_count(); ?> membri inregistrati</p>
     <div id="srv_time" class="user-count" align="center"></div>
-    <script type="text/javascript" src="<?= htmlentities(url_static('js/time.js')) ?>"></script>
+    <script type="text/javascript" src="<?= html_escape(url_static('js/time.js')) ?>"></script>
     <script type="text/javascript">loadTime(<?= format_date(null, "%H, %M, %S");?>);</script>
 
     <?php include(IA_ROOT_DIR.'www/views/sidebar_ad.php'); ?>
@@ -115,7 +115,7 @@ if (isset($recent_pages) && (1 < count($recent_pages))) {
     foreach ($recent_pages as $rec_key => $rec_entry) {
         list($rec_url, $rec_title) = $rec_entry;
 
-        $rec_title = htmlentities($rec_title);
+        $rec_title = html_escape($rec_title);
 
         if ($bstring) {
             $bstring .= ' <span class="separator">|</span> ';
@@ -124,7 +124,7 @@ if (isset($recent_pages) && (1 < count($recent_pages))) {
             $bstring .= "<strong>{$rec_title}</strong>";
         }
         else {
-            $bstring .= "<a href=\"" . htmlentities($rec_url) . "\">{$rec_title}</a>";
+            $bstring .= "<a href=\"" . html_escape($rec_url) . "\">{$rec_title}</a>";
         }
     }
     echo '<p id="breadcrumbs">Pagini recente &raquo; ' . $bstring . '</p>';
@@ -136,7 +136,7 @@ if (isset($recent_pages) && (1 < count($recent_pages))) {
     // display flash message
     if (isset($_SESSION['_ia_flash'])) { ?>
 
-<div id="flash" class="flash <?= htmlentities(getattr($_SESSION, '_ia_flash_class')) ?>"><?= htmlentities($_SESSION['_ia_flash']) ?></div>
+<div id="flash" class="flash <?= html_escape(getattr($_SESSION, '_ia_flash_class')) ?>"><?= html_escape($_SESSION['_ia_flash']) ?></div>
 
 <?php
         // clear flash message 

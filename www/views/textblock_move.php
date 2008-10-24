@@ -1,8 +1,8 @@
 <?php include('header.php'); ?>
 
-<h1><?= htmlentities($title) ?></h1>
+<h1><?= html_escape($title) ?></h1>
 
-<form action="<?= htmlentities(url_textblock_move($page_name)) ?>" method="post" class="move clear">
+<form action="<?= html_escape(url_textblock_move($page_name)) ?>" method="post" class="move clear">
 <fieldset>
     <ul class="form">
         <li>

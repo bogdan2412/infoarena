@@ -30,7 +30,7 @@ foreach ($tags as $tag) {
     echo format_link(url_blog($tag['tag_name']), $tag['tag_name'], true).' ';
 }
 echo '<br/>';
-echo 'Creat la '.htmlentities($first_textblock['creation_timestamp']).' de '.format_user_link($first_textblock["user_name"], $first_textblock["user_fullname"]);
+echo 'Creat la '.html_escape($first_textblock['creation_timestamp']).' de '.format_user_link($first_textblock["user_name"], $first_textblock["user_fullname"]);
 echo '</div>';
 // blog comments
 echo '<div id="comentarii">';

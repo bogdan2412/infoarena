@@ -14,22 +14,22 @@ $optional['item'] = array('author', 'pubDate', 'category', 'comments',
 echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
 echo '<rss version="2.0">'."\n";
 echo '<channel>'."\n";
-echo '<title>'.xmlesc(getattr($view['channel'], 'title')).'</title>'."\n";
-echo '<link>'.xmlesc(getattr($view['channel'], 'link')).'</link>'."\n";
-echo '<description>'.xmlesc(getattr($view['channel'], 'description')).'</description>'."\n";
+echo '<title>'.html_escape(getattr($view['channel'], 'title')).'</title>'."\n";
+echo '<link>'.html_escape(getattr($view['channel'], 'link')).'</link>'."\n";
+echo '<description>'.html_escape(getattr($view['channel'], 'description')).'</description>'."\n";
 
 foreach ($optional['channel'] as $hash_key => $hash_value) {
     if (getattr($view['channel'], $hash_value)) {
         echo '<'.$hash_value.'>';
-        echo xmlesc($view['channel'][$hash_value]);
+        echo html_escape($view['channel'][$hash_value]);
         echo '</'.$hash_value.">\n";
     }
 }
 
 foreach ($view['item'] as $v) {
     echo '<item>'."\n";
-    echo '<title>'.xmlesc(getattr($v, 'title')).'</title>'."\n";
-    echo '<link>'.xmlesc(getattr($v, 'link')).'</link>'."\n";
+    echo '<title>'.html_escape(getattr($v, 'title')).'</title>'."\n";
+    echo '<link>'.html_escape(getattr($v, 'link')).'</link>'."\n";
     foreach ($optional['item'] as $hash_key => $hash_value) {
         if (getattr($v, $hash_value)) {
             echo '<'.$hash_value;
@@ -38,19 +38,19 @@ foreach ($view['item'] as $v) {
                     if ($attr_name == 'value') {
                         continue;
                     }
-                    echo ' '.xmlesc($attr_name).'="'.xmlesc($attr_value).'"';
+                    echo ' '.html_escape($attr_name).'="'.html_escape($attr_value).'"';
                 }
             }
             echo '>';
             if (is_array($v[$hash_value])) {
-                echo xmlesc($v[$hash_value]['value']);
+                echo html_escape($v[$hash_value]['value']);
             } else {
-                echo xmlesc($v[$hash_value]);
+                echo html_escape($v[$hash_value]);
             }
             echo '</'.$hash_value.">\n";
         }
     }
-    echo '<description>'.xmlesc(getattr($v, 'description')).'</description>'."\n";
+    echo '<description>'.html_escape(getattr($v, 'description')).'</description>'."\n";
     echo '</item>'."\n";
 }
 

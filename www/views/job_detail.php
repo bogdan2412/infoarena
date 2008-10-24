@@ -9,7 +9,7 @@ $show_groups = ($view['group_count'] < count($view['tests']));
 
 ?>
 
-<h1><?= htmlentities($view['title']) ?></h1>
+<h1><?= html_escape($view['title']) ?></h1>
 
 <table class="job">
 <tr>
@@ -22,14 +22,14 @@ $show_groups = ($view['group_count'] < count($view['tests']));
     <th class="task-id">Problema</th>
     <td class="task-id"><?= format_link(url_textblock($job['task_page_name']), $job['task_title']) ?></td>
     <th class="score">Scor</th>
-    <td class="score"><?= htmlentities($job['score']) ?></td>
+    <td class="score"><?= html_escape($job['score']) ?></td>
 </tr>
 </tr>
 <tr>
     <th class="compiler-id">Compilator</th>
-    <td class="compiler-id"><?= htmlentities($job['compiler_id']) ?></td>
+    <td class="compiler-id"><?= html_escape($job['compiler_id']) ?></td>
     <th class="status">Status</th>
-    <td class="status"><strong><?= htmlentities($job['status']) ?></strong></td>
+    <td class="status"><strong><?= html_escape($job['status']) ?></strong></td>
 </tr>
 <tr>
     <th class="round-id">Runda</th>
@@ -49,7 +49,7 @@ $show_groups = ($view['group_count'] < count($view['tests']));
 <p>Aceasta sursa nu a fost evaluata inca.</p>
 <?php } else { ?>
     <div class="job-eval-log">
-<?= htmlentities($job['eval_log']) ?>
+<?= html_escape($job['eval_log']) ?>
     </div>
 <?php } ?>
 
@@ -75,7 +75,7 @@ $show_groups = ($view['group_count'] < count($view['tests']));
         echo '<td class="number">'.$test['test_number'].'</td>';
         echo '<td class="number">'.$test['exec_time'].'ms</td>';
         echo '<td class="number">'.$test['mem_used'].'kb</td>';
-        echo '<td>'.htmlentities($test['grader_message']).'</td>';
+        echo '<td>'.html_escape($test['grader_message']).'</td>';
         echo '<td class="number">'.$test['points'].'</td>';
         if ($show_groups && $test['test_group'] != $last_group) {
             $last_group = $test['test_group'];

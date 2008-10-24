@@ -39,11 +39,11 @@ $res = curl_test(array(
 ));
 log_assert(strstr($res['content'], "xzx-content-xzx"));
 log_assert(strstr($res['content'], "xzx-title-xzx"));
-log_assert(stristr($res['content'], "<a href=\"".htmlentities(
+log_assert(stristr($res['content'], "<a href=\"".html_escape(
             url_user_profile('test_dude1'))));
-log_assert(stristr($res['content'], "<a href=\"".htmlentities(
+log_assert(stristr($res['content'], "<a href=\"".html_escape(
             url_user_rating('test_dude1'))));
-log_assert(stristr($res['content'], "<a href=\"".htmlentities(
+log_assert(stristr($res['content'], "<a href=\"".html_escape(
             url_user_stats('test_dude1'))));
 
 log_print("Dude2 tries to edit dude1's page, fails");
@@ -142,11 +142,11 @@ $res = curl_test(array(
 ));
 log_assert(strstr($res['content'], "admin-title-admin"));
 log_assert(strstr($res['content'], "admin-content-admin"));
-log_assert(stristr($res['content'], "<a href=\"".htmlentities(
+log_assert(stristr($res['content'], "<a href=\"".html_escape(
             url_user_profile('test_dude2'))));
-log_assert(stristr($res['content'], "<a href=\"".htmlentities(
+log_assert(stristr($res['content'], "<a href=\"".html_escape(
             url_user_rating('test_dude2'))));
-log_assert(stristr($res['content'], "<a href=\"".htmlentities(
+log_assert(stristr($res['content'], "<a href=\"".html_escape(
             url_user_stats('test_dude2'))));
 
 test_cleanup();

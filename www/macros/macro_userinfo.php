@@ -30,14 +30,14 @@ function macro_userinfo($args) {
             // FIXME: display e-mail only for admins
             return macro_error("Adresa de email este ascunsa");
         case 'fullname':
-            return htmlentities($user['full_name']);
+            return html_escape($user['full_name']);
         case 'username':
-            return htmlentities($user['username']);
+            return html_escape($user['username']);
         case 'security':
-            return htmlentities($user['security_level']);
+            return html_escape($user['security_level']);
         case 'rating':
             if ($user['rating_cache']) {
-                return htmlentities(rating_scale($user['rating_cache']));
+                return html_escape(rating_scale($user['rating_cache']));
             } else {
                 return 'n/a';
             }

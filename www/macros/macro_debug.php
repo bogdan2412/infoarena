@@ -8,7 +8,7 @@ function macro_debug($args) {
     $res = "<p>Debug macro listing args</p>";
     $res .= '<pre>';
     $ncargs = $args;
-    $res .= htmlentities(print_r($ncargs, true));
+    $res .= html_escape(print_r($ncargs, true));
     $res .= '</pre>';
 
     return $res;

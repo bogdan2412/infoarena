@@ -13,7 +13,7 @@ foreach ($tasks as $t) {
 
 ?>
 
-<h1><?= htmlentities($title)  ?></h1>
+<h1><?= html_escape($title)  ?></h1>
 
 <div id="sidebar2">
 <div class="section">
@@ -24,9 +24,9 @@ foreach ($tasks as $t) {
 </div>
 </div>
 
-<form enctype="multipart/form-data" action="<?= htmlentities(url_submit()) ?>" method="post" class="submit" id="task_submit">
+<form enctype="multipart/form-data" action="<?= html_escape(url_submit()) ?>" method="post" class="submit" id="task_submit">
 
-<input type="hidden" id="output_only" value="<?= htmlentities(':'.join(':', $output_only_ids).':') ?>" />
+<input type="hidden" id="output_only" value="<?= html_escape(':'.join(':', $output_only_ids).':') ?>" />
 
 <ul class="form hollyfix">
     <li id="field_task">
@@ -34,7 +34,7 @@ foreach ($tasks as $t) {
         <select name="task_id" id="form_task">
             <option value="">[ Alegeti problema ]</option>
 <?php foreach ($tasks as $task) {  ?>
-            <option value="<?= htmlentities($task['id']) ?>"<?= fval('task_id') == $task['id'] ? ' selected="selected"' : '' ?>><?= htmlentities($task['title']) ?></option>
+            <option value="<?= html_escape($task['id']) ?>"<?= fval('task_id') == $task['id'] ? ' selected="selected"' : '' ?>><?= html_escape($task['title']) ?></option>
 <?php } ?>
         </select>
         <?= ferr_span('task_id') ?>

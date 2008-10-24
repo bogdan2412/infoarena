@@ -19,9 +19,9 @@ function format_attribs($attribs = array())
 
         log_assert(preg_match("/[a-z][a-z_0-9]*/", $k), "Invalid attrib '$k'");
         if ($result == "") {
-            $result .= "$k=\"".htmlentities($v, ENT_COMPAT, "utf-8")."\"";
+            $result .= "$k=\"".html_escape($v)."\"";
         } else {
-            $result .= " $k=\"".htmlentities($v, ENT_COMPAT, "utf-8")."\"";
+            $result .= " $k=\"".html_escape($v)."\"";
         }
     }
 
@@ -52,7 +52,7 @@ function format_tag($tag, $content = null, $attribs = array(), $escape = true) {
         return "<$tag ".format_attribs($attribs)." />";
     } else {
         if ($escape) {
-            $content = htmlentities($content, ENT_COMPAT, "utf-8");
+            $content = html_escape($content);
         }
         return "<$tag ".format_attribs($attribs).">$content</$tag>";
     }
@@ -85,7 +85,7 @@ function format_highlight_access_key($string, $key) {
 // Html content not supported because of format_highlight_access_key.
 function format_link_access($url, $content, $key, $attr = array()) {
     $attr['accesskey'] = $key;
-    $content = format_highlight_access_key(htmlentities($content, ENT_COMPAT, "utf-8"), $key);
+    $content = format_highlight_access_key(html_escape($content), $key);
     return format_link($url, $content, false, $attr);
 }
 
@@ -127,8 +127,8 @@ function format_user_link($user_name, $user_fullname, $rating = null) {
 // Format a tiny user link, with a 16x16 avatar.
 // FIXME: proper styling
 function format_user_tiny($user_name, $user_fullname, $rating = null) {
-    $user_url = htmlentities(url_user_profile($user_name));
-    $user_fullname = htmlentities($user_fullname, ENT_COMPAT, "utf-8");
+    $user_url = html_escape(url_user_profile($user_name));
+    $user_fullname = html_escape($user_fullname);
 
     $rbadge = format_user_ratingbadge($user_name, $rating);
 
@@ -149,8 +149,8 @@ function format_user_tiny($user_name, $user_fullname, $rating = null) {
 // Format a tiny user link, with a 32x32 avatar.
 // FIXME: proper styling
 function format_user_normal($user_name, $user_fullname, $rating = null) {
-    $user_url = htmlentities(url_user_profile($user_name));
-    $user_fullname = htmlentities($user_fullname, ENT_COMPAT, "utf-8");
+    $user_url = html_escape(url_user_profile($user_name));
+    $user_fullname = html_escape($user_fullname);
 
     $rbadge = format_user_ratingbadge($user_name, $rating);
 
@@ -202,7 +202,7 @@ function format_user_ratingbadge($username, $rating) {
         $class = rating_group($rating);
         $rating = rating_scale($rating);
         $att = array(
-            'title' => 'Rating '.htmlentities($username).': '.$rating,
+            'title' => 'Rating '.html_escape($username).': '.$rating,
             'class' => 'rating-badge-'.$class,
         );
         return format_link(url_user_rating($username), '&bull;', false, $att);
@@ -219,7 +219,7 @@ function format_user_ratingbadge($username, $rating) {
 // FIXME: user timezone, user format, etc.
 // global identityUser;
 //
-// HTML safe(don't pass through htmlentities.)
+// HTML safe(don't pass through html_escape.)
 function format_date($date, $format = null) {
     if (is_db_date($date)) {
         $timestamp = db_date_parse($date);

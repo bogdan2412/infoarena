@@ -58,7 +58,7 @@
         $style_css = " align=absmiddle";
     }
 
-    $alt_latex_formula = htmlentities($latex_formula, ENT_QUOTES);
+    $alt_latex_formula = html_escape($latex_formula, ENT_QUOTES);
     $alt_latex_formula = str_replace("\r","&#13;",$alt_latex_formula);
     $alt_latex_formula = str_replace("\n","&#10;",$alt_latex_formula);
 

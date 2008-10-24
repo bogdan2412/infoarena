@@ -52,7 +52,7 @@ function macro_roundparam($args) {
     }
     switch ($param) {
         case 'title':
-            $html .= htmlentities($round['title']);
+            $html .= html_escape($round['title']);
             break;
 
         case 'start_time':
@@ -60,18 +60,18 @@ function macro_roundparam($args) {
             break;
 
         case 'id':
-            $html .= htmlentities($round['id']);
+            $html .= html_escape($round['id']);
             break;
 
         default:
             if (!isset($params[$param])) {
                 if (isset($args['default_value'])) {
-                    $html .= htmlentities($args['default_value']);
+                    $html .= html_escape($args['default_value']);
                 } else {
                     $html .= macro_error("Round doesn't have parameter '$param'");
                 }
             } else {
-                $html .= htmlentities($params[$param]);
+                $html .= html_escape($params[$param]);
             }
     }
     if ($strong) {

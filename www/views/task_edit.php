@@ -4,7 +4,7 @@ require_once(IA_ROOT_DIR."common/tags.php");
 require_once(IA_ROOT_DIR."www/format/form.php");
 
 $view['head'] = getattr($view, 'head').
-    "<script type=\"text/javascript\" src=\"" . htmlentities(url_static("js/parameditor.js")) . "\"></script>";
+    "<script type=\"text/javascript\" src=\"" . html_escape(url_static("js/parameditor.js")) . "\"></script>";
 
 include('views/header.php');
 include('views/tags_header.php');
@@ -62,9 +62,9 @@ $form_fields = array(
 
 ?>
 
-<h1>Editare <a href="<?= htmlentities(url_task($view['task_id'])) ?>"><?= htmlentities($view['title']) ?></a></h1>
+<h1>Editare <a href="<?= html_escape(url_task($view['task_id'])) ?>"><?= html_escape($view['title']) ?></a></h1>
 
-<form action="<?= htmlentities(url_task_edit($task_id)) ?>"
+<form action="<?= html_escape(url_task_edit($task_id)) ?>"
       method="post"
       class="task"
       <?= tag_form_event() ?>>

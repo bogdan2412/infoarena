@@ -17,7 +17,7 @@ function ia_template_header() {
         <div id="userbox">
         <?= format_link(url_user_profile($username, true), format_user_avatar($username, 50, 50, true), false) ?>
             <span class="user">
-                <strong><?= htmlentities($identity_user['full_name']) ?></strong><br/>
+                <strong><?= html_escape($identity_user['full_name']) ?></strong><br/>
                 <?= format_user_ratingbadge($username, $identity_user['rating_cache']) ?>
                 <?= format_link_access(url_user_profile($username, true), $username, 'p') ?><br/>
                 <?= format_link(url_logout(), "logout", true, array('class' => 'logout')) ?> |
@@ -139,7 +139,7 @@ function ia_template_footer() {
         log_execution_stats();
         $buffer = $execution_stats['log_copy'];
         echo '<textarea id="log" rows="50" cols="80">';
-        echo htmlentities($buffer);
+        echo html_escape($buffer);
         echo '</textarea>';
     }
 ?>

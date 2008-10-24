@@ -10,7 +10,7 @@ function macro_tableofcontents($args)
     $subpages = textblock_get_by_prefix($prefix, false, false);
 
     $res = '<div class="macro-toc">';
-    $res .= "<p>Table of contents for ".htmlentities($prefix)."</p><ul>";
+    $res .= "<p>Table of contents for ".html_escape($prefix)."</p><ul>";
     for ($i = 0; $i < count($subpages); ++$i) {
         $title = $subpages[$i]['title'];
         $link = url_textblock($subpages[$i]['name']);

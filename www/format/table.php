@@ -92,7 +92,7 @@ function format_table($data, $column_infos = null, $options = null)
             }
 
             $key = getattr($column, 'key');
-            $caption = htmlentities(getattr($column, 'title', $key));
+            $caption = html_escape(getattr($column, 'title', $key));
 
             // sortable columns
             if ($key && getattr($column, 'sortable')) {
@@ -105,7 +105,7 @@ function format_table($data, $column_infos = null, $options = null)
                     $span_class = '';
                 }
 
-                $caption .= '&nbsp;<span class="sort-field'.htmlentities($span_class).'">'
+                $caption .= '&nbsp;<span class="sort-field'.html_escape($span_class).'">'
                            ._format_sort_link($options, $key, $a_direction)
                            .'</span> ';
             }
@@ -145,7 +145,7 @@ function format_table($data, $column_infos = null, $options = null)
             $result .= '<tr>';
         }
         else {
-            $result .= '<tr class="'.htmlentities($class).'">';
+            $result .= '<tr class="'.html_escape($class).'">';
         }
 
         // Dump the actual data.

@@ -6,21 +6,21 @@ require_once(IA_ROOT_DIR.'www/format/list.php');
 require_once(IA_ROOT_DIR."www/format/form.php");
 
 if (!$display_only_table) {
-    $view['head'] = '<script type="text/javascript" src="'.htmlentities(url_static('js/monitor.js')).'"></script>';
+    $view['head'] = '<script type="text/javascript" src="'.html_escape(url_static('js/monitor.js')).'"></script>';
     include('header.php');
 }
 
 if (!$display_only_table && identity_can('job-reeval') && $view['total_entries'] <= IA_REEVAL_MAXJOBS) {
-    echo '<form enctype="multipart/form-data" action="'.htmlentities(url_reeval($view['filters'])).'" 
+    echo '<form enctype="multipart/form-data" action="'.html_escape(url_reeval($view['filters'])).'" 
                method="post" class="reeval" id="job_reeval" onsubmit="return confirm(\'Se vor reevalua '.
-               htmlentities($view['total_entries']).' job-uri! Continuam?\')">';
+               html_escape($view['total_entries']).' job-uri! Continuam?\')">';
     echo '<ul class="form hollyfix"><li id="field_submit">';
     echo '<input type="submit" class="button important" value="Re-evalueaza!" id="form_reeval" />';
     echo '</li></ul></form>';
 }
 
 if (!$display_only_table) {
-    echo '<h1>'.htmlentities($view['title']).'</h1>';
+    echo '<h1>'.html_escape($view['title']).'</h1>';
 }
 
 $tabs = array();
@@ -68,10 +68,10 @@ if (!$jobs) {
         $url = url_job_detail($row['id']);
         if ($row['status'] == 'done') {
             if (identity_can("job-view-score", $row)) {
-                $msg = htmlentities(sprintf("%s: %s puncte",
+                $msg = html_escape(sprintf("%s: %s puncte",
                     $row['eval_message'], $row['score']));
             } else {
-                $msg = htmlentities( $row['eval_message'] );
+                $msg = html_escape( $row['eval_message'] );
             }
             $msg = "<span style=\"job-status-done\">$msg</span>";
             return format_link($url, $msg, false);

@@ -26,7 +26,7 @@ setTimeout(RefreshPage, 2000);
 include(IA_ROOT_DIR.'www/views/header.php');
 
 if (!$display_only_table) {
-    echo '<h1>'.htmlentities($view['title']).'</h1>';
+    echo '<h1>'.html_escape($view['title']).'</h1>';
 }
 
 echo "<div id=\"monitor-table\">";
@@ -38,7 +38,7 @@ if (!$jobs) {
     function format_state($row) {
         $url = url_job_detail($row['id']);
         if ($row['status'] == 'done') {
-            $msg = htmlentities(sprintf("%s: %s puncte",
+            $msg = html_escape(sprintf("%s: %s puncte",
                     $row['eval_message'], $row['score']));
             $msg = "<span style=\"job-status-done\">$msg</span>";
             return format_link($url, $msg, false);

@@ -40,10 +40,10 @@ log_print("Anon looks at attachment list");
 $res = curl_test(array(
         'url' => url_attachment_list('sandbox/test_page'),
 ));
-log_assert(strstr($res['content'], htmlentities(
+log_assert(strstr($res['content'], html_escape(
         url_attachment('sandbox/test_page', 'test_file'))));
 // FIXME: this shouldn't be visible
-log_assert(strstr($res['content'], htmlentities(
+log_assert(strstr($res['content'], html_escape(
             url_attachment_delete('sandbox/test_page', 'test_file'))));
 
 log_print("Anon tries to delete attachment, fails");
@@ -56,7 +56,7 @@ log_print("Admin looks in list and sees attachment");
 $res = curl_test(array(
         'url' => url_attachment_list('sandbox/test_page'),
 ));
-log_assert(strstr($res['content'], htmlentities(
+log_assert(strstr($res['content'], html_escape(
             url_attachment('sandbox/test_page', 'test_file'))));
 
 log_print("Admin deletes attachment, OK");
@@ -70,7 +70,7 @@ log_print("Admin looks in list and attachment is gone");
 $res = curl_test(array(
         'url' => url_attachment_list('sandbox/test_page', 'test_file'),
 ));
-log_assert(!strstr($res['content'], htmlentities(
+log_assert(!strstr($res['content'], html_escape(
             url_attachment('sandbox/test_page', 'test_file'))));
 
 log_print("Dude 1 attaches 5 files");
@@ -128,12 +128,12 @@ $res = curl_test(array(
         'user' => 'test_admin',
 ));
 for ($i = 1; $i <= 5; ++$i) {
-    log_assert(strstr($res['content'], htmlentities(
+    log_assert(strstr($res['content'], html_escape(
                 url_attachment('sandbox/test_page', "test_file_$i"))));
 }
-log_assert(strstr(strtolower($res['content']), htmlentities(
+log_assert(strstr(strtolower($res['content']), html_escape(
             url_user_profile('test_dude1'))));
-log_assert(!strstr(strtolower($res['content']), htmlentities(
+log_assert(!strstr(strtolower($res['content']), html_escape(
             url_user_profile('test_dude2'))));
 
 log_print("Admin moves the spammed page.");

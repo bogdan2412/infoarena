@@ -9,8 +9,8 @@ function tag_form_event() {
 // Format a tag input box
 // FIXME: Width parameter does not work, I hate CSS
 function tag_format_input_box($value = null, $width = "50", $name = "tags") {
-    $esc_name = htmlentities($name);
-    $esc_width = htmlentities($width);
+    $esc_name = html_escape($name);
+    $esc_width = html_escape($width);
     // presume $value is html-escaped
 
     $output = '<li><label for="form_'.$esc_name.'">Tag-uri</label>';
@@ -25,13 +25,13 @@ function tag_format_input_box($value = null, $width = "50", $name = "tags") {
     }
     $output .= ' />';
     $output .= '<script type="text/javascript" language="JavaScript" src="'.
-                htmlentities(url_static("js/wick.js")).'"></script>';
+                html_escape(url_static("js/wick.js")).'"></script>';
     $output .= "</label></li>";
     return $output;
 }
 ?>
 
-<link rel="stylesheet" type="text/css" href="<?= htmlentities(url_static("css/wick.css")) ?> " />
+<link rel="stylesheet" type="text/css" href="<?= html_escape(url_static("css/wick.css")) ?> " />
 <script type="text/javascript" language="JavaScript">
 function checkForm() {
     answer = true;
@@ -44,7 +44,7 @@ function checkForm() {
 $tag_names = tag_get_all_names();
 echo  "collection = [\n";
 foreach ($tag_names as $tag) {
-    echo "'".htmlentities($tag['name'])."',\n";
+    echo "'".html_escape($tag['name'])."',\n";
 }
 echo "];\n";
 ?>

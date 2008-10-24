@@ -51,7 +51,7 @@ function format_operations($row) {
     global $page_name;
     
     $delurl = '<a href="';
-    $delurl .= htmlentities(url_attachment_delete($page_name, $row['name']));
+    $delurl .= html_escape(url_attachment_delete($page_name, $row['name']));
     $delurl .= "\" onclick=\"return confirm('Aceasta actiune este ireversibila! Doresti sa continui?')\">Sterge</a>";
     $renurl = '<a href="#" id="rename_link_'.$row['id'].'" onclick="rename_form('.$row['id'].')">Redenumeste</a>';
 

@@ -1,6 +1,6 @@
 <?php include('views/header.php'); ?>
 <h1>Administrare <?= format_link(url_textblock($page['name']), $page['title']) ?></h1>
-<form action="<?= htmlentities(getattr($view, 'action')) ?>" method="post">
+<form action="<?= html_escape(getattr($view, 'action')) ?>" method="post">
  <fieldset>
   <legend>Informatii generale</legend>
   <ul class="form">

@@ -299,7 +299,11 @@ function logging_error_handler($errno, $errstr, $errfile, $errline) {
             $msg .= "Full server log:\n";
             global $execution_stats;
             $msg .= $execution_stats['log_copy'];
-            print("<pre>".htmlentities($msg)."</pre>");
+            if (function_exists("html_escape")) {
+                print("<pre>".html_escape($msg)."</pre>");
+            } else {
+                print("<pre>".htmlentities($msg)."</pre>");
+            }
         }
         if (IA_HTTP_ENV && !IA_DEVELOPMENT_MODE) {
             header('HTTP/1.0 500 Internal Error');

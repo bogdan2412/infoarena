@@ -20,7 +20,7 @@ foreach ($subpages as $subpage) {
     echo '<div class="item">';
     echo '<span class="date">';
     echo format_user_link($subpage["user_name"], $subpage["user_fullname"]).' &#8226; ';
-    echo htmlentities(date('d M Y', strtotime($subpage['creation_timestamp'])));
+    echo html_escape(date('d M Y', strtotime($subpage['creation_timestamp'])));
     echo '</span>';
 
     $url = url_textblock($subpage['name']);

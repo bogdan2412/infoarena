@@ -1,15 +1,15 @@
 <?php
 
 // link JS
-$view['head'] = getattr($view, 'head')."<script type=\"text/javascript\" src=\"" . htmlentities(url_static("js/wikiedit.js")) . "\"></script>";
+$view['head'] = getattr($view, 'head')."<script type=\"text/javascript\" src=\"" . html_escape(url_static("js/wikiedit.js")) . "\"></script>";
 
 include('views/header.php');
 include('views/tags_header.php');
 ?>
 
-<form accept-charset="utf-8" action="<?= htmlentities(url_textblock_edit($page_name)) ?>" method="post" id="form_wikiedit" <?= tag_form_event() ?>>
-<input type="hidden" id="form_page_name" value="<?= htmlentities(isset($page_name) ? $page_name : '') ?>" />
-<input type="hidden" name="last_revision" value="<?=htmlentities($last_revision)?>" />
+<form accept-charset="utf-8" action="<?= html_escape(url_textblock_edit($page_name)) ?>" method="post" id="form_wikiedit" <?= tag_form_event() ?>>
+<input type="hidden" id="form_page_name" value="<?= html_escape(isset($page_name) ? $page_name : '') ?>" />
+<input type="hidden" name="last_revision" value="<?=html_escape($last_revision)?>" />
 
 <?php if (ferr('was_modified', false)) { ?>
 <div class="wiki_was_modified"><?= ferr('was_modified', false); ?></div>
@@ -42,7 +42,7 @@ include('views/tags_header.php');
     <?php if (array_key_exists('security', $form_values)) { ?>
     <li id="field_security">
         <label for="form_security">Nivel de securitate al paginii
-        <a href="<?= htmlentities(url_textblock('documentatie/securitate')) ?>">(?)</a></label> 
+        <a href="<?= html_escape(url_textblock('documentatie/securitate')) ?>">(?)</a></label> 
         <input type="text" name="security" value="<?= fval('security') ?>" id="form_security"/>
         <?= ferr_span('security') ?>
     </li>

@@ -49,26 +49,26 @@ function macro_taskparam($args) {
     // serve desired value
     switch ($param) {
         case 'title':
-            return htmlentities($task['title']);
+            return html_escape($task['title']);
 
         case 'author':
-            return htmlentities($task['author']);
+            return html_escape($task['author']);
 
         case 'source':
-            return htmlentities($task['source']);
+            return html_escape($task['source']);
 
         case 'type':
-            return htmlentities($task['type']);
+            return html_escape($task['type']);
 
         case 'id':
-            return htmlentities($task['id']);
+            return html_escape($task['id']);
 
         case 'owner':	    
 	    if( $task['user_id']=='0' ) {
 		return '';
 	    }
 	    $user = user_get_by_id( $task['user_id'] );	    
-            return htmlentities($user['full_name']);
+            return html_escape($user['full_name']);
 
         case 'formatted_owner':
 	    if( $task['user_id']=='0' ) {
@@ -81,12 +81,12 @@ function macro_taskparam($args) {
         default:
             if (!isset($params[$param])) {
                 if (isset($args['default_value'])) {
-                    return htmlentities($args['default_value']);
+                    return html_escape($args['default_value']);
                 } else {
                     return macro_error("Task doesn't have parameter '$param'");
                 }
             } else {
-                return htmlentities($params[$param]);
+                return html_escape($params[$param]);
             }
     }
 }

@@ -4,9 +4,9 @@
 if (!isset($view['head'])) {
     $view['head'] = "";
 }
-$view['head'] .= "<script type=\"text/javascript\" src=\"" . htmlentities(url_static("js/dual.js")) . "\" ></script>";
-$view['head'] .= "<script type=\"text/javascript\" src=\"" . htmlentities(url_static("js/roundedit.js")) . "\" ></script>";
-$view['head'] .= "<script type=\"text/javascript\" src=\"" . htmlentities(url_static("js/parameditor.js")) . "\" ></script>";
+$view['head'] .= "<script type=\"text/javascript\" src=\"" . html_escape(url_static("js/dual.js")) . "\" ></script>";
+$view['head'] .= "<script type=\"text/javascript\" src=\"" . html_escape(url_static("js/roundedit.js")) . "\" ></script>";
+$view['head'] .= "<script type=\"text/javascript\" src=\"" . html_escape(url_static("js/parameditor.js")) . "\" ></script>";
 
 require_once(IA_ROOT_DIR."common/round.php");
 require_once(IA_ROOT_DIR."www/format/form.php");
@@ -80,7 +80,7 @@ $form_fields = array(
     </div>
 <?php } ?>
 
-<form action="<?= htmlentities(getattr($view, 'action')) ?>" method="post" class="task" <?= tag_form_event() ?>>
+<form action="<?= html_escape(getattr($view, 'action')) ?>" method="post" class="task" <?= tag_form_event() ?>>
  <fieldset>
   <legend>Informatii generale</legend>
   <ul class="form">
