@@ -89,8 +89,8 @@ function diff_string($string) {
 // compute longest common subsequence using dynamic programming
 // FIXME: both time and memory complexity can be reduced
 function lcs($a, $b) {
-    $N = strlen($a);
-    $M = strlen($b);
+    $N = mb_strlen($a);
+    $M = mb_strlen($b);
     $C = array(array(2), array($M+1));
 
     for ($i = 0; $i < 2; ++$i)
@@ -99,8 +99,8 @@ function lcs($a, $b) {
     
     for ($i = 1; $i <= $N; ++$i) {
         for ($j = 1; $j <= $M; ++$j) {
-            if ($a[$i-1] == $b[$j-1]) {
-                $C[$i%2][$j] = $C[($i-1)%2][$j-1].$a[$i-1];
+            if (mb_substr($a, $i-1, 1) == mb_substr($b, $j-1, 1)) {
+                $C[$i%2][$j] = $C[($i-1)%2][$j-1].mb_substr($a, $i-1, 1);
             } else if ($C[($i-1)%2][$j] > $C[$i%2][$j-1]) {
                 $C[$i%2][$j] = $C[($i-1)%2][$j];
             } else {
@@ -115,18 +115,17 @@ function split_string($string, $substring, $op_name) {
     // sentinel character
     $string .= "\n";
     $substring .= "\n";
-    $N = strlen($string);
-    $M = strlen($substring);
+    $N = mb_strlen($string);
+    $M = mb_strlen($substring);
 
     $result = array();
     for ($i = 0, $j = -1; $i < $M; ++$i) {
-        for ($prev = $j++; $j < $N && $string[$j] != $substring[$i]; ++$j);
-        log_assert($j < $N && $string[$j] == $substring[$i]);
+        for ($prev = $j++; $j < $N && mb_substr($string, $j, 1) != mb_substr($substring, $i, 1); ++$j);
         if ($j-$prev-1 > 0) {
-            $result[] = array('type' => $op_name, 'string' => substr($string, $prev+1, $j-$prev-1));
+            $result[] = array('type' => $op_name, 'string' => mb_substr($string, $prev+1, $j-$prev-1));
         }
         if ($i < $M-1) {
-            $result[] = array('type' => 'normal', 'string' => $string[$j]);
+            $result[] = array('type' => 'normal', 'string' => mb_substr($string, $j, 1));
         }
     }
 
@@ -136,6 +135,12 @@ function split_string($string, $substring, $op_name) {
 // does inline diff on strings unsing <ins> ans <del> HTML tags
 function diff_inline($string, $op_name = array("del", "ins")) {
     $diff = diff_string($string);
+
+    $extensions = get_loaded_extensions();
+    if (array_search('mbstring', $extensions) === false) {
+        return $diff;
+    }
+    mb_internal_encoding("utf-8");
 
     foreach ($diff as &$block) {
         for ($i = 0; $i+1 < count($block); ++$i) {

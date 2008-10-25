@@ -241,6 +241,9 @@ function check_requirements()
     if (array_search('zip', $extensions) === false) {
         log_warn("zip extension missing.");
     }
+    if (array_search('mbstring', $extensions) === false) {
+        log_warn("mbstring extension missing. inline diff will not be enabled");
+    }
     if (!function_exists("finfo_open")) {
         log_warn("finfo_open missing, falling back to mime_content_type.");
         if (!function_exists("mime_content_type")) {
