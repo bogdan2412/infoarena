@@ -255,9 +255,9 @@ function url_task_create() {
     return url_complex("admin/problema-noua");
 }
 
-function url_task_list($filter = null) {
+function url_task_list($page_name, $filter = null) {
     $args = $filter ? array('filtru' => $filter) : array();
-    return url_complex("arhiva", $args);
+    return url_complex($page_name, $args);
 }
 
 function url_round_edit($round_id) {

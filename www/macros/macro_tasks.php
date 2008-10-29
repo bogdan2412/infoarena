@@ -41,7 +41,7 @@ function task_row_style($row) {
     }
 }
 
-function task_list_tabs($active) {
+function task_list_tabs($round_page, $active) {
     $tabs = array();
 
     $tab_names = array(IA_TLF_ALL => 'Toate problemele',
@@ -50,7 +50,7 @@ function task_list_tabs($active) {
                        IA_TLF_SOLVED => 'Rezolvate');
 
     foreach ($tab_names as $id => $text) {
-        $tabs[$id] = format_link(url_task_list($id), $text);
+        $tabs[$id] = format_link(url_task_list($round_page, $id), $text);
     }
     $tabs[$active] = array($tabs[$active], array('class' => 'active'));
     return format_ul($tabs, 'htabs');
@@ -87,12 +87,10 @@ function macro_tasks($args) {
     }
     log_assert_valid(round_validate($round));
 
-
     // Check if user can see round tasks
     if (!identity_can('round-view-tasks', $round)) {
         return macro_permission_error();
     }
-
 
     $scores = !is_null(getattr($args, 'score')) && identity_can("round-view-scores", $round);
     if (identity_is_anonymous() || $scores == false) {
@@ -103,8 +101,8 @@ function macro_tasks($args) {
 
     $filter = request('filtru', '');
     $tabs = '';
-    if ($user_id && identity_can("round-view-scores", $round)) {
-        $tabs = task_list_tabs($filter);
+    if ($user_id && $round["type"] == "archive" && identity_can("round-view-scores", $round)) {
+        $tabs = task_list_tabs($round["page_name"], $filter);
     } else {
         $filter = '';
     }
