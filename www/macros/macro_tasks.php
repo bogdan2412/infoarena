@@ -92,16 +92,21 @@ function macro_tasks($args) {
         return macro_permission_error();
     }
 
-    $scores = !is_null(getattr($args, 'score')) && identity_can("round-view-scores", $round);
+    $scores = getattr($args, 'score') && identity_can("round-view-scores", $round);
     if (identity_is_anonymous() || $scores == false) {
         $user_id = null;
     } else {
         $user_id = identity_get_user_id();
     }
 
+    $display_tabs = getattr($args, 'show_filters');
+    if (is_null($display_tabs) && $round["type"] == "archive") {
+        $display_tabs = "true";
+    }
+
     $filter = request('filtru', '');
     $tabs = '';
-    if ($user_id && $round["type"] == "archive" && identity_can("round-view-scores", $round)) {
+    if ($user_id && $display_tabs == "true" && identity_can("round-view-scores", $round)) {
         $tabs = task_list_tabs($round["page_name"], $filter);
     } else {
         $filter = '';
