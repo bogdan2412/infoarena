@@ -68,23 +68,6 @@ define("IA_BLOG_SIDEBAR", "blog-sidebar");
 // LaTeX support
 define("IA_LATEX_ENABLE", false);
 
-// List of infoarena controllers
-// Direct controllers
-$IA_DIRECT_CONTROLLERS = array('register', 'news_feed', 'changes',
-                               'login', 'logout', 'json', 'job_detail',
-                               'monitor', 'projector', 'submit',
-                               'plot', 'search',
-                               'unsubscribe', 'resetpass', 'reeval');
-
-// List of controllers which do not point to a textblock 
-$IA_NONTEXTBLOCK_CONTROLLERS = array_merge(array('account', 'admin', 'forum', 'confirm',
-                                           'inregistrare-runda', 'lista-inregistrare'),
-                                           $IA_DIRECT_CONTROLLERS);
-
-// List of all controllers
-$IA_CONTROLLERS = array_merge(array('blog'),
-                              $IA_NONTEXTBLOCK_CONTROLLERS);
-
 // List of safe MIME types
 // FIXME: add more?
 $IA_SAFE_MIME_TYPES = array('text/plain', 'image/jpeg', 'image/png', 'image/gif');

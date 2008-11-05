@@ -36,122 +36,114 @@ if (!is_page_name($page)) {
 // Prepare some vars for url handler.
 // Filter empty path elements. Strips extra '/'s
 $page = normalize_page_name($page);
-$page_path = explode('/', $page);
+$pagepath = explode('/', $page);
 
-$url_root = getattr($page_path, 0, '');
-$page_id = implode('/', array_slice($page_path, 1));
+$urlstart = getattr($pagepath, 0, '');
+$page_id = implode('/', array_slice($pagepath, 1));
 $action = request('action', 'view');
 
-// Check if page gets passed to a controller or is a simple textblock
-if (in_array($url_root, $IA_CONTROLLERS)) {
-    // Trivial direct mappings
-    if (in_array($url_root, $IA_DIRECT_CONTROLLERS)) {
-        require_once(IA_ROOT_DIR."www/controllers/{$url_root}.php");
-        $fname = "controller_{$url_root}";
-        $fname($page_id);
-    }
+// Direct mapping list
+// Note: array_flip() flips keys with values in a dictionary.
+// FIXME: change this to Romanian!
+$directmaps = array_flip(array('register', 'news_feed', 'changes',
+                               'login', 'logout', 'json', 'job_detail',
+                               'monitor', 'projector', 'submit', 'userinfo',
+                               'plot', 'search',
+                               'unsubscribe', 'resetpass', 'reeval'
+));
+//
+// Here comes the big url mapper.
+// We include in the if statement to avoid an extra parsing load.
+//
 
-    // Account edit page
-    if ($url_root == 'account') {
-        require_once(IA_ROOT_DIR.'www/controllers/account.php');
-        controller_account(getattr($page_path, 1));
-    }
+// Trivial direct mappings
+if (isset($directmaps[$urlstart])) {
+    require_once(IA_ROOT_DIR."www/controllers/{$urlstart}.php");
+    $fname = "controller_{$urlstart}";
+    $fname($page_id);
+}
 
-    // Admin controller
-    if ($url_root == 'admin') {
-        $subcontroller = getattr($page_path, 1);
+// Account edit page
+else if ($urlstart == 'account') {
+    require_once(IA_ROOT_DIR.'www/controllers/account.php');
+    controller_account(getattr($pagepath, 1));
+}
 
-        // Blog admin
-        if ($subcontroller == 'blog') {
-            $obj_id = implode("/", array_slice($page_path, 1));
-            require_once(IA_ROOT_DIR.'www/controllers/blog.php');
-            controller_blog_admin($obj_id);
-        }
+// Blog admin
+else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'blog') {
+    $obj_id = implode("/", array_slice($pagepath, 1));
+    require_once(IA_ROOT_DIR.'www/controllers/blog.php');
+    controller_blog_admin($obj_id);
+}
 
-        // Task creator
-        if ($subcontroller == 'problema-noua') {
-            require_once(IA_ROOT_DIR.'www/controllers/task.php');
-            controller_task_create();
-        }
+// Task creator
+else if ($page == 'admin/problema-noua') {
+    require_once(IA_ROOT_DIR.'www/controllers/task.php');
+    controller_task_create();
+}
 
-        // Task detail editor
-        if ($subcontroller == 'problema') {
-            $obj_id = implode("/", array_slice($page_path, 2));
-            require_once(IA_ROOT_DIR.'www/controllers/task.php');
-            controller_task_details($obj_id);
-        }
+// Task detail editor
+else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'problema') {
+    $obj_id = implode("/", array_slice($pagepath, 2));
+    require_once(IA_ROOT_DIR.'www/controllers/task.php');
+    controller_task_details($obj_id);
+}
 
-        // Round creator
-        if ($subcontroller == 'runda-noua') {
-            require_once(IA_ROOT_DIR.'www/controllers/round.php');
-            controller_round_create();
-        }
+// Round creator
+else if ($page == 'admin/runda-noua') {
+    require_once(IA_ROOT_DIR.'www/controllers/round.php');
+    controller_round_create();
+}
 
-        // Round detail editor
-        if ($subcontroller == 'runda') {
-            $obj_id = implode("/", array_slice($page_path, 2));
-            require_once(IA_ROOT_DIR.'www/controllers/round.php');
-            controller_round_details($obj_id);
-        }
+// Round detail editor
+else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'runda') {
+    $obj_id = implode("/", array_slice($pagepath, 2));
+    require_once(IA_ROOT_DIR.'www/controllers/round.php');
+    controller_round_details($obj_id);
+}
 
-        // Invalid subcontroller
-        flash_error('URL invalid');
-        redirect(url_home());
-    }
+// Round registration 
+else if ($urlstart == 'inregistrare-runda') {
+    $obj_id = implode("/", array_slice($pagepath, 1));
+    require_once(IA_ROOT_DIR.'www/controllers/round_register.php');
+    controller_round_register($obj_id);
+}
 
-    if ($url_root == 'inregistrare-runda') {
-        $obj_id = implode("/", array_slice($page_path, 1));
-        require_once(IA_ROOT_DIR.'www/controllers/round_register.php');
-        controller_round_register($obj_id);
-    }
+// Round registered users
+else if ($urlstart == 'lista-inregistrare') {
+    $obj_id = implode("/", array_slice($pagepath, 1));
+    require_once(IA_ROOT_DIR.'www/controllers/round_register.php');
+    controller_round_register_view($obj_id);
+}
 
-    // Round registered users
-    if ($url_root == 'lista-inregistrare') {
-        $obj_id = implode("/", array_slice($page_path, 1));
-        require_once(IA_ROOT_DIR.'www/controllers/round_register.php');
-        controller_round_register_view($obj_id);
-    }
+// Blog RSS feed
+else if ($page == 'blog' && $action == 'rss') {
+    require_once(IA_ROOT_DIR.'www/controllers/blog.php');
+    controller_blog_feed();
+}
 
-    // Password reset confirmation
-    if ($url_root == 'confirm') {
-        require_once(IA_ROOT_DIR.'www/controllers/resetpass.php');
-        controller_resetpass_confirm($page_id);
-    }
+// Blog index
+else if ($page == 'blog') {
+    require_once(IA_ROOT_DIR.'www/controllers/blog.php');
+    controller_blog_index();
+}
 
-    // Special textblock controllers
-    // Blog controller
-    if ($url_root == 'blog')
-    {
-        // Blog index
-        if ($page == 'blog') {
-            // Blog RSS feed
-            if ($action == 'rss') {
-                require_once(IA_ROOT_DIR.'www/controllers/blog.php');
-                controller_blog_feed();
-            } else {
-                require_once(IA_ROOT_DIR.'www/controllers/blog.php');
-                controller_blog_index();
-            }
-        }
+// Blog edit
+else if ($urlstart == 'blog' && $action == 'edit') {
+    require_once(IA_ROOT_DIR.'www/controllers/textblock_edit.php');
+    controller_textblock_edit($page, 'private');
+}
 
-        // Blog edit
-        if ($action == 'edit') {
-            require_once(IA_ROOT_DIR.'www/controllers/textblock_edit.php');
-            controller_textblock_edit($page, 'private');
-        }
-
-        // Blog view
-        if ($action == 'view') {
-            require_once(IA_ROOT_DIR.'www/controllers/blog.php');
-            controller_blog_view($page, request('revision'));
-        }
-    }
+// Blog view
+else if ($urlstart == 'blog' && $action == 'view') {
+    require_once(IA_ROOT_DIR.'www/controllers/blog.php');
+    controller_blog_view($page, request('revision'));
 }
 
 // textblock controllers
 // FIXME: quick array of sorts?
 //  - edit textblock
-if ($action == 'edit') {
+else if ($action == 'edit') {
     require_once(IA_ROOT_DIR.'www/controllers/textblock_edit.php');
     controller_textblock_edit($page);
 }
@@ -215,8 +207,15 @@ else if ($action == 'download') {
     }
 }
 
+// reset password
+else if ('confirm' == $urlstart) {
+    // confirm reset password
+    require_once(IA_ROOT_DIR.'www/controllers/resetpass.php');
+    controller_resetpass_confirm($page_id);
+}
+
 // user profile, view personal page / statistics / rating evolution
-else if (IA_USER_TEXTBLOCK_PREFIX == $url_root.'/' &&
+else if (IA_USER_TEXTBLOCK_PREFIX == $urlstart.'/' &&
          ('view' == $action || 'rating' == $action || 'stats' == $action )) {
     require_once(IA_ROOT_DIR.'www/controllers/user.php');
     controller_user_view($page_id, $action, request('revision'));

@@ -130,11 +130,10 @@ class MyTextile extends Textile {
         $alt = (preg_match("/\([^\)]+\)/", $extra, $match) ? $match[0] : '');
         $args['extra'] = $alt;
 
-        // Catch internal images
         // To avoid CSRF exploits we restrict all images to textblock attachments
         $allowed = false;
         // $allowed_urls are exceptions to this rule
-        $allowed_urls = array("static/images/", "plot/rating", "plot/distribution");
+        $allowed_urls = array("static/images/", "plot/");
 
         foreach ($allowed_urls as $url) {
             if (starts_with(strtolower($srcpath), IA_URL . $url) ||
@@ -143,8 +142,9 @@ class MyTextile extends Textile {
                 break;
             }
         }
-     
-        if (!$allowed && !preg_match('/^'.IA_RE_EXTERNAL_URL.'$/xi', $srcpath)) {
+
+        // Catch internal images
+        if (!preg_match('/^'.IA_RE_EXTERNAL_URL.'$/xi', $srcpath)) {
             if (preg_match('/^ ('.IA_RE_PAGE_NAME.') \? '.
                            '('.IA_RE_ATTACHMENT_NAME.')'.
                            '$/ix', $srcpath, $matches)) {
@@ -157,23 +157,11 @@ class MyTextile extends Textile {
                 }
                 $args['src'] = html_escape(url_absolute(url_image_resize($matches[1], $matches[2], $extra)));
                 $allowed = true;
-
-                // Test if $srcpath references an internal url that is NOT a textblock
-                // in case someone tries to trick the regexp with something like !logout?something!
-
-                $tmp = explode("?", $srcpath);
-                $srcpath_root = $tmp[0];                  // Strips everything after "?"
-                $tmp = explode("/", $srcpath_root);
-                $srcpath_controller = $tmp[0];            // Strips everything after first "/"
-                global $IA_NONTEXTBLOCK_CONTROLLERS;
-                if (in_array(strtolower($srcpath_controller), $IA_NONTEXTBLOCK_CONTROLLERS)) {
-                    $allowed = false;
-                }
             }
         }
 
         if (!$allowed) {
-            return macro_error("Imaginile trebuie neaparat sa fie atasamente ale unei pagini");
+            return macro_error("Imaginile trebuie neaparat sa fie atasamente ale unei pagini.");
         }
         //log_print("passing to parent::format image");
         //log_print_r($args);
