@@ -50,9 +50,10 @@ function format_attach_size($row) {
 function format_operations($row) {
     global $page_name;
     
-    $delurl = '<a href="';
-    $delurl .= html_escape(url_attachment_delete($page_name, $row['name']));
-    $delurl .= "\" onclick=\"return confirm('Aceasta actiune este ireversibila! Doresti sa continui?')\">Sterge</a>";
+    $delurl = format_post_link(url_attachment_delete($page_name, $row['name']),
+                               "Sterge", array(), true,
+                               array("onclick" => "return confirm('Aceasta actiune este ireversibila! Doresti sa continui?')"));
+
     $renurl = '<a href="#" id="rename_link_'.$row['id'].'" onclick="rename_form('.$row['id'].')">Redenumeste</a>';
 
     return '['.$delurl.'] ['.$renurl.']';

@@ -31,7 +31,7 @@ function format_operations($row)
         return '<strong>Ultima versiune</strong>';
     } else {
         return  '['. format_link($diffurl, "Compara") .'] '.
-                '['. format_link($resturl, "Inlocuieste") .'] '.
+                '['. format_post_link($resturl, "Inlocuieste") .'] '.
                 '['. format_link($viewurl, "Vezi") .'] '.
                 '['. format_link($delurl, "Sterge") .']';
     }

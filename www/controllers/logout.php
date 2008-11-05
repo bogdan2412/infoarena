@@ -1,7 +1,10 @@
 <?php
 
 function controller_logout() {
-    // check permissions
+    if (!request_is_post()) {
+        flash_error("Sesiunea nu a putut fi inchisa!");
+        redirect(url_home());
+    }
     identity_end_session();
 
     flash('Sesiunea a fost inchisa!');

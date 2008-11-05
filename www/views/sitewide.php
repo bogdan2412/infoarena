@@ -16,13 +16,13 @@ function ia_template_header() {
     <?php if (!identity_is_anonymous()) { $username = $identity_user['username']; ?>
         <div id="userbox">
         <?= format_link(url_user_profile($username, true), format_user_avatar($username, 50, 50, true), false) ?>
-            <span class="user">
+            <div class="user">
                 <strong><?= html_escape($identity_user['full_name']) ?></strong><br/>
                 <?= format_user_ratingbadge($username, $identity_user['rating_cache']) ?>
                 <?= format_link_access(url_user_profile($username, true), $username, 'p') ?><br/>
-                <?= format_link(url_logout(), "logout", true, array('class' => 'logout')) ?> |
+                <?= format_post_link(url_logout(), "logout", array(), true, array('class' => 'logout')) ?> |
                 <?= format_link_access(url_account(), 'contul meu', 'c') ?>
-            </span>
+            </div>
         </div>
     <?php } ?>
     <?php if (IA_DEVELOPMENT_MODE) { ?>

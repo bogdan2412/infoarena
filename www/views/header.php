@@ -41,6 +41,7 @@ header("Content-type: text/html; charset=utf-8");
     <script type="text/javascript" src="<?= html_escape(url_static('js/tabber-minimized.js')) ?>"></script>
     <script type="text/javascript" src="<?= html_escape(url_static('js/submit.js')) ?>"></script>
     <script type="text/javascript" src="<?= html_escape(url_static('js/remotebox.js')) ?>"></script>
+    <script type="text/javascript" src="<?= html_escape(url_static('js/postdata.js')) ?>"></script>
     <script type="text/javascript" src="<?= html_escape(url_static('js/sh/shCore.js')) ?>"></script>
     <script type="text/javascript" src="<?= html_escape(url_static('js/sh/shBrushCpp.js')) ?>"></script>
     <script type="text/javascript" src="<?= html_escape(url_static('js/sh/shBrushDelphi.js')) ?>"></script>

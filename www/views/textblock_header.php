@@ -19,10 +19,11 @@ log_assert_valid(textblock_validate($textblock));
 <li><?= format_link_access(url_textblock_move($textblock['name']), 'Muta', 'u') ?></li>
 <?php } ?>
 <?php if (identity_can('textblock-delete', $textblock)) { ?>
-<li><?= format_link_access(
+<li><?= format_post_link(
     url_textblock_delete($textblock['name']),
-    'Sterge', 's', array('onclick' =>
-    "return confirm('Aceasta actiune este ireversibila! Doresti sa continui?')")) ?>
+    'Sterge', array(), true, array('onclick' =>
+    "return confirm('Aceasta actiune este ireversibila! Doresti sa continui?')"),
+    's') ?>
 </li>
 <?php } ?>
 <?php if (identity_can('textblock-attach', $textblock)) { ?>

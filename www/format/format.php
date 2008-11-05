@@ -4,6 +4,7 @@ require_once(IA_ROOT_DIR."common/db/user.php");
 require_once(IA_ROOT_DIR."common/rating.php");
 require_once(IA_ROOT_DIR."www/url.php");
 require_once(IA_ROOT_DIR."www/utilities.php");
+require_once(IA_ROOT_DIR."www/JSON.php");
 
 // Format an array of xml attributes.
 // Return '' or 'k1="v1" k2="v2"'.
@@ -66,6 +67,34 @@ function format_link($url, $content, $escape = true, $attr = array()) {
     log_assert(is_array($attr), '$attr is not an array');
     $attr['href'] = $url;
     return format_tag("a", $content, $attr, $escape);
+}
+
+// Build a link which posts data to a page
+function format_post_link($url, $content, $post_data = array(), $escape = true, $attr = array(), $accesskey = null) {
+    log_assert(is_array($attr), '$attr is not an array');
+    log_assert(is_array($post_data), '$post_data is not an array');
+
+    $json = new Services_JSON();
+    $link_url = "javascript:PostData(" . $json->encode($url) . ", " . $json->encode($post_data) . ")";
+
+    if (is_null($accesskey)) {
+        $link = format_link($link_url, $content, $escape, $attr);
+    } else {
+        $link = format_link_access($link_url, $content, $accesskey, $attr);
+    }
+
+    // Display a little "check" button beside the link if
+    // javascript is disabled, by using a form with hidden fields.
+    $form_content = '<input type="submit" style="margin: 0; padding: 0" value="&#10003;" />';
+    foreach ($post_data as $key => $value) {
+        $form_content .= '<input type="hidden" name="' . html_escape($key) . '" value="' . html_escape($value) . '" />';
+    }
+    $form_attr = array("style" => "margin: 0; padding: 0; display: inline",
+                       "method" => "post",
+                       "action" => $url,
+                      );
+
+    return $link . "<noscript>" . format_tag("form", $form_content, $form_attr, false) . "</noscript>";
 }
 
 // Highlight an access key in a string, by surrounding the first occurence

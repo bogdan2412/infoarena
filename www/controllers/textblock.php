@@ -105,6 +105,11 @@ function controller_textblock_diff($page_name) {
 // Restore a certain revision
 // This copies the old revision on top.
 function controller_textblock_restore($page_name, $rev_num) {
+    if (!request_is_post()) {
+        flash_error("Pagina nu a putut fi inlocuita!");
+        redirect(url_textblock($page_name));
+    }
+
     global $identity_user;
     $page = textblock_get_revision($page_name);
     $rev = textblock_get_revision($page_name, $rev_num);
@@ -128,6 +133,7 @@ function controller_textblock_restore($page_name, $rev_num) {
     textblock_add_revision($rev['name'], $rev['title'], $rev['text'],
                            getattr($identity_user, 'id'), $rev['security'],
                            null, $rev['creation_timestamp']);
+    flash("Pagina a fost inlocuita cu revizia {$rev_num}");
     redirect(url_textblock($page_name));
 }
 
@@ -157,10 +163,10 @@ function controller_textblock_history($page_name) {
     //log_print($options['first_entry']." -> ".$options['display_entries']. " $start -> $count, $total");
     $revs = textblock_get_revision_list(
             $page_name, false, true,
-            $start, $count); 
+            $start, $count);
     // FIXME: horrible hack, add revision_id column.
     for ($i = 0; $i < count($revs); ++$i) {
-        $revs[$i]['revision_id'] = $start + $i; 
+        $revs[$i]['revision_id'] = $start + $i;
     }
 
     $view = array();
@@ -176,6 +182,11 @@ function controller_textblock_history($page_name) {
 
 // Delete a certain textblock.
 function controller_textblock_delete($page_name) {
+    if (!request_is_post()) {
+        flash_error("Pagina nu a putut fi stearsa!");
+        redirect(url_textblock($page_name));
+    }
+
     // Get actual page.
     $page = textblock_get_revision($page_name);
 

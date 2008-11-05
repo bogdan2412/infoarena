@@ -195,12 +195,12 @@ else if ($action == 'attach-list') {
 //  - attachment delete
 else if ($action == 'attach-del') {
     require_once(IA_ROOT_DIR.'www/controllers/attachment.php');
-    controller_attachment_delete($page);
+    controller_attachment_delete($page, request('file'));
 }
 //  - attachment rename
 else if ($action == 'attach-rename') {
     require_once(IA_ROOT_DIR.'www/controllers/attachment.php');
-    controller_attachment_rename($page, $_POST['old_name'], $_POST['new_name']);
+    controller_attachment_rename($page, request('old_name'), request('new_name'));
 }
 //  - attachment download
 else if ($action == 'download') {
