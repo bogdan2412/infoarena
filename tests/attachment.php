@@ -49,6 +49,7 @@ log_assert(strstr($res['content'], html_escape(
 log_print("Anon tries to delete attachment, fails");
 $res = curl_test(array(
         'url' => url_attachment_delete('sandbox/test_page', 'test_file'),
+        'post' => array(),
 ));
 log_assert_equal($res['url'],  url_absolute(url_login()));
 
@@ -63,6 +64,7 @@ log_print("Admin deletes attachment, OK");
 $res = curl_test(array(
         'url' => url_attachment_delete('sandbox/test_page', 'test_file'),
         'user' => 'test_admin',
+        'post' => array()
 ));
 log_assert_equal($res['url'],  url_absolute(url_textblock('sandbox/test_page')));
 
@@ -156,6 +158,7 @@ log_print("Admin deletes page");
 $res = curl_test(array(
         'url' => url_textblock_delete('sandbox/test_page_2'),
         'user' => 'test_admin',
+        'post' => array()
 ));
 log_assert_equal($res['url'], url_absolute(url_home()));
 
