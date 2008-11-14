@@ -41,8 +41,6 @@ SELECT `job`.`id`, `job`.`user_id`, `job`.`task_id`, `job`.`round_id`,
        `job`.`compiler_id`, `job`.`status`, `job`.`submit_time`,
        `job`.`eval_message`, `job`.`score`, `job`.`file_contents`
     FROM `ia_job` AS `job`
-    INNER JOIN `ia_user` AS `user` ON `user`.`id` = `job`.`user_id`
-    LEFT JOIN `ia_round` AS `round` ON `round`.`id` = `job`.`round_id`
     WHERE (`status` != 'done')
     ORDER BY `submit_time` ASC LIMIT 1
 SQL;
@@ -119,6 +117,8 @@ function job_get_table_joins($filters) {
                     ON `job`.`user_id` = `user`.`id`";
     }
 
+    // score_begin and score_end filters shouldn't work on rounds
+    // without public eval, so we join with ia_round
     if (getattr($filters, 'score_begin') || getattr($filters, 'score_end')) {
         $sql .= "\nLEFT JOIN `ia_round` AS `round`
                     ON `job`.`round_id` = `round`.`id`";

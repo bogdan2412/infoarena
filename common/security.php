@@ -434,7 +434,7 @@ function security_round($user, $action, $round) {
         case 'round-view-tasks':
             return $round['state'] != 'waiting' || $is_admin;
         case 'round-view-scores':
-            return $round['public_eval'] == true || $is_admin;;
+            return $round['public_eval'] == true || $is_admin;
 
         case 'simple-rev-edit':
         case 'simple-edit':

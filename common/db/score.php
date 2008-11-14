@@ -68,7 +68,7 @@ function score_build_where_clauses($user, $task, $round)
             $query = "SELECT `id`, `state`, `public_eval` FROM `ia_round` WHERE " . $rounds_where;
             $round_objects = db_fetch_all($query);
             $allowed_round_ids = array();
-            
+
             foreach ($round_objects as $round) {
                 if (identity_can('round-view-scores', $round)) {
                     $allowed_round_ids[] = $round["id"];
