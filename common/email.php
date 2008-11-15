@@ -32,8 +32,9 @@ function send_email($to, $subject, $plain_text_message, $from = null,
     $message = wordwrap($plain_text_message, IA_EMAIL_WORDRAP);
 
     // headers
-    $headers = 'From: ' . $from . "\r\n" .
-               'Reply-To: ' . $reply_to . "\r\n" .
+    $headers = 'From: ' . $from . "\n" .
+               'Reply-To: ' . $reply_to . "\n" .
+               "Content-type: text/plain\n" .
                'X-Mailer: infoarena/newsletter';
 
     // log

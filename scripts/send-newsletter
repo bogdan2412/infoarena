@@ -25,7 +25,7 @@ define("IA_NEWSLETTER_LOGDIR", IA_ROOT_DIR."scripts/newsletter-logs/");
 // return array with valid subscriber list identifiers
 function list_valid_ids() {
     $valid = array(
-        'all', 'admins', 'rated', 'test'
+        'all', 'admins', 'rated', 'test', 'tinytest'
     );
     return $valid;
 }
@@ -55,6 +55,13 @@ function list_get($list_id) {
             // a small set of users. meant for testing
             $usernames = array('wickedman', 'fluffy', 'domino', 'silviug',
                                'Cosmin', 'wick3dman');
+            $query = "SELECT * FROM ia_user
+                      WHERE username IN ('".join("', '", $usernames)."')
+                      ORDER BY full_name";
+            return db_fetch_all($query);
+
+        case 'tinytest':
+            $usernames = array('wickedman', 'wick3dman');
             $query = "SELECT * FROM ia_user
                       WHERE username IN ('".join("', '", $usernames)."')
                       ORDER BY full_name";

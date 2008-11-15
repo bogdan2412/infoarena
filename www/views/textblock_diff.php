@@ -65,4 +65,14 @@ else {
 }
 ?>
 
+<?php
+if (empty($view['diff_security'])) {
+    echo "<h3>Nu exista diferente intre securitate.</h3>";
+}
+else {
+    echo "<h3>Diferente intre securitate:</h3>";
+    print_diff($view['diff_security']);
+}
+?>
+
 <?php include('footer.php'); ?>

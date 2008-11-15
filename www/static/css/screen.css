@@ -1422,3 +1422,39 @@ ul.filters li.submit {
     padding-left: 2em;
 }
 
+.picture-box {
+    font-size: .85em;
+    padding: 5px;
+    border: 1px solid gray;
+    margin: 0 1em 1em 0;
+    float: left;
+}
+
+.picture-box img {
+    border: 1px solid silver;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* OKRs */
+
+ul.okr > li:before {
+    content: "O: ";
+    font-weight: bold;
+}
+
+ul.okr > li li:before {
+    content: "KR: ";
+    font-weight: bold;
+}
+
+ul.okr li {
+    list-style: none;
+}
+
+ul.okr .comment {
+    display: block;
+    margin: 0 0 0 2em;
+    color: gray;
+}
+
