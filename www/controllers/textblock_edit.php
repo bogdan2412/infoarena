@@ -22,6 +22,7 @@ function controller_textblock_edit($page_name, $security = 'public') {
                 'text' => "Scrie aici despre " . $page_name,
                 'security' => $security,
                 'user_id' => identity_get_user_id(),
+                'forum_topic' => null,
         );
         identity_require('textblock-create', $page);
         $big_title = "Creare " . $page_name;
@@ -33,6 +34,7 @@ function controller_textblock_edit($page_name, $security = 'public') {
     $values['text'] = request('text', $page['text']);
     $values['title'] = request('title', $page['title']);
     $values['security'] = request('security', $page['security']);
+    $values['forum_topic'] = request('forum_topic', $page['forum_topic']);
     $values['tags'] = request('tags', tag_build_list("textblock", $page_name));
     $values['creation_timestamp'] = getattr($page, 'creation_timestamp');
     $values['timestamp'] = null;
@@ -43,9 +45,13 @@ function controller_textblock_edit($page_name, $security = 'public') {
         $new_page['text'] = $values['text'];
         $new_page['title'] = $values['title'];
         $new_page['security'] = $values['security'];
+        $new_page['forum_topic'] = $values['forum_topic'];
         $new_page['creation_timestamp'] = $values['creation_timestamp'];
         $new_page['timestamp'] = $values['timestamp'];
         $new_page['user_id'] = identity_get_user_id();
+        if ($new_page['forum_topic'] === "") {
+            $new_page['forum_topic'] = null;
+        }
 
         // Validate new page
         $errors = textblock_validate($new_page);
@@ -69,7 +75,9 @@ function controller_textblock_edit($page_name, $security = 'public') {
         if (!$errors) {
             textblock_add_revision($new_page['name'], $new_page['title'],
                                    $new_page['text'], $new_page['user_id'],
-                                   $new_page['security'], $new_page['timestamp'],
+                                   $new_page['security'],
+                                   $new_page['forum_topic'],
+                                   $new_page['timestamp'],
                                    $new_page['creation_timestamp']);
             if (identity_can('textblock-tag', $new_page)) {
                 tag_update("textblock", $new_page['name'], $values['tags']);
@@ -83,6 +91,9 @@ function controller_textblock_edit($page_name, $security = 'public') {
 
     if (!identity_can('textblock-change-security', $page)) {
         unset($values['security']);
+    }
+    if (!identity_can('textblock-change-topic', $page)) {
+        unset($values['forum_topic']);
     }
 
     // Create view.

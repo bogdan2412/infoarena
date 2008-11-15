@@ -108,6 +108,7 @@ function security_simplify_action($action) {
         case 'textblock-restore':
         case 'textblock-attach':
         case 'textblock-create':
+        case 'textblock-change-topic':
         case 'simple-rev-edit':
             return 'simple-rev-edit';
 
@@ -138,7 +139,6 @@ function security_simplify_action($action) {
         case 'textblock-tag':
         case 'job-reeval':  
         case 'simple-critical':
-        case 'blog-admin':
             return 'simple-critical';
 
         // Special actions fall through

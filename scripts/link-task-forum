@@ -15,12 +15,8 @@ function match($a, $b) {
 }
 
 function link_task($task, $page, $topic, $verbose = false) {
-    $content = $page['text'];
-
-    // do we already have the macro there?
-    $pattern = '/==\ *smftopic\(\ *topic_id="\ *([0-9]*).*0*\ *"\ *\)\ *==/i';
-    if (preg_match($pattern, $content, $matches)) {
-        $topic_id = $matches[1];
+    if (!is_null($page["forum_topic"])) {
+        $topic_id = $page["forum_topic"];
         // WTF, wrong topic?
         if ($topic_id == $topic['ID_TOPIC']) {
             if ($verbose) {
@@ -29,27 +25,16 @@ function link_task($task, $page, $topic, $verbose = false) {
             return false;
         }
         log_warn($task['id'].': Topic-ul vechi "'.$topic_id.'" este diferit de cel gasit: "'.$topic['ID_TOPIC'].'"!');
-        $replacement = "==SmfTopic(topic_id=\"".$topic['ID_TOPIC']."\")==";
-        $content = preg_replace($pattern, $replacement, $content);
-    }
-    else {
-        if (stristr($content, 'SmfTopic')) {
-            log_warn('Eroare de regexp pentru "'.$task['id'].'"!');
-        }
-        $content .= "\n\n==SmfTopic(topic_id=\"".$topic['ID_TOPIC']."\")==\n";
     }
 
     // Build new page
-    $new_page['name'] = $task['page_name'];
-    $new_page['text'] = $content;
-    $new_page['title'] = $page['title'];
-    $new_page['security'] = $page['security'];
-    $new_page['creation_timestamp'] = $page['creation_timestamp'];
-    $new_page['timestamp'] = null;
-    $new_page['user_id'] = 1; // update as "domino" :)
+    $new_page = $page;
+    $new_page["forum_topic"] = $topic["ID_TOPIC"];
+    $new_page["timestamp"] = null;
+    $new_page["user_id"] = 1; // update as "domino" :)
 
     // It worked
-    if (!textblock_validate($new_page)) {
+    if (count(textblock_validate($new_page)) == 0) {
         textblock_add_revision($new_page['name'], $new_page['title'],
                                $new_page['text'], $new_page['user_id'],
                                $new_page['security'], $new_page['timestamp'],

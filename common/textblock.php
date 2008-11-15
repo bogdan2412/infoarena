@@ -37,6 +37,10 @@ function textblock_validate($tb) {
         $errors['user_id'] = 'ID de utilizator invalid';
     }
 
+    if (!is_null(getattr($tb, 'forum_topic')) && !is_whole_number(getattr($tb, 'forum_topic'))) {
+        $errors['forum_topic'] = 'Topic forum invalid';
+    }
+
     // NOTE: missing timestamp is OK!!!
     // It stands for 'current moment'.
     if (!is_db_date(getattr($tb, 'timestamp', db_date_format()))) {
@@ -84,7 +88,8 @@ function textblock_copy_replace($srcprefix, $dstprefix, $replace, $security, $us
 
         textblock_add_revision($textblock['name'], $textblock['title'],
                 $textblock['text'], $user_id, $textblock['security'],
-                null, $first_textblock['creation_timestamp']);
+                $textblock['forum_topic'], null,
+                $first_textblock['creation_timestamp']);
     }
 }
 

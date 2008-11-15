@@ -69,13 +69,6 @@ else if ($urlstart == 'account') {
     controller_account(getattr($pagepath, 1));
 }
 
-// Blog admin
-else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'blog') {
-    $obj_id = implode("/", array_slice($pagepath, 1));
-    require_once(IA_ROOT_DIR.'www/controllers/blog.php');
-    controller_blog_admin($obj_id);
-}
-
 // Task creator
 else if ($page == 'admin/problema-noua') {
     require_once(IA_ROOT_DIR.'www/controllers/task.php');

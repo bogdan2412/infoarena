@@ -306,19 +306,15 @@ function task_validate_parameters($task_type, $parameters) {
     return $errors;
 }
 
-//FIXME: this is a hack; we should have a database table for this
 function task_get_topic($task_id) {
     if (!is_task_id($task_id)) {
         log_error("Invalid task id");
     }
 
     // Get task
-    $task = textblock_get_revision("problema/".$task_id);
-    $pattern = '/==\ *smftopic\(\ *topic_id="\ *([0-9]*).*0*\ *"\ *\)\ *==/i';
-    if (preg_match($pattern, $task['text'], $matches)) {
-        return $matches[1];
-    }
-    return null;
+    $task = task_get($task_id);
+    $task_page = textblock_get_revision($task["page_name"]);
+    return $task_page["forum_topic"];
 }
 
 ?>

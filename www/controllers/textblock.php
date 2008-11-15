@@ -44,9 +44,9 @@ function controller_textblock_view($page_name, $rev_num = null) {
     $view['title'] = $page['title'];
     $view['revision'] = $rev_num;
     $view['revision_count'] = $rev_count;
-
     $view['page_name'] = $page['name'];
     $view['textblock'] = $page;
+    $view['forum_topic'] = $page['forum_topic'];
 
     execute_view_die('views/textblock_view.php', $view);
 }
@@ -132,7 +132,8 @@ function controller_textblock_restore($page_name, $rev_num) {
 
     textblock_add_revision($rev['name'], $rev['title'], $rev['text'],
                            getattr($identity_user, 'id'), $rev['security'],
-                           null, $rev['creation_timestamp']);
+                           $rev['forum_topic'], null,
+                           $rev['creation_timestamp']);
     flash("Pagina a fost inlocuita cu revizia {$rev_num}");
     redirect(url_textblock($page_name));
 }

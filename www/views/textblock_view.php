@@ -18,6 +18,13 @@ echo '<div class="wiki_text_block">';
 echo wiki_process_textblock($textblock);
 echo '</div>';
 
+if (getattr($view, "forum_topic")) {
+    require_once(IA_ROOT_DIR.'www/macros/macro_smftopic.php');
+    echo '<div id="forum_box">';
+    echo macro_smftopic(array('topic_id' => $forum_topic));
+    echo '</div>';
+}
+
 // site footer
 include('footer.php');
 

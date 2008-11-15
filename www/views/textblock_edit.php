@@ -35,6 +35,14 @@ include('views/tags_header.php');
         <?= format_link(url_textblock('documentatie/wiki'), "Cum formatez text?") ?>
     </li>
 
+    <?php if (array_key_exists('forum_topic', $form_values)) { ?>
+    <li id="field_forum_topic">
+        <label for="form_forum_topic">Forum Topic</label>
+        <input type="text" name="forum_topic" value="<?= fval('forum_topic') ?>" id="form_forum_topic" />
+        <?= ferr_span('forum_topic') ?>
+    </li>
+    <?php } ?>
+
     <?php if (identity_can('textblock-tag', $view['page'])) { ?>
        <?= tag_format_input_box(fval('tags')) ?>
     <?php } ?>
@@ -43,7 +51,7 @@ include('views/tags_header.php');
     <li id="field_security">
         <label for="form_security">Nivel de securitate al paginii
         <a href="<?= html_escape(url_textblock('documentatie/securitate')) ?>">(?)</a></label> 
-        <input type="text" name="security" value="<?= fval('security') ?>" id="form_security"/>
+        <input type="text" name="security" value="<?= fval('security') ?>" id="form_security" />
         <?= ferr_span('security') ?>
     </li>
     <?php } ?>

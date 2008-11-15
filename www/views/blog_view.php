@@ -34,8 +34,8 @@ echo 'Creat la '.html_escape($first_textblock['creation_timestamp']).' de '.form
 echo '</div>';
 // blog comments
 echo '<div id="comentarii">';
-if (getattr($view, 'topic_id')) {
-    echo macro_remotebox(array('url' => IA_SMF_URL.'/ia_comments.php?topic_id='.$view['topic_id']), true);
+if (getattr($view, 'forum_topic')) {
+    echo macro_remotebox(array('url' => IA_SMF_URL.'/ia_comments.php?topic_id='.$view['forum_topic']), true);
 }
 echo '</div></div>';
 echo '</div>';
