@@ -13,7 +13,7 @@ function controller_blog_feed() {
     $view['channel']['link'] = url_absolute(url_blog());
     $view['channel']['description'] = 'Ultimele insemnari de pe blog-ul infoarena';
     $view['channel']['language'] = 'ro-ro';
-    $view['channel']['copyright'] = '&#169; 2007 - Asociatia infoarena';
+    $view['channel']['copyright'] = '(c) 2008 - Asociatia infoarena';
 
     $blog = blog_get_range(null, 0, IA_MAX_FEED_ITEMS);
     for ($i = 0; $i < count($blog); $i++) {

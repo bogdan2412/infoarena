@@ -12,9 +12,10 @@ $optional['channel'] = array('language', 'copyright', 'managingEditor',
 $optional['item'] = array('author', 'pubDate', 'category', 'comments',
                           'enclosure', 'guid', 'source');
 echo '<?xml version="1.0" encoding="utf-8"?>'."\n";
-echo '<rss version="2.0">'."\n";
+echo '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">'."\n";
 echo '<channel>'."\n";
 echo '<title>'.html_escape(getattr($view['channel'], 'title')).'</title>'."\n";
+echo '<atom:link rel="self" href="http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].'" type="application/rss+xml" />'."\n";
 echo '<link>'.html_escape(getattr($view['channel'], 'link')).'</link>'."\n";
 echo '<description>'.html_escape(getattr($view['channel'], 'description')).'</description>'."\n";
 
