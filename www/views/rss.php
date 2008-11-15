@@ -1,5 +1,5 @@
 <?php
-header("Content-Type: text/xml");
+header("Content-Type: text/xml; charset=utf-8");
 $optional = array();
 // textInput, image, category and cloud don't work properly.. do not use them in your feed
 $optional['channel'] = array('language', 'copyright', 'managingEditor',
