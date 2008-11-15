@@ -260,6 +260,51 @@ $res = curl_test(array(
 ));
 log_assert_equal($res['redirect_count'],  0);
 
+log_print("Testing security for restore");
+$res = curl_test(array(
+        'url' => url_textblock_edit('sandbox/test_page_revision'),
+        'user' => 'test_admin',
+        'post' => array(
+                'text' => "ugu 1\n",
+                'title' => "Test ugu 1",
+                'security' => "private",
+                'last_revision' => "0",
+)));
+usleep(1000000);
+$res = curl_test(array(
+        'url' => url_textblock_edit('sandbox/test_page_revision'),
+        'user' => 'test_admin',
+        'post' => array(
+                'text' => "ugu 2\n",
+                'title' => "Test ugu 2",
+                'security' => "protected",
+                'last_revision' => "1",
+)));
+usleep(1000000);
+$res = curl_test(array(
+        'url' => url_textblock_edit('sandbox/test_page_revision'),
+        'user' => 'test_admin',
+        'post' => array(
+                'text' => "ugu 3\n",
+                'title' => "Test ugu 3",
+                'security' => "public",
+                'last_revision' => "2",
+)));
+usleep(1000000);
+$res = curl_test(array(
+        'url' => url_textblock_restore('sandbox/test_page_revision', 1),
+        'user' => 'test_dude1',
+        'post' => array()
+));
+log_assert_equal($res['url'],  url_absolute(url_home()));
+log_assert(!strstr($res['content'], 'Nu ai permisiuni'));
+$res = curl_test(array(
+        'url' => url_textblock_restore('sandbox/test_page_revision', 2),
+        'user' => 'test_dude1',
+        'post' => array()
+));
+log_assert_equal($res['url'],  url_absolute(url_home()));
+log_assert(!strstr($res['content'], 'Nu ai permisiuni'));
 log_print("Textblock tests all passed");
 test_cleanup();
 

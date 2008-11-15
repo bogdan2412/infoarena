@@ -116,8 +116,9 @@ function controller_textblock_restore($page_name, $rev_num) {
     $page = textblock_get_revision($page_name);
     $rev = textblock_get_revision($page_name, $rev_num);
 
-    if ($page) {
+    if ($page and $rev) {
         identity_require('textblock-restore', $page);
+        identity_require('textblock-restore', $rev);
     } else {
         flash_error("Pagina nu exista");
         redirect(url_home());
