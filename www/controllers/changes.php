@@ -10,7 +10,9 @@ function controller_changes($page_name) {
     $view = array();
     $title = 'Schimbari pe www.infoarena.ro';
     $prefix = request('prefix', '');
-    $revisions = textblock_get_changes($prefix, false, true, $pager_opts['display_entries']);
+    $revisions = textblock_get_changes($prefix, false, true,
+                                       $pager_opts["first_entry"],
+                                       $pager_opts['display_entries']);
 
     // FIXME: horrible horrible hack to add revision ids.
     $rev_ids = array();

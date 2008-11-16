@@ -44,7 +44,7 @@ function pager_init_options($args = null)
         $display_entries = IA_PAGER_DEFAULT_DISPLAY_ENTRIES;
         log_warn("Bad display_entries");
     }
-    $display_entries = 
+    $display_entries =
             max(IA_PAGER_MIN_DISPLAY_ENTRIES,
             min($display_entries, IA_PAGER_MAX_DISPLAY_ENTRIES));
 
@@ -120,8 +120,8 @@ function format_standard_pager($options)
     log_assert($options['pager_style'] == "standard");
     $first_entry = getattr($options, 'first_entry', 0);
     $total_entries = getattr($options, 'total_entries', 0);
-    $show_count = getattr($options, 'show_count', false);   
-    $show_display_entries = getattr($options, 'show_display_entries', false); 
+    $show_count = getattr($options, 'show_count', false);
+    $show_display_entries = getattr($options, 'show_display_entries', false);
     $display_entries = getattr($options, 'display_entries', IA_PAGER_DEFAULT_DISPLAY_ENTRIES);
     $surround_pages = getattr($options, 'surround_pages', 5);
     $access_keys = getattr($options, 'use_digit_access_keys', true);
@@ -130,8 +130,6 @@ function format_standard_pager($options)
     assert(is_whole_number($first_entry));
     assert(is_whole_number($total_entries));
 
-    //log_print_r($options);
-
     $curpage = (int)($first_entry / $display_entries);
     $totpages = (int)(($total_entries + $display_entries - 1) / $display_entries);
 
@@ -139,13 +137,14 @@ function format_standard_pager($options)
 
 
     if ($show_display_entries) {
-        //FIXME: hardcoded numbers are bad
+        global $IA_PAGER_DISPLAY_ENTRIES_OPTIONS;
+        $links = array();
+        foreach ($IA_PAGER_DISPLAY_ENTRIES_OPTIONS as $num) {
+            $links[] = _format_standard_pager_link_with_text(array('display_entries' => $num) + $options, $num);
+        }
+
         $result .= '<span class="entries-per-page">(';
-        $result .= _format_standard_pager_link_with_text(array('display_entries' => '25') + $options, '25')."|";
-        $result .= _format_standard_pager_link_with_text(array('display_entries' => '50') + $options, '50')."|";
-        $result .= _format_standard_pager_link_with_text(array('display_entries' => '100') + $options, '100')."|";
-        $result .= _format_standard_pager_link_with_text(array('display_entries' => '250') + $options, '250')."|";
-        $result .= _format_standard_pager_link_with_text(array('display_entries' => '500') + $options, '500');
+        $result .= implode("|", $links);
         $result .= ")</span>";
     }
 

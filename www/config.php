@@ -32,8 +32,9 @@ date_default_timezone_set('GMT');
 
 // Constrains and default value for pager display_rows.
 define('IA_PAGER_DEFAULT_DISPLAY_ENTRIES', 50);
-define('IA_PAGER_MAX_DISPLAY_ENTRIES', 200);
+define('IA_PAGER_MAX_DISPLAY_ENTRIES', 250);
 define('IA_PAGER_MIN_DISPLAY_ENTRIES', 3);
+$IA_PAGER_DISPLAY_ENTRIES_OPTIONS = array(25, 50, 100, 250);
 
 // User date formatting.
 // Everything in the database is UTC.

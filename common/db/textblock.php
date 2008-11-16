@@ -173,16 +173,17 @@ function textblock_get_by_prefix($prefix, $content = false, $username = false) {
     ));
 }
 
-// Get all textblocks(without content) with a certain prefix).
+// Get all textblocks(without content) with a certain prefix.
 // Ordered by name.
-function textblock_get_changes($prefix, $content = false, $username = true, $count = 50) {
+function textblock_get_changes($prefix, $content = false, $username = true,
+                               $offset = 0, $count = 50) {
     return textblock_complex_query(array(
             'content' => $content,
             'username' => $username,
             'prefix' => $prefix,
             'history' => true,
             'order' => 'desc',
-            'limit_start' => 0,
+            'limit_start' => $offset,
             'limit_count' => $count,
     ));
 }
