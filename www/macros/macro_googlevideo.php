@@ -1,4 +1,5 @@
 <?php
+require_once(IA_ROOT_DIR . "common/common.php");
 
 // Displays a google video widget (EMBED object).
 //
@@ -10,14 +11,14 @@
 // Examples:
 //      GoogleVideo( id="2535789311422139569" )
 function macro_googlevideo($args) {
-    $doc_id = getattr($args, 'id');
+    $doc_id = html_escape(getattr($args, 'id'));
     $width = getattr($args, 'width', 400);
     $height = getattr($args, 'height', 326);
 
     if (is_null($doc_id)) {
         return macro_error('Expecting argument `id` (Google Video docId)');
     }
-    if (!is_numeric($width) || !is_numeric($height) || $width < 50
+    if (!is_whole_number($width) || !is_whole_number($height) || $width < 50
         || $width > 700 || $height < 50 || $height > 700) {
         return macro_error('Invalid `width` / `height` argument');
     }
