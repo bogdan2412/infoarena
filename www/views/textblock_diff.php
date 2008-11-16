@@ -75,4 +75,14 @@ else {
 }
 ?>
 
+<?php
+if (empty($view['diff_forum'])) {
+    echo "<h3>Topicul de forum nu a fost schimbat.</h3>";
+}
+else {
+    echo "<h3>Diferente intre topic forum:</h3>";
+    print_diff($view['diff_forum']);
+}
+?>
+
 <?php include('footer.php'); ?>

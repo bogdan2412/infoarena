@@ -92,6 +92,7 @@ function controller_textblock_diff($page_name) {
     $diff_title = diff_inline(array($revfrom['title'], $revto['title']));
     $diff_content = diff_inline(array($revfrom['text'], $revto['text']));
     $diff_security = diff_inline(array($revfrom['security'], $revto['security']));
+    $diff_forum = diff_string(array($revfrom['forum_topic'], $revto['forum_topic']));
 
     $view = array();
     $view['page_name'] = $page['name'];
@@ -101,6 +102,7 @@ function controller_textblock_diff($page_name) {
     $view['diff_title'] = $diff_title;
     $view['diff_content'] = $diff_content;
     $view['diff_security'] = $diff_security;
+    $view['diff_forum'] = $diff_forum;
     execute_view_die('views/textblock_diff.php', $view);
 }
 
