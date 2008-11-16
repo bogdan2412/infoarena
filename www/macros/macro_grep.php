@@ -5,11 +5,15 @@ require_once(IA_ROOT_DIR . "www/format/format.php");
 
 // FIXME: document this macro
 function macro_grep($args) {
+    $regexp = getattr($args, 'regexp');
     $substr = getattr($args, 'substr');
     $page = getattr($args, 'page');
 
-    if (!$substr) {
-        return macro_error('Expecting parameter `substr`');
+    if (!$substr && !$regexp) {
+        return macro_error('Expecting parameter `substr` or `regexp`');
+    }
+    if ($substr && $regexp) {
+        return macro_error("Parameters `substr` and `regexp` can't be used together");
     }
     if (!$page) {
         return macro_error('Expecting parameter `page`');
@@ -19,14 +23,24 @@ function macro_grep($args) {
         return macro_permission_error();
     }
 
-    $textblocks = textblock_grep($substr, $page);
+    if ($substr) {
+        $textblocks = textblock_grep($substr, $page, false);
+    } else {
+        $textblocks = textblock_grep($regexp, $page, true);
+    }
+    $textblocks_good = array();
+    foreach ($textblocks as $textblock) {
+        if (identity_can("textblock-view", $textblock)) {
+            $textblocks_good[] = $textblock;
+        }
+    }
 
     ob_start();
 ?>
 <div class="macroToc">
-<p><strong><?= count($textblocks) ?></strong> rezultate.</p>
+<p><strong><?= count($textblocks_good) ?></strong> rezultate.</p>
 <ul>
-<?php foreach ($textblocks as $textblock) { ?>
+<?php foreach ($textblocks_good as $textblock) { ?>
     <li><?= format_link(url_textblock($textblock['name']), $textblock['title']) ?></li>
 <?php } ?>
 </ul>

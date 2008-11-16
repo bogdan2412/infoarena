@@ -201,11 +201,16 @@ function textblock_get_revision_count($name) {
 }
 
 // Grep through textblocks. This is mostly a hack needed for macro_grep.php
-function textblock_grep($substr, $page) {
+function textblock_grep($substr, $page, $regexp = false) {
+    if (!$regexp) {
+        $compare = "LIKE";
+    } else {
+        $compare = "REGEXP";
+    }
     $query = sprintf("SELECT `name`, `title`, `creation_timestamp`, `timestamp`, `user_id`, `security`, `forum_topic`
                       FROM ia_textblock
                       WHERE `name` LIKE '%s' AND
-                            (`text` LIKE '%s' OR `title` LIKE '%s')
+                            (`text` $compare '%s' OR `title` $compare '%s')
                       ORDER BY `name`",
                       db_escape($page), db_escape($substr), db_escape($substr));
     return db_fetch_all($query);
