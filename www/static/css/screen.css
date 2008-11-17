@@ -648,6 +648,14 @@ fieldset ul.form {
     margin-left: 0;
 }
 
+.compare-radio {
+    text-align : center;
+}
+
+.compare-button {
+    float : right;
+}
+
 /* user profile form */
 form.profile fieldset input {
     width: 20em;

@@ -2,6 +2,7 @@
 include('header.php');
 require_once(IA_ROOT_DIR . "www/format/table.php");
 require_once(IA_ROOT_DIR . "www/format/format.php");
+require_once(IA_ROOT_DIR . "www/format/form.php");
 ?>
 
 <h1>Istoria paginii <?= format_link(url_textblock($page_name), $page_name) ?></h1>
@@ -20,8 +21,7 @@ function format_textblock_title($row) {
     return "$title";
 }
 
-function format_operations($row)
-{
+function format_operations($row) {
     global $page_name, $total_entries;
     $diffurl = url_textblock_diff($page_name, $row['revision_id'], $total_entries);
     $resturl = url_textblock_restore($page_name, $row['revision_id']);
@@ -35,6 +35,29 @@ function format_operations($row)
                 '['. format_link($viewurl, "Vezi") .'] '.
                 '['. format_link($delurl, "Sterge") .']';
     }
+}
+
+function format_compare($row) {
+    global $total_entries;
+
+    $button1_args = array(
+        'name' => 'rev_from',
+        'value' => $row['revision_id'],
+    );
+    if ($row['revision_id'] == $total_entries - 1) {
+        $button1_args += array('checked' => 'checked');
+    }
+
+    $button2_args = array(
+        'name' => 'rev_to',
+        'value' => $row['revision_id'],
+    );
+    if ($row['revision_id'] == $total_entries) {
+        $button2_args += array('checked' => 'checked');
+    }
+
+    return format_radio_button($button1_args) . " " .
+        format_radio_button($button2_args);
 }
 
 $column_infos = array(
@@ -64,6 +87,12 @@ $column_infos = array(
         'title' => 'Operatii',
         'rowform' => 'format_operations',
     ),
+
+    array(
+        'title' => 'Compara',
+        'rowform' => 'format_compare',
+        'css_class' => 'compare-radio',
+    ),
 );
 
 $options = array(
@@ -77,8 +106,28 @@ $options = array(
     'surround_pages' => 3,
 );
 
-echo format_table($revisions, $column_infos, $options);
+?>                                                         
 
+<form
+    action = "<?php echo html_escape(url_textblock_diff($page_name, null, null)); ?>"
+    method = "get"
+>
+
+<?php
+// We need to use a hidden field to pass "action=diff" as "get"
+// because the form submit erases it from the url otherwise
 ?>
+<input type = "hidden" name = "action" value = "diff" />
+
+<?
+echo format_table($revisions, $column_infos, $options);
+?>
+
+<input
+    type = "submit"
+    value = "Compara versiunile selectate"
+    class = "button compare-button"
+/>
+</form>
 
 <?php include('footer.php'); ?> 

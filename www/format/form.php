@@ -239,4 +239,10 @@ HTML;
     return $res;
 }
 
+// Format a radio input button
+function format_radio_button($attribs) {
+    $args = array('type' => 'radio') + $attribs;
+    return format_tag('input', null, $args);
+}
+
 ?>
