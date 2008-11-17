@@ -293,22 +293,22 @@ function textblock_copy($old_name, $new_name) {
 
     $new_textblock = textblock_get_revision($old_name);
     $new_textblock['name'] = $new_name;
+    $new_textblock['timestamp'] = db_date_format();
+    $new_textblock['user_id'] = identity_get_user_id();
     db_insert('ia_textblock', $new_textblock);
 
     // Get a list of attachments.
     $files = attachment_get_all($old_name);
 
-    // Copy attachments in db and get new id's
-    foreach ($files as &$file) {
-        $id = attachment_insert($file['name'], $file['size'], $file['mime_type'], $new_name, identity_get_user_id());
-        $file['new_id'] = $id;
-    }
-
-    // Copy attachments to hard drive
+    // Copy attachments in db and hard drive
     foreach ($files as $file) {
+        // Copy in db and get new id
+        $new_id = attachment_insert($file['name'], $file['size'], $file['mime_type'], $new_name, identity_get_user_id());
+
+        // Copy on hard drive
         $old_filename = attachment_get_filepath($file);
         $file['page'] = $new_name;
-        $file['id'] = $file['new_id'];
+        $file['id'] = $new_id;
         $new_filename = attachment_get_filepath($file);
 
         if (!@copy($old_filename, $new_filename)) {
