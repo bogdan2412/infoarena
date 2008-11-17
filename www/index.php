@@ -155,6 +155,11 @@ else if ($action == 'move') {
     require_once(IA_ROOT_DIR.'www/controllers/textblock_move.php');
     controller_textblock_move($page);
 }
+//  - copy textblock
+else if ($action == 'copy') {
+    require_once(IA_ROOT_DIR.'www/controllers/textblock_copy.php');
+    controller_textblock_copy($page);
+}
 //  - restore textblock
 else if ($action == 'restore') {
     require_once(IA_ROOT_DIR.'www/controllers/textblock.php');

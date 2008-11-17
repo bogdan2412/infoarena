@@ -114,6 +114,7 @@ function security_simplify_action($action) {
 
         // Irreversible edits.
         case 'textblock-move':
+        case 'textblock-copy':
         case 'attach-overwrite':
         case 'attach-delete':
         case 'attach-rename':

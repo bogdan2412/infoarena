@@ -106,6 +106,12 @@ function url_textblock_move($page_name) {
     ));
 }
 
+function url_textblock_copy($page_name) {
+    return url_complex($page_name, array(
+            'action' => 'copy'
+    ));
+}
+
 function url_textblock_delete($page_name) {
     return url_complex($page_name, array(
             'action' => 'delete'

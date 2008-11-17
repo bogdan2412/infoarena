@@ -2,14 +2,14 @@
 
 require_once(IA_ROOT_DIR . "common/db/textblock.php");
 
-// Initial move controller.
-function controller_textblock_move($page_name) {
+// Initial copy controller.
+function controller_textblock_copy($page_name) {
     // Get actual page.
     $page = textblock_get_revision($page_name);
 
     // Check permissions.
     if ($page) {
-        identity_require('textblock-move', $page);
+        identity_require('textblock-copy', $page);
     } else {
         // Missing page.
         flash_error("Pagina inexistenta.");
@@ -30,22 +30,22 @@ function controller_textblock_move($page_name) {
         }
 
         if (!$errors) {
-            textblock_move($page_name, $new_name);
-            flash("Pagina a fost mutata.");
+            textblock_copy($page_name, $new_name);
+            flash("Pagina a fost copiata.");
             redirect(url_textblock($new_name));
         }
     }
 
     // -- Print form
     $view = array(
-            'title' => "Muta " . $page_name,
+            'title' => "Copiaza " . $page_name,
             'page_name' => $page_name,
-            'action' => url_textblock_move($page_name),
+            'action' => url_textblock_copy($page_name),
             'form_values' => $values,
             'form_errors' => $errors,
     );
 
-    execute_view_die("views/textblock_move.php", $view);
+    execute_view_die("views/textblock_copy.php", $view);
 }
 
 ?>

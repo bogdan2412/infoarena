@@ -18,6 +18,9 @@ log_assert_valid(textblock_validate($textblock));
 <?php if (identity_can('textblock-move', $textblock)) { ?>
 <li><?= format_link_access(url_textblock_move($textblock['name']), 'Muta', 'u') ?></li>
 <?php } ?>
+<?php if (identity_can('textblock-copy', $textblock)) { ?>
+<li><?= format_link_access(url_textblock_copy($textblock['name']), 'Copiaza', 'c') ?></li>
+<?php } ?>
 <?php if (identity_can('textblock-delete', $textblock)) { ?>
 <li><?= format_post_link(
     url_textblock_delete($textblock['name']),

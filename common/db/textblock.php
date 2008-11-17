@@ -285,4 +285,36 @@ function textblock_move($old_name, $new_name) {
     }
 }
 
+function textblock_copy($old_name, $new_name) {
+    $old_name = normalize_page_name($old_name);
+    $new_name = normalize_page_name($new_name);
+    log_assert(is_normal_page_name($old_name));
+    log_assert(is_normal_page_name($new_name));
+
+    $new_textblock = textblock_get_revision($old_name);
+    $new_textblock['name'] = $new_name;
+    db_insert('ia_textblock', $new_textblock);
+
+    // Get a list of attachments.
+    $files = attachment_get_all($old_name);
+
+    // Copy attachments in db and get new id's
+    foreach ($files as &$file) {
+        $id = attachment_insert($file['name'], $file['size'], $file['mime_type'], $new_name, identity_get_user_id());
+        $file['new_id'] = $id;
+    }
+
+    // Copy attachments to hard drive
+    foreach ($files as $file) {
+        $old_filename = attachment_get_filepath($file);
+        $file['page'] = $new_name;
+        $file['id'] = $file['new_id'];
+        $new_filename = attachment_get_filepath($file);
+
+        if (!@copy($old_filename, $new_filename)) {
+            log_error("Failed copying attachment from $old_filename to $new_filename");
+        }
+    }
+}
+
 ?>
