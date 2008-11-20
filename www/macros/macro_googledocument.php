@@ -1,5 +1,4 @@
 <?php
-
 // This is a macro to embed a published google document
 // 
 // Arguments:
@@ -14,8 +13,8 @@ function macro_googledocument($args) {
     $width = getattr($args, 'width', 1000);
     $height = getattr($args, 'height', 600);
 
-    if (is_null($doc_key)) {
-        macro_error('Expected document `id` (Google Document ID)');
+    if (!$doc_key) {
+        return macro_error('Expected document `id` (Google Document ID)');
     }
 
     if (!is_whole_number($width) || !(is_whole_number($height)) ||

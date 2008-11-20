@@ -14,8 +14,8 @@ function macro_googlespreadsheet($args) {
     $width = getattr($args, 'width', 1000);
     $height = getattr($args, 'height', 600);
 
-    if (is_null($doc_key)) {
-        macro_error('Expected document `id` (Google Spreadsheet key)');
+    if (!$doc_key) {
+        return macro_error('Expected document `id` (Google Spreadsheet key)');
     }
 
     if (!is_whole_number($width) || !(is_whole_number($height)) ||

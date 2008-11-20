@@ -15,9 +15,10 @@ function macro_googlevideo($args) {
     $width = getattr($args, 'width', 400);
     $height = getattr($args, 'height', 326);
 
-    if (is_null($doc_id)) {
+    if (!$doc_id) {
         return macro_error('Expecting argument `id` (Google Video docId)');
     }
+
     if (!is_whole_number($width) || !is_whole_number($height) || $width < 50
         || $width > 700 || $height < 50 || $height > 700) {
         return macro_error('Invalid `width` / `height` argument');

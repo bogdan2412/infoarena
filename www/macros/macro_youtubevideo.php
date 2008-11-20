@@ -15,7 +15,7 @@ function macro_youtubevideo($args) {
     $width = getattr($args, 'width', 425);
     $height = getattr($args, 'height', 344);
 
-    if (is_null($doc_id)) {
+    if (!$doc_id) {
         return macro_error('Expecting argument `id` (Youtube Video docId)');
     }
 
