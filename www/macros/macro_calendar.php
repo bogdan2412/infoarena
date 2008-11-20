@@ -58,7 +58,7 @@ function macro_calendar($args) {
 		foreach ($array as $event)
 		{
             $html .= '<div class="event">';
-            $html .= '&raquo';
+            $html .= '&raquo;';
 			$html .=  $event['link'];
             $html .= '</div>';
 		}
