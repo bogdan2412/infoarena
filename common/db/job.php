@@ -41,8 +41,11 @@ SELECT `job`.`id`, `job`.`user_id`, `job`.`task_id`, `job`.`round_id`,
        `job`.`compiler_id`, `job`.`status`, `job`.`submit_time`,
        `job`.`eval_message`, `job`.`score`, `job`.`file_contents`
     FROM `ia_job` AS `job`
-    WHERE (`status` != 'done')
-    ORDER BY `submit_time` ASC LIMIT 1
+    WHERE `job`.`id` = (
+        SELECT MIN(id)
+        FROM `ia_job`
+        WHERE (`status` IN ('waiting', 'proceessing'))
+    )
 SQL;
     return db_fetch($query);
 }

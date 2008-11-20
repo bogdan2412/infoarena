@@ -1,0 +1,11 @@
+#! /usr/bin/env php
+<?php
+require_once(dirname($argv[0]) . "/utilities.php");
+
+db_connect();
+$query = "ALTER TABLE `ia_job`
+    ADD INDEX by_status USING BTREE(`status`, `id`)";
+
+db_query($query);
+
+?>
