@@ -256,6 +256,10 @@ function url_task_create() {
     return url_complex("admin/problema-noua");
 }
 
+function url_task_delete() {
+    return url_complex("admin/sterge-problema");
+}
+
 function url_task_list($page_name, $filter = null) {
     $args = $filter ? array('filtru' => $filter) : array();
     return url_complex($page_name, $args);

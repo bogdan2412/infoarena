@@ -197,4 +197,35 @@ function controller_task_create() {
     execute_view_die("views/task_create.php", $view);
 }
 
+// Deletes a task.
+function controller_task_delete($task_id) {
+    if (!request_is_post()) {
+        flash_error("Problema nu a putut fi stearsa.");
+        redirect(url_home());
+    }
+
+    // Validate task_id
+    if (!is_task_id($task_id)) {
+        flash_error("Problema inexistenta.");
+        redirect(url_home());
+    }
+
+    // Get task
+    $task = task_get($task_id);
+    if (!$task) {
+        flash_error("Problema inexistenta.");
+        redirect(url_home());
+    }
+
+    // Security check
+    identity_require('task-delete', $task);
+
+    // Delete the task
+    task_delete($task);
+
+    flash("Problema a fost stearsa.");
+    redirect(url_home());
+}
+
+
 ?>

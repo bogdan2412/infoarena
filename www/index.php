@@ -75,6 +75,12 @@ else if ($page == 'admin/problema-noua') {
     controller_task_create();
 }
 
+// Task deleter
+else if ($page == 'admin/sterge-problema') {
+    require_once(IA_ROOT_DIR.'www/controllers/task.php');
+    controller_task_delete(request("task_id"));
+}
+
 // Task detail editor
 else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'problema') {
     $obj_id = implode("/", array_slice($pagepath, 2));

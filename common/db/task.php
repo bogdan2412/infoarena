@@ -33,7 +33,7 @@ function task_get($task_id) {
     return mem_cache_set("task-by-id:$task_id", db_fetch($query));
 }
 
-// create new task
+// Create new task
 function task_create($task, $task_params) {
     log_assert_valid(task_validate($task));
     log_assert_valid(task_validate_parameters($task['type'], $task_params));
@@ -52,6 +52,49 @@ function task_create($task, $task_params) {
         _task_cache_add($task);
     }
     return $res;
+}
+
+// Delete a task, including scores, jobs and page
+// WARNING: This is irreversible.
+function task_delete($task) {
+    log_assert_valid(task_validate($task));
+
+    // Delete task from cache
+    _task_cache_delete($task);
+
+    // Delete problem page
+    textblock_delete($task["page_name"]);
+
+    // Remove task from all rounds
+    db_query("DELETE FROM `ia_round_task`
+              WHERE `task_id` = " . db_quote($task["id"]));
+
+    // Delete all scores received on task
+    db_query("DELETE FROM `ia_score`
+              WHERE `task_id` = " . db_quote($task["id"]));
+
+    // Delete task jobs
+    $job_ids_fetched = db_fetch_all("
+        SELECT `id`
+        FROM `ia_job`
+        WHERE `task_id` = " . db_quote($task["id"]));
+
+    $job_ids = array();
+    foreach ($job_ids_fetched as $job) {
+        $job_ids[] = (int)$job["id"];
+    }
+
+    $formated_job_ids = implode(", ", array_map("db_quote", $job_ids));
+    db_query("DELETE FROM `ia_job_test`
+              WHERE `job_id` IN ({$formated_job_ids})");
+    db_query("DELETE FROM `ia_job`
+              WHERE `id` IN ({$formated_job_ids})");
+
+    // Delete task
+    db_query("DELETE FROM `ia_task` WHERE `id` = '" . db_escape($task["id"]) . "'");
+
+    // Delete all task parameters
+    task_update_parameters($task["id"], array());
 }
 
 function task_update($task) {

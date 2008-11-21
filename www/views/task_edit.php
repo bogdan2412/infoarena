@@ -64,6 +64,13 @@ $form_fields = array(
 
 <h1>Editare <a href="<?= html_escape(url_task($view['task_id'])) ?>"><?= html_escape($view['title']) ?></a></h1>
 
+<?php if (identity_can("task-delete", $task)) { ?>
+<form action="<?= html_escape(url_task_delete()) ?>" method="post" style="float: right">
+    <input type="hidden" name="task_id" value="<?= html_escape($task_id) ?>" />
+    <input onclick="return confirm('Aceasta actiune este ireversibila! Doresti sa continui?')") type="submit" value="Sterge problema" id="form_delete" class="button important" />
+</form>
+<?php } ?>
+
 <form action="<?= html_escape(url_task_edit($task_id)) ?>"
       method="post"
       class="task"
