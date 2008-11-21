@@ -44,7 +44,7 @@ SELECT `job`.`id`, `job`.`user_id`, `job`.`task_id`, `job`.`round_id`,
     WHERE `job`.`id` = (
         SELECT MIN(id)
         FROM `ia_job`
-        WHERE (`status` IN ('waiting', 'proceessing'))
+        WHERE (`status` IN ('waiting', 'processing'))
     )
 SQL;
     return db_fetch($query);
