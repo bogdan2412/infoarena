@@ -58,6 +58,7 @@ include('views/tags_header.php');
 
     <li id="field_submit">
         <input type="submit" value="Salveaza" id="form_submit" class="button important" />
+        <input type="submit" value="Salveaza si Editeaza" name="form_save_and_edit" class="button" />
         <input type="button" value="Preview" id="form_preview" class="button" />
     </li>
 </ul>

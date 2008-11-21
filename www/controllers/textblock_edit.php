@@ -83,7 +83,13 @@ function controller_textblock_edit($page_name, $security = 'public') {
                 tag_update("textblock", $new_page['name'], $values['tags']);
             }
             flash('Am actualizat continutul');
-            redirect(url_textblock($page_name));
+
+            // Redirect depends of the pressed submit button
+            $save_and_edit = getattr($_POST, 'form_save_and_edit');
+            if($save_and_edit == null)
+                redirect(url_textblock($page_name));
+            else
+                redirect(url_textblock_edit($page_name));
         }
     } else {
         $errors = array();
