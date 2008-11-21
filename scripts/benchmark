@@ -13,8 +13,10 @@ $benchmark_urls = array(
     IA_URL . "changes",
     IA_URL . "clasament-rating",
     IA_URL . "monitor",
-    IA_URL . "monitor?first_entry=113425",
-    IA_URL . "monitor?first_entry=143425&round=arhiva&status=done&compiler=cpp",
+    IA_URL . "monitor?first_entry=63425",
+    IA_URL . "monitor?task=fractii&round=arhiva&first_entry=3550",
+    IA_URL . "monitor?user=gabitzish1&first_entry=4550",
+    IA_URL . "monitor?first_entry=53425&round=arhiva&status=done&compiler=cpp",
     IA_URL . "links",
     IA_URL . "stiri",
     IA_URL . "problema/adunare",
@@ -42,12 +44,18 @@ foreach ($benchmark_urls as $url) {
     $output = shell_exec($cmd);
 
     $ret = preg_match('/Requests per second:\s*([0-9.]+)\s/', $output, $match);
-    log_assert($ret, "Failed parsing ab output");
+    if (!$ret) {
+        log_var_dump($output);
+        log_error("Failed parsing ab output");
+    }
     $req = $match[1];
     $req_unit = 'reqs/s';
 
     $ret = preg_match('/Transfer rate:\s*([0-9.]+)/', $output, $match);
-    log_assert($ret, "Failed parsing ab output");
+    if (!$ret) {
+        log_var_dump($output);
+        log_error("Failed parsing ab output");
+    }
     $trans = $match[1];
     $trans_unit = 'kb/s';
 
