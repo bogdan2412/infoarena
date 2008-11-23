@@ -3,7 +3,7 @@
 require_once(dirname($argv[0]) . "/utilities.php");
 
 db_connect();
-$query = "ALTER TABLE `webdb`.`ia_job`
+$query = "ALTER TABLE `ia_job`
     DROP INDEX `by_round`,
     ADD INDEX by_round USING BTREE(`round_id`, `id`),
     DROP INDEX `by_task`,

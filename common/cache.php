@@ -6,8 +6,26 @@
 // Old stuff is deleted.
 //
 // Only returns true/false.
+
+// Used internally to determine file path from cache_id
+function _disk_cache_path($cache_id) {
+    return IA_ROOT_DIR . "cache/" . $cache_id;
+}
+
+// Recursively delete directories
+function _recursive_delete($path) {
+    foreach (glob($path . "/*") as $file_name) {
+        if (is_dir($file_name)) {
+            _recursive_delete($file_name);
+        } else if (is_file($file_name)) {
+            unlink($file_name);
+        }
+    }
+    rmdir($path);
+}
+
 function disk_cache_has($cache_id, $date = null) {
-    $file_name = IA_ROOT_DIR . 'cache/' . $cache_id;
+    $file_name = _disk_cache_path($cache_id);
 
     if (!@is_readable($file_name)) {
         return false;
@@ -31,7 +49,7 @@ function disk_cache_has($cache_id, $date = null) {
 
 // Get an object from the cache, or FALSE if nothing is found.
 function disk_cache_get($cache_id) {
-    $file_name = IA_ROOT_DIR . 'cache/' . $cache_id;
+    $file_name = _disk_cache_path($cache_id);
 
     if (@is_readable($file_name)) {
         if (IA_LOG_DISK_CACHE) {
@@ -50,7 +68,7 @@ function disk_cache_get($cache_id) {
 // Fails if not found.
 function disk_cache_serve($cache_id, $http_file_name, $mime_type = null) {
     require_once(IA_ROOT_DIR . 'www/utilities.php');
-    $file_name = IA_ROOT_DIR . 'cache/' . $cache_id;
+    $file_name = _disk_cache_path($cache_id);
 
     if (IA_LOG_DISK_CACHE) {
         log_print("CACHE: DISK: SERVE $cache_id");
@@ -62,8 +80,9 @@ function disk_cache_serve($cache_id, $http_file_name, $mime_type = null) {
 // Object should expire after $ttl, but it's only a hint.
 // Always returns $buffer.
 function disk_cache_set($cache_id, $buffer, $ttl = 0) {
-    $file_name = IA_ROOT_DIR . 'cache/' . $cache_id;
+    $file_name = _disk_cache_path($cache_id);
 
+    @mkdir(dirname($file_name), 0777, true);
     $ret = @file_put_contents($file_name, $buffer, LOCK_EX);
 
     if (IA_LOG_DISK_CACHE) {
@@ -79,14 +98,18 @@ function disk_cache_set($cache_id, $buffer, $ttl = 0) {
 
 // Delete something from the disk cache.
 function disk_cache_delete($cache_id) {
-    $file_name = IA_ROOT_DIR . 'cache/' . $cache_id;
+    $file_name = _disk_cache_path($cache_id);
     @unlink($file_name);
 }
 
 // Delete the entire disk cache
 function disk_cache_purge() {
-    foreach (glob(IA_ROOT_DIR . 'cache/[^.]*') as $file_name) {
-        @unlink($file_name);
+    foreach (glob(IA_ROOT_DIR . "cache/*", GLOB_ONLYDIR) as $dir_name) {
+        _recursive_delete($dir_name);
+    }
+
+    foreach (glob(IA_ROOT_DIR . "cache/*") as $file_name) {
+        unlink($file_name);
     }
 }
 
@@ -166,7 +189,7 @@ if (IA_MEM_CACHE_METHOD == 'none') {
     }
 
     // Purge the entire SHM cache.
-    // FIXME: does this actually work?
+    // FIXME: This does not work
     function mem_cache_purge() {
         if (IA_LOG_MEM_CACHE) {
             log_print("MEM CACHE: purge");

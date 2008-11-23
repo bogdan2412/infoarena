@@ -256,12 +256,11 @@ function job_get_range($filters, $start, $range) {
 
     if (!isset($wheres[1])) {
         // if we have no filters outside of `ia_job` table then optimize query
-        $subquery = sprintf("
+        $subquery = "
             SELECT `job`.`id` AS `ID`
             FROM `ia_job` as `job`
             WHERE (" . implode(") AND (", $wheres_job) . ")
-            ORDER BY `id` DESC LIMIT %s, %s",
-            $start, $range);
+            ORDER BY `id` DESC LIMIT {$start}, {$range}";
 
         $job_ids_fetched = db_fetch_all($subquery);
         foreach ($job_ids_fetched as $job_id) {
