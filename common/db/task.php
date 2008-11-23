@@ -84,11 +84,13 @@ function task_delete($task) {
         $job_ids[] = (int)$job["id"];
     }
 
-    $formated_job_ids = implode(", ", array_map("db_quote", $job_ids));
-    db_query("DELETE FROM `ia_job_test`
-              WHERE `job_id` IN ({$formated_job_ids})");
-    db_query("DELETE FROM `ia_job`
-              WHERE `id` IN ({$formated_job_ids})");
+    if (count($job_ids)) {
+        $formated_job_ids = implode(", ", array_map("db_quote", $job_ids));
+        db_query("DELETE FROM `ia_job_test`
+                  WHERE `job_id` IN ({$formated_job_ids})");
+        db_query("DELETE FROM `ia_job`
+                  WHERE `id` IN ({$formated_job_ids})");
+    }
 
     // Delete task
     db_query("DELETE FROM `ia_task` WHERE `id` = '" . db_escape($task["id"]) . "'");
