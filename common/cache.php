@@ -1,4 +1,5 @@
 <?php
+require_once(IA_ROOT_DIR . "common/string.php");
 
 // Check if there is something in the cache newer that date.
 // If date is null age doesn't matter.
@@ -14,6 +15,9 @@ function _disk_cache_path($cache_id) {
 
 // Recursively delete directories
 function _recursive_delete($path) {
+    $path = realpath($path);
+    log_assert($path != IA_ROOT_DIR . "cache/" &&
+               starts_with($path, IA_ROOT_DIR . "cache/"));
     foreach (glob($path . "/*") as $file_name) {
         if (is_dir($file_name)) {
             _recursive_delete($file_name);
@@ -82,7 +86,14 @@ function disk_cache_serve($cache_id, $http_file_name, $mime_type = null) {
 function disk_cache_set($cache_id, $buffer, $ttl = 0) {
     $file_name = _disk_cache_path($cache_id);
 
-    @mkdir(dirname($file_name), 0777, true);
+    if (!is_dir(dirname($file_name))) {
+        log_assert(!file_exists(dirname($file_name)),
+                   "Cache directory contains invalid files");
+
+        $old_umask = umask(0);
+        @mkdir(dirname($file_name), 0777, true);
+        umask($old_umask);
+    }
     $ret = @file_put_contents($file_name, $buffer, LOCK_EX);
 
     if (IA_LOG_DISK_CACHE) {

@@ -1,0 +1,31 @@
+#! /usr/bin/env php
+<?php
+require_once(dirname($argv[0]) . "/utilities.php");
+require_once(IA_ROOT_DIR . "common/attachment.php");
+
+$verbose = getattr($argv, 1, false);
+
+db_connect();
+$files = db_fetch_all("SELECT `id`, `page`, `name`, `mime_type` FROM `ia_file`");
+
+$nr = 0;
+foreach ($files as $file)
+{
+    $mime_type = get_mime_type(attachment_get_filepath($file));
+    if ($mime_type != $file["mime_type"]) {
+        db_query("UPDATE `ia_file`
+                  SET `mime_type` = " . db_quote($mime_type) . "
+                  WHERE `id` = " . db_quote($file["id"]));
+        if ($verbose) {
+            log_print("Attachment {$file["id"]} - {$file["page"]}/{$file["name"]}: Changed mime_type from '{$file["mime_type"]}' to '{$mime_type}'");
+        }
+    }
+    $nr++;
+
+    if ($nr % 1000 == 0) {
+        log_print("Updated mime_types for " . $nr . " files so far.");
+    }
+}
+
+?>
+
