@@ -71,7 +71,7 @@ function get_snippet($tb, $max_num_words, $whole_news = false,
                     break;
                 }
                 $num_words += $par_words;
-                $cache_res .= $element;
+                $cache_res .= $element->outertext();
             }
 
             $cache_res .= '<a href="' . html_escape($url) .
