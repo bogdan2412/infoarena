@@ -1,0 +1,25 @@
+#! /usr/bin/env php
+<?php
+require_once(dirname($argv[0]) . "/utilities.php");
+
+db_connect();
+
+$news = db_fetch_all("SELECT name FROM ia_textblock WHERE name LIKE \"stiri/%\"");
+$news_tag_id = db_fetch("SELECT id FROM ia_tags WHERE name = 'stiri'");
+
+if ($news_tag_id == null) {
+    db_query("INSERT INTO ia_tags (name) VALUES ('stiri')");
+    $news_tag_id = db_fetch("SELECT id FROM ia_tags WHERE name = 'stiri'");
+}
+
+foreach ($news as $row) {
+    $new_location = sprintf("blog/%s", substr($row['name'], 6));
+
+    $query = sprintf("UPDATE ia_textblock SET name = '%s' WHERE name = '%s'", $new_location, $row['name']);
+    db_query($query);
+
+    $query = sprintf("INSERT INTO ia_textblock_tags VALUES (%d, '%s')", $news_tag_id['id'], $new_location);
+    db_query($query);
+}
+?>
+

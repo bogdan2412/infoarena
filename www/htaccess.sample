@@ -9,7 +9,9 @@ RewriteCond %{REQUEST_URI}  !^.*/static/.*$
 RewriteCond %{REQUEST_URI}  !^.*/forum/.*$
 RewriteCond %{REQUEST_URI}  !^.*/robots\.txt$
 RewriteCond %{REQUEST_URI}  !^.*/favicon\.ico$
+RewriteCond %{REQUEST_URI}  !^.*/stiri/.*$
 RewriteRule ^(.*) index.php?page=$1 [QSA]
+RewriteRule ^stiri/(.*)$ blog/$1 [R=301,QSA]
 
 php_value magic_quotes_gpc 0
 php_value register_globals 0

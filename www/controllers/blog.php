@@ -37,7 +37,7 @@ function controller_blog_index() {
     $view = array();
     $view['topnav_select'] = 'blog';
     $view['title'] = 'infoarena - Blog';
-    
+
     // Pager options
     $args['display_entries'] = request('display_entries', 10);
     $args['param_prefix'] = 'blog_';
@@ -59,7 +59,7 @@ function controller_blog_index() {
         $subpage['comment_count'] = blog_get_comment_count($subpage['forum_topic']);
         $subpage['tags'] = tag_get_names("textblock", $subpage['name']);
     }
-    
+
     execute_view_die('views/blog_index.php', $view);
 }
 
@@ -99,11 +99,17 @@ function controller_blog_view($page_name, $rev_num = null) {
     $view['revision'] = $rev_num;
     $view['revision_count'] = $rev_count;
     $view['page_name'] = $page['name'];
-    $view['textblock'] = $page; 
+    $view['textblock'] = $page;
     $view['forum_topic'] = $page['forum_topic'];
     $view['tags'] = tag_get_names("textblock", $page['name']);
     $view['first_textblock'] = textblock_get_revision($page_name, 1, true);
-    log_assert($view['textblock']['creation_timestamp'] == $view['first_textblock']['timestamp']);
+
+    // This emits a warning on the stripped database used by devs because
+    // some revisions are missing. On the live database it should not.
+    if ($view['textblock']['creation_timestamp'] !=
+            $view['first_textblock']['timestamp']) {
+        log_warn("Inconsistent database: first revision missing");
+    }
 
     execute_view_die('views/blog_view.php', $view);
 }

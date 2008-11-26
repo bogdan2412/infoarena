@@ -22,8 +22,9 @@ if (getattr($view, 'revision')) {
 // blog content
 echo '<div class="wiki_text_block">';
 echo '<div class="blog">';
-echo '<h1>'.$textblock['title'].'</h1>';
-echo wiki_process_textblock($textblock);
+$text = wiki_process_textblock($textblock);
+echo hijack_title($text, null, $textblock['title']);
+echo $text;
 echo '<div class="strap">';
 echo '<strong>Categorii: </strong>';
 foreach ($tags as $tag) {

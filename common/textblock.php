@@ -1,6 +1,90 @@
 <?php
 
 require_once(IA_ROOT_DIR . "common/db/textblock.php");
+require_once(IA_ROOT_DIR . "common/cache.php");
+require_once(IA_ROOT_DIR . "common/external_libs/simple_html_dom.php");
+
+// Hijacks title from $text if already there. If $url is null the title
+// will not have a link.
+function hijack_title(&$text, $url, $title) {
+    if (preg_match('/^\s*<h1>(.*)<\/h1>(.*)$/sxi', $text, $matches)) {
+        $text = $matches[2];
+        if (is_null($url)) {
+            return '<h1>'.$matches[1].'</h1>';
+        } else {
+            return '<h1>'.format_link($url, $matches[1], false).'</h1>';
+        }
+    } else {
+        if (is_null($url)) {
+            return '<h1>'.html_escape($title).'</h1>';
+        } else {
+            return '<h1>'.format_link($url, $title).'</h1>';
+        }
+    }
+}
+
+// Returns a snippet of a textblock. The snippet does not contain images
+// (if $remove_images = true) and it doesn't exceed $max_num_words.
+//
+// Some exceptions:
+//    * news -- they are fully rendered in the snippet if $whole_news is true
+//    * blog posts having a huge first paragraph -- although we exceed the
+//        number of words allowed we should have a snippet for this kind of
+//        posts after all
+function get_snippet($tb, $max_num_words, $whole_news = false,
+        $remove_images = true) {
+    $cache_id = 'snip_' . preg_replace('/[^a-z0-9\.\-_]/i', '_',
+                $tb['name']) . '_' . $max_num_words . '_' . $whole_news .
+                $remove_images . '_' . db_date_parse($tb['timestamp']);
+    $cache_res = disk_cache_get($cache_id);
+
+    if ($cache_res == false) {
+        $url = url_textblock($tb['name']);
+        $html_text = wiki_process_textblock_recursive($tb);
+
+        $cache_res .= hijack_title($html_text, $url, $tb['title']);
+        $cache_res .= '<div class="wiki_text_block">';
+
+        // May be there is a better way to find out if $tb is tagged
+        // 'stiri'. On the other hand, this operation is cached and we
+        // shouldn't worry too much about performance.
+        if ($whole_news && tag_exists('textblock', $tb['name'], tag_get_id('stiri'))) {
+            // Don't compute snippet for news -- they should be rendered as
+            // they are in the snippet.
+            $cache_res .= $html_text;
+        } else {
+            $html_dom = str_get_html($html_text);
+            $num_words = 0;
+
+            if ($remove_images) {
+                // Remove all the images -- ussually they look bad in a snippet.
+                foreach ($html_dom->find('img') as $element) {
+                    $element->outertext = '';
+                }
+            }
+
+            // Select some paragraphs so that the maximum number of words is
+            // not exceeded and at least one paragraph is selected.
+            foreach ($html_dom->find('p') as $element) {
+                $par_words = count(explode(" ", $element->plaintext));
+                if ($num_words + $par_words >= $max_num_words && $num_words > 0) {
+                    break;
+                }
+                $num_words += $par_words;
+                $cache_res .= $element;
+            }
+
+            $cache_res .= '<a href="' . html_escape($url) .
+                '"> &raquo; Citeste restul insemnarii</a>';
+            unset($html_dom);
+        }
+
+        $cache_res .= '</div>';
+        disk_cache_set($cache_id, $cache_res, 3);
+    }
+
+    return $cache_res;
+}
 
 // Check if textblock security string is valid
 // FIXME: check task/round existence?
