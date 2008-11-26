@@ -2,13 +2,34 @@
 
 include('header.php');
 
+$min_rev_id = min($revfrom_id, $revto_id);
+$max_rev_id = max($revfrom_id, $revto_id);
+
 ?>
+
+<div class="swap_diff">
+<?= format_link(url_textblock_diff($page_name, $revto_id, $revfrom_id), "Inverseaza reviziile") ?>
+</div>
 
 <h1>Diferente pentru
 <?= format_link(url_textblock($page_name), $page_name) ?> intre reviziile
     <?= format_link(url_textblock_revision($page_name, $revfrom_id), "#$revfrom_id") ?> si
     <?= format_link(url_textblock_revision($page_name, $revto_id), "#$revto_id") ?>
 </h1>
+
+<div class="diff_navbar">
+<?php if ($max_rev_id < $rev_count) { ?>
+    <div class="next_diff">
+    <?= format_link(url_textblock_diff($page_name, $max_rev_id, $max_rev_id + 1), "Diferente intre #" . $max_rev_id . " si #" . ($max_rev_id + 1)); ?>
+    </div>
+<?php } ?>
+<?php if ($min_rev_id > 1) { ?>
+    <div class="prev_diff">
+    <?= format_link(url_textblock_diff($page_name, $min_rev_id - 1, $min_rev_id), "Diferente intre #" . ($min_rev_id - 1) . " si #" . $min_rev_id); ?>
+    </div>
+<?php } ?>
+</div>
+
 <?php
 
 function print_diff($diff) {
@@ -26,7 +47,7 @@ function print_diff($diff) {
                         if ($chunk['type'] != 'normal') {
                             $output .= '<'.$chunk['type'].'>';
                         }
-                        $output .= html_escape($chunk['string']); 
+                        $output .= html_escape($chunk['string']);
                         if ($chunk['type'] != 'normal') {
                             $output .= '</'.$chunk['type'].'>';
                         }

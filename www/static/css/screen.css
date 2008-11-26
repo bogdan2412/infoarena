@@ -693,7 +693,7 @@ form.round li#field_tasks select {
 /* Diff */
 .diff {
     font-family: monospace;
-    border: #999988 solid 1px;  
+    border: #999988 solid 1px;
     margin-bottom: 1em;
 }
 
@@ -702,7 +702,7 @@ form.round li#field_tasks select {
     border: #CC0000 solid 1px;
     display: block;
 }
-    
+
 .diff .added {
     background-color: #DDFFDD;
     border: #00AA00 solid 1px;
@@ -729,9 +729,20 @@ form.round li#field_tasks select {
 .diff ins {
     background-color: #99EE99;
     text-decoration: none;
-    
 }
 
+.prev_diff {
+    /*float: left;*/
+}
+
+.next_diff {
+    float: right;
+}
+
+.swap_diff {
+    float: right;
+    margin: 0.5em;
+}
 
 /* Wiki text block */
 .wiki_text_block {
@@ -790,7 +801,7 @@ form.round li#field_tasks select {
     font-family: Georgia, "Times New Roman", Times, serif;
     font-size: 13pt;
     font-weight: normal;
-    background-color: white;    
+    background-color: white;
 }
 
 /* layout table with 3 columns */
@@ -806,7 +817,7 @@ form.round li#field_tasks select {
     font-family: Arial, Tahoma, sans-serif;
     font-size: 1.3em;
     font-weight: normal;
-    background-color: white;    
+    background-color: white;
 }
 
 .wiki_text_block .compact {
@@ -1421,7 +1432,6 @@ ul.filters li.submit {
     text-align: center;
     line-height: 2em;
     -moz-border-radius: 7px;
-         
 }
 
 .report {

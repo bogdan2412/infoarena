@@ -51,11 +51,11 @@ function controller_textblock_view($page_name, $rev_num = null) {
     execute_view_die('views/textblock_view.php', $view);
 }
 
-// Show a textblock diff.
-// FIXME: two revisions.
+// Show differences between two textblock revisions.
 function controller_textblock_diff($page_name) {
     global $identity_user;
     $page = textblock_get_revision($page_name);
+    $rev_count = textblock_get_revision_count($page_name);
     if ($page) {
         identity_require('textblock-history', $page);
     } else {
@@ -63,32 +63,35 @@ function controller_textblock_diff($page_name) {
         redirect(url_home());
     }
 
-    // Get revisions.
-    // FIXME: probably doesn't work.
-    $revfrom_id = (int)request("rev_from");
-    $revto_id = (int)request("rev_to");
+    // Validate revision ids.
+    $revfrom_id = request("rev_from");
+    $revto_id = request("rev_to");
     if (is_null($revfrom_id) || is_null($revto_id)) {
-        flash_error("Nu ati specificat reviziile");
+        flash_error("Nu ati specificat reviziile.");
+        redirect(url_textblock($page_name));
+    }
+    if (!is_whole_number($revfrom_id) || !is_whole_number($revto_id) ||
+        $revfrom_id < 1 || $revfrom_id > $rev_count ||
+        $revto_id < 1 || $revto_id > $rev_count) {
+        flash_error("Reviziile sunt invalide.");
         redirect(url_textblock($page_name));
     }
     if ($revfrom_id == $revto_id) {
-        flash_error("Reviziile sunt identice");
-        redirect(url_textblock($page_name));
-    }
-    if ($revfrom_id < 1 || $revto_id < 1) {
-        flash_error("Reviziile sunt invalide");
+        flash_error("Reviziile sunt identice.");
         redirect(url_textblock($page_name));
     }
 
+    // Get revisions.
     $revfrom = textblock_get_revision($page_name, $revfrom_id);
     $revto = textblock_get_revision($page_name, $revto_id);
     if (is_null($revfrom) || is_null($revto)) {
-        flash_error("Nu am gasit reviziile");
-        redirect(url_textblock($page_name));
+        log_error("Unable to get revisions $revfrom and $revto for " .
+                  "textblock $page_name.");
     }
     log_assert_valid(textblock_validate($revfrom));
     log_assert_valid(textblock_validate($revto));
 
+    // Get diffs.
     $diff_title = diff_inline(array($revfrom['title'], $revto['title']));
     $diff_content = diff_inline(array($revfrom['text'], $revto['text']));
     $diff_security = diff_inline(array($revfrom['security'], $revto['security']));
@@ -97,6 +100,7 @@ function controller_textblock_diff($page_name) {
     $view = array();
     $view['page_name'] = $page['name'];
     $view['title'] = "Diferente pentru $page_name intre reviziile $revfrom_id si $revto_id";
+    $view['rev_count'] = $rev_count;
     $view['revfrom_id'] = $revfrom_id;
     $view['revto_id'] = $revto_id;
     $view['diff_title'] = $diff_title;
