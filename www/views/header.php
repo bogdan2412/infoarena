@@ -25,6 +25,8 @@ header("Content-type: text/html; charset=utf-8");
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="Description" content="Concursuri de programare, Stiri si articole de informatica, Comunitate online. Arhiva de probleme, Evaluare 24/24, Forum, Resurse educationale, Pregatire pentru olimpiada.">
+    <meta name="keywords" content="Cocursuri, Informatica, Programare, Comunitate, Algoritmi, Structuri de date, Articole, Evaluare, Pregatire">
     <meta name="verify-v1" content="j9UCDYvsDL2pLtkJDDkE4HnHVmXakgvz30vOyIJ+6cI=" />
     <title><?= html_escape(getattr($view, 'title')) ?></title>
 
