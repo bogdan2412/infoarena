@@ -25,9 +25,20 @@ header("Content-type: text/html; charset=utf-8");
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<?php
+    // Hack to insert meta description and keywords for home page.
+    // Description should get us a better snippet for keywords that hit our
+    // home page. If this proves to be effective we should find a way to
+    // include meta descriptions for the most visited pages (can we do it with
+    // a macro?).
+    if (getattr($view, 'page_name') == "home") {
+?>
     <meta name="Description" content="Concursuri de programare, Stiri si articole de informatica, Comunitate online. Arhiva de probleme, Evaluare 24/24, Forum, Resurse educationale, Pregatire pentru olimpiada.">
-    <meta name="keywords" content="Cocursuri, Informatica, Programare, Comunitate, Algoritmi, Structuri de date, Articole, Evaluare, Pregatire">
+    <meta name="keywords" content="Cocursuri, Informatica, Programare, Comunitate, Algoritmi, Articole, Evaluare, Pregatire">
     <meta name="verify-v1" content="j9UCDYvsDL2pLtkJDDkE4HnHVmXakgvz30vOyIJ+6cI=" />
+<?php
+    }
+?>
     <title><?= html_escape(getattr($view, 'title')) ?></title>
 
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/sitewide.css')) ?>"/>
@@ -143,7 +154,7 @@ if (isset($recent_pages) && (1 < count($recent_pages))) {
 <div id="flash" class="flash <?= html_escape(getattr($_SESSION, '_ia_flash_class')) ?>"><?= html_escape($_SESSION['_ia_flash']) ?></div>
 
 <?php
-        // clear flash message 
+        // clear flash message
         unset($_SESSION['_ia_flash']);
         if (isset($_SESSION['_ia_flash_class'])) {
             unset($_SESSION['_ia_flash_class']);
