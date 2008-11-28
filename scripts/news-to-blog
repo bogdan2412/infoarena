@@ -1,6 +1,7 @@
 #! /usr/bin/env php
 <?php
 require_once(dirname($argv[0]) . "/utilities.php");
+require_once(IA_ROOT_DIR . "common/db/textblock.php");
 
 db_connect();
 
@@ -15,8 +16,7 @@ if ($news_tag_id == null) {
 foreach ($news as $row) {
     $new_location = sprintf("blog/%s", substr($row['name'], 6));
 
-    $query = sprintf("UPDATE ia_textblock SET name = '%s' WHERE name = '%s'", $new_location, $row['name']);
-    db_query($query);
+    textblock_move($row["name"], $new_location);
 
     $query = sprintf("INSERT INTO ia_textblock_tags VALUES (%d, '%s')", $news_tag_id['id'], $new_location);
     db_query($query);
