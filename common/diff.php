@@ -101,7 +101,7 @@ function lcs($a, $b) {
         for ($j = 1; $j <= $M; ++$j) {
             if (mb_substr($a, $i-1, 1) == mb_substr($b, $j-1, 1)) {
                 $C[$i%2][$j] = $C[($i-1)%2][$j-1].mb_substr($a, $i-1, 1);
-            } else if ($C[($i-1)%2][$j] > $C[$i%2][$j-1]) {
+            } else if (mb_strlen($C[($i-1)%2][$j]) > mb_strlen($C[$i%2][$j-1])) {
                 $C[$i%2][$j] = $C[($i-1)%2][$j];
             } else {
                 $C[$i%2][$j] = $C[$i%2][$j-1];
