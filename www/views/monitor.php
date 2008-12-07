@@ -11,7 +11,7 @@ if (!$display_only_table) {
 }
 
 if (!$display_only_table && identity_can('job-reeval') && $view['total_entries'] <= IA_REEVAL_MAXJOBS) {
-    echo '<form enctype="multipart/form-data" action="'.html_escape(url_reeval($view['filters'])).'" 
+    echo '<form enctype="multipart/form-data" action="'.html_escape(url_reeval($view['filters'])).'"
                method="post" class="reeval" id="job_reeval" onsubmit="return confirm(\'Se vor reevalua '.
                html_escape($view['total_entries']).' job-uri! Continuam?\')">';
     echo '<ul class="form hollyfix"><li id="field_submit">';
@@ -71,7 +71,7 @@ if (!$jobs) {
                 $msg = html_escape(sprintf("%s: %s puncte",
                     $row['eval_message'], $row['score']));
             } else {
-                $msg = html_escape( $row['eval_message'] );
+                $msg = html_escape($row['eval_message']);
             }
             $msg = "<span style=\"job-status-done\">$msg</span>";
             return format_link($url, $msg, false);
@@ -124,6 +124,9 @@ if (!$jobs) {
 
     // For the size column.
     function format_size($row) {
+        if (!identity_can('job-view-source-size', $row)) {
+            return "...";
+        }
         $size = sprintf("%.2f", $row['job_size']/1024)." kb";
         if (identity_can('job-view-source', $row)) {
             return format_link(url_job_view_source($row['id']), $size);
@@ -168,7 +171,7 @@ if (!$jobs) {
     $options = array(
         'css_class' => 'monitor',
         'show_count' => true,
-        'display_entries' => $view['display_entries'], 
+        'display_entries' => $view['display_entries'],
         'total_entries' => $view['total_entries'],
         'first_entry' => $view['first_entry'],
         'pager_style' => 'standard',

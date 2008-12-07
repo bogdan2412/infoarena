@@ -138,7 +138,7 @@ function security_simplify_action($action) {
         case 'task-tag':
         case 'round-tag':
         case 'textblock-tag':
-        case 'job-reeval':  
+        case 'job-reeval':
         case 'simple-critical':
             return 'simple-critical';
 
@@ -156,6 +156,7 @@ function security_simplify_action($action) {
         case 'job-view':
         case 'job-eval':
         case 'job-view-source':
+        case 'job-view-source-size':
         case 'job-view-score':
             return $action;
 
@@ -478,7 +479,7 @@ function security_macro($user, $action, $args) {
         case 'macro-debug':
         case 'macro-remotebox':
         case 'macro-preoni':
-            // only administrators can execute these macros 
+            // only administrators can execute these macros
             return $usersec == 'admin';
 
         default:
@@ -504,10 +505,6 @@ function security_blog($user, $action, $round) {
 }
 
 
-// FIXME: implement job security.
-// * job-view-source (this should be job-view-source) 
-// * job-view
-//
 // There is no job-eval, jobs are evaluated on the spot, we check job-view instead.
 function security_job($user, $action, $job) {
     $usersec = getattr($user, 'security_level', 'anonymous');
@@ -516,6 +513,9 @@ function security_job($user, $action, $job) {
     $is_task_owner = ($job['task_owner_id'] == $user['id'] && $usersec == 'helper');
     $can_view_job = ($job['task_hidden'] == false) || $is_task_owner || $is_admin;
     $can_view_source = ($job['task_open_source'] == true) || $is_task_owner || $is_owner || $is_admin;
+    $can_view_source_size = ($job['round_type'] == "archive") ||
+                            ($job['round_type'] != "archive" && $job['round_state'] == "complete") ||
+                            $can_view_source;
     $can_view_score = ($job['round_public_eval'] == true) || $is_task_owner || $is_admin;
 
     // Log query response.
@@ -535,8 +535,11 @@ function security_job($user, $action, $job) {
         case 'job-view':
             return $can_view_job;
 
-        case 'job-view-source': 
+        case 'job-view-source':
             return $can_view_job && $can_view_source;
+
+        case 'job-view-source-size':
+            return $can_view_job && $can_view_source_size;
 
         case 'job-view-score':
             return $can_view_job && $can_view_score;

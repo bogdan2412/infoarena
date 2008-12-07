@@ -91,7 +91,10 @@ function job_get_by_id($job_id, $contents = false) {
                    `task`.`open_source` AS `task_open_source`,
                    `task`.`open_tests` AS `task_open_tests`,
                    `round`.`id` AS `round_id`,
-                   `round`.`page_name` AS `round_page_name`, `round`.`title` AS `round_title`,
+                   `round`.`page_name` AS `round_page_name`,
+                   `round`.`title` AS `round_title`,
+                   `round`.`type` AS `round_type`,
+                   `round`.`state` AS `round_state`,
                    `round`.`public_eval` AS `round_public_eval`";
     if ($contents) {
         $field_list .= ", job.file_contents";
@@ -238,6 +241,8 @@ function job_get_range($filters, $start, $range) {
             `task`.`open_source` AS `task_open_source`,
             `round`.`page_name` AS `round_page_name`,
             `round`.`title` AS `round_title`,
+            `round`.`state` AS `round_state`,
+            `round`.`type` AS `round_type`,
             `round`.`public_eval` AS `round_public_eval`
         #    (CASE WHEN `status` = 'processing' THEN
         #        (SELECT `value` FROM `ia_parameter_value` WHERE
