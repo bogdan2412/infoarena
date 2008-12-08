@@ -261,6 +261,11 @@ table th .sort-field-active a:hover {
     background-color: white;
 }
 
+table.fill-screen, table.fill-screen tr {
+    width: 99%;         /* Internet Explorer 6 doesn't like it when it's 100% */
+    margin: 0.5px auto;
+}
+
 /* datagrids */
 
 td.number, th.number, td.date, th.date {

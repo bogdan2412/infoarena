@@ -15,7 +15,7 @@ define("IA_CLIENT_CACHE_ENABLE", true);
 define("IA_CLIENT_CACHE_AGE", 604800);
 
 // maximum attachment size for wiki pages
-define("IA_ATTACH_MAXSIZE", 60*1024*1024);
+define("IA_ATTACH_MAXSIZE", 70*1024*1024);
 
 // maximum jobs to reeval
 define("IA_REEVAL_MAXJOBS", 512);
@@ -71,6 +71,6 @@ define("IA_LATEX_ENABLE", false);
 
 // List of safe MIME types
 // FIXME: add more?
-$IA_SAFE_MIME_TYPES = array('image/jpeg', 'image/png', 'image/gif');
+$IA_SAFE_MIME_TYPES = array('image/jpeg', 'image/pjpeg', 'image/png', 'image/gif', 'image/x-ms-bmp');
 
 ?>

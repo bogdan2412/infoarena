@@ -30,10 +30,10 @@ function format_operations($row) {
     if ($row['revision_id'] == $total_entries) {
         return '<strong>Ultima versiune</strong>';
     } else {
-        return  '['. format_link($diffurl, "Compara") .'] '.
+        return  '['. format_link($diffurl, "Compara cu ultima revizie") .'] '.
                 '['. format_post_link($resturl, "Inlocuieste") .'] '.
-                '['. format_link($viewurl, "Vezi") .'] '.
-                '['. format_link($delurl, "Sterge") .']';
+                '['. format_link($viewurl, "Vezi") .'] '/*.
+                '['. format_link($delurl, "Sterge") .']'*/;
     }
 }
 
@@ -118,16 +118,26 @@ $options = array(
 // because the form submit erases it from the url otherwise
 ?>
 <input type = "hidden" name = "action" value = "diff" />
-
-<?
-echo format_table($revisions, $column_infos, $options);
-?>
-
+<div class="compare-button-container">
 <input
     type = "submit"
     value = "Compara versiunile selectate"
     class = "button compare-button"
 />
+</div>
+
+<?
+$options["css_class"] = "fill-screen";
+echo format_table($revisions, $column_infos, $options);
+?>
+
+<div class="compare-button-container">
+<input
+    type = "submit"
+    value = "Compara versiunile selectate"
+    class = "button compare-button"
+/>
+</div>
 </form>
 
 <?php include('footer.php'); ?> 

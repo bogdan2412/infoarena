@@ -19,7 +19,7 @@ function controller_monitor() {
     $view['jobs'] = job_get_range($view['filters'], $options['first_entry'], $options['display_entries']);
     $view['total_entries'] = job_get_count($view['filters']);
     $view['first_entry'] = $options['first_entry'];
-    $view['display_entries'] = request('display_entries', $options['display_entries']);
+    $view['display_entries'] = $options['display_entries'];
     $view['display_only_table'] = request('only_table', false);
 
     execute_view_die('views/monitor.php', $view);

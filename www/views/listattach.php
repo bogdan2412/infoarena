@@ -102,6 +102,7 @@ $column_infos = array(
             'pager_style' => 'standard',
             'show_count' => true,
             'show_display_entries' => true,
+            'css_class' => 'fill-screen',
         );
 
         echo format_table($view['attach_list'], $column_infos, $options);

@@ -649,11 +649,11 @@ fieldset ul.form {
 }
 
 .compare-radio {
-    text-align : center;
+    text-align: center;
 }
 
-.compare-button {
-    float : right;
+.compare-button-container {
+    text-align: right;
 }
 
 /* user profile form */
