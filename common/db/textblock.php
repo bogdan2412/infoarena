@@ -293,9 +293,11 @@ function textblock_copy($old_name, $new_name) {
 
     $new_textblock = textblock_get_revision($old_name);
     $new_textblock['name'] = $new_name;
-    $new_textblock['timestamp'] = db_date_format();
     $new_textblock['user_id'] = identity_get_user_id();
-    db_insert('ia_textblock', $new_textblock);
+    textblock_add_revision($new_textblock['name'], $new_textblock['title'],
+                           $new_textblock['text'], $new_textblock['user_id'],
+                           $new_textblock['security'],
+                           $new_textblock['forum_topic'], null, null);
 
     // Get a list of attachments.
     $files = attachment_get_all($old_name);

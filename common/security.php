@@ -109,12 +109,12 @@ function security_simplify_action($action) {
         case 'textblock-attach':
         case 'textblock-create':
         case 'textblock-change-topic':
+        case 'textblock-copy':
         case 'simple-rev-edit':
             return 'simple-rev-edit';
 
         // Irreversible edits.
         case 'textblock-move':
-        case 'textblock-copy':
         case 'attach-overwrite':
         case 'attach-delete':
         case 'attach-rename':
