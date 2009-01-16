@@ -8,7 +8,7 @@ require_once(IA_ROOT_DIR . "common/db/parameter.php");
 function _task_cache_add($task) {
     if (!is_null($task)) {
         log_assert_valid(task_validate($task));
-        mem_cache_set("task-by-id:{$task['id']}", $task);
+        mem_cache_set("task-by-id:{$task['id']}", $task, IA_MEM_CACHE_TASK_EXPIRATION);
     }
     return $task;
 }
@@ -30,7 +30,7 @@ function task_get($task_id) {
                      db_escape($task_id));
 
     // This way nulls (missing tasks) get cached too.
-    return mem_cache_set("task-by-id:$task_id", db_fetch($query));
+    return mem_cache_set("task-by-id:$task_id", db_fetch($query), IA_MEM_CACHE_TASK_EXPIRATION);
 }
 
 // Create new task

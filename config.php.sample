@@ -124,6 +124,8 @@ define("IA_MEM_CACHE_EXPIRATION", 3600);
 // Round TTL. Smaller because of evaluator.
 define("IA_MEM_CACHE_ROUND_EXPIRATION", 10);
 
+// Task TTL. Smaller because of evaluator.
+define("IA_MEM_CACHE_TASK_EXPIRATION", 10);
 
 // Logging options. Anything else in normal operation is a bug.
 // Filling error_log on a production machine sucks.
