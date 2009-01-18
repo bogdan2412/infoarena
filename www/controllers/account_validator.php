@@ -4,7 +4,16 @@ require_once(IA_ROOT_DIR."common/tags.php");
 
 // validates registration input data (wrapper for validate_data)
 function validate_register_data($data) {
-    return validate_user_data($data, true, null);
+    $errors = validate_user_data($data, true, null);
+
+    $resp = recaptcha_check_answer(IA_CAPTCHA_PRIVATE_KEY,
+                                   $_SERVER["REMOTE_ADDR"],
+                                   $data['recaptcha_challenge_field'],
+                                   $data['recaptcha_response_field']);
+    if (!$resp->is_valid) {
+        $errors['captcha'] = "Cuvintele introduse de tine sunt incorecte";
+    }
+    return $errors;
 }
 
 // validates user profile input data (wrapper for validate_data)

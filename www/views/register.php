@@ -74,6 +74,24 @@
     </ul>
 </fieldset>
 
+<fieldset>
+    <legend>Captcha</legend>
+    <ul class="form">
+        <li>
+            <script>
+                var RecaptchaOptions = {
+                theme : 'clean',
+                };
+            </script>
+
+            <label>Scrieti cuvintele de mai jos:</label>
+            <?= ferr_span('captcha') ?>
+            <?= fval('captcha', false) ?>
+            <span class="fieldHelp">Prin completarea acestei casute ajutati la transcrierea cartilor in format electronic</span>
+        </li>
+    </ul>
+</fieldset>
+
 <ul class="form clear">
     <li>
         <input type="checkbox" <?php if (fval('newsletter'))
