@@ -17,7 +17,7 @@ function format_textblock_revision($row) {
 
 function format_textblock_title($row) {
     global $page_name;
-    $title = $row['title'];
+    $title = html_escape($row['title']);
     return "$title";
 }
 
