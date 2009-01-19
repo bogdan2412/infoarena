@@ -1,4 +1,5 @@
 <?php
+
 // This is a macro to embed a published google document
 // 
 // Arguments:
@@ -7,7 +8,6 @@
 //      heigth(optional)    default 600px 
 //
 // Example: ==GoogleDocument(id="dfct3qd8_4gtxnh4dx" height = "200" width = "500")==
-
 function macro_googledocument($args) {
     $doc_key = html_escape(getattr($args, 'id'));
     $width = getattr($args, 'width', 1000);

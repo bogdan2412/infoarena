@@ -5,12 +5,14 @@ require_once(IA_ROOT_DIR . "common/db/textblock.php");
 
 // This macro takes a page parameter and includes another wiki page
 //
-// Additionally it accepts an unlimited number of template parameters. The macro will substitute
-// any occurences of form: %tag% with argument value for tag.
+// Additionally it accepts an unlimited number of template parameters. The
+// macro will substitute any occurences of form: %tag% with argument value
+// for tag.
 //
-// NOTE: Substitution occurs before transforming the textile into HTML. In some use cases,
-// the substitution may break textile formatting.
-// FIXME: Should we escape argument values before inserting them inside templates at the expense of flexibility?
+// NOTE: Substitution occurs before transforming the textile into HTML.
+// In some use cases, the substitution may break textile formatting.
+// FIXME: Should we escape argument values before inserting them inside
+// templates at the expense of flexibility?
 function macro_include($args) {
     if (!isset($args['page'])) {
         return macro_error("Expecting argument `page`");
