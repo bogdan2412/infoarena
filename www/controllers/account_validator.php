@@ -6,13 +6,16 @@ require_once(IA_ROOT_DIR."common/tags.php");
 function validate_register_data($data) {
     $errors = validate_user_data($data, true, null);
 
-    $resp = recaptcha_check_answer(IA_CAPTCHA_PRIVATE_KEY,
-                                   $_SERVER["REMOTE_ADDR"],
-                                   $data['recaptcha_challenge_field'],
-                                   $data['recaptcha_response_field']);
-    if (!$resp->is_valid) {
-        $errors['captcha'] = "Cuvintele introduse de tine sunt incorecte";
+    if(!IA_DEVELOPMENT_MODE) {
+        $resp = recaptcha_check_answer(IA_CAPTCHA_PRIVATE_KEY,
+                                       $_SERVER["REMOTE_ADDR"],
+                                       $data['recaptcha_challenge_field'],
+                                       $data['recaptcha_response_field']);
+        if (!$resp->is_valid) {
+            $errors['captcha'] = "Cuvintele introduse de tine sunt incorecte";
+        }
     }
+
     return $errors;
 }
 

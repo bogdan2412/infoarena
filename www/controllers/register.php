@@ -27,8 +27,11 @@ function controller_register() {
         $data['email'] = trim(request('email'));
         $data['newsletter'] = (request('newsletter') ? 1 : 0);
         $data['tnc'] = (request('tnc') ? 1 : 0);
-        $data['recaptcha_challenge_field'] = request('recaptcha_challenge_field');
-        $data['recaptcha_response_field'] = request('recaptcha_response_field');
+
+        if(!IA_DEVELOPMENT_MODE) {
+            $data['recaptcha_challenge_field'] = request('recaptcha_challenge_field');
+            $data['recaptcha_response_field'] = request('recaptcha_response_field');
+        }
 
         $errors = validate_register_data($data);
 
@@ -55,7 +58,10 @@ function controller_register() {
         $data['newsletter'] = 1;
         $data['tnc'] = 1;
     }
-    $data['captcha'] = recaptcha_get_html(IA_CAPTCHA_PUBLIC_KEY);
+    
+    if(!IA_DEVELOPMENT_MODE) {
+        $view['captcha'] = recaptcha_get_html(IA_CAPTCHA_PUBLIC_KEY);
+    }
 
     // attach form is displayed for the first time or a validation error occured
     $view['title'] = 'Inregistreaza-te!';

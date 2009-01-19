@@ -74,8 +74,11 @@
     </ul>
 </fieldset>
 
+<?php
+    if(!IA_DEVELOPMENT_MODE) {
+?>
 <fieldset>
-    <legend>Captcha</legend>
+    <legend>Verificare</legend>
     <ul class="form">
         <li>
             <script>
@@ -86,11 +89,14 @@
 
             <label>Scrieti cuvintele de mai jos:</label>
             <?= ferr_span('captcha') ?>
-            <?= fval('captcha', false) ?>
-            <span class="fieldHelp">Prin completarea acestei casute ajutati la transcrierea cartilor in format electronic</span>
+            <?= $view['captcha'] ?>
+            <span class="fieldHelp">Va rugam sa transcrieti cuvintele de mai sus in aceasta casuta pentru verificare</span>
         </li>
     </ul>
 </fieldset>
+<?php 
+    }
+?>
 
 <ul class="form clear">
     <li>
