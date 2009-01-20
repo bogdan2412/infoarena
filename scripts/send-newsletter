@@ -56,7 +56,7 @@ function phpmail_config(&$phpmail) {
 // return array with valid subscriber list identifiers
 function list_valid_ids() {
     $valid = array(
-        'all', 'admins', 'rated', 'test', 'tinytest'
+        'all', 'admins', 'rated', 'test', 'review'
     );
     return $valid;
 }
