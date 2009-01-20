@@ -82,6 +82,7 @@ define("IA_DEBUG_MODE", true);
 //  - NOTE: it can't reside in www/* since judge needs it too
 define("IA_TASK_TEXTBLOCK_PREFIX", 'problema/');
 define("IA_USER_TEXTBLOCK_PREFIX", 'utilizator/');
+define("IA_NEWSLETTER_TEXTBLOCK_PREFIX", 'newsletter/');
 // FIXME: Do we really need this?
 define("IA_ROUND_TEXTBLOCK_PREFIX", 'runda/');
 

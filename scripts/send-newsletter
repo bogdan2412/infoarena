@@ -1,26 +1,57 @@
 #! /usr/bin/env php
 <?php
 
-// dependencies
 require_once(dirname($argv[0]) . "/utilities.php");
+require_once(IA_ROOT_DIR . 'common/external_libs/class.phpmailer.php');
 require_once(IA_ROOT_DIR."common/db/user.php");
 require_once(IA_ROOT_DIR."common/db/textblock.php");
 require_once(IA_ROOT_DIR."common/user.php");
 require_once(IA_ROOT_DIR."common/rating.php");
 require_once(IA_ROOT_DIR."common/email.php");
+require_once(IA_ROOT_DIR."common/newsletter.php");
 require_once(IA_ROOT_DIR."www/url.php");
 db_connect();
 
-// config
-define("IA_NEWSLETTER_FROM", "Cristian George Strat <cristian@infoarena.ro>");
-// define("IA_NEWSLETTER_FROM", "Crestez Dan Leonard <cdleonard@gmail.com>");
+// Configuration section.
+
+define("IA_NEWSLETTER_FROM", "cristian@infoarena.ro");
+define("IA_NEWSLETTER_FROM_NAME", "Cristian George Strat");
 // how many emails to send at once (with no delay)
 define("IA_BURST_LENGTH", 25);
 // pause (milliseconds i.e. 10^-3) between bursts.
 define("IA_BURST_DELAY", 500);
-
 // place where we store newsletter logs
 define("IA_NEWSLETTER_LOGDIR", IA_ROOT_DIR."scripts/newsletter-logs/");
+// application to use for previewing the HTML newsletter
+define("IA_NEWSLETTER_PREVIEW_APP", "elinks");
+
+// Create PHPMailer object from newsletter textblock, and for given recipient.
+function phpmail_create($textblock, $recipient) {
+    log_assert_valid(user_validate($recipient));
+    log_assert_valid(textblock_validate($textblock));
+    $phpmail = new PHPMailer();
+    phpmail_config($phpmail);
+    $phpmail->Subject = newsletter_subject($textblock, $recipient);
+    $phpmail->AltBody = newsletter_body_alternate($textblock, $recipient);
+    $phpmail->Body = newsletter_body_html($textblock, $recipient);
+    $phpmail->AddAddress($recipient['email'], $recipient['full_name']);
+    return $phpmail;
+}
+
+// Configure a PHPMailer object.
+function phpmail_config(&$phpmail) {
+    if (IA_SMTP_ENABLED) {
+        $phpmail->IsSMTP();
+        $phpmail->Host = IA_SMTP_HOST;
+        $phpmail->Port = IA_SMTP_PORT;
+    } else {
+        // Use PHP mail(...) function.
+        $phpmail->IsMail();
+    }
+    $phpmail->From = IA_NEWSLETTER_FROM;
+    $phpmail->FromName = IA_NEWSLETTER_FROM_NAME;
+    $phpmail->CharSet = "UTF-8";
+}
 
 // return array with valid subscriber list identifiers
 function list_valid_ids() {
@@ -51,17 +82,18 @@ function list_get($list_id) {
                       ORDER BY rating_cache DESC";
             return db_fetch_all($query);
 
-        case 'test':
-            // a small set of users. meant for testing
-            $usernames = array('wickedman', 'fluffy', 'domino', 'silviug',
-                               'Cosmin', 'wick3dman');
+        case 'review':
+            // a small set of users. meant for reviewing
+            $usernames = array('wickedman', 'domino', 'silviug', 'Cosmin');
             $query = "SELECT * FROM ia_user
                       WHERE username IN ('".join("', '", $usernames)."')
                       ORDER BY full_name";
             return db_fetch_all($query);
 
-        case 'tinytest':
-            $usernames = array('wickedman', 'wick3dman');
+        case 'test':
+            // test the newsletter in various email clients
+            $usernames = array('gmail_test', 'yahoo_test', 'hotmail_test',
+                    'k_test');
             $query = "SELECT * FROM ia_user
                       WHERE username IN ('".join("', '", $usernames)."')
                       ORDER BY full_name";
@@ -74,117 +106,42 @@ function list_get($list_id) {
 
 // Preview email for a given recipient
 // When recipient is null, no tags are replaced
-function preview_email($textblock, $recipient = null, $short = false) {
-    log_assert(is_null($recipient) || valid_recipient($recipient));
-
-    if ($recipient) {
-        $subject = email_tags($textblock['title'], $recipient);
-        $body = email_tags($textblock['text'], $recipient);
-    }
-    else {
-        $subject = $textblock['title'];
-        $body = $textblock['text'];
-    }
+function preview_email($textblock, $recipient, $use_external_app = true) {
+    log_assert_valid(user_validate($recipient));
+    log_assert_valid(textblock_validate($textblock));
+    $phpmail = phpmail_create($textblock, $recipient);
+    $temp_filename = tempnam(sys_get_temp_dir(), 'ia-newsletter-preview-');
+    file_put_contents($temp_filename, $phpmail->Body);
 
     echo "\n\n===  e-mail ========================================\n";
-    echo "From   : ".IA_NEWSLETTER_FROM."\n";
+    echo "From   : {$phpmail->From}\n";
     if ($recipient) {
         echo "To     : ".$recipient['email']."\n";
     }
-    else {
-        echo "To     : %email%\n";
-    }
-    echo "Subject: {$subject}\n";
-    if (!$short) {
-        echo "---  body ------------------------------------------\n";
-        echo wordwrap($body, IA_EMAIL_WORDRAP)."\n";
-        echo "--- /body ------------------------------------------\n";
-    }
+    echo "Subject: {$phpmail->Subject}\n";
+    echo "---  alternate text --------------------------------\n";
+    echo wordwrap($phpmail->AltBody, IA_EMAIL_WORDRAP)."\n";
+    echo "--- /alternate text --------------------------------\n";
     echo "=== /e-mail ========================================\n\n";
 
     // warn users if word-wrapping is needed
-    if (wordwrap($body, IA_EMAIL_WORDRAP) != $body) {
+
+    if (wordwrap($phpmail->AltBody, IA_EMAIL_WORDRAP) != $phpmail->AltBody) {
         log_print("WARNING: Please word-wrap the text to ".IA_EMAIL_WORDRAP
                   ." characters per line!\n");
     }
-}
 
-// Replace special email tags (placeholders) with real content
-function email_tags($content, $recipient) {
-    log_assert(valid_recipient($recipient));
+    // display HTML body in preview app
 
-    global $_et_callback_hack;
-    $_et_callback_hack = $recipient;
-
-    $content = preg_replace_callback('/%([a-z_0-9]+)%/', 'email_tags_callback',
-                                     $content);
-
-    return $content;
-}
-
-// Callback for email_tags
-function email_tags_callback($matches) {
-    global $_et_callback_hack;
-    log_assert(valid_recipient($_et_callback_hack));
-    log_assert(2 == count($matches));
-
-    $recipient = $_et_callback_hack;
-    $tag = $matches[1];
-
-    switch ($tag) {
-        case 'rating':
-            if ($recipient['rating_cache']) {
-                return rating_scale($recipient['rating_cache']);
-            }
-            else {
-                return 'fara rating';
-            }
-        case 'full_name':
-            return $recipient['full_name'];
-        case 'username':
-            return $recipient['username'];
-        case 'email':
-            return $recipient['email'];
-        case 'url_profile':
-            return url_user_profile($recipient['username'], true);
-        case 'url_infoarena':
-            return IA_URL;
-        case 'url_forum':
-            return IA_SMF_URL;
-        case 'url_unsubscribe':
-            // unsubscribe link
-            $key = user_unsubscribe_key($recipient);
-            return url_absolute(url_unsubscribe($recipient['username'], $key));
-        case 'your_rating_is':
-            // nice sentence telling user what her rating is.
-            // when user is not rated, expand tag to nothing
-            if ((int)$recipient['rating_cache']) {
-                return 'Rating-ul tau este '
-                       .rating_scale($recipient['rating_cache'])
-                       .".\n";
-            }
-            else {
-                return '';
-            }
-        default:
-            log_error("Invalid email tag: ".$tag);
+    if ($use_external_app) {
+        system(IA_NEWSLETTER_PREVIEW_APP." ".$temp_filename);
+        unlink($temp_filename);
     }
-}
-
-
-// Make sure $recipient is a valid... recipient :)
-// Keep these checks very light. Performance bottleneck ahead.
-function valid_recipient($recipient) {
-    $valid = !is_null($recipient) && isset($recipient['username']);
-    if (!$valid) {
-        log_print("Invalid recipient: ".print_r($recipient, true));
-    }
-    return $valid;
 }
 
 // Format recipient to display it nicely on screen / log
 function recipient_str($recipient) {
-    log_assert(valid_recipient($recipient));
+    log_assert_valid(user_validate($recipient));
     return '<'.$recipient['email'].'> ['.$recipient['username']
             .'] '.$recipient['full_name'];
 }
@@ -244,7 +201,7 @@ if (!$textblock) {
 $newsletter_id = substr($page_name, strlen($prefix));
 
 // small preview before entering main menu
-preview_email($textblock, null, true);
+preview_email($textblock, newsletter_anonymous_user(), false);
 
 // check log
 // It is possible that script was interrupted so warn user to resume
@@ -286,7 +243,7 @@ while (true) {
                 }
             }
             else {
-                $user = null;
+                $user = newsletter_anonymous_user();
             }
             preview_email($textblock, $user);
             break;
@@ -405,7 +362,7 @@ while (true) {
                 }
 
                 $i++;
-                log_assert(valid_recipient($recipient));
+                log_assert_valid(user_validate($recipient));
 
                 // log invalid email addresses
                 if (!is_valid_email($recipient['email'])) {
@@ -429,22 +386,19 @@ while (true) {
                 }
 
                 // send email
-                $subject = email_tags($textblock['title'], $recipient);
-                $body = email_tags($textblock['text'], $recipient);
-                $success = send_email($recipient['email'], $subject, $body,
-                                      IA_NEWSLETTER_FROM, IA_NEWSLETTER_FROM,
-                                      false);
+                $phpmail = phpmail_create($textblock, $recipient);
+                $success = $phpmail->Send();
 
                 if ($success) {
                     log_putch('.');
-                    nlog($newsletter_id,
-                         $i."\tok\t".recipient_str($recipient));
+                    nlog($newsletter_id, $i."\tok\t".recipient_str($recipient));
                     $count_ok++;
                 }
                 else {
                     log_putch('e');
-                    nlog($newsletter_id,
-                         $i."\tERROR\t".recipient_str($recipient));
+                    nlog($newsletter_id, $i."\tERROR\t".
+                            recipient_str($recipient)."\t".
+                            $phpmail->ErrorInfo);
                     $count_error++;
                 }
 

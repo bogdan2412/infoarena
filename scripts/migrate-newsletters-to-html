@@ -1,0 +1,79 @@
+#! /usr/bin/env php
+<?php
+require_once(dirname($argv[0]) . "/utilities.php");
+require_once(IA_ROOT_DIR . "common/textblock.php");
+require_once(IA_ROOT_DIR . "common/db/textblock.php");
+
+// Timestamp since all newsletters are HTML.
+define("IA_NEWSLETTER_HTML_EPOCH", "2009-01-10 00:00:00");
+log_assert(is_db_date(IA_NEWSLETTER_HTML_EPOCH));
+// Basic HTTP URL Regexp;
+define("IA_RE_HTTP_URL", 'https?:\/\/[^\s\(\)]*');
+
+function newsletter_is_plaintext($textblock) {
+    log_assert_valid(textblock_validate($textblock));
+    $timestamp = $textblock['timestamp'];
+    return ($timestamp && is_db_date($timestamp) &&
+        db_date_parse($timestamp) < db_date_parse(IA_NEWSLETTER_HTML_EPOCH));
+}
+
+// Convert plaintext newsletter body to textile format.
+function newsletter_plaintext_to_textile($plaintext) {
+    // Indent paragraphs with leading whitespace.
+
+    $paragraphs = preg_split("/(\n\r?){2,}/", $plaintext);
+    $textile = '';
+    foreach ($paragraphs as $paragraph) {
+        $p_stripped = ltrim($paragraph);
+        $num_spaces = strlen($paragraph) - strlen($p_stripped);
+        if ($num_spaces > 0) {
+            $indent = (double)$num_spaces / 2;
+            $textile .= "p{padding-left: {$indent}em;}. ";
+        }
+        $textile .= $p_stripped."\n\n";
+    }
+
+    // Insert headings.
+
+    $textile = preg_replace('/^==(.+)==\s*$/m', "h2. \\1\n", $textile);
+
+    // Convert placeholder %tags% to textile macros.
+
+    $tags = array(
+        '"%full_name%"' => '==UserInfo(user="%username%" info="fullname")==',
+        '%full_name%' => '==UserInfo(user="%username%" info="fullname")==',
+        '%url_unsubscribe%' => '\'account/%username%\':account/%username%',
+        '%your_rating_is%' => '==NewsletterRating(username="%username%")==',
+    );
+    foreach ($tags as $tag_name => $tag_value) {
+        $textile = str_replace($tag_name, $tag_value, $textile);
+    }
+
+    // Convert links
+
+    $textile = preg_replace('|%url_infoarena%/?utilizator/('.IA_RE_USER_NAME.')|',
+            ' ==User(user="\1" type="link")== ', $textile);
+    $textile = preg_replace('|%url_infoarena%/?('.IA_RE_PAGE_NAME.')\.|',
+            '\'\1\':\1.', $textile);
+    $textile = preg_replace('|%url_infoarena%/?('.IA_RE_PAGE_NAME.')|',
+            '\'\1\':\1', $textile);
+    $textile = preg_replace('|%url_infoarena%/?|', '\'infoarena\':home', $textile);
+    $textile = preg_replace('|('.IA_RE_HTTP_URL.')|', '\'\1\':\1', $textile);
+    return $textile;
+}
+
+
+db_connect();
+foreach (textblock_get_by_prefix('newsletter/', true) as $textblock) {
+    if (!newsletter_is_plaintext($textblock)) {
+        log_print('Skipping '.$textblock['name']);
+        continue;
+    }
+    log_print('Converting '.$textblock['name']);
+    $new_text = newsletter_plaintext_to_textile($textblock['text']);
+    textblock_add_revision($textblock['name'], $textblock['title'],
+            $new_text, $textblock['user_id'], $textblock['security'],
+            $textblock['forum_topic'], null, $textblock['creation_timestamp']);
+}
+
+?>

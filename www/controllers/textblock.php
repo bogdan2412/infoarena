@@ -8,7 +8,8 @@ require_once(IA_ROOT_DIR . "common/diff.php");
 
 // View a plain textblock.
 // That textblock can be owned by something else.
-function controller_textblock_view($page_name, $rev_num = null) {
+function controller_textblock_view($page_name, $rev_num = null,
+        $display_view = 'views/textblock_view.php') {
     global $identity_user;
 
     // Get actual page.
@@ -48,7 +49,7 @@ function controller_textblock_view($page_name, $rev_num = null) {
     $view['textblock'] = $page;
     $view['forum_topic'] = $page['forum_topic'];
 
-    execute_view_die('views/textblock_view.php', $view);
+    execute_view_die($display_view, $view);
 }
 
 // Show differences between two textblock revisions.

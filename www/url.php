@@ -335,4 +335,15 @@ function url_forum() {
     return IA_SMF_URL;
 }
 
+// Newsletter
+
+function url_newsletter($page_name, $rev = null) {
+    return url_textblock_revision($page_name, $rev);
+}
+
+function url_newsletter_preview_body($page_name, $rev = null) {
+    return url_complex($page_name, array('revision' => $rev,
+            'preview' => 'body'));
+}
+
 ?>

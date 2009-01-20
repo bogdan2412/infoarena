@@ -51,6 +51,7 @@ $directmaps = array_flip(array('register', 'changes',
                                'plot', 'search',
                                'unsubscribe', 'resetpass', 'reeval'
 ));
+
 //
 // Here comes the big url mapper.
 // We include in the if statement to avoid an extra parsing load.
@@ -223,6 +224,23 @@ else if (IA_USER_TEXTBLOCK_PREFIX == $urlstart.'/' &&
          ('view' == $action || 'rating' == $action || 'stats' == $action )) {
     require_once(IA_ROOT_DIR.'www/controllers/user.php');
     controller_user_view($page_id, $action, request('revision'));
+}
+
+// Newsletter index
+else if ($page == 'newsletter') {
+    require_once(IA_ROOT_DIR.'www/controllers/newsletter.php');
+    controller_newsletter_index();
+}
+
+// Display one newsletter.
+else if (IA_NEWSLETTER_TEXTBLOCK_PREFIX == $urlstart.'/'
+        && 'view' == $action) {
+    require_once(IA_ROOT_DIR.'www/controllers/newsletter.php');
+    if ('body' == request('preview')) {
+        controller_newsletter_preview_body($page_id, request('revision'));
+    } else {
+        controller_newsletter_preview_frame($page_id, request('revision'));
+    }
 }
 
 // general textblock view

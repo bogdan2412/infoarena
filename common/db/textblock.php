@@ -71,7 +71,7 @@ function textblock_add_revision(
 // This is the function called by most query functions.
 function textblock_complex_query($options)
 {
-    //log_print_r($options);
+    // log_print_r($options);
 
     $field_list = "`name`, `title`, `creation_timestamp`, `timestamp`, `security`, `user_id`, `forum_topic`";
 
@@ -111,9 +111,10 @@ function textblock_complex_query($options)
                           ORDER BY `timestamp` %s LIMIT %d, %d",
                           $where, $where, $order, $options['limit_start'], $options['limit_count']);
     } else {
-        $query = "SELECT $field_list FROM ia_textblock $join $where";
+        $query = "SELECT $field_list FROM ia_textblock
+                  $join $where ORDER BY ia_textblock.`creation_timestamp` $order";
     }
-    //log_print("QUERY: " . $query);
+    // log_print("QUERY: " . $query);
     return db_fetch_all($query);
 }
 
@@ -165,11 +166,13 @@ function textblock_get_revision_list($name, $content = false, $username = true,
 
 // Get all textblocks(without content) with a certain prefix).
 // Ordered by name.
-function textblock_get_by_prefix($prefix, $content = false, $username = false) {
+function textblock_get_by_prefix($prefix, $content = false, $username = false,
+        $order = 'asc') {
     return textblock_complex_query(array(
             'content' => $content,
             'username' => $username,
             'prefix' => $prefix,
+            'order' => $order,
     ));
 }
 
