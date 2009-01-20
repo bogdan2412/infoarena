@@ -1,0 +1,95 @@
+#! /usr/bin/env php
+<?php
+/*
+ * Script for calculating statistics for contest rounds
+ * Supports rounds with multiple age groups
+ */
+require_once(dirname($argv[0]) . "/utilities.php");
+
+db_connect();
+
+log_assert(2 == $argc, "Expecting a single argument: round_id_like (example: 'algoritmiada2009-runda1-%' will match all age groups for 'algoritmiada2009-runda1')!");
+$round_like = $argv[1];
+
+// Get number of contestants who submitted at least one solution
+$query = sprintf("
+SELECT COUNT(DISTINCT(`user_id`))
+    FROM ia_job
+    WHERE round_id LIKE %s", db_quote($round_like));
+
+$result = db_fetch($query);
+$result = array_pop($result);
+
+print "Number of contestants who submitted at least one solution: " . $result . "\n";
+
+// Get number of registered users
+$query = sprintf("
+SELECT COUNT(DISTINCT(`user_id`))
+    FROM `ia_user_round`
+    WHERE `round_id` LIKE %s", db_quote($round_like));
+
+$result = db_fetch($query);
+$result = array_pop($result);
+
+print "Number of registered users: " . $result . "\n";
+
+// Get number of submitted jobs
+$query = sprintf("
+SELECT COUNT(*)
+    FROM `ia_job`
+    WHERE `round_id` LIKE %s", db_quote($round_like));
+
+$result = db_fetch($query);
+$result = array_pop($result);
+
+print "Number of submitted jobs: " . $result . "\n";
+
+// Get number of submitted jobs with positive score
+$query = sprintf("
+SELECT COUNT(*)
+    FROM `ia_job`
+    WHERE `score` > 0 AND `round_id` LIKE %s", db_quote($round_like));
+
+$result = db_fetch($query);
+$result = array_pop($result);
+
+print "Number of submitted jobs with positive score: " . $result . "\n";
+
+// Get number of contestants with positive scores
+// Counts number of distinct users that received a
+// score greater than 0 on at least one task
+$query = sprintf('
+SELECT COUNT(DISTINCT(`user_id`))
+    FROM `ia_score`
+    WHERE `name` = "score" AND
+          `score` > 0 AND
+          `round_id` LIKE %s', db_quote($round_like));
+
+$result = db_fetch($query);
+$result = array_pop($result);
+
+print "Number of users with positive scores: " . $result . "\n";
+
+// Get average score of contestants
+// Big query, first groups scores by user and task,
+// then groups by users and calculates total score for each,
+// then calculates average score for all
+$query = sprintf('
+SELECT AVG(`grouped_by_users`.`score`)
+FROM (
+    SELECT `user_id`, SUM(`grouped_by_tasks`.`score`) AS `score`
+    FROM (
+        SELECT `user_id`, `task_id`, `score`
+        FROM `ia_score`
+        WHERE `name` = "score" AND
+              `round_id` LIKE %s
+        GROUP BY `user_id`, `task_id`
+        ) AS `grouped_by_tasks`
+    GROUP BY `user_id`
+    ) AS `grouped_by_users`', db_quote($round_like));
+
+$result = db_fetch($query);
+$result = array_pop($result);
+
+print "Average score of contestants: " . $result . "\n";
+?>

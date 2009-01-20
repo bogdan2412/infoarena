@@ -67,7 +67,7 @@ function controller_round_register_view($round_id) {
 
     $options = pager_init_options();
     $view = array();
-    $view['title'] = 'Utiliztori inregistrati la '.$round['title'];
+    $view['title'] = 'Utilizatori inregistrati la '.$round['title'];
     $view['round'] = $round;
     $view['users'] = round_get_registered_users_range($round['id'], 
                      $options['first_entry'], $options['display_entries']);
