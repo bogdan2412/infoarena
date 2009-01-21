@@ -42,7 +42,7 @@ function Submit_AutoCompiler() {
         }
     }
     var ext = f.value.substring(k + 1).toLowerCase();
-    if ('c' == ext || 'cpp' == ext || 'pas' == ext) {
+    if ('c' == ext || 'cpp' == ext || 'pas' == ext || 'py' == ext) {
         if ('pas' == ext) {
             // choose FreePascal compiler
             compiler.value = 'fpc';

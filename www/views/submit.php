@@ -53,6 +53,9 @@ foreach ($tasks as $t) {
             <option value="c"<?= 'c' == fval('compiler_id') ? ' selected="selected"' : '' ?>>GNU C</option>
             <option value="cpp"<?= 'cpp' == fval('compiler_id') ? ' selected="selected"' : '' ?>>GNU C++</option>
             <option value="fpc"<?= 'fpc' == fval('compiler_id') ? ' selected="selected"' : '' ?>>FreePascal</option>
+            <?php if (user_is_admin($identity_user)) { ?>
+                <option value="py"<?= 'py' == fval('compiler_id') ? ' selected="selected"' : '' ?>>Python (FOARTE EXPERIMENTAL!)</option>
+            <?php } ?>
         </select>
         <?= ferr_span('compiler_id') ?>
     </li>

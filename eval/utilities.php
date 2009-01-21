@@ -24,7 +24,7 @@ function clean_dir($dir)
 // Compile a certain file.
 // Returns success value, and a friendly error message in $compiler_message.
 //
-// Can currently handle C, C++ and FreePascal
+// Can currently handle C, C++, FreePascal, and Python.
 function compile_file($input_file_name, $output_file_name, &$compiler_message)
 {
     $compiler_message = false;
@@ -34,8 +34,9 @@ function compile_file($input_file_name, $output_file_name, &$compiler_message)
             'cpp' => 'g++ -Wall -O2 -static %file_name% -o %exe_name% -lm',
             'pas' => 'fpc -O2 -Xs %file_name%',
             'fpc' => 'fpc -O2 -Xs %file_name%',
+            'py' => IA_JUDGE_PY_COMPILER.' %file_name% %exe_name%',
     );
-    if (!preg_match("/^(.*)\.(c|cpp|pas|fpc)$/i", $input_file_name, $matches)) {
+    if (!preg_match("/^(.*)\.(c|cpp|pas|fpc|py)$/i", $input_file_name, $matches)) {
         $compiler_message = "Nu am putut sa determin compilatorul ".
                 "pentru '$input_file_name'.";
         return false;
@@ -52,7 +53,7 @@ function compile_file($input_file_name, $output_file_name, &$compiler_message)
     $cmdline = preg_replace('/%exe_name%/', $exe_name, $cmdline);
 
     // Running compiler
-    $compiler_message = shell_exec("$cmdline 2>&1 | head -n 25");
+    $compiler_message = shell_exec("$cmdline 2>&1 | head -n 50");
 
     // This is the BEST way to fail on compilation errors.
     if (!is_executable($exe_name)) {
@@ -167,7 +168,7 @@ function jail_run($program, $jaildir, $time, $memory, $capture_std = false)
         return jrun_make_error('Failed executing jail');
     }
 
-    if ($result['result'] == 'OK' && $capture_std) {
+    if ($capture_std) {
         $result['stdout'] = @file_get_contents($jaildir.'jailed_stdout');
         if ($result['stdout'] === false) {
             return jrun_make_error('Failed reading captured stdout');

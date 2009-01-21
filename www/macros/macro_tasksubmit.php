@@ -59,6 +59,9 @@ function macro_tasksubmit($args) {
             <option value="c">GNU C</option>
             <option value="cpp">GNU C++</option>
             <option value="fpc">FreePascal</option>
+            <?php if (user_is_admin($identity_user)) { ?>
+                <option value="py">Python (FOARTE EXPERIMENTAL!)</option>
+            <?php } ?>
         </select>
     </li>
 

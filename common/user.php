@@ -106,4 +106,12 @@ function user_validate($user) {
     return $errors;
 }
 
+function user_is_admin($user) {
+    if (!$user) {
+        return false;
+    }
+    log_assert_valid(user_validate($user));
+    return $user['security_level'] === 'admin';
+}
+
 ?>

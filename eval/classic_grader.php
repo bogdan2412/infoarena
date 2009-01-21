@@ -55,6 +55,16 @@ function classic_task_grade_job($task, $tparams, $job) {
         $result['log'] = "Compilare:\n" . $compiler_messages . "\n";
     }
 
+    // HACK: Capture run-time stderr for Python jobs.
+    //
+    // WARNING! This is a security hole! Users may dump input tests
+    // on stderr and see them in the monitor page. Currently, only
+    // admins are allowed to submit Python.
+    //
+    // TODO: Come up with a safe way of reporting run-time errors
+    // for Python scripts.
+    $capture_std = ('py' == $job['compiler_id']);
+
     // Running tests.
     $test_score = array();
     for ($testno = 1; $testno <= $tparams['tests']; ++$testno) {
@@ -100,13 +110,23 @@ function classic_task_grade_job($task, $tparams, $job) {
             log_assert("Failed to chmod a+x user program");
 
             // Run user program.
-            $jrunres = jail_run($userfile, $jaildir, $tparams['timelimit'] * 1000, $tparams['memlimit']);
+            $jrunres = jail_run($userfile, $jaildir, $tparams['timelimit'] * 1000,
+                        $tparams['memlimit'], $capture_std);
             log_assert($jrunres['result'] != 'ERROR', "Error in jrun.");
             if ($jrunres['result'] == 'FAIL') {
                 log_print("Test $testno: User program failed: {$jrunres['message']} ".
                         "{$jrunres['time']}ms {$jrunres['memory']}kb");
+                if ($capture_std) {
+                    // TODO: Come up with a safe way of reporting run-time
+                    // errors for Python scripts.
+                    $job_message = $jrunres['message'].": "
+                            .substr($jrunres['stderr'],
+                                    -min(100, strlen($jrunres['stderr'])));
+                } else {
+                    $job_message = $jrunres['message'];
+                }
                 job_test_update($job['id'], $testno, $group_idx, $jrunres['time'], $jrunres['memory'], 
-                        null, null, 0, $jrunres['message']);
+                        null, null, 0, $job_message);
                 // User program failed on this test. Bye bye.
                 continue;
             }

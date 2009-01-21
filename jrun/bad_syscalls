@@ -33,3 +33,15 @@ getrusage
 reboot
 mount
 umount
+accept
+bind
+connect
+getsockname
+getsockopt
+listen
+recv
+recvfrom
+send
+setsockopt
+socket
+socketpair

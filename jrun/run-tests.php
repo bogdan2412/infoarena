@@ -2,15 +2,21 @@
 <?php
 
 require_once(dirname($argv[0]) . "/../config.php");
+require_once(IA_ROOT_DIR . 'eval/config.php');
 require_once(IA_ROOT_DIR . 'common/log.php');
 
 // Config options.
 $jail_dir = "jail";
 $exe_name = "prog";
-$extra_args = "--block-syscalls-file=bad_syscalls --chroot --verbose";
+$extra_args = "--block-syscalls-file=bad_syscalls --verbose";
 //$extra_args = "--nice -5 --block-syscalls-file=bad_syscalls --verbose";
-//$extra_args = "--uid 65534 --gid 65534 --block-syscalls-file=bad_syscalls --verbose";
+//$extra_args = "--uid 65534 --gid 65534 --block-syscalls-file=bad_syscalls --chroot";
 //$extra_args = "--uid 65534 --gid 65534 --block-syscalls-file=bad_syscalls";
+
+// In order to run python tests, download a python distribution, configure,
+// make, make install, then specify the top level directory here.
+$py_compiler = IA_ROOT_DIR."scripts/pybin.sh ".IA_JUDGE_PY_DISTRO
+        ." {$jail_dir}";
 
 // Parse a source file
 // Returns the arguments to run the jail with and the expected response.
@@ -19,10 +25,10 @@ function parse_source($filename, &$test_args, &$test_exp_res)
 {
     $test_args = $test_exp_res = null;
     foreach (file("$filename") as $line) {
-        if (preg_match("/\/\/ JRUN_ARGS =(.*)$/", $line, $matches)) {
+        if (preg_match("/(?:\/\/|#) JRUN_ARGS =(.*)$/", $line, $matches)) {
             $test_args = trim($matches[1]);
         }
-        if (preg_match("/\/\/ JRUN_RES =(.*)$/", $line, $matches)) {
+        if (preg_match("/(?:\/\/|#) JRUN_RES =(.*)$/", $line, $matches)) {
             $test_exp_res = trim($matches[1]);
         }
     }
@@ -33,10 +39,13 @@ function parse_source($filename, &$test_args, &$test_exp_res)
 
 function compile_source($source, $exe)
 {
+    global $py_compiler;
     if (strpos($source, ".cpp") === strlen($source) - 4) {
-        system("g++ -Wall -lm -O2 $source -o $exe", $ret);
+        system("g++ -Wall -lm -O2 $source --static -o $exe", $ret);
     } else if (strpos($source, ".c") === strlen($source) - 2) {
-        system("gcc -Wall -lm -O2 $source -o $exe", $ret);
+        system("gcc -Wall -lm -O2 $source --static -o $exe", $ret);
+    } else if (strpos($source, ".py") === strlen($source) - 3) {
+        system("{$py_compiler} $source $exe", $ret);
     } else {
         log_error("Can't compile $source, unknown file extension\n");
     }
@@ -52,11 +61,10 @@ function jail_run($filename, $args)
 {
     global $jail_dir, $exe_name;
 
-    system("rm -rf jail");
+    system("rm -rf $jail_dir");
     system("mkdir -p $jail_dir");
     system("chmod 777 $jail_dir");
     compile_source($filename, "$jail_dir/$exe_name");
-
     $cmd = "./jrun --dir=$jail_dir --prog=$exe_name $args";
 
     log_print("Running $cmd");
@@ -129,6 +137,6 @@ do {
     } else {
         print("Invalid arguments\n");
     }
-} while (true);
+} while (false);
 
 ?>
