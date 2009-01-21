@@ -17,6 +17,7 @@ function safe_job_submit($args, $user) {
     $errors = array();
 
     // Validate task id.
+    $task = null;
     if (!array_key_exists('task_id', $args)) {
         $errors['task_id'] = "Lipseste id-ul task-ului.";
     } else if (!is_task_id($args['task_id'])) {
@@ -26,14 +27,13 @@ function safe_job_submit($args, $user) {
     }
 
     // Validate round id.
+    $round = null;
     if (array_key_exists('round_id', $args)) {
         if (!is_round_id($args['round_id'])) {
             $errors['round_id'] = "Id de runda invalid";
         } else if (is_null($round = round_get($args['round_id']))) {
             $errors['round_id'] = "Runda '{$args['round_id']}' nu exista.";
         }
-    } else {
-        $round = null;
     }
 
     // Validate compiler id
@@ -43,7 +43,7 @@ function safe_job_submit($args, $user) {
     } else if (array_search($args['compiler_id'], $valid_compilers) === false) {
         $errors['compiler_id'] = "Compilator invalid.";
     }
-    
+
     // Validate solution
     if (!array_key_exists('solution', $args)) {
         $errors['solution'] = "Lipseste fisierul solutie.";
