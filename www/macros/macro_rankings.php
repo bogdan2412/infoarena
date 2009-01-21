@@ -17,6 +17,9 @@ require_once(IA_ROOT_DIR . "common/db/score.php");
 //      Rankings(rounds="preONI2007/1/a | preONI2007/2/a" count="10")
 function macro_rankings($args) {
     $args['param_prefix'] = 'rankings_';
+    if (isset($args['count'])) {
+            $args['display_entries'] = $args['count'];
+    }
     $options = pager_init_options($args);
     $options['show_count'] = true;
 
