@@ -42,4 +42,10 @@ define("IA_JUDGE_MAX_GRADER_DOWNLOAD_RETRIES", 5);
 // FIXME: horrible hack.
 define("IA_LOG_TIMESTAMP_FORMAT", "Y-m-d H:i:s");
 
+// Python support.
+define("IA_JUDGE_PY_DISTRO", "~/external/Python-2.6.1");
+define("IA_JUDGE_PY_COMPILER",
+       IA_ROOT_DIR."scripts/pybin.sh ".IA_JUDGE_PY_DISTRO." ".
+       IA_ROOT_DIR."eval/temp");
+
 ?>
