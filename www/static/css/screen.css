@@ -1263,19 +1263,21 @@ td.rating, th.rating {
 /* round registration */
 .round-register, .round-registered, .round-expired {
     width: 50%;
-    padding: .2em .5em .2em .5em;
+    padding: 0 1em;
     background-color: #fff;
 }
 
 .round-registered {
+    border: 2px solid silver;
 }
 
 .round-register {
-    border: 2px dashed red;
+    background-color: #ffa;
+    border: 2px solid red;
 }
 
 .round-expired {
-    border: 2px dashed silver;
+    border: 2px solid silver;
 }
 
 .round-register a {

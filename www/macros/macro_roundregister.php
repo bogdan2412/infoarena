@@ -29,10 +29,12 @@ function macro_roundregister($args) {
 
     if ($is_registered) {
         $class = "round-registered";
-        $msg = "Te-ai inscris la <em>{$round['title']}</em>."
+        $msg = "<p>Te-ai inscris la <em>".html_escape($round['title'])."</em>."
                ." <a href=\"".html_escape(url_round_register_view($round['id']))."\">"
                ."Vezi cine s-a mai inscris"
-               ."</a>.";
+               ."</a>.</p><p>In caz ca nu mai poti participa te poti deinscrie"
+               ." <a href=\"".html_escape(url_round_register($round['id']))
+               ."\">aici</a>.";
     }
     else {
         // too late?

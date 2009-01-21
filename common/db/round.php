@@ -213,6 +213,21 @@ function round_register_user($round_id, $user_id) {
     return db_insert('ia_user_round', $insert_fields);
 }
 
+// Unregisters user $user_id from round $round_id
+// NOTE: This does not check if user is registered
+// Returns false if failed
+function round_unregister_user($round_id, $user_id) {
+    log_assert(is_round_id($round_id));
+    log_assert(is_user_id($user_id));
+
+    $query = sprintf("DELETE FROM `ia_user_round`".
+                     "WHERE `user_id` = %s AND `round_id` = %s",
+                     db_quote($user_id), db_quote($round_id));
+
+    db_query($query);
+    return db_affected_rows() == 1;
+}
+
 // Returs list of registred user to round $round_id, order by rating
 // round can be 
 function round_get_registered_users_range($round_id, $start, $range)
