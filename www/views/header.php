@@ -62,6 +62,7 @@ header("Content-type: text/html; charset=utf-8");
     <script type="text/javascript" src="<?= html_escape(url_static('js/sh/shBrushCpp.js')) ?>"></script>
     <script type="text/javascript" src="<?= html_escape(url_static('js/sh/shBrushDelphi.js')) ?>"></script>
     <script type="text/javascript" src="<?= html_escape(url_static('js/sh/shBrushJava.js')) ?>"></script>
+    <script type="text/javascript" src="<?= html_escape(url_static('js/sh/shBrushPython.js')) ?>"></script>
     <script type="text/javascript" src="<?= html_escape(url_static('js/sh/shInit.js')) ?>"></script>
 
     <?= getattr($view, 'head') ?>
