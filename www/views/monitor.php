@@ -67,11 +67,14 @@ if (!$jobs) {
     function format_state($row) {
         $url = url_job_detail($row['id']);
         if ($row['status'] == 'done') {
-            if (identity_can("job-view-score", $row)) {
+            if (!is_null($row['score'])) {
                 $msg = html_escape(sprintf("%s: %s puncte",
                     $row['eval_message'], $row['score']));
             } else {
                 $msg = html_escape($row['eval_message']);
+                if (isset($row["feedback_available"])) {
+                    $msg .= ": rezultate partiale disponibile";
+                }
             }
             $msg = "<span style=\"job-status-done\">$msg</span>";
             return format_link($url, $msg, false);
@@ -124,7 +127,7 @@ if (!$jobs) {
 
     // For the size column.
     function format_size($row) {
-        if (!identity_can('job-view-source-size', $row)) {
+        if (is_null($row['job_size'])) {
             return "...";
         }
         $size = sprintf("%.2f", $row['job_size']/1024)." kb";

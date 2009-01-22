@@ -158,6 +158,7 @@ function security_simplify_action($action) {
         case 'job-view-source':
         case 'job-view-source-size':
         case 'job-view-score':
+        case 'job-view-partial-feedback':
             return $action;
 
         default:
@@ -517,6 +518,7 @@ function security_job($user, $action, $job) {
                             ($job['round_type'] != "archive" && $job['round_state'] == "complete") ||
                             $can_view_source;
     $can_view_score = ($job['round_public_eval'] == true) || $is_task_owner || $is_admin;
+    $can_view_partial_feedback = $is_owner || $is_admin;
 
     // Log query response.
     $action = security_simplify_action($action);
@@ -543,6 +545,9 @@ function security_job($user, $action, $job) {
 
         case 'job-view-score':
             return $can_view_job && $can_view_score;
+
+        case 'job-view-partial-feedback':
+            return $can_view_job && $can_view_partial_feedback;
 
         default:
             log_error('Invalid job action: '.$action);

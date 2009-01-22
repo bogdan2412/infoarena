@@ -14,72 +14,23 @@ function task_get_types() {
 // Get parameter infos.
 function task_get_parameter_infos() {
     return array(
-            'classic' => array(
-                'timelimit' => array(
-                        'description' => "Limita de timp (in secunde)",
-                        'default' => 1,
-                        'type' => 'float',
-                        'name' => 'Limita de timp',
-                ),
-                'memlimit' => array(
-                        'description' => "Limita de memorie (in kilobytes)",
-                        'default' => 16384,
-                        'type' => 'integer',
-                        'name' => 'Limita de memorie',
-                ),
-                'tests' => array(
-                        'description' => "Numar de teste",
-                        'default' => 10,
-                        'type' => 'integer',
-                        'name' => "Numar de teste",
-                ),
-                'testgroups' => array(
-                        'description' => "Descrierea gruparii testelor.",
-                        'default' => '1;2;3;4;5;6;7;8;9;10',
-                        'type' => 'string',
-                        'name' => "Grupare teste",
-
+        'classic' => array(
+            'timelimit' => array(
+                    'description' => "Limita de timp (in secunde)",
+                    'default' => 1,
+                    'type' => 'float',
+                    'name' => 'Limita de timp',
             ),
-            'okfiles' => array(
-                    'description' => "Daca evaluator-ul foloseste fisiere .ok",
-                    'default' => '0',
-                    'type' => 'bool',
-                    'name' => "Foloseste .ok",
-            ),
-            'evaluator' => array(
-                    'description' => "Sursa evaluatorului. Poate fi omis pentru evaluare cu diff",
-                    'default' => 'eval.c',
-                    'type' => 'string',
-                    'name' => "Evaluator",
-            ),
-    ),
-    'output-only' => array(
-            'tests' => array(
-                    'description' => "Numar de teste",
-                    'default' => 10,
+            'memlimit' => array(
+                    'description' => "Limita de memorie (in kilobytes)",
+                    'default' => 16384,
                     'type' => 'integer',
-                    'name' => "Numar de teste",
+                    'name' => 'Limita de memorie',
             ),
-            'testgroups' => array(
-                    'description' => "Descrierea gruparii testelor.",
-                    'default' => '1;2;3;4;5;6;7;8;9;10',
-                    'type' => 'string',
-                    'name' => "Grupare teste",
-            ),
-            'okfiles' => array(
-                    'description' => "Daca evaluator-ul foloseste fisiere .ok",
-                    'default' => '0',
-                    'type' => 'bool',
-                    'name' => "Foloseste .ok",
-            ),
-            'evaluator' => array(
-                    'description' => "Sursa evaluatorului. Poate fi omis pentru evaluare cu diff",
-                    'default' => 'eval.c',
-                    'type' => 'string',
-                    'name' => "Evaluator",
-            ),
-    ),
-);
+        ),
+        'output-only' => array(
+        ),
+    );
 }
 
 // Initialize a task object
@@ -93,6 +44,11 @@ function task_init($task_id, $task_type, $user = null) {
             'page_name' => IA_TASK_TEXTBLOCK_PREFIX . $task_id,
             'open_source' => 0,
             'open_tests' => 0,
+            'test_count' => 10,
+            'test_groups' => NULL,
+            'public_tests' => NULL,
+            'evaluator' => NULL,
+            'use_ok_files' => 1,
     );
 
     // User stuff. ugly
@@ -152,22 +108,102 @@ function task_validate($task) {
         $errors['id'] = 'ID de task invalid';
     }
 
+    if (!is_whole_number($task['test_count'])) {
+        $errors['test_count'] = "Numarul de teste trebuie sa fie un numar.";
+    } else if ($task['test_count'] < 1) {
+        $errors['test_count'] = "Minim 1 test.";
+    } else if ($task['test_count'] > 100) {
+        $errors['test_count'] = "Maxim 100 de teste.";
+    }
+
+    if ($task['use_ok_files'] != '0' && $task['use_ok_files'] != '1') {
+        $errors['use_ok_files'] = "0/1 only";
+    }
+
+    if ($task['evaluator'] == "") {
+        if (!$task['use_ok_files']) {
+            $errors['evaluator'] = "Pentru evaluare cu diff e nevoie e fisiere .ok";
+        }
+    } else {
+        if (!is_attachment_name($task['evaluator'])) {
+            $errors['evaluator'] = "Nume de fisier invalid.";
+        }
+    }
+
+    if (task_get_testgroups($task) === false) {
+        $errors['test_groups'] = "Eroare de sintaxa in expresie.";
+    }
+
+    if (task_parse_test_group($task["public_tests"], $task["test_count"]) === false) {
+        $errors['public_tests'] = "Eroare de sintaxa in expresie.";
+    }
+
     return $errors;
 }
 
-// Parse test grouping expression from task parameters and returns groups as an array
+// Parse test grouping expression from task and returns groups as an array
 // If there is no grouping parameter defined it returns a group for each test by default
 // If the expression string contains errors the function returns false
 // Expression syntax:
-// item: number | number-number 
+// item: number | number-number
 // group: item | item,group
 // groups: group | group;groups
-function task_get_testgroups($parameters) {
-    $test_count = $parameters['tests'];
+function task_parse_test_group($string, $test_count) {
+    if (strlen($string) == 0)
+        return array();
+
+    $current_group = array();
+    $items = explode(',', $string);
+    $used_count = array();
+    for ($test = 1; $test <= $test_count; $test++) {
+        $used_count[$test]  = 0;
+    }
+
+    foreach ($items as &$item) {
+        $tests = explode('-', $item);
+        if (count($tests) < 1 || count($tests) > 2) {
+            return false;
+        }
+        foreach ($tests as &$test) {
+            $test = trim($test);
+            if (!is_whole_number($test)) {
+                return false;
+            }
+        }
+        if (count($tests) == 1) {
+            if ($tests[0] < 1 || $tests[0] > $test_count) {
+                return false;
+            }
+            $current_group[] = $tests[0];
+            $used_count[$tests[0]] = 1;
+        } else {
+            $left = (int) $tests[0];
+            $right = (int) $tests[1];
+            if ($left < 1 || $right < 1 || $left > $test_count || $right > $test_count) {
+                return false;
+            }
+            for ($test = min($left, $right); $test <= max($left, $right); $test++) {
+                $current_group[] = $test;
+                $used_count[$test]++;
+            }
+        }
+    }
+
+    for ($test = 1; $test <= $test_count; $test++) {
+        if ($used_count[$test] > 1) {
+            return false;
+        }
+    }
+
+    return $current_group;
+}
+
+function task_get_testgroups($task) {
+    $test_count = $task['test_count'];
     if (!is_whole_number($test_count)) {
         return false;
     }
-    if (is_null(getattr($parameters, 'testgroups'))) {
+    if (!getattr($task, 'test_groups')) {
         $testgroups = array();
         for ($test = 1; $test <= $test_count; $test++) {
             $group = array($test);
@@ -181,39 +217,14 @@ function task_get_testgroups($parameters) {
         $used_count[$test]  = 0;
     }
     $testgroups = array();
-    $groups = explode(';', $parameters['testgroups']);
+    $groups = explode(';', $task['test_groups']);
     foreach ($groups as &$group) {
-        $current_group = array();
-        $items = explode(',', $group);
-        foreach ($items as &$item) {
-            $tests = explode('-', $item);
-            if (count($tests) < 1 || count($tests) > 2) {
-                return false;
-            }
-            foreach ($tests as &$test) {
-                $test = trim($test);
-                if (!is_whole_number($test)) {
-                    return false;
-                }
-            }
-            if (count($tests) == 1) {
-                if ($tests[0] < 1 || $tests[0] > $test_count) {
-                    return false;
-                }
-                $current_group[] = $tests[0];
-                $used_count[$tests[0]]++;
-            }
-            else {
-                $left = (int) $tests[0];
-                $right = (int) $tests[1];
-                if ($left < 1 || $right < 1 || $left > $test_count || $right > $test_count) {
-                    return false;
-                }
-                for ($test = min($left, $right); $test <= max($left, $right); $test++) {
-                    $current_group[] = $test;
-                    $used_count[$test]++;
-                }
-            }
+        $current_group = task_parse_test_group($group, $test_count);
+        if (!$current_group) {
+            return false;
+        }
+        foreach ($current_group as $test) {
+            $used_count[$test]++;
         }
         $testgroups[] = $current_group;
     }
@@ -246,60 +257,8 @@ function task_validate_parameters($task_type, $parameters) {
         } else if ($parameters['memlimit'] > 131072) {
             $errors['memlimit'] = "Maxim 128 megabytes.";
         }
-
-        if (!is_whole_number($parameters['tests'])) {
-            $errors['tests'] = "Numarul de teste trebuie sa fie un numar.";
-        } else if ($parameters['tests'] < 1) {
-            $errors['tests'] = "Minim 1 test.";
-        } else if ($parameters['tests'] > 100) {
-
-            $errors['tests'] = "Maxim 100 de teste.";
-        }
-
-        if ($parameters['okfiles'] != '0' && $parameters['okfiles'] != '1') {
-            $errors['okfiles'] = "0/1 only";
-        }
-
-        if ($parameters['evaluator'] == "") {
-            if (!$parameters['okfiles']) {
-                $errors['evaluator'] = "Pentru evaluare cu diff e nevoie e fisiere .ok";
-            }
-        } else {
-            if (!is_attachment_name($parameters['evaluator'])) {
-                $errors['evaluator'] = "Nume de fisier invalid.";
-            }
-        }
-
-        if (task_get_testgroups($parameters) === false) {
-            $errors['testgroups'] = "Eroare de sintaxa in expresie.";
-        }
-
     } else if ($task_type == 'output-only') {
-        if ($parameters['okfiles'] != '0' && $parameters['okfiles'] != '1') {
-            $errors['okfiles'] = "0/1 only";
-        }
-
-        if (!is_whole_number($parameters['tests'])) {
-            $errors['tests'] = "Numarul de teste trebuie sa fie un numar.";
-        } else if ($parameters['tests'] < 1) {
-            $errors['tests'] = "Minim 1 test.";
-        } else if ($parameters['tests'] > 100) {
-            $errors['tests'] = "Maxim 100 de teste.";
-        }
-
-        if ($parameters['evaluator'] == "") {
-            if (!$parameters['okfiles']) {
-                $errors['evaluator'] = "Pentru evaluare cu diff e nevoie e fisiere .ok";
-            }
-        } else {
-            if (!is_attachment_name($parameters['evaluator'])) {
-                $errors['evaluator'] = "Nume de fisier invalid.";
-            }
-        }
-
-        if (task_get_testgroups($parameters) === false) {
-            $errors['testgroups'] = "Eroare de sintaxa in expresie.";
-        }
+        // Nothing to validate
     } else {
         log_error("Bad task_type");
     }

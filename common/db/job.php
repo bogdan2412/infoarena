@@ -357,4 +357,30 @@ function job_test_get_all($job_id) {
     return db_fetch_all($query);
 }
 
+// Returns an array of public test informations for a job
+function job_test_get_public($job_id) {
+    $query = sprintf("
+        SELECT `test_count`, `public_tests` FROM `ia_task`
+        WHERE `id` = (
+            SELECT `task_id` FROM `ia_job`
+            WHERE `id` = %s
+        )", db_quote($job_id));
+
+    $task = db_fetch($query);
+    log_assert(!is_null($task));
+
+    $test_ids = task_parse_test_group($task["public_tests"], $task["test_count"]);
+    if (!count($test_ids)) {
+        return array();
+    }
+
+    $query = sprintf("
+        SELECT * FROM `ia_job_test`
+        WHERE `job_id` = %s AND `test_number` IN (%s)
+        ORDER BY `test_number`",
+        db_quote($job_id),
+        implode(", ", array_map("db_quote", array_values($test_ids))));
+    return db_fetch_all($query);
+}
+
 ?>

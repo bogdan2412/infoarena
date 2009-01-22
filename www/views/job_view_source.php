@@ -17,7 +17,7 @@ include('header.php');
     <th class="task-id">Problema</th>
     <td class="task-id"><?= format_link(url_textblock($job['task_page_name']), $job['task_title']) ?></td>
     <th class="score">Scor</th>
-    <td class="score"><?= html_escape($job['score']) ?></td>
+    <td class="score"><?= html_escape(is_null($job['score']) ? "Ascuns" : $job['score']) ?></td>
 </tr>
 </tr>
 <tr>

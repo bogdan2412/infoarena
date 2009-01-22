@@ -5,7 +5,8 @@ require_once(IA_ROOT_DIR . 'www/format/format.php');
 require_once(IA_ROOT_DIR . 'www/url.php');
 
 // display group sum column?
-$show_groups = ($view['group_count'] < count($view['tests']));
+$show_groups = $view['group_tests'] &&
+               ($view['group_count'] < count($view['tests']));
 
 ?>
 
@@ -22,7 +23,7 @@ $show_groups = ($view['group_count'] < count($view['tests']));
     <th class="task-id">Problema</th>
     <td class="task-id"><?= format_link(url_textblock($job['task_page_name']), $job['task_title']) ?></td>
     <th class="score">Scor</th>
-    <td class="score"><?= html_escape($job['score']) ?></td>
+    <td class="score"><?= html_escape(is_null($job['score']) ? "Ascuns" : $job['score']) ?></td>
 </tr>
 </tr>
 <tr>
@@ -70,8 +71,16 @@ $show_groups = ($view['group_count'] < count($view['tests']));
 <tbody>
 <?php
     $last_group = 0;
+    if (!$view["group_tests"]) {
+        $test_row = 0;
+    }
     foreach ($view['tests'] as $test) {
-        echo '<tr class="'.($test['test_group'] % 2 == 1 ? "odd" : "even").'">';
+        if ($view["group_tests"]) {
+            echo '<tr class="'.($test['test_group'] % 2 == 1 ? "odd" : "even").'">';
+        } else {
+            echo '<tr class="'.($test_row % 2 == 1 ? "odd" : "even").'">';
+            $test_row++;
+        }
         echo '<td class="number">'.$test['test_number'].'</td>';
         echo '<td class="number">'.$test['exec_time'].'ms</td>';
         echo '<td class="number">'.$test['mem_used'].'kb</td>';
@@ -85,8 +94,10 @@ $show_groups = ($view['group_count'] < count($view['tests']));
         }
         echo '</tr>';
     }
-    echo '<tr><td colspan="'.($show_groups ? 5 : 4).'">'.
-         'Punctaj total</td><td class="total_score number">'.$job['score'].'</td></tr>';
+    if (!is_null($job['score'])) {
+        echo '<tr><td colspan="'.($show_groups ? 5 : 4).'">'.
+             'Punctaj total</td><td class="total_score number">'.$job['score'].'</td></tr>';
+    }
 ?>
 </tbody>
 </table>

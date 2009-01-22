@@ -63,20 +63,20 @@ function macro_taskparam($args) {
         case 'id':
             return html_escape($task['id']);
 
-        case 'owner':	    
-	    if( $task['user_id']=='0' ) {
-		return '';
-	    }
-	    $user = user_get_by_id( $task['user_id'] );	    
+        case 'owner':
+            if ($task['user_id'] == '0') {
+                return '';
+            }
+            $user = user_get_by_id($task['user_id']);
             return html_escape($user['full_name']);
 
         case 'formatted_owner':
-	    if( $task['user_id']=='0' ) {
-		return '';
-	    }
-	    $user = user_get_by_id( $task['user_id'] );
-	    return format_user_tiny($user['username'], $user['full_name'],
-		                    $user['rating_cache']);
+            if ($task['user_id'] == '0') {
+                return '';
+            }
+            $user = user_get_by_id($task['user_id']);
+            return format_user_tiny($user['username'], $user['full_name'],
+                                    $user['rating_cache']);
 
         default:
             if (!isset($params[$param])) {

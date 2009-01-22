@@ -42,14 +42,13 @@ function controller_task_details($task_id) {
     $errors = array();
 
     // Fill in form values from request, defaults in $task
-    $values['author'] = request('author', $task['author']);
-    $values['type'] = request('type', $task['type']);
-    $values['source'] = request('source', $task['source']);
-    $values['hidden'] = request('hidden', $task['hidden']);
-    $values['title'] = request('title', $task['title']);
-    $values['page_name'] = request('page_name', $task['page_name']);
-    $values['open_source'] = request('open_source', $task['open_source']);
-    $values['open_tests'] = request('open_tests', $task['open_tests']);
+    $fields = array('author', 'type', 'source', 'hidden', 'title', 'page_name',
+                    'open_source', 'open_tests', 'test_count', 'test_groups',
+                    'evaluator', 'use_ok_files', 'public_tests');
+
+    foreach ($fields as $field) {
+        $values[$field] = request($field, $task[$field]);
+    }
 
     // Parameter values, for all possible types of tasks.
     // Yucky, but functional.
@@ -71,14 +70,9 @@ function controller_task_details($task_id) {
     if (request_is_post()) {
         // Build new task
         $new_task = $task;
-        $new_task['title'] = $values['title'];
-        $new_task['page_name'] = $values['page_name'];
-        $new_task['author'] = $values['author'];
-        $new_task['source'] = $values['source'];
-        $new_task['type'] = $values['type'];
-        $new_task['hidden'] = $values['hidden'];
-        $new_task['open_source'] = $values['open_source'];
-        $new_task['open_tests'] = $values['open_tests'];
+        foreach ($fields as $field) {
+            $new_task[$field] = $values[$field];
+        }
 
         $task_errors = task_validate($new_task);
         $errors = $task_errors;

@@ -58,6 +58,36 @@ $form_fields = array(
                 'name' => 'Acces liber la teste',
                 'type' => 'bool'
         ),
+        'test_count' => array(
+                'description' => "Numar de teste",
+                'default' => 10,
+                'type' => 'integer',
+                'name' => "Numar de teste",
+        ),
+        'test_groups' => array(
+                'description' => "Descrierea gruparii testelor.",
+                'default' => '1;2;3;4;5;6;7;8;9;10',
+                'type' => 'string',
+                'name' => "Grupare teste",
+        ),
+        'public_tests' => array(
+                'description' => "Lista de teste pe care utilizatorii pot vedea rezultatele in concursuri.",
+                'default' => '',
+                'type' => 'string',
+                'name' => "Detailed feedback",
+        ),
+        'use_ok_files' => array(
+                'description' => "Daca evaluator-ul foloseste fisiere .ok",
+                'default' => '0',
+                'type' => 'bool',
+                'name' => "Foloseste .ok",
+        ),
+        'evaluator' => array(
+                'description' => "Sursa evaluatorului. Poate fi omis pentru evaluare cu diff",
+                'default' => 'eval.c',
+                'type' => 'string',
+                'name' => "Evaluator",
+        ),
 );
 
 ?>
@@ -107,6 +137,12 @@ $form_fields = array(
     <fieldset>
     <legend>Detalii despre evaluare</legend>
     <ul class="form">
+        <?= view_form_field_li($form_fields['test_count'], 'test_count') ?>
+        <?= view_form_field_li($form_fields['test_groups'], 'test_groups') ?>
+        <?= view_form_field_li($form_fields['public_tests'], 'public_tests') ?>
+        <?= view_form_field_li($form_fields['use_ok_files'], 'use_ok_files') ?>
+        <?= view_form_field_li($form_fields['evaluator'], 'evaluator') ?>
+
         <?= view_form_field_li($form_fields['type'], 'type') ?>
         <li><hr /></li>
         <li id="field_params">

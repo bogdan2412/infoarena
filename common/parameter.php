@@ -8,10 +8,10 @@ require_once(IA_ROOT_DIR . "common/db/db.php");
 // $parameter_id    parameter type (id)
 // $value           raw value string stored in database
 function parameter_decode($parameter_id, $value) {
-    $booleans = array('unique_output', 'okfiles', 'rating_update');
-    $ints = array('memlimit', 'tests', 'rating_timestamp');
+    $booleans = array('rating_update');
+    $ints = array('memlimit', 'rating_timestamp');
     $floats = array('timelimit');
-    $strings = array('evaluator');
+    $strings = array();
 
     if (in_array($parameter_id, $booleans)) {
         if ("1" == $value) {

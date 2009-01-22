@@ -35,10 +35,12 @@ function controller_job_view($job_id) {
 
     $view['title'] = 'Borderou de evaluare (job #'.$job_id.')';
     $view['job'] = $job;
-    $view['group_count'] = 0;
     $view['tests'] = array();
 
     if (identity_can('job-view-score', $job)) {
+        $view['group_tests'] = true;
+        $view['group_count'] = 0;
+
         $view['tests'] = job_test_get_all($job_id);
         foreach ($view['tests'] as $test) {
             $view['group_count'] = max($view['group_count'], $test['test_group']);
@@ -62,7 +64,11 @@ function controller_job_view($job_id) {
             }
         }
     } else {
-        $view['job']['score'] = "Ascuns";
+        $view['group_tests'] = false;
+        $view['job']['score'] = NULL;
+        if (identity_can("job-view-partial-feedback", $job)) {
+            $view['tests'] = job_test_get_public($job_id);
+        }
     }
 
     if (!$view['job']['eval_message']) {
@@ -70,7 +76,6 @@ function controller_job_view($job_id) {
     }
     execute_view_die('views/job_detail.php', $view);
 }
-
 
 function controller_job_view_source($job_id) {
     if (!is_whole_number($job_id)) {
@@ -86,6 +91,9 @@ function controller_job_view_source($job_id) {
     }
 
     identity_require('job-view-source', $job);
+    if (!identity_can("job-view-score", $job)) {
+        $job['score'] = NULL;
+    }
 
     $view = array();
     $view['title'] = 'Cod sursa (job #'.$job_id.')';

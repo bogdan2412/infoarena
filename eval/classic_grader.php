@@ -20,19 +20,19 @@ function classic_task_grade_job($task, $tparams, $job) {
 
     // Compile custom evaluator.
     // Don't send system error, send custom message
-    if ($tparams['evaluator'] !== '') {
-        if (!copy_grader_file($task, $tparams['evaluator'],
-                    IA_ROOT_DIR.'eval/temp/'.$tparams['evaluator'])) {
+    if ($task['evaluator']) {
+        if (!copy_grader_file($task, $task['evaluator'],
+                    IA_ROOT_DIR.'eval/temp/'.$task['evaluator'])) {
             log_print('Task eval not found');
             $result['message'] = 'Eroare in setarile problemei';
             $result['log'] = "Lipseste evaluatorul problemei.\n";
             $result['log'] .= "Ar trebui sa existe un atasament".
-                " 'grader_{$tparams['evaluator']}' ".
+                " 'grader_{$task['evaluator']}' ".
                 "la pagina cu enuntul problemei";
             return $result;
         }
 
-        if (!compile_file($tparams['evaluator'], 'eval', $compiler_messages)) {
+        if (!compile_file($task['evaluator'], 'eval', $compiler_messages)) {
             log_print('Task eval compile error');
             $result['message'] = 'Eroare de compilare in evaluator';
             $result['log'] = "Eroare de compilare:\n" . $compiler_messages;
@@ -67,10 +67,10 @@ function classic_task_grade_job($task, $tparams, $job) {
 
     // Running tests.
     $test_score = array();
-    for ($testno = 1; $testno <= $tparams['tests']; ++$testno) {
+    for ($testno = 1; $testno <= $task['test_count']; ++$testno) {
         $test_score[$testno] = 0;
     }
-    $test_groups = task_get_testgroups($tparams);
+    $test_groups = task_get_testgroups($task);
     $group_idx = 0;
     foreach ($test_groups as $group) {
         $group_idx++;
@@ -138,7 +138,7 @@ function classic_task_grade_job($task, $tparams, $job) {
             $grader_mem = null;
 
             // Copy ok file, if used.
-            if ($tparams['okfiles']) {
+            if ($task['use_ok_files']) {
                 if (!copy_grader_file($task , 'test' . $testno . '.ok', $okfile)) {
                     log_print("Test $testno: .ok file not found");
                     $result['message'] = 'Eroare in teste';
@@ -151,13 +151,13 @@ function classic_task_grade_job($task, $tparams, $job) {
                 }
             }
 
-            if ($tparams['evaluator'] === '') {
+            if (!$task['evaluator']) {
                 // Diff grading, trivial.
                 if (is_readable($outfile)) {
                     $diff_output = shell_exec("diff -qBbEa $outfile $okfile");
                     if ($diff_output == '') {
                         log_print("Test $testno: Diff eval: Files identical"); 
-                        $score = 100 / $tparams['tests'];
+                        $score = 100 / $task['test_count'];
                         $test_msg = "OK";
                         $test_score[$testno] = $score;
                     } else {
