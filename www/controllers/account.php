@@ -107,11 +107,13 @@ function controller_account($username = null) {
                 if ($attach) {
                     // Attachment already exists, overwrite.
                     attachment_update($attach['id'], $file_name, $avatar_size,
-                                      $mime_type, $user_page, $user['id']);
+                                      $mime_type, $user_page, $user['id'],
+                                      remote_ip_info());
                 } else {
                     // New attachment. Insert.
                     attachment_insert($file_name, $avatar_size,
-                                      $mime_type, $user_page, $user['id']);
+                                      $mime_type, $user_page, $user['id'],
+                                      remote_ip_info());
                 }
 
                 // check if update/insert went ok

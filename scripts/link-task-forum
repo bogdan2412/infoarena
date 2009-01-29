@@ -38,7 +38,8 @@ function link_task($task, $page, $topic, $verbose = false) {
         textblock_add_revision($new_page['name'], $new_page['title'],
                                $new_page['text'], $new_page['user_id'],
                                $new_page['security'], $new_page['timestamp'],
-                               $new_page['creation_timestamp']);
+                               $new_page['creation_timestamp'],
+                               $new_page['remote_ip_info']);
     } else {
         log_error('Eroare la validarea textblock-ului!');
         return false;

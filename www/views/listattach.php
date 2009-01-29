@@ -47,6 +47,14 @@ function format_attach_size($row) {
 
 }
 
+function format_ip($row) {
+    if ($row['remote_ip_info'] && identity_can('attach-view-ip', $row)) {
+        return html_escape($row['remote_ip_info']);
+    } else {
+        return 'N/A';
+    }
+}
+
 function format_operations($row) {
     global $page_name;
     
@@ -85,6 +93,10 @@ $column_infos = array(
         'title' => 'Data',
         'key' => 'timestamp',
         'valform' => 'format_date',
+    ),
+    array(
+        'title' => 'IP',
+        'rowform' => 'format_ip',
     ),
     array(
         'title' => 'Operatii',

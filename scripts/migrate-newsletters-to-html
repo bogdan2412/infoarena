@@ -73,7 +73,8 @@ foreach (textblock_get_by_prefix('newsletter/', true) as $textblock) {
     $new_text = newsletter_plaintext_to_textile($textblock['text']);
     textblock_add_revision($textblock['name'], $textblock['title'],
             $new_text, $textblock['user_id'], $textblock['security'],
-            $textblock['forum_topic'], null, $textblock['creation_timestamp']);
+            $textblock['forum_topic'], null, $textblock['creation_timestamp'],
+            getattr($textblock. 'remote_ip_info'));
 }
 
 ?>

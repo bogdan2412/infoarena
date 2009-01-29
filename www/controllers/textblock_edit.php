@@ -78,7 +78,8 @@ function controller_textblock_edit($page_name, $security = 'public') {
                                    $new_page['security'],
                                    $new_page['forum_topic'],
                                    $new_page['timestamp'],
-                                   $new_page['creation_timestamp']);
+                                   $new_page['creation_timestamp'],
+                                   remote_ip_info());
             if (identity_can('textblock-tag', $new_page)) {
                 tag_update("textblock", $new_page['name'], $values['tags']);
             }

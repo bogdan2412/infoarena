@@ -30,7 +30,8 @@ function controller_textblock_copy($page_name) {
         }
 
         if (!$errors) {
-            textblock_copy($page_name, $new_name);
+            textblock_copy($page_name, $new_name, identity_get_user_id(),
+                    remote_ip_info());
             flash("Pagina a fost copiata.");
             redirect(url_textblock($new_name));
         }

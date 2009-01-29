@@ -20,7 +20,8 @@ foreach ($blog_pages as $blog_page) {
         textblock_add_revision($page['name'], $page['title'], $page['text'],
                                $page['user_id'], $page['security'],
                                $page["forum_topic"], $page['timestamp'],
-                               $page['creation_timestamp']);
+                               $page['creation_timestamp'],
+                               getattr($page, 'remote_ip_info'));
     } else {
         log_error('Eroare la procesarea ia_blog_forum!');
     }
@@ -47,7 +48,8 @@ foreach ($task_pages as $task_page) {
             textblock_add_revision($page['name'], $page['title'], $page['text'],
                                    $page['user_id'], $page['security'],
                                    $page["forum_topic"], $page['timestamp'],
-                                   $page['creation_timestamp']);
+                                   $page['creation_timestamp'],
+                                   getattr($page, 'remote_ip_info'));
         } else {
             log_error('Eroare la procesarea paginii ' . $page["name"] . '!');
         }

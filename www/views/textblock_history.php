@@ -21,6 +21,14 @@ function format_textblock_title($row) {
     return "$title";
 }
 
+function format_ip($row) {
+    if ($row['remote_ip_info'] && identity_can('textblock-view-ip', $row)) {
+        return html_escape($row['remote_ip_info']);
+    } else {
+        return 'N/A';
+    }
+}
+
 function format_operations($row) {
     global $page_name, $total_entries;
     $diffurl = url_textblock_diff($page_name, $row['revision_id'], $total_entries);
@@ -82,7 +90,10 @@ $column_infos = array(
         'key' => 'timestamp',
         'valform' => 'format_date',
     ),
-
+    array(
+        'title' => 'IP',
+        'rowform' => 'format_ip',
+    ),
     array(
         'title' => 'Operatii',
         'rowform' => 'format_operations',

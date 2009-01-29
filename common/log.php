@@ -111,9 +111,9 @@ function log_print($message, $include_origin = false) {
 }
 
 // Use this for warning messages.
-function log_warn($message, $include_origin = false) {
+function log_warn($message, $include_origin = false, $backtrace_level = 0) {
     if ($include_origin) {
-        $message = format_message_backtrace($message);
+        $message = format_message_backtrace($message, $backtrace_level);
     }
     trigger_error_split($message, E_USER_WARNING);
 }

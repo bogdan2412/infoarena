@@ -64,7 +64,8 @@ function attachment_get_by_id($id) {
 }
 
 // Update an attachment. FIXME: hash args.
-function attachment_update($id, $name, $size, $mime_type, $page, $user_id) {
+function attachment_update($id, $name, $size, $mime_type, $page, $user_id,
+        $remote_ip_info) {
     $attachment = array(
             'id' => $id,
             'name' => $name,
@@ -73,6 +74,7 @@ function attachment_update($id, $name, $size, $mime_type, $page, $user_id) {
             'page' => $page,
             'user_id' => $user_id,
             'timestamp' => db_date_format(),
+            'remote_ip_info' => $remote_ip_info,
     );
 
     db_update('ia_file', $attachment, '`id` = '.db_quote($id));
@@ -81,7 +83,8 @@ function attachment_update($id, $name, $size, $mime_type, $page, $user_id) {
 }
 
 // Inserts an attachment in the db
-function attachment_insert($name, $size, $mime_type, $page, $user_id) {
+function attachment_insert($name, $size, $mime_type, $page, $user_id,
+        $remote_ip_info) {
     $attachment = array(
             'name' => $name,
             'size' => $size,
@@ -89,12 +92,13 @@ function attachment_insert($name, $size, $mime_type, $page, $user_id) {
             'page' => $page,
             'user_id' => $user_id,
             'timestamp' => db_date_format(),
+            'remote_ip_info' => $remote_ip_info,
     );
 
     db_insert('ia_file', $attachment);
     $attachment['id'] = db_insert_id();
     _attachment_cache_add($attachment);
-    
+
     return $attachment['id'];
 }
 

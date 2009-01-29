@@ -37,13 +37,15 @@ foreach ($blog_posts as $post) {
         $new_page['creation_timestamp'] = $post['creation_timestamp'];
         $new_page['timestamp'] = null;
         $new_page['user_id'] = 1; // update as "domino" :)
+        $new_page['remote_ip_info'] = getattr($post, 'remote_ip_info');
 
         // It worked
         if (!textblock_validate($new_page)) {
             textblock_add_revision($new_page['name'], $new_page['title'],
                                    $new_page['text'], $new_page['user_id'],
                                    $new_page['security'], $new_page['timestamp'],
-                                   $new_page['creation_timestamp']);
+                                   $new_page['creation_timestamp'],
+                                   $new_page['remote_ip_info']);
         } else {
             log_error('Eroare la validarea textblock-ului!');
             return false;

@@ -22,23 +22,28 @@ $show_groups = $view['group_tests'] &&
 <tr>
     <th class="task-id">Problema</th>
     <td class="task-id"><?= format_link(url_textblock($job['task_page_name']), $job['task_title']) ?></td>
-    <th class="score">Scor</th>
-    <td class="score"><?= html_escape(is_null($job['score']) ? "Ascuns" : $job['score']) ?></td>
-</tr>
-</tr>
-<tr>
-    <th class="compiler-id">Compilator</th>
-    <td class="compiler-id"><?= html_escape($job['compiler_id']) ?></td>
     <th class="status">Status</th>
     <td class="status"><strong><?= html_escape($job['status']) ?></strong></td>
 </tr>
 <tr>
     <th class="round-id">Runda</th>
-    <td class="round-id" colspan="<?= identity_can('job-view-source', $job) ? 1 : 3 ?>">
+    <td class="round-id">
     <?= format_link(url_textblock($job['round_page_name']), $job['round_title']) ?></td>
-<?php if (identity_can('job-view-source', $job)) { ?>
-    <th class="source">Sursa</th>
-    <td class="source"><?= format_link(url_job_view_source($job['id']), "Vezi sursa") ?></td>
+    <th class="compiler-id">Compilator</th>
+    <td class="compiler-id">
+        <?= html_escape($job['compiler_id']) ?>
+        <?php if (identity_can('job-view-source', $job)) { ?>
+            | <?= format_link(url_job_view_source($job['id']), "Vezi sursa") ?>
+        <?php } ?>
+    </td>
+</tr>
+<tr>
+    <th class="score">Scor</th>
+    <td class="score" colspan="<?= identity_can('job-view-ip', $job) ? 1 : 3 ?>">
+        <?= html_escape(is_null($job['score']) ? "Ascuns" : $job['score']) ?></td>
+<?php if (identity_can('job-view-ip', $job)) { ?>
+    <th class="ip">IP</th>
+    <td class="ip"><?= $job['remote_ip_info'] ? html_escape($job['remote_ip_info']) : '<em>lipseste</em>' ?></td>
 <?php } ?>
 </tr>
 

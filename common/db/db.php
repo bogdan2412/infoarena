@@ -261,6 +261,8 @@ function db_fetch($query) {
     }
 }
 
+// FIXME: This shouldn't be here. Move it in common/db/task.php or
+// common/db/round.php
 function db_get_task_filter_clause($filter, $table_alias) {
     if ($filter == IA_TLF_SOLVED) {
         return "{$table_alias}.score = 100";

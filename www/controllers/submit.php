@@ -12,7 +12,8 @@ function controller_submit() {
     if (request_is_post()) {
         $values = array(
             'task_id' => getattr($_POST, 'task_id'),
-            'compiler_id' => getattr($_POST, 'compiler_id')
+            'compiler_id' => getattr($_POST, 'compiler_id'),
+            'remote_ip_info' => remote_ip_info(),
         );
 
         // Check uploaded solution

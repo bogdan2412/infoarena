@@ -148,8 +148,8 @@ function textblock_validate($tb) {
 // You can also change the security descriptor on all those files.
 //
 // Use this like textblock_copy_replace('template/newtask', 'problema/capsuni');
-function textblock_copy_replace($srcprefix, $dstprefix, $replace, $security, $user_id)
-{
+function textblock_copy_replace($srcprefix, $dstprefix, $replace, $security,
+        $user_id, $remote_ip_info = null) {
     assert($srcprefix != $dstprefix);
     assert(is_textblock_security_descriptor($security));
     assert(is_whole_number($user_id));
@@ -173,7 +173,7 @@ function textblock_copy_replace($srcprefix, $dstprefix, $replace, $security, $us
         textblock_add_revision($textblock['name'], $textblock['title'],
                 $textblock['text'], $user_id, $textblock['security'],
                 $textblock['forum_topic'], null,
-                $first_textblock['creation_timestamp']);
+                $first_textblock['creation_timestamp'], $remote_ip_info);
     }
 }
 

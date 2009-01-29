@@ -217,11 +217,8 @@ function controller_round_create()
             }
 
             // This should never fail.
-            log_assert(round_create(
-                        $round,
-                        $round_params,
-                        identity_get_user_id()
-            ));
+            log_assert(round_create($round, $round_params,
+                    identity_get_user_id(), remote_ip_info()));
             flash("O noua runda a fost creata, acum poti sa editezi detalii.");
             redirect(url_round_edit($round['id']));
         }

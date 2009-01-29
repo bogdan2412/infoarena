@@ -77,19 +77,22 @@ function safe_job_submit($args, $user) {
         // This is compatible with 2.1.3
         if (array_key_exists('round_id', $args)) {
             job_create($args['task_id'], $args['round_id'], $user['id'],
-                    $args['compiler_id'], $args['solution']);
+                    $args['compiler_id'], $args['solution'],
+                    getattr($args, 'remote_ip_info'));
         } else {
             $parent_rounds = task_get_parent_rounds($args['task_id']);
             if (count($parent_rounds) === 0) {
                 // some jobs just don't have a round
                 job_create($args['task_id'], '', $user['id'],
-                        $args['compiler_id'], $args['solution']);
+                        $args['compiler_id'], $args['solution'],
+                        getattr($args, 'remote_ip_info'));
             }
             else {
                 foreach ($parent_rounds as $round_id) {
                     if (security_query($user, 'round-submit', round_get($round_id))) {
                         job_create($args['task_id'], $round_id, $user['id'],
-                                $args['compiler_id'], $args['solution']);
+                                $args['compiler_id'], $args['solution'],
+                                getattr($args, 'remote_ip_info'));
                     }
                 }
             }

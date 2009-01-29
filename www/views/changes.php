@@ -28,7 +28,12 @@ $difflink = format_link(url_textblock_diff(
             $rev['revision_id']),
             "diff");
 $tstamp = format_date($rev['timestamp']);
-echo "$tstamp: $userlink a modificat $pagelink ($difflink).";
+if (identity_can('textblock-view-ip', $rev) && $rev['remote_ip_info']) {
+    $remote_ip = '('.$rev['remote_ip_info'].') ';
+} else {
+    $remote_ip = '';
+}
+echo "$tstamp: $userlink {$remote_ip}a modificat $pagelink ($difflink).";
 ?>
     </li>
 <?php } ?>

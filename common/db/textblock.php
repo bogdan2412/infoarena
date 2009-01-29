@@ -14,7 +14,8 @@ require_once(IA_ROOT_DIR."common/textblock.php");
 // FIXME: hash parameter?
 function textblock_add_revision(
         $name, $title, $content, $user_id, $security = "public",
-        $forum_topic = null, $timestamp = null, $creation_timestamp = null) {
+        $forum_topic = null, $timestamp = null, $creation_timestamp = null,
+        $remote_ip_info = null) {
     $name = normalize_page_name($name);
     $tb = array(
             'name' => $name,
@@ -25,6 +26,7 @@ function textblock_add_revision(
             'forum_topic' => $forum_topic,
             'timestamp' => $timestamp,
             'creation_timestamp' => $creation_timestamp,
+            'remote_ip_info' => $remote_ip_info,
     );
     log_assert_valid(textblock_validate($tb));
 
@@ -58,13 +60,14 @@ function textblock_add_revision(
         log_assert(is_db_date($timestamp), "Invalid timestamp");
     }
     $query = sprintf("INSERT INTO ia_textblock
-                        (name, `text`, `title`, `creation_timestamp`, `timestamp`, `user_id`, `security`, `forum_topic`)
-                      VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', %s)",
-                     db_escape($name), db_escape($content),
-                     db_escape($title), db_escape($creation_timestamp), 
-                     db_escape($timestamp), db_escape($user_id),
-                     db_escape($security),
-                     is_null($forum_topic) ? "NULL" : db_escape($forum_topic));
+            (name, `text`, `title`, `creation_timestamp`,
+                    `timestamp`, `user_id`, `security`, `forum_topic`,
+                    `remote_ip_info`)
+            VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, %s)",
+            db_escape($name), db_escape($content), db_escape($title),
+            db_escape($creation_timestamp), db_escape($timestamp),
+            db_escape($user_id), db_escape($security), db_quote($forum_topic),
+            db_quote($remote_ip_info));
     return db_query($query);
 }
 
@@ -73,7 +76,8 @@ function textblock_complex_query($options)
 {
     // log_print_r($options);
 
-    $field_list = "`name`, `title`, `creation_timestamp`, `timestamp`, `security`, `user_id`, `forum_topic`";
+    $field_list = "`name`, `title`, `creation_timestamp`, `timestamp`, `security`, `user_id`,
+            `forum_topic`, `remote_ip_info`";
 
     // Select content.
     if (getattr($options, 'content', false) == true) {
@@ -211,7 +215,9 @@ function textblock_grep($substr, $page, $regexp = false) {
     } else {
         $compare = "REGEXP";
     }
-    $query = sprintf("SELECT `name`, `title`, `creation_timestamp`, `timestamp`, `user_id`, `security`, `forum_topic`
+    $query = sprintf("SELECT `name`, `title`, `creation_timestamp`, `timestamp`,
+                            `user_id`, `security`, `forum_topic`,
+                            `remote_ip_info`
                       FROM ia_textblock
                       WHERE `name` LIKE '%s' AND
                             (`text` $compare '%s' OR `title` $compare '%s')
@@ -288,7 +294,7 @@ function textblock_move($old_name, $new_name) {
     }
 }
 
-function textblock_copy($old_name, $new_name) {
+function textblock_copy($old_name, $new_name, $user_id, $remote_ip_info) {
     $old_name = normalize_page_name($old_name);
     $new_name = normalize_page_name($new_name);
     log_assert(is_normal_page_name($old_name));
@@ -296,11 +302,12 @@ function textblock_copy($old_name, $new_name) {
 
     $new_textblock = textblock_get_revision($old_name);
     $new_textblock['name'] = $new_name;
-    $new_textblock['user_id'] = identity_get_user_id();
+    $new_textblock['user_id'] = $user_id;
     textblock_add_revision($new_textblock['name'], $new_textblock['title'],
                            $new_textblock['text'], $new_textblock['user_id'],
                            $new_textblock['security'],
-                           $new_textblock['forum_topic'], null, null);
+                           $new_textblock['forum_topic'], null, null,
+                           $remote_ip_info);
 
     // Get a list of attachments.
     $files = attachment_get_all($old_name);
@@ -308,7 +315,8 @@ function textblock_copy($old_name, $new_name) {
     // Copy attachments in db and hard drive
     foreach ($files as $file) {
         // Copy in db and get new id
-        $new_id = attachment_insert($file['name'], $file['size'], $file['mime_type'], $new_name, identity_get_user_id());
+        $new_id = attachment_insert($file['name'], $file['size'],
+                $file['mime_type'], $new_name, $user_id, $remote_ip_info);
 
         // Copy on hard drive
         $old_filename = attachment_get_filepath($file);

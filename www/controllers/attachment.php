@@ -177,14 +177,16 @@ function controller_attachment_submit($page_name) {
             if ($attach) {
                 // Attachment already exists, overwrite.
                 identity_require('attach-overwrite', $attach);
-                attachment_update($attach['id'], $file_att['name'], $file_att['size'],
-                                  $file_att['type'], $page_name, $identity_user['id']);
+                attachment_update($attach['id'], $file_att['name'],
+                        $file_att['size'], $file_att['type'], $page_name,
+                        $identity_user['id'], remote_ip_info());
                 $rewrite_count++;
             }
             else {
                 // New attachment. Insert.
-                attachment_insert($file_att['name'], $file_att['size'], $file_att['type'],
-                                  $page_name, $identity_user['id']);
+                attachment_insert($file_att['name'], $file_att['size'],
+                        $file_att['type'], $page_name, $identity_user['id'],
+                        remote_ip_info());
             }
 
             // check if update/insert went ok

@@ -34,7 +34,7 @@ function task_get($task_id) {
 }
 
 // Create new task
-function task_create($task, $task_params) {
+function task_create($task, $task_params, $remote_ip_info = null) {
     log_assert_valid(task_validate($task));
     log_assert_valid(task_validate_parameters($task['type'], $task_params));
 
@@ -47,7 +47,7 @@ function task_create($task, $task_params) {
         require_once(IA_ROOT_DIR . "common/textblock.php");
         $replace = array("task_id" => $task['id'], "task_title" => ucfirst($task['id']));
         textblock_copy_replace("template/newtask", $task['page_name'],
-                $replace, "task: {$task['id']}", $task['user_id']);
+                $replace, "task: {$task['id']}", $task['user_id'], $remote_ip_info);
 
         _task_cache_add($task);
     }

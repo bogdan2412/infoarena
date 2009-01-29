@@ -23,7 +23,7 @@ foreach ($users as $user) {
             log_print("Missing textblock for {$user['username']}");
             $replace = array("user_id" => $user['username']);
             textblock_copy_replace("template/newuser", $tbname, $replace,
-                    "public", $user['id']);
+                    "public", $user['id'], null);
         }
     }
 }

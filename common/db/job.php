@@ -21,15 +21,18 @@ require_once(IA_ROOT_DIR."common/db/db.php");
 }*/
 
 // Creates new eval job
-function job_create($task_id, $round_id, $user_id, $compiler_id, $file_contents) {
+function job_create($task_id, $round_id, $user_id, $compiler_id, $file_contents,
+        $remote_ip_info = null) {
     $query = <<<SQL
         INSERT INTO ia_job
-            (`task_id`, `round_id`, `user_id`, `compiler_id`, `file_contents`, `submit_time`)
-        VALUES (%s, %s, %s, %s, %s, %s)
+            (`task_id`, `round_id`, `user_id`, `compiler_id`, `file_contents`,
+             `submit_time`, `remote_ip_info`)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
 SQL;
     $query = sprintf($query,
             db_quote($task_id), db_quote($round_id), db_quote($user_id),
-            db_quote($compiler_id), db_quote($file_contents), db_quote(db_date_format()));
+            db_quote($compiler_id), db_quote($file_contents),
+            db_quote(db_date_format()), db_quote($remote_ip_info));
     return db_query($query);
 }
 
@@ -39,7 +42,8 @@ function job_get_next_job() {
     $query = <<<SQL
 SELECT `job`.`id`, `job`.`user_id`, `job`.`task_id`, `job`.`round_id`,
        `job`.`compiler_id`, `job`.`status`, `job`.`submit_time`,
-       `job`.`eval_message`, `job`.`score`, `job`.`file_contents`
+       `job`.`eval_message`, `job`.`score`, `job`.`file_contents`,
+       `job`.`remote_ip_info`
     FROM `ia_job` AS `job`
     WHERE `job`.`id` = (
         SELECT MIN(id)
@@ -82,7 +86,8 @@ function job_update($job_id, $status = null,  $eval_message = null,
 function job_get_by_id($job_id, $contents = false) {
     log_assert(is_whole_number($job_id));
     $field_list = "`job`.`id`, job.`user_id`, `job`.`compiler_id`, `job`.`status`,
-                   `job`.`submit_time`, `job`.`eval_message`, `job`.`score`, `job`.`eval_log`,
+                   `job`.`submit_time`, `job`.`eval_message`, `job`.`score`,
+                   `job`.`eval_log`, `job`.`remote_ip_info`,
                    OCTET_LENGTH(`job`.`file_contents`) AS `job_size`,
                    `user`.`username` AS `user_name`, `user`.`full_name` AS `user_fullname`,
                    `task`.`id` AS `task_id`,
@@ -127,6 +132,7 @@ function job_get_range_wheres_job($filters) {
     $score_begin = getattr($filters, 'score_begin');
     $score_end = getattr($filters, 'score_end');
     $eval_msg = getattr($filters, 'eval_msg');
+    $remote_ip_info = getattr($filters, 'remote_ip_info');
 
     $wheres = array("TRUE");
     if (!is_null($task)) {
@@ -171,6 +177,11 @@ function job_get_range_wheres_job($filters) {
     }
     if (!is_null($eval_msg)) {
         $wheres[] = sprintf("`job`.`eval_message` LIKE '%s%%'", db_escape($eval_msg));
+    }
+    if (!is_null($remote_ip_info)) {
+        // We allow remote_ip_info to contain % wildcards. This will make it a bit
+        // easier to search for IP classes.
+        $wheres[] = sprintf("`job`.`remote_ip_info` LIKE '%s'", db_escape($remote_ip_info));
     }
 
     return $wheres;
@@ -231,6 +242,7 @@ function job_get_range($filters, $start, $range) {
             `job`.`score`,
             `job`.`eval_message`,
             `job`.`eval_log`,
+            `job`.`remote_ip_info`,
             OCTET_LENGTH(`job`.`file_contents`) AS `job_size`,
             `user`.`username` AS `user_name`,
             `user`.`full_name` AS `user_fullname`,

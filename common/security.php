@@ -103,6 +103,12 @@ function security_simplify_action($action) {
         case 'round-register-view':
             return 'simple-view';
 
+        // View IP.
+        case 'attach-view-ip':
+        case 'textblock-view-ip':
+        case 'job-view-ip':
+            return 'sensitive-info';
+
         // Reversible edits access.
         case 'textblock-edit':
         case 'textblock-restore':
@@ -243,6 +249,9 @@ function security_textblock($user, $action, $textblock) {
             } else {
                 return true;
             }
+
+        case 'sensitive-info':
+            return ($usersec == 'admin' || $usersec == 'helper');
 
         // Reversible modifications.
         case 'simple-rev-edit':
@@ -410,6 +419,9 @@ function security_task($user, $action, $task) {
             }
             return $can_view || $is_owner || $is_admin;
 
+        case 'sensitive-info':
+            return ($usersec == 'admin' || $usersec == 'helper');
+
         default:
             log_error('Invalid task action: '.$action);
     }
@@ -465,6 +477,9 @@ function security_round($user, $action, $round) {
                 return false;
             }
 
+        case 'sensitive-info':
+            return ($usersec == 'admin' || $usersec == 'helper');
+
         default:
             log_error('Invalid round action: '.$action);
     }
@@ -519,6 +534,7 @@ function security_job($user, $action, $job) {
                             $can_view_source;
     $can_view_score = ($job['round_public_eval'] == true) || $is_task_owner || $is_admin;
     $can_view_partial_feedback = $is_owner || $is_admin;
+    $can_view_sensitive_info = ($usersec == 'admin' || $usersec == 'helper');
 
     // Log query response.
     $action = security_simplify_action($action);
@@ -548,6 +564,9 @@ function security_job($user, $action, $job) {
 
         case 'job-view-partial-feedback':
             return $can_view_job && $can_view_partial_feedback;
+
+        case 'sensitive-info':
+            return $can_view_job && $can_view_sensitive_info;
 
         default:
             log_error('Invalid job action: '.$action);

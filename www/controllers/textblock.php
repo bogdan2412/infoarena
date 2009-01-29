@@ -143,7 +143,8 @@ function controller_textblock_restore($page_name, $rev_num) {
     textblock_add_revision($rev['name'], $rev['title'], $rev['text'],
                            getattr($identity_user, 'id'), $rev['security'],
                            $rev['forum_topic'], null,
-                           $rev['creation_timestamp']);
+                           $rev['creation_timestamp'],
+                           remote_ip_info());
     flash("Pagina a fost inlocuita cu revizia {$rev_num}");
     redirect(url_textblock($page_name));
 }

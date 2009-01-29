@@ -28,7 +28,7 @@ function round_get($round_id) {
 
 // Create new round
 // Return success.
-function round_create($round, $round_params, $user_id) {
+function round_create($round, $round_params, $user_id, $remote_ip_info = null) {
     log_assert(is_user_id($user_id));
     log_assert_valid(round_validate($round));
     log_assert_valid(round_validate_parameters($round['type'], $round_params));
@@ -44,7 +44,7 @@ function round_create($round, $round_params, $user_id) {
         require_once(IA_ROOT_DIR . "common/textblock.php");
         $replace = array("round_id" => $round['id']);
         textblock_copy_replace("template/newround", $round['page_name'],
-                $replace, "round: {$round['id']}", $user_id);
+                $replace, "round: {$round['id']}", $user_id, $remote_ip_info);
 
         _round_cache_add($round);
         return true;

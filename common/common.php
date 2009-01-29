@@ -37,6 +37,13 @@ define("IA_RE_TAG_NAME", '[a-z0-9\-\.\ \@]+');
 define("IA_RE_SCORE_NAME", '[a-z0-9][a-z0-9_\-\.]*');
 define("IA_RE_USER_NAME", '[_@a-z0-9][a-z0-9_\-\.\@]*');
 
+// IPv4 address, doesn't check for values greater than 255.
+define("IA_RE_IPV4", '(?:\d{1,3}\.){3}\d{1,3}');
+// Full IPv6 address, doesn't match compressed IPv6 formats.
+define("IA_RE_IPV6_NO_COMPRESS", '(?:[0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}');
+// IP address, matches IPv4 and non-compressed IPv6.
+define("IA_RE_IP_ADDRESS", IA_RE_IPV4."|".IA_RE_IPV6_NO_COMPRESS);
+
 // Valid email. A complete check is not possible, see
 // http://www.regular-expressions.info/email.html
 define("IA_RE_EMAIL", '[^@]+@.+\..+');
@@ -100,6 +107,13 @@ function is_valid_email($email) {
         return false;
     }
     return true;
+}
+
+// Check for (apparently) valid IP address.
+// It will match IPv4 and only non-compressed IPv6. Doesn't check
+// for values greater than 255.
+function is_valid_ip_address($ip_address) {
+    return preg_match('/^'.IA_RE_IP_ADDRESS.'$/xi', $ip_address);
 }
 
 // Normalize a page name. Removes extra slashes and lowercases.

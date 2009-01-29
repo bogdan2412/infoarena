@@ -175,7 +175,7 @@ function controller_task_create() {
             }
 
             // This should never fail.
-            log_assert(task_create($task, $task_params));
+            log_assert(task_create($task, $task_params, remote_ip_info()));
             flash("Un nou task a fost creeat, acum poti sa-l editezi");
             redirect(url_task_edit($task['id']));
         }

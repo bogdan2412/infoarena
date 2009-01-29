@@ -206,4 +206,21 @@ function execute_view_die($view_file_name, $view) {
     die();
 }
 
+// Return information about the remote IP address. Useful for logging.
+// This isn't necessarily just an IP address. It might contain proxy
+// information when available.
+function remote_ip_info() {
+    $ip_address = getattr($_SERVER, 'REMOTE_ADDR');
+    if ($ip_address && !is_valid_ip_address($ip_address)) {
+        log_warn("Invalid IP address: {$ip_address}", true, 1);
+    }
+    // FIXME: Also validate XFF header.
+    if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        return getattr($_SERVER, 'REMOTE_ADDR')."; "
+                .$_SERVER['HTTP_X_FORWARDED_FOR'];
+    } else {
+        return getattr($_SERVER, 'REMOTE_ADDR');
+    }
+}
+
 ?>

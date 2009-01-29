@@ -6,7 +6,7 @@ function job_get_filters() {
     $available_filters = array('task', 'user', 'round', 'job_begin', 'job_end',
                                'job_id', 'time_begin', 'time_end', 'compiler',
                                'status', 'score_begin', 'score_end',
-                               'eval_msg', 'task_hidden');
+                               'eval_msg', 'task_hidden', 'remote_ip_info');
 
     $filters = array();
     foreach ($available_filters as $filter) {
