@@ -92,4 +92,26 @@ $result = db_fetch($query);
 $result = array_pop($result);
 
 print "Average score of contestants: " . $result . "\n";
+
+// Get average score of contestants with positive scores
+$query = sprintf('
+SELECT AVG(`grouped_by_users`.`score`)
+FROM (
+    SELECT `user_id`, SUM(`grouped_by_tasks`.`score`) AS `score`
+    FROM (
+        SELECT `user_id`, `task_id`, `score`
+        FROM `ia_score`
+        WHERE `name` = "score" AND
+              `round_id` LIKE %s AND
+              `score` > 0
+        GROUP BY `user_id`, `task_id`
+        ) AS `grouped_by_tasks`
+    GROUP BY `user_id`
+    ) AS `grouped_by_users`', db_quote($round_like));
+
+$result = db_fetch($query);
+$result = array_pop($result);
+
+print "Average score of contestants with strictly positive scores: " . $result . "\n";
+
 ?>

@@ -9,6 +9,7 @@
 require_once(dirname($argv[0]) . "/utilities.php");
 
 require_once(IA_ROOT_DIR."www/config.php");
+require_once(IA_ROOT_DIR."www/identity.php");
 require_once(IA_ROOT_DIR."common/db/round.php");
 require_once(IA_ROOT_DIR."common/db/score.php");
 require_once(IA_ROOT_DIR."common/db/parameter.php");
@@ -72,7 +73,7 @@ log_print("Reading round registered users...");
 $round_users = round_get_registered_users_range($round['id'], 0, $usercount);
 log_print(count($round_users) . " users registered for this round.");
 foreach ($round_users as $row) {
-    assert(isset($row['username']));
+    log_assert(isset($row['username']));
     $scores[$row['username']] = 0;
 }
 

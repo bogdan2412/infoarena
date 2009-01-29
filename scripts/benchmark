@@ -34,7 +34,7 @@ $benchmark_n = getattr($options, 'n', 200);
 $benchmark_c = getattr($options, 'c', 1);
 
 // benchmark command line
-$benchmark_cmd = "ab -n {$benchmark_n} -c $benchmark_c %url% 2>&1";
+$benchmark_cmd = "ab -k -n {$benchmark_n} -c $benchmark_c %url% 2>&1";
 
 // run benchmarks
 log_print("Running {$benchmark_n} tests for each URL");

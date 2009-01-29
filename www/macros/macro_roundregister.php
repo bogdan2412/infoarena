@@ -32,9 +32,13 @@ function macro_roundregister($args) {
         $msg = "<p>Te-ai inscris la <em>".html_escape($round['title'])."</em>."
                ." <a href=\"".html_escape(url_round_register_view($round['id']))."\">"
                ."Vezi cine s-a mai inscris"
-               ."</a>.</p><p>In caz ca nu mai poti participa te poti deinscrie"
-               ." <a href=\"".html_escape(url_round_register($round['id']))
-               ."\">aici</a>.";
+               ."</a>.</p>";
+        
+        if ($round['state'] == 'waiting') {
+            $msg .= "<p>In caz ca nu mai poti participa te poti deinscrie"
+                    ." <a href=\"".html_escape(url_round_register($round['id']))
+                    ."\">aici</a>.</p>";
+        }
     }
     else {
         // too late?
