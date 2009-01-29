@@ -351,6 +351,9 @@ function security_user($user, $action, $target_user) {
         case 'simple-critical':
             return false;
 
+        case 'sensitive-info':
+            return ($usersec == 'admin' || $usersec == 'helper');
+
         default:
             log_error('Invalid user action: '.$action);
             return false;
