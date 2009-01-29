@@ -110,7 +110,12 @@ function preview_email($textblock, $recipient, $use_external_app = true) {
     log_assert_valid(user_validate($recipient));
     log_assert_valid(textblock_validate($textblock));
     $phpmail = phpmail_create($textblock, $recipient);
-    $temp_filename = tempnam(sys_get_temp_dir(), 'ia-newsletter-preview-');
+    if (function_exists('sys_get_temp_dir')) {
+        $temp_dir = sys_get_temp_dir();
+    } else {
+        $temp_dir = '/tmp';
+    }
+    $temp_filename = tempnam($temp_dir, 'ia-newsletter-preview-');
     file_put_contents($temp_filename, $phpmail->Body);
 
     echo "\n\n===  e-mail ========================================\n";
