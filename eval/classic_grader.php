@@ -35,7 +35,7 @@ function classic_task_grade_job($task, $tparams, $job) {
         if (!compile_file($task['evaluator'], 'eval', $compiler_messages)) {
             log_print('Task eval compile error');
             $result['message'] = 'Eroare de compilare in evaluator';
-            $result['log'] = "Eroare de compilare:\n" . $compiler_messages;
+            $result['log'] = "Eroare de compilare in evaluator:\n" . $compiler_messages;
             return $result;
         }
     } else {
@@ -49,7 +49,7 @@ function classic_task_grade_job($task, $tparams, $job) {
         log_print('User program compile error');
         log_print($compiler_messages);
         $result['message'] = "Eroare de compilare";
-        $result['log'] = "Eroare de compilare in evaluator:\n" . $compiler_messages;
+        $result['log'] = "Eroare de compilare:\n" . $compiler_messages;
         return $result;
     } else {
         $result['log'] = "Compilare:\n" . $compiler_messages . "\n";
