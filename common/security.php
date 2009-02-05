@@ -107,6 +107,7 @@ function security_simplify_action($action) {
         case 'attach-view-ip':
         case 'textblock-view-ip':
         case 'job-view-ip':
+        case 'grader-view-ip':
             return 'sensitive-info';
 
         // Reversible edits access.

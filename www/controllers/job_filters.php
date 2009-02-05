@@ -11,6 +11,10 @@ function job_get_filters() {
     $filters = array();
     foreach ($available_filters as $filter) {
         if (!is_null(request($filter)) && request($filter)) {
+            if ($filter == "remote_ip_info" && !identity_can("job-view-ip", NULL)) {
+                continue;
+            }
+
             $filters[$filter] = request($filter);
         }
     }
