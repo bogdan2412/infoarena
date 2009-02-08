@@ -1,10 +1,13 @@
-/**
+/*
  * DHTML for RemoteBox macro
  * (c) infoarena
  */
-var RemoteBox_Url = '';
 
-function RemoteBox_Init() {
+var RemoteBox_Url = '';
+var RemoteBox_Display = 'hide';
+var RemoteBox_BeginComm = 1;
+
+function RemoteBox_Load() {
     var container = $('remotebox');
     if (!container || !RemoteBox_Url) {
         // no remotebox in this page
@@ -14,7 +17,7 @@ function RemoteBox_Init() {
     // visual clue to indicate that remotebox is loading
     container.innerHTML = '<div class="loading"> <img src="/static/images/indicator.gif" />Se incarca ...</div>';
 
-    var d = doSimpleXMLHttpRequest(RemoteBox_Url);
+    var d = doSimpleXMLHttpRequest(RemoteBox_Url + "&display=" + RemoteBox_Display + "&begin_comm=" + RemoteBox_BeginComm);
 
     var ready = function(data) {
         if (data) {
@@ -29,5 +32,5 @@ function RemoteBox_Init() {
     d.addCallbacks(ready, error);
 }
 
-connect(window, 'onload', RemoteBox_Init);
+connect(window, 'onload', RemoteBox_Load);
 

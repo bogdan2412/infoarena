@@ -240,123 +240,152 @@ function ssi_logout($redirect_to = '', $output_method = 'echo')
 }
 
 // Display an entire SMF topic as a comment thread.
-function ssi_commentThread($topicID, $output_method = 'echo')
+function ssi_commentThread($topicID, $display, $begin_comm, $output_method = 'echo')
 {
-	global $context, $settings, $scripturl, $txt, $db_prefix, $ID_MEMBER;
-	global $user_info, $modSettings, $func;
+    global $context, $settings, $scripturl, $txt, $db_prefix, $ID_MEMBER;
+    global $user_info, $modSettings, $func;
 
-	// Find all the posts.  Newer ones will have higher IDs.
-	$request = db_query("
-		SELECT
-			m.posterTime, m.subject, m.ID_TOPIC, m.ID_MEMBER, m.ID_MSG, m.ID_BOARD, b.name AS bName,
-            ia_user.username, ia_user.full_name, ia_user.rating_cache,
-			IFNULL(mem.realName, m.posterName) AS posterName, " . ($user_info['is_guest'] ? '1 AS isRead, 0 AS new_from' : '
-			IFNULL(lt.ID_MSG, IFNULL(lmr.ID_MSG, 0)) >= m.ID_MSG_MODIFIED AS isRead,
-			IFNULL(lt.ID_MSG, IFNULL(lmr.ID_MSG, -1)) + 1 AS new_from') . ", LEFT(m.body, 666013) AS body, m.smileysEnabled
-		FROM ({$db_prefix}messages AS m, {$db_prefix}boards AS b)
-			LEFT JOIN {$db_prefix}members AS mem ON (mem.ID_MEMBER = m.ID_MEMBER)
-			LEFT JOIN ia_user ON (mem.memberName = ia_user.username)" . (!$user_info['is_guest'] ? "
-			LEFT JOIN {$db_prefix}log_topics AS lt ON (lt.ID_TOPIC = m.ID_TOPIC AND lt.ID_MEMBER = $ID_MEMBER)
-			LEFT JOIN {$db_prefix}log_mark_read AS lmr ON (lmr.ID_BOARD = m.ID_BOARD AND lmr.ID_MEMBER = $ID_MEMBER)" : '') . "
-		WHERE
-			m.ID_TOPIC = '" . mysql_escape_string($topicID) . "'
-			AND b.ID_BOARD = m.ID_BOARD" . (empty($exclude_boards) ? '' : "
-			AND b.ID_BOARD NOT IN (" . implode(', ', $exclude_boards) . ")") . "
-			AND $user_info[query_see_board]
-		ORDER BY m.ID_MSG
-		LIMIT 1, 1024", __FILE__, __LINE__);
-	$posts = array();
-	while ($row = mysql_fetch_assoc($request))
-	{
-		$row['body'] = parse_bbc($row['body'], $row['smileysEnabled'], $row['ID_MSG']);
+    // Get the number of comments
+    $request = db_query("SELECT numReplies FROM ia_smf_topics WHERE ID_TOPIC = " . db_escape($topicID));
+    $row = mysql_fetch_assoc($request);
+    $count_comm = (int)$row['numReplies'];
+    mysql_free_result($request);
 
-		// Censor it!
-		censorText($row['subject']);
-		censorText($row['body']);
+    // Get $max_comm posts, starting with $begin_comm. Newer ones will have higher IDs.
+    // Do this only if there is a 'show' request.
+    $max_comm = 10;
+    $posts = array();
 
-		// Build the array.
-		$posts[] = array(
-			'board' => array(
-				'id' => $row['ID_BOARD'],
-				'name' => $row['bName'],
-				'href' => $scripturl . '?board=' . $row['ID_BOARD'] . '.0',
-				'link' => '<a href="' . $scripturl . '?board=' . $row['ID_BOARD'] . '.0">' . $row['bName'] . '</a>'
-			),
-			'topic' => $row['ID_TOPIC'],
-			'poster' => array(
-				'id' => $row['ID_MEMBER'],
-				'name' => $row['posterName'],
-				'href' => empty($row['ID_MEMBER']) ? '' : $scripturl . '?action=profile;u=' . $row['ID_MEMBER'],
-				'link' => empty($row['ID_MEMBER']) ? $row['posterName'] : '<a href="' . $scripturl . '?action=profile;u=' . $row['ID_MEMBER'] . '">' . $row['posterName'] . '</a>',
-                'badge' => empty($row['ID_MEMBER']) ? $row['posterName'] : format_user_tiny($row['username'], $row['full_name'], $row['rating_cache']),
-			),
-			'subject' => $row['subject'],
-			'short_subject' => shorten_subject($row['subject'], 25),
-			'preview' => $row['body'],
-			'time' => timeformat($row['posterTime']),
-			'timestamp' => forum_time(true, $row['posterTime']),
-			'href' => $scripturl . '?topic=' . $row['ID_TOPIC'] . '.msg' . $row['ID_MSG'] . ';topicseen#new',
-			'link' => '<a href="' . $scripturl . '?topic=' . $row['ID_TOPIC'] . '.msg' . $row['ID_MSG'] . '#msg' . $row['ID_MSG'] . '">' . $row['subject'] . '</a>',
-			'new' => !empty($row['isRead']),
-			'new_from' => $row['new_from'],
-		);
-	}
-	mysql_free_result($request);
+    if($display == 'show') {
+        $request = db_query("
+            SELECT
+                m.posterTime, m.subject, m.ID_TOPIC, m.ID_MEMBER, m.ID_MSG, m.ID_BOARD, b.name AS bName,
+                ia_user.username, ia_user.full_name, ia_user.rating_cache,
+                IFNULL(mem.realName, m.posterName) AS posterName, " . ($user_info['is_guest'] ? '1 AS isRead, 0 AS new_from' : '
+                IFNULL(lt.ID_MSG, IFNULL(lmr.ID_MSG, 0)) >= m.ID_MSG_MODIFIED AS isRead,
+                IFNULL(lt.ID_MSG, IFNULL(lmr.ID_MSG, -1)) + 1 AS new_from') . ", LEFT(m.body, 666013) AS body, m.smileysEnabled
+            FROM ({$db_prefix}messages AS m, {$db_prefix}boards AS b)
+                LEFT JOIN {$db_prefix}members AS mem ON (mem.ID_MEMBER = m.ID_MEMBER)
+                LEFT JOIN ia_user ON (mem.memberName = ia_user.username)" . (!$user_info['is_guest'] ? "
+                LEFT JOIN {$db_prefix}log_topics AS lt ON (lt.ID_TOPIC = m.ID_TOPIC AND lt.ID_MEMBER = $ID_MEMBER)
+                LEFT JOIN {$db_prefix}log_mark_read AS lmr ON (lmr.ID_BOARD = m.ID_BOARD AND lmr.ID_MEMBER = $ID_MEMBER)" : '') . "
+            WHERE
+                m.ID_TOPIC = '" . mysql_escape_string($topicID) . "'
+                AND b.ID_BOARD = m.ID_BOARD" . (empty($exclude_boards) ? '' : "
+                AND b.ID_BOARD NOT IN (" . implode(', ', $exclude_boards) . ")") . "
+                AND $user_info[query_see_board]
+            ORDER BY m.ID_MSG
+            LIMIT " . db_quote($begin_comm) . ", " . db_quote($max_comm), __FILE__, __LINE__);
+        while ($row = mysql_fetch_assoc($request))
+        {
+            $row['body'] = parse_bbc($row['body'], $row['smileysEnabled'], $row['ID_MSG']);
 
-	// Just return it.
-	if ($output_method != 'echo')
-		return $posts;
+            // Censor it!
+            censorText($row['subject']);
+            censorText($row['body']);
 
-	echo '
-        <div class="comments">';
-
-    if (0 == count($posts)) {
-        echo '
-            <h3>Nici un comentariu inca...</h3>';
-    }
-    elseif (1 == count($posts)) {
-        echo '
-            <h3>Un comentariu</h3>';
-    }
-    else {
-        echo '
-            <h3>', count($posts), ' comentarii</h3>';
+            // Build the array.
+            $posts[] = array(
+                'board' => array(
+                    'id' => $row['ID_BOARD'],
+                    'name' => $row['bName'],
+                    'href' => $scripturl . '?board=' . $row['ID_BOARD'] . '.0',
+                    'link' => '<a href="' . $scripturl . '?board=' . $row['ID_BOARD'] . '.0">' . $row['bName'] . '</a>'
+                ),
+                'topic' => $row['ID_TOPIC'],
+                'poster' => array(
+                    'id' => $row['ID_MEMBER'],
+                    'name' => $row['posterName'],
+                    'href' => empty($row['ID_MEMBER']) ? '' : $scripturl . '?action=profile;u=' . $row['ID_MEMBER'],
+                    'link' => empty($row['ID_MEMBER']) ? $row['posterName'] : '<a href="' . $scripturl . '?action=profile;u=' . $row['ID_MEMBER'] . '">' . $row['posterName'] . '</a>',
+                    'badge' => empty($row['ID_MEMBER']) ? $row['posterName'] : format_user_tiny($row['username'], $row['full_name'], $row['rating_cache']),
+                ),
+                'subject' => $row['subject'],
+                'short_subject' => shorten_subject($row['subject'], 25),
+                'preview' => $row['body'],
+                'time' => timeformat($row['posterTime']),
+                'timestamp' => forum_time(true, $row['posterTime']),
+                'href' => $scripturl . '?topic=' . $row['ID_TOPIC'] . '.msg' . $row['ID_MSG'] . ';topicseen#new',
+                'link' => '<a href="' . $scripturl . '?topic=' . $row['ID_TOPIC'] . '.msg' . $row['ID_MSG'] . '#msg' . $row['ID_MSG'] . '">' . $row['subject'] . '</a>',
+                'new' => !empty($row['isRead']),
+                'new_from' => $row['new_from'],
+            );
+        }
+        mysql_free_result($request);
     }
 
-	foreach ($posts as $post)
-		echo '
-			<div class="comment">
-				<div class="header">
-                    <span class="timestamp">
-                        ', $post['time'], '
-                        ', $post['new'] ? '' : '<a href="' . $scripturl . '?topic=' . $post['topic'] . '.msg' . $post['new_from'] . ';topicseen#new"><img src="' . $settings['images_url'] . '/' . $context['user']['language'] . '/new.gif" alt="' . $txt[302] . '" border="0" /></a>', '
-                    </span>
-					', $post['poster']['badge'], '
-				</div>
-                <div class="body">
-					', $post['preview'], '
-                </div>
-            </div>';
-
-    $new_post_url = $scripturl.'?action=post;topic='.$topicID;
-    if (0 == count($posts)) {
-        $new_post_caption = 'Fii primul care comenteaza!';
-    }
-    else {
-        echo '
-            <h3>Comenteaza si tu!</h3>';
-        $new_post_caption = 'Lasa un comentariu!';
-    }
+    // Just return it.
+    if ($output_method != 'echo')
+        return $posts;
 
     echo '
-            <div class="toolbar">
-                <a href="', htmlentities($new_post_url), '">',
-                    htmlentities($new_post_caption),
-                '</a> Vrem sa aflam ce crezi!
+        <div class="comments">';
+
+    echo '
+        <a href="javascript:stay()" onclick="RemoteBox_Display = (RemoteBox_Display == \'show\' ? \'hide\' : \'show\'); RemoteBox_Load();"><h3>&#187; ';
+
+    if (0 == $count_comm){
+        echo 'Niciun comentariu inca...';
+    }
+    elseif (1 == $count_comm) {
+        echo 'Un comentariu';
+    }
+    else {
+        echo $count_comm, ' comentarii';
+    }
+
+    echo '</h3></a>';
+
+    if($display == 'show') {
+
+        // Pagination
+        if($count_comm > $max_comm) {
+            echo '<b>Mergi la pagina:</b> ';
+            for ($i = 1; $i <= $count_comm; $i += $max_comm) {
+                if ($i != $begin_comm) {
+                    echo '<a href="javascript:stay()" onclick="RemoteBox_BeginComm=' . $i . ';RemoteBox_Load();">[' . (int)(($i + $max_comm - 1) / $max_comm) . ']</a> ';
+                } else {
+                    echo '<b>[' . (int)(($i + $max_comm - 1)/ $max_comm) . ']</b> ';
+                }
+            }
+        }
+
+        foreach ($posts as $post)
+            echo '
+                <div class="comment">
+                    <div class="header">
+                        <span class="timestamp">
+                            ', $post['time'], '
+                            ', $post['new'] ? '' : '<a href="' . $scripturl . '?topic=' . $post['topic'] . '.msg' . $post['new_from'] . ';topicseen#new"><img src="' . $settings['images_url'] . '/' . $context['user']['language'] . '/new.gif" alt="' . $txt[302] . '" border="0" /></a>', '
+                        </span>
+                        ', $post['poster']['badge'], '
+                    </div>
+                    <div class="body">
+                        ', $post['preview'], '
+                    </div>
+                </div>';
+
+        $new_post_url = $scripturl.'?action=post;topic='.$topicID;
+        if (0 == $count_comm) {
+            $new_post_caption = 'Fii primul care comenteaza!';
+        }
+        else {
+            echo '
+                <h3>Comenteaza si tu!</h3>';
+            $new_post_caption = 'Lasa un comentariu!';
+        }
+
+        echo '
+                <div class="toolbar">
+                    <a href="', htmlentities($new_post_url), '">',
+                        htmlentities($new_post_caption),
+                    '</a> Vrem sa aflam ce crezi!
+                </div>';
+
+        echo '
             </div>';
 
-	echo '
-		</div>';
+    }
 }
 
 //////

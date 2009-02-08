@@ -36,7 +36,7 @@ echo '</div>';
 // blog comments
 echo '<div id="comentarii">';
 if (getattr($view, 'forum_topic')) {
-    echo macro_remotebox(array('url' => IA_SMF_URL.'/ia_comments.php?topic_id='.$view['forum_topic']), true);
+    echo macro_remotebox(array('url' => IA_SMF_URL.'/ia_comments.php?topic_id='.$view['forum_topic'], 'display' => 'show'), true);
 }
 echo '</div></div>';
 echo '</div>';

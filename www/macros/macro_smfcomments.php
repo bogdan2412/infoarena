@@ -18,7 +18,8 @@ function macro_smfcomments($args) {
     }
 
     $args = array(
-        'url' => IA_SMF_URL.'/ia_comments.php?topic_id='.$topic_id
+        'url' => IA_SMF_URL.'/ia_comments.php?topic_id='.$topic_id,
+        'display' => 'show'
     );
     return macro_remotebox($args, true);
 }
