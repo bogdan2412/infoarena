@@ -21,8 +21,8 @@ echo '</div>';
 // page comments
 echo '<div id="comentarii">';
 if (getattr($view, 'forum_topic')) {
-    require_once(IA_ROOT_DIR.'www/macros/macro_remotebox.php');
-    echo macro_remotebox(array('url' => IA_SMF_URL.'/ia_comments.php?topic_id='.$view['forum_topic']), true);
+    require_once(IA_ROOT_DIR.'www/macros/macro_smfcomments.php');
+    echo macro_smfcomments(array('topic_id' => $view['forum_topic'], 'display' => 'hide'));
 }
 echo '</div>';
 

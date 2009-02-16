@@ -1,7 +1,7 @@
 <?php
 
 require_once(IA_ROOT_DIR.'www/wiki/wiki.php');
-require_once(IA_ROOT_DIR.'www/macros/macro_remotebox.php');
+require_once(IA_ROOT_DIR.'www/macros/macro_smfcomments.php');
 
 // site header
 include('header.php');
@@ -36,7 +36,7 @@ echo '</div>';
 // blog comments
 echo '<div id="comentarii">';
 if (getattr($view, 'forum_topic')) {
-    echo macro_remotebox(array('url' => IA_SMF_URL.'/ia_comments.php?topic_id='.$view['forum_topic'], 'display' => 'show'), true);
+    echo macro_smfcomments(array('topic_id' => $view['forum_topic'], 'display' => 'show'));
 }
 echo '</div></div>';
 echo '</div>';

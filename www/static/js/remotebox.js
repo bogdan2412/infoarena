@@ -6,6 +6,7 @@
 var RemoteBox_Url = '';
 var RemoteBox_Display = 'hide';
 var RemoteBox_BeginComm = 1;
+var RemoteBox_MaxComm = 10;
 
 function RemoteBox_Load() {
     var container = $('remotebox');
@@ -17,7 +18,9 @@ function RemoteBox_Load() {
     // visual clue to indicate that remotebox is loading
     container.innerHTML = '<div class="loading"> <img src="/static/images/indicator.gif" />Se incarca ...</div>';
 
-    var d = doSimpleXMLHttpRequest(RemoteBox_Url + "&display=" + RemoteBox_Display + "&begin_comm=" + RemoteBox_BeginComm);
+    var d = doSimpleXMLHttpRequest(RemoteBox_Url + "&display=" + RemoteBox_Display +
+            "&begin_comm=" + RemoteBox_BeginComm +
+            "&max_comm=" + RemoteBox_MaxComm);
 
     var ready = function(data) {
         if (data) {

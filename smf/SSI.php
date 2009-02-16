@@ -240,7 +240,7 @@ function ssi_logout($redirect_to = '', $output_method = 'echo')
 }
 
 // Display an entire SMF topic as a comment thread.
-function ssi_commentThread($topicID, $display, $begin_comm, $output_method = 'echo')
+function ssi_commentThread($topicID, $display, $begin_comm, $max_comm = 10, $output_method = 'echo')
 {
     global $context, $settings, $scripturl, $txt, $db_prefix, $ID_MEMBER;
     global $user_info, $modSettings, $func;
@@ -253,7 +253,6 @@ function ssi_commentThread($topicID, $display, $begin_comm, $output_method = 'ec
 
     // Get $max_comm posts, starting with $begin_comm. Newer ones will have higher IDs.
     // Do this only if there is a 'show' request.
-    $max_comm = 10;
     $posts = array();
 
     if($display == 'show') {
@@ -364,28 +363,27 @@ function ssi_commentThread($topicID, $display, $begin_comm, $output_method = 'ec
                         ', $post['preview'], '
                     </div>
                 </div>';
+    }
 
-        $new_post_url = $scripturl.'?action=post;topic='.$topicID;
-        if (0 == $count_comm) {
-            $new_post_caption = 'Fii primul care comenteaza!';
-        }
-        else {
-            echo '
-                <h3>Comenteaza si tu!</h3>';
-            $new_post_caption = 'Lasa un comentariu!';
-        }
-
+    $new_post_url = $scripturl.'?action=post;topic='.$topicID;
+    if (0 == $count_comm) {
+        $new_post_caption = 'Fii primul care comenteaza!';
+    }
+    else {
         echo '
-                <div class="toolbar">
-                    <a href="', htmlentities($new_post_url), '">',
-                        htmlentities($new_post_caption),
-                    '</a> Vrem sa aflam ce crezi!
-                </div>';
+            <h3>Comenteaza si tu!</h3>';
+        $new_post_caption = 'Lasa un comentariu!';
+    }
 
-        echo '
+    echo '
+            <div class="toolbar">
+                <a href="', htmlentities($new_post_url), '">',
+                    htmlentities($new_post_caption),
+                '</a> Vrem sa aflam ce crezi!
             </div>';
 
-    }
+    echo '
+        </div>';
 }
 
 //////
