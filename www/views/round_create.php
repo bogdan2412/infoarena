@@ -11,13 +11,12 @@ $form_fields = array(
         'type' => array(
                 'name' => 'Tipul rundei',
                 'type' => 'enum',
-                'values' => round_get_types(),
-                'default' => 'classic',
+                'values' => $round_types,
+                'default' => 'user-defined',
         ), 
 );
 
 ?>
-
 <h1><?= html_escape($title) ?></h1>
 
 <form action="<?= html_escape(url_round_create()) ?>"

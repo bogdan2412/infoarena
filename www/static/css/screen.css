@@ -1484,3 +1484,23 @@ ul.okr .comment {
     border: none;
 }
 
+/* Round status icons */
+.round-complete, .round-waiting, .round-running {
+    width: 16px;
+    height: 16px;
+    display: block;
+}
+
+.round-complete {
+    width: 14px;
+    height: 11px;
+    background: url("../images/complete.gif");
+}
+
+.round-waiting {
+    background: url("../images/hourglass.png");
+}
+
+.round-running {
+    background: url("../images/run.png");
+}

@@ -10,12 +10,23 @@ test_prepare();
 
 log_print("WARNING: This test requires the evaluator.");
 
-log_print("Helper1 looks at new round page, fails");
+log_print("Helper1 looks at new round page, works");
 $res = curl_test(array(
         'url' => url_round_create(),
         'user' => 'test_helper1',
 ));
-log_assert($res['url'] != url_absolute(url_round_create()));
+log_assert_equal($res['url'], url_absolute(url_round_create()));
+
+
+log_print("Helper1 tries to create a new round, works");
+$res = curl_test(array(
+        'url' => url_round_create(),
+        'user' => 'test_helper1',
+        'post' => array(
+          'id' => 'tEst_Round',
+          'type' => 'user-defined',
+)));
+log_assert_equal($res['url'], url_absolute(url_round_edit('tEst_Round')));
 
 
 log_print("Helper1 tries to create a new round, fails");
@@ -23,17 +34,18 @@ $res = curl_test(array(
         'url' => url_round_create(),
         'user' => 'test_helper1',
         'post' => array(
-                'id' => 'tEst_Round',
+          'id' => 'tEst_Round',
+          'type' => 'classic',
 )));
-log_assert_equal($res['url'], url_absolute(url_home()));
+log_assert_equal($res['url'], url_absolute(url_round_create()));
 
 
-log_print("Helper2 looks at round page, but it's not there");
+log_print("Helper2 looks at round page, and it's there");
 $res = curl_test(array(
         'url' => url_textblock('runda/tEst_Round'),
         'user' => 'test_helper2',
 ));
-log_assert_equal($res['url'], url_absolute(url_textblock_edit('runda/test_round')));
+log_assert_equal($res['url'], url_absolute(url_textblock('runda/tEst_Round')));
 
 
 log_print("Admin looks at new round page, ok");
@@ -44,14 +56,14 @@ $res = curl_test(array(
 log_assert_equal($res['url'], url_absolute(url_round_create()));
 
 
-log_print("Admin creates round.");
+log_print("Admin creates round, already exists.");
 $res = curl_test(array(
         'url' => url_round_create(),
         'user' => 'test_admin',
         'post' => array(
                 'id' => 'tEst_Round',
 )));
-log_assert_equal($res['url'], url_absolute(url_round_edit('tEst_Round')));
+log_assert_equal($res['url'], url_absolute(url_round_create()));
 log_assert(strstr($res['content'], 'tEst_Round'));
 
 
@@ -116,7 +128,7 @@ $res = curl_test(array(
 ));
 log_assert_equal($res['url'], url_absolute(url_textblock('runda/tEst_Round')));
 log_assert(strstr($res['content'], 'xzx-round-title-xzx'));
-log_assert(strstr($res['content'], '<span class="round status waiting">'));
+log_assert(strstr($res['content'], 'Nu esti inscris la'));
 log_assert(!strstr($res['content'], '<a href="'.
             url_textblock('problema/cmmdc')));
 log_assert(!strstr($res['content'], '<a href="'.
@@ -149,9 +161,9 @@ $res = curl_test(array(
 ));
 log_assert_equal($res['url'], url_absolute(url_textblock('runda/tEst_Round')));
 log_assert(strstr($res['content'], 'xzx-round-title-xzx'));
-log_assert(strstr($res['content'], '<span class="round status waiting">'));
-log_assert(!strstr($res['content'], '<span class="round status running">'));
-log_assert(!strstr($res['content'], '<span class="round status complete">'));
+log_assert(strstr($res['content'], 'Nu esti inscris la'));
+log_assert(!strstr($res['content'], 'Nu se mai pot face inscrieri'));
+log_assert(!strstr($res['content'], 'Runda s-a incheiat'));
 log_assert(strstr($res['content'], '<a href="'.
             url_textblock('problema/cmmdc')));
 log_assert(strstr($res['content'], '<a href="'.
@@ -161,8 +173,8 @@ log_assert(strstr($res['content'], '<a href="'.
 
 
 // Yuck
-log_print("Waiting for 4 seconds...");
-usleep(4 * 1000000);
+log_print("Waiting for 5 seconds...");
+usleep(5 * 1000000);
 
 
 log_print("Anon looks at round page, sees that round started");
@@ -171,9 +183,10 @@ $res = curl_test(array(
 ));
 log_assert_equal($res['url'], url_absolute(url_textblock('runda/tEst_Round')));
 log_assert(strstr($res['content'], 'xzx-round-title-xzx'));
-log_assert(!strstr($res['content'], '<span class="round status waiting">'), "Round still waiting");
-log_assert(strstr($res['content'], '<span class="round status running">'));
-log_assert(!strstr($res['content'], '<span class="round status complete">'));
+log_assert(!strstr($res['content'], 'Nu esti inscris la'), 
+    "Round still waiting, is the evaluator ON?");
+log_assert(strstr($res['content'], 'Nu se mai pot face inscrieri'));
+log_assert(!strstr($res['content'], 'Runda s-a incheiat'));
 log_assert(strstr($res['content'], '<a href="'.
             url_textblock('problema/cmmdc')));
 log_assert(strstr($res['content'], '<a href="'.
@@ -184,5 +197,6 @@ log_assert(strstr($res['content'], '<a href="'.
 
 log_print("Basic round passed");
 //test_cleanup();
+
 
 ?>

@@ -54,8 +54,8 @@ $form_fields = array(
         'type' => array(
                 'name' => 'Tipul rundei',
                 'type' => 'enum',
-                'values' => round_get_types(),
-                'default' => 'classic',
+                'values' => $round_types,
+                'default' => 'user-defined',
         ),
         'public_eval' => array(
                 'name' => 'Evaluare publica',
@@ -70,7 +70,7 @@ $form_fields = array(
 
 <?php if ($round['state'] == 'running') { ?>
     <div class="warning">
-     Atentie! Runda este activa chiar acum. Orice modificare poate avea urmari neplacute.
+     Atentie! Runda este activa chiar acum. Orice modificare poate avea urmari neplacute!
     </div>
 <?php } elseif ($round['state'] == 'waiting') { ?>
     Aceasta runda nu a rulat inca.

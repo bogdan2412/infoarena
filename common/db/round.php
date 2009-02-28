@@ -178,7 +178,7 @@ function round_update_task_list($round_id, $tasks) {
         foreach ($tasks as $task_id) {
             $values[] = "('".db_escape($round_id)."', '".db_escape($task_id)."')";
         }
-        $query = "INSERT INTO ia_round_task (round_id, task_id) 
+        $query = "INSERT INTO ia_round_task (round_id, task_id)
                   VALUES ". implode(', ', $values);
         db_query($query);
     }
@@ -229,7 +229,7 @@ function round_unregister_user($round_id, $user_id) {
 }
 
 // Returs list of registred user to round $round_id, order by rating
-// round can be 
+// round can be
 function round_get_registered_users_range($round_id, $start, $range)
 {
     log_assert(is_round_id($round_id));
@@ -311,8 +311,8 @@ SQL;
 
     $query = <<<SQL
 SELECT * FROM `ia_round`
-    WHERE `state` != 'running' AND 
-    `start_time` <= '%s' AND 
+    WHERE `state` != 'running' AND
+    `start_time` <= '%s' AND
     DATE_ADD(`start_time`, INTERVAL ($duration_subquery) * 60 * 60 SECOND) > '%s'
     LIMIT 1
 SQL;
@@ -367,6 +367,55 @@ SELECT *
     LIMIT 1
 SQL;
     return db_fetch(sprintf($query, db_date_format()));
+}
+
+function round_get_many($options) {
+    $field_list = "`ia_round`.*";
+    $where = Array();
+    if (getattr($options, "name_regexp")) {
+        $where[] = "`ia_round`.`id` REGEXP " . db_quote($options["name_regexp"]);
+    }
+    if (getattr($options, "type")) {
+        $where[] = "`ia_round`.`type` = " . db_quote($options["type"]);
+    }
+
+    // Add a join for username.
+    $join = "";
+    if (getattr($options, 'username', false) == true) {
+        $field_list .= ", `ia_user`.`username` AS `user_name`" .
+                       ", `ia_user`.`full_name` AS `user_fullname`" .
+                       ", `ia_user`.`rating_cache` AS `user_rating`";
+        $join = "LEFT JOIN ia_user ON `ia_round`.`user_id` = `ia_user`.`id`";
+    }
+
+    if (strtolower(getattr($options, "order", "desc") == "desc")) {
+        $order = "DESC";
+    } else {
+        $order = "ASC";
+    }
+
+    $limit = db_quote(getattr($options, "limit", 50));
+    $offset = db_quote(getattr($options, "offset", 0));
+
+    if (!empty($where)) {
+        $where = " WHERE (" . implode(") AND (", $where) . ")";
+    } else {
+        $where = "";
+    }
+
+    $query = "SELECT $field_list FROM `ia_round` $join $where";
+    $query .= " ORDER BY `ia_round`.`start_time` $order, `ia_round`.`id` $order";
+    $query .= " LIMIT $offset, $limit";
+
+    $rounds = db_fetch_all($query);
+
+    if (getattr($options, "get_count")) {
+        $query = "SELECT COUNT(*) FROM `ia_round` $where";
+        $rounds["count"] = db_fetch($query);
+        $rounds["count"] = array_pop($rounds["count"]);
+    }
+
+    return $rounds;
 }
 
 ?>

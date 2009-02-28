@@ -19,7 +19,9 @@ require_once(IA_ROOT_DIR."common/tags.php");
 // this controller as an error handler in order to display the form
 // with the user-submitted data and their corresponding errors.
 function controller_round_details($round_id) {
-    // validate round_id
+    global $identity_user;
+
+    // Validate round_id
     if (!is_round_id($round_id)) {
         flash_error('Identificatorul rundei este invalid');
         redirect(url_home());
@@ -34,6 +36,14 @@ function controller_round_details($round_id) {
 
     // Security check
     identity_require('round-edit', $round);
+
+    // Filter for available round types.
+    $round_types = array();
+    foreach (round_get_types() as $round_type => $pretty_name) {
+        if (identity_can("round-edit", round_init('round_id', $round_type, 
+            $identity_user)))
+            $round_types[$round_type] = $pretty_name;
+    }
 
     // get parameter list for rounds (in general, not for this specific round)
     $param_infos = round_get_parameter_infos();
@@ -147,6 +157,8 @@ function controller_round_details($round_id) {
 
     // If posting with no errors then do the db monkey
     if (request_is_post() && !$errors) {
+        // Don't forget about security.
+        identity_require("round-edit", $new_round);
         // FIXME: error handling? Is that even remotely possible in php?
         log_print_r($_REQUEST);
         round_update($new_round);
@@ -171,6 +183,7 @@ function controller_round_details($round_id) {
     $view['form_errors'] = $errors;
     $view['param_infos'] = $param_infos;
     $view['all_tasks'] = $all_tasks;
+    $view['round_types'] = $round_types;
 
     execute_view_die("views/round_edit.php", $view);
 }
@@ -180,10 +193,8 @@ function controller_round_create()
 {
     global $identity_user;
 
-    // Security check. FIXME: sort of a hack.
+    // Security check.
     identity_require_login();
-    identity_require("round-create",
-            round_init('new_round', 'classic', $identity_user));
 
     // Form stuff.
     $values = array();
@@ -192,7 +203,7 @@ function controller_round_create()
     // Get form values
     $values['id'] = request('id', '');
     // FIXME: type hidden
-    $values['type'] = request('type', 'classic');
+    $values['type'] = request('type', 'user-defined');
 
     if (request_is_post()) {
         if (!is_round_id($values['id'])) {
@@ -209,6 +220,7 @@ function controller_round_create()
                     $values['id'],
                     $values['type'],
                     $identity_user);
+            identity_require("round-create", $round);
             $round_params = array();
             // FIXME: array_ magic?
             $param_infos = round_get_parameter_infos();
@@ -224,12 +236,21 @@ function controller_round_create()
         }
     }
 
+    // Filter for available round types.
+    $round_types = array();
+    foreach (round_get_types() as $round_type => $pretty_name) {
+        if (identity_can("round-create", round_init("round_id", $round_type, 
+            $identity_user)))
+            $round_types[$round_type] = $pretty_name;
+    }
+
     // Create view.
     $view = array();
     $view['title'] = "Creare runda";
     $view['page_name'] = url_round_create();
     $view['form_values'] = $values;
     $view['form_errors'] = $errors;
+    $view['round_types'] = $round_types;
 
     execute_view_die("views/round_create.php", $view);
 }

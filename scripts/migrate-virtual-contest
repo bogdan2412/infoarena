@@ -1,0 +1,21 @@
+#! /usr/bin/env php
+<?php
+
+require_once(dirname($argv[0]) . "/utilities.php");
+
+db_connect();
+
+db_query("
+ALTER TABLE `ia_round`
+    MODIFY COLUMN `type` ENUM('classic','archive','user-defined') NOT NULL,
+    ADD COLUMN `user_id` INTEGER UNSIGNED NOT NULL;
+");
+
+db_query("
+ALTER TABLE `ia_round`
+    ADD INDEX `by_type`(`type`, `id`);
+");
+
+db_query("UPDATE `ia_round` SET `user_id` = 1");
+
+?>

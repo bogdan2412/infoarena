@@ -6,6 +6,7 @@ function round_get_types() {
     return array(
             'classic' => 'Concurs clasic',
             'archive' => 'Arhiva de pregatire',
+            'user-defined' => 'Concurs virtual',
     );
 }
 
@@ -26,7 +27,7 @@ function round_get_parameter_infos() {
                             'default' => '1',
                             'type' => 'bool',
                     ),
-            ),
+                ),
             'archive' => array(
                     'duration' => array(
                             'name' => 'Durata',
@@ -34,14 +35,22 @@ function round_get_parameter_infos() {
                             'default' => '10000000',
                             'type' => 'float',
                     ),
-            ),
-    );
+                ),
+            'user-defined' => array(
+                'duration' => array(
+                            'name' => 'Durata',
+                            'description' => "Durata concursului, in ore",
+                            'default' => '4.5',
+                            'type' => 'float',
+                    ),
+                ),
+            );
 }
 
 // Validate parameters. Return erros as $form_errors convention.
 function round_validate_parameters($round_type, $parameters) {
     $errors = array();
-    if ($round_type == 'classic') {
+    if ($round_type == 'classic' or $round_type == 'user-defined') {
         // Check duration
         $duration = getattr($parameters, 'duration');
         if (is_null($duration)) {
@@ -68,7 +77,8 @@ function round_init($round_id, $round_type, $user = null) {
             'page_name' => IA_ROUND_TEXTBLOCK_PREFIX . $round_id,
             'state' => 'waiting',
             'start_time' => NULL,
-            'public_eval' => (($round_type == 'archive') ? 1 : 0)
+            'public_eval' => (($round_type == 'archive') ? 1 : 0),
+            'user_id' => $user['id']
     );
 
     log_assert_valid(round_validate($round));
@@ -108,6 +118,10 @@ function round_validate($round) {
     // NULL is ok here.
     if (!is_db_date(getattr($round, 'start_time', db_date_format()))) {
         $errors['start_time'] = "Timpul trebuie specificat ca YYYY-MM-DD HH:MM:SS";
+    }
+
+    if (!is_user_id(getattr($round, 'user_id', ''))) {
+        $errors['user_id'] = "ID-ul userului este invalid";
     }
 
     return $errors;

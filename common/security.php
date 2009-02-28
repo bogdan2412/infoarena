@@ -128,8 +128,6 @@ function security_simplify_action($action) {
         case 'task-edit':
         case 'task-create':
         case 'task-delete':
-        case 'round-edit':
-        case 'round-create':
         case 'round-delete':
         case 'textblock-delete':
         case 'grader-overwrite':
@@ -153,6 +151,8 @@ function security_simplify_action($action) {
         // FIXME: As few as possible.
         case 'grader-download':
         case 'task-submit':
+        case 'round-edit':
+        case 'round-create':
         case 'round-submit':
         case 'round-view-tasks':
         case 'round-view-scores':
@@ -448,14 +448,31 @@ function security_round($user, $action, $round) {
 
     switch ($action) {
         case 'simple-view':
-            return true;
+          return true;
+
+        case 'round-create':
+          if ($round['type'] == 'user-defined') {
+              return $usersec != 'anonymous';
+          } else {
+              return $is_admin;
+          }
+
+        case 'round-edit':
+        case 'simple-rev-edit':
+          if ($usersec == 'anonymous') {
+              return false;
+          }
+          if ($round['type'] == 'user-defined') {
+              return $user['id'] == $round['user_id'] || $is_admin;
+          } else {
+              return $is_admin;
+          }
 
         case 'round-view-tasks':
             return $round['state'] != 'waiting' || $is_admin;
         case 'round-view-scores':
             return $round['public_eval'] == true || $is_admin;
 
-        case 'simple-rev-edit':
         case 'simple-edit':
         case 'simple-critical':
             return $is_admin;
