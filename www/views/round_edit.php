@@ -11,7 +11,11 @@ $view['head'] .= "<script type=\"text/javascript\" src=\"" . html_escape(url_sta
 require_once(IA_ROOT_DIR."common/round.php");
 require_once(IA_ROOT_DIR."www/format/form.php");
 include('views/header.php');
-include('views/tags_header.php');
+
+$can_tag = identity_can('round-tag', $round);
+if ($can_tag) {
+    include('views/tags_header.php');
+}
 
 // Validate $view values.
 log_assert(is_array($all_tasks));
@@ -80,14 +84,14 @@ $form_fields = array(
     </div>
 <?php } ?>
 
-<form action="<?= html_escape(getattr($view, 'action')) ?>" method="post" class="task" <?= tag_form_event() ?>>
+<form action="<?= html_escape(getattr($view, 'action')) ?>" method="post" class="task" <?= $can_tag ? tag_form_event() : "" ?>>
  <fieldset>
   <legend>Informatii generale</legend>
   <ul class="form">
    <?= view_form_field_li($form_fields['title'], 'title') ?>
    <?= view_form_field_li($form_fields['page_name'], 'page_name') ?>
    <?= view_form_field_li($form_fields['start_time'], 'start_time') ?>
-   <?php if (identity_can('round-tag', $round)) { ?>
+   <?php if ($can_tag) { ?>
       <?= tag_format_input_box(fval('tags')) ?>
    <?php } ?>
    <?= view_form_field_li($form_fields['tasks'], 'tasks') ?>

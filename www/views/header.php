@@ -101,9 +101,11 @@ ia_template_topnav($topnav_select, $smf_admin);
         <?php } ?>
         </ul>
 
+    <?php if (!IA_DEVELOPMENT_MODE) { ?>
     <div id="google-search">
         <?php include(IA_ROOT_DIR.'www/views/google_search.php'); ?>
     </div>
+    <?php } ?>
 
     <div id="calendar">
         <?= macro_calendar(array()) ?>

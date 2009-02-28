@@ -124,7 +124,6 @@ function controller_round_details($round_id) {
                 break;
             }
             if (!array_key_exists($tid, $all_task_ids)) {
-                log_print_r($all_task_ids);
                 $errors['tasks'] = "Nu exista task-ul $tid.";
                 break;
             }
@@ -165,7 +164,6 @@ function controller_round_details($round_id) {
         // Don't forget about security.
         identity_require("round-edit", $new_round);
         // FIXME: error handling? Is that even remotely possible in php?
-        log_print_r($_REQUEST);
         round_update($new_round);
         round_update_parameters($round_id, $new_round_params);
         round_update_task_list($round_id, $new_round_tasks);
