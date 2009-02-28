@@ -86,6 +86,7 @@ ia_template_topnav($topnav_select, $smf_admin);
         <li><?= format_link_access(url_textblock('arhiva'), "Arhiva de probleme", 'a') ?></li>
         <li><a href="<?= html_escape(url_textblock('arhiva-educationala')) ?>">Arhiva educationala</a></li>
         <li><a href="<?= html_escape(url_textblock('concursuri')) ?>">Concursuri</a></li>
+        <li><a href="<?= html_escape(url_textblock('concursuri-virtuale')) ?>">Concursuri virtuale</a></li>
         <li><a href="<?= html_escape(url_textblock('clasament-rating')) ?>">Clasament</a></li>
         <li><a href="<?= html_escape(url_textblock('articole')) ?>">Articole</a></li>
         <li><a href="<?= html_escape(url_textblock('downloads')) ?>">Downloads</a></li>

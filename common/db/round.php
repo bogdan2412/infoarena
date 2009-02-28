@@ -371,7 +371,7 @@ SQL;
 
 function round_get_many($options) {
     $field_list = "`ia_round`.*";
-    $where = Array();
+    $where = array();
     if (getattr($options, "name_regexp")) {
         $where[] = "`ia_round`.`id` REGEXP " . db_quote($options["name_regexp"]);
     }

@@ -23,6 +23,10 @@ function macro_roundregister($args) {
     if (!$round) {
         return macro_error('Invalid round identifier');
     }
+    $round_parameters = round_get_parameters($round_id);
+    if (!getattr($round_parameters, "rating_update")) {
+        return "";
+    }
 
     global $identity_user;
     $is_registered = $identity_user && round_is_registered($round['id'], $identity_user['id']);

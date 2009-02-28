@@ -32,7 +32,7 @@ function macro_roundlist($args) {
     $options['show_count'] = getattr($args, 'show_count', true);
     $options['show_display_entries'] = getattr($args, 'show_display_entries', true);
 
-    $filters = Array();
+    $filters = array();
     $filters["limit"] = (int)$options["display_entries"];
     $filters["offset"] = (int)$options["first_entry"];
 
