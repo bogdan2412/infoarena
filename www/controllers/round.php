@@ -49,8 +49,13 @@ function controller_round_details($round_id) {
     $param_infos = round_get_parameter_infos();
     $all_tasks = task_get_all();
     $all_task_ids = array();
-    foreach ($all_tasks as $task) {
-        $all_task_ids[$task['id']] = true;
+    foreach ($all_tasks as $idx => $task) {
+        if ($round['type'] != 'user-defined' || 
+            identity_can('task-use-in-user-round', $task)) {
+            $all_task_ids[$task['id']] = true;
+        } else {
+            unset($all_tasks[$idx]);
+        }
     }
 
     // Get parameters and task list.
@@ -82,7 +87,7 @@ function controller_round_details($round_id) {
 
     // Parameter values, for all possible types of rounds.
     // Yucky, but functional.
-    foreach (round_get_types() as $round_type => $pretty_name) {
+    foreach ($round_types as $round_type => $pretty_name) {
         foreach ($param_infos[$round_type] as $name => $info) {
             $form_name = "param_{$round_type}_{$name}";
             $def = $info['default'];

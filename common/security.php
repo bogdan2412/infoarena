@@ -150,6 +150,7 @@ function security_simplify_action($action) {
         // Special actions fall through
         // FIXME: As few as possible.
         case 'grader-download':
+        case 'task-use-in-user-round':
         case 'task-submit':
         case 'round-edit':
         case 'round-create':
@@ -392,6 +393,26 @@ function security_task($user, $action, $task) {
         // Admin stuff:
         case 'simple-critical':
             return $is_admin;
+
+        case 'task-use-in-user-round':
+            if ($usersec == 'anonymous') {
+                return false;
+            }
+            if ($is_admin) {
+                return true;
+            }
+            $is_valid = true;
+            $rounds = task_get_parent_rounds($task['id']);
+            foreach ($rounds as $rid) {
+                $r = round_get($rid);
+                // You can use a task in an user defined contest ONLY IF it's
+                // not being used in a waiting or running classic contest.
+                if ($r['type'] == 'classic' && $r['state'] != 'complete') {
+                    $is_valid = false;
+                    break;
+                }
+            }
+            return ($task['hidden'] == false && $is_valid);
 
         // Special: submit. Check for at least one registered contest for the task.
         // FIXME: contest logic?
