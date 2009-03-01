@@ -163,10 +163,9 @@ function controller_round_details($round_id) {
     if (request_is_post() && !$errors) {
         // Don't forget about security.
         identity_require("round-edit", $new_round);
-        // FIXME: error handling? Is that even remotely possible in php?
         round_update($new_round);
         round_update_parameters($round_id, $new_round_params);
-        round_update_task_list($round_id, $new_round_tasks);
+        round_update_task_list($round_id, $round_tasks, $new_round_tasks);
 
         if (identity_can('round-tag', $new_round)) {
             tag_update("round", $new_round['id'], $values['tags']);

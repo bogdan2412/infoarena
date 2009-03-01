@@ -131,8 +131,15 @@ function task_get_all() {
 }
 
 // Returns list of round ids that include this task
-function task_get_parent_rounds($task_id) {
+function task_get_parent_rounds($task_id, $force_no_cache=false) {
     log_assert(is_task_id($task_id));
+    if (!$force_no_cache) {
+        $result = mem_cache_get("task-rounds-by-id:$task_id");
+        if ($result !== false) {
+            return $result;
+        }
+    }
+
     $query = sprintf("
         SELECT DISTINCT round_id
         FROM ia_round_task
@@ -148,6 +155,7 @@ function task_get_parent_rounds($task_id) {
         $idlist[] = $row['round_id'];
     }
 
+    mem_cache_set("task-rounds-by-id:$task_id", $idlist);
     return $idlist;
 }
 

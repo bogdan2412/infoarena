@@ -160,7 +160,7 @@ function round_update_parameters($round_id, $param_values) {
 // It only stores them to database.
 //
 // $tasks is array of task id's
-function round_update_task_list($round_id, $tasks) {
+function round_update_task_list($round_id, $old_tasks, $tasks) {
     log_assert(is_round_id($round_id));
 
     // delete all round-task relations
@@ -168,9 +168,10 @@ function round_update_task_list($round_id, $tasks) {
                       WHERE round_id = '%s'",
                      db_escape($round_id));
     db_query($query);
-
-    log_print_r($tasks);
-    log_print(count($tasks));
+    foreach($old_tasks as $task) {
+        // Update parent round cache for old tasks
+        task_get_parent_rounds($task, true);
+    }
 
     if (count($tasks) > 0) {
         // insert new relations
@@ -181,6 +182,10 @@ function round_update_task_list($round_id, $tasks) {
         $query = "INSERT INTO ia_round_task (round_id, task_id)
                   VALUES ". implode(', ', $values);
         db_query($query);
+        foreach($tasks as $task) {
+            // Update parent round cache for new tasks
+            task_get_parent_rounds($task, true);
+        }
     }
 }
 
