@@ -91,8 +91,6 @@ function diff_string($string) {
 function lcs($a, $b) {
     $N = mb_strlen($a);
     $M = mb_strlen($b);
-    if ($N * $M > 500000)
-        return "";
     $C = array(array(2), array($M+1));
 
     for ($i = 0; $i < 2; ++$i)

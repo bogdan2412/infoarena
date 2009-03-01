@@ -35,11 +35,6 @@ function attachment_validate($att) {
 
 // Get a file's mime type.
 function get_mime_type($filename) {
-    // finfo_open returns weird mime types for images (such as "GIF image" instead of "image/gif"
-    // this needs to be investigated. This is a temporary fix
-    exec("file -i -b " . $filename, $output);
-    return $output[0];
-    
     if (function_exists("finfo_open")) {
         // FIXME: cache.
         $finfo = finfo_open(FILEINFO_MIME);
