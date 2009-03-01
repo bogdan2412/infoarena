@@ -24,10 +24,6 @@ function backup_init_dirs() {
             IA_BACKUP_DIR));
 }
 
-function backup_timestamp() {
-    return date("YmdGi");
-}
-
 function backup_db() {
     $temp_file = tempnam(temp_dir(), 'infoarena.sql.gz');
     $backup_file = sprintf("%s/db/db-%s.sql.gz", IA_BACKUP_DIR,

@@ -90,4 +90,8 @@ function temp_dir() {
     }
 }
 
+function backup_timestamp() {
+    return date("YmdGi");
+}
+
 ?>

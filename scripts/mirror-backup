@@ -1,0 +1,47 @@
+#! /usr/bin/env php
+<?php
+
+require_once(dirname($argv[0]) . "/utilities.php");
+
+$home_dir = exec('echo $HOME');
+define("IA_BACKUP_REPO_DIR", "$home_dir/backup/infoarena");
+define("IA_BACKUP_SSL_CERT", "$home_dir/.ssh/ia-backup");
+
+function check_env() {
+    log_assert(is_dir(IA_BACKUP_REPO_DIR));
+    log_assert(file_exists(IA_BACKUP_SSL_CERT));
+    log_assert(exec('which rsync'), "Please install rsync");
+}
+
+function exec_rsync($source_dir, $target_dir) {
+    log_print("rsync $source_dir -> $target_dir");
+    $cmd = sprintf("rsync -avC --delete --rsh='ssh -p 21883 -i %s' "
+            ."backup@infoarena.ro:%s %s/%s", IA_BACKUP_SSL_CERT, $source_dir,
+            IA_BACKUP_REPO_DIR, $target_dir);
+    system($cmd);
+}
+
+function archive_attachments() {
+    log_print("Archiving attachments");
+    $archive_file = sprintf("%s/archive/attach/attach-%s.tar.gz",
+            IA_BACKUP_REPO_DIR, backup_timestamp());
+    system(sprintf("tar czf %s %s/attach-live", $archive_file,
+            IA_BACKUP_REPO_DIR));
+}
+
+function main() {
+    global $argv;
+    check_env();
+    exec_rsync('ia-backup/', 'archive/');
+    exec_rsync('attach-live/', 'attach-live/');
+    if (count($argv) == 2) {
+        log_assert_equal($argv[1], '--archive-attachments', 'Invalid args');
+        archive_attachments();
+    } else {
+        log_print("Won't archive attachments now");
+    }
+}
+
+main();
+
+?>
