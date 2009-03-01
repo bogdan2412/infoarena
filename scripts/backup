@@ -1,0 +1,75 @@
+#! /usr/bin/env php
+<?php
+
+require_once(dirname($argv[0]) . "/utilities.php");
+
+define("IA_BACKUP_DIR", "/home/backup");
+define("IA_LIVE_DIR", "/home/infoarena");
+
+$BACKUP_PATHS_WEEKLY = array(
+    "conf/conf-" => array(IA_LIVE_DIR."/trac.htpasswd", IA_LIVE_DIR."/apache.conf"),
+    "hackers/svn/svn-" => array(IA_LIVE_DIR."/svn"),
+    "hackers/trac/trac-" => array(IA_LIVE_DIR."/trac"),
+    "hackers/reviewboard/reviewboard-" => array("/var/www/reviewboard"),
+);
+
+function backup_init_dirs() {
+    log_assert(is_dir(IA_BACKUP_DIR), "Invalid directory: ".IA_BACKUP_DIR);
+    log_assert(is_dir(IA_LIVE_DIR), "Invalid directory: ".IA_LIVE_DIR);
+    system(sprintf("mkdir -p %s/{db,conf,hackers}", IA_BACKUP_DIR));
+    system(sprintf("mkdir -p %s/hackers/{svn,trac,reviewboard}", IA_BACKUP_DIR));
+}
+
+function backup_timestamp() {
+    return date("YmdGi");
+}
+
+function backup_db() {
+    $temp_file = tempnam(temp_dir(), 'infoarena.sql.gz');
+    $backup_file = sprintf("%s/db/db-%s.sql.gz", IA_BACKUP_DIR,
+        backup_timestamp());
+    log_print(sprintf("Database backup (%s, %s)", $temp_file, $backup_file));
+    system(sprintf("%s/scripts/db-backup %s", IA_ROOT_DIR, $temp_file));
+    rename($temp_file, $backup_file);
+}
+
+function backup_path($target, $paths) {
+    $target_file = sprintf("%s/%s%s.tar.gz", IA_BACKUP_DIR, $target,
+        backup_timestamp());
+    $quoted_paths = "'".join("' '", $paths)."'";
+    log_print(sprintf("Creating archive %s from (%s)", $target_file,
+        $quoted_paths));
+    system(sprintf("tar -czf %s %s", $target_file, $quoted_paths));
+}
+
+function backup_daily() {
+    log_print("Running daily backup");
+    backup_db();
+}
+
+function backup_weekly() {
+    log_print("Running weekly backup");
+    global $BACKUP_PATHS_WEEKLY;
+    foreach ($BACKUP_PATHS_WEEKLY as $target => $paths) {
+        backup_path($target, $paths);
+    }
+}
+
+function main() {
+    global $argv;
+    backup_init_dirs();
+    if (count($argv) != 2 || !in_array($argv[1], array('daily', 'weekly'))) {
+        log_error("Expecting 1 argument: 'daily' or 'weekly'.");
+    }
+    if ('daily' == $argv[1]) {
+        backup_daily();
+    } elseif ('weekly' == $argv[1]) {
+        backup_weekly();
+    } else {
+        log_error("Invalid args");
+    }
+}
+
+main();
+
+?>

@@ -82,4 +82,12 @@ function magic_exec($cmd)
     }
 }
 
+function temp_dir() {
+    if (function_exists('sys_get_temp_dir')) {
+        return sys_get_temp_dir();
+    } else {
+        return '/tmp';
+    }
+}
+
 ?>
