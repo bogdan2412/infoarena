@@ -207,7 +207,7 @@ function rating_history($user_id) {
     $query = sprintf("SELECT * FROM `ia_score`
                       LEFT JOIN ia_round ON round_id = ia_round.id
                       WHERE `name` IN ('deviation', 'rating')
-                            AND user_id = '%s'
+                            AND ia_score.user_id = '%s'
                             AND ia_round.state = 'complete'
                      ",
                      db_escape($user_id));
