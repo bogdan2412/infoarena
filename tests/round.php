@@ -66,6 +66,16 @@ $res = curl_test(array(
 log_assert_equal($res['url'], url_absolute(url_round_create()));
 log_assert(strstr($res['content'], 'tEst_Round'));
 
+log_print("Admin changes round to classic.");
+$res = curl_test(array(
+        'url' => url_round_edit('tEst_Round'),
+        'user' => 'test_admin',
+        'post' => array(
+            'type' => 'classic',
+            'rating_update' => true,
+)));
+log_assert_equal($res['url'], url_absolute(url_round_edit('test_round')));
+log_assert(strstr($res['content'], 'Concurs clasic'));
 
 log_print("Admin adds tasks adunare and cmmdc to round.");
 $res = curl_test(array(
