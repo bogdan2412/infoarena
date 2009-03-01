@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.4                                           *
+* Software Version:           SMF 1.1.5                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -496,7 +496,8 @@ function SendMailing()
 	$result = db_query("
 		SELECT realName, memberName, ID_MEMBER, emailAddress
 		FROM {$db_prefix}members
-		WHERE emailAddress IN ('" . implode("', '", addslashes__recursive($send_list)) . "')", __FILE__, __LINE__);
+		WHERE emailAddress IN ('" . implode("', '", addslashes__recursive($send_list)) . "')
+			AND is_activated = 1", __FILE__, __LINE__);
 	while ($row = mysql_fetch_assoc($result))
 	{
 		unset($send_list[$row['emailAddress']]);

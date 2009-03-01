@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1                                             *
+* Software Version:           SMF 1.1.5                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -178,42 +178,31 @@ function Admin()
 		{
 			list ($key, $expires) = explode(',', $modSettings['copy_settings']);
 			// Get the expired date.
-			$fp = @fsockopen("www.simplemachines.org", 80, $errno, $errstr, 1);
-			if ($fp)
+			require_once($sourcedir . '/Subs-Package.php');
+			$return_data = fetch_web_data($url = 'http://www.simplemachines.org/smf/copyright/check_copyright.php?site=' . base64_encode($boardurl) . '&key=' . $key . '&version=' . base64_encode($forum_version));
+
+			// Get the expire date.
+			$return_data = substr($return_data, strpos($return_data, 'STARTCOPY') + 9);
+			$return_data = trim(substr($return_data, 0, strpos($return_data, 'ENDCOPY')));
+
+			if ($return_data != 'void')
 			{
-				$out = "GET /smf/copyright/check_copyright.php?site=" . base64_encode($boardurl) . "&key=" . $key . "&version=" . base64_encode($forum_version) . " HTTP/1.1\r\n";
-				$out .= "Host: www.simplemachines.org\r\n";
-				$out .= "Connection: Close\r\n\r\n";
-				fwrite($fp, $out);
-
-				$return_data = '';
-				while (!feof($fp))
-					$return_data .= fgets($fp, 128);
-				fclose($fp);
-
-				// Get the expire date.
-				$return_data = substr($return_data, strpos($return_data, 'STARTCOPY') + 9);
-				$return_data = trim(substr($return_data, 0, strpos($return_data, 'ENDCOPY')));
-
-				if ($return_data != 'void')
-				{
-					list ($_SESSION['copy_expire'], $modSettings['copyright_key']) = explode('|', $return_data);
-					$_SESSION['copy_key'] = $key;
-					$modSettings['copy_settings'] = $key . ',' . (int) $return_data;
-					updateSettings(array('copy_settings' => $modSettings['copy_settings'], 'copyright_key' => $modSettings['copyright_key']));
-				}
-				else
-				{
-					$_SESSION['copy_expire'] = '';
-					db_query("
-						DELETE FROM {$db_prefix}settings
-						WHERE variable = 'copy_settings'
-							OR variable = 'copyright_key'", __FILE__, __LINE__);
-				}
+				list ($_SESSION['copy_expire'], $copyright_key) = explode('|', $return_data);
+				$_SESSION['copy_key'] = $key;
+				$copy_settings = $key . ',' . (int) $_SESSION['copy_expire'];
+				updateSettings(array('copy_settings' => $copy_settings, 'copyright_key' => $copyright_key));
+			}
+			else
+			{
+				$_SESSION['copy_expire'] = '';
+				db_query("
+					DELETE FROM {$db_prefix}settings
+					WHERE variable = 'copy_settings'
+						OR variable = 'copyright_key'", __FILE__, __LINE__);
 			}
 		}
 
-		if ($_SESSION['copy_expire'] && $_SESSION['copy_expire'] > time())
+		if (isset($_SESSION['copy_expire']) && $_SESSION['copy_expire'] > time())
 		{
 			$context['copyright_expires'] = (int) (($_SESSION['copy_expire'] - time()) / 3600 / 24);
 			$context['copyright_key'] = $_SESSION['copy_key'];
@@ -251,6 +240,8 @@ function Admin()
 		$context['current_versions']['phpa'] = array('title' => 'ionCube PHP-Accelerator', 'version' => $_PHPA['VERSION']);
 	if (extension_loaded('apc'))
 		$context['current_versions']['apc'] = array('title' => 'Alternative PHP Cache', 'version' => phpversion('apc'));
+	if (function_exists('memcache_set'))
+		$context['current_versions']['memcache'] = array('title' => 'Memcached', 'version' => memcache_get_version());
 
 	$context['can_admin'] = allowedTo('admin_forum');
 
@@ -811,36 +802,24 @@ function ManageCopyright()
 		$_POST['copy_code'] = urlencode($_POST['copy_code']);
 
 		// Check the actual code.
-		$fp = @fsockopen("www.simplemachines.org", 80, $errno, $errstr);
-		if ($fp)
+		require_once($sourcedir . '/Subs-Package.php');
+		$return_data = fetch_web_data('http://www.simplemachines.org/smf/copyright/check_copyright.php?site=' . base64_encode($boardurl) . '&key=' . $_POST['copy_code'] . '&version=' . base64_encode($forum_version));
+
+		// Get the data back
+		$return_data = substr($return_data, strpos($return_data, 'STARTCOPY') + 9);
+		$return_data = trim(substr($return_data, 0, strpos($return_data, 'ENDCOPY')));
+
+		if ($return_data != 'void')
 		{
-			$out = "GET /smf/copyright/check_copyright.php?site=" . base64_encode($boardurl) . "&key=" . $_POST['copy_code'] . "&version=" . base64_encode($forum_version) . " HTTP/1.1\r\n";
-			$out .= "Host: www.simplemachines.org\r\n";
-			$out .= "Connection: Close\r\n\r\n";
-			fwrite($fp, $out);
-
-			$return_data = '';
-			while (!feof($fp))
-				$return_data .= fgets($fp, 128);
-			fclose($fp);
-
-			// Get the data back
-			$return_data = substr($return_data, strpos($return_data, 'STARTCOPY') + 9);
-			$return_data = trim(substr($return_data, 0, strpos($return_data, 'ENDCOPY')));
-
-			if ($return_data != 'void')
-			{
-				echo $return_data;
-				list ($_SESSION['copy_expire'], $modSettings['copyright_key']) = explode('|', $return_data);
-				$_SESSION['copy_key'] = $key;
-				$modSettings['copy_settings'] = $key . ',' . (int) $return_data;
-				updateSettings(array('copy_settings' => $modSettings['copy_settings'], 'copyright_key' => $modSettings['copyright_key']));
-				redirectexit('action=admin');
-			}
-			else
-			{
-				fatal_lang_error('copyright_failed');
-			}
+			list ($_SESSION['copy_expire'], $copyright_key) = explode('|', $return_data);
+			$_SESSION['copy_key'] = $_POST['copy_code'];
+			$copy_settings = $_POST['copy_code'] . ',' . (int) $_SESSION['copy_expire'];
+			updateSettings(array('copy_settings' => $copy_settings, 'copyright_key' => $copyright_key));
+			redirectexit('action=admin');
+		}
+		else
+		{
+			fatal_lang_error('copyright_failed');
 		}
 	}
 

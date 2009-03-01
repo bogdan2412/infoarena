@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1                                             *
+* Software Version:           SMF 1.1.5                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -468,9 +468,9 @@ function calendarCanLink()
 	isAllowedTo('calendar_post');
 
 	// No board?  No topic?!?
-	if (!isset($board))
+	if (empty($board))
 		fatal_lang_error('calendar38', false);
-	if (!isset($topic))
+	if (empty($topic))
 		fatal_lang_error('calendar39', false);
 
 	// Administrator, Moderator, or owner.  Period.

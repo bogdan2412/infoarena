@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.2                                           *
+* Software Version:           SMF 1.1.5                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -548,7 +548,7 @@ function addMembersToGroup($members, $group, $type = 'auto')
 	if ($type == 'only_additional')
 		db_query("
 			UPDATE {$db_prefix}members
-			SET additionalGroups = IF(additionalGroups = '', '$group', CONCAT(additionalGroups, ',$group')))
+			SET additionalGroups = IF(additionalGroups = '', '$group', CONCAT(additionalGroups, ',$group'))
 			WHERE ID_MEMBER IN (" . implode(', ', $members) . ")
 				AND ID_GROUP != $group
 				AND NOT FIND_IN_SET($group, additionalGroups)

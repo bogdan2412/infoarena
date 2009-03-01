@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.2                                           *
+* Software Version:           SMF 1.1.5                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -1948,7 +1948,10 @@ function loadSession()
 
 		// Use database sessions? (they don't work in 4.1.x!)
 		if (!empty($modSettings['databaseSession_enable']) && @version_compare(PHP_VERSION, '4.2.0') != -1)
+		{
 			session_set_save_handler('sessionOpen', 'sessionClose', 'sessionRead', 'sessionWrite', 'sessionDestroy', 'sessionGC');
+			@ini_set('session.gc_probability', '1');
+		}
 		elseif (@ini_get('session.gc_maxlifetime') <= 1440 && !empty($modSettings['databaseSession_lifetime']))
 			@ini_set('session.gc_maxlifetime', max($modSettings['databaseSession_lifetime'], 60));
 
@@ -2094,22 +2097,15 @@ function cache_put_data($key, $value, $ttl = 120)
 	$value = $value === null ? null : serialize($value);
 
 	// The simple yet efficient memcached.
-	if (isset($modSettings['cache_memcached']) && trim($modSettings['cache_memcached']) != '')
+	if (function_exists('memcache_set') && isset($modSettings['cache_memcached']) && trim($modSettings['cache_memcached']) != '')
 	{
-		// Grab the memcached server.
-		if (!is_resource($memcached))
+		// Not connected yet?
+		if (empty($memcached))
 			get_memcached_server();
 		if (!$memcached)
 			return;
 
-		// !!! It almost might be best to write null to as many as possible....
-		if (!fwrite($memcached, 'set ' . $key . ' 0 ' . $ttl . ' ' . strlen($value) . "\r\n" . $value . "\r\n"))
-		{
-			$memcached = fclose($memcached);
-			return;
-		}
-
-		fread($memcached, 128);
+		memcache_set($memcached, $key, $value, 0, $ttl);
 	}
 	// eAccelerator...
 	elseif (function_exists('eaccelerator_put'))
@@ -2168,36 +2164,15 @@ function cache_get_data($key, $ttl = 120)
 	$key = md5($boardurl . filemtime($sourcedir . '/Load.php')) . '-SMF-' . $key;
 
 	// Okay, let's go for it memcached!
-	if (isset($modSettings['cache_memcached']) && trim($modSettings['cache_memcached']) != '')
+	if (function_exists('memcache_get') && isset($modSettings['cache_memcached']) && trim($modSettings['cache_memcached']) != '')
 	{
-		// Grab the memcached server.
-		if (!is_resource($memcached) && $memcached !== '0')
+		// Not connected yet?
+		if (empty($memcached))
 			get_memcached_server();
 		if (!$memcached)
-		{
-			// '0' means ignore me for the rest of this page view.
-			$memcached = '0';
-			return null;
-		}
+			return;
 
-		if (!fwrite($memcached, 'get ' . $key . "\r\n"))
-		{
-			$memcached = fclose($memcached);
-			return null;
-		}
-
-		$response = fgets($memcached);
-		if (substr($response, 0, 3) != 'END' && substr($response, 0, 5) != 'VALUE')
-		{
-			// Bad response, junk time.
-			$memcached = fclose($memcached);
-			return null;
-		}
-
-		if (substr($response, 0, 5) == 'VALUE' && preg_match('~(\d+)$~', trim($response), $match) != 0)
-			$value = substr(fread($memcached, $match[1] + 2), 0, -2);
-
-		fread($memcached, 5);
+		$value = memcache_get($memcached, $key);
 	}
 	// Again, eAccelerator.
 	elseif (function_exists('eaccelerator_get'))
@@ -2237,17 +2212,12 @@ function get_memcached_server($level = 3)
 
 	// Don't wait too long: yes, we want the server, but we might be able to run the query faster!
 	if (empty($db_persist))
-		$memcached = @fsockopen($server[0], empty($server[1]) ? 11211 : $server[1], $err, $err, 0.15);
+		$memcached = memcache_connect($server[0], empty($server[1]) ? 11211 : $server[1]);
 	else
-		$memcached = @pfsockopen($server[0], empty($server[1]) ? 11211 : $server[1], $err, $err, 0.15);
+		$memcached = memcache_pconnect($server[0], empty($server[1]) ? 11211 : $server[1]);
 
 	if (!$memcached && $level > 0)
 		get_memcached_server($level - 1);
-	elseif ($memcached)
-	{
-		@socket_set_timeout($memcached, 1);
-		@set_file_buffer($memcached, 0);
-	}
 }
 
 ?>

@@ -44,6 +44,13 @@ function controller_attachment_list($page_name) {
 
 // Create a new attachment to a textblock.
 function controller_attachment_create($page_name) {
+    // For Stelele informaticii 2009: don't allow users to upload any attachments
+    /*
+    if (starts_with(remote_ip_info(), "194.102.57.125")) {
+        flash_error("N-ai voie :(");
+        redirect(url_home());
+    }
+    */
     if (request_is_post()) {
         controller_attachment_submit($page_name);
         die();
@@ -210,6 +217,10 @@ function controller_attachment_submit($page_name) {
             if (!@rename($file_att['disk_name'], $disk_name)) {
                 log_error("Failed moving attachment to final storage ".
                     "(from {$file_att['disk_name']} to $disk_name)");
+            }
+            if (!chmod($disk_name)) {
+                log_error("Failed setting attachment permissions ".
+                    "(target $disk_name)");
             }
         }
     }

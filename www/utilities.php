@@ -22,8 +22,8 @@ function xml_escape($string, $quote_style = ENT_COMPAT, $charset = "UTF-8")
         '&#226;','&#227;','&#228;','&#229;','&#230;','&#231;','&#232;','&#233;',
         '&#234;','&#235;','&#236;','&#237;','&#238;','&#239;','&#240;','&#241;',
         '&#242;','&#243;','&#244;','&#245;','&#246;','&#247;','&#248;','&#249;',
-        '&#250;','&#251;','&#252;','&#253;','&#254;','&#255;', '&#8221', 
-        '&#8222',
+        '&#250;','&#251;','&#252;','&#253;','&#254;','&#255;', '&#8221;', 
+        '&#8222;',
     );
     $html = array('&quot;','&amp;','&amp;','&lt;','&gt;','&nbsp;','&iexcl;',
         '&cent;','&pound;','&curren;','&yen;','&brvbar;','&sect;','&uml;',
@@ -39,7 +39,7 @@ function xml_escape($string, $quote_style = ENT_COMPAT, $charset = "UTF-8")
         '&eacute;','&ecirc;','&euml;','&igrave;','&iacute;','&icirc;','&iuml;',
         '&eth;','&ntilde;','&ograve;','&oacute;','&ocirc;','&otilde;','&ouml;',
         '&divide;','&oslash;','&ugrave;','&uacute;','&ucirc;','&uuml;','&yacute;',
-        '&thorn;','&yuml;', '&rdquo;', '&bdquo',
+        '&thorn;','&yuml;', '&rdquo;', '&bdquo;',
     );
     $string = html_escape($string, $quote_style, $charset);
     $string = str_replace($html, $xml, $string);

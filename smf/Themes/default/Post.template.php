@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1; Post
+// Version: 1.1.5; Post
 
 // The main template for the post page.
 function template_main()
@@ -267,8 +267,8 @@ function template_main()
 					<td id="preview_subject">', empty($context['preview_subject']) ? '' : $context['preview_subject'], '</td>
 				</tr>
 				<tr>
-					<td class="windowbg" width="100%">
-						<div id="preview_body" class="post">', empty($context['preview_message']) ? '' : $context['preview_message'], '</div>
+					<td class="post" width="100%" id="preview_body">
+						', empty($context['preview_message']) ? str_repeat('<br />', 5) : $context['preview_message'], '
 					</td>
 				</tr>
 			</table><br />
@@ -518,6 +518,62 @@ function template_main()
 											', $context['last_modified'], '
 										</td>
 									</tr>';
+
+	if ($context['visual_verification'])
+	{
+		echo '
+			<tr align="right" valign="top">
+				<td style="font-weight: bold;', isset($context['post_error']['visual_verification_failed']) ? 'color: red;' : '', '">
+
+					<script language="JavaScript" type="text/javascript"><!-- // -->
+					function refreshImages()
+					{
+						// Make sure we are using a new rand code.
+						var new_url = new String("', $context['verificiation_image_href'], '");
+						new_url = new_url.substr(0, new_url.indexOf("rand=") + 5);
+
+						// Quick and dirty way of converting decimal to hex
+						var hexstr = "0123456789abcdef";
+						for(var i=0; i < 32; i++)
+							new_url = new_url + hexstr.substr(Math.floor(Math.random() * 16), 1);';
+
+						if ($context['use_graphic_library'])
+							echo '
+						document.getElementById("verificiation_image").src = new_url;';
+						else
+							echo '
+						document.getElementById("verificiation_image_1").src = new_url + ";letter=1";
+						document.getElementById("verificiation_image_2").src = new_url + ";letter=2";
+						document.getElementById("verificiation_image_3").src = new_url + ";letter=3";
+						document.getElementById("verificiation_image_4").src = new_url + ";letter=4";
+						document.getElementById("verificiation_image_5").src = new_url + ";letter=5";';
+						echo '
+					}
+						// ]]&gt;</script>
+
+					', $txt['visual_verification_label'], ':
+					<div class="smalltext">', $txt['visual_verification_description'], '</div>
+				</td>
+				<td align="left" valign="top">';
+if ($context['use_graphic_library'])
+	echo '
+					<img src="', $context['verificiation_image_href'], '" alt="', $txt['visual_verification_description'], '" id="verificiation_image" /><br />';
+else
+	echo '
+					<img src="', $context['verificiation_image_href'], ';letter=1" alt="', $txt['visual_verification_description'], '" id="verificiation_image_1" />
+					<img src="', $context['verificiation_image_href'], ';letter=2" alt="', $txt['visual_verification_description'], '" id="verificiation_image_2" />
+					<img src="', $context['verificiation_image_href'], ';letter=3" alt="', $txt['visual_verification_description'], '" id="verificiation_image_3" />
+					<img src="', $context['verificiation_image_href'], ';letter=4" alt="', $txt['visual_verification_description'], '" id="verificiation_image_4" />
+					<img src="', $context['verificiation_image_href'], ';letter=5" alt="', $txt['visual_verification_description'], '" id="verificiation_image_5" />';
+echo '
+					<input type="text" name="visual_verification_code" size="30" tabindex="', $context['tabindex']++, '" />
+					<div class="smalltext">
+						<a href="', $context['verificiation_image_href'], ';sound" onclick="return reqWin(this.href, 400, 120);">', $txt['visual_verification_sound'], '</a> | <a href="', $scripturl, '" onclick="refreshImages(); return false;">', $txt['visual_verification_request_new'], '</a>
+					</div>
+				</td>
+			</tr>';
+	}
+
 
 	// If the admin has enabled the hiding of the additional options - show a link and image for it.
 	if (!empty($settings['additional_options_collapsable']))

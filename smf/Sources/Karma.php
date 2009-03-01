@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1                                             *
+* Software Version:           SMF 1.1.5                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -123,7 +123,7 @@ function ModifyKarma()
 	}
 
 	// Figure out where to go back to.... the topic?
-	if (isset($topic))
+	if (!empty($topic))
 		redirectexit('topic=' . $topic . '.' . $_REQUEST['start'] . '#msg' . $_REQUEST['m']);
 	// Hrm... maybe a personal message?
 	elseif (isset($_REQUEST['f']))

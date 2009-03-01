@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1                                             *
+* Software Version:           SMF 1.1.5                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -36,9 +36,14 @@ global $db_server, $db_name, $db_user, $db_prefix, $db_persist, $db_error_send, 
 global $db_connection, $modSettings, $context, $sc, $user_info, $topic, $board, $txt;
 
 // Remember the current configuration so it can be set back.
-$ssi_magic_quotes_runtime = get_magic_quotes_runtime();
+$ssi_magic_quotes_runtime = @get_magic_quotes_runtime();
 @set_magic_quotes_runtime(0);
 $time_start = microtime();
+
+// Make sure some things simply do not exist.
+foreach (array('db_character_set') as $variable)
+	if (isset($GLOBALS[$variable]))
+		unset($GLOBALS[$variable]);
 
 // Get the forum's settings for database and file paths.
 require_once(dirname(__FILE__) . '/Settings.php');
@@ -99,7 +104,7 @@ elseif (isset($_COOKIE['ssi_theme']) && (int) $_COOKIE['ssi_theme'] == (int) $ss
 	die('Hacking attempt...');
 elseif (isset($_REQUEST['ssi_layers']))
 {
-	if ((get_magic_quotes_gpc() ? addslashes($_REQUEST['ssi_layers']) : $_REQUEST['ssi_layers']) == htmlspecialchars($ssi_layers))
+	if ((@get_magic_quotes_gpc() ? addslashes($_REQUEST['ssi_layers']) : $_REQUEST['ssi_layers']) == htmlspecialchars($ssi_layers))
 		die('Hacking attempt...');
 }
 if (isset($_REQUEST['context']))
@@ -1246,7 +1251,7 @@ function ssi_showPoll($topic = null, $output_method = 'echo')
 
 	$request = db_query("
 		SELECT
-			p.ID_POLL, p.question, p.votingLocked, p.hideResults, p.expireTime, p.maxVotes
+			p.ID_POLL, p.question, p.votingLocked, p.hideResults, p.expireTime, p.maxVotes, b.ID_BOARD
 		FROM ({$db_prefix}topics AS t, {$db_prefix}polls AS p, {$db_prefix}boards AS b)
 		WHERE p.ID_POLL = t.ID_POLL
 			AND t.ID_TOPIC = $topic
@@ -1265,7 +1270,7 @@ function ssi_showPoll($topic = null, $output_method = 'echo')
 	// Check if they can vote.
 	if (!empty($row['expireTime']) && $row['expireTime'] < time())
 		$allow_vote = false;
-	elseif ($user_info['is_guest'] || !empty($row['votingLocked']) || !allowedTo('poll_vote'))
+	elseif ($user_info['is_guest'] || !empty($row['votingLocked']) || !allowedTo('poll_vote', array($row['ID_BOARD'])))
 		$allow_vote = false;
 	else
 	{

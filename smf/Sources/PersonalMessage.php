@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.4                                           *
+* Software Version:           SMF 1.1.5                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -688,7 +688,7 @@ function MessageSearch2()
 	$context['folder'] = 'inbox';
 
 	// Some useful general permissions.
-	$context['can_send_pm'] = allowedTo('send_pm');
+	$context['can_send_pm'] = allowedTo('pm_send');
 
 	// Some hardcoded veriables that can be tweaked if required.
 	$maxMembersToSearch = 500;

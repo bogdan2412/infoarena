@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.2                                           *
+* Software Version:           SMF 1.1.5                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -1243,14 +1243,14 @@ class gif_file
 		// Now, we want the header...
 		$out .= "\x00\x00\x00\x0D";
 		$tmp = 'IHDR' . pack('N', (int) $this->header->m_nWidth) . pack('N', (int) $this->header->m_nHeight) . "\x08\x03\x00\x00\x00";
-		$out .= $tmp . pack('N', crc32($tmp));
+		$out .= $tmp . pack('N', smf_crc32($tmp));
 
 		// The palette, assuming we have one to speak of...
 		if ($colors > 0)
 		{
 			$out .= pack('N', (int) $colors * 3);
 			$tmp = 'PLTE' . $pal;
-			$out .= $tmp . pack('N', crc32($tmp));
+			$out .= $tmp . pack('N', smf_crc32($tmp));
 		}
 
 		// Do we have any transparency we want to make available?
@@ -1263,13 +1263,13 @@ class gif_file
 			for ($i = 0; $i < $colors; $i++)
 				$tmp .= $i == $this->image->m_nTrans ? "\x00" : "\xFF";
 
-			$out .= $tmp . pack('N', crc32($tmp));
+			$out .= $tmp . pack('N', smf_crc32($tmp));
 		}
 
 		// Here's the data itself!
 		$out .= pack('N', strlen($bmp));
 		$tmp = 'IDAT' . $bmp;
-		$out .= $tmp . pack('N', crc32($tmp));
+		$out .= $tmp . pack('N', smf_crc32($tmp));
 
 		// EOF marker...
 		$out .= "\x00\x00\x00\x00IEND\xAE\x42\x60\x82";
@@ -1610,6 +1610,24 @@ function showLetterImage($letter)
 
 	// Nothing more to come.
 	die();
+}
+
+// crc32 doesn't work as expected on 64-bit functions - make our own.
+// http://www.php.net/crc32#79567
+if (!function_exists('smf_crc32'))
+{
+	function smf_crc32($number)
+	{
+		$crc = crc32($number);
+	
+		if($crc & 0x80000000){
+			$crc ^= 0xffffffff;
+			$crc += 1;
+			$crc = -$crc;
+		}
+	
+		return $crc;
+	} 
 }
 
 ?>

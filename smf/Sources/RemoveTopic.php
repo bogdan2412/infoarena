@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1                                             *
+* Software Version:           SMF 1.1.5                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -88,6 +88,10 @@ function DeleteMessage()
 
 	$_REQUEST['msg'] = (int) $_REQUEST['msg'];
 
+	// Is $topic set?
+	if (empty($topic) && isset($_REQUEST['topic']))
+		$topic = (int) $_REQUEST['topic'];
+
 	$request = db_query("
 		SELECT t.ID_MEMBER_STARTED, m.ID_MEMBER, m.subject, m.posterTime
 		FROM ({$db_prefix}topics AS t, {$db_prefix}messages AS m)
@@ -121,7 +125,10 @@ function DeleteMessage()
 	if (allowedTo('delete_any') && (!allowedTo('delete_own') || $poster != $ID_MEMBER))
 		logAction('delete', array('topic' => $topic, 'subject' => $subject, 'member' => $starter));
 
-	if ($full_topic)
+	// We want to redirect back to recent action.
+	if (isset($_REQUEST['recent']))
+		redirectexit('action=recent');
+	elseif ($full_topic)
 		redirectexit('board=' . $board . '.0');
 	else
 		redirectexit('topic=' . $topic . '.' . $_REQUEST['start']);

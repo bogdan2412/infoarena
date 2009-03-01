@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.4                                           *
+* Software Version:           SMF 1.1.5                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -620,12 +620,9 @@ function updateMemberData($members, $data)
 	}
 
 	// Ensure posts, instantMessages, and unreadMessages never go below 0.
-	if (isset($data['posts']))
-		$data['posts'] = 'IF(' . $data['posts'] . ' < 0, 0, ' . $data['posts'] . ')';
-	if (isset($data['instantMessages']))
-		$data['instantMessages'] = 'IF(' . $data['instantMessages'] . ' < 0, 0, ' . $data['instantMessages'] . ')';
-	if (isset($data['unreadMessages']))
-		$data['unreadMessages'] = 'IF(' . $data['unreadMessages'] . ' < 0, 0, ' . $data['unreadMessages'] . ')';
+	foreach(array('posts', 'instantMessages', 'unreadMessages') as $type)
+		if (isset($data[$type]) && preg_match('~^' . $type . ' - ([\d]+)~', $data[$type], $match) === 1)
+			$data[$type] = 'CASE WHEN ' . $type . ' <= ' . $match[1] . ' THEN 0 ELSE ' . $data[$type] . ' END';
 
 	$setString = '';
 	foreach ($data as $var => $val)

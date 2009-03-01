@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1                                             *
+* Software Version:           SMF 1.1.5                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -405,6 +405,8 @@ function ModifyCacheSettings()
 		$detected = 'APC';
 	elseif (function_exists('output_cache_put'))
 		$detected = 'Zend';
+	elseif (function_exists('memcache_set'))
+		$detected = 'Memcached';
 	else
 		$detected = 'no_caching';
 

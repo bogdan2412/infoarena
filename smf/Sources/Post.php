@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.4                                           *
+* Software Version:           SMF 1.1.5                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -105,6 +105,29 @@ function Post()
 
 	// Posting an event?
 	$context['make_event'] = isset($_REQUEST['calendar']);
+
+	// Generate a visual verification code to make sure the user is no bot.
+	$context['visual_verification'] = (empty($modSettings['disable_visual_verification']) || $modSettings['disable_visual_verification'] != 1) && ($user_info['is_guest'] && $modSettings['visual_verification_guest_post']);
+	if ($context['visual_verification'])
+	{
+		loadLanguage('Login');
+
+		$context['use_graphic_library'] = in_array('gd', get_loaded_extensions());
+		$context['verificiation_image_href'] = $scripturl . '?action=verificationcode;rand=' . md5(rand());
+
+		// Only generate a new code if one hasn't been set yet
+		if (!isset($_SESSION['visual_verification_code']))
+		{
+			// Skip I, J, L, O and Q.
+			$character_range = array_merge(range('A', 'H'), array('K', 'M', 'N', 'P'), range('R', 'Z'));
+
+			// Generate a new code.
+			$_SESSION['visual_verification_code'] = '';
+			for ($i = 0; $i < 5; $i++)
+				$_SESSION['visual_verification_code'] .= $character_range[array_rand($character_range)];
+		}
+	}
+
 
 	// You must be posting to *some* board.
 	if (empty($board) && !$context['make_event'])
@@ -1027,7 +1050,7 @@ function Post()
 			'selected' => true,
 		));
 
-	if (isset($topic))
+	if (!empty($topic))
 		getTopic();
 
 	$context['back_to_topic'] = isset($_REQUEST['goback']) || (isset($_REQUEST['msg']) && !isset($_REQUEST['subject']));
@@ -1295,7 +1318,7 @@ function Post2()
 	// Validate the poll...
 	if (isset($_REQUEST['poll']) && $modSettings['pollMode'] == '1')
 	{
-		if (isset($topic) && !isset($_REQUEST['msg']))
+		if (!empty($topic) && !isset($_REQUEST['msg']))
 			fatal_lang_error(1, false);
 
 		// This is a new topic... so it's a new poll.
@@ -1336,6 +1359,20 @@ function Post2()
 		$_POST['guestname'] = addslashes($user_info['username']);
 		$_POST['email'] = addslashes($user_info['email']);
 	}
+
+	// Check whether the visual verification code was entered correctly.
+	if ((empty($modSettings['disable_visual_verification']) || $modSettings['disable_visual_verification'] != 1) && ($user_info['is_guest'] && $modSettings['visual_verification_guest_post']))
+	{
+		if ((empty($_REQUEST['visual_verification_code']) || strtoupper($_REQUEST['visual_verification_code']) !== $_SESSION['visual_verification_code']))
+		{
+			$_SESSION['visual_errors'] = isset($_SESSION['visual_errors']) ? $_SESSION['visual_errors'] + 1 : 1;
+			if ($_SESSION['visual_errors'] > 3 && isset($_SESSION['visual_verification_code']))
+				unset($_SESSION['visual_verification_code']);
+
+			$post_errors[] = 'visual_verification_failed';
+		}
+	}
+
 
 	// Any mistakes?
 	if (!empty($post_errors))

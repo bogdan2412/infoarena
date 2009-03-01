@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.2                                           *
+* Software Version:           SMF 1.1.5                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -130,7 +130,7 @@ function Register()
 			// Generate a new code.
 			$_SESSION['visual_verification_code'] = '';
 			for ($i = 0; $i < 5; $i++)
-				$_SESSION['visual_verification_code'] .= $character_range[array_rand($character_range)];
+				$_SESSION['visual_verification_code'] .= $character_range[mt_rand(0, count($character_range)-1)];
 		}
 	}
 }
@@ -435,7 +435,7 @@ function Activate()
 	// Also do a proper member stat re-evaluation.
 	updateStats('member', false);
 
-	if (!isset($_POST['new_email']))
+	if (!isset($_POST['new_email']) && $row['is_activated'] != 2)
 	{
 		require_once($sourcedir . '/Subs-Post.php');
 

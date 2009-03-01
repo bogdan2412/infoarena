@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.2                                           *
+* Software Version:           SMF 1.1.5                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -289,7 +289,7 @@ function read_tgz_data($data, $destination, $single_file = false, $overwrite = f
 	$crc = unpack('Vcrc32/Visize', substr($data, strlen($data) - 8, 8));
 	$data = @gzinflate(substr($data, $offset, strlen($data) - 8 - $offset));
 
-	if ($crc['crc32'] != crc32($data))
+	if ($crc['crc32'] != smf_crc32($data))
 		return false;
 
 	$blocks = strlen($data) / 512 - 1;
@@ -2708,14 +2708,34 @@ class xmlArray
 	// Parse out CDATA tags. (htmlspecialchars them...)
 	function _to_cdata($data)
 	{
-		// Match all of the CDATA tags.
-		preg_match_all('/<!\[CDATA\[(.*?)\]\]>/s', $data, $match, PREG_SET_ORDER);
+		$inCdata = $inComment = false;
+		$output = '';
 
-		// Replace them with htmlentities'd versions.
-		foreach ($match as $m)
-			$data = str_replace($m[0], htmlentities($m[1], ENT_QUOTES), $data);
+		$parts = preg_split('~(<!\[CDATA\[|\]\]>|<!--|-->)~', $data, -1, PREG_SPLIT_DELIM_CAPTURE);
+		foreach ($parts as $part)
+		{
+			// Handle XML comments.
+			if (!$inCdata && $part === '<!--')
+				$inComment = true;
+			if ($inComment && $part === '-->')
+				$inComment = false;
+			elseif ($inComment)
+				continue;
 
-		return $data;
+			// Handle Cdata blocks.
+			elseif (!$inComment && $part === '<![CDATA[')
+				$inCdata = true;
+			elseif ($inCdata && $part === ']]>')
+				$inCdata = false;
+			elseif ($inCdata)
+				$output .= htmlentities($part, ENT_QUOTES);
+
+			// Everything else is kept as is.
+			else
+				$output .= $part;
+		}
+
+		return $output;
 	}
 
 	// Turn the CDATAs back to normal text.
@@ -3158,6 +3178,24 @@ class ftp_connection
 
 		return true;
 	}
+}
+
+// crc32 doesn't work as expected on 64-bit functions - make our own.
+// http://www.php.net/crc32#79567
+if (!function_exists('smf_crc32'))
+{
+	function smf_crc32($number)
+	{
+		$crc = crc32($number);
+	
+		if($crc & 0x80000000){
+			$crc ^= 0xffffffff;
+			$crc += 1;
+			$crc = -$crc;
+		}
+	
+		return $crc;
+	} 
 }
 
 ?>

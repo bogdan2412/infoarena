@@ -163,7 +163,7 @@ a img
 }
 
 /* Alternating backgrounds for posts, and several other sections of the forum. */
-.windowbg
+.windowbg, #preview_body
 {
 	color: #000000;
 	background-color: #fff;

@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1                                             *
+* Software Version:           SMF 1.1.5                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -181,7 +181,15 @@ function is_not_guest($message = '')
 
 	// Load the Login template and language file.
 	loadLanguage('Login');
-	loadTemplate('Login');
+
+	// Are we in wireless mode?
+	if (WIRELESS)
+		$context['sub_template'] = WIRELESS_PROTOCOL . '_login';
+	else
+	{
+		loadTemplate('Login');
+		$context['sub_template'] = 'kick_guest';
+	}
 
 	// Use the kick_guest sub template...
 	$context['kick_message'] = $message;

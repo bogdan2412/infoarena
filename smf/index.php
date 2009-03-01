@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.4                                           *
+* Software Version:           SMF 1.1.5                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -34,13 +34,18 @@
 	with the URL index.php?action=action-in-url.  Relatively simple, no?
 */
 
-$forum_version = 'SMF 1.1.4';
+$forum_version = 'SMF 1.1.5';
 
 // Get everything started up...
 define('SMF', 1);
 @set_magic_quotes_runtime(0);
 error_reporting(E_ALL);
 $time_start = microtime();
+
+// Make sure some things simply do not exist.
+foreach (array('db_character_set') as $variable)
+	if (isset($GLOBALS[$variable]))
+		unset($GLOBALS[$variable]);
 
 // Load the settings...
 require_once(dirname(__FILE__) . '/Settings.php');
@@ -82,6 +87,10 @@ reloadSettings();
 // Clean the request variables, add slashes, etc.
 cleanRequest();
 $context = array();
+
+// Seed the random generator for PHP < 4.2.0.
+if (@version_compare(PHP_VERSION, '4.2.0') == -1)
+	smf_seed_generator();
 
 // Determine if this is using WAP, WAP2, or imode.  Technically, we should check that wap comes before application/xhtml or text/html, but this doesn't work in practice as much as it should.
 if (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/vnd.wap.xhtml+xml') !== false)
@@ -329,7 +338,7 @@ function smf_main()
 		'viewprofile' => array('Profile.php', 'ModifyProfile'),
 
         // Feature stripped for integration with infoarena
-		// 'verificationcode' => array('Register.php', 'VerificationCode'),
+		'verificationcode' => array('Register.php', 'VerificationCode'),
 
 		'vote' => array('Poll.php', 'Vote'),
 		'viewquery' => array('ViewQuery.php', 'ViewQuery'),

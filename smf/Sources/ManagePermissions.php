@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.2                                           *
+* Software Version:           SMF 1.1.5                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -558,8 +558,8 @@ function SetQuickGroups()
 			// Delete the previous permissions...
 			db_query("
 				DELETE FROM {$db_prefix}permissions
-				WHERE ID_GROUP IN (" . implode(', ', $_POST['group']) . ")
-					" . (empty($context['illegal_permissions']) ? '' : ' AND permission NOT IN (' . implode(', ', $context['illegal_permissions']) . ')'), __FILE__, __LINE__);
+				WHERE ID_GROUP IN (" . implode(', ', $_POST['group']) . ")" . (empty($context['illegal_permissions']) ? '' : "
+					AND permission NOT IN ('" . implode("', '", $context['illegal_permissions']) . "')"), __FILE__, __LINE__);
 
 			if (!empty($insert_string))
 			{
@@ -623,8 +623,8 @@ function SetQuickGroups()
 				db_query("
 					DELETE FROM {$db_prefix}permissions
 					WHERE ID_GROUP IN (" . implode(', ', $_POST['group']) . ")
-						AND permission = '$permission'
-						" . (empty($context['illegal_permissions']) ? '' : ' AND permission NOT IN (' . implode(', ', $context['illegal_permissions']) . ')'), __FILE__, __LINE__);
+						AND permission = '$permission'" . (empty($context['illegal_permissions']) ? '' : "
+						AND permission NOT IN ('" . implode("', '", $context['illegal_permissions']) . "')"), __FILE__, __LINE__);
 			else
 				db_query("
 					DELETE FROM {$db_prefix}board_permissions
@@ -883,8 +883,8 @@ function ModifyMembergroup2()
 	{
 		db_query("
 			DELETE FROM {$db_prefix}permissions
-			WHERE ID_GROUP = $_GET[group]
-			" . (empty($context['illegal_permissions']) ? '' : ' AND permission NOT IN (' . implode(', ', $context['illegal_permissions']) . ')'), __FILE__, __LINE__);
+			WHERE ID_GROUP = $_GET[group]" . (empty($context['illegal_permissions']) ? '' : "
+				AND permission NOT IN ('" . implode("', '", $context['illegal_permissions']) . "')"), __FILE__, __LINE__);
 		if (!empty($givePerms['membergroup']))
 			db_query("
 				INSERT IGNORE INTO {$db_prefix}permissions
@@ -1194,8 +1194,8 @@ function setPermissionLevel($level, $group, $board = 'null')
 
 		db_query("
 			DELETE FROM {$db_prefix}permissions
-			WHERE ID_GROUP = $group
-			" . (empty($context['illegal_permissions']) ? '' : ' AND permission NOT IN (' . implode(', ', $context['illegal_permissions']) . ')'), __FILE__, __LINE__);
+			WHERE ID_GROUP = $group" . (empty($context['illegal_permissions']) ? '' : "
+				AND permission NOT IN ('" . implode("', '", $context['illegal_permissions']) . "')"), __FILE__, __LINE__);
 		db_query("
 			DELETE FROM {$db_prefix}board_permissions
 			WHERE ID_GROUP = $group
@@ -1579,8 +1579,8 @@ function save_inline_permissions($permissions)
 	// Remove the old permissions...
 	db_query("
 		DELETE FROM {$db_prefix}permissions
-		WHERE permission IN ('" . implode("', '", $permissions) . "')
-		" . (empty($context['illegal_permissions']) ? '' : ' AND permission NOT IN (' . implode(', ', $context['illegal_permissions']) . ')'), __FILE__, __LINE__);
+		WHERE permission IN ('" . implode("', '", $permissions) . "')" . (empty($context['illegal_permissions']) ? '' : "
+			AND permission NOT IN ('" . implode("', '", $context['illegal_permissions']) . "')"), __FILE__, __LINE__);
 
 	// ...and replace them with new ones.
 	if ($insertRows != '')

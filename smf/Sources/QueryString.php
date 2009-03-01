@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.4                                           *
+* Software Version:           SMF 1.1.5                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -126,7 +126,7 @@ function cleanRequest()
 	{
 		$_GET = urldecode__recursive($_GET);
 
-		if (get_magic_quotes_gpc() != 0 && empty($modSettings['integrate_magic_quotes']))
+		if (@get_magic_quotes_gpc() != 0 && empty($modSettings['integrate_magic_quotes']))
 			$_GET = stripslashes__recursive($_GET);
 
 		// Search engines will send action=profile%3Bu=1, which confuses PHP.
@@ -173,7 +173,7 @@ function cleanRequest()
 	$_GET = addslashes__recursive(htmlspecialchars__recursive($_GET));
 
 	// Clean up after annoying ini settings.  (magic_quotes_gpc might be off...)
-	if (get_magic_quotes_gpc() == 0 && empty($modSettings['integrate_magic_quotes']))
+	if (@get_magic_quotes_gpc() == 0 && empty($modSettings['integrate_magic_quotes']))
 	{
 		// E(G)PCS: ENV, (GET was already done), POST, COOKIE.
 		$_ENV = addslashes__recursive($_ENV);
@@ -235,6 +235,8 @@ function cleanRequest()
 		// Now make sure the online log gets the right number.
 		$_GET['topic'] = $topic;
 	}
+	else
+		$topic = 0;
 
 	// There should be a $_REQUEST['start'], some at least.  If you need to default to other than 0, use $_GET['start'].
 	if (empty($_REQUEST['start']) || $_REQUEST['start'] < 0)
@@ -369,9 +371,9 @@ function stripslashes__recursive($var, $level = 0)
 
 	// Strip the slashes from every element.
 	foreach ($var as $k => $v)
-		$var[stripslashes($k)] = $level > 25 ? null : stripslashes__recursive($v, $level + 1);
+		$new_var[stripslashes($k)] = $level > 25 ? null : stripslashes__recursive($v, $level + 1);
 
-	return $var;
+	return $new_var;
 }
 
 // Trim a string including the HTML space, character 160.
@@ -382,6 +384,8 @@ function htmltrim__recursive($var, $level = 0)
 	// Remove spaces (32), tabs (9), returns (13, 10, and 11), nulls (0), and hard spaces. (160)
 	if (!is_array($var))
 		return isset($func) ? $func['htmltrim']($var) : trim($var, " \t\n\r\x0B\0\xA0");
+
+	$new_var = array();
 
 	// Go through all the elements and remove the whitespace.
 	foreach ($var as $k => $v)

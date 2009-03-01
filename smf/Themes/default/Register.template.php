@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1.2; Register
+// Version: 1.1.5; Register
 
 // Before registering - get their information.
 function template_before()
@@ -123,7 +123,7 @@ function template_before()
 	{
 		echo '
 					<tr valign="top">
-						<td width="40%" align="top">
+						<td width="40%" valign="top">
 							<b>', $txt['visual_verification_label'], ':</b>
 							<div class="smalltext">', $txt['visual_verification_description'], '</div>
 						</td>

@@ -2,7 +2,7 @@
 
 // Hacked template to integrate in infoarena
 
-// Version: 1.1; index
+// Version: 1.1.5; index
 
 /*	This template is, perhaps, the most important template in the theme. It
 	contains the main template layer that displays the header and footer of
@@ -86,10 +86,11 @@ function template_main_above()
 
 	// The ?fin11 part of this link is just here to make sure browsers don't cache it wrongly.
 	echo '
-    <link rel="icon" href="'.IA_URL.'favicon.ico" type="image/vnd.microsoft.icon" />
+	<link rel="icon" href="'.IA_URL.'favicon.ico" type="image/vnd.microsoft.icon" />
 	<link rel="stylesheet" type="text/css" href="', IA_URL, 'static/css/sitewide.css" />
 	<link rel="stylesheet" type="text/css" href="', $settings['theme_url'], '/style.css?fin11" />
-	<link rel="stylesheet" type="text/css" href="', $settings['default_theme_url'], '/print.css?fin11" media="print" />';
+	<link rel="stylesheet" type="text/css" href="', $settings['default_theme_url'], '/print.css?fin11" media="print" />
+	<script type="text/javascript" src="' . html_escape(url_static('js/postdata.js')) . '"></script>';
 
 	/* Internet Explorer 4/5 and Opera 6 just don't do font sizes properly. (they are big...)
 		Thus, in Internet Explorer 4, 5, and Opera 6 this will show fonts one size smaller than usual.
@@ -123,7 +124,10 @@ function template_main_above()
 
 	// We'll have to use the cookie to remember the header...
 	if ($context['user']['is_guest'])
+	{
 		$options['collapse_header'] = !empty($_COOKIE['upshrink']);
+		$options['collapse_header_ic'] = !empty($_COOKIE['upshrinkIC']);
+	}
 
 	// Output any remaining HTML headers. (from mods, maybe?)
 	echo $context['html_headers'], '

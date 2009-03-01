@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1                                             *
+* Software Version:           SMF 1.1.5                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -145,18 +145,6 @@ function getLastPosts($showlatestcount)
 function RecentPosts()
 {
 	global $txt, $scripturl, $db_prefix, $user_info, $context, $ID_MEMBER, $modSettings, $sourcedir, $board;
-
-	// They're deleting something... just skip back to it.
-	if (isset($_GET['delete']))
-	{
-		checkSession('get');
-
-		// Luckily, removeMessage() checks permissions for us.
-		require_once($sourcedir . '/RemoveTopic.php');
-		removeMessage((int) $_GET['delete']);
-
-		redirectexit('action=recent');
-	}
 
 	loadTemplate('Recent');
 	$context['page_title'] = $txt[214];

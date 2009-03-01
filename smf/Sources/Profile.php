@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.4                                           *
+* Software Version:           SMF 1.1.5                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -677,7 +677,7 @@ function saveProfileChanges(&$profile_vars, &$post_errors, $memID)
 		}
 
 		// Change the registration date.
-		if (!empty($_POST['dateRegistered']) && allowedTo('moderate_forum'))
+		if (!empty($_POST['dateRegistered']) && allowedTo('admin_forum'))
 		{
 			// Bad date!  Go try again - please?
 			if (($_POST['dateRegistered'] = strtotime($_POST['dateRegistered'])) === -1)
@@ -1899,7 +1899,7 @@ function TrackIP($memID = 0)
 				'id' => $row['ID_MEMBER'],
 				'name' => $row['display_name'],
 				'href' => $scripturl . '?action=profile;u=' . $row['ID_MEMBER'],
-				'link' => '<a href="' . $scripturl . '?action=profile;u=' . $row['ID_MEMBER'] . '">' . $row['display_name'] . '</a>'
+				'link' => empty($row['ID_MEMBER']) ? $row['display_name'] : '<a href="' . $scripturl . '?action=profile;u=' . $row['ID_MEMBER'] . '">' . $row['display_name'] . '</a>'
 			),
 			'board' => array(
 				'id' => $row['ID_BOARD'],

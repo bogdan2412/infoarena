@@ -29,6 +29,10 @@ function template_modify_settings()
 				<th width="50%" align="right"><label for="simpleSearch_check">', $txt['simpleSearch'], '</label> (<a href="', $scripturl, '?action=helpadmin;help=simpleSearch" onclick="return reqWin(this.href);">?</a>):</th>
 				<td><input type="checkbox" name="simpleSearch" id="simpleSearch_check"', empty($modSettings['simpleSearch']) ? '' : ' checked="checked"', ' class="check" /></td>
 			</tr><tr class="windowbg2">
+
+				<th align="right"><label for="visual_verification_guest_search_check">', $txt['visual_verification_guest_search'], ':</label></th>
+				<td><input type="checkbox" name="visual_verification_guest_search" id="visual_verification_guest_search_check"', empty($modSettings['visual_verification_guest_search']) ? '' : ' checked="checked"', ' class="check" /></td>
+			</tr><tr class="windowbg2">
 				<th align="right"><label for="search_results_per_page_input">', $txt['search_results_per_page'], ':</label></th>
 				<td><input type="text" name="search_results_per_page" id="search_results_per_page_input" value="', $modSettings['search_results_per_page'], '" size="10" /></td>
 			</tr><tr class="windowbg2">

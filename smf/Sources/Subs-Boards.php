@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.4                                           *
+* Software Version:           SMF 1.1.5                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -1138,12 +1138,13 @@ function createBoard($boardOptions)
 				$boardPerms[] = "$board_id, $row[ID_GROUP], '$row[permission]', $row[addDeny]";
 			mysql_free_result($request);
 
-			// Do the insert!
-			db_query("
-				INSERT IGNORE INTO {$db_prefix}board_permissions
-					(ID_BOARD, ID_GROUP, permission, addDeny)
-				VALUES
-					(" . implode('), (', $boardPerms) . ")", __FILE__, __LINE__);
+			if (!empty($boardPerms))
+				// Do the insert!
+				db_query("
+					INSERT IGNORE INTO {$db_prefix}board_permissions
+						(ID_BOARD, ID_GROUP, permission, addDeny)
+					VALUES
+						(" . implode('), (', $boardPerms) . ")", __FILE__, __LINE__);
 
 			// Update the board.
 			db_query("
