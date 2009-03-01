@@ -94,4 +94,13 @@ function backup_timestamp() {
     return date("YmdGi");
 }
 
+function remove_old_files($dir, $keep_newest = 10) {
+    log_assert(is_dir($dir));
+    exec(sprintf("ls -t1 '%s'", $dir), $files);
+    $delete_files = array_slice($files, $keep_newest);
+    foreach ($delete_files as $file) {
+        unlink($file);
+    }
+}
+
 ?>
