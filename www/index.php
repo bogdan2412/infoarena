@@ -211,6 +211,10 @@ else if ($action == 'download') {
         controller_attachment_download($page, request('file'), request('safe_only', false) == 'true');
     }
 }
+else if ($action == 'download-zip') {
+    require_once(IA_ROOT_DIR.'www/controllers/attachment.php');
+    controller_attachment_downloadZip($page, request_args());
+}
 
 // reset password
 else if ('confirm' == $urlstart) {

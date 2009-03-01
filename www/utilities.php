@@ -8,6 +8,15 @@ function html_escape($string, $quote_style = ENT_COMPAT, $charset = "UTF-8")
     return htmlentities($string, $quote_style, $charset);
 }
 
+// returns an array of all arguments in REQUEST
+function request_args() {
+    $result = array();
+    foreach($_REQUEST as $key => $value) {
+        $result[] = $key;
+    }
+    return $result;
+}
+
 function request($param, $default = null) {
     return getattr($_REQUEST, $param, $default);
 }

@@ -2,6 +2,7 @@
 include('header.php');
 require_once(IA_ROOT_DIR . "www/format/table.php");
 require_once(IA_ROOT_DIR . "www/format/format.php");
+
 ?>
     
 <script type="text/javascript">
@@ -47,6 +48,12 @@ function format_attach_size($row) {
 
 }
 
+function format_attach_zip($row) {
+    $attachurl = "<input type='checkbox' name='" . $row['id'] . "' value='" . $row['name'] . "'>";
+
+    return $attachurl;
+}
+
 function format_ip($row) {
     if ($row['remote_ip_info'] && identity_can('attach-view-ip', $row)) {
         return html_escape($row['remote_ip_info']);
@@ -68,6 +75,11 @@ function format_operations($row) {
 }
 
 $column_infos = array(
+    array (
+        'title' => '',
+        'key' => 'zip',
+        'rowform' => 'format_attach_zip'
+    ),
     array(
         'title' => 'Numar',
         'key' => 'id',
@@ -104,7 +116,8 @@ $column_infos = array(
     ),
 );
 ?>
-
+    <form method = 'get' action = '' target = '_blank'> 
+    <input type = 'hidden' name = 'action' value = 'download-zip'>
     <h1>Atasamente pentru pagina <?= format_link(url_textblock($view['page_name']), $view['page_name']) ?></h1>
     <?php
         $options = array(
@@ -121,5 +134,10 @@ $column_infos = array(
     ?>
 
     <p><?= format_link(url_attachment_new($page_name), 'Ataseaza un alt fisier') ?></p>
-
+    <?php
+        if($view['total_entries']) {
+    ?>
+    <p><input type="submit" value="Descarca ZIP" class="button"/></p>
+    <?php } ?>
+    </form>
 <?php include('footer.php'); ?>

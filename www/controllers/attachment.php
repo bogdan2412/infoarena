@@ -4,6 +4,7 @@ require_once(IA_ROOT_DIR."www/format/pager.php");
 require_once(IA_ROOT_DIR."common/db/textblock.php");
 require_once(IA_ROOT_DIR."common/db/attachment.php");
 require_once(IA_ROOT_DIR.'www/controllers/zip_attachment.php');
+require_once(IA_ROOT_DIR."common/external_libs/zipfile.php");
 
 // Try to get the textblock model for a certain page.
 // If it fails it will flash and redirect
@@ -360,7 +361,30 @@ function controller_attachment_download($page_name, $file_name, $restrict_to_saf
         http_serve(attachment_get_filepath($attach), $file_name, $mime_type);
     } else {
         // redirect to main page
-        header("Location: " . url_absolute(url_home()));
+        redirect(url_absolute(url_home()));
+    }
+}
+
+function controller_attachment_downloadZip($page_name, $arguments) {
+    if(http_referer_check()) {
+        $files = array();
+        foreach($arguments as $value) {
+            if(is_numeric($value)) $files[] = request($value);
+        }
+        $zipfile = new zipfile();
+        foreach($files as $filename) {
+            $attach = try_attachment_get($page_name, $filename);
+            $contents = "";
+            foreach(file(attachment_get_filepath($attach)) as $line) $contents .= $line;
+            $zipfile->add_file($contents, $filename);
+        }
+
+        header("Content-type: application/octet-stream");
+        header("Content-disposition: attachment; filename=$page_name.zip");
+        echo $zipfile->file();
+    } else {
+        // redirect to main page
+        redirect(url_absolute(url_home()));
     }
 }
 
