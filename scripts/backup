@@ -3,11 +3,13 @@
 
 require_once(dirname($argv[0]) . "/utilities.php");
 
-define("IA_BACKUP_DIR", "/home/backup");
+define("IA_BACKUP_DIR", "/home/backup/ia-backup");
 define("IA_LIVE_DIR", "/home/infoarena");
+define("IA_BACKUP_USER", "backup");
 
 $BACKUP_PATHS_WEEKLY = array(
-    "conf/conf-" => array(IA_LIVE_DIR."/trac.htpasswd", IA_LIVE_DIR."/apache.conf"),
+    "conf/conf-" => array(IA_LIVE_DIR."/trac.htpasswd",
+            IA_LIVE_DIR."/apache.conf", IA_ROOT_DIR."/config.php"),
     "hackers/svn/svn-" => array(IA_LIVE_DIR."/svn"),
     "hackers/trac/trac-" => array(IA_LIVE_DIR."/trac"),
     "hackers/reviewboard/reviewboard-" => array("/var/www/reviewboard"),
@@ -16,8 +18,10 @@ $BACKUP_PATHS_WEEKLY = array(
 function backup_init_dirs() {
     log_assert(is_dir(IA_BACKUP_DIR), "Invalid directory: ".IA_BACKUP_DIR);
     log_assert(is_dir(IA_LIVE_DIR), "Invalid directory: ".IA_LIVE_DIR);
-    system(sprintf("mkdir -p %s/{db,conf,hackers}", IA_BACKUP_DIR));
+    system(sprintf("mkdir -p %s/{db,conf,hackers,attach}", IA_BACKUP_DIR));
     system(sprintf("mkdir -p %s/hackers/{svn,trac,reviewboard}", IA_BACKUP_DIR));
+    system(sprintf("chown -R %s:%s %s/*", IA_BACKUP_USER, IA_BACKUP_USER,
+            IA_BACKUP_DIR));
 }
 
 function backup_timestamp() {
@@ -31,6 +35,8 @@ function backup_db() {
     log_print(sprintf("Database backup (%s, %s)", $temp_file, $backup_file));
     system(sprintf("%s/scripts/db-backup %s", IA_ROOT_DIR, $temp_file));
     rename($temp_file, $backup_file);
+    chown($backup_file, IA_BACKUP_USER);
+    chgrp($backup_file, IA_BACKUP_USER);
 }
 
 function backup_path($target, $paths) {
@@ -40,6 +46,8 @@ function backup_path($target, $paths) {
     log_print(sprintf("Creating archive %s from (%s)", $target_file,
         $quoted_paths));
     system(sprintf("tar -czf %s %s", $target_file, $quoted_paths));
+    chown($target_file, IA_BACKUP_USER);
+    chgrp($target_file, IA_BACKUP_USER);
 }
 
 function backup_daily() {
