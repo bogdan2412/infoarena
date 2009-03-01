@@ -207,11 +207,16 @@ function controller_attachment_submit($page_name) {
                 continue;
             }
             $disk_name = attachment_get_filepath($file_att['attach_obj']);
-            if (!@rename($file_att['disk_name'], $disk_name)) {
+            if (is_uploaded_file($file_att['disk_name'])) {
+                $move_ok = move_uploaded_file($file_att['disk_name'], $disk_name);
+            } else {
+                $move_ok = @rename($file_att['disk_name'], $disk_name);
+            }
+            if (!$move_ok) {
                 log_error("Failed moving attachment to final storage ".
                     "(from {$file_att['disk_name']} to $disk_name)");
             }
-            if (!chmod($disk_name)) {
+            if (!chmod($disk_name, 0640)) {
                 log_error("Failed setting attachment permissions ".
                     "(target $disk_name)");
             }
