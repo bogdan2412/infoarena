@@ -87,28 +87,41 @@ function diff_string($string) {
 }
 
 // compute longest common subsequence using dynamic programming
-// FIXME: both time and memory complexity can be reduced
 function lcs($a, $b) {
-    $N = mb_strlen($a);
-    $M = mb_strlen($b);
-    $C = array(array(2), array($M+1));
+    $descriptorspec = array(
+        0 => array("pipe", "r"),
+        1 => array("pipe", "w"),
+        2 => array("pipe", "w"),
+    );
 
-    for ($i = 0; $i < 2; ++$i)
-        for ($j = 0; $j <= $M; ++$j)
-            $C[$i][$j] = "";
-    
-    for ($i = 1; $i <= $N; ++$i) {
-        for ($j = 1; $j <= $M; ++$j) {
-            if (mb_substr($a, $i-1, 1) == mb_substr($b, $j-1, 1)) {
-                $C[$i%2][$j] = $C[($i-1)%2][$j-1].mb_substr($a, $i-1, 1);
-            } else if (mb_strlen($C[($i-1)%2][$j]) > mb_strlen($C[$i%2][$j-1])) {
-                $C[$i%2][$j] = $C[($i-1)%2][$j];
-            } else {
-                $C[$i%2][$j] = $C[$i%2][$j-1];
-            }
-        }
+    // run lcs process
+    $process = proc_open("iconv -f utf8 -t utf32 | " . IA_ROOT_DIR.
+        "/common/lcs" . " | iconv -f utf32 -t utf8", $descriptorspec, $pipes);
+    log_assert(is_resource($process), "Could not create process.");
+
+    // feed script to pipe
+    list($lcs_in, $lcs_out, $lcs_err) = $pipes;
+
+    fwrite($lcs_in, $a."\n");
+    fwrite($lcs_in, $b."\n");
+    fclose($lcs_in);
+
+    $result = fread($lcs_out, 10000);
+    fclose($lcs_out);
+
+    // check for errors
+    $errors = fread($lcs_err, 1000);
+    if ($errors) {
+        log_error($errors);
     }
-    return $C[$N%2][$M];
+    fclose($lcs_err);
+
+    // clean-up
+    proc_close($process);
+
+    $result = trim($result, "\n");
+
+    return $result;
 }
 
 function split_string($string, $substring, $op_name) {
