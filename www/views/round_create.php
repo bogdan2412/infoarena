@@ -4,7 +4,7 @@
 $form_fields = array(
        'id' => array(
                 'name' => 'Id-ul rundei',
-                'description' => 'Identificator unic si permanent.',
+                'description' => 'Identificator unic si permanent. Identificatorul poate fi alcatuit doar din litere mici ale alfabetului, cifre si caracterele punct (.), underscore (_), minus (-).',
                 'type' => 'string',
                 'default' => '',
         ),

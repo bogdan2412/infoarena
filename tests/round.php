@@ -26,7 +26,7 @@ $res = curl_test(array(
           'id' => 'tEst_Round',
           'type' => 'user-defined',
 )));
-log_assert_equal($res['url'], url_absolute(url_round_edit('tEst_Round')));
+log_assert_equal($res['url'], url_absolute(url_round_edit('test_round')));
 
 
 log_print("Helper1 tries to create a new round, fails");
@@ -64,7 +64,7 @@ $res = curl_test(array(
                 'id' => 'tEst_Round',
 )));
 log_assert_equal($res['url'], url_absolute(url_round_create()));
-log_assert(strstr($res['content'], 'tEst_Round'));
+log_assert(strstr($res['content'], 'test_round'));
 
 log_print("Admin changes round to classic.");
 $res = curl_test(array(
@@ -183,9 +183,12 @@ log_assert(strstr($res['content'], '<a href="'.
 
 
 // Yuck
-log_print("Waiting for 5 seconds...");
-usleep(5 * 1000000);
-
+$wait = 4;
+if (IA_MEM_CACHE_METHOD != "none") {
+    $wait += IA_MEM_CACHE_ROUND_EXPIRATION;
+}
+log_print("Waiting for $wait seconds...");
+usleep($wait * 1000000);
 
 log_print("Anon looks at round page, sees that round started");
 $res = curl_test(array(
@@ -206,7 +209,7 @@ log_assert(strstr($res['content'], '<a href="'.
 
 
 log_print("Basic round passed");
-//test_cleanup();
+test_cleanup();
 
 
 ?>

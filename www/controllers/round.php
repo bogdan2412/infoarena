@@ -203,7 +203,7 @@ function controller_round_create()
     $errors = array();
 
     // Get form values
-    $values['id'] = request('id', '');
+    $values['id'] = strtolower(request('id', ''));
     // FIXME: type hidden
     $values['type'] = request('type', 'user-defined');
 
