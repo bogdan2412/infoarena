@@ -91,7 +91,7 @@ function temp_dir() {
 }
 
 function backup_timestamp() {
-    return date("YmdGi");
+    return date("Ymd");
 }
 
 function remove_old_files($dir, $keep_newest = 10) {

@@ -21,26 +21,20 @@ function exec_rsync($source_dir, $target_dir) {
     system($cmd);
 }
 
-/*
-// Not needed anymore because cp -alr seems to work fine.
-function archive_attachments() {
-    log_print("Archiving attachments");
-    $archive_file = sprintf("%s/archive/attach/attach-%s.tar.gz",
-            IA_BACKUP_REPO_DIR, backup_timestamp());
-    system(sprintf("tar czf %s %s/attach-live/ar*", $archive_file,
-            IA_BACKUP_REPO_DIR));
-}
-*/
-
 function sync_attachments() {
+    $new_snapshot = backup_timestamp();
+    if (!is_dir(IA_BACKUP_REPO_DIR."/attach")) {
+        mkdir(IA_BACKUP_REPO_DIR."/attach");
+    }
     $last_snapshot = exec(sprintf("ls -tr1 '%s'",
             IA_BACKUP_REPO_DIR."/attach"));
-    $new_snapshot = backup_timestamp();
-    log_print("Duplicating last snapshot with hard links "
-            ."($last_snapshot -> $new_snapshot)");
-    system(sprintf("cp -alr %s %s",
-            IA_BACKUP_REPO_DIR."/attach/".$last_snapshot,
-            IA_BACKUP_REPO_DIR."/attach/".$new_snapshot));
+    if ($last_snapshot && $last_snapshot != $new_snapshot) {
+        log_print("Duplicating last snapshot with hard links "
+                ."($last_snapshot -> $new_snapshot)");
+        system(sprintf("cp -alr %s %s",
+                IA_BACKUP_REPO_DIR."/attach/".$last_snapshot,
+                IA_BACKUP_REPO_DIR."/attach/".$new_snapshot));
+    }
     log_print("Syncing last snapshot");
     exec_rsync('attach-live/', "attach/$new_snapshot/");
 }

@@ -18,7 +18,7 @@ $BACKUP_PATHS_WEEKLY = array(
 function backup_init_dirs() {
     log_assert(is_dir(IA_BACKUP_DIR), "Invalid directory: ".IA_BACKUP_DIR);
     log_assert(is_dir(IA_LIVE_DIR), "Invalid directory: ".IA_LIVE_DIR);
-    system(sprintf("mkdir -p %s/{db,conf,hackers,attach}", IA_BACKUP_DIR));
+    system(sprintf("mkdir -p %s/{db,conf,hackers}", IA_BACKUP_DIR));
     system(sprintf("mkdir -p %s/hackers/{svn,trac,reviewboard}", IA_BACKUP_DIR));
     system(sprintf("chown -R %s:%s %s/*", IA_BACKUP_USER, IA_BACKUP_USER,
             IA_BACKUP_DIR));
