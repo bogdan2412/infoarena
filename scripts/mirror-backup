@@ -7,26 +7,31 @@ $home_dir = exec('echo $HOME');
 define("IA_BACKUP_REPO_DIR", "$home_dir/backup/infoarena");
 define("IA_BACKUP_SSL_CERT", "$home_dir/.ssh/ia-backup");
 
+function week_timestamp() {
+    return date("YW");
+}
+
 function check_env() {
     log_assert(is_dir(IA_BACKUP_REPO_DIR));
     log_assert(file_exists(IA_BACKUP_SSL_CERT));
     log_assert(exec('which rsync'), "Please install rsync");
 }
 
-function exec_rsync($source_dir, $target_dir) {
+function exec_rsync($source_dir, $target_dir, $delete_extraneous=false) {
     log_print("rsync $source_dir -> $target_dir");
-    $cmd = sprintf("rsync -avC --delete --rsh='ssh -p 21883 -i %s' "
+    $delete_arg = $delete_extraneous ? '--delete' : '';
+    $cmd = sprintf("rsync -avC {$delete_arg} --rsh='ssh -p 21883 -i %s' "
             ."backup@infoarena.ro:%s %s/%s", IA_BACKUP_SSL_CERT, $source_dir,
             IA_BACKUP_REPO_DIR, $target_dir);
     system($cmd);
 }
 
 function sync_attachments() {
-    $new_snapshot = backup_timestamp();
+    $new_snapshot = week_timestamp();
     if (!is_dir(IA_BACKUP_REPO_DIR."/attach")) {
         mkdir(IA_BACKUP_REPO_DIR."/attach");
     }
-    $last_snapshot = exec(sprintf("ls -tr1 '%s'",
+    $last_snapshot = exec(sprintf("ls -1 '%s'",
             IA_BACKUP_REPO_DIR."/attach"));
     if ($last_snapshot && $last_snapshot != $new_snapshot) {
         log_print("Duplicating last snapshot with hard links "
@@ -36,7 +41,7 @@ function sync_attachments() {
                 IA_BACKUP_REPO_DIR."/attach/".$new_snapshot));
     }
     log_print("Syncing last snapshot");
-    exec_rsync('attach-live/', "attach/$new_snapshot/");
+    exec_rsync('attach-live/', "attach/$new_snapshot/", true);
 }
 
 function main() {
