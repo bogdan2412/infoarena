@@ -152,6 +152,15 @@ else if ($action == 'delete') {
     require_once(IA_ROOT_DIR.'www/controllers/textblock.php');
     controller_textblock_delete($page);
 }
+// - delete textblock revision
+else if ($action == 'delete-revision') {
+    require_once(IA_ROOT_DIR.'www/controllers/textblock.php');
+
+    $rev = request('revision');
+    $rev_cnt = request('revision_count');
+    controller_textblock_delete_revision($page, $rev, $rev_cnt);
+}
+
 //  - view textblock history
 else if ($action == 'history') {
     require_once(IA_ROOT_DIR.'www/controllers/textblock.php');

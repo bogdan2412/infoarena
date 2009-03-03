@@ -36,12 +36,13 @@ function format_operations($row) {
     $delurl = url_textblock_delete_revision($page_name, $row['revision_id']);
     $viewurl = url_textblock_revision($page_name, $row['revision_id']);
     if ($row['revision_id'] == $total_entries) {
-        return '<strong>Ultima versiune</strong>';
+        $ret = '<strong>Ultima versiune</strong> ['. format_post_link($delurl, "Sterge") .']';
+        return $ret;
     } else {
-        return  '['. format_link($diffurl, "Compara cu ultima revizie") .'] '.
+        return '['. format_link($diffurl, "Compara cu ultima revizie") .'] '.
                 '['. format_post_link($resturl, "Inlocuieste") .'] '.
-                '['. format_link($viewurl, "Vezi") .'] '/*.
-                '['. format_link($delurl, "Sterge") .']'*/;
+                '['. format_link($viewurl, "Vezi") .'] '.
+                '['. format_post_link($delurl, "Sterge") .']';
     }
 }
 

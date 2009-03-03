@@ -130,6 +130,7 @@ function security_simplify_action($action) {
         case 'task-delete':
         case 'round-delete':
         case 'textblock-delete':
+        case 'textblock-delete-revision':
         case 'grader-overwrite':
         case 'grader-delete':
         case 'grader-rename':

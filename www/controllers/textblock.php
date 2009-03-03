@@ -208,10 +208,51 @@ function controller_textblock_delete($page_name) {
     } else {
         // Missing page.
         flash_error("Pagina inexistenta.");
+        redirect(url_home);
     }
     textblock_delete($page_name);
     flash("Pagina a fost stearsa.");
     redirect(url_home());
+}
+
+// Delete a certain revision
+function controller_textblock_delete_revision($page = null, $rev_num = null) {
+    if (!request_is_post()) {
+        flash_error("Pagina nu a putut fi stearsa");
+        redirect(url_textblock($page));
+    }
+
+    if ($page == null) {
+        flash_error("Nu a fost specificata pagina");
+        redirect(url_home());
+    }
+    if ($rev_num == null) {
+        flash_error("Nu a fost specificat numarul reviziei");
+        redirect(url_home());
+    }
+
+    $total_revs = textblock_get_revision_count($page);
+    if ($rev_num > $total_revs) {
+        flash_error("Nu exista revizia");
+        redirect(url_home());
+    }
+
+    if ($total_revs == 1) {
+        textblock_delete($page);
+    }
+
+    $revision = textblock_get_revision($page, $rev_num == $total_revs ? null : $rev_num);
+    if ($revision) {
+        identity_require('textblock-delete-revision', $revision);
+    } else {
+        flash_error("Revizie inexistenta");
+        redirect(url_home());
+    }
+
+    textblock_delete_revision($revision, $rev_num == $total_revs);
+
+    flash("Revizia a fost stearsa");
+    redirect(url_textblock_history($page));
 }
 
 ?>

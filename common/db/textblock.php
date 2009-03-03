@@ -71,6 +71,34 @@ function textblock_add_revision(
     return db_query($query);
 }
 
+// Delete $revision from database
+// The revision is identified by name and timestamp
+// $curr is true if $revision is the current revision and false otherwise
+function textblock_delete_revision($revision, $curr)
+{
+    if ($curr == false) {
+        $name = $revision['name'];
+        $timestamp = $revision['timestamp'];
+        $query = "DELETE FROM `ia_textblock_revision`
+            WHERE `name` = ".db_quote($name)." &&
+                `timestamp` = ".db_quote($timestamp);
+        db_query($query);
+    } else {
+        $name = $revision['name'];
+        $query = "REPLACE INTO `ia_textblock`
+                    (SELECT * FROM `ia_textblock_revision`
+                    WHERE `name` = ".db_quote($name)."
+                    ORDER BY `timestamp` DESC LIMIT 1)";
+        db_query($query);
+
+        //delete last_rev from ia_textblock_revision
+        $query = "DELETE FROM `ia_textblock_revision`
+                WHERE `name` = ".db_quote($name)."
+                ORDER BY `timestamp` DESC LIMIT 1";
+        db_query($query);
+    }
+}
+
 // This is the function called by most query functions.
 function textblock_complex_query($options)
 {

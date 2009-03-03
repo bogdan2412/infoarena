@@ -128,7 +128,7 @@ function url_textblock_restore($page_name, $rev) {
 function url_textblock_delete_revision($page_name, $rev) {
     return url_complex($page_name, array(
             'action' => 'delete-revision',
-            'revision' => $rev,
+            'revision' => $rev
     ));
 }
 

@@ -17,4 +17,10 @@
         echo "Revizia urmatoare";
     }
     ?>
+    &nbsp;
+    <?php
+    if (identity_can('textblock-delete-revision', $view['textblock'])) {
+        echo format_post_link(url_textblock_delete_revision($view['page_name'], $view['revision']), "Sterge");
+    }
+    ?>
 </div>
