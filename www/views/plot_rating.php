@@ -1,121 +1,104 @@
 <?php
 
-require_once(IA_ROOT_DIR."www/format/format.php");
+require_once(IA_ROOT_DIR."www/php-ofc-library/open-flash-chart.php");
 
-// date range
+// get data ranges
 if (2 <= count($history)) {
     $keys = array_keys($history);
-    $range_start = $history[$keys[0]]['timestamp'];
-    $range_end = $history[$keys[count($history)-1]]['timestamp'];
+
+    $range_start = floor($history[$keys[0]]['timestamp'] / (24 * 3600));
+    $range_start -= (int)date('d', $history[$keys[0]]['timestamp']) - 1;
+    $range_end = floor($history[$keys[count($history) - 1]]['timestamp'] / (24 * 3600));
+
     $rating_start = $history[$keys[0]]['rating'];
     $rating_end = $rating_start;
     foreach ($history as $round_id => $round) {
         $rating_start = min($rating_start, $round['rating']);
         $rating_end = max($rating_end, $round['rating']);
     }
-    $rating_start = rating_scale($rating_start)-50;
-    $rating_end = rating_scale($rating_end)+50;
-}
-else {
+    $rating_start = rating_scale($rating_start) - 50;
+    $rating_start -= $rating_start % 50;
+    $peak_point = rating_scale($rating_end);
+    $rating_end = $peak_point + 50;
+} else {
     // 2004-01-01
-    $range_start = mktime(1, 0, 0, 1, 1, 2004);
-    $range_end = time();
-    $rating_start = 0; $rating_end = 1000;
+    $range_start = floor(mktime(1, 0, 0, 1, 1, 2004) / (24 * 3600));
+    $range_end = floor(time() / (24 * 3600));
+    $rating_start = 0;
+    $rating_end = $peak_point = 1000;
 }
-// compute months between date range to show as xtics
-list($dy, $dm, $dd) = split('-', date('Y-m-d', $range_end));
-$i = 0;
-$xtics = array();
-$scale = ceil(($range_end-$range_start)/(30*24*3600)/12);
-while (true) {
-    $dx = mktime(1, 0, 0, $dm - $i, $dd, $dy); 
-    $xtics[] = date('Y-m-d', $dx);
-    if ($dx < $range_start) {
-        break;
+
+// create the rating chart
+$chart = new open_flash_chart();
+
+$chart->set_bg_colour("#ffffff");
+
+$title = new title("Evolutia ratingului pentru " . $user['username']);
+$chart->set_title($title);
+
+// adjust axises and labels
+$x = new x_axis();
+$x->set_colour("#aaaaaa");
+$x->set_grid_colour("#aaaaaa");
+$x->set_range($range_start, $range_end);
+$x->set_steps(122);
+
+$labels = array();
+for ($p = $range_start; $p <= $range_end; ++$p) {
+    $labels[] = date("d-m-Y", $p * 24 * 3600);
+}
+
+$x_axis_labels = new x_axis_labels();
+$x_axis_labels->set_labels($labels);
+$x_axis_labels->set_vertical();
+$x_axis_labels->set_steps(122);
+
+$x->set_labels($x_axis_labels);
+$chart->set_x_axis($x);
+
+$y = new y_axis();
+$y->set_colour("#aaaaaa");
+$y->set_grid_colour("#aaaaaa");
+$y->set_range($rating_start, $rating_end);
+$y->set_steps(50);
+$chart->set_y_axis($y);
+
+// generate the rating chart
+$data = array();
+
+$p = $range_start;
+foreach ($history as $round_id => $round) {
+    $current_x = floor($round['timestamp'] / (24 * 3600));
+    for (; $p < $current_x; ++$p) {
+        $data[] = null;
     }
-    $i += $scale;
-}
-$xtics = array_reverse($xtics);
 
-// format date ranges for gnuplot
-$range_start = date('Y-m-d', $range_start - 15*24*3600);
-$range_end = date('Y-m-d', $range_end + 15*24*3600);
+    $current_y = rating_scale($round['rating']);
+    if ($current_y < 520) {
+        $colour = "#00a900";
+    } elseif ($current_y < 600) {
+        $colour = "#ddcc00";
+    } else {
+        $colour = "#ee0000";
+    }
+    $dot = new dot_value($current_y, $colour);
+    if ($current_y == $peak_point) {
+        $dot->set_tooltip("Max: #val#<br>" . $round['round_title']);
+    } else {
+        $dot->set_tooltip("#val#<br>" . $round['round_title']);
+    }
 
-// gnuplot script
-$script = "
-set terminal postscript noenhanced
-set locale \"ro_RO.UTF-8\"
-set xdata time
-set timefmt \"%Y-%m-%d\"
-set format x \"%b %y\"
-set grid
-
-set rmargin 5
-set lmargin 5
-set tmargin 12
-set bmargin 2
-set xtics nomirror
-set ytics nomirror
-
-set title \"Evolutie rating pentru {$user['username']} (".IA_URL.")\" 0,-.5
-
-set style line 1 lt 1 lw 4 pt 3 ps 0.5
-set style line 2 lt 3 lw 3 pt 7 ps 1.0
-set style line 3 lt 11 lw 3
-set xrange [\"{$range_start}\":\"{$range_end}\"]
-set yrange [{$rating_start}:{$rating_end}]
-
-set xtics ('".join("', '", $xtics)."')
-set xtic rotate by -20
-
-set clip
-";
-
-// display round_id labels
-$i = 1;
-$scale = ceil(($rating_end-$rating_start)/20);
-foreach ($history as $round_id => $round) {
-    $date = date("Y-m-d", $round['timestamp']);
-    $rating = rating_scale($round['rating']) + ($i % 2 ? $scale : -$scale);
-    $align = "right";
-    $script .= "set label {$i} \"{$i}\" at \"{$date}\",{$rating} {$align} font \"Helvetica,19\" back tc lt 9\n";
-    $i++;
+    $data[] = $dot;
+    ++$p;
 }
 
-// legend
-$script .= "
-set key right bottom box 3
-set key width -1.5
-";
+$line_dot = new line_dot();
+$line_dot->set_dot_size(4);
+$line_dot->set_halo_size(1);
+$line_dot->set_values($data);
+$chart->add_element($line_dot);
 
-if (1 <= count($history)) {
-    // plot ratings, deviations & median
-    $script .= "
-plot \\
-    \"%data%\" using 1:2 title \"Rating\" with lines ls 1, \\
-    \"%data%\" using 1:2 notitle with points ls 2
-";
-}
-else {
-    // when nothing to plot, use a bogus (non-visible) function plot so that
-    // gnuplot doesn't fail
-    $script .= "
-set label \"(date insuficiente pentru a desena graficul)\" at graph 0.5,0.5 center
-plot 0 notitle with lines ls 1
-";
-}
-
-// plot data
-// #date #rating #deviation
-$data = '';
-foreach ($history as $round_id => $round) {
-    $timestamp = (int)$round['timestamp'];
-    $data .= date("Y-m-d", $timestamp)
-             ." ".rating_scale($round['rating'])." "
-             .rating_scale($round['deviation'])."\n";
-}
-
-// render PNG
-include(IA_ROOT_DIR.'www/views/gnuplot.php');
+// output data
+echo $chart->toString();
 
 ?>

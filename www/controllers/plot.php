@@ -3,8 +3,8 @@
 require_once(IA_ROOT_DIR."common/db/user.php");
 require_once(IA_ROOT_DIR."common/db/score.php");
 
-// This controller serves real time plots (graphs) rendered
-// with gnuplot.
+// This controller serves real time data for plots (graphs) rendered
+// with Open Flash Chart.
 function controller_plot($suburl) {
     switch ($suburl) {
         case 'rating':
@@ -26,7 +26,7 @@ function controller_plot($suburl) {
                 'user' => $user,
             );
 
-            // output gnuplot
+            // output data for Open Flash Chart
             execute_view_die('views/plot_rating.php', $view);
 
         case 'distribution':
@@ -46,7 +46,7 @@ function controller_plot($suburl) {
             //
             // Note: This bucket size is relative to the absolute ratings
             // ranging from ~1000 to ~2500
-            $bucket_size = 20;
+            $bucket_size = 60;
             $distribution = rating_distribution($bucket_size);
 
             // view
@@ -56,8 +56,9 @@ function controller_plot($suburl) {
                 'user' => $user,
             );
 
-            // output gnuplot
+            // output data for Open Flash Chart
             execute_view_die('views/plot_distribution.php', $view);
+
         default:
             flash('Actiunea nu este valida.');
             redirect(url_home());

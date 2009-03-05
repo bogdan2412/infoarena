@@ -1,78 +1,103 @@
 <?php
 
-require_once(IA_ROOT_DIR."www/format/format.php");
+require_once(IA_ROOT_DIR."www/php-ofc-library/open-flash-chart.php");
 
-if ($user) {
-    $user_rating = $user['rating_cache'];
-    if ($user_rating) {
-        $user_rating = rating_scale($user_rating);
-    }
-}
-else {
-    $user_rating = null;
-}
+// create the rating chart
+$chart = new open_flash_chart();
 
-// gnuplot script
-$script = "
-set terminal postscript noenhanced
-set grid
+$chart->set_bg_colour("#ffffff");
 
-set rmargin 2
-set lmargin 5
-set tmargin 15
-set bmargin 2
-set xtics nomirror
-set ytics nomirror
+$title = new title("Distributia ratingului");
+$chart->set_title($title);
 
-set title \"Distributie rating (".IA_URL.")\" 0,-.5
+// adjust axises and labels
+$x = new x_axis();
+$x->set_colour("#aaaaaa");
+$x->set_grid_colour("#ffffff");
 
-set style line 1 lt 1 lw 4 pt 3 ps 0.5
-set style line 2 lt 3 lw 6 pt 7 ps 1.0
-set style line 3 lt 11 lw 6
-set xrange [350:1130]
-set yrange [0:250]
-
-set xtics 100
-set xtic rotate by -20
-
-";
-
-// legend
-$script .= "
-set key right top box 3
-set key width -1.5
-";
-
-// draw user rating as a parametric curve with constant x
-if ($user && $user_rating) {
-    $script .= "
-set parametric
-const={$user_rating}
-set trange [0:250]
-";
+$first_element = array_slice($distribution, 0, 1, TRUE);
+foreach ($first_element as $first_bucket => $count) {
+    $p = $first_bucket;
 }
 
-// plot distribution & median
-$script .= "
-plot \\
-    \"%data%\" using 1:2 title \"Concurenti\" with impulses ls 3, \\
-    \"%data%\" using 1:2 smooth csplines title \"Aproximare\" with lines ls 1";
-
-// plot user
-if ($user && $user_rating) {
-    $script .= ", \\
-    const,t title \"{$user['username']} ({$user_rating})\" with lines ls 2
-";
-}
-
-// plot data
-// #rating bucket #count
-$data = '';
+$labels = array();
 foreach ($distribution as $bucket => $count) {
-    $scaled = rating_scale($bucket*$bucket_size);
-    $data .= $scaled." ".$count."\n";
+    for (; $p < $bucket; ++$p) {
+        $current_rating = rating_scale($p * $bucket_size);
+        $current_label = $current_rating . " - " . ($current_rating + rating_scale($bucket_size) - 1);
+        $labels[] = $current_label;
+    }
+
+    $current_rating = rating_scale($bucket * $bucket_size);
+    $current_label = $current_rating . " - " . ($current_rating + rating_scale($bucket_size) - 1);
+    $labels[] = $current_label;
+
+    ++$p;
+}
+$x_axis_labels = new x_axis_labels();
+$x_axis_labels->set_vertical();
+$x_axis_labels->set_labels($labels);
+$x->set_labels($x_axis_labels);
+
+$chart->set_x_axis($x);
+
+$y = new y_axis();
+$y->set_colour("#aaaaaa");
+$y->set_grid_colour("#aaaaaa");
+$y->set_range(0, max($distribution) * 1.15);
+$y->set_steps(50);
+$chart->set_y_axis($y);
+
+// generate the rating chart
+$bar = new bar_filled();
+
+foreach ($first_element as $first_bucket => $count) {
+    $p = $first_bucket;
+}
+foreach ($distribution as $bucket => $count) {
+    for (; $p < $bucket; ++$p) {
+        $bar_value = new bar_value(0);
+        $current_rating = rating_scale($p * $bucket_size);
+        $bar_value->set_tooltip("Rating: " . $current_rating . " - " .
+            ($current_rating + rating_scale($bucket_size) - 1)
+            . "<br>0 concurenti");
+        $bar->append_value($bar_value);
+    }
+
+    $bar_value = new bar_value($count);
+    $current_rating = rating_scale($bucket * $bucket_size);
+    $bar_value->set_tooltip("Rating: " . $current_rating . " - " .
+        ($current_rating + rating_scale($bucket_size) - 1)
+        . "<br>" . $count . ($count == 1 ? " concurent" : " concurenti"));
+
+    if (rating_scale($bucket * $bucket_size) < 520) {
+        $bar_value->set_colour("#00a900");
+    } elseif (rating_scale($bucket * $bucket_size) < 600) {
+        $bar_value->set_colour("#ddcc00");
+    } else {
+        $bar_value->set_colour("ee0000");
+    }
+
+    $bar->append_value($bar_value);
+    ++$p;
 }
 
-// render PNG
-include(IA_ROOT_DIR.'www/views/gnuplot.php');
+$chart->add_element($bar);
+
+// mark the rating of the current user
+$user_rating = rating_scale(getattr($user, 'rating_cache', 0));
+foreach ($first_element as $first_bucket => $count) {
+    $x_coord = ($user_rating - rating_scale($first_bucket * $bucket_size + $bucket_size / 2.)) / rating_scale($bucket_size);
+}
+
+$shape = new shape("#0000ff");
+$shape->append_value(new shape_point($x_coord - 0.05, 0));
+$shape->append_value(new shape_point($x_coord + 0.05, 0));
+$shape->append_value(new shape_point($x_coord + 0.05, max($distribution) * 1.15));
+$shape->append_value(new shape_point($x_coord - 0.05, max($distribution) * 1.15));
+$chart->add_element($shape);
+
+// output data
+echo $chart->toString();
+
 ?>

@@ -64,6 +64,14 @@ header("Content-type: text/html; charset=utf-8");
     <script type="text/javascript" src="<?= html_escape(url_static('js/sh/shBrushJava.js')) ?>"></script>
     <script type="text/javascript" src="<?= html_escape(url_static('js/sh/shBrushPython.js')) ?>"></script>
     <script type="text/javascript" src="<?= html_escape(url_static('js/sh/shInit.js')) ?>"></script>
+<?php
+    $action = getattr($_GET, 'action');
+    if ($action == 'rating') {
+?>
+    <script type="text/javascript" src="<?= html_escape(url_static('js/swfobject.js')) ?>"></script>
+<?php
+    }
+?>
 
     <?= getattr($view, 'head') ?>
 </head>
