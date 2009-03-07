@@ -244,6 +244,21 @@ function ssi_logout($redirect_to = '', $output_method = 'echo')
 	echo '<a href="', $scripturl, '?action=logout;sesc=', $sc, '">', $txt[108], '</a>';
 }
 
+function ssi_displayPaging($count_comm, $begin_comm, $max_comm, $display)
+{
+    if($count_comm > $max_comm) {
+        echo '<b>Mergi la pagina:</b> ';
+        for ($i = 1; $i <= $count_comm; $i += $max_comm) {
+            if ($i != $begin_comm) {
+                echo '<a href="javascript:stay()" onclick="RemoteBox_Comments('. $i .', '. $max_comm .', true, \''. $display .'\');">
+                    ['. (int)(($i + $max_comm - 1) / $max_comm) . ']</a> ';
+            } else {
+                echo '<b>[' . (int)(($i + $max_comm - 1)/ $max_comm) . ']</b> ';
+            }
+        }
+    }
+}
+
 // Display an entire SMF topic as a comment thread.
 function ssi_commentThread($topicID, $display, $begin_comm, $max_comm = 10, $output_method = 'echo')
 {
@@ -325,8 +340,9 @@ function ssi_commentThread($topicID, $display, $begin_comm, $max_comm = 10, $out
     echo '
         <div class="comments">';
 
+    $remotebox_display = ($display == 'show' ? 'hide' : 'show');
     echo '
-        <a href="javascript:stay()" onclick="RemoteBox_Display = (RemoteBox_Display == \'show\' ? \'hide\' : \'show\'); RemoteBox_Load();"><h3>&#187; ';
+        <a href="javascript:stay()" onclick="RemoteBox_Comments('. $begin_comm .', '. $max_comm .', false, \''. $remotebox_display .'\');"><h3>&#187; ';
 
     if (0 == $count_comm){
         echo 'Niciun comentariu inca...';
@@ -342,17 +358,8 @@ function ssi_commentThread($topicID, $display, $begin_comm, $max_comm = 10, $out
 
     if($display == 'show') {
 
-        // Pagination
-        if($count_comm > $max_comm) {
-            echo '<b>Mergi la pagina:</b> ';
-            for ($i = 1; $i <= $count_comm; $i += $max_comm) {
-                if ($i != $begin_comm) {
-                    echo '<a href="javascript:stay()" onclick="RemoteBox_BeginComm=' . $i . ';RemoteBox_Load();">[' . (int)(($i + $max_comm - 1) / $max_comm) . ']</a> ';
-                } else {
-                    echo '<b>[' . (int)(($i + $max_comm - 1)/ $max_comm) . ']</b> ';
-                }
-            }
-        }
+        // Front paging display
+        ssi_displayPaging($count_comm, $begin_comm, $max_comm, $display);
 
         foreach ($posts as $post)
             echo '
@@ -368,6 +375,10 @@ function ssi_commentThread($topicID, $display, $begin_comm, $max_comm = 10, $out
                         ', $post['preview'], '
                     </div>
                 </div>';
+
+        // Back paging display
+        echo '<br>';
+        ssi_displayPaging($count_comm, $begin_comm, $max_comm, $display);
     }
 
     $new_post_url = $scripturl.'?action=post;topic='.$topicID;

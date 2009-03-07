@@ -22,10 +22,9 @@ function macro_smftopic($args) {
         return macro_error('Invalid `count` argument');
     }
 
-    $args = array(
-        'url' => IA_SMF_URL.'/ia_recentposts.php?topic_id='.$topic_id.'&count='.$count
-    );
-    return macro_remotebox($args, true);
+    $url = IA_SMF_URL.'/ia_recentposts.php?topic_id='.$topic_id.'&count='.$count;
+
+    return macro_remotebox($url, true);
 }
 
 ?>

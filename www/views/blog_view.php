@@ -34,11 +34,10 @@ echo '<br/>';
 echo 'Creat la '.html_escape($first_textblock['creation_timestamp']).' de '.format_user_link($first_textblock["user_name"], $first_textblock["user_fullname"]);
 echo '</div>';
 // blog comments
-echo '<div id="comentarii">';
 if (getattr($view, 'forum_topic')) {
     echo macro_smfcomments(array('topic_id' => $view['forum_topic'], 'display' => 'show'));
 }
-echo '</div></div>';
+echo '</div>';
 echo '</div>';
 
 // site footer

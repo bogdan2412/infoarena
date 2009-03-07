@@ -14,6 +14,8 @@ require_once(IA_ROOT_DIR.'www/macros/macro_remotebox.php');
 //      SmfComments( topic_id="400" display="show" )
 //      SmfComments( topic_id="400" display="hide" max_comm="5")
 function macro_smfcomments($args) {
+    $comments = '<div id="comentarii">';
+
     $topic_id = getattr($args, 'topic_id');
     $display = getattr($args, 'display');
     $max_comm = getattr($args, 'max_comm');
@@ -30,19 +32,21 @@ function macro_smfcomments($args) {
         return macro_error('Wrong value for argument `display`');
     }
 
-    $args = array(
-        'url' => IA_SMF_URL.'/ia_comments.php?topic_id='.$topic_id,
-        'display' => $display
-    );
     if(!is_null($max_comm)) {
-        if(is_whole_number($max_comm)) {
-            $args['max_comm'] = $max_comm;
-        } else {
+        if(!is_whole_number($max_comm)) {
             return macro_error('Wrong value for argument `max_comm`');
         }
     }
 
-    return macro_remotebox($args, true);
+    $url = IA_SMF_URL . '/ia_comments.php?topic_id=' . $topic_id . '&display=' . $display;
+    if (!is_null($max_comm)) {
+        $url .= '&max_comm=' . $max_comm;
+    }
+
+    $comments .= macro_remotebox($url, true);
+    $comments .= '</div>';
+
+    return $comments;
 }
 
 ?>

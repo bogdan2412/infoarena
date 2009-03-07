@@ -19,12 +19,10 @@ echo wiki_process_textblock($textblock);
 echo '</div>';
 
 // page comments
-echo '<div id="comentarii">';
 if (getattr($view, 'forum_topic')) {
     require_once(IA_ROOT_DIR.'www/macros/macro_smfcomments.php');
     echo macro_smfcomments(array('topic_id' => $view['forum_topic'], 'display' => 'hide'));
 }
-echo '</div>';
 
 // site footer
 include('footer.php');

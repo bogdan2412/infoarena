@@ -6,7 +6,7 @@ require("./SSI.php");
 
 $topic_id = getattr($_GET, 'topic_id');
 $display = getattr($_GET, 'display', 'hide');
-$begin_comm = (int)getattr($_GET, 'begin_comm', '0');
+$begin_comm = (int)getattr($_GET, 'begin_comm', '1');
 $max_comm = getattr($_GET, 'max_comm');
 
 if (!$topic_id) {
