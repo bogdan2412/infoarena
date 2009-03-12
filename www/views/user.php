@@ -1,5 +1,4 @@
 <?php
-
 require_once(IA_ROOT_DIR.'www/wiki/wiki.php');
 require_once(IA_ROOT_DIR.'www/format/format.php');
 require_once(IA_ROOT_DIR.'www/format/list.php');
@@ -21,10 +20,6 @@ $options = array(
     'stats' => format_link(url_user_stats($username), 'Statistici'),
 );
 // mark selected action with class 'active'
-if($action == "") {
-    $action = 'view';
-}
-
 $options[$action] = array($options[$action], array('class' => 'active'));
 echo format_ul($options, 'htabs');
 
