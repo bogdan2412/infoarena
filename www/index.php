@@ -222,7 +222,11 @@ else if ($action == 'download') {
 }
 else if ($action == 'download-zip') {
     require_once(IA_ROOT_DIR.'www/controllers/attachment.php');
-    controller_attachment_downloadZip($page, request_args());
+    if(request('download')) {
+        controller_attachment_download_zip($page, request_args());
+    } else if(request('delete')) {
+        controller_attachment_delete_many($page, request_args());
+    }
 }
 
 // reset password

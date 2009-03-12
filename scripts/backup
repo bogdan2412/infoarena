@@ -3,88 +3,22 @@
 
 require_once(dirname($argv[0]) . "/utilities.php");
 
-define("IA_BACKUP_DIR", "/home/backup/ia-backup");
-define("IA_LIVE_DIR", "/home/infoarena");
-define("IA_BACKUP_USER", "backup");
-// Passphrase file to use with GPG, leave blank to disable encryption.
-define("IA_BACKUP_DB_ENCRYPT_KEY", "/root/.backup-passphrase");
+db_connect();
 
-$BACKUP_PATHS_WEEKLY = array(
-    "conf/conf-" => array(IA_LIVE_DIR."/trac.htpasswd",
-            IA_LIVE_DIR."/apache.conf", IA_ROOT_DIR."/config.php"),
-    "hackers/svn/svn-" => array(IA_LIVE_DIR."/svn"),
-    "hackers/trac/trac-" => array(IA_LIVE_DIR."/trac"),
-    "hackers/reviewboard/reviewboard-" => array("/var/www/reviewboard"),
-);
+$s = db_fetch_all("SELECT T.id, T.title, T.page_name, U.forum_topic FROM ia_task T,
+    ia_textblock U WHERE T.page_name = U.name AND T.id IN 
+    (SELECT task_id FROM ia_round_task WHERE round_id = 'arhiva')");
 
-function backup_init_dirs() {
-    log_assert(is_dir(IA_BACKUP_DIR), "Invalid directory: ".IA_BACKUP_DIR);
-    log_assert(is_dir(IA_LIVE_DIR), "Invalid directory: ".IA_LIVE_DIR);
-    system(sprintf("mkdir -p %s/{db,conf,hackers}", IA_BACKUP_DIR));
-    system(sprintf("mkdir -p %s/hackers/{svn,trac,reviewboard}", IA_BACKUP_DIR));
-    system(sprintf("chown -R %s:%s %s/*", IA_BACKUP_USER, IA_BACKUP_USER,
-            IA_BACKUP_DIR));
+foreach($s as $problem) {
+    $topic = $problem['forum_topic'];
+    $page_name = $problem['page_name'];
+    $title = $problem['title'];
+    $s1 = db_fetch("SELECT ID_MSG FROM ia_smf_messages WHERE ID_TOPIC = '$topic'");
+    $message = $s1['ID_MSG'];
+    $new_text = 'Aici puteti discuta despre problema [url=http://infoarena.ro/' . $page_name . ']' . $title . '[/url].';
+    $new_text = mysql_real_escape_string($new_text);
+    db_query("UPDATE ia_smf_messages SET body = '$new_text' WHERE ID_MSG = '$message'");
 }
-
-function backup_db() {
-    $temp_file = tempnam(temp_dir(), 'infoarena.sql.gz');
-    $backup_file = sprintf("%s/db/db-%s.sql.gz", IA_BACKUP_DIR,
-        backup_timestamp());
-    log_print("Backing up database to {$temp_file}");
-    system(sprintf("%s/scripts/db-backup %s", IA_ROOT_DIR, $temp_file));
-    if (IA_BACKUP_DB_ENCRYPT_KEY) {
-        log_assert(file_exists(IA_BACKUP_DB_ENCRYPT_KEY));
-        $backup_file .= ".gpg";
-        log_print("Encrypting database dump to {$backup_file}");
-        system(sprintf("gpg -c --passphrase-file='%s' < %s > %s",
-                IA_BACKUP_DB_ENCRYPT_KEY, $temp_file, $backup_file));
-        unlink($temp_file);
-    } else {
-        rename($temp_file, $backup_file);
-    }
-    chown($backup_file, IA_BACKUP_USER);
-    chgrp($backup_file, IA_BACKUP_USER);
-}
-
-function backup_path($target, $paths) {
-    $target_file = sprintf("%s/%s%s.tar.gz", IA_BACKUP_DIR, $target,
-        backup_timestamp());
-    $quoted_paths = "'".join("' '", $paths)."'";
-    log_print(sprintf("Creating archive %s from (%s)", $target_file,
-        $quoted_paths));
-    system(sprintf("tar -czf %s %s", $target_file, $quoted_paths));
-    chown($target_file, IA_BACKUP_USER);
-    chgrp($target_file, IA_BACKUP_USER);
-}
-
-function backup_daily() {
-    log_print("Running daily backup");
-    backup_db();
-}
-
-function backup_weekly() {
-    log_print("Running weekly backup");
-    global $BACKUP_PATHS_WEEKLY;
-    foreach ($BACKUP_PATHS_WEEKLY as $target => $paths) {
-        backup_path($target, $paths);
-    }
-}
-
-function main() {
-    global $argv;
-    backup_init_dirs();
-    if (count($argv) != 2 || !in_array($argv[1], array('daily', 'weekly'))) {
-        log_error("Expecting 1 argument: 'daily' or 'weekly'.");
-    }
-    if ('daily' == $argv[1]) {
-        backup_daily();
-    } elseif ('weekly' == $argv[1]) {
-        backup_weekly();
-    } else {
-        log_error("Invalid args");
-    }
-}
-
-main();
 
 ?>
+

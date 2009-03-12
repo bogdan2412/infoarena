@@ -49,7 +49,9 @@ function format_attach_size($row) {
 }
 
 function format_attach_zip($row) {
-    $attachurl = "<input type='checkbox' name='" . $row['id'] . "' value='" . $row['name'] . "'>";
+    $id = html_escape($row["id"]);
+    $name = html_escape($row["name"]);
+    $attachurl = "<input type='checkbox' name='$id' value='$name'>";
 
     return $attachurl;
 }
@@ -116,7 +118,7 @@ $column_infos = array(
     ),
 );
 ?>
-    <form method = 'get' action = '' target = '_blank'> 
+    <form method = 'post' action = ''> 
     <input type = 'hidden' name = 'action' value = 'download-zip'>
     <h1>Atasamente pentru pagina <?= format_link(url_textblock($view['page_name']), $view['page_name']) ?></h1>
     <?php
@@ -137,7 +139,8 @@ $column_infos = array(
     <?php
         if($view['total_entries']) {
     ?>
-    <p><input type="submit" value="Descarca ZIP" class="button"/></p>
+    <p><input type="submit" value="Descarca ZIP" class="button" name="download"/></p>
+    <p><input type="submit" value="Sterge Atasamente" class="button" name="delete" onclick = "return confirm('Aceasta actiune este ireversibila! Doresti sa continui?');"/></p>
     <?php } ?>
     </form>
 <?php include('footer.php'); ?>

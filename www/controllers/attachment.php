@@ -256,7 +256,7 @@ function controller_attachment_submit($page_name) {
 }
 
 // Delete an attachment.
-function controller_attachment_delete($page_name, $file_name) {
+function controller_attachment_delete($page_name, $file_name, $more_files = 0) {
     if (!request_is_post()) {
         flash_error("Atasamentul nu a putut fi sters!");
         redirect(url_attachment_list($page_name));
@@ -281,7 +281,28 @@ function controller_attachment_delete($page_name, $file_name) {
     }
 
     // We've got big balls.
-    flash('Fisierul '.$file_name.' a fost sters cu succes.');
+
+    if(!$more_files) {
+        flash('Fisierul '.$file_name.' a fost sters cu succes.');
+        redirect(url_textblock($page_name));
+    } else {
+        return 1;
+    }
+}
+
+// Delete more attachments
+function controller_attachment_delete_many($page_name, $arguments) {
+    $files = array();
+    $deleted = 0;
+    foreach($arguments as $value) {
+        if(is_numeric($value)) {
+            $files[] = request($value);
+        }
+    }
+    foreach($files as $file_name) {
+       $deleted += controller_attachment_delete($page_name, $file_name, 1);
+    }
+    flash($deleted . ' fisiere au fost sterse cu succes.');
     redirect(url_textblock($page_name));
 }
 
@@ -374,17 +395,20 @@ function controller_attachment_download($page_name, $file_name, $restrict_to_saf
     }
 }
 
-function controller_attachment_downloadZip($page_name, $arguments) {
+function controller_attachment_download_zip($page_name, $arguments) {
     if(http_referer_check()) {
         $files = array();
         foreach($arguments as $value) {
-            if(is_numeric($value)) $files[] = request($value);
+            if(is_numeric($value)) {
+                $files[] = request($value);
+            }
         }
         $zipfile = new zipfile();
         foreach($files as $filename) {
             $attach = try_attachment_get($page_name, $filename);
-            $contents = "";
-            foreach(file(attachment_get_filepath($attach)) as $line) $contents .= $line;
+            $local_file_path = attachment_get_filepath($attach);
+            $fh = fopen($local_file_path, "r");
+            $contents = fread($fh, filesize($local_file_path));
             $zipfile->add_file($contents, $filename);
         }
 

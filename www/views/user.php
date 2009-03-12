@@ -21,6 +21,10 @@ $options = array(
     'stats' => format_link(url_user_stats($username), 'Statistici'),
 );
 // mark selected action with class 'active'
+if($action == "") {
+    $action = 'view';
+}
+
 $options[$action] = array($options[$action], array('class' => 'active'));
 echo format_ul($options, 'htabs');
 
