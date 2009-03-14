@@ -1081,6 +1081,10 @@ th {
 }
 
 .inlineSubmit #form_compiler {
+    width: 7em;
+}
+
+.inlineSubmit #form_round {
     width: 9em;
 }
 
@@ -1503,4 +1507,11 @@ ul.okr .comment {
 
 .round-running {
     background: url("../images/run.png");
+}
+
+.submit-warning {
+    color: red;
+    text-align: center;
+    margin: 0;
+    padding: 0;
 }

@@ -41,6 +41,10 @@ function fval_checkbox($param_name) {
 function ferr($param_name, $escape_html = true) {
     global $view;
 
+    if (!isset($view["form_errors"])) {
+        return '';
+    }
+
     if ($escape_html) {
         return html_escape(getattr($view['form_errors'], $param_name));
     } else {
@@ -51,6 +55,10 @@ function ferr($param_name, $escape_html = true) {
 // returns a form error span, html-escaped by default.
 function ferr_span($param_name, $escape_html = true) {
     $error = ferr($param_name, $escape_html);
+
+    if (!isset($view["form_errors"])) {
+        return '';
+    }
 
     if ($error) {
         return '<span class="fieldError">' . $error . '</span>';

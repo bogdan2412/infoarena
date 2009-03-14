@@ -34,45 +34,15 @@ function macro_tasksubmit($args) {
         return macro_message("Nu se (mai) pot trimite solutii la aceasta problema.", true);
     }
 
-    // display form
+    // Display form
     ob_start();
 ?>
 
 <a href="<?= html_escape(url_monitor()."?task=".$task['id']."&user=".$identity_user['username']) ?>">Vezi solutiile trimise de tine</a>
-
-<form enctype="multipart/form-data" action="<?= html_escape(url_submit()) ?>" method="post" class="inlineSubmit" id="task_submit">
-
-<input type="hidden" id="output_only" value="<?= 'output-only' == $task['type'] ? html_escape($task['id']) : '' ?>" />
-<input type="hidden" name="task_id" value="<?= html_escape($task['id']) ?>" id="form_task" />
-
-<ul class="form">
-
-    <li id="field_solution">
-        <label for="form_solution">Fisier solutie</label>
-        <input type="file" name="solution" id="form_solution" />
-    </li>
-
-    <li id="field_compiler">
-        <label for="form_compiler">Compilator</label>
-        <select name="compiler_id" id="form_compiler">
-            <option value="-">[ Alege ]</option>
-            <option value="c">GNU C</option>
-            <option value="cpp">GNU C++</option>
-            <option value="fpc">FreePascal</option>
-            <?php if (user_is_admin($identity_user)) { ?>
-                <option value="py">Python (FOARTE EXPERIMENTAL!)</option>
-            <?php } ?>
-        </select>
-    </li>
-
-    <li id="field_submit">
-        <input type="submit" class="button" value="Trimite solutia" id="form_submit" />
-    </li>
-</ul>
-</form>
-
-
 <?php
+    require_once(IA_ROOT_DIR . "www/views/submit_form.php");
+    display_form(true, $task_id);
+
     $buffer = ob_get_contents();
     ob_end_clean();
 

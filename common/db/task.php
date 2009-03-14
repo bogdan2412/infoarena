@@ -159,4 +159,17 @@ function task_get_parent_rounds($task_id, $force_no_cache=false) {
     return $idlist;
 }
 
+// Returns list of running round ids that include this task to which
+// $user_id can submit
+function task_get_submit_rounds($task_id, $user_id) {
+    $rounds = task_get_parent_rounds($task_id);
+    foreach($rounds as $id => $round) {
+        $round = round_get($rounds[$id]);
+        if (!security_query($user_id, "round-submit", $round)) {
+            unset($rounds[$id]);
+        }
+    }
+    return array_values($rounds);
+}
+
 ?>

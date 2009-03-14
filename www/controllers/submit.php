@@ -6,13 +6,18 @@ require_once(IA_ROOT_DIR . "common/job.php");
 function controller_submit() {
     identity_require_login();
 
+    $view = array(
+        'title' => 'Trimite solutie',
+    );
+
     $values = array();
     $errors = array();
 
     if (request_is_post()) {
         $values = array(
-            'task_id' => getattr($_POST, 'task_id'),
-            'compiler_id' => getattr($_POST, 'compiler_id'),
+            'task_id' => request('task_id'),
+            'compiler_id' => request('compiler_id'),
+            'round_id' => request('round_id'),
             'remote_ip_info' => remote_ip_info(),
         );
 
@@ -25,8 +30,10 @@ function controller_submit() {
         $errors = safe_job_submit($values, identity_get_user());
 
         // The end.
+        if (!isset($errors["round_id"])) {
+            $_SESSION["_ia_last_submit_round"] = $values["round_id"];
+        }
         if ($errors) {
-            log_print_r($errors);
             flash_error('NU am salvat solutia trimisa! Unul sau mai multe campuri
                          nu au fost completate corect.');
         } else {
@@ -45,12 +52,9 @@ function controller_submit() {
         }
     }
 
-    $view = array(
-            'title' => 'Trimite solutie',
-            'tasks' => $tasks,
-            'form_errors' => $errors,
-            'form_values' => $values,
-    );
+    $view['tasks'] = $tasks;
+    $view['form_errors'] = $errors;
+    $view['form_values'] = $values;
 
     execute_view_die('views/submit.php', $view);
 }

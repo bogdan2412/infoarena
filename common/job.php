@@ -28,12 +28,17 @@ function safe_job_submit($args, $user) {
 
     // Validate round id.
     $round = null;
-    if (array_key_exists('round_id', $args)) {
-        if (!is_round_id($args['round_id'])) {
-            $errors['round_id'] = "Id de runda invalid";
-        } else if (is_null($round = round_get($args['round_id']))) {
-            $errors['round_id'] = "Runda '{$args['round_id']}' nu exista.";
-        }
+    if (!array_key_exists('round_id', $args)) {
+        $errors['round_id'] = "Nu ai specificat un concurs.";
+    } else if (!is_round_id($args['round_id'])) {
+        $errors['round_id'] = "Nu ai specificat un concurs corect.";
+    } else if (is_null($round = round_get($args['round_id']))) {
+        $errors['round_id'] = "Runda '{$args['round_id']}' nu exista.";
+    }
+    // Check if task is new and hasn't been added to any rounds
+    if (getattr($args, "round_id") == "" &&
+        security_query($user, 'task-submit', $task)) {
+        unset($errors["round_id"]);
     }
 
     // Validate compiler id
@@ -64,39 +69,15 @@ function safe_job_submit($args, $user) {
     if ($task && !security_query($user, 'task-submit', $task)) {
         $errors[] = "Nu ai voie sa trimiti la acest task.";
     }
-    if ($round && !security_query($round, 'task-submit', $round)) {
+    if ($round && !security_query($user, 'round-submit', $round)) {
         $errors[] = "Nu poti sa trimiti la aceasta runda.";
     }
 
-    // FIXME: check round-submit or something?
-
     // Only now create the job.
     if (count($errors) === 0) {
-        // round_id can be missing.
-        // If it's missing then the job is multiplied and sent to all parent rounds.
-        // This is compatible with 2.1.3
-        if (array_key_exists('round_id', $args)) {
-            job_create($args['task_id'], $args['round_id'], $user['id'],
-                    $args['compiler_id'], $args['solution'],
-                    getattr($args, 'remote_ip_info'));
-        } else {
-            $parent_rounds = task_get_parent_rounds($args['task_id']);
-            if (count($parent_rounds) === 0) {
-                // some jobs just don't have a round
-                job_create($args['task_id'], '', $user['id'],
-                        $args['compiler_id'], $args['solution'],
-                        getattr($args, 'remote_ip_info'));
-            }
-            else {
-                foreach ($parent_rounds as $round_id) {
-                    if (security_query($user, 'round-submit', round_get($round_id))) {
-                        job_create($args['task_id'], $round_id, $user['id'],
-                                $args['compiler_id'], $args['solution'],
-                                getattr($args, 'remote_ip_info'));
-                    }
-                }
-            }
-        }
+        job_create($args['task_id'], $args['round_id'], $user['id'],
+                $args['compiler_id'], $args['solution'],
+                getattr($args, 'remote_ip_info'));
     }
 
     return $errors;

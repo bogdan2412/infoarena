@@ -508,17 +508,7 @@ function security_round($user, $action, $round) {
             return $is_waiting || $is_admin;
 
         case 'round-submit':
-            // FIXME: This sucks.
-            // FIXME: job_get_submit_targets
-            $rparams = round_get_parameters($round['id']);
-            $time = time();
-            $rstart = db_date_parse($round['start_time']);
-            $rduration = getattr($rparams, 'duration', 10000000) * 60 * 60;
-            if ($time >= $rstart && $time <= $rstart + $rduration) {
-                return true;
-            } else {
-                return false;
-            }
+            return $round["state"] == "running";
 
         case 'sensitive-info':
             return ($usersec == 'admin' || $usersec == 'helper');

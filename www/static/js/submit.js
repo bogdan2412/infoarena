@@ -15,6 +15,7 @@ function Submit_Init() {
     var fTask = $('form_task');
 
     Submit_CompilerDisplay = $('field_compiler').style.display;
+    Submit_RoundDisplay = $('field_round').style.display;
 
     connect(fSolution, 'onchange', Submit_UpdateSolution);
     if ('hidden' != fTask.type) {
@@ -73,9 +74,47 @@ function Submit_UpdateTask() {
     // toggle displaying compiler select box
     if (Submit_HasCompiler(t.value)) {
         $('field_compiler').style.display = Submit_CompilerDisplay;
-    }
-    else {
+    } else {
         $('field_compiler').style.display = 'none';
+    }
+
+    if (t.value) {
+        $('field_round').style.display = Submit_RoundDisplay;
+        var d = doXHR(BASE_HREF + 'json/task-get-rounds?task_id=' + escape(t.value), {method: 'POST'});
+
+        var ready = function(xhr) {
+            var data = evalJSONRequest(xhr);
+            var rounds = data["rounds"];
+            var default_round = data["default"];
+
+            $('form_round').innerHTML = '';
+            warning_container = $('field_round_warning');
+            if (warning_container) {
+                if (rounds.length != 1) {
+                    warning_container.innerHTML = '<p class="submit-warning">Această problemă face parte din mai multe concursuri. Selectează-l pe cel la care participi!</p>';
+                } else {
+                    warning_container.innerHTML = '';
+                }
+            }
+            for (key in rounds) {
+                var option = document.createElement("option");
+                option.value = rounds[key]["id"];
+                if (rounds[key]["id"] == default_round) {
+                    option.selected = "selected";
+                }
+                var text = document.createTextNode(rounds[key]["title"])
+                option.appendChild(text);
+                $('form_round').appendChild(option);
+            }
+        }
+
+        var error = function(error) {
+            window.alert('Eroare! Nu pot determina rundele. Incercati din nou.');
+        }
+
+        d.addCallbacks(ready, error);
+    } else {
+        $('field_round').style.display = 'none';
     }
 
     // auto-choose compiler
