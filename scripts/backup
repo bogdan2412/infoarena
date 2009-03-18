@@ -36,8 +36,9 @@ function backup_db() {
         log_assert(file_exists(IA_BACKUP_DB_ENCRYPT_KEY));
         $backup_file .= ".gpg";
         log_print("Encrypting database dump to {$backup_file}");
-        system(sprintf("gpg -c --passphrase-file='%s' < %s > %s",
-                IA_BACKUP_DB_ENCRYPT_KEY, $temp_file, $backup_file));
+        system(sprintf("gpg -c --batch --no-tty --passphrase-file='%s' "
+                ."< %s > %s", IA_BACKUP_DB_ENCRYPT_KEY, $temp_file,
+                $backup_file));
         unlink($temp_file);
     } else {
         rename($temp_file, $backup_file);
