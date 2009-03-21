@@ -80,6 +80,7 @@ function macro_roundlist($args) {
         'title' => 'Data de inceput',
         'css_class' => 'start_time',
         'key' => 'start_time',
+        'valform' => 'format_date',
     );
 
     return format_table($rounds, $column_infos, $options);

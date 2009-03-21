@@ -237,11 +237,12 @@ function controller_textblock_delete_revision($page = null, $rev_num = null) {
         redirect(url_home());
     }
 
+    $revision = textblock_get_revision($page, $rev_num == $total_revs ? null : $rev_num);
     if ($total_revs == 1) {
+        identity_require('textblock-delete', $revision);
         textblock_delete($page);
     }
 
-    $revision = textblock_get_revision($page, $rev_num == $total_revs ? null : $rev_num);
     if ($revision) {
         identity_require('textblock-delete-revision', $revision);
     } else {
