@@ -83,6 +83,7 @@ function round_field($rounds, $default_round, $warning_field = true) {
             <option value="<?= html_escape($round['id']) ?>"<?= ($round['id'] == $default_round) ? ' selected="selected"' : ''?>><?= html_escape($round['title']) ?></option>
 <?php } ?>
         </select>
+        <?= ferr_span('round_id', false) ?>
     </li>
 <?php
 }

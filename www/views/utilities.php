@@ -42,7 +42,7 @@ function ferr($param_name, $escape_html = true) {
     global $view;
 
     if (!isset($view["form_errors"])) {
-        return '';
+        return null;
     }
 
     if ($escape_html) {
@@ -55,10 +55,6 @@ function ferr($param_name, $escape_html = true) {
 // returns a form error span, html-escaped by default.
 function ferr_span($param_name, $escape_html = true) {
     $error = ferr($param_name, $escape_html);
-
-    if (!isset($view["form_errors"])) {
-        return '';
-    }
 
     if ($error) {
         return '<span class="fieldError">' . $error . '</span>';
