@@ -57,7 +57,8 @@ function job_handle($job) {
             $job_result['score'],
             $job['submit_time'],
             $job['user_id'],
-            $job['task_id']);
+            $job['task_id'],
+            $job['round_id']);
 }
 
 // Main loop. It works by polling the sql server
