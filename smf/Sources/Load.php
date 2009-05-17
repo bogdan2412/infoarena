@@ -1073,7 +1073,7 @@ function loadMemberContext($user)
 			'name' => &$profile['avatar'],
 			'image' => "<img src=\"{$avatar_img_src}\" />",
 			'href' => $avatar_img_src,
-			'url'=> url_absolute(url_user_profile($profile['memberName']))
+			'url'=> url_user_profile($profile['memberName'])
 		),
 		'last_login' => empty($profile['lastLogin']) ? $txt['never'] : timeformat($profile['lastLogin']),
 		'last_login_timestamp' => empty($profile['lastLogin']) ? 0 : forum_time(0, $profile['lastLogin']),
