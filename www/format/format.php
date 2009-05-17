@@ -1,6 +1,7 @@
 <?php
 
 require_once(IA_ROOT_DIR."common/db/user.php");
+require_once(IA_ROOT_DIR."common/user.php");
 require_once(IA_ROOT_DIR."common/rating.php");
 require_once(IA_ROOT_DIR."www/url.php");
 require_once(IA_ROOT_DIR."www/utilities.php");
@@ -202,7 +203,7 @@ function format_user_normal($user_name, $user_fullname, $rating = null) {
 // Rating groups (from highest to lowest ranking): 1, 2, 3, 0
 // NOTE: It outputs 0 when user is not rated
 function rating_group($absolute_rating, $is_admin = false) {
-    if ($is_admin) {
+	if ($is_admin) {
         // all mighty admin
         return 4;
     }
@@ -228,7 +229,8 @@ function rating_group($absolute_rating, $is_admin = false) {
 // and indicate the user's rating.
 function format_user_ratingbadge($username, $rating) {
     if ($rating) {
-        $class = rating_group($rating);
+        $is_admin = user_is_admin(user_get_by_username($username));
+        $class = rating_group($rating, $is_admin);
         $rating = rating_scale($rating);
         $att = array(
             'title' => 'Rating '.html_escape($username).': '.$rating,
