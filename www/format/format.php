@@ -203,7 +203,7 @@ function format_user_normal($user_name, $user_fullname, $rating = null) {
 // Rating groups (from highest to lowest ranking): 1, 2, 3, 0
 // NOTE: It outputs 0 when user is not rated
 function rating_group($absolute_rating, $is_admin = false) {
-	if ($is_admin) {
+    if ($is_admin) {
         // all mighty admin
         return 4;
     }
