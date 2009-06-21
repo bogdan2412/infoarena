@@ -81,6 +81,7 @@ function compile_file($input_file_name, $output_file_name, &$compiler_message)
 function jrun_parse_message($message)
 {
     if (!preg_match("/^(ERROR|FAIL|OK):\ (.*)$/", $message, $matches)) {
+        log_warn("Invalid jrun output: $message");
         return false;
     }
 
@@ -160,7 +161,7 @@ function jail_run($program, $jaildir, $time, $memory, $capture_std = false)
     }
     //$cmdline .= " --verbose";
 
-    //log_print("Running $cmdline");
+    log_print("Running $cmdline");
     $message = shell_exec($cmdline);
 
     $result = jrun_parse_message($message);

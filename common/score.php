@@ -6,8 +6,10 @@ require_once(IA_ROOT_DIR . "common/db/task.php");
 
 function score_update_for_job($score, $time, $user_id, $task_id, $round_id)
 {
-    $round = round_get($round_id);
-    round_event_job_score($round, $score, $time, $user_id, $task_id);
+    if ($round_id) {
+        $round = round_get($round_id);
+        round_event_job_score($round, $score, $time, $user_id, $task_id);
+    }
 }
 
 function round_event_job_score($round, $score, $time, $user_id, $task_id) {
