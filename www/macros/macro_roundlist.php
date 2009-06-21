@@ -17,6 +17,13 @@ function format_status($status) {
     return '<span title="' . $status . '" class="round-' . $status . '"></span>';
 }
 
+function format_start_date($start_date) {
+    if (is_null($start_date))
+        return "Data de inceput nu a fost setata.";
+    else
+        return format_date($start_date);
+}
+
 // Lists all rounds with filters
 //
 // Arguments;
@@ -59,7 +66,7 @@ function macro_roundlist($args) {
 
     $column_infos = array();
     $column_infos[] = array(
-        'title' => 'Titlul rundei',
+        'title' => 'Titlul concursului',
         'css_class' => 'round',
         'rowform' => 'format_title'
     );
@@ -80,7 +87,7 @@ function macro_roundlist($args) {
         'title' => 'Data de inceput',
         'css_class' => 'start_time',
         'key' => 'start_time',
-        'valform' => 'format_date',
+        'valform' => 'format_start_date',
     );
 
     return format_table($rounds, $column_infos, $options);

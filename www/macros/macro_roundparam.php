@@ -56,7 +56,11 @@ function macro_roundparam($args) {
             break;
 
         case 'start_time':
-            $html .= format_date($round['start_time']);
+            if (is_null($round['start_time'])) { 
+                $html .= "data necunoscuta";
+            } else {
+                $html .= format_date($round['start_time']);
+            }
             break;
 
         case 'id':
