@@ -1,4 +1,6 @@
 <?php
+require_once(IA_ROOT_DIR . "www/views/utilities.php");
+
 // Returns list of rounds to which a task can be submitted
 // along with a default round
 function task_get_submit_options($task_id) {
@@ -103,7 +105,7 @@ function task_field($tasks) {
 <?php
 }
 
-function display_form($inline_form = false, $task_id = null) {
+function display_submit_form($inline_form = false, $task_id = null) {
 ?>
 <form enctype="multipart/form-data" action="<?= html_escape(url_submit()) ?>" method="post" class="<?= $inline_form ? "inlineSubmit" : "submit" ?>" id="task_submit">
 

@@ -41,7 +41,7 @@ function macro_tasksubmit($args) {
 <a href="<?= html_escape(url_monitor()."?task=".$task['id']."&user=".$identity_user['username']) ?>">Vezi solutiile trimise de tine</a>
 <?php
     require_once(IA_ROOT_DIR . "www/views/submit_form.php");
-    display_form(true, $task_id);
+    display_submit_form(true, $task_id);
 
     $buffer = ob_get_contents();
     ob_end_clean();

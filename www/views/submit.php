@@ -26,7 +26,7 @@ foreach ($tasks as $t) {
 
 <?php
 require_once("submit_form.php");
-display_form(false, fval("task_id", false));
+display_submit_form(false, fval("task_id", false));
 ?>
 
 <?php wiki_include('template/trimite-solutii') ?>
