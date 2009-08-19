@@ -1,11 +1,1 @@
-
-function Sh_Init() {
-    if (!dp) {
-        return;
-    }
-    dp.SyntaxHighlighter.ClipboardSwf = '../static/js/sh/clipboard.swf';
-    dp.SyntaxHighlighter.HighlightAll('code');
-}
-
-connect(window, 'onload', Sh_Init);
-
+function Sh_Init(a){if(!SyntaxHighlighter){return}SyntaxHighlighter.config.clipboardSwf=a;SyntaxHighlighter.config.tagName="textarea";SyntaxHighlighter.config.strings.viewSource="neformatat";SyntaxHighlighter.config.strings.copyToClipboard="copiaza in clipboard";SyntaxHighlighter.config.strings.copyToClipboardConfirmation="Codul a fost copiat.";SyntaxHighlighter.config.strings.alert="";SyntaxHighlighter.all()};

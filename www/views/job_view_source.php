@@ -44,7 +44,7 @@ include('header.php');
 </div>
 <?php
     echo '<div class="code">';
-    echo "<textarea name=\"code\" class=\"{$lang}\" cols=\"60\" rows=\"10\">";
+    echo "<textarea class=\"brush: {$lang}\" cols=\"60\" rows=\"10\">";
     echo html_escape($job['file_contents']);
     echo '</textarea></div>';
     include('footer.php');

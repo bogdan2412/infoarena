@@ -72,10 +72,10 @@ class MyTextile extends Textile {
                 $lang = 'delphi';
             }
 
-            // put javascript dp.SyntaxHighlighter at work
+            // put javascript SyntaxHighlighter at work
             return "\n<div class=\"code\">"
-                   ."<textarea name=\"code\" class=\"{$lang}\" cols=\"60\" rows=\"10\">"
-                   .html_escape($text) . "</textarea></div>\n";
+                ."<textarea class=\"brush: {$lang};\" cols=\"60\" rows=\"10\">"
+                .html_escape($text) . "</textarea></div>\n";
         }
         else {
             return macro_error("Can't handle ==$type| block.");
