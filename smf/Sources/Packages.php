@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.2                                           *
+* Software Version:           SMF 1.1.10                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -145,8 +145,10 @@ function PackageInstallTest()
 {
 	global $boarddir, $txt, $context, $scripturl, $sourcedir, $modSettings;
 
+	checkSession('request');
+
 	// You have to specify a file!!
-	if (!isset($_REQUEST['package']) || $_REQUEST['package'] == '')
+	if (empty($_REQUEST['package']) || preg_match('~[^\\w0-9.\\-_]~', $_REQUEST['package']) === 1 || strpos($_REQUEST['package'], '..') !== false)
 		redirectexit('action=packages');
 	$context['filename'] = preg_replace('~[\.]+~', '.', $_REQUEST['package']);
 
@@ -308,7 +310,7 @@ function PackageInstallTest()
 
 				$context['actions'][] = array(
 					'type' => $txt['package56'],
-					'action' => strtr($action['filename'], array($boarddir => '.')),
+					'action' => htmlspecialchars(strtr($action['filename'], array($boarddir => '.'))),
 					'description' => $txt['package_action_error']
 				);
 			}
@@ -335,14 +337,14 @@ function PackageInstallTest()
 				elseif ($mod_action['type'] == 'saved')
 					$context['actions'][] = array(
 						'type' => $txt['package56'],
-						'action' => strtr($mod_action['filename'], array($boarddir => '.')),
+						'action' => htmlspecialchars(strtr($mod_action['filename'], array($boarddir => '.'))),
 						'description' => $failed ? $txt['package_action_failure'] : $txt['package_action_success']
 					);
 				elseif ($mod_action['type'] == 'skipping')
 				{
 					$context['actions'][] = array(
 						'type' => $txt['package56'],
-						'action' => strtr($mod_action['filename'], array($boarddir => '.')),
+						'action' => htmlspecialchars(strtr($mod_action['filename'], array($boarddir => '.'))),
 						'description' => $txt['package_action_skipping']
 					);
 				}
@@ -351,14 +353,14 @@ function PackageInstallTest()
 					$context['has_failure'] = true;
 					$context['actions'][] = array(
 						'type' => $txt['package56'],
-						'action' => strtr($mod_action['filename'], array($boarddir => '.')),
+						'action' => htmlspecialchars(strtr($mod_action['filename'], array($boarddir => '.'))),
 						'description' => $txt['package_action_missing']
 					);
 				}
 				elseif ($mod_action['type'] == 'error')
 					$context['actions'][] = array(
 						'type' => $txt['package56'],
-						'action' => strtr($mod_action['filename'], array($boarddir => '.')),
+						'action' => htmlspecialchars(strtr($mod_action['filename'], array($boarddir => '.'))),
 						'description' => $txt['package_action_error']
 					);
 			}
@@ -369,27 +371,27 @@ function PackageInstallTest()
 		elseif ($action['type'] == 'code')
 			$thisAction = array(
 				'type' => $txt['package57'],
-				'action' => $action['filename']
+				'action' => htmlspecialchars($action['filename'])
 			);
 		elseif (in_array($action['type'], array('create-dir', 'create-file')))
 			$thisAction = array(
 				'type' => $txt['package50'] . ' ' . ($action['type'] == 'create-dir' ? $txt['package55'] : $txt['package54']),
-				'action' => strtr($action['destination'], array($boarddir => '.'))
+				'action' => htmlspecialchars(strtr($action['destination'], array($boarddir => '.')))
 			);
 		elseif (in_array($action['type'], array('require-dir', 'require-file')))
 			$thisAction = array(
 				'type' => $txt['package53'] . ' ' . ($action['type'] == 'require-dir' ? $txt['package55'] : $txt['package54']),
-				'action' => strtr($action['destination'], array($boarddir => '.'))
+				'action' => htmlspecialchars(strtr($action['destination'], array($boarddir => '.')))
 			);
 		elseif (in_array($action['type'], array('move-dir', 'move-file')))
 			$thisAction = array(
 				'type' => $txt['package51'] . ' ' . ($action['type'] == 'move-dir' ? $txt['package55'] : $txt['package54']),
-				'action' => strtr($action['source'], array($boarddir => '.')) . ' => ' . strtr($action['destination'], array($boarddir => '.'))
+				'action' => htmlspecialchars(strtr($action['source'], array($boarddir => '.'))) . ' => ' . htmlspecialchars(strtr($action['destination'], array($boarddir => '.')))
 			);
 		elseif (in_array($action['type'], array('remove-dir', 'remove-file')))
 			$thisAction = array(
 				'type' => $txt['package52'] . ' ' . ($action['type'] == 'remove-dir' ? $txt['package55'] : $txt['package54']),
-				'action' => strtr($action['filename'], array($boarddir => '.'))
+				'action' => htmlspecialchars(strtr($action['filename'], array($boarddir => '.')))
 			);
 
 		if (empty($thisAction))
@@ -416,8 +418,10 @@ function PackageInstall()
 {
 	global $boarddir, $txt, $context, $boardurl, $scripturl, $sourcedir, $modSettings;
 
+	checkSession('post');
+
 	// If there's no file, what are we installing?
-	if (!isset($_REQUEST['package']) || $_REQUEST['package'] == '')
+	if (empty($_REQUEST['package']) || preg_match('~[^\\w0-9.\\-_]~', $_REQUEST['package']) === 1 || strpos($_REQUEST['package'], '..') !== false)
 		redirectexit('action=packages');
 	$context['filename'] = $_REQUEST['package'];
 
@@ -609,7 +613,7 @@ function PackageList()
 	require_once($sourcedir . '/Subs-Package.php');
 
 	// No package?  Show him or her the door.
-	if (!isset($_REQUEST['package']) || $_REQUEST['package'] == '')
+	if (empty($_REQUEST['package']) || preg_match('~[^\\w0-9.\\-_]~', $_REQUEST['package']) === 1 || strpos($_REQUEST['package'], '..') !== false)
 		redirectexit('action=packages');
 
 	$context['linktree'][] = array(
@@ -634,10 +638,12 @@ function ExamineFile()
 {
 	global $txt, $scripturl, $boarddir, $context, $sourcedir;
 
+	checkSession('get');
+
 	require_once($sourcedir . '/Subs-Package.php');
 
 	// No package?  Show him or her the door.
-	if (!isset($_REQUEST['package']) || $_REQUEST['package'] == '')
+	if (empty($_REQUEST['package']) || preg_match('~[^\\w0-9.\\-_]~', $_REQUEST['package']) === 1 || strpos($_REQUEST['package'], '..') !== false)
 		redirectexit('action=packages');
 
 	// No file?  Show him or her the door.
@@ -670,7 +676,7 @@ function ExamineFile()
 
 	// Let the unpacker do the work.... but make sure we handle images properly.
 	if (in_array(strtolower(strrchr($_REQUEST['file'], '.')), array('.bmp', '.gif', '.jpeg', '.jpg', '.png')))
-		$context['filedata'] = '<img src="' . $scripturl . '?action=packages;sa=examine;package=' . $_REQUEST['package'] . ';file=' . $_REQUEST['file'] . ';raw" alt="' . $_REQUEST['file'] . '" />';
+		$context['filedata'] = '<img src="' . $scripturl . '?action=packages;sa=examine;package=' . $_REQUEST['package'] . ';file=' . $_REQUEST['file'] . ';raw;sesc=' . $context['session_id'] . '" alt="' . $_REQUEST['file'] . '" />';
 	else
 	{
 		if (is_file($boarddir . '/Packages/' . $_REQUEST['package']))
@@ -705,6 +711,8 @@ function FlushInstall()
 {
 	global $boarddir, $sourcedir;
 
+	checkSession('get');
+
 	include_once($sourcedir . '/Subs-Package.php');
 
 	// Open the file and write nothing to it.
@@ -717,6 +725,8 @@ function FlushInstall()
 function PackageRemove()
 {
 	global $scripturl, $boarddir;
+
+	checkSession('get');
 
 	// Ack, don't allow deletion of arbitrary files here, could become a security hole somehow!
 	if (!isset($_GET['package']) || $_GET['package'] == 'index.php' || $_GET['package'] == 'installed.list')

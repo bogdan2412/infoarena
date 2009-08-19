@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.2                                           *
+* Software Version:           SMF 1.1.10                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -159,7 +159,7 @@ function AdminRegister()
 			'check_reserved_name' => true,
 			'check_password_strength' => false,
 			'check_email_ban' => false,
-			'send_welcome_email' => isset($_POST['emailPassword']),
+			'send_welcome_email' => isset($_POST['emailPassword']) || empty($_POST['password']),
 			'require' => isset($_POST['emailActivate']) ? 'activation' : 'nothing',
 			'memberGroup' => empty($_POST['group']) ? 0 : (int) $_POST['group'],
 		);
@@ -301,7 +301,7 @@ function AdminSettings()
 
 	// Generate a sample registration image.
 	$context['use_graphic_library'] = in_array('gd', get_loaded_extensions());
-	$context['verificiation_image_href'] = $scripturl . '?action=verificationcode;rand=' . md5(rand());
+	$context['verificiation_image_href'] = $scripturl . '?action=verificationcode;rand=' . md5(mt_rand());
 
 	$character_range = array_merge(range('A', 'H'), array('K', 'M', 'N', 'P'), range('R', 'Z'));
 	$_SESSION['visual_verification_code'] = '';

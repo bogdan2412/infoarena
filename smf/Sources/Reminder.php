@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.2                                           *
+* Software Version:           SMF 1.1.6                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -120,7 +120,8 @@ function RemindMail()
 		fatal_error('<b>' . $txt[394] . '<br />' . $txt[395] . ' <a href="mailto:' . $webmaster_email . '">webmaster</a> ' . $txt[396] . '.');
 
 	// Randomly generate a new password, with only alpha numeric characters that is a max length of 10 chars.
-	$password = substr(preg_replace('/\W/', '', md5(rand())), 0, 10);
+	require_once($sourcedir . '/Subs-Members.php');
+	$password = generateValidationCode();
 
 	// Set the password in the database.
 	updateMemberData($row['ID_MEMBER'], array('validation_code' => "'" . substr(md5($password), 0, 10) . "'"));

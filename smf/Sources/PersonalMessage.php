@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.5                                           *
+* Software Version:           SMF 1.1.10                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -1254,7 +1254,7 @@ function MessagePost()
 	if ($context['visual_verification'])
 	{
 		$context['use_graphic_library'] = in_array('gd', get_loaded_extensions());
-		$context['verificiation_image_href'] = $scripturl . '?action=verificationcode;rand=' . md5(rand());
+		$context['verificiation_image_href'] = $scripturl . '?action=verificationcode;rand=' . md5(mt_rand());
 
 		// Skip I, J, L, O, Q, S and Z.
 		$character_range = array_merge(range('A', 'H'), array('K', 'M', 'N', 'P'), range('R', 'Z'));
@@ -1345,6 +1345,10 @@ function messagePostError($error_types, $to, $bcc)
 	);
 	foreach ($error_types as $error_type)
 	{
+		// There is no compatible language string. So lets work around that.
+		if ($error_type == 'wrong_verification_code')
+			$txt['error_wrong_verification_code'] = $txt['visual_verification_failed'];
+
 		$context['post_error'][$error_type] = true;
 		if (isset($txt['error_' . $error_type]))
 			$context['post_error']['messages'][] = $txt['error_' . $error_type];
@@ -1355,7 +1359,7 @@ function messagePostError($error_types, $to, $bcc)
 	if ($context['visual_verification'])
 	{
 		$context['use_graphic_library'] = in_array('gd', get_loaded_extensions());
-		$context['verificiation_image_href'] = $scripturl . '?action=verificationcode;rand=' . md5(rand());
+		$context['verificiation_image_href'] = $scripturl . '?action=verificationcode;rand=' . md5(mt_rand());
 	}
 
 	// No check for the previous submission is needed.

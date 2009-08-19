@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1; ManageAttachments
+// Version: 1.1.9; ManageAttachments
 
 function template_manage_files_above()
 {
@@ -126,9 +126,6 @@ function template_attachments()
 		</tr><tr class="windowbg2">
 			<td width="50%" align="right"><label for="attachmentExtensions">', $txt['attachmentExtensions'], '</label>:</td>
 			<td><input type="text" name="attachmentExtensions" id="attachmentExtensions" value="', $modSettings['attachmentExtensions'], '" size="40" /></td>
-		</tr><tr class="windowbg2">
-			<td width="50%" align="right"><label for="attachmentEncryptFilenames">', $txt['attachmentEncryptFilenames'], ' <a href="', $scripturl, '?action=helpadmin;help=attachmentEncryptFilenames" onclick="return reqWin(this.href);" class="help">(?)</a>:</label></td>
-			<td><input type="checkbox" name="attachmentEncryptFilenames" id="attachmentEncryptFilenames" value="1" class="check"', empty($modSettings['attachmentEncryptFilenames']) ? '' : ' checked="checked"', ' /></td>
 		</tr><tr class="windowbg2">
 			<td colspan="2"><hr /></td>
 		</tr><tr class="windowbg2">

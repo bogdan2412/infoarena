@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1                                             *
+* Software Version:           SMF 1.1.6                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -766,7 +766,7 @@ function AdminApprove()
 
 				sendmail($member['email'], $txt['register_subject'],
 					"$txt[hello_guest] $member[name]!\n\n" .
-					"$txt[admin_approve_accept_desc] $txt[719] $member[name]\n\n" .
+					"$txt[admin_approve_accept_desc] $txt[719] $member[username]\n\n" .
 					"$txt[701]\n" .
 					"$scripturl?action=profile\n\n" .
 					$txt[130]);
@@ -776,11 +776,13 @@ function AdminApprove()
 	// Maybe we're sending it off for activation?
 	elseif ($_POST['todo'] == 'require_activation')
 	{
+		require_once($sourcedir . '/Subs-Members.php');
+
 		// We have to do this for each member I'm afraid.
 		foreach ($member_info as $member)
 		{
 			// Generate a random activation code.
-			$validation_code = substr(preg_replace('/\W/', '', md5(rand())), 0, 10);
+			$validation_code = generateValidationCode();
 
 			// Set these members for activation - I know this includes two ID_MEMBER checks but it's safer than bodging $condition ;).
 			db_query("

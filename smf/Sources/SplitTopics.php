@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.2                                           *
+* Software Version:           SMF 1.1.6                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -626,6 +626,10 @@ function MergeIndex()
 	$_REQUEST['targetboard'] = isset($_REQUEST['targetboard']) ? (int) $_REQUEST['targetboard'] : $board;
 	$context['target_board'] = $_REQUEST['targetboard'];
 
+	if (!isset($_GET['from']))
+		fatal_lang_error(1);
+	$_GET['from'] = (int) $_GET['from'];
+
 	// How many topics are on this board?  (used for paging.)
 	$request = db_query("
 		SELECT COUNT(*)
@@ -728,7 +732,7 @@ function MergeExecute($topics = array())
 
 	// Handle URLs from MergeIndex.
 	if (!empty($_GET['from']) && !empty($_GET['to']))
-		$topics = array($_GET['from'], $_GET['to']);
+		$topics = array((int) $_GET['from'], (int) $_GET['to']);
 
 	// If we came from a form, the topic IDs came by post.
 	if (!empty($_POST['topics']) && is_array($_POST['topics']))
@@ -1091,8 +1095,8 @@ function MergeDone()
 	global $txt, $context;
 
 	// Make sure the template knows everything...
-	$context['target_board'] = $_GET['targetboard'];
-	$context['target_topic'] = $_GET['to'];
+	$context['target_board'] = (int) $_GET['targetboard'];
+	$context['target_topic'] = (int) $_GET['to'];
 
 	$context['page_title'] = $txt['smf252'];
 	$context['sub_template'] = 'merge_done';

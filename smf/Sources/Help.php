@@ -62,7 +62,7 @@ function ShowHelp()
 		'searching' => 'search',
 	);
 
-	if (!isset($_GET['page']) || !isset($context['all_pages'][$_GET['page']]))
+	if (!isset($_GET['page']) || !is_string($_GET['page']) || !isset($context['all_pages'][$_GET['page']]))
 		$_GET['page'] = 'index';
 
 	$context['current_page'] = $_GET['page'];

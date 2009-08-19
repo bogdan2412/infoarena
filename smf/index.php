@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.5                                           *
+* Software Version:           SMF 1.1.10                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -34,7 +34,7 @@
 	with the URL index.php?action=action-in-url.  Relatively simple, no?
 */
 
-$forum_version = 'SMF 1.1.5';
+$forum_version = 'SMF 1.1.10';
 
 // Get everything started up...
 define('SMF', 1);
@@ -88,8 +88,8 @@ reloadSettings();
 cleanRequest();
 $context = array();
 
-// Seed the random generator for PHP < 4.2.0.
-if (@version_compare(PHP_VERSION, '4.2.0') == -1)
+// Seed the random generator?
+if (empty($modSettings['rand_seed']) || mt_rand(1, 250) == 69)
 	smf_seed_generator();
 
 // Determine if this is using WAP, WAP2, or imode.  Technically, we should check that wap comes before application/xhtml or text/html, but this doesn't work in practice as much as it should.
@@ -199,7 +199,7 @@ function smf_main()
 		}
 	}
 	// If guest access is off, a guest can only do one of the very few following actions.
-	elseif (empty($modSettings['allow_guestAccess']) && $user_info['is_guest'] && (!isset($_REQUEST['action']) || !in_array($_REQUEST['action'], array('login', 'login2', 'register', 'register2', 'reminder', 'activate', 'smstats', 'help', '.xml', 'verificationcode'))))
+	elseif (empty($modSettings['allow_guestAccess']) && $user_info['is_guest'] && (!isset($_REQUEST['action']) || !in_array($_REQUEST['action'], array('coppa', 'login', 'login2', 'register', 'register2', 'reminder', 'activate', 'smstats', 'help', 'verificationcode'))))
 	{
 		require_once($sourcedir . '/Subs-Auth.php');
 		return 'KickGuest';

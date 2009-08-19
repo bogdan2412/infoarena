@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.5                                           *
+* Software Version:           SMF 1.1.9                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -230,7 +230,7 @@ function preparsecode(&$message, $previewing = false)
 				$parts[$i] = $parts[$i] . str_repeat('[/list]', $list_open - $list_close);
 
 			// Make sure all tags are lowercase.
-			$parts[$i] = preg_replace('~\[([/]?)(list|li|table|tr|td)([^\]]*)\]~ie', '\'[$1\' . strtolower(\'$2\') . \'$3]\'', $parts[$i]);
+			$parts[$i] = preg_replace('~\[([/]?)(list|li|table|tr|td)((\s[^\]]+)*)\]~ie', '\'[$1\' . strtolower(\'$2\') . \'$3]\'', $parts[$i]);
 
 			$mistake_fixes = array(
 				// Find [table]s not followed by [tr].
@@ -306,8 +306,8 @@ function un_preparsecode($message)
 		}
 	}
 
-	// Change breaks back to \n's.
-	return preg_replace('~<br( /)?' . '>~', "\n", implode('', $parts));
+	// Change breaks back to \n's and &nsbp; back to spaces.
+	return preg_replace('~<br( /)?' . '>~', "\n", str_replace('&nbsp;', ' ', implode('', $parts)));
 }
 
 // Fix any URLs posted - ie. remove 'javascript:'.
@@ -461,7 +461,7 @@ function fixTag(&$message, $myTag, $protocols, $embeddedUrl = false, $hasEqualSi
 	$replaces = array();
 
 	if ($hasEqualSign)
-		preg_match_all('~\[(' . $myTag . ')=([^\]]*?)\](.+?)\[/(' . $myTag . ')\]~is', $message, $matches);
+		preg_match_all('~\[(' . $myTag . ')=([^\]]*?)\](?:(.+?)\[/(' . $myTag . ')\])?~is', $message, $matches);
 	else
 		preg_match_all('~\[(' . $myTag . ($hasExtra ? '(?:[^\]]*?)' : '') . ')\](.+?)\[/(' . $myTag . ')\]~is', $message, $matches);
 
@@ -470,10 +470,7 @@ function fixTag(&$message, $myTag, $protocols, $embeddedUrl = false, $hasEqualSi
 		// Remove all leading and trailing whitespace.
 		$replace = trim($matches[2][$k]);
 		$this_tag = $matches[1][$k];
-		if (!$hasEqualSign)
-			$this_close = $matches[3][$k];
-		else
-			$this_close = $matches[4][$k];
+		$this_close = $hasEqualSign ? (empty($matches[4][$k]) ? '' : $matches[4][$k]) : $matches[3][$k];
 
 		$found = false;
 		foreach ($protocols as $protocol)
@@ -502,7 +499,7 @@ function fixTag(&$message, $myTag, $protocols, $embeddedUrl = false, $hasEqualSi
 			$replace = $protocols[0] . '://' . $replace;
 
 		if ($hasEqualSign && $embeddedUrl)
-			$replaces['[' . $matches[1][$k] . '=' . $matches[2][$k] . ']' . $matches[3][$k] . '[/' . $matches[4][$k] . ']'] = '[' . $this_tag . '=' . $replace . ']' . $matches[3][$k] . '[/' . $this_close . ']';
+			$replaces[$matches[0][$k]] = '[' . $this_tag . '=' . $replace . ']' . (empty($matches[4][$k]) ? '' : $matches[3][$k] . '[/' . $this_close . ']');
 		elseif ($hasEqualSign)
 			$replaces['[' . $matches[1][$k] . '=' . $matches[2][$k] . ']'] = '[' . $this_tag . '=' . $replace . ']';
 		elseif ($embeddedUrl)
@@ -1708,9 +1705,9 @@ function createAttachment(&$attachmentOptions)
 	if (!$file_restricted || $already_uploaded)
 		list ($attachmentOptions['width'], $attachmentOptions['height']) = @getimagesize($attachmentOptions['tmp_name']);
 
-	// Remove special foreign characters from the filename.
-	if (empty($modSettings['attachmentEncryptFilenames']))
-		$attachmentOptions['name'] = getAttachmentFilename($attachmentOptions['name'], false, true);
+	// Get the hash if no hash has been given yet.
+	if (empty($attachmentOptions['file_hash']))
+		$attachmentOptions['file_hash'] = getAttachmentFilename($attachmentOptions['name'], false, true);
 
 	// Is the file too big?
 	if (!empty($modSettings['attachmentSizeLimit']) && $attachmentOptions['size'] > $modSettings['attachmentSizeLimit'] * 1024)
@@ -1780,14 +1777,14 @@ function createAttachment(&$attachmentOptions)
 
 	db_query("
 		INSERT INTO {$db_prefix}attachments
-			(ID_MSG, filename, size, width, height)
-		VALUES (" . (int) $attachmentOptions['post'] . ", SUBSTRING('" . $attachmentOptions['name'] . "', 1, 255), " . (int) $attachmentOptions['size'] . ', ' . (empty($attachmentOptions['width']) ? '0' : (int) $attachmentOptions['width']) . ', ' . (empty($attachmentOptions['height']) ? '0' : (int) $attachmentOptions['height']) . ')', __FILE__, __LINE__);
+			(ID_MSG, filename, file_hash, size, width, height)
+		VALUES (" . (int) $attachmentOptions['post'] . ", SUBSTRING('" . $attachmentOptions['name'] . "', 1, 255), '$attachmentOptions[file_hash]', " . (int) $attachmentOptions['size'] . ', ' . (empty($attachmentOptions['width']) ? '0' : (int) $attachmentOptions['width']) . ', ' . (empty($attachmentOptions['height']) ? '0' : (int) $attachmentOptions['height']) . ')', __FILE__, __LINE__);
 	$attachmentOptions['id'] = db_insert_id();
 
 	if (empty($attachmentOptions['id']))
 		return false;
 
-	$attachmentOptions['destination'] = $modSettings['attachmentUploadDir'] . '/' . getAttachmentFilename(basename($attachmentOptions['name']), $attachmentOptions['id'], true);
+	$attachmentOptions['destination'] = getAttachmentFilename(basename($attachmentOptions['name']), $attachmentOptions['id'], false, $attachmentOptions['file_hash']);
 
 	if ($already_uploaded)
 		rename($attachmentOptions['tmp_name'], $attachmentOptions['destination']);
@@ -1826,10 +1823,11 @@ function createAttachment(&$attachmentOptions)
 			$thumb_size = filesize($attachmentOptions['destination'] . '_thumb');
 
 			// To the database we go!
+			$thumb_file_hash = getAttachmentFilename($thumb_filename, false, true);
 			db_query("
 				INSERT INTO {$db_prefix}attachments
-					(ID_MSG, attachmentType, filename, size, width, height)
-				VALUES (" . (int) $attachmentOptions['post'] . ", 3, SUBSTRING('$thumb_filename', 1, 255), " . (int) $thumb_size . ", " . (int) $thumb_width . ", " . (int) $thumb_height . ")", __FILE__, __LINE__);
+					(ID_MSG, attachmentType, filename, file_hash, size, width, height)
+				VALUES (" . (int) $attachmentOptions['post'] . ", 3, SUBSTRING('$thumb_filename', 1, 255), '$thumb_file_hash', " . (int) $thumb_size . ", " . (int) $thumb_width . ", " . (int) $thumb_height . ")", __FILE__, __LINE__);
 			$attachmentOptions['thumb'] = db_insert_id();
 
 			if (!empty($attachmentOptions['thumb']))
@@ -1840,7 +1838,7 @@ function createAttachment(&$attachmentOptions)
 					WHERE ID_ATTACH = $attachmentOptions[id]
 					LIMIT 1", __FILE__, __LINE__);
 
-				rename($attachmentOptions['destination'] . '_thumb', $modSettings['attachmentUploadDir'] . '/' . getAttachmentFilename($thumb_filename, $attachmentOptions['thumb'], true));
+				rename($attachmentOptions['destination'] . '_thumb', getAttachmentFilename($thumb_filename, $attachmentOptions['thumb'], false, $thumb_file_hash));
 			}
 		}
 	}

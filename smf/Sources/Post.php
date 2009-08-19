@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.5                                           *
+* Software Version:           SMF 1.1.10                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -142,6 +142,20 @@ function Post()
 		// Just in case of an earlier error...
 		$context['preview_message'] = '';
 		$context['preview_subject'] = '';
+	}
+
+	// No message is complete without a topic.
+	if (empty($topic) && !empty($_REQUEST['msg']))
+	{
+		$request = db_query("
+			SELECT id_topic
+			FROM {$db_prefix}messages
+			WHERE id_msg = " . (int) $_REQUEST['msg'], __FILE__, __LINE__);
+		if (mysql_num_rows($request) != 1)
+			unset($_REQUEST['msg'], $_POST['msg'], $_GET['msg']);
+		else
+			list($topic) = mysql_fetch_row($request);
+		mysql_free_result($request);
 	}
 
 	// Check if it's locked.  It isn't locked if no topic is specified.
@@ -570,8 +584,46 @@ function Post()
 		$context['submit_label'] = isset($_REQUEST['msg']) ? $txt[10] : $txt[105];
 
 		// Previewing an edit?
-		if (isset($_REQUEST['msg']))
+		if (isset($_REQUEST['msg']) && !empty($topic))
 		{
+			// Get the existing message.
+			$request = db_query("
+				SELECT
+					m.ID_MEMBER, m.modifiedTime, m.smileysEnabled, m.body,
+					m.posterName, m.posterEmail, m.subject, m.icon,
+					IFNULL(a.size, -1) AS filesize, a.filename, a.ID_ATTACH,
+					t.ID_MEMBER_STARTED AS ID_MEMBER_POSTER, m.posterTime
+				FROM ({$db_prefix}messages AS m, {$db_prefix}topics AS t)
+					LEFT JOIN {$db_prefix}attachments AS a ON (a.ID_MSG = m.ID_MSG AND a.attachmentType = 0)
+				WHERE m.ID_MSG = " . (int) $_REQUEST['msg'] . "
+					AND m.ID_TOPIC = $topic
+					AND t.ID_TOPIC = $topic", __FILE__, __LINE__);
+			// The message they were trying to edit was most likely deleted.
+			// !!! Change this error message?
+			if (mysql_num_rows($request) == 0)
+				fatal_lang_error('smf232', false);
+			$row = mysql_fetch_assoc($request);
+	
+			$attachment_stuff = array($row);
+			while ($row2 = mysql_fetch_assoc($request))
+				$attachment_stuff[] = $row2;
+			mysql_free_result($request);
+
+			if ($row['ID_MEMBER'] == $ID_MEMBER && !allowedTo('modify_any'))
+			{
+				// Give an extra five minutes over the disable time threshold, so they can type.
+				if (!empty($modSettings['edit_disable_time']) && $row['posterTime'] + ($modSettings['edit_disable_time'] + 5) * 60 < time())
+					fatal_lang_error('modify_post_time_passed', false);
+				elseif ($row['ID_MEMBER_POSTER'] == $ID_MEMBER && !allowedTo('modify_own'))
+					isAllowedTo('modify_replies');
+				else
+					isAllowedTo('modify_own');
+			}
+			elseif ($row['ID_MEMBER_POSTER'] == $ID_MEMBER && !allowedTo('modify_any'))
+				isAllowedTo('modify_replies');
+			else
+				isAllowedTo('modify_any');
+
 			if (!empty($modSettings['attachmentEnable']))
 			{
 				$request = db_query("
@@ -615,7 +667,7 @@ function Post()
 		checkSubmitOnce('free');
 	}
 	// Editing a message...
-	elseif (isset($_REQUEST['msg']))
+	elseif (isset($_REQUEST['msg']) && !empty($topic))
 	{
 		checkSession('get');
 
@@ -814,7 +866,7 @@ function Post()
 				$total_size += filesize($modSettings['attachmentUploadDir'] . '/' . $attachID);
 
 				$context['current_attachments'][] = array(
-					'name' => getAttachmentFilename($name, false, true),
+					'name' => $name,
 					'id' => $attachID
 				);
 			}
@@ -1157,6 +1209,9 @@ function Post2()
 	// Posting a new topic.
 	elseif (empty($topic))
 	{
+		// Now don't be silly, new topics will get their own id_msg soon enough.
+		unset($_REQUEST['msg'], $_POST['msg'], $_GET['msg']);
+
 		if (!isset($_REQUEST['poll']) || $modSettings['pollMode'] != '1')
 			isAllowedTo('post_new');
 

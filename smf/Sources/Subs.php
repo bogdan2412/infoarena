@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.5                                           *
+* Software Version:           SMF 1.1.9                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -3040,7 +3040,7 @@ function setupThemeContext()
 		// Gotta be special for the javascript.
 		$context['fader_news_lines'][$i] = strtr(addslashes($context['news_lines'][$i]), array('/' => '\/', '<a href=' => '<a hre" + "f='));
 	}
-	$context['random_news_line'] = $context['news_lines'][rand(0, count($context['news_lines']) - 1)];
+	$context['random_news_line'] = $context['news_lines'][mt_rand(0, count($context['news_lines']) - 1)];
 
 	if (!$user_info['is_guest'])
 	{
@@ -3280,7 +3280,7 @@ function theme_copyright($get_it = false)
 		return $found;
 
 	// Naughty, naughty.
-	if (rand(0, 2) == 1)
+	if (mt_rand(0, 2) == 1)
 	{
 		$temporary = preg_replace('~<!--.+?-->~s', '', ob_get_contents());
 		if (strpos($temporary, '<!--') !== false)
@@ -3306,7 +3306,7 @@ function theme_copyright($get_it = false)
 	{
 		$found = true;
 		echo '
-			<div style="white-space: normal;">The administrator doesn\'t want a copyright notice saying this is copyright 2006 - 2007 by <a href="http://www.simplemachines.org/about/copyright.php" target="_blank">Simple Machines LLC</a>, and named <a href="http://www.simplemachines.org/">SMF</a>, so the forum will honor this request and be quiet.</div>';
+			<div style="white-space: normal;">The administrator doesn\'t want a copyright notice saying this is copyright 2006 - 2009 by <a href="http://www.simplemachines.org/about/copyright.php" target="_blank">Simple Machines LLC</a>, and named <a href="http://www.simplemachines.org/">SMF</a>, so the forum will honor this request and be quiet.</div>';
 	}
 	// If it's in the copyright, and we are outputting it... it's been found.
 	elseif (isset($modSettings['copyright_key']) && sha1($modSettings['copyright_key'] . 'banjo') == '1d01885ece7a9355bdeb22ed107f0ffa8c323026'){$found = true; return;}elseif ((strpos($forum_copyright, '<a href="http://www.simplemachines.org/" title="Simple Machines Forum" target="_blank">Powered by SMF') !== false || strpos($forum_copyright, '<a href="http://www.simplemachines.org/" onclick="this.href += \'referer.php?forum=' . urlencode($context['forum_name'] . '|' . $boardurl . '|' . $forum_version) . '\';" target="_blank">SMF') !== false || strpos($forum_copyright, '<a href="http://www.simplemachines.org/" target="_blank">SMF') !== false || strpos($forum_copyright, '<a href="http://www.simplemachines.org/" title="Simple Machines Forum" target="_blank">SMF') !== false)&&((strpos($forum_copyright, '<a href="http://www.simplemachines.org/about/copyright.php" title="Free Forum Software" target="_blank">SMF &copy;') !== false && (strpos($forum_copyright, 'Lewis Media</a>') !== false || strpos($forum_copyright, 'Simple Machines LLC</a>') !== false)) || strpos($forum_copyright, '<a href="http://www.lewismedia.com/">Lewis Media</a>') !== false || strpos($forum_copyright, '<a href="http://www.lewismedia.com/" target="_blank">Lewis Media</a>') !== false || (strpos($forum_copyright, '<a href="http://www.simplemachines.org/about/copyright.php"') !== false &&	strpos($forum_copyright, 'Simple Machines LLC') !== false))){$found = true; echo $forum_copyright;}
@@ -3440,7 +3440,38 @@ function db_debug_junk()
 }
 
 // Get an attachment's encrypted filename.  If $new is true, won't check for file existence.
-function getAttachmentFilename($filename, $attachment_id, $new = false)
+function getAttachmentFilename($filename, $attachment_id, $new = false, $file_hash = '')
+{
+	global $modSettings, $db_prefix;
+
+	// Just make up a nice hash...
+	if ($new)
+		return sha1(md5($filename . time()) . mt_rand());
+
+	// Grab the file hash if it wasn't added.
+	if ($file_hash === '')
+	{
+		$request = db_query("
+			SELECT file_hash
+			FROM {$db_prefix}attachments
+			WHERE ID_ATTACH = " . (int) $attachment_id, __FILE__, __LINE__);
+
+		if (mysql_num_rows($request) === 0)
+			return false;
+
+		list ($file_hash) = mysql_fetch_row($request);
+
+		mysql_free_result($request);
+	}
+
+	// In case of files from the old system, do a legacy call.
+	if (empty($file_hash))
+		return getLegacyAttachmentFilename($filename, $attachment_id, $new);
+
+	return $modSettings['attachmentUploadDir'] . '/' . $attachment_id . '_' . $file_hash;
+}
+
+function getLegacyAttachmentFilename($filename, $attachment_id, $new = false)
 {
 	global $modSettings;
 
@@ -3481,7 +3512,7 @@ function host_from_ip($ip)
 		$host = false;
 
 	// Try the Linux host command, perhaps?
-	if (!isset($host) && (strpos(strtolower(PHP_OS), 'win') === false || strpos(strtolower(PHP_OS), 'darwin') !== false) && rand(0, 1) == 1)
+	if (!isset($host) && (strpos(strtolower(PHP_OS), 'win') === false || strpos(strtolower(PHP_OS), 'darwin') !== false) && mt_rand(0, 1) == 1)
 	{
 		if (!isset($modSettings['host_to_dis']))
 			$test = @shell_exec('host -W 1 ' . @escapeshellarg($ip));
@@ -3500,7 +3531,7 @@ function host_from_ip($ip)
 	}
 
 	// This is nslookup; usually only Windows, but possibly some Unix?
-	if (!isset($host) && strpos(strtolower(PHP_OS), 'win') !== false && strpos(strtolower(PHP_OS), 'darwin') === false && rand(0, 1) == 1)
+	if (!isset($host) && strpos(strtolower(PHP_OS), 'win') !== false && strpos(strtolower(PHP_OS), 'darwin') === false && mt_rand(0, 1) == 1)
 	{
 		$test = @shell_exec('nslookup -timeout=1 ' . @escapeshellarg($ip));
 		if (strpos($test, 'Non-existent domain') !== false)
@@ -3575,6 +3606,27 @@ function create_button($name, $alt, $label = '', $custom = '')
 		return '<img src="' . $settings['images_url'] . '/buttons/' . $name . '" alt="' . $txt[$alt] . '" ' . $custom . ' />' . ($label != '' ? '<b>' . $txt[$label] . '</b>' : '');
 	else
 		return '<img src="' . $settings['images_url'] . '/' . $context['user']['language'] . '/' . $name . '" alt="' . $txt[$alt] . '" ' . $custom . ' />';
+}
+// Generate a random seed and ensure it's stored in settings.
+function smf_seed_generator()
+{
+	global $modSettings;
+
+	// Never existed?
+	if (empty($modSettings['rand_seed']))
+	{
+		$modSettings['rand_seed'] = microtime() * 1000000;
+		updateSettings(array('rand_seed' => $modSettings['rand_seed']));
+	}
+
+	if (@version_compare(PHP_VERSION, '4.2.0') == -1)
+	{
+		$seed = ($modSettings['rand_seed'] + ((double) microtime() * 1000003)) & 0x7fffffff;
+		mt_srand($seed);
+	}
+
+	// Change the seed.
+	updateSettings(array('rand_seed' => mt_rand()));
 }
 
 ?>

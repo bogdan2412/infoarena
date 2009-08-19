@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1.5; Register
+// Version: 1.1.10; Register
 
 // Before registering - get their information.
 function template_before()
@@ -360,7 +360,7 @@ function template_admin_register()
 		<script language="JavaScript" type="text/javascript"><!-- // --><![CDATA[
 			function onCheckChange()
 			{
-				if (document.forms.postForm.emailActivate.checked)
+				if (document.forms.postForm.emailActivate.checked || document.forms.postForm.password.value == \'\')
 				{
 					document.forms.postForm.emailPassword.disabled = true;
 					document.forms.postForm.emailPassword.checked = true;
@@ -405,7 +405,7 @@ function template_admin_register()
 					<div class="smalltext" style="font-weight: normal;">', $txt['admin_register_password_desc'], '</div>
 				</th>
 				<td width="50%" align="left">
-					<input type="password" name="password" id="password_input" size="30" /><br />
+					<input type="password" name="password" id="password_input" size="30" onchange="onCheckChange();" /><br />
 				</td>
 			</tr><tr class="windowbg2">
 				<th width="50%" align="right">
@@ -427,7 +427,7 @@ function template_admin_register()
 					<div class="smalltext" style="font-weight: normal;">', $txt['admin_register_email_detail_desc'], '</div>
 				</th>
 				<td width="50%" align="left">
-					<input type="checkbox" name="emailPassword" id="emailPassword_check" checked="checked"', !empty($modSettings['registration_method']) && $modSettings['registration_method'] == 1 ? ' disabled="disabled"' : '', ' class="check" /><br />
+					<input type="checkbox" name="emailPassword" id="emailPassword_check" checked="checked" disabled="disabled" class="check" /><br />
 				</td>
 			</tr><tr class="windowbg2">
 				<th width="50%" align="right">

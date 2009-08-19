@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.3                                           *
+* Software Version:           SMF 1.1.10                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -179,7 +179,7 @@ function setLoginCookie($cookie_length, $id, $password = '')
 		$_SESSION = $oldSessionData;
 
 		// Version 4.3.2 didn't store the cookie of the new session.
-		if (version_compare(PHP_VERSION, '4.3.2') === 0)
+		if (version_compare(PHP_VERSION, '4.3.2') === 0 || (isset($_COOKIE[session_name()]) && $_COOKIE[session_name()] != session_id()))
 			setcookie(session_name(), session_id(), time() + $cookie_length, $cookie_url[1], '', 0);
 
 		$_SESSION['login_' . $cookiename] = $data;
@@ -195,7 +195,7 @@ if (!function_exists('session_regenerate_id'))
 		if (headers_sent())
 			return false;
 
-		session_id(strtolower(md5(uniqid(rand(), true))));
+		session_id(strtolower(md5(uniqid(mt_rand(), true))));
 		return true;
 	}
 }
@@ -616,7 +616,8 @@ function resetPassword($memID, $username = null)
 	}
 
 	// Generate a random password.
-	$newPassword = substr(preg_replace('/\W/', '', md5(rand())), 0, 10);
+	require_once($sourcedir . '/Subs-Members.php');
+	$newPassword = generateValidationCode();
 	$newPassword_sha1 = sha1(strtolower($user) . $newPassword);
 
 	// Do some checks on the username if needed.

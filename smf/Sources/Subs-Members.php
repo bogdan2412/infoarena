@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.5                                           *
+* Software Version:           SMF 1.1.9                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -644,13 +644,13 @@ function registerMember(&$regOptions)
 	// Generate a validation code if it's supposed to be emailed.
 	$validation_code = '';
 	if ($regOptions['require'] == 'activation')
-		$validation_code = substr(preg_replace('/\W/', '', md5(rand())), 0, 10);
+		$validation_code = generateValidationCode();
 
 	// If you haven't put in a password generated one.
 	if ($regOptions['interface'] == 'admin' && $regOptions['password'] == '')
 	{
-		srand(time() + 1277);
-		$regOptions['password'] = substr(preg_replace('/\W/', '', md5(rand())), 0, 10);
+		mt_srand(time() + 1277);
+		$regOptions['password'] = generateValidationCode();
 		$regOptions['password_check'] = $regOptions['password'];
 	}
 	// Does the first password match the second?
@@ -687,12 +687,35 @@ function registerMember(&$regOptions)
 		fatal_error(sprintf($txt[730], htmlspecialchars($regOptions['email'])), false);
 	mysql_free_result($request);
 
+	$reservedVars = array(
+		'actual_theme_url',
+		'actual_images_url',
+		'base_theme_dir',
+		'base_theme_url',
+		'default_images_url',
+		'default_theme_dir',
+		'default_theme_url',
+		'default_template',
+		'images_url',
+		'number_recent_posts',
+		'smiley_sets_default',
+		'theme_dir',
+		'theme_id',
+		'theme_layers',
+		'theme_templates',
+		'theme_url',
+	);
+
+	// Can't change reserved vars.
+	if (isset($regOptions['theme_vars']) && array_intersect(array_keys($regOptions['theme_vars']), $reservedVars) != array())
+		fatal_lang_error('theme3');
+
 	// Some of these might be overwritten. (the lower ones that are in the arrays below.)
 	$regOptions['register_vars'] = array(
 		'memberName' => "'$regOptions[username]'",
 		'emailAddress' => "'$regOptions[email]'",
 		'passwd' => '\'' . sha1(strtolower($regOptions['username']) . $regOptions['password']) . '\'',
-		'passwordSalt' => '\'' . substr(md5(rand()), 0, 4) . '\'',
+		'passwordSalt' => '\'' . substr(md5(mt_rand()), 0, 4) . '\'',
 		'posts' => 0,
 		'dateRegistered' => time(),
 		'memberIP' => "'$user_info[ip]'",
@@ -1093,6 +1116,19 @@ function BuddyListToggle()
 
 	// Redirect back to the profile
 	redirectexit('action=profile;u=' . $_REQUEST['u']);
+}
+// Generate a random validation code.
+function generateValidationCode()
+{
+	global $modSettings;
+	
+	$request = db_query('
+		SELECT RAND()', __FILE__, __LINE__);
+	
+	list ($dbRand) = mysql_fetch_row($request);
+	mysql_free_result($request);
+	
+	return substr(preg_replace('/\W/', '', sha1(microtime() . mt_rand() . $dbRand . $modSettings['rand_seed'])), 0, 10);	
 }
 
 ?>

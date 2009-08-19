@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.5                                           *
+* Software Version:           SMF 1.1.9                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -1178,6 +1178,10 @@ function loadTheme($ID_THEME = 0, $initialize = true)
 		// Pick between $settings and $options depending on whose data it is.
 		while ($row = mysql_fetch_assoc($result))
 		{
+			// There are just things we shouldn't be able to change as members.
+			if ($row['ID_MEMBER'] != 0 && in_array($row['variable'], array('actual_theme_url', 'actual_images_url', 'base_theme_dir', 'base_theme_url', 'default_images_url', 'default_theme_dir', 'default_theme_url', 'default_template', 'images_url', 'number_recent_posts', 'smiley_sets_default', 'theme_dir', 'theme_id', 'theme_layers', 'theme_templates', 'theme_url')))
+				continue;
+
 			// If this is the theme_dir of the default theme, store it.
 			if (in_array($row['variable'], array('theme_dir', 'theme_url', 'images_url')) && $row['ID_THEME'] == '1' && empty($row['ID_MEMBER']))
 				$themeData[0]['default_' . $row['variable']] = $row['value'];
@@ -1941,9 +1945,9 @@ function loadSession()
 		// This is here to stop people from using bad junky PHPSESSIDs.
 		if (isset($_REQUEST[session_name()]) && preg_match('~^[A-Za-z0-9]{16,32}$~', $_REQUEST[session_name()]) == 0 && !isset($_COOKIE[session_name()]))
 		{
-			$_REQUEST[session_name()] = md5(md5('smf_sess_' . time()) . rand());
-			$_GET[session_name()] = md5(md5('smf_sess_' . time()) . rand());
-			$_POST[session_name()] = md5(md5('smf_sess_' . time()) . rand());
+			$_REQUEST[session_name()] = md5(md5('smf_sess_' . time()) . mt_rand());
+			$_GET[session_name()] = md5(md5('smf_sess_' . time()) . mt_rand());
+			$_POST[session_name()] = md5(md5('smf_sess_' . time()) . mt_rand());
 		}
 
 		// Use database sessions? (they don't work in 4.1.x!)
@@ -1970,16 +1974,21 @@ function loadSession()
 		if (!empty($modSettings['databaseSession_loose']))
 			header('Cache-Control: private');
 	}
-
-	// While PHP 4.1.x should use $_SESSION, it seems to need this to do it right.
-	if (@version_compare(PHP_VERSION, '4.2.0') == -1)
-		$HTTP_SESSION_VARS['php_412_bugfix'] = true;
 	*/
 
 	// Set the randomly generated code.
 	if (!isset($_SESSION['rand_code']))
-		$_SESSION['rand_code'] = md5(session_id() . rand());
+		$_SESSION['rand_code'] = md5(session_id() . mt_rand() . (string) microtime() . $modSettings['rand_seed']);
 	$sc = $_SESSION['rand_code'];
+
+	// While PHP 4.1.x should use $_SESSION, it seems to need this to do it right. Also reseed the random generator.
+	if (@version_compare(PHP_VERSION, '4.2.0') == -1)
+	{
+		$HTTP_SESSION_VARS['php_412_bugfix'] = true;
+		mt_srand((float) microtime() * 10000010 + $modSettings['rand_seed']);
+	}
+	else
+		mt_srand();
 }
 
 function sessionOpen($save_path, $session_name)
@@ -2110,7 +2119,7 @@ function cache_put_data($key, $value, $ttl = 120)
 	// eAccelerator...
 	elseif (function_exists('eaccelerator_put'))
 	{
-		if (rand(0, 10) == 1)
+		if (mt_rand(0, 10) == 1)
 			eaccelerator_gc();
 
 		if ($value === null)
@@ -2121,7 +2130,7 @@ function cache_put_data($key, $value, $ttl = 120)
 	// Turck MMCache?
 	elseif (function_exists('mmcache_put'))
 	{
-		if (rand(0, 10) == 1)
+		if (mt_rand(0, 10) == 1)
 			mmcache_gc();
 
 		if ($value === null)

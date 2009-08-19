@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.5                                           *
+* Software Version:           SMF 1.1.10                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -699,7 +699,8 @@ function saveProfileChanges(&$profile_vars, &$post_errors, $memID)
 			// Prepare the new password, or check if they want to change their own.
 			if (!empty($modSettings['send_validation_onChange']) && !allowedTo('moderate_forum'))
 			{
-				$validationCode = substr(preg_replace('/\W/', '', md5(rand())), 0, 10);
+				require_once($sourcedir . '/Subs-Members.php');
+				$validationCode = generateValidationCode();
 				$profile_vars['validation_code'] = '\'' . $validationCode . '\'';
 				$profile_vars['is_activated'] = '2';
 				$newpassemail = true;
@@ -901,6 +902,29 @@ function makeThemeChanges($memID, $ID_THEME)
 {
 	global $db_prefix, $modSettings;
 
+	$reservedVars = array(
+		'actual_theme_url',
+		'actual_images_url',
+		'base_theme_dir',
+		'base_theme_url',
+		'default_images_url',
+		'default_theme_dir',
+		'default_theme_url',
+		'default_template',
+		'images_url',
+		'number_recent_posts',
+		'smiley_sets_default',
+		'theme_dir',
+		'theme_id',
+		'theme_layers',
+		'theme_templates',
+		'theme_url',
+	);
+
+	// Can't change reserved vars.
+	if ((isset($_POST['options']) && array_intersect(array_keys($_POST['options']), $reservedVars) != array()) || (isset($_POST['default_options']) && array_intersect(array_keys($_POST['default_options']), $reservedVars) != array()))
+		fatal_lang_error(1);
+
 	// These are the theme changes...
 	$themeSetArray = array();
 	if (isset($_POST['options']) && is_array($_POST['options']))
@@ -1090,6 +1114,24 @@ function makeAvatarChanges($memID, &$post_errors)
 			}
 			elseif (is_array($sizes))
 			{
+				// Though not an exhaustive list, better safe than sorry.
+				$fp = fopen($_FILES['attachment']['tmp_name'], 'rb');
+				if (!$fp)
+					fatal_lang_error('smf124');
+
+				// Now try to find an infection.
+				while (!feof($fp))
+				{
+					if (preg_match('~(iframe|\\<\\?php|\\<\\?[\s=]|\\<%[\s=]|html|eval|body|script\W)~', fgets($fp, 4096)) === 1)
+					{
+						if (file_exists($uploadDir . '/avatar_tmp_' . $memID))
+							@unlink($uploadDir . '/avatar_tmp_' . $memID);
+
+						fatal_lang_error('smf124');
+					}
+				}
+				fclose($fp);
+
 				$extensions = array(
 					'1' => '.gif',
 					'2' => '.jpg',
@@ -1104,16 +1146,28 @@ function makeAvatarChanges($memID, &$post_errors)
 				// Remove previous attachments this member might have had.
 				removeAttachments('a.ID_MEMBER = ' . $memID);
 
-				if (!rename($_FILES['attachment']['tmp_name'], $uploadDir . '/' . $destName))
-					fatal_lang_error('smf124');
+				$file_hash = empty($modSettings['custom_avatar_enabled']) ? getAttachmentFilename($destName, false, true) : '';
 
 				db_query("
 					INSERT INTO {$db_prefix}attachments
-						(ID_MEMBER, attachmentType, filename, size, width, height)
-					VALUES ($memID, " . (empty($modSettings['custom_avatar_enabled']) ? '0' : '1') . ", '$destName', " . filesize($uploadDir . '/' . $destName) . ", " . (int) $width . ", " . (int) $height . ")", __FILE__, __LINE__);
+						(ID_MEMBER, attachmentType, filename, file_hash, size, width, height)
+					VALUES ($memID, " . (empty($modSettings['custom_avatar_enabled']) ? '0' : '1') . ", '$destName', '" . (empty($file_hash) ? "" : "$file_hash") . "', " . filesize($_FILES['attachment']['tmp_name']) . ", " . (int) $width . ", " . (int) $height . ")", __FILE__, __LINE__);
+				$attachID = db_insert_id();
+
+				// Try to move this avatar.
+				$destinationPath = $uploadDir . '/' . (empty($file_hash) ? $destName : $attachID . '_' . $file_hash);
+				if (!rename($_FILES['attachment']['tmp_name'], $destinationPath))
+				{
+					// The move failed, get rid of it and die.
+					db_query("
+						DELETE FROM {$db_prefix}attachments
+						WHERE ID_ATTACH = $attachID", __FILE__, __LINE__);
+
+					fatal_lang_error('smf124');
+				}
 
 				// Attempt to chmod it.
-				@chmod($uploadDir . '/' . $destName, 0644);
+				@chmod($destinationPath, 0644);
 			}
 			$_POST['avatar'] = '';
 
@@ -1202,7 +1256,7 @@ function summary($memID)
 		$context['activate_link_text'] = in_array($context['member']['is_activated'], array(3, 4, 5, 13, 14, 15)) ? $txt['account_approve'] : $txt['account_activate'];
 
 		// Should we show a custom message?
-		$context['activate_message'] = isset($txt['account_activate_method_' . $context['member']['is_activated'] % 10]) ? $txt['account_activate_method_' . $context['member']['is_activated']] : $txt['account_not_activated'];
+		$context['activate_message'] = isset($txt['account_activate_method_' . $context['member']['is_activated'] % 10]) ? $txt['account_activate_method_' . $context['member']['is_activated'] % 10] : $txt['account_not_activated'];
 	}
 
 	// How about, are they banned?
@@ -1854,8 +1908,10 @@ function TrackIP($memID = 0)
 	// Get some totals for pagination.
 	$request = db_query("
 		SELECT COUNT(*)
-		FROM {$db_prefix}messages
-		WHERE posterIP $dbip", __FILE__, __LINE__);
+		FROM {$db_prefix}messages AS m
+			INNER JOIN {$db_prefix}boards AS b ON (b.ID_BOARD = m.ID_BOARD)
+		WHERE $user_info[query_see_board]
+			AND m.posterIP $dbip", __FILE__, __LINE__);
 	list ($totalMessages) = mysql_fetch_row($request);
 	mysql_free_result($request);
 	$request = db_query("
@@ -1887,8 +1943,10 @@ function TrackIP($memID = 0)
 			m.ID_MSG, m.posterIP, IFNULL(mem.realName, m.posterName) AS display_name, mem.ID_MEMBER,
 			m.subject, m.posterTime, m.ID_TOPIC, m.ID_BOARD
 		FROM {$db_prefix}messages AS m
+			INNER JOIN {$db_prefix}boards AS b ON (b.ID_BOARD = m.ID_BOARD)
 			LEFT JOIN {$db_prefix}members AS mem ON (mem.ID_MEMBER = m.ID_MEMBER)
-		WHERE m.posterIP $dbip
+		WHERE $user_info[query_see_board]
+			AND m.posterIP $dbip
 		ORDER BY m.ID_MSG DESC
 		LIMIT $context[message_start], 20", __FILE__, __LINE__);
 	$context['messages'] = array();
@@ -1950,12 +2008,12 @@ function TrackIP($memID = 0)
 			),
 			'apnic' => array(
 				'name' => &$txt['whois_apnic'],
-				'url' => 'http://www.apnic.net/apnic-bin/whois2.pl?searchtext=' . $context['ip'],
+				'url' => 'http://wq.apnic.net/apnic-bin/whois.pl?searchtext=' . $context['ip'],
 				'range' => array(58, 59, 60, 61, 124, 125, 126, 202, 203, 210, 211, 218, 219, 220, 221, 222),
 			),
 			'arin' => array(
 				'name' => &$txt['whois_arin'],
-				'url' => 'http://ws.arin.net/cgi-bin/whois.pl?queryinput=' . $context['ip'],
+				'url' => 'http://ws.arin.net/whois/?queryinput=' . $context['ip'],
 				'range' => array(63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 199, 204, 205, 206, 207, 208, 209, 216),
 			),
 			'lacnic' => array(
@@ -1965,7 +2023,7 @@ function TrackIP($memID = 0)
 			),
 			'ripe' => array(
 				'name' => &$txt['whois_ripe'],
-				'url' => 'http://www.ripe.net/perl/whois?searchtext=' . $context['ip'],
+				'url' => 'http://www.db.ripe.net/whois?searchtext=' . $context['ip'],
 				'range' => array(62, 80, 81, 82, 83, 84, 85, 86, 87, 88, 193, 194, 195, 212, 213, 217),
 			),
 		);

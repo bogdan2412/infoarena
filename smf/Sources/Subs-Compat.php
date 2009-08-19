@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.5                                           *
+* Software Version:           SMF 1.1.6                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -171,24 +171,5 @@ if (1 == 1)
 	}
 }
 
-// Make sure random means random.
-if (@version_compare(PHP_VERSION, '4.2.0') == -1)
-{
-	function smf_seed_generator()
-	{
-		global $modSettings;
-
-		if (empty($modSettings['rand_seed']))
-		{
-			$modSettings['rand_seed'] = microtime() * 1000000;
-			updateSettings(array('rand_seed' => $modSettings['rand_seed']));
-		}
-		$seed = ($modSettings['rand_seed'] + ((double) microtime() * 1000003)) & 0x7fffffff;
-		srand($seed);
-		// Change the seed?
-		if (rand(1, 250) == 69)
-			updateSettings(array('rand_seed' => rand()));
-	}
-}
 
 ?>

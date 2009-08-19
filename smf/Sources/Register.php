@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.5                                           *
+* Software Version:           SMF 1.1.10                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -119,7 +119,7 @@ function Register()
 	if ($context['visual_verification'])
 	{
 		$context['use_graphic_library'] = in_array('gd', get_loaded_extensions());
-		$context['verificiation_image_href'] = $scripturl . '?action=verificationcode;rand=' . md5(rand());
+		$context['verificiation_image_href'] = $scripturl . '?action=verificationcode;rand=' . md5(mt_rand());
 
 		// Only generate a new code if one hasn't been set yet
 		if (!isset($_SESSION['visual_verification_code']))
@@ -217,7 +217,7 @@ function Register2()
 	if (isset($_POST['realName']) && (!empty($modSettings['allow_editDisplayName']) || allowedTo('moderate_forum')))
 	{
 		$_POST['realName'] = trim(preg_replace('~[\s]~' . ($context['utf8'] ? 'u' : ''), ' ', $_POST['realName']));
-		if (trim($_POST['realName']) != '' && !isReservedName($_POST['realName'], $memID) && $func['strlen']($_POST['realName']) <= 60)
+		if (trim($_POST['realName']) != '' && !isReservedName($_POST['realName']) && $func['strlen']($_POST['realName']) <= 60)
 			$possible_strings[] = 'realName';
 	}
 
@@ -298,7 +298,7 @@ function Register2()
 	// Registration options are always default options...
 	if (isset($_POST['default_options']))
 		$_POST['options'] = isset($_POST['options']) ? $_POST['options'] + $_POST['default_options'] : $_POST['default_options'];
-	$regOptions['theme_vars'] = isset($_POST['options']) && is_array($_POST['options']) ? $_POST['options'] : array();
+	$regOptions['theme_vars'] = isset($_POST['options']) && is_array($_POST['options']) ? htmlspecialchars__recursive($_POST['options']) : array();
 
 	$memberID = registerMember($regOptions);
 
@@ -543,7 +543,7 @@ function VerificationCode()
 		loadLanguage('Login');
 		loadTemplate('Register');
 
-		$context['verificiation_sound_href'] = $scripturl . '?action=verificationcode;rand=' . md5(rand()) . ';format=.wav';
+		$context['verificiation_sound_href'] = $scripturl . '?action=verificationcode;rand=' . md5(mt_rand()) . ';format=.wav';
 		$context['sub_template'] = 'verification_sound';
 		$context['template_layers'] = array();
 

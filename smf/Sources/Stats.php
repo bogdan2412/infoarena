@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1                                             *
+* Software Version:           SMF 1.1.6                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -387,7 +387,6 @@ function DisplayStats()
 		SELECT ID_MEMBER, realName
 		FROM {$db_prefix}members
 		WHERE ID_MEMBER IN (" . implode(', ', array_keys($members)) . ")
-		GROUP BY ID_MEMBER
 		ORDER BY FIND_IN_SET(ID_MEMBER, '" . implode(',', array_keys($members)) . "')
 		LIMIT 10", __FILE__, __LINE__);
 	$context['top_starters'] = array();
@@ -595,7 +594,7 @@ function SMStats()
 			$out .= "Host: www.simplemachines.org\r\n";
 			$out .= "Content-Type: application/x-www-form-urlencoded\r\n";
 			$out .= "Content-Length: $length\r\n\r\n";
-			$out .= "$stats_to_send\r\n"; 
+			$out .= "$stats_to_send\r\n";
 			$out .= "Connection: Close\r\n\r\n";
 			fwrite($fp, $out);
 			fclose($fp);

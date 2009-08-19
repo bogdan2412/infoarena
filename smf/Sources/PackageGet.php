@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1                                             *
+* Software Version:           SMF 1.1.9                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -250,6 +250,18 @@ function PackageGBrowse()
 
 		// Clear any "relative" URL.  Since "server" is not present, "relative" is garbage.
 		unset($_GET['relative']);
+		
+		$token = checkConfirm('get_absolute_url');
+		if ($token !== true)
+		{
+			$context['sub_template'] = 'package_confirm';
+		
+			$context['page_title'] = $txt['smf183'];
+			$context['confirm_message'] = sprintf($txt['package_confirm_view_package_content'], htmlspecialchars($_GET['absolute']));
+			$context['proceed_href'] = $scripturl . '?action=packageget;sa=browse;absolute=' . urlencode($_GET['absolute']) . ';confirm=' . $token;
+			
+			return;
+		}
 	}
 	// Minimum required parameter did not exist so dump out.
 	else
@@ -298,7 +310,7 @@ function PackageGBrowse()
 	// Get default author and email if they exist.
 	if ($listing->exists('default-author'))
 	{
-		$default_author = $listing->fetch('default-author');
+		$default_author = htmlspecialchars($listing->fetch('default-author'));
 		if ($listing->exists('default-author/@email'))
 			$default_email = $listing->fetch('default-author/@email');
 	}
@@ -308,7 +320,7 @@ function PackageGBrowse()
 	{
 		$default_website = $listing->fetch('default-website');
 		if ($listing->exists('default-website/@title'))
-			$default_title = $listing->fetch('default-website/@title');
+			$default_title = htmlspecialchars($listing->fetch('default-website/@title'));
 	}
 
 	$the_version = strtr($forum_version, array('SMF ' => ''));
@@ -328,7 +340,7 @@ function PackageGBrowse()
 
 			// It's a Title, Heading, Rule or Text.
 			if (in_array($package['type'], array('title', 'heading', 'text', 'rule')))
-				$package['name'] = $thisPackage->fetch('.');
+				$package['name'] = htmlspecialchars($thisPackage->fetch('.'));
 			// It's a Remote link.
 			elseif ($package['type'] == 'remote')
 			{
@@ -355,7 +367,7 @@ function PackageGBrowse()
 					$package['href'] = $scripturl . '?action=packageget;sa=browse;absolute=' . $current_url;
 				}
 
-				$package['name'] = $thisPackage->fetch('.');
+				$package['name'] = htmlspecialchars($thisPackage->fetch('.'));
 				$package['link'] = '<a href="' . $package['href'] . '">' . $package['name'] . '</a>';
 			}
 			// It's a package...
@@ -378,6 +390,8 @@ function PackageGBrowse()
 
 				if ($package['description'] == '')
 					$package['description'] = $txt['pacman8'];
+				else
+					$package['description'] = parse_bbc(preg_replace('~\[[/]?html\]~i', '', htmlspecialchars($package['description'])));				
 
 				$package['is_installed'] = isset($installed_mods[$package['id']]);
 				$package['is_current'] = $package['is_installed'] && ($installed_mods[$package['id']] == $package['version']);
@@ -397,6 +411,7 @@ function PackageGBrowse()
 				$package['download_conflict'] = !empty($already_exists) && $already_exists['id'] == $package['id'] && $already_exists['version'] != $package['version'];
 
 				$package['href'] = $url . '/' . $package['filename'];
+				$package['name'] = htmlspecialchars($package['name']);
 				$package['link'] = '<a href="' . $package['href'] . '">' . $package['name'] . '</a>';
 				$package['download']['href'] = $scripturl . '?action=packageget;sa=download' . $server_att . ';package=' . $current_url . $package['filename'] . ($package['download_conflict'] ? ';conflict' : '') . ';sesc=' . $context['session_id'];
 				$package['download']['link'] = '<a href="' . $package['download']['href'] . '">' . $package['name'] . '</a>';
@@ -404,12 +419,12 @@ function PackageGBrowse()
 				if ($thisPackage->exists('author') || isset($default_author))
 				{
 					if ($thisPackage->exists('author/@email'))
-						$package['author']['email'] = $thisPackage->fetch('author/@email');
+						$package['author']['email'] = htmlspecialchars($thisPackage->fetch('author/@email'));
 					elseif (isset($default_email))
 						$package['author']['email'] = $default_email;
 
 					if ($thisPackage->exists('author') && $thisPackage->fetch('author') != '')
-						$package['author']['name'] = $thisPackage->fetch('author');
+						$package['author']['name'] = htmlspecialchars($thisPackage->fetch('author'));
 					else
 						$package['author']['name'] = $default_author;
 
@@ -424,11 +439,11 @@ function PackageGBrowse()
 				if ($thisPackage->exists('website') || isset($default_website))
 				{
 					if ($thisPackage->exists('website') && $thisPackage->exists('website/@title'))
-						$package['author']['website']['name'] = $thisPackage->fetch('website/@title');
+						$package['author']['website']['name'] = htmlspecialchars($thisPackage->fetch('website/@title'));
 					elseif (isset($default_title))
 						$package['author']['website']['name'] = $default_title;
 					elseif ($thisPackage->exists('website'))
-						$package['author']['website']['name'] = $thisPackage->fetch('website');
+						$package['author']['website']['name'] = htmlspecialchars($thisPackage->fetch('website'));
 					else
 						$package['author']['website']['name'] = $default_website;
 
@@ -561,7 +576,7 @@ function PackageDownload()
 
 	// Done!  Did we get this package automatically?
 	if (preg_match('~^http://[\w_\-]+\.simplemachines\.org/~', $_REQUEST['package']) == 1 && strpos($_REQUEST['package'], 'dlattach') === false && isset($_REQUEST['auto']))
-		redirectexit('action=packages;sa=install;package=' . $package_name);
+		redirectexit('action=packages;sa=install;package=' . $package_name . ';sesc=' . $context['session_id']);
 
 	// You just downloaded a mod from SERVER_NAME_GOES_HERE.
 	$context['package_server'] = $server;
@@ -572,11 +587,11 @@ function PackageDownload()
 		fatal_lang_error('package_cant_download', false);
 
 	if ($context['package']['type'] == 'modification')
-		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=packages;sa=install;package=' . $context['package']['filename'] . '">[ ' . $txt['package11'] . ' ]</a>';
+		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=packages;sa=install;package=' . $context['package']['filename'] . ';sesc=' . $context['session_id'] . '">[ ' . $txt['package11'] . ' ]</a>';
 	elseif ($context['package']['type'] == 'avatar')
-		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=packages;sa=install;package=' . $context['package']['filename'] . '">[ ' . $txt['package12'] . ' ]</a>';
+		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=packages;sa=install;package=' . $context['package']['filename'] . ';sesc=' . $context['session_id'] . '">[ ' . $txt['package12'] . ' ]</a>';
 	elseif ($context['package']['type'] == 'language')
-		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=packages;sa=install;package=' . $context['package']['filename'] . '">[ ' . $txt['package13'] . ' ]</a>';
+		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=packages;sa=install;package=' . $context['package']['filename'] . ';sesc=' . $context['session_id'] . '">[ ' . $txt['package13'] . ' ]</a>';
 	else
 		$context['package']['install']['link'] = '';
 
@@ -633,11 +648,11 @@ function PackageUpload()
 	}
 
 	if ($context['package']['type'] == 'modification')
-		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=packages;sa=install;package=' . $context['package']['filename'] . '">[ ' . $txt['package11'] . ' ]</a>';
+		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=packages;sa=install;package=' . $context['package']['filename'] . ';sesc=' . $context['session_id'] . '">[ ' . $txt['package11'] . ' ]</a>';
 	elseif ($context['package']['type'] == 'avatar')
-		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=packages;sa=install;package=' . $context['package']['filename'] . '">[ ' . $txt['package12'] . ' ]</a>';
+		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=packages;sa=install;package=' . $context['package']['filename'] . ';sesc=' . $context['session_id'] . '">[ ' . $txt['package12'] . ' ]</a>';
 	elseif ($context['package']['type'] == 'language')
-		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=packages;sa=install;package=' . $context['package']['filename'] . '">[ ' . $txt['package13'] . ' ]</a>';
+		$context['package']['install']['link'] = '<a href="' . $scripturl . '?action=packages;sa=install;package=' . $context['package']['filename'] . ';sesc=' . $context['session_id'] . '">[ ' . $txt['package13'] . ' ]</a>';
 	else
 		$context['package']['install']['link'] = '';
 

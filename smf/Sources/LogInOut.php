@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.3                                           *
+* Software Version:           SMF 1.1.6                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -106,7 +106,7 @@ function Login2()
 		else
 			trigger_error('Login2(): Cannot be logged in without a session or cookie', E_USER_ERROR);
 
-		$user_settings['passwordSalt'] = substr(md5(rand()), 0, 4);
+		$user_settings['passwordSalt'] = substr(md5(mt_rand()), 0, 4);
 		updateMemberData($ID_MEMBER, array('passwordSalt' => '\'' . $user_settings['passwordSalt'] . '\''));
 
 		setLoginCookie($timeout - time(), $ID_MEMBER, sha1($user_settings['passwd'] . $user_settings['passwordSalt']));
@@ -347,7 +347,7 @@ function Login2()
 		if (in_array($user_settings['passwd'], $other_passwords))
 		{
 			$user_settings['passwd'] = $sha_passwd;
-			$user_settings['passwordSalt'] = substr(md5(rand()), 0, 4);
+			$user_settings['passwordSalt'] = substr(md5(mt_rand()), 0, 4);
 
 			// Update the password and set up the hash.
 			updateMemberData($user_settings['ID_MEMBER'], array('passwd' => '\'' . $user_settings['passwd'] . '\'', 'passwordSalt' => '\'' . $user_settings['passwordSalt'] . '\''));
@@ -375,7 +375,7 @@ function Login2()
 	// Correct password, but they've got no salt; fix it!
 	elseif ($user_settings['passwordSalt'] == '')
 	{
-		$user_settings['passwordSalt'] = substr(md5(rand()), 0, 4);
+		$user_settings['passwordSalt'] = substr(md5(mt_rand()), 0, 4);
 		updateMemberData($user_settings['ID_MEMBER'], array('passwordSalt' => '\'' . $user_settings['passwordSalt'] . '\''));
 	}
 

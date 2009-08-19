@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1; Packages
+// Version: 1.1.8; Packages
 
 function template_main()
 {
@@ -160,6 +160,7 @@ function template_view_package()
 	}
 		echo '
 			</table>
+			<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		</form>';
 }
 
@@ -255,7 +256,7 @@ function template_list()
 
 	foreach ($context['files'] as $fileinfo)
 		echo '
-						<li><a href="', $scripturl, '?action=packages;sa=examine;package=', $context['filename'], ';file=', $fileinfo['filename'], '" title="', $txt[305], '">', $fileinfo['filename'], '</a> (', $fileinfo['size'], ' ', $txt['package_bytes'], ')</li>';
+						<li><a href="', $scripturl, '?action=packages;sa=examine;package=', $context['filename'], ';file=', $fileinfo['filename'], ';sesc=', $context['session_id'], '" title="', $txt[305], '">', $fileinfo['filename'], '</a> (', $fileinfo['size'], ' ', $txt['package_bytes'], ')</li>';
 
 	echo '
 					</ol>
@@ -323,13 +324,13 @@ function template_view_installed()
 							<td>', ++$i, '.</td>
 							<td>', $file['name'], '</td>
 							<td>', $file['version'], '</td>
-							<td align="right"><a href="', $scripturl, '?action=packages;sa=uninstall;package=', $file['filename'], '">[ ', $txt['smf198b'], ' ]</a></td>
+							<td align="right"><a href="', $scripturl, '?action=packages;sa=uninstall;package=', $file['filename'], ';sesc=', $context['session_id'], '">[ ', $txt['smf198b'], ' ]</a></td>
 						</tr>';
 
 		echo '
 					</table>
 					<br />
-					<a href="', $scripturl, '?action=packages;sa=flush">[ ', $txt['smf198d'], ' ]</a>';
+					<a href="', $scripturl, '?action=packages;sa=flush;sesc=', $context['session_id'], '">[ ', $txt['smf198d'], ' ]</a>';
 	}
 
 	echo '
@@ -434,17 +435,17 @@ function template_browse()
 
 		if ($package['can_uninstall'])
 			echo '
-								<a href="', $scripturl, '?action=packages;sa=uninstall;package=', $package['filename'], '">[ ', $txt['smf198b'], ' ]</a>';
+								<a href="', $scripturl, '?action=packages;sa=uninstall;package=', $package['filename'], ';sesc=', $context['session_id'], '">[ ', $txt['smf198b'], ' ]</a>';
 		elseif ($package['can_upgrade'])
 			echo '
-								<a href="', $scripturl, '?action=packages;sa=install;package=', $package['filename'], '">[ ', $txt['package_upgrade'], ' ]</a>';
+								<a href="', $scripturl, '?action=packages;sa=install;package=', $package['filename'], ';sesc=', $context['session_id'], '">[ ', $txt['package_upgrade'], ' ]</a>';
 		elseif ($package['can_install'])
 			echo '
-								<a href="', $scripturl, '?action=packages;sa=install;package=', $package['filename'], '">[ ', $txt['package11'], ' ]</a>';
+								<a href="', $scripturl, '?action=packages;sa=install;package=', $package['filename'], ';sesc=', $context['session_id'], '">[ ', $txt['package11'], ' ]</a>';
 
 		echo '
 								<a href="', $scripturl, '?action=packages;sa=list;package=', $package['filename'], '">[ ', $txt['package14'], ' ]</a>
-								<a href="', $scripturl, '?action=packages;sa=remove;package=', $package['filename'], '"', $package['is_installed'] && $package['is_current'] ? ' onclick="return confirm(\'' . $txt['package_delete_bad'] . '\');"' : '', '>[ ', $txt['package52'], ' ]</a>
+								<a href="', $scripturl, '?action=packages;sa=remove;package=', $package['filename'], ';sesc=', $context['session_id'], '"', $package['is_installed'] && $package['is_current'] ? ' onclick="return confirm(\'' . $txt['package_delete_bad'] . '\');"' : '', '>[ ', $txt['package52'], ' ]</a>
 							</td>
 						</tr>';
 		}
@@ -488,17 +489,17 @@ function template_browse()
 
 		if ($package['can_uninstall'])
 			echo '
-								<a href="', $scripturl, '?action=packages;sa=uninstall;package=', $package['filename'], '">[ ', $txt['smf198b'], ' ]</a>';
+								<a href="', $scripturl, '?action=packages;sa=uninstall;package=', $package['filename'], ';sesc=', $context['session_id'], '">[ ', $txt['smf198b'], ' ]</a>';
 		elseif ($package['can_upgrade'])
 			echo '
-								<a href="', $scripturl, '?action=packages;sa=install;package=', $package['filename'], '">[ ', $txt['package_upgrade'], ' ]</a>';
+								<a href="', $scripturl, '?action=packages;sa=install;package=', $package['filename'], ';sesc=', $context['session_id'], '">[ ', $txt['package_upgrade'], ' ]</a>';
 		elseif ($package['can_install'])
 			echo '
-								<a href="', $scripturl, '?action=packages;sa=install;package=', $package['filename'], '">[ ', $txt['package11'], ' ]</a>';
+								<a href="', $scripturl, '?action=packages;sa=install;package=', $package['filename'], ';sesc=', $context['session_id'], '">[ ', $txt['package11'], ' ]</a>';
 
 		echo '
 								<a href="', $scripturl, '?action=packages;sa=list;package=', $package['filename'], '">[ ', $txt['package14'], ' ]</a>
-								<a href="', $scripturl, '?action=packages;sa=remove;package=', $package['filename'], '">[ ', $txt['package52'], ' ]</a>
+								<a href="', $scripturl, '?action=packages;sa=remove;package=', $package['filename'], ';sesc=', $context['session_id'], '">[ ', $txt['package52'], ' ]</a>
 							</td>
 						</tr>';
 		}
@@ -542,17 +543,17 @@ function template_browse()
 
 		if ($package['can_uninstall'])
 			echo '
-								<a href="', $scripturl, '?action=packages;sa=uninstall;package=', $package['filename'], '">[ ', $txt['smf198b'], ' ]</a>';
+								<a href="', $scripturl, '?action=packages;sa=uninstall;package=', $package['filename'], ';sesc=', $context['session_id'], '">[ ', $txt['smf198b'], ' ]</a>';
 		elseif ($package['can_upgrade'])
 			echo '
-								<a href="', $scripturl, '?action=packages;sa=install;package=', $package['filename'], '">[ ', $txt['package_upgrade'], ' ]</a>';
+								<a href="', $scripturl, '?action=packages;sa=install;package=', $package['filename'], ';sesc=', $context['session_id'], '">[ ', $txt['package_upgrade'], ' ]</a>';
 		elseif ($package['can_install'])
 			echo '
-								<a href="', $scripturl, '?action=packages;sa=install;package=', $package['filename'], '">[ ', $txt['package11'], ' ]</a>';
+								<a href="', $scripturl, '?action=packages;sa=install;package=', $package['filename'], ';sesc=', $context['session_id'], '">[ ', $txt['package11'], ' ]</a>';
 
 		echo '
 								<a href="', $scripturl, '?action=packages;sa=list;package=', $package['filename'], '">[ ', $txt['package14'], ' ]</a>
-								<a href="', $scripturl, '?action=packages;sa=remove;package=', $package['filename'], '">[ ', $txt['package52'], ' ]</a>
+								<a href="', $scripturl, '?action=packages;sa=remove;package=', $package['filename'], ';sesc=', $context['session_id'], '">[ ', $txt['package52'], ' ]</a>
 							</td>
 						</tr>';
 		}
@@ -596,17 +597,17 @@ function template_browse()
 
 		if ($package['can_uninstall'])
 			echo '
-								<a href="', $scripturl, '?action=packages;sa=uninstall;package=', $package['filename'], '">[ ', $txt['smf198b'], ' ]</a>';
+								<a href="', $scripturl, '?action=packages;sa=uninstall;package=', $package['filename'], ';sesc=', $context['session_id'], '">[ ', $txt['smf198b'], ' ]</a>';
 		elseif ($package['can_upgrade'])
 			echo '
-								<a href="', $scripturl, '?action=packages;sa=install;package=', $package['filename'], '">[ ', $txt['package_upgrade'], ' ]</a>';
+								<a href="', $scripturl, '?action=packages;sa=install;package=', $package['filename'], ';sesc=', $context['session_id'], '">[ ', $txt['package_upgrade'], ' ]</a>';
 		elseif ($package['can_install'])
 			echo '
-								<a href="', $scripturl, '?action=packages;sa=install;package=', $package['filename'], '">[ ', $txt['package11'], ' ]</a>';
+								<a href="', $scripturl, '?action=packages;sa=install;package=', $package['filename'], ';sesc=', $context['session_id'], '">[ ', $txt['package11'], ' ]</a>';
 
 		echo '
 								<a href="', $scripturl, '?action=packages;sa=list;package=', $package['filename'], '">[ ', $txt['package14'], ' ]</a>
-								<a href="', $scripturl, '?action=packages;sa=remove;package=', $package['filename'], '"', $package['is_installed'] ? ' onclick="return confirm(\'' . $txt['package_delete_bad'] . '\');"' : '', '>[ ', $txt['package52'], ' ]</a>
+								<a href="', $scripturl, '?action=packages;sa=remove;package=', $package['filename'], ';sesc=', $context['session_id'], '"', $package['is_installed'] ? ' onclick="return confirm(\'' . $txt['package_delete_bad'] . '\');"' : '', '>[ ', $txt['package52'], ' ]</a>
 							</td>
 						</tr>';
 		}
@@ -753,6 +754,25 @@ function template_servers()
 		</table>';
 }
 
+function template_package_confirm()
+{
+	global $context, $settings, $options, $txt, $scripturl;
+
+	echo '
+		<table border="0" width="100%" cellspacing="1" cellpadding="4" class="bordercolor">
+			<tr class="titlebg">
+				<td>' . $context['page_title'] . '</td>
+			</tr>
+			<tr>
+				<td width="100%" align="left" valign="middle" class="windowbg2">
+					', $context['confirm_message'], '<br />
+					<br />
+					<a href="', $context['proceed_href'], '">[ ', $txt['package_confirm_proceed'], ' ]</a> <a href="JavaScript:history.go(-1);">[ ', $txt['package_confirm_go_back'], ' ]</a>
+				</td>
+			</tr>
+		</table>';	
+}
+	
 function template_package_list()
 {
 	global $context, $settings, $options, $txt, $scripturl, $func;

@@ -3,3 +3,4 @@
 	Deny from all
 	Allow from localhost
 </Files>
+RemoveHandler .php .php3 .phtml .cgi .fcgi .pl .fpl .shtml

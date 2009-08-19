@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1.5; Recent
+// Version: 1.1.9; Recent
 
 function template_main()
 {
@@ -15,7 +15,7 @@ function template_main()
 		$button_set = array();
 
 		if ($post['can_delete'])
-			$button_set['delete'] = array('text' => 31, 'image' => 'delete.gif', 'lang' => true, 'custom' => 'onclick="return confirm(\'' . $txt[154] . '?\');"', 'url' => $scripturl . '?action=deletemsg2;msg=' . $post['id'] . ';topic=' . $post['topic'] . ';recent;sesc=' . $context['session_id']);
+			$button_set['delete'] = array('text' => 31, 'image' => 'delete.gif', 'lang' => true, 'custom' => 'onclick="return confirm(\'' . $txt[154] . '?\');"', 'url' => $scripturl . '?action=deletemsg;msg=' . $post['id'] . ';topic=' . $post['topic'] . ';recent;sesc=' . $context['session_id']);
 		if ($post['can_reply'])
 		{
 			$button_set['reply'] = array('text' => 146, 'image' => 'reply_sm.gif', 'lang' => true, 'url' => $scripturl . '?action=post;topic=' . $post['topic'] . '.' . $post['start']);

@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.5                                           *
+* Software Version:           SMF 1.1.9                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -193,7 +193,6 @@ function is_not_guest($message = '')
 
 	// Use the kick_guest sub template...
 	$context['kick_message'] = $message;
-	$context['sub_template'] = 'kick_guest';
 	$context['page_title'] = $txt[34];
 
 	obExit();
@@ -607,6 +606,22 @@ function checkSession($type = 'post', $from_action = '', $is_fatal = true)
 	trigger_error('Hacking attempt...', E_USER_ERROR);
 }
 
+function checkConfirm($action)
+{
+	global $modSettings;
+	
+	if (isset($_GET['confirm']) && isset($_SESSION['confirm_' . $action]) && md5($_GET['confirm'] . $_SERVER['HTTP_USER_AGENT']) == $_SESSION['confirm_' . $action])
+		return true;
+		
+	else
+	{
+		$token = md5(mt_rand() . session_id() . (string) microtime() . $modSettings['rand_seed']);
+		$_SESSION['confirm_' . $action] = md5($token . $_SERVER['HTTP_USER_AGENT']);
+		
+		return $token;
+	}
+}
+
 // Check whether a form has been submitted twice.
 function checkSubmitOnce($action, $is_fatal = true)
 {
@@ -620,7 +635,7 @@ function checkSubmitOnce($action, $is_fatal = true)
 	{
 		$context['form_sequence_number'] = 0;
 		while (empty($context['form_sequence_number']) || in_array($context['form_sequence_number'], $_SESSION['forms']))
-			$context['form_sequence_number'] = rand(1, 16000000);
+			$context['form_sequence_number'] = mt_rand(1, 16000000);
 	}
 	// Check whether the submitted number can be found in the session.
 	elseif ($action == 'check')
@@ -638,7 +653,7 @@ function checkSubmitOnce($action, $is_fatal = true)
 			return false;
 	}
 	// Don't check, just free the stack number.
-	elseif ($action == 'free' && isset($_REQUEST['seqnum']) && in_array($_REQUEST['seqnum'], $_SESSION['forms']))	
+	elseif ($action == 'free' && isset($_REQUEST['seqnum']) && in_array($_REQUEST['seqnum'], $_SESSION['forms']))
 		$_SESSION['forms'] = array_diff($_SESSION['forms'], array($_REQUEST['seqnum']));
 	elseif ($action != 'free')
 		trigger_error('checkSubmitOnce(): Invalid action \'' . $action . '\'', E_USER_WARNING);

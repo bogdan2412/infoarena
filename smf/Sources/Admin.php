@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.5                                           *
+* Software Version:           SMF 1.1.6                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -122,7 +122,7 @@ if (!defined('SMF'))
 function Admin()
 {
 	global $sourcedir, $db_prefix, $forum_version, $txt, $scripturl, $context, $modSettings;
-	global $user_info, $_PHPA, $boardurl;
+	global $user_info, $_PHPA, $boardurl, $memcached;
 
 	if (isset($_GET['area']) && $_GET['area'] == 'copyright')
 		return ManageCopyright();
@@ -231,6 +231,10 @@ function Admin()
 	list ($context['current_versions']['mysql']['version']) = mysql_fetch_row($request);
 	mysql_free_result($request);
 
+	// If we're using memcache we need the server info.
+	if (empty($memcached) && function_exists('memcache_get') && isset($modSettings['cache_memcached']) && trim($modSettings['cache_memcached']) != '')
+		get_memcached_server();
+
 	// Check to see if we have any accelerators installed...
 	if (defined('MMCACHE_VERSION'))
 		$context['current_versions']['mmcache'] = array('title' => 'Turck MMCache', 'version' => MMCACHE_VERSION);
@@ -241,7 +245,7 @@ function Admin()
 	if (extension_loaded('apc'))
 		$context['current_versions']['apc'] = array('title' => 'Alternative PHP Cache', 'version' => phpversion('apc'));
 	if (function_exists('memcache_set'))
-		$context['current_versions']['memcache'] = array('title' => 'Memcached', 'version' => memcache_get_version());
+		$context['current_versions']['memcache'] = array('title' => 'Memcached', 'version' => empty($memcached) ? '???' : memcache_get_version($memcached));
 
 	$context['can_admin'] = allowedTo('admin_forum');
 

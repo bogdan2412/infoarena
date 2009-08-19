@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.4                                           *
+* Software Version:           SMF 1.1.9                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -702,7 +702,7 @@ function Display()
 		{
 			$request = db_query("
 				SELECT
-					a.ID_ATTACH, a.ID_MSG, a.filename, IFNULL(a.size, 0) AS filesize, a.downloads,
+					a.ID_ATTACH, a.ID_MSG, a.filename, a.file_hash, IFNULL(a.size, 0) AS filesize, a.downloads,
 					a.width, a.height" . (empty($modSettings['attachmentShowImages']) || empty($modSettings['attachmentThumbnails']) ? '' : ",
 					IFNULL(thumb.ID_ATTACH, 0) AS ID_THUMB, thumb.width AS thumb_width, thumb.height AS thumb_height") . "
 				FROM {$db_prefix}attachments AS a" . (empty($modSettings['attachmentShowImages']) || empty($modSettings['attachmentThumbnails']) ? '' : "
@@ -941,7 +941,7 @@ function Download()
 	if (isset($_REQUEST['type']) && $_REQUEST['type'] == 'avatar')
 	{
 		$request = db_query("
-			SELECT filename, ID_ATTACH, attachmentType
+			SELECT filename, ID_ATTACH, attachmentType, file_hash
 			FROM {$db_prefix}attachments
 			WHERE ID_ATTACH = $_REQUEST[attach]
 				AND ID_MEMBER > 0
@@ -955,7 +955,7 @@ function Download()
 
 		// Make sure this attachment is on this board.
 		$request = db_query("
-			SELECT a.filename, a.ID_ATTACH, a.attachmentType
+			SELECT a.filename, a.ID_ATTACH, a.attachmentType, a.file_hash
 			FROM ({$db_prefix}boards AS b, {$db_prefix}messages AS m, {$db_prefix}attachments AS a)
 			WHERE b.ID_BOARD = m.ID_BOARD
 				AND $user_info[query_see_board]
@@ -965,7 +965,7 @@ function Download()
 	}
 	if (mysql_num_rows($request) == 0)
 		fatal_lang_error(1, false);
-	list ($real_filename, $ID_ATTACH, $attachmentType) = mysql_fetch_row($request);
+	list ($real_filename, $ID_ATTACH, $attachmentType, $file_hash) = mysql_fetch_row($request);
 	mysql_free_result($request);
 
 	// Update the download counter (unless it's a thumbnail).
@@ -976,7 +976,7 @@ function Download()
 			WHERE ID_ATTACH = $ID_ATTACH
 			LIMIT 1", __FILE__, __LINE__);
 
-	$filename = getAttachmentFilename($real_filename, $_REQUEST['attach']);
+	$filename = getAttachmentFilename($real_filename, $_REQUEST['attach'], false, $file_hash);
 
 	// This is done to clear any output that was made before now. (would use ob_clean(), but that's PHP 4.2.0+...)
 	ob_end_clean();
@@ -1036,7 +1036,11 @@ function Download()
 	header('Connection: close');
 	header('ETag: ' . $file_md5);
 
-	if (filesize($filename) != 0)
+	// IE 6 just doesn't play nice. As dirty as this seems, it works.
+	if ($context['browser']['is_ie6'] && isset($_REQUEST['image']))
+		unset($_REQUEST['image']);
+
+	elseif (filesize($filename) != 0)
 	{
 		$size = @getimagesize($filename);
 		if (!empty($size))
@@ -1047,7 +1051,7 @@ function Download()
 				2 => 'jpeg',
 				3 => 'png',
 				5 => 'psd',
-				6 => 'bmp',
+				6 => 'x-ms-bmp',
 				7 => 'tiff',
 				8 => 'tiff',
 				9 => 'jpeg',
@@ -1055,8 +1059,8 @@ function Download()
 			);
 
 			// Do we have a mime type we can simpy use?
-			if (!empty($size['mime']))
-				header('Content-Type: ' . $size['mime']);
+			if (!empty($size['mime']) && !in_array($size[2], array(4, 13)))
+				header('Content-Type: ' . strtr($size['mime'], array('image/bmp' => 'image/x-ms-bmp')));
 			elseif (isset($validTypes[$size[2]]))
 				header('Content-Type: image/' . $validTypes[$size[2]]);
 			// Otherwise - let's think safety first... it might not be an image...
@@ -1068,11 +1072,9 @@ function Download()
 			unset($_REQUEST['image']);
 	}
 
+	header('Content-Disposition: ' . (isset($_REQUEST['image']) ? 'inline' : 'attachment') . '; filename="' . $real_filename . '"');
 	if (!isset($_REQUEST['image']))
-	{
-		header('Content-Disposition: attachment; filename="' . $real_filename . '"');
 		header('Content-Type: application/octet-stream');
-	}
 
 	// If this has an "image extension" - but isn't actually an image - then ensure it isn't cached cause of silly IE.
 	if (!isset($_REQUEST['image']) && in_array(substr($real_filename, -4), array('.gif', '.jpg', '.bmp', '.png', 'jpeg', 'tiff')))
@@ -1166,7 +1168,7 @@ function loadAttachmentContext($ID_MSG)
 				// A proper thumb doesn't exist yet? Create one!
 				if (empty($attachment['ID_THUMB']) || $attachment['thumb_width'] > $modSettings['attachmentThumbWidth'] || $attachment['thumb_height'] > $modSettings['attachmentThumbHeight'] || ($attachment['thumb_width'] < $modSettings['attachmentThumbWidth'] && $attachment['thumb_height'] < $modSettings['attachmentThumbHeight']))
 				{
-					$filename = getAttachmentFilename($attachment['filename'], $attachment['ID_ATTACH']);
+					$filename = getAttachmentFilename($attachment['filename'], $attachment['ID_ATTACH'], false, $attachment['file_hash']);
 
 					require_once($sourcedir . '/Subs-Graphics.php');
 					if (createThumbnail($filename, $modSettings['attachmentThumbWidth'], $modSettings['attachmentThumbHeight']))
@@ -1178,10 +1180,11 @@ function loadAttachmentContext($ID_MSG)
 						$thumb_filename = addslashes($attachment['filename'] . '_thumb');
 
 						// Add this beauty to the database.
+						$thumb_hash = getAttachmentFilename($thumb_filename, false, true);
 						db_query("
 							INSERT INTO {$db_prefix}attachments
-								(ID_MSG, attachmentType, filename, size, width, height)
-							VALUES ($ID_MSG, 3, '$thumb_filename', " . (int) $thumb_size . ", " . (int) $attachment['thumb_width'] . ", " . (int) $attachment['thumb_height'] . ")", __FILE__, __LINE__);
+								(ID_MSG, attachmentType, filename, file_hash, size, width, height)
+							VALUES ($ID_MSG, 3, '$thumb_filename', '$thumb_hash', " . (int) $thumb_size . ", " . (int) $attachment['thumb_width'] . ", " . (int) $attachment['thumb_height'] . ")", __FILE__, __LINE__);
 						$attachment['ID_THUMB'] = db_insert_id();
 						if (!empty($attachment['ID_THUMB']))
 						{
@@ -1191,8 +1194,8 @@ function loadAttachmentContext($ID_MSG)
 								WHERE ID_ATTACH = $attachment[ID_ATTACH]
 								LIMIT 1", __FILE__, __LINE__);
 
-							$thumb_realname = getAttachmentFilename($thumb_filename, $attachment['ID_THUMB'], true);
-							rename($filename . '_thumb', $modSettings['attachmentUploadDir'] . '/' . $thumb_realname);
+							$thumb_realname = getAttachmentFilename($thumb_filename, $attachment['ID_THUMB'], false, $thumb_hash);
+							rename($filename . '_thumb', $thumb_realname);
 						}
 					}
 				}
