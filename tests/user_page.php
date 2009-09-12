@@ -30,8 +30,7 @@ $res = curl_test(array(
             'title' => "New xzx-title-xzx",
             'last_revision' => "1",
 )));
-log_assert_equal($res['url'],  url_absolute(
-            url_user_profile('test_dude1', true)));
+log_assert_equal($res['url'], url_user_profile('test_dude1', true));
 
 log_print("Anonymous looks at user page and sees changes");
 $res = curl_test(array(

@@ -21,7 +21,7 @@ function curl_test($args)
 //            CURLOPT_VERBOSE => true,
     );
 
-    if (strpos('http://', $args['url']) === false) {
+    if (strpos($args["url"], 'http://') === false) {
         $curl_args[CURLOPT_URL] = IA_URL_HOST . $args['url'];
     } else {
         $curl_args[CURLOPT_URL] = $args['url'];
