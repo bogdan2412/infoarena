@@ -58,6 +58,7 @@ function smf_create_user($ia_user) {
 
 // Updates SMF user information from a regular infoarena user.
 function smf_update_user($ia_user) {
+
     $fields = array(
         'memberName' => $ia_user['username'],
         // 'dateRegistered' => time(),
@@ -95,10 +96,58 @@ function smf_update_user($ia_user) {
         //'messageLabels' => '',
         //'buddy_list' => '',
         //'memberIP2' => '',
-
-        // ID_GROUP 1 is forum administrator
-        'ID_GROUP' => ('admin' == $ia_user['security_level'] ? 1 : null),
     );
+
+    $smf_user = smf_get_member_by_name($ia_user['username']);
+
+    $additional_groups = array();
+    if (strlen($smf_user['additional_groups']) > 0) {
+        $additional_groups = explode(',', $smf_user['additional_groups']);
+    }
+
+    // Check if user is a smf admin
+    // SMF holds the ID of the first group in id_group
+    // and the others in additional_groups separated by , (comma)
+    $is_smf_admin = false;
+    if ($smf_user['id_group'] == 1) {
+        $is_smf_admin = true;
+    }
+
+    if (in_array(1, $additional_groups)) {
+        $is_smf_admin = true;
+    }
+
+    // If user is admin on IA but not on SMF he is promoted
+    if ($ia_user['security_level'] == 'admin' && !$is_smf_admin) {
+        $fields['ID_GROUP'] = 1;
+
+        if ($smf_user['id_group'] != 0) {
+            $additional_groups[] = $smf_user['id_group'];
+        }
+        $fields['additionalGroups'] = implode(',', $additional_groups);
+    }
+
+    // If user is admin on smf but not on IA he is demoted
+    if ($ia_user['security_level'] != 'admin' && $is_smf_admin) {
+        if ($smf_user['id_group'] == '1') {
+            $fields['ID_GROUP'] = 0;
+        } else {
+            $groups = '';
+            foreach ($additional_groups as $group) {
+                // Strip group 1 from additionalGroups
+                if ($group == 1) {
+                    continue;
+                }
+
+                if (strlen($groups) > 0) {
+                    $groups .= ',';
+                }
+                $groups .= $group;
+            }
+
+            $fields['additionalGroups'] = $groups;
+        }
+    }
 
     $where = sprintf("memberName='%s'", db_escape($ia_user['username']));
     $res = db_update(IA_SMF_DB_PREFIX.'members', $fields, $where);
@@ -115,7 +164,19 @@ function smf_get_member_id($username) {
         SELECT ID_MEMBER FROM {$prefix}members
         WHERE memberName = '%s'
     ";
-    return db_query_value(sprintf($query, $username));
+    return db_query_value(sprintf($query, db_escape($username)));
+}
+
+function smf_get_member_by_name($username) {
+    $prefix = IA_SMF_DB_PREFIX;
+    $query = "
+        SELECT ID_MEMBER AS id, memberName AS user_name,
+        ID_GROUP AS id_group, additionalGroups AS additional_groups
+        FROM {$prefix}members
+        WHERE memberName = '".db_escape($username)."'
+    ";
+
+    return db_fetch($query);
 }
 
 ?>
