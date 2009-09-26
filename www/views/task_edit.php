@@ -20,8 +20,14 @@ $form_fields = array(
         ),
         'page_name' => array(
                 'name' => "Pagina cu enuntul",
-                'description' => "Aceasta este pagina la care este trimis utilizatorul ".
-                                 "cand da click pe o problema",
+                'description' => "Aceasta este pagina la care este trimis ".
+                                 "utilizatorul cand da click pe o problema",
+                'type' => 'string',
+        ),
+        'user' => array(
+                'name' => "Utilizatorul care adauga problema",
+                'description' => "Utilizatorul care are drepturi de editare ".
+                                 "asupra problemei. Poate fi lasat gol.",
                 'type' => 'string',
         ),
         'author' => array(
@@ -110,9 +116,12 @@ $form_fields = array(
     <ul class="form">
         <?= view_form_field_li($form_fields['title'], 'title') ?>
         <?= view_form_field_li($form_fields['page_name'], 'page_name') ?>
+        <?php if (identity_can('task-edit-owner', $task)) { ?>
+            <?= view_form_field_li($form_fields['user'], 'user') ?>
+        <?php } ?>
         <?= view_form_field_li($form_fields['author'], 'author') ?>
         <?= view_form_field_li($form_fields['source'], 'source') ?>
-        <?php if (identity_can('task-change-security', $task)) { ?> 
+        <?php if (identity_can('task-change-security', $task)) { ?>
            <?= view_form_field_li($form_fields['hidden'], 'hidden') ?>
         <?php } ?>
         <?php if (identity_can('task-tag', $task)) { ?>
@@ -124,7 +133,7 @@ $form_fields = array(
 <?php
 // FIXME: Field should be generated from task_get_types()
 ?>
-    <?php if (identity_can('task-change-open', $task)) { ?> 
+    <?php if (identity_can('task-change-open', $task)) { ?>
     <fieldset>
     <legend>Acces la surse si teste</legend>
     <ul class="form">

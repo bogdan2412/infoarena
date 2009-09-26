@@ -65,13 +65,38 @@ function controller_task_details($task_id) {
 
     // Tag data
     $values['tags'] = request('tags', tag_build_list("task", $task_id));
-    
+
+    // Task owner
+    if (identity_can('task-edit-owner', $task)) {
+        if ($task["user_id"]) {
+            $user = user_get_by_id($task["user_id"]);
+            log_assert($user, "Task has invalid user_id");
+            $username = $user["username"];
+        } else {
+            $username = "";
+        }
+        $values["user"] = request("user", $username);
+    }
+
     // Validate the monkey.
     if (request_is_post()) {
         // Build new task
         $new_task = $task;
         foreach ($fields as $field) {
             $new_task[$field] = $values[$field];
+        }
+
+        if (identity_can('task-edit-owner', $task)) {
+            if ($values["user"] == "") {
+                $new_task["user_id"] = 0;
+            } else {
+                $user = user_get_by_username($values["user"]);
+                if (!$user) {
+                    $errors["user"] = "Utilizator inexistent";
+                } else {
+                    $new_task["user_id"] = $user["id"];
+                }
+            }
         }
 
         $task_errors = task_validate($new_task);
