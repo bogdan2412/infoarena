@@ -58,7 +58,6 @@ function smf_create_user($ia_user) {
 
 // Updates SMF user information from a regular infoarena user.
 function smf_update_user($ia_user) {
-
     $fields = array(
         'memberName' => $ia_user['username'],
         // 'dateRegistered' => time(),
@@ -112,7 +111,6 @@ function smf_update_user($ia_user) {
     if ($smf_user['id_group'] == 1) {
         $is_smf_admin = true;
     }
-
     if (in_array(1, $additional_groups)) {
         $is_smf_admin = true;
     }

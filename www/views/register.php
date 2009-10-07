@@ -81,7 +81,7 @@
     <legend>Verificare</legend>
     <ul class="form">
         <li>
-            <script>
+            <script type="text/javascript">
                 var RecaptchaOptions = {
                 theme : 'clean',
                 };

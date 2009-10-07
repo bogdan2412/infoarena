@@ -76,7 +76,7 @@ if (!$jobs) {
                     $msg .= ": rezultate partiale disponibile";
                 }
             }
-            $msg = "<span style=\"job-status-done\">$msg</span>";
+            $msg = "<span class=\"job-status-done\">$msg</span>";
             return format_link($url, $msg, false);
         }
         if ($row['status'] == 'processing') {
@@ -94,7 +94,7 @@ if (!$jobs) {
             return format_link($url, $msg, false);
         }
         if ($row['status'] == 'waiting') {
-            $msg = '<span style="job-stats-waiting">in asteptare</span>';
+            $msg = '<span class="job-stats-waiting">in asteptare</span>';
             return format_link($url, $msg, false);
         }
         log_error("Invalid job status");

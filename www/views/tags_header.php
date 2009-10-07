@@ -18,7 +18,7 @@ function tag_format_input_box($value = null, $width = "50", $name = "tags") {
     $output .= '<input class="wickEnabled" type="text" name="'.$esc_name.
                '" id="form_'.$esc_name.'"';
     if (!is_null($width)) {
-        $output .= ' width="'.$esc_width.'"';
+        $output .= ' size="'.$esc_width.'"';
     }
     if (!is_null($value)) {
         $output .= ' value="'.$value.'"';
@@ -26,7 +26,7 @@ function tag_format_input_box($value = null, $width = "50", $name = "tags") {
     $output .= ' />';
     $output .= '<script type="text/javascript" language="JavaScript" src="'.
                 html_escape(url_static("js/wick.js")).'"></script>';
-    $output .= "</label></li>";
+    $output .= "</li>";
     return $output;
 }
 ?>

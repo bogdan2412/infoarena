@@ -103,7 +103,7 @@ $form_fields = array(
 <?php if (identity_can("task-delete", $task)) { ?>
 <form action="<?= html_escape(url_task_delete()) ?>" method="post" style="float: right">
     <input type="hidden" name="task_id" value="<?= html_escape($task_id) ?>" />
-    <input onclick="return confirm('Aceasta actiune este ireversibila! Doresti sa continui?')") type="submit" value="Sterge problema" id="form_delete" class="button important" />
+    <input onclick="return confirm('Aceasta actiune este ireversibila! Doresti sa continui?')" type="submit" value="Sterge problema" id="form_delete" class="button important" />
 </form>
 <?php } ?>
 

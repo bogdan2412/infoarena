@@ -154,7 +154,7 @@ function format_form_field($field_info, $field_name,
 
     // Format label.
     $label = "<label for=\"form_$field_name\"";
-    if (array_key_exists('access_key', $field_info)) {
+    if (array_key_exists(' access_key', $field_info)) {
         $label .= 'accesskey="';
         $label .= $field_info['access_key'];
         $label .= '">';
