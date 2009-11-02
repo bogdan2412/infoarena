@@ -151,7 +151,7 @@ function textblock_validate($tb) {
 function textblock_copy_replace($srcprefix, $dstprefix, $replace, $security,
         $user_id, $remote_ip_info = null) {
     assert($srcprefix != $dstprefix);
-    assert(is_textblock_security_descriptor($security));
+    assert($security === null || is_textblock_security_descriptor($security));
     assert(is_whole_number($user_id));
 
     $textblocks = textblock_get_by_prefix($srcprefix, true, false);
@@ -159,21 +159,13 @@ function textblock_copy_replace($srcprefix, $dstprefix, $replace, $security,
         if ($replace !== null) {
             textblock_template_replace($textblock, $replace);
         }
-        if ($replace !== null) {
+        if ($security !== null) {
             $textblock['security'] = $security;
         }
-        $textblock['name'] = preg_replace('/^'.preg_quote($srcprefix, '/').'/i', $dstprefix, $textblock['name']);
+        $new_name = preg_replace('/^'.preg_quote($srcprefix, '/').'/i',
+            $dstprefix, $textblock['name']);
 
-        //FIXME: hack to keep creation_timestamp correct when textblock already exists
-        $first_textblock = textblock_get_revision($textblock['name']);
-        if (!$first_textblock) {
-            $first_textblock['creation_timestamp'] = null;
-        }
-
-        textblock_add_revision($textblock['name'], $textblock['title'],
-                $textblock['text'], $user_id, $textblock['security'],
-                $textblock['forum_topic'], null,
-                $first_textblock['creation_timestamp'], $remote_ip_info);
+        textblock_copy($textblock, $new_name, $user_id, $remote_ip_info);
     }
 }
 

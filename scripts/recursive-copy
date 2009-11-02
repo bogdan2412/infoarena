@@ -1,0 +1,18 @@
+#!/usr/bin/env php
+<?php
+require_once(dirname($argv[0]) . "/utilities.php");
+require_once(IA_ROOT_DIR . "common/textblock.php");
+require_once(IA_ROOT_DIR . "common/user.php");
+
+db_connect();
+
+log_print("Used for copying textblock pages in bulk.");
+
+$srcprefix = read_line("Source root?");
+$dstprefix = read_line("Destination root?");
+$user = user_get_by_username(read_line("Username?", "bogdan2412"));
+log_assert($user && !user_validate($user), "Please enter valid username");
+
+textblock_copy_replace($srcprefix, $dstprefix, null, null, $user["id"]);
+
+?>

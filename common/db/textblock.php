@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 require_once(IA_ROOT_DIR."common/db/db.php");
 require_once(IA_ROOT_DIR."common/db/tags.php");
@@ -39,7 +39,7 @@ function textblock_add_revision(
     if ($current_revision) {
         // copy current version to revision table
         db_insert('ia_textblock_revision', $current_revision);
-    
+
         // replace current version
         $query = sprintf("DELETE FROM ia_textblock
                           WHERE `name` = '%s'
@@ -322,23 +322,31 @@ function textblock_move($old_name, $new_name) {
     }
 }
 
-function textblock_copy($old_name, $new_name, $user_id, $remote_ip_info) {
-    $old_name = normalize_page_name($old_name);
+// Copy a textblock to new_name.
+// Also copies attachments.
+function textblock_copy($old_textblock, $new_name, $user_id, $remote_ip_info) {
+    log_assert(!textblock_validate($old_textblock));
     $new_name = normalize_page_name($new_name);
-    log_assert(is_normal_page_name($old_name));
     log_assert(is_normal_page_name($new_name));
 
-    $new_textblock = textblock_get_revision($old_name);
+    $new_textblock = $old_textblock;
     $new_textblock['name'] = $new_name;
     $new_textblock['user_id'] = $user_id;
+    $new_textblock['creation_timestamp'] = null;
+    // Keep creation_timestamp correct when textblock with new name already exists
+    $aux = textblock_get_revision($new_name);
+    if ($aux) {
+        $new_textblock['creation_timestamp'] = $aux['creation_timestamp'];
+    }
     textblock_add_revision($new_textblock['name'], $new_textblock['title'],
                            $new_textblock['text'], $new_textblock['user_id'],
                            $new_textblock['security'],
-                           $new_textblock['forum_topic'], null, null,
+                           $new_textblock['forum_topic'],
+                           null, $new_textblock['creation_timestamp'],
                            $remote_ip_info);
 
     // Get a list of attachments.
-    $files = attachment_get_all($old_name);
+    $files = attachment_get_all($old_textblock["name"]);
 
     // Copy attachments in db and hard drive
     foreach ($files as $file) {
