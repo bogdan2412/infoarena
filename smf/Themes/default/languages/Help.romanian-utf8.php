@@ -3,454 +3,367 @@
 
 global $helptxt;
 
-// Versiunea în limba română cu diacritice www.smf.ro - în lucru
 $helptxt = array();
 
-$txt[1006] = 'Inchide fereastra';
+$txt[1006] = 'Închide fereastra';
 
 $helptxt['manage_boards'] = '
-	<b>Edit Boards</b><br />
-	In this menu you can create/reorder/remove boards, and the categories
-	above them. For example, if you had a wide-ranging
-	site that offered information on &quot;Sports&quot; and &quot;Cars&quot; and &quot;Music&quot;, these
-	would be the top-level Categories you\'d create. Under each of these
-	categories you\'d likely want to create hierarchical &quot;sub-categories&quot;,
-	or &quot;Boards&quot; for topics within each. It\'s a simple hierarchy, with this structure: <br />
+	<b>Editare Secţiuni</b><br />
+	În acest meniu poţi crea/reordona/elimina secţiuni şi categoriile de deasupra lor. De exemplu, dacă aţi avea un site care ar oferi informaţii cu privire la &quot;Sport&quot; şi &quot;Maşini&quot; şi &quot;Muzică&quot;, acestea ar fi Categoriile principale pe care le-aţi crea. Sub fiecare dintre aceste categorii veţi dori probabil să creaţi în mod ierarhic &quot;sub-categorii&quot;,
+	sau &quot;Secţiuni&quot; pentru subiecte în fiecare dintre ele. Este o simplă ierarhie cu această structură: <br />
 	<ul>
 		<li>
-			<b>Sports</b>
-			&nbsp;- A &quot;category&quot;
+			<b>Sport</b>
+			&nbsp;- O &quot;categorie&quot;
 		</li>
 		<ul>
 			<li>
 				<b>Baseball</b>
-				&nbsp;- A board under the category of &quot;Sports&quot;
+				&nbsp;- O secţiune în categoria &quot;Sport&quot;
 			</li>
 			<ul>
 				<li>
-					<b>Stats</b>
-					&nbsp;- A child board under the board of &quot;Baseball&quot;
+					<b>Statistici</b>
+					&nbsp;- O subsecţiune în secţiunea &quot;Baseball&quot;
 				</li>
 			</ul>
-			<li><b>Football</b>
-			&nbsp;- A board under the category of &quot;Sports&quot;</li>
+			<li><b>Fotbal</b>
+			&nbsp;- O secţiune în categoria &quot;Sport&quot;</li>
 		</ul>
 	</ul>
-	Categories allow you to break down the board into broad topics (&quot;Cars,
-	Sports&quot;), and the &quot;Boards&quot; under them are the actual topics under which
-	members can post. A user interested in Pintos
-	would post a message under &quot;Cars->Pinto&quot;. Categories allow people to
-	quickly find what their interests are: Instead of a &quot;Store&quot; you have
-	&quot;Hardware&quot; and &quot;Clothing&quot; stores you can go to. This simplifies your
-	search for &quot;pipe joint compound&quot; because you can go to the Hardware
-	Store &quot;category&quot; instead of the Clothing Store (where you\'re unlikely
-	to find pipe joint compound).<br />
-	As noted above, a Board is a key topic underneath a broad category.
-	If you want to discuss &quot;Pintos&quot; you\'d go to the &quot;Auto&quot; category and
-	jump into the &quot;Pinto&quot; board to post your thoughts in that board.<br />
-	Administrative functions for this menu item are to create new boards
-	under each category, to reorder them (put &quot;Pinto&quot; behind &quot;Chevy&quot;), or
-	to delete the board entirely.';
+	Categoriile vă permit să spargeţi secţiunea în subiecte vaste (&quot;Maşini,
+	Sport&quot;), şi &quot;Secţiunile&quot; din ele sunt de fapt subiectele în care membrii pot posta. Un utilizator interesat în Pintos ar posta un mesaj în &quot;Maşini->Pinto&quot;. Categoriile le permit oamenilor să găsească rapid ceea ce îi interesează: În loc de &quot;Magazin&quot; aveţi magazinele &quot;Hardware&quot; şi &quot;Articole de îmbrăcăminte&quot; la care puteţi merge.  Aceasta simplifică căutarea dumneavoastră pentru &quot;pipe joint compound&quot; pentru că puteţi merge la Magazinul Hardware &quot;categorie&quot; în loc de a merge la Magazinul cu Articole de îmbrăcăminte (unde e puţin probabil să găsiţi
+	pipe joint compound).<br />
+	După cum s-a menţionat mai sus o secţiune este un subiect-cheie dintr-o categorie vastă. 
+	Dacă vreţi să discutaţi despre &quot;Pintos&quot; va trebui să mergeţi la categoria &quot;Auto&quot; şi să
+	săriţi în secţiunea &quot;Pinto&quot; pentru a posta gândurile dumneavoastră în acea secţiune.<br />
+	Funcţiile administrative pentru acest element de meniu sunt de a crea noi secţiuni sub fiecare categorie, de a le reordona (pune &quot;Pinto&quot; după &quot;Chevy&quot;), sau de a şterge secţiunile în întregime.';
 
-$helptxt['edit_news'] = '<b>Edit Forum News</b><br />
-	This allows you to set the text for news items displayed on the Board Index page.
-	Add any item you want (e.g., &quot;Don\'t miss the conference this Tuesday&quot;). Each news item should
-	go in a separate box, and they are displayed randomly.';
+$helptxt['edit_news'] = '<b>Editează Ştiri Forum</b><br />
+	Acest lucru vă permite să setaţi textul pentru ştirile afişate pe pagina de Index a Secţiunii (Board Index page).
+	Adăugaţi orice element doriţi (e.g., &quot;Nu pierdeţi conferinţa de marţi&quot;). Fiecare element de ştiri ar trebui să
+meargă într-o casetă separată şi este afişat aleator.';
 
 $helptxt['view_members'] = '
 	<ul>
 		<li>
-			<b>View all Members</b><br />
-			View all members in the board. You are presented with a hyperlinked list of member names. You may click
-			on any of the names to find details of the members (homepage, age, etc.), and as Administrator
-			you are able to modify these parameters. You have complete control over members, including the
-			ability to delete them from the forum.<br /><br />
+			<b>Vizualizaţi toţi Membrii</b><br />
+			Vizualizaţi toţi membrii în secţiune. Vă este prezentată o listă cu hiperlegături de nume de membri.  Este posibil să faceţi click pe oricare nume pentru a afla detalii despre membri (homepage, vârstă, etc.) şi ca Administrator
+puteţi modifica aceşti parametri. Aveţi control complet asupra membrilor, inclusiv capacitatea de a-i şterge de pe forum.<br /><br />
 		</li>
 		<li>
-			<b>Awaiting Approval</b><br />
-			This section is only shown if you have enabled admin approval of all new registrations. Anyone who registers to join your
-			forum will only become a full member once they have been approved by an admin. The section lists all those members who
-			are still awaiting approval, along with their email and IP address. You can choose to either accept or reject (delete)
-			any member on the list by checking the box next to the member and choosing the action from the drop-down box at the bottom
-			of the screen. When rejecting a member you can choose to delete the member either with or without notifying them of your decision.<br /><br />
+			<b>Aşteaptă Aprobarea</b><br />
+			Această secţiune este afişată numai dacă aţi activat aprobarea de către admin a tuturor înregistrărilor noi. Oricine se înregistrează pentru a se alătura forumului dvs va deveni membru cu drepturi depline numai după ce va fi aprobat de către admin. Secţiunea afişează toţi acei membri care sunt încă în aşteptarea aprobării, împreună cu adresa de e-mail şi adresa IP. Puteţi alege fie să acceptaţi, fie să respingeţi (ştergeţi) orice membru de pe listă, bifând caseta de lângă membru şi alegând acţiunea din caseta derulantă (drop-down) din partea de jos a ecranului. Când respingeţi un membru puteţi să alegeţi să-l ştergeţi cu sau fără a-l notifica asupra deciziei dumneavoastră.<br /><br />
 		</li>
 		<li>
-			<b>Awaiting Activation</b><br />
-			This section will only be visible if you have activation of member accounts enabled on the forum. This section will list all
-			members who have still not activated their new accounts. From this screen you can choose to either accept, reject or remind
-			members with outstanding registrations. As above you can also choose to email the member to inform them of the
-			action you have taken.<br /><br />
+			<b>Aşteaptă Activarea</b><br />
+			Această secţiune va fi vizibilă doar dacă aveţi activarea conturilor de membru activată pe forum. Această secţiune va lista toţi membrii care nu şi-au activat conturile încă. Din acest ecran puteţi alege să acceptaţi, să respingeţi sau să le reamintiţi membrilor de înregistrările restante. 	Ca mai sus, puteţi, de asemenea, alege să trimiteţi e-mail membrilor pentru a-i informa de acţiunile pe care le-aţi luat.<br /><br />
 		</li>
 	</ul>';
 
-$helptxt['ban_members'] = '<b>Ban Members</b><br />
-	SMF provides the ability to &quot;ban&quot; users, to prevent people who have violated the trust of the board
-	by spamming, trolling, etc. This allows you to those users who are detrimental to your forum. As an admin,
-	when you view messages, you can see each user\'s IP address used to post at that time. In the ban list,
-	you simply type that IP address in, save, and they can no longer post from that location.<br />You can also
-	ban people through their email address.';
+$helptxt['ban_members'] = '<b>Banează Membrii</b><br />
+	SMF dispune de capacitatea de a &quot;bana&quot; utilizatorii, pentru a preveni persoanele care au încălcat încrederea acordată în secţiune prin spamming, trolling, etc. Acest lucru vă permite să banaţi utilizatorii care sunt în detrimentul dumneavoastră pe forum. Când vizualizaţi mesajele ca admin puteţi vedea adresa de IP a fiecărui utilizator folosită pentru postare la momentul respectiv. Tastaţi pur şi simplu acea adresă de IP în lista de interdicţie, salvaţi şi ei nu mai pot posta de la acea locaţie.<br />Puteţi, de asemenea, bana oamenii prin adresa lor de e-mail.';
 
-$helptxt['modsettings'] = '<b>Edit Features and Options</b><br />
-	There are several features in this section that can be changed to your preference.  Options for installed mods will generally also appear in here.';
+$helptxt['modsettings'] = '<b>Editare Facilităţi şi Opţiuni</b><br />
+	Există mai multe facilităţi în această secţiune care pot fi modificate în funcţie de preferinţele dumneavoastră.
+Opţiunile pentru modificările instalate vor apărea, de asemenea, în general, aici.';
 
-$helptxt['number_format'] = '<b>Number Format</b><br />
-	You can use this setting to format the way in which numbers on your forum will be displayed to the user. The format of this setting is:<br />
+$helptxt['number_format'] = '<b>Formatare Număr</b><br />
+		Aveţi posibilitatea să utilizaţi această setare pentru a formata modul în care numerele de pe forum vor fi afişate pentru utilizator. Formatul aceastei setări este:<br />
 	<div style="margin-left: 2ex;">1,234.00</div><br />
-	Where \',\' is the character used to split up groups of thousands, \'.\' is the character used as the decimal point and the number of zeros dictate the accuracy of roundings.';
+	Unde \',\' este caracterul utilizat pentru a separa grupurile de mii, \'.\' este caracterul utilizat ca punct zecimal şi numărul de zerouri dictate de acurateţea rotunjirilor.';
 
-$helptxt['time_format'] = '<b>Time Format</b><br />
-	You have the power to adjust how the time and date look for yourself. There are a lot of little letters, but it\'s quite simple.
-	The conventions follow PHP\'s strftime function and are described as below (more details can be found at <a href="http://www.php.net/manual/function.strftime.php" target="_blank">php.net</a>).<br />
+$helptxt['time_format'] = '<b>Formatare Timp</b><br />
+	Ai puterea de a ajusta modul în care ora şi data sunt afişate pentru tine. Sunt o mulţime de litere mici, dar e foarte simplu.
+	Convenţiile urmăresc funcţia PHP strftime  şi sunt descrise ca mai jos (mai multe detalii pot fi găsite la <a href="http://www.php.net/manual/function.strftime.php" target="_blank">php.net</a>).<br />
 	<br />
-	The following characters are recognized in the format string: <br />
+	Următoarele caractere sunt recunoscute în formatul şir (string): <br />
 	<span class="smalltext">
-	&nbsp;&nbsp;%a - abbreviated weekday name<br />
-	&nbsp;&nbsp;%A - full weekday name<br />
-	&nbsp;&nbsp;%b - abbreviated month name<br />
-	&nbsp;&nbsp;%B - full month name<br />
-	&nbsp;&nbsp;%d - day of the month (01 to 31) <br />
-	&nbsp;&nbsp;%D<b>*</b> - same as %m/%d/%y <br />
-	&nbsp;&nbsp;%e<b>*</b> - day of the month (1 to 31) <br />
-	&nbsp;&nbsp;%H - hour using a 24-hour clock (range 00 to 23) <br />
-	&nbsp;&nbsp;%I - hour using a 12-hour clock (range 01 to 12) <br />
-	&nbsp;&nbsp;%m - month as a number (01 to 12) <br />
-	&nbsp;&nbsp;%M - minute as a number <br />
-	&nbsp;&nbsp;%p - either &quot;am&quot; or &quot;pm&quot; according to the given time<br />
-	&nbsp;&nbsp;%R<b>*</b> - time in 24 hour notation <br />
-	&nbsp;&nbsp;%S - second as a decimal number <br />
-	&nbsp;&nbsp;%T<b>*</b> - current time, equal to %H:%M:%S <br />
-	&nbsp;&nbsp;%y - 2 digit year (00 to 99) <br />
-	&nbsp;&nbsp;%Y - 4 digit year<br />
-	&nbsp;&nbsp;%Z - time zone or name or abbreviation <br />
-	&nbsp;&nbsp;%% - a literal \'%\' character <br />
+	&nbsp;&nbsp;%a - nume zi abreviat<br />
+	&nbsp;&nbsp;%A - nume zi complet<br />
+	&nbsp;&nbsp;%b - nume lună abreviat<br />
+	&nbsp;&nbsp;%B - nume lună complet<br />
+	&nbsp;&nbsp;%d - zi a lunii (de la 01 la 31) <br />
+	&nbsp;&nbsp;%D<b>*</b> - la fel ca %m/%d/%y <br />
+	&nbsp;&nbsp;%e<b>*</b> - zi a lunii (de la 1 la 31) <br />
+	&nbsp;&nbsp;%H - ora folosind un ceas cu 24 de ore (de la 00 la 23) <br />
+	&nbsp;&nbsp;%I - ora folosind un ceas cu 12 ore (de la 01 la 12) <br />
+	&nbsp;&nbsp;%m - luna ca număr (de la 01 la 12) <br />
+	&nbsp;&nbsp;%M - minutul ca număr <br />
+	&nbsp;&nbsp;%p - fie &quot;am&quot; sau &quot;pm&quot; în funcţie de timpul dat<br />
+	&nbsp;&nbsp;%R<b>*</b> - timp în notaţie de 24 ore<br />
+	&nbsp;&nbsp;%S - secunda ca număr zecimal<br />
+	&nbsp;&nbsp;%T<b>*</b> - timp actual, egal cu %H:%M:%S <br />
+	&nbsp;&nbsp;%y - an cu 2 caractere (de la 00 la 99) <br />
+	&nbsp;&nbsp;%Y - an cu 4 caractere<br />
+	&nbsp;&nbsp;%Z - fus orar sau nume sau abreviere <br />
+	&nbsp;&nbsp;%% - un \'%\' caracter literă <br />
 	<br />
-	<i>* Does not work on Windows-based servers.</i></span>';
+	<i>* Nu funcţionează pe serverele bazate pe Windows.</i></span>';
 
-$helptxt['live_news'] = '<b>Live announcements</b><br />
-	This box shows recently updated announcements from <a href="http://www.simplemachines.org/" target="_blank">www.simplemachines.org</a>.
-	You should check here every now and then for updates, new releases, and important information from Simple Machines.';
+$helptxt['live_news'] = '<b>Anunţuri live</b><br />
+	Această casetă arată anunţurile recent actualizate de la <a href="http://www.simplemachines.org/" target="_blank">www.simplemachines.org</a>.
+	Ar trebui să verificaţi aici din când în când pentru actualizări, noi versiuni, informaţii importante de la Simple Machines.';
 
-$helptxt['registrations'] = '<b>Registration Management</b><br />
-	This section contains all the functions that could be necessary to manage new registrations on the forum. It contains up to four
-	sections which are visible depending on your forum settings. These are:<br /><br />
+$helptxt['registrations'] = '<b>Management Înregistrare</b><br />
+	Această secţiune conţine toate funcţiile care ar putea fi necesare în administrarea noilor înregistrări de pe forum. Ea conţine până la patru secţiuni care sunt vizibile în funcţie de setările forumului dumneavoastră. Acestea sunt:<br /><br />
 	<ul>
 		<li>
-			<b>Register new member</b><br />
-			From this screen you can choose to register accounts for new members on their behalf. This can be useful in forums where registration is closed
-			to new members, or in cases where the admin wishes to create a test account. If the option to require activation of the account
-			is selected the member will be emailed a activation link which must be clicked before they can use the account. Similarly you can
-			select to email the users new password to the stated email address.<br /><br />
+			<b>Înregistrează Un Membru Nou</b><br />		
+Din acest ecran puteţi alege să se înregistreze conturi de noi membri în numele lor. Acest lucru poate fi util în cazul în care înregistrarea în forum este închisă sau în cazurile în care administratorul doreşte să creeze un cont de test. 	
+Dacă opţiunea de a solicita activarea contului este selectată, membrul va primi pe e-mail un link de activare pe care trebuie să facă click înainte de a putea utiliza contul de membru.
+			Puteţi selecta în mod similar să le trimiteti pe e-mail utilizatorilor noua parolă la adresa de e-mail declarată.<br /><br />
 		</li>
 		<li>
-			<b>Edit Registration Agreement</b><br />
-			This allows you to set the text for the registration agreement displayed when members sign up for your forum.
-			You can add or remove anything from the default registration agreement, which is included in SMF.<br /><br />
+			<b>Editează Acordul de Înregistrare</b><br />
+			Acest lucru vă permite să setaţi textul acordului de înregistrare afişat atunci când membrii se înscriu în forumul dumneavoastră.
+			Puteţi adăuga sau elimina orice din acordul de înregistrare implicit care este inclus în SMF.<br /><br />
 		</li>
 		<li>
-			<b>Set Reserved Names</b><br />
-			Using this interface you can specify words or names which may not be used by your users.<br /><br />
+			<b>Setează Numele Rezervate</b><br />
+			Folosind această interfaţă puteţi specifica numele sau cuvintele care nu pot fi utilizate de către utilizatorii dvs.<br /><br />
 		</li>
 		<li>
-			<b>Settings</b><br />
-			This section will only be visible if you have permission to administrate the forum. From this screen you can decide on the registration method
-			is use on your forum, as well as other registration related settings.
+			<b>Setări</b><br />
+			Această secţiune va fi vizibilă doar dacă aveţi permisiunea de a administra forumul. Din acest ecran puteţi decide cu privire la metoda de înregistrare care este folosită în forumul dumneavoastră, precum şi alte setări legate de înregistrare.
 		</li>
 	</ul>';
 
 $helptxt['modlog'] = '<b>Moderation Log</b><br />
-	This section allows members of the admin team to track all the moderation actions that the forum moderators have performed. To ensure that
-	moderators cannot remove references to the actions they have performed, entries may not be deleted until 24 hours after the action was taken.
-	The \'objects\' column lists any variables associated with the action.';
+		Această secţiune permite membrilor din echipa de admini să urmărească toate acţiunile de moderare pe care le-au efectuat moderatorii forumului. Pentru a te asigura că moderatorii nu pot elimina referirile la acţiunile pe care le-au efectuat, intrările nu pot fi şterse până la 24 de ore după ce acţiunea a fost luată.
+	Coloana \'objects\' afişează orice variabile asociate cu acţiunea.';
 $helptxt['error_log'] = '<b>Error Log</b><br />
-	The error log tracks logs every serious error encountered by users using your forum. It lists all of these errors by date which can be sorted
-	by clicking the black arrow next to each date. Additionally you can filter the errors by clicking the picture next to each error statistic. This
-	allows you to filter, for example, by member. When a filter is active the only results that will be displayed will be those that match that filter.';
-$helptxt['theme_settings'] = '<b>Theme Settings</b><br />
-	The settings screen allows you to change settings specific to a theme. These settings include options such as the themes directory and URL information but
-	also options that affect the layout of a theme on your forum. Most themes will have a variety of user configurable options, allowing you to adapt a theme
-	to suit your individual forum needs.';
-$helptxt['smileys'] = '<b>Smiley Center</b><br />
-	Here you can add and remove smileys, and smiley sets.  Note importantly that if a smiley is in one set, it\'s in all sets - otherwise, it might
-	get confusing for your users using different sets.<br /><br />
+	Jurnalul de erori urmăreşte fiecare eroare serioasă întâlnită de utilizatori în utilizarea forumului dumneavoastră. El afişează toate aceste erori după dată, dată care poate fi ordonată prin click pe săgeata neagră de lângă fiecare dată. În plus, puteţi filtra erorile făcând click pe imaginea de lângă fiecare eroare statistică. Aceasta vă permite să filtraţi, de exemplu, după membru. Când un filtru este activ singurele rezultate care vor fi afişate sunt acelea care corespund acelui filtru.';
+$helptxt['theme_settings'] = '<b>Setări Temă</b><br />
+	Ecranul de setări vă permite să schimbaţi setările specifice unei teme. Aceste setări includ opţiuni cum ar fi directorul de teme şi informaţii despre URL, dar şi opţiuni care pot afecta aspectul (layout-ul) unei teme de pe forum. Cele mai multe teme vor avea o varietate de opţiuni configurabile de către utilizator, permiţându-vă să adaptaţi o temă pentru a se potrivi nevoilor individuale ale forumului dumneavoastră.';
+$helptxt['smileys'] = '<b>Centrul de Zâmbete</b><br />
+		Aici puteţi adăuga şi elimina Zâmbete şi Seturi de Zâmbete.  Notează importanţa faptului că dacă un zâmbet este într-un set, el trebuie sa fie în toate seturile - altfel s-ar putea crea confuzie printre utilizatorii care folosesc diferite seturi.<br /><br />
 
-	You are also able to edit message icons from here, if you have them enabled on the settings page.';
-$helptxt['calendar'] = '<b>Manage Calendar</b><br />
-	Here you can modify the current calendar settings as well as add and remove holidays that appear on the calendar.';
+		În plus, puteţi să editaţi iconiţele asociate mesajelor de aici, dacă le-aţi activat de pe pagina de setări. ';
+$helptxt['calendar'] = '<b>Administrează Calendarul</b><br />
+	Aici puteţi modifica setările calendarului curent, precum şi adăuga sau şterge sărbătorile care apar în calendar.';
 
-$helptxt['serversettings'] = '<b>Server Settings</b><br />
-	Here you can perform the core configuration for your forum. This section includes the database and url settings, as well as other
-	important configuration items such as mail settings and caching. Think carefully whenever editing these settings as an error may
-	render the forum inaccessible';
+$helptxt['serversettings'] = '<b>Setări Server</b><br />
+	Aici puteţi efectua configurarea de bază pentru forumul dumneavoastră. Aceasta secţiune include setări ale bazei de date si url-ului, precum şi alte elemente de configurare importante, cum ar fi setările de mail şi de stocare în cache. Gândeşte-te cu atenţie ori de câte ori editezi aceste setări deoarece o eroare poate face forumul inaccesibil.';
 
-$helptxt['topicSummaryPosts'] = 'This allows you to set the number of previous posts shown in the topic summary at the reply screen.';
-$helptxt['enableAllMessages'] = 'Set this to the <em>maximum</em> number of posts a topic can have to show the all link.  Setting this lower than &quot;Maximum messages to display in a topic page&quot; will simply mean it never gets shown, and setting it too high could slow down your forum.';
-$helptxt['enableStickyTopics'] = 'Stickies are topics that remain on top of the topic list. They are mostly used for important
-		messages. Although you can change this with permissions, by default only moderators and administrators can make topics sticky.';
-$helptxt['allow_guestAccess'] = 'Unchecking this box will stop guests from doing anything but very basic actions - login, register, password reminder, etc. - on your forum.  This is not the same as disallowing guest access to boards.';
-$helptxt['userLanguage'] = 'Turning this option on will allow users to select which language file they use. It will not affect the
-		default selection.';
-$helptxt['trackStats'] = 'Stats:<br />This will allow users to see the latest posts and the most popular topics on your forum.
-		It will also show several statistics, like the most members online, new members and new topics.<hr />
-		Page views:<br />Adds another column to the stats page with the number of pageviews on your forum.';
-$helptxt['titlesEnable'] = 'Switching Custom Titles on will allow members with the relevant permission to create a special title for themselves.
-		This will be shown underneath the name.<br /><i>For example:</i><br />Jeff<br />Cool Guy';
-$helptxt['topbottomEnable'] = 'This will add go up and go down buttons, so that member can go to the top and bottom of a page
-		without scrolling.';
-$helptxt['onlineEnable'] = 'This will show an image to indicate whether the member is online or offline';
-$helptxt['todayMod'] = 'This will show &quot;Today&quot;, or &quot;Yesterday&quot;, instead of the date.';
-$helptxt['enablePreviousNext'] = 'This will show a link to the next and previous topic.';
-$helptxt['pollMode'] = 'This selects whether polls are enabled or not. If polls are disabled, any existing polls will be hidden
-		from the topic listing. You can choose to continue to show the regular topic without their polls by selecting
-		&quot;Show Existing Polls as Topics&quot;.<br /><br />To choose who can post polls, view polls, and similar, you
-		can allow and disallow those permissions. Remember this if polls are not working.';
-$helptxt['enableVBStyleLogin'] = 'This will show a more compact login on every page of the forum for guests.';
-$helptxt['enableCompressedOutput'] = 'This option will compress output to lower bandwidth consumption, but it requires
-		zlib to be installed.';
-$helptxt['databaseSession_enable'] = 'This option makes use of the database for session storage - it is best for load balanced servers, but helps with all timeout issues and can make the forum faster.';
-$helptxt['databaseSession_loose'] = 'Turning this on will decrease the bandwidth your forum uses, and make it so clicking back will not reload the page - the downside is that the (new) icons won\'t update, among other things. (unless you click to that page instead of going back to it.)';
-$helptxt['databaseSession_lifetime'] = 'This is the number of seconds for sessions to last after they haven\'t been accessed.  If a session is not accessed for too long, it is said to have &quot;timed out&quot;.  Anything higher than 2400 is recommended.';
-$helptxt['enableErrorLogging'] = 'This will log any errors, like a failed login, so you can see what went wrong.';
-$helptxt['allow_disableAnnounce'] = 'This will allow users to opt out of notification of topics you announce by checking the &quot;announce topic&quot; checkbox when posting.';
-$helptxt['disallow_sendBody'] = 'This option removes the option to receive the text of replies and posts in notification emails.<br /><br />Often, members will reply to the notification email, which in most cases means the webmaster receives the reply.';
-$helptxt['compactTopicPagesEnable'] = 'This will just show a selection of the number of pages.<br /><i>Example:</i>
-		&quot;3&quot; to display: 1 ... 4 [5] 6 ... 9 <br />
-		&quot;5&quot; to display: 1 ... 3 4 [5] 6 7 ... 9';
-$helptxt['timeLoadPageEnable'] = 'This will show the time in seconds SMF took to create that page at the bottom of the board.';
-$helptxt['removeNestedQuotes'] = 'This will only show the quote of the post in question, not any quoted posts from that post.';
-$helptxt['simpleSearch'] = 'This will show a simple search form and a link to a more advanced form.';
-$helptxt['max_image_width'] = 'This allows you to set a maximum size for posted pictures. Pictures smaller than the maximum will not be affected.';
-$helptxt['mail_type'] = 'This setting allows you to choose either PHP\'s default settings, or to override those settings with SMTP.  PHP doesn\'t support using authentication with SMTP (which many hosts require, now) so if you want that you should select SMTP.  Please note that SMTP can be slower, and some servers will not take usernames and passwords.<br /><br />You don\'t need to fill in the SMTP settings if this is set to PHP\'s default.';
-$helptxt['attachmentEnable'] = 'Attachments are files that members can upload, and attach to a post.<br /><br />
-		<b>Check attachment extension</b>:<br /> Do you want to check the extension of the files?<br />
-		<b>Allowed attachment extensions</b>:<br /> You can set the allowed extensions of attached files.<br />
-		<b>Attachments directory</b>:<br /> The path to your attachment folder<br />(example: /home/sites/yoursite/www/forum/attachments)<br />
-		<b>Max attachment folder space</b> (in KB):<br /> Select how large the attachment folder can be, including all files within it.<br />
-		<b>Max attachment size per post</b> (in KB):<br /> Select the maximum filesize of all attachments made per post.  If this is lower than the per-attachment limit, this will be the limit.<br />
-		<b>Max size per attachment</b> (in KB):<br /> Select the maximum filesize of each separate attachment.<br />
-		<b>Max number of attachments per post</b>:<br /> Select the number of attachments a person can make, per post.<br />
-		<b>Display attachment as picture in posts</b>:<br /> If the uploaded file is a picture, this will show it underneath the post.<br />
-		<b>Resize images when showing under posts</b>:<br /> If the above option is selected, this will save a separate (smaller) attachment for the thumbnail to decrease bandwidth.<br />
-		<b>Maximum width and height of thumbnails</b>:<br /> Only used with the &quot;Resize images when showing under posts&quot; option, the maximum width and height to resize attachments down from.  They will be resized proportionally.';
-$helptxt['karmaMode'] = 'Karma is a feature that shows the popularity of a member. Members, if allowed, can
-		\'applaud\' or \'smite\' other members, which is how their popularity is calculated. You can change the
-		number of posts needed to have a &quot;karma&quot;, the time between smites or applauds, and if administrators
-		have to wait this time as well.<br /><br />Whether or not groups of members can smite others is controlled by
-		a permission.  If you have trouble getting this feature to work for everyone, double check your permissions.';
+$helptxt['topicSummaryPosts'] = 'Aceasta îţi permite să setezi numărul mesajelor precedente vizualizate în rezumatul topicului în ecranul de răspuns.';
+$helptxt['enableAllMessages'] = 'Setează aceasta la numărul <em>maxim</em> de mesaje postate pe care le poate avea un subiect pentru a afişa link-ul toate.  Setarea acesteia mai jos de &quot;Maximul de mesaje de afişat în pagina unui subiect&quot; va însemna pur şi simplu ca nu va fi afişat niciodată, iar setarea ei prea sus ar putea încetini forumul dvs.';
+$helptxt['enableStickyTopics'] = 'Subiectele importante (Stickies) sunt subiecte care ramân în fruntea listei de subiecte. Ele sunt utilizate în cea mai mare măsură pentru mesaje. Deşi puteţi schimba acest lucru cu permisiunile, în mod implicit numai moderatorii şi administratorii pot face subiectele importante (sticky).';
+$helptxt['allow_guestAccess'] = 'Debifarea acestei casete va opri vizitatorii să facă orice altceva decât acţiunile de bază - logare,  înregistrare, reamintire parolă etc. - pe forumul dvs.  Aceasta nu este acelaşi lucru cu a refuza accesul vizitatorilor la forumuri.';
+$helptxt['userLanguage'] = 'Activarea acestei opţiuni va permite utilizatorilor să selecteze ce fişier de limbă vor folosi. Nu va afecta selecţia implicită.';
+$helptxt['trackStats'] = 'Statistici:<br />Aceasta va permite utilizatorilor să vadă cele mai noi mesaje postate şi cele mai populare subiecte de pe forum.
+		De asemenea, va arăta mai multe statistici, cum ar fi cei mai mulţi membri online, noii membri şi subiectele noi.<hr />
+		Vizualizări pagină:<br />Adaugă o altă coloană la pagina de statistici cu numărul de vizualizări de pagini pe forumul dvs.';
+$helptxt['titlesEnable'] = 'Activarea Titlurilor Personalizate le va permite membrilor cu permisiuni relevante să creeze un titlu special pentru ei înşişi.
+		Acesta va fi afişat sub nume.<br /><i>De exemplu:</i><br />Jeff<br />Grozav Tip';
+$helptxt['topbottomEnable'] = 'Aceasta va adăuga butoanele Mergi Sus şi Mergi Jos, în aşa fel încât membrul poate merge în partea de sus sau de jos a forumului fără a derula.';
+$helptxt['onlineEnable'] = 'Aceasta va afişa o imagine pentru a indica dacă membrul este online sau offline';
+$helptxt['todayMod'] = 'Aceasta va arăta &quot;Astăzi&quot;, sau &quot;Ieri&quot;, în loc de dată.';
+$helptxt['enablePreviousNext'] = 'Aceasta va arăta un link către topicul următor şi precedent.';
+$helptxt['pollMode'] = 'Aceasta selectează dacă sondajele sunt sau nu activate. Dacă sondajele sunt dezactivate, orice sondaje existente vor fi ascunse din listarea subiectului. Puteţi opta să arătaţi în continuare subiectele obişnuite fără sondaje prin selectarea &quot;Afişează Sondajele Existente ca Subiecte&quot;.<br /><br />Pentru a alege cine poate posta sondaje, vizualiza sondaje şi altele similare, puteţi permite şi interzice aceste permisiuni. Amintiţi-vă acest lucru dacă sondajele nu funcţionează.';
+$helptxt['enableVBStyleLogin'] = 'Aceasta va afişa un login mai compact pentru vizitatori pe fiecare pagină a forumului.';
+$helptxt['enableCompressedOutput'] = 'Această opţiune va comprima ieşirea pentru a diminua consumul de lăţime de bandă (bandwidth), dar necesită ca zlib  să fie instalat.';
+$helptxt['databaseSession_enable'] = 'Această opţiune face uz de baza de date pentru sesiunea de stocare - este cel mai bine pentru servere cu încărcare echilibrată, dar ajută cu toate problemele de expirare de timp şi poate face forumul mai rapid.';
+$helptxt['databaseSession_loose'] = 'Această setare va diminua lăţimea de bandă consumată de forum, dar la folosirea butonului înapoi din browser pagina nu se va reîncărca - minusul acestei setări este că icoanele (noi) şi alte lucruri nu se vor reîmprospăta automat. (doar dacă se face click pe link-ul paginii respective în loc de folosirea butonului înapoi.)';
+$helptxt['databaseSession_lifetime'] = 'Acesta este numărul de secunde în care mai pot dura sesiunile după ce nu au mai fost accesate.  Dacă o sesiune nu este accesată prea mult timp, se spune că a &quot;expirat&quot;.  Orice număr mai mare decât 2400 este recomandat.';
+$helptxt['enableErrorLogging'] = 'Aceasta va loga orice erori, cum ar fi o logare nereuşită, ca să puteţi vedea ce a mers rău.';
+$helptxt['allow_disableAnnounce'] = 'Aceasta le va permite utilizatorilor să opteze să nu primească notificări despre subiectele pe care tu le anunţi bifând căsuţa &quot;anunţă subiect&quot; la postare.';
+$helptxt['disallow_sendBody'] = 'Această opţiune înlătură opţiunea de a primi textul răspunsurilor şi mesajelor în email-urile de notificare.<br /><br />Deseori membrii răspund notificării prin email, ceea ce în cele mai multe cazuri înseamnă că webmaster-ul primeşte răspunsul.';
+$helptxt['compactTopicPagesEnable'] = 'Aceasta va afişa doar o selecţie a numărului de pagini.<br /><i>Exemplu:</i>
+		&quot;3&quot; pentru a afişa: 1 ... 4 [5] 6 ... 9 <br />
+		&quot;5&quot; pentru a afişa: 1 ... 3 4 [5] 6 7 ... 9';
+$helptxt['timeLoadPageEnable'] = 'Aceasta va arăta timpul în secunde necesar SMF pentru a crea această pagină în partea de jos a forumului.';
+$helptxt['removeNestedQuotes'] = 'Aceasta va arăta citatul mesajului în cauză, nu orice mesaje citate din acel mesaj.';
+$helptxt['simpleSearch'] = 'Aceasta va arăta un formular simplu de căutare şi un link către un formular mai avansat.';
+$helptxt['max_image_width'] = 'Aceasta îţi permite să setezi mărimea măximă admisă pentru imaginile postate. Imaginile mai mici decât maximul setat nu vor fi afectate.';
+$helptxt['mail_type'] = 'Aceasta setare îţi permite să alegi fie setările implicite ale PHP, fie să suprascrii acele setări cu SMTP.  PHP nu sprijină folosirea autentificării cu SMTP (cerute de multe gazde acum), deci dacă vrei aceasta ar trebui să selectezi SMTP.  Vă rugăm să reţineţi că SMTP poate fi mai lent şi unele servere nu vor lua în calcul numele de utilizator şi parolele.<br /><br />Nu trebuie să completaţi setările SMTP, dacă aceasta este setată pentru PHP implicit.';
+$helptxt['attachmentEnable'] = 'Ataşamentele sunt fişiere pe care membrii le pot încărca şi ataşa la un post.<br /><br />
+		<b>Verificaţi extensia fişierului ataşat </b>:<br />Doriţi să verificaţi extensia fişierelor?<br />
+		<b>Extensii fişier ataşat permise</b>:<br /> Poţi seta extensiile permise ale fişierelor ataşate.<br />
+		<b>Directorul de ataşamente</b>:<br /> Calea către folderul dvs. de ataşament<br />(exemplu: /home/sites/siteuldvs/www/forum/attachments)<br />
+		<b>Spaţiul maxim al folderului de ataşamente</b> (în KB):<br /> Selectaţi cât de mare poate fi folderul de ataşamente incluzând toate fişierele din el.<br />
+		<b>Mărimea maximă a ataşamentului per post</b> (în KB):<br /> Selectaţi dimensiunea maximă a fişierelor din toate ataşamentele făcute per post.  Daca aceasta este mai mică decât limita per ataşament, atunci aceasta va fi limita.<br />
+		<b>Mărimea maximă per ataşament</b> (în KB):<br /> Selectaţi dimensiunea maximă a fişierelor din fiecare ataşament separat.<br />
+		<b>Numărul maxim de ataşamente per post</b>:<br /> Selectaţi numărul maxim de ataşamente pe care le poate face o persoană per post.<br />
+		<b>Afişează ataşamentul ca imagine în mesajele postate</b>:<br /> Dacă fişierul încărcat este o imagine, va fi arătat sub mesajul postat.<br />
+		<b>Redimensionează imaginile când sunt afişate sub mesajele postate</b>:<br /> Dacă este selectată opţiunea de mai sus, aceasta va salva un ataşament (mai mic) separat pentru imaginea în miniatură (thumbnail) pentru a reduce lăţimea de bandă.<br />
+		<b>Lăţimea şi înălţimea maximă a imaginilor în miniatură </b>:<br /> Utilizat numai cu opţiunea &quot;Redimensionează imaginile atunci când sunt afişate sub mesajele postate&quot; , lăţimea şi înălţimea maximă de la care se porneşte pentru a redimensiona în jos ataşamentele .  Ele vor fi redimensionate proporţional.';
+$helptxt['karmaMode'] = 'Karma este o caracteristică care arată popularitatea unui membru. Membrii, dacă li se permite, pot
+		\'aplauda\' sau \'plezni\' alţi membri, acesta fiind modul în care popularitatea lor este calculată. Aveţi posibilitatea să modificaţi numărul de postări necesare pentru a avea &quot;karma&quot;, timpul dintre lovituri sau aplauze şi dacă administratorii trebuie să aştepte tot acest timp şi ei.<br /><br />Posibilitatea ca grupurile de membri să îi poată plezni sau nu pe alţii este controlată printr-o permisiune. Dacă aveţi probleme în a face această facilitate să funcţioneze pentru toată lumea verificaţi-vă din nou permisiunile.';
 // !!! This should be resused or removed.
-$helptxt['cal_enabled'] = 'The calendar can be used for showing birthdays, or for showing important moments happening in your community.<br /><br />
-		<b>Show days as link to \'Post Event\'</b>:<br />This will allow members to post events for that day, when they click on that date<br />
-		<b>Show week numbers</b>:<br />Show which week it is.<br />
-		<b>Max days in advance on board index</b>:<br />If this is set to 7, the next week\'s worth of events will be shown.<br />
-		<b>Show holidays on board index</b>:<br />Show today\'s holidays in a calendar bar on the board index.<br />
-		<b>Show birthdays on board index</b>:<br />Show today\'s birthdays in a calendar bar on the board index.<br />
-		<b>Show events on board index</b>:<br />Show today\'s events in a calendar bar on the board index.<br />
-		<b>Default Board to Post In</b>:<br />What\'s the default board to post events in?<br />
-		<b>Allow events not linked to posts</b>:<br />Allow members to post events without requiring it to be linked with a post in a board.<br />
-		<b>Minimum year</b>:<br />Select the &quot;first&quot; year on the calendar list.<br />
-		<b>Maximum year</b>:<br />Select the &quot;last&quot; year on the calendar list<br />
-		<b>Birthday color</b>:<br />Select the color of the birthday text<br />
-		<b>Event color</b>:<br />Select the color of the event text<br />
-		<b>Holiday color</b>:<br />Select the color of the Holiday text<br />
-		<b>Allow events to span multiple days</b>:<br />Check to allow events to span multiple days.<br />
-		<b>Max number of days an event can span</b>:<br />Select the maximum days that an event can span.<br /><br />
-		Remember that usage of the calendar (posting events, viewing events, etc.) is controlled by permissions set on the permissions screen.';
-$helptxt['localCookies'] = 'SMF uses cookies to store login information on the client computer.
-	Cookies can be stored globally (myserver.com) or locally (myserver.com/path/to/forum).<br />
-	Check this option if you\'re experiencing problems with users getting logged out automatically.<hr />
-	Globally stored cookies are less secure when used on a shared webserver (like Tripod).<hr />
-	Local cookies don\'t work outside the forum folder so, if your forum is stored at www.myserver.com/forum, pages like www.myserver.com/index.php cannot access the account information.
-	Especially when using SSI.php, global cookies are recommended.';
-$helptxt['enableBBC'] = 'Selecting this option will allow your members to use Bulletin Board Code (BBC) throughout the forum, allowing users to format their posts with images, type formatting and more.';
-$helptxt['time_offset'] = 'Not all forum administrators want their forum to use the same time zone as the server upon which it is hosted. Use this option to specify a time difference (in hours) from which the forum should operate from the server time. Negative and decimal values are permitted.';
-$helptxt['spamWaitTime'] = 'Here you can select the amount of time that must pass between postings. This can be used to stop people from "spamming" your forum by limiting how often they can post.';
+$helptxt['cal_enabled'] = 'Calendarul poate fi folosit pentru a afişa zilele de naştere sau pentru a afişa momentele importante ce se întâmplă în comunitatea ta.<br /><br /> <b>Afişează zilele ca legătura către \'Post Event\'</b>:<br />Aceasta le va permite membrilor să posteze evenimente pentru acea zi când vor face click pe acea dată<br /> <b>Afişează numărul săptămânilor</b>:<br />Arată ce săptămână este aceasta.<br /> <b>Numărul maxim de zile în avans în index-ul forumului</b>:<br />Dacă acesta este setat la 7 vor fi afişate evenimentele din săptămâna viitoare.<br /> <b>Afişează sărbătorile în index-ul forumului.<br /> <b>Arată sărbătoririle zilei de astăzi într-o bară a calendarului în index-ul forumului</b><b>Afişează zilele de naştere în index-ul forumului</b>:<br />Arată zilele de naştere (sărbătoriţii) de astăzi într-o bară a calendarului în index-ul forumului.<br /> <b>Afişează evenimentele în index-ul forumului</b>:<br />Arată evenimentele zilei de astăzi într-o bară a calendarului în index-ul forumului.<br /> <b>Secţiunea implicită pentru a posta în</b>:<br />Care este secţiunea implicită pentru a posta evenimente?<br /> <b>Permite evenimentele fără legătură către mesajele postate</b>:<br />Permite-le membrilor să posteze evenimente fără a le solicita să facă legătura cu un mesaj postat într-o sectiune.<br /> <b>Anul de început</b>:<br />Selectează &quot;primul&quot; an din lista calendarului.<br /> <b>Anul de sfârşit</b>:<br />Selectează &quot;ultimult&quot; an din lista calendarului<br /> <b>Culoarea zilei de naştere</b>:<br />Selectează culoarea textului zilei de naştere<br /> <b>Culoarea evenimentului</b>:<br />Selectează culoarea textului evenimentului<br /> <b>Culoarea Sărbătorii</b>:<br />Selectează culoarea textului Sărbătorii<br /> <b>Permite evenimentelor să se întindă pe mai multe zile</b>:<br />Bifaţi pentru a permite evenimentelor să se întindă pe mai multe zile.<br /> <b>Numărul maxim de zile în care un eveniment se poate întinde</b>:<br />Selectează numărul maxim de zile în care un evenimnet se poate întinde.<br /><br /> Reţine că utilizarea calendarului (postarea de evenimente, vizualizarea evenimentelor, etc.) este controlată prin permisiunile setate în ecranul de permisiuni.';
+$helptxt['localCookies'] = 'SMF foloseşte module cookie pentru a stoca informaţiile de login pe computerul clientului. Cookie-urile pot fi stocate la nivel global (myserver.com) sau local (myserver.com/path/to/forum).<br />Bifaţi această opţiune dacă vă confruntaţi cu probleme de utilizatori deconectaţi automat.<hr />Cookie-urile stocate la nivel global sunt mai puţin sigure atunci când sunt utilizate pe un server de web partajat (cum ar fi Tripod).<hr />Cookie-urile locale nu funcţionează în afara directorului forumului, dacă forumul tău forum se afla la www.myserver.com/forum, pagini ca www.myserver.com/index.php nu pot accesa informaţiile de cont. Cookie-urile globale sunt recomandate în special când se foloseşte SSI.php.
+';
+$helptxt['enableBBC'] = 'Selectarea acestei opţiuni le va permite utilizatorilor tăi să utilizeze Bulletin Board Code (BBC) in forum, permiţându-le utilizatorilor să-şi formateze mesajele cu imagini, tipuri de formatare şi multe altele.';
+$helptxt['time_offset'] = 'Nu toţi administratorii de forum vor ca forumul lor să folosească acelaşi timp ca al zonei serverului pe care sunt găzduiţi. Foloseşte această opţiune pentru a specifica o diferenţă de timp (în ore) de la care forumul ar trebui sa opereze faţă de timpul serverului. Valorile negative şi zecimale sunt permise.';
+$helptxt['spamWaitTime'] = 'Aici puteţi selecta timpul care trebuie să treacă între postări. Acest lucru poate fi folosit pentru a opri oamenii de la "spam" pe forumul dvs prin limitarea a cât de des se poate posta.';
 
-$helptxt['enablePostHTML'] = 'This will allow the posting of some basic HTML tags:
-	<ul style="margin-bottom: 0;">
-		<li>&lt;b&gt;, &lt;u&gt;, &lt;i&gt;, &lt;s&gt;, &lt;em&gt;, &lt;ins&gt;, &lt;del&gt;</li>
-		<li>&lt;a href=&quot;&quot;&gt;</li>
-		<li>&lt;img src=&quot;&quot; alt=&quot;&quot; /&gt;</li>
-		<li>&lt;br /&gt;, &lt;hr /&gt;</li>
-		<li>&lt;pre&gt;, &lt;blockquote&gt;</li>
-	</ul>';
+$helptxt['enablePostHTML'] = 'Acest lucru va permite postarea unor tag-uri HTML de bază :
+<ul style="margin-bottom: 0;"> <li>&lt;b&gt;, &lt;u&gt;, &lt;i&gt;, &lt;s&gt;, &lt;em&gt;, &lt;ins&gt;, &lt;del&gt;</li> <li>&lt;a href=&quot;&quot;&gt;</li> <li>&lt;img src=&quot;&quot; alt=&quot;&quot; /&gt;</li> <li>&lt;br /&gt;, &lt;hr /&gt;</li> <li>&lt;pre&gt;, &lt;blockquote&gt;</li> </ul>';
 
-$helptxt['themes'] = 'Here you can select whether the default theme can be chosen, what theme guests will use,
-	as well as other options. Click on a theme to the right to change the settings for it.';
-$helptxt['theme_install'] = 'This allows you to install new themes.  You can do this from an already created directory, by uploading an archive for the theme, or by copying the default theme.<br /><br />Note that the archive or directory must have a <tt>theme_info.xml</tt> definition file.';
-$helptxt['enableEmbeddedFlash'] = 'This option will allow your users to use Flash directly inside their posts,
-	just like images.  This could pose a security risk, although few have successfully exploited it.
-	USE AT YOUR OWN RISK!';
+$helptxt['themes'] = 'Aici puteţi selecta dacă tema implicită poate fi aleasă, ce temă vor utiliza vizitatorii, precum şi alte opţiuni. Faceţi click în dreapta pe o temă pentru a modifica setările pentru ea.';
+$helptxt['theme_install'] = 'Acest lucru vă permite să instalaţi teme noi.  Puteţi face acest lucru dintr-un director deja creat prin încărcarea unei arhive a temei sau prin copierea temei implicite.<br /><br />Reţineţi că arhiva sau directorul trebuie să aibă un fişier de definiţie <tt>theme_info.xml</tt>.';
+$helptxt['enableEmbeddedFlash'] = 'Această opţiune le va permite utilizatorilor dvs să utilizeze Flash direct în mesajle postate, la fel ca la imagini.  Acest lucru ar putea ridica un risc de securitate, cu toate că puţini l-au exploatat cu succes.	UTILIZAŢI PE PROPRIUL RISC!';
 // !!! Add more information about how to use them here.
-$helptxt['xmlnews_enable'] = 'Allows people to link to <a href="' . $scripturl . '?action=.xml;sa=news">Recent news</a>
-	and similar data.  It is also recommended that you limit the size of recent posts/news because, when rss data
-	is displayed in some clients, like Trillian, it is expected to be truncated.';
-$helptxt['hotTopicPosts'] = 'Change the number of posts for a topic to reach the state of a &quot;hot&quot; or
-	&quot;very hot&quot; topic.';
-$helptxt['globalCookies'] = 'Makes log in cookies available across subdomains.  For example, if...<br />
-	Your site is at http://www.simplemachines.org/,<br />
-	And your forum is at http://forum.simplemachines.org/,<br />
-	Using this option will allow you to access the forum\'s cookie on your site.  Do not enable this if there are other subdomains (like hacker.simplemachines.org) not controlled by you.';
-$helptxt['securityDisable'] = 'This <i>disables</i> the additional password check for the administration section. This is not recommended!';
-$helptxt['securityDisable_why'] = 'This is your current password. (the same one you use to login.)<br /><br />Having to type this helps ensure that you want to do whatever administration you are doing, and that it is <b>you</b> doing it.';
-$helptxt['emailmembers'] = 'In this message you can use a few &quot;variables&quot;.  These are:<br />
-	{$board_url} - The URL to your forum.<br />
-	{$current_time} - The current time.<br />
-	{$member.email} - The current member\'s email.<br />
-	{$member.link} - The current member\'s link.<br />
-	{$member.id} - The current member\'s id.<br />
-	{$member.name} - The current member\'s name.  (for personalization.)<br />
-	{$latest_member.link} - The most recently registered member\'s link.<br />
-	{$latest_member.id} - The most recently registered member\'s id.<br />
-	{$latest_member.name} - The most recently registered member\'s name.';
-$helptxt['attachmentEncryptFilenames'] = 'Encrypting attachment filenames allows you to have more than one attachment of the
-	same name, to safely use .php files for attachments, and heightens security.  It, however, could make it more
-	difficult to rebuild your database if something drastic happened.';
+$helptxt['xmlnews_enable'] = 'Permite oamenilor să facă legatura către <a href="' . $scripturl . '?action=.xml;sa=news">Ştiri Recente</a> şi date similare.  Este, de asemenea, recomandat să limitaţi dimensiunea mesajelor recent postate/ştirilor deoarece, atunci când datele rss sunt afişate la unii clienţi, cum ar fi Trillian, este de aşteptat să fie trunchiate.';
+$helptxt['hotTopicPosts'] = 'Schimbă numărul de postări pentru ca un subiect să ajungă la starea de subiect  &quot;hot&quot; sau &quot;very hot&quot; .';
+$helptxt['globalCookies'] = 'Face disponibilă intrarea în modulele cookies pe subdomenii.  De exemplu, dacă...<br /> Site-ul dvs este la http://www.simplemachines.org/,<br /> Şi forumul dvs este la http://forum.simplemachines.org/,<br /> Utilizarea acestei opţiuni vă va permite să accesaţi cockie-ul forumului dvs pe site-ul dvs. Nu permite acest lucru, dacă există şi alte subdomenii (cum ar fi hacker.simplemachines.org) care nu sunt controlate de către dumneavoastră';
+$helptxt['securityDisable'] = 'Aceasta <i>dezactivează</i> verificarea suplimentară a parolei pentru secţiunea de administrare. Acest lucru nu este recomandat!';
+$helptxt['securityDisable_why'] = 'Aceasta este parola ta actuală. (aceeaşi cu cea pe care o folosiţi pentru logare.)<br /><br />Tastarea acesteia ajută în asigurarea faptului că tu vrei să faci orice sarcină de administraţie ai face şi că eşti <b>tu</b> cel care o face.';
+$helptxt['emailmembers'] = 'În acest mesaj puteţi utiliza câteva &quot;variabile&quot;.  Acestea sunt:<br />
+	{$board_url} - URL-ul forumul dvs.<br />
+	{$current_time} - Timpul actual.<br />
+	{$member.email} - Adresa de e-mail actuală a membrului.<br />
+	{$member.link} - Link-ul actual al membrului.<br />
+	{$member.id} - ID-ul actual al membrului.<br />
+	{$member.name} - Numele actual al membrului.  (pentru personalizare.)<br />
+	{$latest_member.link} - Link-ul celui mai recent membru înregistrat.<br />
+	{$latest_member.id} -  ID-ul elui mai recent membru înregistrat.<br />
+	{$latest_member.name} - Numele celui mai recent membru înregistrat.';
+$helptxt['attachmentEncryptFilenames'] = 'Incriptarea numelor fişierelor ataşate vă permite să aveţi mai mult de un ataşament cu acelaşi nume, să utilizaţi în condiţii de siguranţă fişiere .php pentru ataşamente şi sporeşte securitatea. Acest lucru, totuşi, ar putea face reconstruirea bazei dvs de date mult mai dificilă dacă s-ar întâmpla ceva drastic.';
 
-$helptxt['failed_login_threshold'] = 'Set the number of failed login attempts before directing the user to the password reminder screen.';
-$helptxt['oldTopicDays'] = 'If this option is enabled a warning will be displayed to the user when attempting to reply to a topic which has not had any new replies for the amount of time, in days, specified by this setting. Set this setting to 0 to disable the feature.';
-$helptxt['edit_wait_time'] = 'Number of seconds allowed for a post to be edited before logging the last edit date.';
-$helptxt['edit_disable_time'] = 'Number of minutes allowed to pass before a user can no longer edit a post they have made. Set to 0 disable. <br /><br /><i>Note: This will not effect any user who has permission to edit other peoples posts.</i>';
-$helptxt['enableSpellChecking'] = 'Enable spell checking. You MUST have the pspell library installed on your server and your PHP configuration set up to use the pspell library. Your server ' . (function_exists('pspell_new') ? 'DOES' : 'DOES NOT') . ' appear to have this set up.';
-$helptxt['lastActive'] = 'Set the number of minutes to show people are active in X number of minutes on the board index. Default is 15 minutes.';
+$helptxt['failed_login_threshold'] = 'Setaţi numărul de încercări de conectare eşuate înainte de direcţionarea utilizatorului către ecranul de reamintire a parolei.';
+$helptxt['oldTopicDays'] = 'Dacă această opţiune este activată o avertizare va fi afişată pentru utilizator, atunci când acesta încearcă să răspundă la un subiect care nu a avut niciun răspuns nou pentru timpul, în zile, prevăzut de această setare. Setaţi această setare la 0 pentru a dezactiva facilitatea.';
+$helptxt['edit_wait_time'] = 'Numărul de secunde permis pentru ca un mesaj postat să fie editat înainte de a loga data ultimei editări.';
+$helptxt['edit_disable_time'] = 'Numărul de minute permis să treacă înainte ca un utilizator să nu mai poată edita un mesaj pe care l-a făcut. Setează la 0 pentru a dezactiva. <br /><br /><i> Reţine: Acest lucru nu va afecta orice utilizator care are permisiunea de a edita mesajele psotate de către alte popoare.</i>';
+$helptxt['enableSpellChecking'] = 'Permite verificarea ortografiei. TREBUIE să aveţi biblioteca pspell instalată pe serverul dvs şi configuraţia PHP  setată pentru a utiliza biblioteca pspell. Serverul dvs ' . (function_exists('pspell_new') ? 'ARE' : 'NU ARE') . ' acest lucru setat.';
+$helptxt['lastActive'] = 'Setaţi numărul de minute pentru a arata că oamenii sunt activi în numărul X de minute pe indexul forumului. Implicit este de 15 minute.';
 
-$helptxt['autoOptDatabase'] = 'This option optimizes the database every so many days.  Set it to 1 to make a daily optimization.  You can also specify a maximum number of online users, so that you won\'t overload your server or inconvenience too many users.';
-$helptxt['autoFixDatabase'] = 'This will automatically fix broken tables and resume like nothing happened.  This can be useful, because the only way to fix it is to REPAIR the table, and this way your forum won\'t be down until you notice.  It does email you when this happens.';
+$helptxt['autoOptDatabase'] = 'Această opţiune optimizează baza de date la intervalul de zile setat. Setaţi-o la 1 pentru a face o optimizare zilnică. Puteţi, de asemenea, să specificaţi un număr maxim de utilizatori online, astfel încât nu veţi supraîncărca serverul dvs. sau crea neplăceri prea multor utilizatori.';
+$helptxt['autoFixDatabase'] = 'Aceasta va stabiliza automat tabelele defecte şi va relua activitatea ca şi cum nimic nu s-a întâmplat. Acest lucru poate fi util pentru că singura cale de a o stabiliza este de a REPARA tabelul şi în acest fel forumul dvs nu va cădea înainte ca dvs să vă daţi seama. Vă trimite un email atunci când acest lucru se întâmplă.';
 
-$helptxt['enableParticipation'] = 'This shows a little icon on the topics the user has posted in.';
+$helptxt['enableParticipation'] = 'Aceasta arată o mică pictogramă în subiectele în care a postat utilizatorul.';
 
-$helptxt['db_persist'] = 'Keeps the connection active to increase performance.  If you aren\'t on a dedicated server, this may cause you problems with your host.';
+$helptxt['db_persist'] = 'Păstrează conexiunea activă pentru creşterea performanţei. Dacă nu sunteţi pe un server dedicat, aceasta vă poate cauza probleme cu gazda.';
 
-$helptxt['queryless_urls'] = 'This changes the format of URLs a little so search engines will like them better.  They will look like index.php/topic,1.html.<br /><br />This feature will ' . (strpos(php_sapi_name(), 'apache') !== false ? '' : 'not') . ' work on your server.';
-$helptxt['countChildPosts'] = 'Checking this option will mean that posts and topics in a board\'s child board will count toward its totals on the index page.<br /><br />This will make things notably slower, but means that a parent with no posts in it won\'t show \'0\'.';
-$helptxt['fixLongWords'] = 'This option breaks words longer than a certain length into pieces so they don\'t disturb the forum\'s layout. (as much...)  This option should not be set to a value under 40.';
+$helptxt['queryless_urls'] = 'Acest lucru schimbă un pic formatul adreselor URL astfel încât motoarele de cautare le vor plăcea mai mult.  Ele vor arăta ca index.php/topic,1.html.<br /><br /> 
+Această facilitate va ' . (strpos(php_sapi_name(), 'apache') !== false ? '' : 'not') . ' funcţiona pe serverul dvs.';
+$helptxt['countChildPosts'] = 'Bifarea acestei opţiuni va însemna că mesajele postate şi subiectele dintr-o subsecţiune a secţiunii vor fi luate în calcul în totalul de pe pagina de index.<br /><br />Aceasta va face lucrurile considerabil mai lente, dar înseamnă că o secţiune părinte fără mesaje postate în ea nu va afişa "0".';
+$helptxt['fixLongWords'] = 'Această opţiune împarte cuvintele mai mari de o anumită lungime în bucăţi astfel încât ele nu afectează aspectul forumului. (la fel de mult...)  Această opţiune nu ar trebui să fie setată la o valoare sub 40.';
 
-$helptxt['who_enabled'] = 'This option allows you to turn on or off the ability for users to see who is browsing the forum and what they are doing.';
+$helptxt['who_enabled'] = 'Această opţiune vă permite să activaţi sau să dezactivaţi abilitatea utilizatorilor de a vedea cine sunt cei care navighează pe forum şi ceea ce fac ei.';
 
-$helptxt['recycle_enable'] = '&quot;Recycles&quot; deleted topics and posts to the specified board.';
+$helptxt['recycle_enable'] = '&quot;Reciclează&quot; subiectele şi mesajele şterse în secţiunea specificată.';
 
-$helptxt['enableReportPM'] = 'This option allows your users to report personal messages they receive to the administration team. This may be useful in helping to track down any abuse of the personal messaging system.';
-$helptxt['max_pm_recipients'] = 'This option allows you to set the maximum amount of recipients allowed in a personal message sent by a forum member. This may be used to help stop spam abuse of the PM system. Note that users with permission to send newsletters are exempt from this restriction. Set to zero for no limit.';
-// Untranslated!
-$helptxt['pm_posts_verification'] = 'This setting will force users to enter a code shown on a verification image each time they are sending a personal message. Only users with a post count below the number set will need to enter the code - this should help combat automated spamming scripts.';
-// Untranslated!
-$helptxt['pm_posts_per_hour'] = 'This will limit the number of personal messages which may be sent by a user in a one hour period. This does not affect admins or moderators.';
+$helptxt['enableReportPM'] = 'Această opţiune permite utilizatorilor dvs. să raporteze mesajele personale pe care le primesc de la echipa de administrare. Acest lucru poate fi util în a ajuta să urmărim orice abuz al sistemului de mesaje personale.
 
-$helptxt['default_personalText'] = 'Sets the default text a user will have as their &quot;personal text.&quot;';
+ 
 
-$helptxt['modlog_enabled'] = 'Logs all moderation actions.';
+		';
+$helptxt['max_pm_recipients'] = 'Această opţiune vă permite să setaţi valoarea maximă permisă de destinatari într-un mesaj personal trimis de către un membru al forumului. Acest lucru poate fi utilizat pentru a vă ajuta să opriţi abuzul de spam în sistemul de PM. Reţineţi că utilizatorii cu permisiunea de a trimite buletine de ştiri sunt exceptaţi de la această restricţie. Setaţi la zero pentru nicio limită.';
+$helptxt['pm_posts_verification'] = 'Această setare va forţa utilizatorii să introducă un cod de verificare afişat într-o imagine de fiecare dată când aceştia trimit un mesaj personal. Numai utilizatorii cu un număr de mesaje postate sub numărul setat vor fi nevoiţi să introducă codul - acest lucru ar trebui să ajute la combaterea scripturilor automate de spam.';
+$helptxt['pm_posts_per_hour'] = 'Aceasta va limita numărul de mesaje personale care pot fi trimise de către un utilizator într-o oră. Aceasta nu îi afectează pe administratori şi moderatori.';
 
-$helptxt['guest_hideContacts'] = 'If selected this option will hide the email addresses and messenger contact details
-	of all members from any guests on your forum';
+$helptxt['default_personalText'] = 'Setează textul implicit pe care un utilizator îl poate avea ca &quot;text personal.&quot;';
 
-$helptxt['registration_method'] = 'This option determines what method of registration is used for people wishing to join your forum. You can select from:<br /><br />
+$helptxt['modlog_enabled'] = 'Loghează toate acţiunile de moderare.';
+
+$helptxt['guest_hideContacts'] = 'Dacă este selectată această opţiune veţi ascunde adresele de e-mail şi detalii de contact messenger ale tuturor membrilor faţă de orice vizitatori ai forumului dvs.';
+
+$helptxt['registration_method'] = 'Această opţiune stabileşte metoda de înregistrare care este utilizată pentru persoanele care doresc să se alăture forumului dvs.. Puteţi să selectaţi dintre:<br /><br />
 	<ul>
 		<li>
-			<b>Registration Disabled:</b><br />
-				Disables the registration process, which means that no new members can register to join your forum.<br />
+			<b>Înregistrare Dezactivată:</b><br />
+				Dezactivează procesul de înregistrare, ceea ce înseamnă că nu se pot înregistra noi membri pentru a alătura forumului dvs. .<br />
 		</li><li>
-			<b>Immediate Registration</b><br />
-				New members can login and post immediately after registering on your forum.<br />
+			<b>Înregistrare Imediată</b><br />
+			        Membrii noi pot intra şi posta imediat după înregistrare pe forumul dvs. .<br />
 		</li><li>
-			<b>Member Activation</b><br />
-				When this option is enabled any members registering to the forum will have a activation link emailed to them which they must click before they can become full members<br />
+			<b>Activare Membri</b><br />
+				Când această opţiune este activată orice membrii care se înregistrează pe forumul dvs vor primi un link de activare pe e-mail pe care trebuie să facă click înainte de a putea deveni membri deplini.<br />
 		</li><li>
-			<b>Member Approval</b><br />
-				This option will make it so all new members registering to your forum will need to be approved by the admin before they become members.
+			<b>Aprobare Membri</b><br />
+			Această opţiune va face ca toţi membrii care se înregistrează pe forumul dvs. să necesite aprobarea administratorului înainte de a deveni membri.
 		</li>
 	</ul>';
-$helptxt['send_validation_onChange'] = 'When this option is checked all members who change their email address in their profile will have to reactivate their account from an email sent to that address';
-$helptxt['send_welcomeEmail'] = 'When this option is enabled all new members will be sent an email welcoming them to your community';
-$helptxt['password_strength'] = 'This setting determines the strength required for passwords selected by your forum users. The stronger the password, the harder it should be to compromise member\'s accounts.
-	Its possible options are:
+$helptxt['send_validation_onChange'] = 'Când această opţiune este bifată cei care îşi vor schimba adresa de email în profilul lor vor trebui să-şi reactiveze contul dintr-un e-mail trimis la acea adresă.';
+$helptxt['send_welcomeEmail'] = 'Când această opţiune este activată tuturor membrilor noi le va fi trimis un e-mail urându-le bun venit în comunitatea ta';
+$helptxt['password_strength'] = 'Această setare determină puterea necesară pentru parolele selectate de catre utilizatorii forumului dvs. . Cu cât va fi mai puternică parola, cu atât vor fi mai greu de compromis conturile membrilor.
+	Opţiunile posibile sunt
 	<ul>
-		<li><b>Low:</b> The password must be at least four characters long.</li>
-		<li><b>Medium:</b> The password must be at least eight characters long, and can not be part of a users name or email address.</li>
-		<li><b>High:</b> As for medium, except the password must also contain a mixture of upper and lower case letters, and at least one number.</li>
+		<li><b>Scăzut:</b>Parola trebuie să fie de cel puţin patru caractere.</li>
+		<li><b>Mediu:</b> Parola trebuie să fie cel puţin opt caractere şi nu poate fi parte a unui nume de utilizatori sau adresa de e-mail.</li>
+		<li><b>Ridicat:</b> Ca şi pentru mediu, cu excepţia faptului că parola trebuie de asemenea să conţină un amestec de litere mari şi mici şi cel puţin un număr.</li>
 	</ul>';
 
-$helptxt['coppaAge'] = 'The value specified in this box will determine the minimum age that new members must be to be granted immediate access to the forums.
-	On registration they will be prompted to confirm whether they are over this age, and if not will either have their application rejected or suspended awaiting parental approval - dependant on the type of restriction choosen.
-	If a value of 0 is choosen for this setting then all other age restriction settings shall be ignored.';
-$helptxt['coppaType'] = 'If age restrictions are enabled, then this setting will define that happens when a user below the minimum age attempts to register with your forum. There are two possible choices:
+$helptxt['coppaAge'] = 'Valoarea specificată în această casetă va stabili vârsta minimă pe care membrii noi trebuie să o aibă pentru a li se acorda acces imediat la forum.
+	La înregistrare li se va solicita să confirme dacă sunt peste această vârstă şi, dacă nu, cererea lor va fi fie respinsă, fie suspendată în aşteapteptarea aprobării părintelui - depinde de tipul de restricţie ales.
+	Dacă o valoare de 0 este aleasă pentru această setare atunci toate celelalte setări de restricţie de vârstă trebuie să fie ignorate.';
+$helptxt['coppaType'] = 'Dacă sunt activate restricţiile de vârstă, atunci această setare va defini ce se întâmplă atunci când un utilizator sub vârsta minimă încearcă să se înregistreze pe forumul dvs. Există două opţiuni: <ul>  <li>  <b>Respinge Înregistrarea Lui:</b><br /> Înregistrarea oricărui membru nou sub vârsta minimă va fi respinsă imediat.<br />  </li><li>Obţine Aprobarea Părintelui / Tutorelui</b><br /> Orice nou membru care încearcă să se înregistreze şi este sub vârsta minimă permisă va avea contul marcat ca fiind în aşteaptarea aprobării şi i se va prezenta un formular prin intermediul căruia părinţii săi trebuie să îi acorde permisiunea de a deveni membru al forumului. Lor li se vor oferi, de asemenea, detaliile de contact ale forumului introduse în pagina de setări, astfel încât să poată trimite formularul către administrator prin mail sau fax.</li>  </ul>  ';
+$helptxt['coppaPost'] = 'Casetele de contact sunt necesare pentru ca formularele de acordare a permisiunii de înregistrare pentru minori să poată să fie trimise către administratorul forumului. 	
+Aceste detalii vor fi afişate tuturor minorilor şi sunt solicitate la aprobarea părintelui/tutorelui. Cel puţin o adresă poştală sau numărul de fax trebuie să fie furnizate.';
+
+$helptxt['allow_hideOnline'] = 'Cu această opţiune activată toţi utilizatorii vor putea să-şi ascundă statusul online faţă de ceilalţi utilizatori (cu excepţia administratorilor). Dacă este dezactivată atunci numai utilizatorii care pot modera forumul îşi pot ascunde prezenţa. De notat că dezactivarea acestei opţiuni nu va modifica statusul curent al utilizatorilor - îi va opri doar să se mai ascundă în viitor.';
+$helptxt['allow_hideEmail'] = 'Cu această opţiune activată membrii pot alege să-şi ascundă adresa de e-mail faţă de alţi membri. Cu toate acestea administratorii pot vedea întotdeauna adresele de e-mail ale tuturor.';
+
+$helptxt['latest_support'] = 'Acest panou vă arată câteva din cele mai comune probleme şi întrebări despre configurarea serverului dvs. Nu vă faceţi griji, această informaţie nu este logată sau aşa ceva.<br /><br />	
+Dacă aceasta rămâne ca &quot;Preluare de informaţii de asistenţă...&quot;, 	
+computerul dvs nu se poate conecta probabil la <a href="http://www.simplemachines.org/" target="_blank">www.simplemachines.org</a>.';
+$helptxt['latest_packages'] = 'Aici puteţi vedea unele din cele mai populare pachete, precum şi câteva pachete aleatoare sau modificări, cu instalări rapide şi uşoare.<br /><br />Dacă această secţiune nu va apărea, probabil computerul dvs nu se poate conecta la <a href="http://www.simplemachines.org/" target="_blank">www.simplemachines.org</a>.';
+$helptxt['latest_themes'] = 'Această zonă arată câteva din cele mai recente şi cele mai populare teme de la <a href="http://www.simplemachines.org/" target="_blank">www.simplemachines.org</a>. Aceasta s-ar putea să nu apară în mod corespunzător în cazul în care computerul nu poate găsi <a href="http://www.simplemachines.org/" target="_blank">www.simplemachines.org</a>, totuşi.';
+
+$helptxt['secret_why_blank'] = 'Pentru securitatea ta, răspunsul la întrebarea ta (precum şi parola ta) este criptat în aşa fel incât SMF poate doar să-ţi spună dacă este corect, deci nu îţi poate spune niciodată ţie (ori, important, nimănui altcuiva) care este răspunsul sau parola. ';
+$helptxt['moderator_why_missing'] = 'Deoarece moderarea se face la nivel de secţiune cu secţiune, trebuie să faceţi membrii moderatori din <a href="javascript:window.open(\'' . $scripturl . '?action=manageboards\'); self.close();">interfaţa de administrare secţiune</a>.';
+
+$helptxt['permissions'] = 'Permisiunile sunt după cum fie permiţi, fie interzici grupurilor să facă anumite lucruri.<br /><br />Puteţi modifica secţiuni multiple de-odată cu casetele de selectare sau puteţi vizualiza permisiunile pentru un anumit grup dând click pe "Modifică" ';
+$helptxt['permissions_board'] = 'Dacă o secţiune este setată la nivel "Global", aceasta înseamnă că secţiunea nu va avea nicio permisiune specială. "Local"  înseamnă că ea va avea propriile permisiuni - separate de cele de la nivel global. Acest lucru vă permite să aveţi o secţiune care are mai multe sau mai puţine permisiuni decât alta, fără să fie nevoie să le setaţi pentru fiecare secţiune în parte.';
+$helptxt['permissions_quickgroups'] = 'Aceste lucru vă permite să utilizaţi setările de permisiuni &quot;implicite&quot; - standard înseamnă \'nimic special\', restrictiv înseamnă \'ca un vizitator\', moderator înseamnă \'ca un moderator\', şi în cele din urmă \'mentenanţă\' înseamnă permisiuni foarte aproape de cele ale unui administrator.';
+$helptxt['permissions_deny'] = 'Negarea permisiunilor pot fi utilă atunci când doriţi să luaţi permisiunile anumitor membri. Puteţi adăuga un membergroup cu permisiunea de \'deny\' pentru membrii cărora doriţi să le negaţi o permisiune. <br /><br />Folosiţi cu atenţie, o permisiune refuzată va rămâne refuzată indiferent de grupurile de membri în care se află acel membru. ';
+$helptxt['permissions_postgroups'] = 'Activarea permisiunilor pentru grupurile bazate pe numărul de mesaje postate vă va permite să atribuiţi permisiuni membrilor care au postat un anumit număr de mesaje. Permisiunile pentru grupurile bazate pe numărul de mesaje postate sunt <em>adăugate</em> la permisiunile grupurilor obişnuite de membri.';
+$helptxt['permissions_by_board'] = 'Activarea acestei opţiuni va permite să setaţi permisiuni diferite pentru fiecare sec pentru fiecare secţiune pentru fiecare grup de membri. În mod implicit o secţiune utilizează permisiunile la nivel global, dar cu această opţiune activată puteţi comuta o secţiune la setările de permisiuni locale. Acest lucru oferă un mod foarte sofisticat de a vă gestiona permisiunile.';
+$helptxt['membergroup_guests'] = 'În grupul de membri Vizitatori sunt toţi utilizatorii care nu sunt autentificaţi.';
+$helptxt['membergroup_regular_members'] = 'Membrii Obişnuiţi sunt toţi membri care sunt autentificaţi, dar care nu au niciun membergroup primar asignat.';
+$helptxt['membergroup_administrator'] = 'Administratorul poate, prin definiţie, să facă orice şi să vadă orice secţiune. Nu există setări de permisiune pentru administrator.';
+$helptxt['membergroup_moderator'] = 'Grupul de membri Moderator este un grup de membri special. Permisiunile şi setările asignate acestui grup se aplică moderatorilor dar numai <em>în secţiunile pe care le moderează</em>. În afara acestor secţiuni ei sunt la fel ca orice alt membru.';
+$helptxt['membergroups'] = 'În SMF există două tipuri de grupuri din care membrii pot face parte. Acestea sunt:
 	<ul>
-		<li>
-			<b>Reject Their Registration:</b><br />
-				Any new member below the minimum age will have their registration rejected immediately.<br />
-		</li><li>
-			<b>Require Parent/Guardian Approval</b><br />
-				Any new member who attempts to register and is below the minimum permitted age will have their account marked as awaiting approval, and will be presented with a form upon which their parents must give permission to become a member of the forums.
-				They will also be presented with the forum contact details entered on the settings page, so they can send the form to the administrator by mail or fax.
-		</li>
-	</ul>';
-$helptxt['coppaPost'] = 'The contact boxes are required so that forms granting permission for underage registration can be sent to the forum administrator. These details will be shown to all new minors, and are required for parent/guardian approval. At the very least a postal address or fax number must be provided.';
-
-$helptxt['allow_hideOnline'] = 'With this option enabled all members will be able to hide their online status from other users (except administrators). If disabled only users who can moderate the forum can hide their presence. Note that disabling this option will not change any existing member\'s status - it just stops them from hiding themselves in the future.';
-$helptxt['allow_hideEmail'] = 'With this option enabled members can choose to hide their email address from other members. However, administrators can always see everyone\'s email addresses.';
-
-$helptxt['latest_support'] = 'This panel shows you some of the most common problems and questions on your server configuration. Don\'t worry, this information isn\'t logged or anything.<br /><br />If this stays as &quot;Retrieving support information...&quot;, your computer probably cannot connect to <a href="http://www.simplemachines.org/" target="_blank">www.simplemachines.org</a>.';
-$helptxt['latest_packages'] = 'Here you can see some of the most popular and some random packages or mods, with quick and easy installations.<br /><br />If this section doesn\'t show up, your computer probably cannot connect to <a href="http://www.simplemachines.org/" target="_blank">www.simplemachines.org</a>.';
-$helptxt['latest_themes'] = 'This area shows a few of the latest and most popular themes from <a href="http://www.simplemachines.org/" target="_blank">www.simplemachines.org</a>.  It may not show up properly if your computer can\'t find <a href="http://www.simplemachines.org/" target="_blank">www.simplemachines.org</a>, though.';
-
-$helptxt['secret_why_blank'] = 'For your security, the answer to your question (as well as your password) is encrypted in such a way that SMF can only tell you if get it right, so it can never tell you (or anyone else, importantly!) what your answer or password is.';
-$helptxt['moderator_why_missing'] = 'Since moderation is done on a board-by-board basis, you have to make members moderators from the <a href="javascript:window.open(\'' . $scripturl . '?action=manageboards\'); self.close();">board management interface</a>.';
-
-$helptxt['permissions'] = 'Permissions are how you either allow groups to, or deny groups from, doing specific things.<br /><br />You can modify multiple boards at once with the checkboxes, or look at the permissions for a specific group by clicking \'Modify.\'';
-$helptxt['permissions_board'] = 'If a board is set to \'Global,\' it means that the board will not have any special permissions.  \'Local\' means it will have its own permissions - separate from the global ones.  This allows you to have a board that has more or less permissions than another, without requiring you to set them for each and every board.';
-$helptxt['permissions_quickgroups'] = 'These allow you to use the &quot;default&quot; permission setups - standard means \'nothing special\', restrictive means \'like a guest\', moderator means \'what a moderator has\', and lastly \'maintenance\' means permissions very close to those of an administrator.';
-$helptxt['permissions_deny'] = 'Denying permissions can be useful when you want take away permission from certain members. You can add a membergroup with a \'deny\'-permission to the members you wish to deny a permission.<br /><br />Use with care, a denied permission will stay denied no matter what other membergroups the member is in.';
-$helptxt['permissions_postgroups'] = 'Enabling permissions for post count based groups will allow you to attribute permissions to members that have posted a certain amount of messages. The permissions of the post count based groups are <em>added</em> to the permissions of the regular membergroups.';
-$helptxt['permissions_by_board'] = 'Enabling this option will allow you to, for each board for each membergroup, set different permissions. By default a board uses global permissions, but with this option enabled, you can switch a board to local permission settings. This provides a very sophisticated way to manage your permissions.';
-$helptxt['membergroup_guests'] = 'The Guests membergroup are all users that are not logged in.';
-$helptxt['membergroup_regular_members'] = 'The Regular Members are all members that are logged in, but that have no primary membergroup assigned.';
-$helptxt['membergroup_administrator'] = 'The administrator can, per definition, do anything and see any board. There are no permission settings for the administrator.';
-$helptxt['membergroup_moderator'] = 'The Moderator membergroup is a special membergroup. Permissions and settings assigned to this group apply to moderators but only <em>on the boards they moderate</em>. Outside these boards they\'re just like any other member.';
-$helptxt['membergroups'] = 'In SMF there are two types of groups that your members can be part of. These are:
-	<ul>
-		<li><b>Regular Groups:</b> A regular group is a group to which members are not automatically put into. To assign a member to be in a group simply go to their profile and click &quot;Account Settings&quot;. From here you can assign them any number of regular groups to which they will be part.</li>
-		<li><b>Post Groups:</b> Unlike regular groups post based groups cannot be assigned. Instead, members are automatically assigned to a post based group when they reach the minimum number of posts required to be in that group.</li>
+		<li><b>Grupuri Obişnuite:</b>Un grup obişnuit este un grup în care membrii nu sunt puşi automat. Pentru a aloca un membru într-un grup pur şi simplu mergeţi la profilul său şi faceţi click pe &quot;Setări Cont&quot;. De aici puteţi desemna orice număr de grupuri obişnuite din care vor lua parte..</li>
+		<li><b>Grupuri de Postări :</b> Spre deosebire de grupurile obişnuite, grupurile bazate pe numărul de postări nu pot fi desemnate. În schimb, membrii sunt asignaţi automat unui grup bazat pe numărul de postari atunci când ajung  la numărul minim de mesaje postate necesar pentru a fi în acel grup.</li>
 	</ul>';
 
-$helptxt['calendar_how_edit'] = 'You can edit these events by clicking on the red asterisk (*) next to their names.';
+$helptxt['calendar_how_edit'] = 'Aveţi posibilitatea să editaţi aceste evenimente făcând click pe asteriscul roşu (*) de lângă numele lor.';
 
-$helptxt['maintenance_general'] = 'From here, you are able to optimize all your tables (makes them smaller and faster!), make sure you have the newest versions, find any errors that might be messing up your board, recount totals, and empty logs.<br /><br />The last two should be avoided unless something is wrong, but don\'t hurt anything.';
-$helptxt['maintenance_backup'] = 'This area allows you to save a copy of all the posts, settings, members, and other information in your forum to a very large file.<br /><br />It is recommended that you do this often, perhaps weekly, for safety and security.';
-$helptxt['maintenance_rot'] = 'This allows you to <b>completely</b> and <b>irrevocably</b> remove old topics.  It is recommended that you try to make a backup first, just in case you remove something you didn\'t mean to.<br /><br />Use this option with care.';
+$helptxt['maintenance_general'] = 'De aici, veţi putea să vă optimizaţi toate tabelele (le face mai mici şi mai rapide!), să vă asiguraţi că aveţi cele mai noi versiuni, să găsiţi orice erori care ar putea să facă dezordine în forumul dvs, să recalculaţi totalurile şi să goliţi jurnalele.<br /><br /> Ultimele două ar trebui să fie evitate, cu excepţia cazului în care ceva este greşit, dar nu strică nimic.';
+$helptxt['maintenance_backup'] = 'Această zonă vă permite să salvaţi o copie a tuturor mesajelor postate, setărilor, membrilor, precum şi alte informaţii din forumul dvs într-un fişier foarte mare.<br /><br />Este recomandat să faceţi asta de multe ori, poate săptămânal, pentru siguranţă şi securitate.';
+$helptxt['maintenance_rot'] = 'Acest lucru vă permite să eliminaţi <b>complet</b> şi <b>irevocabil</b> subiectele vechi. Este recomandat să încercaţi să faceţi o copie de rezervă mai întâi, pentru eventualitatea în care ai elimina ceva ce nu ai vrut să elimini.<br /><br />Folosiţi această opţiune cu grijă.';
 
-$helptxt['avatar_allow_server_stored'] = 'This allows your members to pick from avatars stored on your server itself.  They are, generally, in the same place as SMF under the avatars folder.<br />As a tip, if you create directories in that folder, you can make &quot;categories&quot; of avatars.';
-$helptxt['avatar_allow_external_url'] = 'With this enabled, your members can type in a URL to their own avatar.  The downside of this is that, in some cases, they may use avatars that are overly large or portray images you don\'t want on your forum.';
-$helptxt['avatar_download_external'] = 'With this option enabled, the URL given by the user is accessed to download the avatar at that location. On success, the avatar will be treated as uploadable avatar.';
-$helptxt['avatar_allow_upload'] = 'This option is much like &quot;Allow members to select an external avatar&quot;, except that you have better control over the avatars, a better time resizing them, and your members do not have to have somewhere to put avatars.<br /><br />However, the downside is that it can take a lot of space on your server.';
-$helptxt['avatar_download_png'] = 'PNGs are larger, but offer better quality compression.  If this is unchecked, JPEG will be used instead - which is often smaller, but also of lesser or blurry quality.';
+$helptxt['avatar_allow_server_stored'] = 'Acest lucru le permite utilizatorilor dvs. să selecteze dintre avatarele stocate chiar pe serverul dvs. Ele sunt, în general, în acelaşi loc ca SMF, în folderul avatarelor.<br />Ca un pont, în cazul în care creaţi directoarele din acel folder, puteţi face &quot;categorii&quot; de avatare.';
+$helptxt['avatar_allow_external_url'] = 'Cu această opţiune activată, membrii dvs. pot tasta un URL către propriul lor avatar. Dezavantajul este că, în unele cazuri, ei pot folosi avatare care sunt excesiv de mari sau imagini pe care nu le doreşti pe forumul tău.';
+$helptxt['avatar_download_external'] = 'Cu această opţiune activată, URL-ul dat de utilizator este accesat pentru a descărca avatarul de la acea locaţie. În caz de succes, avatarul va fi tratat ca avatar ce poate fi încărcat.';
+$helptxt['avatar_allow_upload'] = 'Această opţiune este asemănătoare cu &quot;Permite membrilor să selecteze un avatar extern&quot;, numai că aveţi mai bun control asupra avatarelor, un timp mai bun de redimensionare şi membrii dvs nu trebuie să aibă un alt loc unde să-şi pună avatarele.<br /><br />Cu toate acestea dezavantajul este ca poate ocupa o mulţime de spaţiu pe serverul dvs.';
+$helptxt['avatar_download_png'] = 'Fişierele PNG sunt mai mari, dar oferă o calitate mai bună de compresie. Dacă acest lucru este nebifat, JPEG va fi folosit în loc - care este de multe ori mai mic, dar de asemenea, de o calitate mai mică sau neclară.';
 
-$helptxt['disableHostnameLookup'] = 'This disables host name lookups, which on some servers are very slow.  Note that this will make banning less effective.';
+$helptxt['disableHostnameLookup'] = 'Aceasta dezactivează hostname lookups care, la unele servere sunt foarte lente. Reţine că acest lucru va face banarea mai puţin eficientă.';
 
-$helptxt['search_weight_frequency'] = 'Weight factors are used to determine the relevancy of a search result. Change these weight factors to match the things that are specifically important for your forum. For instance, a forum of a news site, might want a relatively high value for \'age of last matching message\'. All values are relative in relation to each other and should be positive integers.<br /><br />This factor counts the amount of matching messages and divides them by the total number of messages within a topic.';
-$helptxt['search_weight_age'] = 'Weight factors are used to determine the relevancy of a search result. Change these weight factors to match the things that are specifically important for your forum. For instance, a forum of a news site, might want a relatively high value for \'age of last matching message\'. All values are relative in relation to each other and should be positive integers.<br /><br />This factor rates the age of the last matching message within a topic. The more recent this message is, the higher the score.';
-$helptxt['search_weight_length'] = 'Weight factors are used to determine the relevancy of a search result. Change these weight factors to match the things that are specifically important for your forum. For instance, a forum of a news site, might want a relatively high value for \'age of last matching message\'. All values are relative in relation to each other and should be positive integers.<br /><br />This factor is based on the topic size. The more messages are within the topic, the higher the score.';
-$helptxt['search_weight_subject'] = 'Weight factors are used to determine the relevancy of a search result. Change these weight factors to match the things that are specifically important for your forum. For instance, a forum of a news site, might want a relatively high value for \'age of last matching message\'. All values are relative in relation to each other and should be positive integers.<br /><br />This factor looks whether a search term can be found withing the subject of a topic.';
-$helptxt['search_weight_first_message'] = 'Weight factors are used to determine the relevancy of a search result. Change these weight factors to match the things that are specifically important for your forum. For instance, a forum of a news site, might want a relatively high value for \'age of last matching message\'. All values are relative in relation to each other and should be positive integers.<br /><br />This factor looks whether a match can be found in the first message of a topic.';
-$helptxt['search_weight_sticky'] = 'Weight factors are used to determine the relevancy of a search result. Change these weight factors to match the things that are specifically important for your forum. For instance, a forum of a news site, might want a relatively high value for \'age of last matching message\'. All values are relative in relation to each other and should be positive integers.<br /><br />This factor looks whether a topic is sticky and increases the relevancy score if it is.';
-$helptxt['search'] = 'Adjust all settings for the search function here.';
-$helptxt['search_why_use_index'] = 'A search index can greatly improve the performance of searches on your forum. Especially when the number of messages on a forum grows bigger, searching without an index can take a long time and increase the pressure on your database. If your forum is bigger than 50.000 messages, you might want to consider creating a search index to assure peak performance of your forum.<br /><br />Note that a search index can take up quite some space. A fulltext index is a built-in index of MySQL. It\'s relatively compact (approximately the same size as the message table), but a lot of words aren\'t indexed and it can some search queries turn out to be very slow. The custom index is often bigger (depending on your configuration it can be up to 3 times the size of the messages table) but it\'s performance is better than fulltext and relatively stable.';
+$helptxt['search_weight_frequency'] = 'Factorii de greutate sunt utilizaţi pentru a determina relevanţa unui rezultat al căutării. Schimbă acesti factori de greutate pentru a se potrivi cu lucrurile care sunt în mod special importante pentru forumul dvs. De exemplu, un forum al unui site de ştiri ar putea dori o valoare relativ ridicată pentru  \'vechimea ultimelor mesaje compatibile\'. Toate valorile sunt relative între ele şi ar trebui să fie numere întregi pozitive.<br /><br />Acest factor ia în calcul numărul mesajelor compatibile şi îl împarte la numărul total de mesaje din cadrul unui subiect.';
+$helptxt['search_weight_age'] = 'Factorii de greutate sunt utilizaţi pentru a determina relevanţa unui rezultat al căutării. Schimbă aceşti factori de greutate pentru a se potrivi cu lucrurile care sunt în mod special importante pentru forumul dvs. De exemplu, un forum al unui site de ştiri ar putea dori o valoare relativ ridicată pentru  \'vechimea ultimelor mesaje compatibile\'. Toate valorile sunt relative între ele şi ar trebui să fie numere întregi pozitive..<br /><br />Acest factor indică vechimea ultimului mesaj compatibil dintr-un subiect. Cu cât acest mesaj este mai recent, cu atât scorul este mai ridicat.';
+$helptxt['search_weight_length'] = 'Factorii de greutate sunt utilizaţi pentru a determina relevanţa unui rezultat al căutării. Schimbă aceşti factori de greutate pentru a se potrivi cu lucrurile care sunt în mod special importante pentru forumul dvs. De exemplu, un forum al unui site de ştiri ar putea dori o valoare relativ ridicată pentru  \'vechimea ultimelor mesaje compatibile\'. Toate valorile sunt relative între ele şi ar trebui să fie numere întregi pozitive..<br /><br />Acest factor se bazează pe mărimea subiectului. Cu cât sunt mai multe mesaje într-un subiect, cu atât este mai mare scorul.';
+$helptxt['search_weight_subject'] = 'Factorii de greutate sunt utilizaţi pentru a determina relevanţa unui rezultat al căutării. Schimbă aceşti factori de greutate pentru a se potrivi cu lucrurile care sunt în mod special importante pentru forumul dvs. De exemplu, un forum al unui site de ştiri ar putea dori o valoare relativ ridicată pentru  \'vechimea ultimelor mesaje compatibile\'. Toate valorile sunt relative între ele şi ar trebui să fie numere întregi pozitive..<br /><br />Acest factor arată dacă un termen de căutare pot fi găsit în cadrul subiectului unui topic.';
+$helptxt['search_weight_first_message'] = 'Factorii de greutate sunt utilizaţi pentru a determina relevanţa unui rezultat al căutării Schimbă aceşti factori de greutate pentru a se potrivi cu lucrurile care sunt în mod special importante pentru forumul dvs. De exemplu, un forum al unui site de ştiri ar putea dori o valoare relativ ridicată pentru  \'vechimea ultimelor mesaje compatibile\'. Toate valorile sunt relative între ele şi ar trebui să fie numere întregi pozitive.<br /><br />Acest factor arată dacă poate fi găsită o similaritate în primul mesaj al unui subiect.';
+$helptxt['search_weight_sticky'] = 'Factorii de greutate sunt utilizaţi pentru a determina relevanţa unui rezultat al căutării. Schimbă aceşti factori de greutate pentru a se potrivi cu lucrurile care sunt în mod special importante pentru forumul dvs. De exemplu, un forum al unui site de ştiri ar putea dori o valoare relativ ridicată pentru  \'vechimea ultimelor mesaje compatibile\'. Toate valorile sunt relative între ele şi ar trebui să fie numere întregi pozitive..<br /><br /> Acest factor arată dacă un subiect este important (sticky) şi creşte scorul de relevanţă în cazul în care este.';
+$helptxt['search'] = 'Reglaţi toate setările pentru funcţia de căutare aici.';
+$helptxt['search_why_use_index'] = 'Un index de căutare poate îmbunătăţi foarte mult performanţa căutărilor de pe forumul dvs. Mai ales atunci când numărul de mesaje pe un forum creşte mai mare căutarea fără un index poate dura o perioadă mai lungă de timp şi poate creşte presiunea asupra bazei dvs de date. Dacă forumul dvs este mai mare de 50.000 de mesaje, aţi putea lua în considerare crearea unui index de căutare pentru a asigura o performanţă de vârf a forumului dvs.<br /><br />Reţineţi că un index de căutare poate ocupa destul spaţiu. Un index fulltext este cel construit în indexul de MySQL. Este relativ compact (aproximativ aceeaşi mărime ca tabela de mesaje), dar o mulţime de cuvinte nu sunt indexate şi este posibil ca unele interogări de căutare să se dovedească a fi foarte lente. Indexul personalizat este deseori mai mare (în funcţie de configuraţia dvs. poate fi de până la 3 ori mai mare decât tabela de mesaje) dar performanţa sa este mai bună decât cel fulltext şi este relativ stabilă.';
 
-$helptxt['see_admin_ip'] = 'IP addresses are shown to administrators and moderators to facilitate moderation and to make it easier to track people up to no good.  Remember that IP addresses may not always be identifying, and most people\'s IP addresses change periodically.<br /><br />Members are also allowed to see their own IPs.';
-$helptxt['see_member_ip'] = 'Your IP address is shown only to you and moderators.  Remember that this information is not identifying, and that most IPs change periodically.<br /><br />You cannot see other members\' IP addresses, and they cannot see yours.';
+$helptxt['see_admin_ip'] = 'Adresele de IP sunt prezentate administratorilor şi moderatorilor pentru a facilita moderarea şi  	
+pentru a face mai uşor urmărirea oamenilor ce nu au intenţii bune..  Amintiţi-vă că adresele IP nu pot fi întotdeauna de identificare şi adresele IP ale majorităţii oamenilor se schimbă periodic..<br /><br />Membrilor le este de asemenea permis să-şi vizualizeze propriile IP-uri.';
+$helptxt['see_member_ip'] = 'Adresa dvs. IP este afişată numai la tine şi moderatorilor. Amintiţi-vă că această informaţie nu este de identificare şi de cele mai multe IP-urile se schimbă periodic.<br /><br />Nu puteţi vedea adresele IP ale altor membri şi ei nu o pot vedea pe a ta.';
 
-$helptxt['ban_cannot_post'] = 'The \'cannot post\' restriction turns the forum into read-only mode for the banned user. The user cannot create new topics, or reply to existing ones, send personal messages or vote in polls. The banned user can however still read personal messages and topics.<br /><br />A warning message is shown to the users that are banned this way.';
+$helptxt['ban_cannot_post'] = 'Restricţia \'cannot post\' transformă forumul în modul read-only (doar citire) pentru utilizatorii cu interdicţii (banaţi). Utilizatorul nu poate crea subiecte noi sau răspunde la cele existente, nu poate trimite mesaje personale sau vota în sondaje. Utilizatorul banat poate citi totuşi mesajele personale sau subiectele.<br /><br />Un mesaj de avertizare este prezentat utilizatorilor care sunt banaţi în acest fel.';
 
 $helptxt['posts_and_topics'] = '
 	<ul>
 		<li>
-			<b>Post Settings</b><br />
-			Modify the settings related to the posting of messages and the way messages are shown. You can also enable the spell check here.
+			<b>Setări Postare</b><br />
+			Modifică setările legate de postarea de mesaje şi de modul în care sunt afişate mesajele.  Puteţi, de asemenea, permite verificarea ortografiei aici.
 		</li><li>
 			<b>Bulletin Board Code</b><br />
-			Enable the code that show forum messages in the right layout. Also adjust which codes are allowed and which aren\'t.
+			Activaţi codul care afişează mesajele pe forum în layout-ul corect. De asemenea, reglează care coduri sunt permise şi care nu.
 		</li><li>
-			<b>Censored Words</b>
-			In order to keep the language on your forum under control, you can censor certain words. This function allows you to convert forbidden words into innocent versions.
+			<b>Cuvinte Cenzurate</b>
+				Puteţi să cenzuraţi anumite cuvinte în scopul de a păstra sub control limba dvs. pe forum. Această funcţie vă permite să transformaţi cuvinte interzise în versiuni inocente.
 		</li><li>
-			<b>Topic Settings</b>
-			Modify the settings related to topics. The number of topics per page, whether stickey topics are enabled or not, the number of messages needed for a topic to be hot, etc.
+			<b>Setări Subiect</b>
+			Modifică setările legate de subiecte. Numărul de subiecte pe pagină, dacă subiectele importante (sticky) sunt activate sau nu, numărul de mesaje necesare pentru a fi un subiect fierbinte, etc.
 		</li>
 	</ul>';
 

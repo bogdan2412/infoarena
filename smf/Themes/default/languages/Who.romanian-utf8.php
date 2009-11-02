@@ -1,7 +1,6 @@
 <?php
 // Version: 1.1; Who
 
-// Versiunea în limba română cu diacritice www.smf.ro
 $txt['who_hidden'] = '<em>Nimic, sau nu poţi vedea acţiunile sale</em>';
 $txt['who_unknown'] = '<em>Acţiune necunoscută</em>';
 $txt['who_user'] = 'Utilizator';
@@ -10,7 +9,7 @@ $txt['who_action'] = 'Acţiune';
 
 $txt['whoall_activate'] = 'Activează contul.';
 $txt['whoall_help'] = 'Citeşte <a href="' . $scripturl . '?action=help">pagina de ajutor</a>.';
-$txt['whoall_helpadmin'] = 'Citeşte o fereastra popup de ajutor.';
+$txt['whoall_helpadmin'] = 'Citeşte o fereastră popup de ajutor.';
 $txt['whoall_pm'] = 'Citeşte mesajele proprii.';
 $txt['whoall_login'] = 'Se autentifică în forum.';
 $txt['whoall_login2'] = 'Se autentifică în forum.';
@@ -25,8 +24,8 @@ $txt['whoall_register2'] = 'Îşi înregistrează un cont în forum.';
 $txt['whoall_reminder'] = 'Cere să i se reamintească parola.';
 $txt['whoall_reporttm'] = 'Raportează un subiect la moderatori.';
 $txt['whoall_spellcheck'] = 'Foloseşte dicţionarul';
-$txt['whoall_unread'] = 'Citeşte subiectele necitite de la ultima să vizită.';
-$txt['whoall_unreadreplies'] = 'Citeşte răspunsurile necitite de la ultima să vizită.';
+$txt['whoall_unread'] = 'Citeşte subiectele necitite de la ultima sa vizită.';
+$txt['whoall_unreadreplies'] = 'Citeşte răspunsurile necitite de la ultima sa vizită.';
 $txt['whoall_who'] = 'Se uită la <a href="' . $scripturl . '?action=who">Cine este online</a>.';
 $txt['whoall_.xml'] = 'Citeşte un feed XML.';
 
@@ -42,7 +41,7 @@ $txt['whotopic_mergetopics'] = 'Lipeşte subiectul &quot;<a href="' . $scripturl
 $txt['whotopic_movetopic'] = 'Mută subiectul &quot;<a href="' . $scripturl . '?topic=%d.0">%s</a>&quot; în alt forum.';
 $txt['whotopic_post'] = 'Scrie în <a href="' . $scripturl . '?topic=%d.0">%s</a>.';
 $txt['whotopic_post2'] = 'Scrie în <a href="' . $scripturl . '?topic=%d.0">%s</a>.';
-$txt['whotopic_printpage'] = 'Tipareşte subiectul &quot;<a href="' . $scripturl . '?topic=%d.0">%s</a>&quot;.';
+$txt['whotopic_printpage'] = 'Tipăreşte subiectul &quot;<a href="' . $scripturl . '?topic=%d.0">%s</a>&quot;.';
 $txt['whotopic_sendtopic'] = 'Trimite subiectul &quot;<a href="' . $scripturl . '?topic=%d.0">%s</a>&quot; unui prieten';
 $txt['whotopic_splittopics'] = 'Desparte subiectul &quot;<a href="' . $scripturl . '?topic=%d.0">%s</a>&quot; în două subiecte.';
 $txt['whotopic_vote'] = 'Votează în <a href="' . $scripturl . '?topic=%d.0">%s</a>.';
@@ -51,32 +50,31 @@ $txt['whopost_quotefast'] = 'Citează un mesaj de la &quot;<a href="' . $scriptu
 
 $txt['whoadmin_detailedversion'] = 'Execută o verificare în detaliu a versiunilor.';
 $txt['whoadmin_dumpdb'] = 'Face un backup la baza de date.';
-$txt['whoadmin_editagreement'] = 'Editează agreementul pentru înregistrare.';
-// Untranslated!
-$txt['whoadmin_featuresettings'] = 'Editing forum features and options.';
+$txt['whoadmin_editagreement'] = 'Editează acordul pentru înregistrare.';
+$txt['whoadmin_featuresettings'] = 'Editează facilităţile şi opţiunile forumului.';
 $txt['whoadmin_modlog'] = 'Citeşte logul de moderare.';
 $txt['whoadmin_serversettings'] = 'Editează setările forumului.';
 $txt['whoadmin_packageget'] = 'Aduce pachete de modificări.';
 $txt['whoadmin_packages'] = 'Vizualizează managerul de pachete.';
 $txt['whoadmin_permissions'] = 'Editează permisiunile utilizatorilor în forum.';
-$txt['whoadmin_pgdownload'] = 'Face download la un pachet.';
+$txt['whoadmin_pgdownload'] = 'Descarcă un pachet.';
 $txt['whoadmin_theme'] = 'Editează setările pentru teme.';
-$txt['whoadmin_trackip'] = 'Urmareşte o adresă IP.';
+$txt['whoadmin_trackip'] = 'Urmăreşte o adresă IP.';
 
 $txt['whoallow_manageboards'] = 'Editează setările pentru forumuri şi categorii.';
 $txt['whoallow_admin'] = 'Se uită la <a href="' . $scripturl . '?action=admin">admin page</a>.';
 $txt['whoallow_ban'] = 'Editează lista de ban.';
-$txt['whoallow_boardrecount'] = 'Recontorizeaza totalurile în forum.';
-$txt['whoallow_calendar'] = 'Se uit la <a href="' . $scripturl . '?action=calendar">calendar</a>.';
+$txt['whoallow_boardrecount'] = 'Recontorizează totalurile în forum.';
+$txt['whoallow_calendar'] = 'Se uită la <a href="' . $scripturl . '?action=calendar">calendar</a>.';
 $txt['whoallow_editnews'] = 'Editează ştirile.';
 $txt['whoallow_mailing'] = 'Trimite un email la utilizatorii din forum.';
-$txt['whoallow_maintain'] = 'Executa întreţinerea de rutină pentru forum.';
+$txt['whoallow_maintain'] = 'Execută întreţinerea de rutină pentru forum.';
 $txt['whoallow_manageattachments'] = 'Organizează fişierele ataşate.';
 $txt['whoallow_mlist'] = 'Se uită la <a href="' . $scripturl . '?action=mlist">lista de utilizatori</a>.';
 $txt['whoallow_optimizetables'] = 'Optimizează baza de date.';
 $txt['whoallow_repairboards'] = 'Repară tabelele în baza de date.';
 $txt['whoallow_search'] = '<a href="' . $scripturl . '?action=search">Caută</a> prin forum.';
-$txt['whoallow_search2'] = 'Se uită la rezultatele căutarii.';
+$txt['whoallow_search2'] = 'Se uită la rezultatele căutării.';
 $txt['whoallow_setcensor'] = 'Editează un text cenzurat.';
 $txt['whoallow_setreserve'] = 'Editează numele rezervate.';
 $txt['whoallow_stats'] = 'Se uită la <a href="' . $scripturl . '?action=stats">statistici</a>.';

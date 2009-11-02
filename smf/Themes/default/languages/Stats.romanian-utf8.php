@@ -1,7 +1,6 @@
 <?php
 // Version: 1.1; Stats
 
-// Versiunea în limba română cu diacritice www.smf.ro
 $txt[888] = 'Cei mai mulţi online';
 
 $txt['smf_stats_1'] = 'Statistici';
@@ -17,7 +16,7 @@ $txt['smf_stats_10'] = 'Pagini Vizualizate';
 $txt['smf_stats_11'] = 'Top 10 Subiecte (după răspunsuri)';
 $txt['smf_stats_12'] = 'Top 10 Subiecte (după vizualizări)';
 $txt['smf_stats_13'] = 'Sumar lunar';
-$txt['smf_stats_14'] = 'Cei mai multi online';
+$txt['smf_stats_14'] = 'Cei mai mulţi online';
 $txt['smf_stats_15'] = 'Top 10 utilizatori (după numărul de subiecte)';
 $txt['smf_stats_16'] = 'Cel mai mult timp online';
 $txt['smf_stats_17'] = 'Cea mai pozitivă karma';
@@ -37,7 +36,7 @@ $txt['average_hits'] = 'Media zilnică a paginilor vizualizate';
 $txt['smf_news_1'] = 'comentariu';
 $txt['smf_news_2'] = 'comentarii';
 $txt['smf_news_3'] = 'Scrie comentariu';
-$txt['smf_news_error2'] = 'Nu puteţi indica un forum care nu acceptă vizitatori. Vă rugăm verificati numele forumului înainte de a încerca din nou!';
+$txt['smf_news_error2'] = 'Nu puteţi indica o secţiune care nu acceptă vizitatori. Vă rugăm verificaţi numele forumului înainte de a încerca din nou!';
 $txt['xml_rss_desc'] = 'Informaţii în timp real din ' . $context['forum_name'];
 
 ?>

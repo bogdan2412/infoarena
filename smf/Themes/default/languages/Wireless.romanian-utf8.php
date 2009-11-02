@@ -1,9 +1,8 @@
 <?php
 // Version: 1.1; Wireless
 
-// Versiunea în limba română www.smf.ro
 $txt['wireless_error_home'] = 'Pagina Principală';
-$txt['wireless_error_notyet'] = 'Ne pare rău, dar acestă secţiune nu este disponibilă pentru utilizatorii wireless în acest moment.';
+$txt['wireless_error_notyet'] = 'Ne pare rău, dar această secţiune nu este disponibilă pentru utilizatorii wireless în acest moment.';
 
 $txt['wireless_options'] = 'Opţiuni adiţionale';
 $txt['wireless_options_login'] = 'Autentificare';
@@ -12,9 +11,9 @@ $txt['wireless_options_logout'] = 'Ieşire';
 $txt['wireless_navigation'] = 'Navigare';
 $txt['wireless_navigation_up'] = 'Un nivel mai sus';
 $txt['wireless_navigation_next'] = 'Pagina următoare';
-$txt['wireless_navigation_prev'] = 'Pagina anterioara';
+$txt['wireless_navigation_prev'] = 'Pagina anterioară';
 $txt['wireless_navigation_index'] = 'Indexul de mesaje';
-$txt['wireless_navigation_topic'] = 'Inapoi la subiect';
+$txt['wireless_navigation_topic'] = 'Înapoi la subiect';
 
 $txt['wireless_pm_inbox'] = 'PM primite';
 $txt['wireless_pm_inbox_new'] = 'PM primite (<span style="color: red;">%d noi</span>)';
