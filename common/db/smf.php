@@ -53,14 +53,56 @@ function smf_create_user($ia_user) {
         'ID_GROUP' => ('admin' == $ia_user['security_level'] ? 1 : null),
     );
 
-    return db_insert(IA_SMF_DB_PREFIX.'members', $fields);
+    $user_id = db_insert(IA_SMF_DB_PREFIX.'members', $fields);
+    smf_update_member_stats();
+    return $user_id;
+}
+
+// Adapted from updateStats function in smf/Sources/Subs.php
+function smf_update_member_stats() {
+    $changes = array(
+        'memberlist_updated' => time(),
+    );
+
+    // Get the latest member (highest ID_MEMBER) and count.
+    list($changes['totalMembers'], $changes['latestMember']) = array_values(
+        db_fetch("
+            SELECT COUNT(*), MAX(ID_MEMBER)
+            FROM `" . IA_SMF_DB_PREFIX . "members`"
+        )
+    );
+
+    // Get the latest member's display name.
+    list($changes['latestRealName']) = array_values(
+        db_fetch("
+            SELECT realName
+            FROM `" . IA_SMF_DB_PREFIX . "members`
+            WHERE ID_MEMBER = " . (int)$changes['latestMember'] . "
+            LIMIT 1"
+        )
+    );
+
+    // Update smf settings table.
+    // SMF also clears it's $modSettings cache at this point
+    // but, since infoarena and SMF don't use the same caching
+    // engine, I don't know how to handle this. The cache timeout
+    // is short though so it's ok to leave it like this.
+    foreach ($changes as $variable => $value)
+    {
+        db_query("
+            UPDATE `" . IA_SMF_DB_PREFIX . "settings`
+            SET value = " . db_quote($value) . "
+            WHERE variable = " . db_quote($variable) . "
+            LIMIT 1"
+        );
+    }
 }
 
 // Updates SMF user information from a regular infoarena user.
 function smf_update_user($ia_user) {
     $fields = array(
         'memberName' => $ia_user['username'],
-        // 'dateRegistered' => time(),
+        //'dateRegistered' => time(),
         //'posts' => 0,
         //'lngfile' => '',
         'realName' => $ia_user['full_name'],
