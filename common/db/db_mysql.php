@@ -7,14 +7,32 @@ function db_connect() {
     // Repetitive include guard. Is this really needed?
     log_assert(!isset($dbLink), "Already connected to the database.");
 
-    // log_print("connecting to database");
+    // log_print("Connecting to database...");
     if (!$dbLink = @mysql_connect(IA_DB_HOST, IA_DB_USER, IA_DB_PASS)) {
-        log_error('Cannot connect to database: '.mysql_error());
+        if (IA_DB_KEEP_ALIVE) {
+            $timeout = 0;
+            do {
+                log_warn('Cannot connect to database: '.mysql_error().
+                    "\nRetrying...");
+
+                // Wait for an increasing amount of seconds to avoid
+                // strain on the mysql server if it is under heavy load
+                sleep($timeout);
+                $timeout = min(max(1, $timeout * 2), 60);
+
+                // Try and reconnect to the database server
+                $dbLink = @mysql_connect(IA_DB_HOST, IA_DB_USER, IA_DB_PASS);
+            } while (!db_isalive());
+            log_print('Connected to database.');
+        } else {
+            log_error('Cannot connect to database: '.mysql_error());
+        }
     }
     if (!mysql_select_db(IA_DB_NAME, $dbLink)) {
         log_error('Cannot select database.');
     }
     mysql_query('SET NAMES utf8');
+    return true;
 }
 
 function db_isalive() {
@@ -34,16 +52,11 @@ function db_keepalive() {
     if (db_isalive()) {
         return false;
     }
-    while (!db_isalive()) {
-        if (is_resource($dbLink)) {
-            mysql_close($dbLink);
-        }
-        $dbLink = null;
-        db_connect();
-        // Wait for 1 second
-        sleep(1);
+    if (is_resource($dbLink)) {
+        mysql_close($dbLink);
     }
-    return true;
+
+    return db_connect();
 }
 
 // Escapes a string to be safely included in a query.
