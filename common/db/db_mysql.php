@@ -5,7 +5,10 @@
 function db_connect() {
     global $dbLink;
     // Repetitive include guard. Is this really needed?
-    log_assert(!isset($dbLink), "Already connected to the database.");
+    if (db_isalive()) {
+        log_warn("Already connected to the database.");
+        return true;
+    }
 
     // log_print("Connecting to database...");
     if (!$dbLink = @mysql_connect(IA_DB_HOST, IA_DB_USER, IA_DB_PASS)) {
