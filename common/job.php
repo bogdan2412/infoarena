@@ -37,7 +37,7 @@ function safe_job_submit($args, $user) {
     }
     // Check if task is new and hasn't been added to any rounds
     if (getattr($args, "round_id") == "" &&
-        !task_get_parent_rounds($task["id"]) &&
+        !task_get_submit_rounds($task["id"], $user) &&
         security_query($user, 'task-submit', $task)) {
         unset($errors["round_id"]);
     }
