@@ -106,11 +106,11 @@ function lcs($a, $b) {
     fwrite($lcs_in, $b."\n");
     fclose($lcs_in);
 
-    $result = fread($lcs_out, 10000);
+    $result = stream_get_contents($lcs_out);
     fclose($lcs_out);
 
     // check for errors
-    $errors = fread($lcs_err, 1000);
+    $errors = stream_get_contents($lcs_err);
     if ($errors) {
         log_error($errors);
     }
