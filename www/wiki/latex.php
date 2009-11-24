@@ -22,17 +22,17 @@
  * @package latexrender
  * Revised by Steve Mayer
  * This file can be included in many PHP programs by using something like (see example.php to see how it can be used)
- * 		include_once('/full_path_here_to/latexrender/latex.php');
- * 		$text_to_be_converted=latex_content($text_to_be_converted);
+ *      include_once('/full_path_here_to/latexrender/latex.php');
+ *      $text_to_be_converted=latex_content($text_to_be_converted);
  * $text_to_be_converted will then contain the link to the appropriate image
  * or an error code as follows (the values can be altered in class.latexrender.php):
- * 	0 OK
- * 	1 Formula longer than 10000 characters
- * 	2 Includes a blacklisted tag
- * 	3 Latex rendering failed
- * 	4 Cannot create DVI file
- * 	5 Picture larger than 800 x 600 followed by x x y dimensions
- * 	6 Cannot copy image to latex directory
+ *      0 OK
+ *      1 Formula longer than 10000 characters
+ *      2 Includes a blacklisted tag
+ *      3 Latex rendering failed
+ *      4 Cannot create DVI file
+ *      5 Picture larger than 800 x 600 followed by x x y dimensions
+ *      6 Cannot copy image to latex directory
  * 
  * This version includes Mike Boyle's modifications to allow vertical offset of LaTeX formulae
  */

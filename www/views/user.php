@@ -32,7 +32,7 @@ if ('view' == $action) {
     // revision warning
     // FIXME: duplicated code (see views/textblock_view.php)
     if (getattr($view, 'revision')) {
-	    include('revision_warning.php');
+        include('revision_warning.php');
     }
 
     echo '<div class="wiki_text_block">';

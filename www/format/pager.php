@@ -8,7 +8,7 @@
 //  * total_entries         : Total number of entries.
 //  * url_args              : Base arguments for the url function. Defaults to _GET.
 //  * param_prefix          : Prefix for url parameters.
-//  * show_count	        : Show number of entries. true / false
+//  * show_count            : Show number of entries. true / false
 //  * show_display_entries  : Shows "results per page" links
 //
 // Certain style might have their own additional args:
