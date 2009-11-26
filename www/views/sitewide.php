@@ -83,7 +83,13 @@ function ia_template_topnav($selected = 'infoarena', $smf_admin = false) {
         <?= getattr($post, 'profile') ?></li>
     <li>
         <?= getattr($pre, 'pm') ?>
-        <?= format_link(url_forum() . "?action=pm", "mesaje") ?>
+	<?php
+        $new_pm_count = smf_get_pm_count($identity_user['username']);
+        if ($new_pm_count) { ?>
+            <?= format_link(url_forum() . "?action=pm", "<b>mesaje (".$new_pm_count.")</b>", false) ?>
+	<?php } else { ?>
+            <?= format_link(url_forum() . "?action=pm", "mesaje") ?>
+	<?php } ?>
         <?= getattr($post, 'pm') ?>
     </li>
 <?php if ($smf_admin) { ?>

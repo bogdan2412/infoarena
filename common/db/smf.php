@@ -219,4 +219,24 @@ function smf_get_member_by_name($username) {
     return db_fetch($query);
 }
 
+// Counts the number of unread personal messages
+function smf_get_pm_count($username) {
+   $from_cache = mem_cache_get("smf-new-pm-".$username);
+
+    if ($from_cache !== false) {
+        return $from_cache;
+    }
+
+    $user_smf_id = smf_get_member_id($username);
+    $prefix = IA_SMF_DB_PREFIX;
+    $query = "
+        SELECT COUNT(*) FROM {$prefix}pm_recipients
+        WHERE ID_MEMBER = ".$user_smf_id." AND is_read = 0
+    ";
+
+    // Cache value
+    $new_pm_count = db_query_value($query);
+    mem_cache_set("smf-new-pm-".$username, $new_pm_count, 600);
+    return $new_pm_count;
+}
 ?>
