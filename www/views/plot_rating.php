@@ -8,7 +8,7 @@ if (2 <= count($history)) {
 
     $range_start = floor($history[$keys[0]]['timestamp'] / (24 * 3600));
     $range_start -= (int)date('d', $history[$keys[0]]['timestamp']) - 1;
-    $range_end = floor($history[$keys[count($history) - 1]]['timestamp'] / (24 * 3600));
+    $range_end = ceil($history[$keys[count($history) - 1]]['timestamp'] / (24 * 3600)) + 10;
 
     $rating_start = $history[$keys[0]]['rating'];
     $rating_end = $rating_start;
