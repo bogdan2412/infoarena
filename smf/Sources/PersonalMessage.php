@@ -118,6 +118,9 @@ function MessageMain()
 			loadTemplate('InstantMessage');
 	}
 
+	// Delete IA cached number of unread messages
+	mem_cache_delete("smf-new-pm-".$user_info["username"]);
+
 	// Load up the members maximum message capacity.
 	if (!$user_info['is_admin'])
 	{
@@ -1523,6 +1526,7 @@ function MessagePost2()
 				if (array_intersect(array($func['strtolower']($member['username']), $func['strtolower']($member['name']), $func['strtolower']($member['email'])), $to_members))
 				{
 					$recipients[$rec_type][] = $member['id'];
+					mem_cache_delete("smf-new-pm-".$member['username']);
 
 					// Get rid of this username. The ones that remain were not found.
 					$input[$rec_type] = array_diff($input[$rec_type], array($func['strtolower']($member['username']), $func['strtolower']($member['name']), $func['strtolower']($member['email'])));
@@ -1536,12 +1540,14 @@ function MessagePost2()
 			$_REQUEST['u'][$key] = (int) $uID;
 
 		$request = db_query("
-			SELECT ID_MEMBER
+			SELECT ID_MEMBER, memberName
 			FROM {$db_prefix}members
 			WHERE ID_MEMBER IN (" . implode(',', $_REQUEST['u']) . ")
 			LIMIT " . count($_REQUEST['u']), __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($request))
+		while ($row = mysql_fetch_assoc($request)) {
 			$recipients['to'][] = $row['ID_MEMBER'];
+			mem_cache_delete("smf-new-pm-".$row['memberName']);
+		}
 		mysql_free_result($request);
 	}
 
