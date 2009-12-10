@@ -6,6 +6,7 @@
 function get_zipped_attachments($filename) {
     $attachments = array();
     $namehash = array();
+    $total_files = 0;
 
     log_print('Exploring ZIP archive '.$filename);
 
@@ -23,6 +24,12 @@ function get_zipped_attachments($filename) {
                 continue;
             }
 
+            $total_files++;
+            // Skip big files
+            if ($stat['size'] > IA_ATTACH_MAXSIZE) {
+                continue;
+            }
+
             // validate file name and make sure there are no duplicates
             $aname = basename($stat['name']);
             if (isset($namehash[$aname]) || !is_attachment_name($aname)) {
@@ -36,7 +43,7 @@ function get_zipped_attachments($filename) {
         }
         $zip->close();
     }
-    return $attachments;
+    return array('total_files' => $total_files, 'attachments' => $attachments);
 }
 
 // given a ZIP archive file name, extract ZIP entry of index $zip_index

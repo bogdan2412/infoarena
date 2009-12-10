@@ -108,10 +108,13 @@ function controller_attachment_submit($page_name) {
     $attachments = array();
     if (!$form_errors) {
         if ($autoextract) {
-            $attachments = get_zipped_attachments($_FILES['file_name']['tmp_name']);
+            $zip_files = get_zipped_attachments($_FILES['file_name']['tmp_name']);
 
-            if (false === $attachments) {
+            if (false === $zip_files) {
                 $form_errors['file_name'] = 'Arhiva ZIP este invalida sau nu poate fi recunoscuta';
+            } else {
+                $attachments = $zip_files['attachments'];
+                $skipped_files = $zip_files['total_files'] - count($attachments);
             }
         }
         else {
@@ -231,9 +234,22 @@ function controller_attachment_submit($page_name) {
     // display error/confirmation message
     if (!$form_errors) {
         if ($autoextract) {
-            $msg = "Am extras si incarcat {$attach_okcount} fisiere.";
-            if ($rewrite_count) {
-                $msg .= " {$rewrite_count} fisiere vechi au fost rescrise.";
+            if ($attach_okcount == 1) {
+                $msg = "Am extras si incarcat un fisier.";
+            } else {
+                $msg = "Am extras si incarcat {$attach_okcount} fisiere.";
+            }
+
+            if ($rewrite_count == 1) {
+                $msg .= " Un fisier mai vechi a fost rescris.";
+            } else if ($rewrite_count > 1) {
+                $msg .= " {$rewrite_count} fisiere mai vechi au fost rescrise.";
+            }
+
+            if ($skipped_files == 1) {
+                $msg .= " Un fisier nu a fost dezarhivat deoarece era prea mare sau era invalid.";
+            } else if ($skipped_files > 1) {
+                $msg .= " {$skipped_files} fisiere nu au fost dezarhivate deoarece erau prea mari sau erau invalide.";
             }
         }
         else {
