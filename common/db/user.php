@@ -149,7 +149,7 @@ function user_create($user)
     require_once(IA_ROOT_DIR . "common/textblock.php");
     $replace = array("user_id" => $user['username']);
     textblock_copy_replace("template/newuser", IA_USER_TEXTBLOCK_PREFIX.$user['username'],
-                           $replace, "public", $new_user['id'], null);
+                           $replace, "public", $new_user['id'], remote_ip_info());
 
     // Create SMF user
     require_once(IA_ROOT_DIR."common/db/smf.php");
