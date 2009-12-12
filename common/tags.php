@@ -29,8 +29,8 @@ function tag_validate($data, &$errors) {
     }
 }
 
-function tag_build_list($obj, $obj_id) {
-    $tag_list = tag_get_names($obj, $obj_id);
+function tag_build_list($obj, $obj_id, $type) {
+    $tag_list = tag_get($obj, $obj_id, $type);
     $tag_names = array();
     foreach ($tag_list as $tag) {
         $tag_names[] = $tag['tag_name'];
@@ -38,11 +38,11 @@ function tag_build_list($obj, $obj_id) {
     return implode(", ", $tag_names);
 }
 
-function tag_update($obj, $obj_id, $tag_data) {
-    tag_clear($obj, $obj_id);
+function tag_update($obj, $obj_id, $type, $tag_data) {
+    tag_clear($obj, $obj_id, $type);
     $tag_data = tag_split($tag_data);
     foreach ($tag_data as $tag_name) {
-        $tag_id = tag_assign_id($tag_name);
+        $tag_id = tag_assign_id(array("name" => $tag_name, "type" => $type));
         tag_add($obj, $obj_id, $tag_id);
     }
 }

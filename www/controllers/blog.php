@@ -57,7 +57,7 @@ function controller_blog_index() {
         $subpage['rating_cache'] = $first_textblock['rating_cache'];
         $subpage['forum_topic'] = blog_get_forum_topic($subpage['name']);
         $subpage['comment_count'] = blog_get_comment_count($subpage['forum_topic']);
-        $subpage['tags'] = tag_get_names("textblock", $subpage['name']);
+        $subpage['tags'] = tag_get("textblock", $subpage['name']);
     }
 
     execute_view_die('views/blog_index.php', $view);
@@ -101,7 +101,7 @@ function controller_blog_view($page_name, $rev_num = null) {
     $view['page_name'] = $page['name'];
     $view['textblock'] = $page;
     $view['forum_topic'] = $page['forum_topic'];
-    $view['tags'] = tag_get_names("textblock", $page['name']);
+    $view['tags'] = tag_get("textblock", $page['name']);
     $view['first_textblock'] = textblock_get_revision($page_name, 1, true);
 
     // This emits a warning on the stripped database used by devs because

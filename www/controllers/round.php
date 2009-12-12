@@ -99,7 +99,7 @@ function controller_round_details($round_id) {
     }
 
     // Tag data
-    $values['tags'] = request('tags', tag_build_list("round", $round_id));
+    $values['tags'] = request('tags', tag_build_list("round", $round_id, "tag"));
 
     // Validate the monkey.
 
@@ -168,7 +168,7 @@ function controller_round_details($round_id) {
         round_update_task_list($round_id, $round_tasks, $new_round_tasks);
 
         if (identity_can('round-tag', $new_round)) {
-            tag_update("round", $new_round['id'], $values['tags']);
+            tag_update("round", $new_round['id'], "tag", $values['tags']);
         }
 
         flash("Runda a fost modificata cu succes.");

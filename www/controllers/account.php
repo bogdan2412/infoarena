@@ -75,7 +75,7 @@ function controller_account($username = null) {
         $errors = validate_profile_data($data, $user);
 
         // validate tag data
-        $data['tags'] = request('tags', tag_build_list("user", $user['id']));
+        $data['tags'] = request('tags', tag_build_list("user", $user['id'], "tag"));
         tag_validate($data, $errors);
 
         // validate avatar
@@ -161,9 +161,9 @@ function controller_account($username = null) {
 
             // update tags info
             if (identity_can('user-tag', $new_user)) {
-                tag_update("user", $new_user['id'], $data['tags']);
+                tag_update("user", $new_user['id'], "tag", $data['tags']);
             }
-            $data['tags'] = tag_build_list("user", $new_user['id']);
+            $data['tags'] = tag_build_list("user", $new_user['id'], "tag");
 
             // done. redirect to same page so user has a strong confirmation
             // of data being saved
@@ -174,7 +174,7 @@ function controller_account($username = null) {
     } else {
         // form is displayed for the first time. Fill in default values
         $data = $user;
-        $data['tags'] = tag_build_list("user", $user['id']);
+        $data['tags'] = tag_build_list("user", $user['id'], "tag");
 
         // unset some fields we do not $data to carry
         unset($data['id']);

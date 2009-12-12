@@ -64,7 +64,7 @@ function controller_task_details($task_id) {
     }
 
     // Tag data
-    $values['tags'] = request('tags', tag_build_list("task", $task_id));
+    $values['tags'] = request('tags', tag_build_list("task", $task_id, "tag"));
 
     // Task owner
     if (identity_can('task-edit-owner', $task)) {
@@ -137,7 +137,7 @@ function controller_task_details($task_id) {
             task_update($new_task);
 
             if (identity_can('task-tag', $new_task)) {
-                tag_update("task", $new_task['id'], $values['tags']);
+                tag_update("task", $new_task['id'], "tag", $values['tags']);
             }
 
             flash("Task-ul a fost modificat cu succes.");

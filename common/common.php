@@ -162,7 +162,7 @@ function is_round_id($round_id) {
 }
 
 // Check valid score names.
-// Does not check existence. 
+// Does not check existence.
 function is_score_name($score_name) {
     return preg_match('/^'.IA_RE_SCORE_NAME.'$/xi', $score_name) &&
         strlen($score_name) < 64;
@@ -204,6 +204,28 @@ function is_tag_id($tag_id) {
 function is_tag_name($tag_name) {
     return preg_match('/^'.IA_RE_TAG_NAME.'$/xi', $tag_name) &&
            strlen($tag_name) < 64;
+}
+
+// Check tag type
+function is_tag_type($tag_type) {
+    return in_array($tag_type, array(
+        'author', 'contest', 'year', 'round', 'age_group',
+        'method', 'algorithm', 'tag'
+    ));
+}
+
+// Check tag
+function is_tag($tag) {
+    if (!is_array($tag)) {
+        return false;
+    }
+    if (!array_key_exists("name", $tag)) {
+        return false;
+    }
+    if (!array_key_exists("type", $tag)) {
+        return false;
+    }
+    return is_tag_name($tag["name"]) && is_tag_type($tag["type"]);
 }
 
 // Taggable objects

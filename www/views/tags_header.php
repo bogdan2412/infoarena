@@ -41,7 +41,7 @@ function checkForm() {
     return answer;
 }
 <?php
-$tag_names = tag_get_all_names();
+$tag_names = tag_get_all();
 echo  "collection = [\n";
 foreach ($tag_names as $tag) {
     echo "'".html_escape($tag['name'])."',\n";

@@ -35,7 +35,7 @@ function controller_textblock_edit($page_name, $security = 'public') {
     $values['title'] = request('title', $page['title']);
     $values['security'] = request('security', $page['security']);
     $values['forum_topic'] = request('forum_topic', $page['forum_topic']);
-    $values['tags'] = request('tags', tag_build_list("textblock", $page_name));
+    $values['tags'] = request('tags', tag_build_list("textblock", $page_name, "tag"));
     $values['creation_timestamp'] = getattr($page, 'creation_timestamp');
     $values['timestamp'] = null;
 
@@ -81,7 +81,7 @@ function controller_textblock_edit($page_name, $security = 'public') {
                                    $new_page['creation_timestamp'],
                                    remote_ip_info());
             if (identity_can('textblock-tag', $new_page)) {
-                tag_update("textblock", $new_page['name'], $values['tags']);
+                tag_update("textblock", $new_page['name'], "tag", $values['tags']);
             }
             flash('Am actualizat continutul');
 
