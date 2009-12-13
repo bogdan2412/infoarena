@@ -8,7 +8,7 @@ function tag_form_event() {
 
 // Format a tag input box
 // FIXME: Width parameter does not work, I hate CSS
-function tag_format_input_box($field, $value = null, $width = "50", $name = "tags") {
+function tag_format_input_box($field, $value = null, $width = "50", $name = "tags", $autocomplete = true) {
     $esc_name = html_escape($field['name']);
     $esc_width = html_escape($width);
     // presume $value is html-escaped
@@ -24,8 +24,8 @@ function tag_format_input_box($field, $value = null, $width = "50", $name = "tag
         $output .= ' value="'.$value.'"';
     }
     $output .= ' />';
-//    $output .= '<script type="text/javascript" language="JavaScript" src="'.
-//                html_escape(url_static("js/wick.js")).'"></script>';
+    $output .= '<script type="text/javascript" language="JavaScript" src="'.
+                html_escape(url_static("js/wick.js")).'"></script>';
     $output .= "</li>";
     return $output;
 }

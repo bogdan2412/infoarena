@@ -147,13 +147,13 @@ $form_fields = array(
         <fieldset>
             <legend>Taguri</legend>
             <ul class="form">
-                <?= tag_format_input_box($tag_fields['author'], fval('tag_author')); ?>
-                <?= tag_format_input_box($tag_fields['contest'], fval('tag_contest')); ?>
-                <?= tag_format_input_box($tag_fields['year'], fval('tag_year')); ?>
-                <?= tag_format_input_box($tag_fields['round'], fval('tag_round')); ?>
-                <?= tag_format_input_box($tag_fields['age_group'], fval('tag_age_group')); ?>
-                <?= tag_format_input_box($tag_fields['method'], fval('tag_method')); ?>
-                <?= tag_format_input_box($tag_fields['algorithm'], fval('tag_algorithm')); ?>
+                <?= tag_format_input_box($tag_fields['author'], fval('tag_author'), 50, "tags", false); ?>
+                <?= tag_format_input_box($tag_fields['contest'], fval('tag_contest'), 50, "tags", false); ?>
+                <?= tag_format_input_box($tag_fields['year'], fval('tag_year'), 50, "tags", false); ?>
+                <?= tag_format_input_box($tag_fields['round'], fval('tag_round'), 50, "tags", false); ?>
+                <?= tag_format_input_box($tag_fields['age_group'], fval('tag_age_group'), 50, "tags", false); ?>
+                <?= tag_format_input_box($tag_fields['method'], fval('tag_method'), 50, "tags", false); ?>
+                <?= tag_format_input_box($tag_fields['algorithm'], fval('tag_algorithm'), 50, "tags", false); ?>
             </ul>
         </fieldset>
     <?php } ?>
