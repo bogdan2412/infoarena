@@ -50,17 +50,24 @@ function round_get_parameter_infos() {
 // Validate parameters. Return erros as $form_errors convention.
 function round_validate_parameters($round_type, $parameters) {
     $errors = array();
-    if ($round_type == 'classic' or $round_type == 'user-defined') {
+    if ($round_type == 'classic' or $round_type == 'user-defined'
+            or $round_type == 'archive') {
         // Check duration
         $duration = getattr($parameters, 'duration');
         if (is_null($duration)) {
             $errors['duration'] = "Durata trebuie specificata";
         }
+
+        if ($round_type == 'user-defined') {
+            if ($duration > IA_USER_DEFINED_ROUND_DURATION_LIMIT) {
+                $errors['duration'] = "Durata maxim admisa este de " .
+                    IA_USER_DEFINED_ROUND_DURATION_LIMIT . " ore";
+            }
+        }
+
         if (!is_numeric($duration) || $duration < 0) {
             $errors['duration'] = "Durata trebuie sa fie un numar pozitiv";
         }
-    } elseif ($round_type == 'archive') {
-        // Empty...
     } else {
         log_error("Bad round_type");
     }
@@ -118,6 +125,17 @@ function round_validate($round) {
     // NULL is ok here.
     if (!is_db_date(getattr($round, 'start_time', db_date_format()))) {
         $errors['start_time'] = "Timpul trebuie specificat ca YYYY-MM-DD HH:MM:SS";
+    } else {
+        if ($round['type'] == 'user-defined') {
+            $current_time = db_date_parse(date("Y-m-d H:i:s"));
+            $round_time = db_date_parse($round['start_time']);
+
+            if (($round_time - $current_time) >
+                    IA_USER_DEFINED_ROUND_DAYSBEFORE_LIMIT * 60 * 60 * 24) {
+                $errors['start_time'] = "Nu poti creea o runda cu mai mult de "
+                    . IA_USER_DEFINED_ROUND_DAYSBEFORE_LIMIT . " zile inainte";
+            }
+        }
     }
 
     if (!is_user_id(getattr($round, 'user_id', ''))) {

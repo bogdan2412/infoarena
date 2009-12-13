@@ -78,6 +78,14 @@ define("IA_TLF_UNSOLVED", '1');
 define("IA_TLF_TRIED", '2');
 define("IA_TLF_SOLVED", '3');
 
+// Constants for IA user-defined rounds
+// Users can't create rounds lasting 123141231223 hours
+define("IA_USER_DEFINED_ROUND_DURATION_LIMIT", '48');
+// Users can't create rounds 5412312421 days before the round starts
+define("IA_USER_DEFINED_ROUND_DAYSBEFORE_LIMIT", '30');
+// Users can't create user defined rounds with too many problems
+define("IA_USER_DEFINED_ROUND_TASK_LIMIT", '25');
+
 // Windows hack for checkdnsrr function.
 // FIXME: Not fully tested!
 if (!function_exists('checkdnsrr')) {

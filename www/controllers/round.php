@@ -115,6 +115,7 @@ function controller_round_details($round_id) {
 
     // Validate task list.
     $new_round_tasks = $values['tasks'];
+
     if (!is_array($new_round_tasks)) {
         $errors['tasks'] = 'Valori invalide.';
     } else {
@@ -129,6 +130,19 @@ function controller_round_details($round_id) {
             }
         }
     }
+
+    if (request_is_post() && count($values['tasks']) == 0) {
+        $errors['tasks'] = "Trebuie sa alegi cel putin o problema";
+    }
+
+    // Additional validation for user defined tasks
+    if (!array_key_exists('tasks', $errors)
+        && $values['type'] == 'user-defined' &&
+        count($values['tasks']) > IA_USER_DEFINED_ROUND_TASK_LIMIT) {
+            $errors['tasks'] = "Nu poti alege mai mult de " .
+            IA_USER_DEFINED_ROUND_TASK_LIMIT . " probleme";
+        }
+
     if (array_key_exists('tasks', $errors)) {
         $values['tasks'] = array();
     }
