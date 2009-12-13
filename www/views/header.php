@@ -39,6 +39,7 @@ header("Content-type: text/html; charset=utf-8");
     <meta name="verify-v1" content="ac36ilLp6y4xp71sJgZEjFMgow6YCLkyQLrG/b2iT/Q=" />
     <meta name="verify-v1" content="PQDTb5Advw297iADXVUYuxh0z+iQKfq1wtYWnfHCb1Y=" />
     <meta name="verify-v1" content="GUKPcDm0TzwAR7r5xbagq576p/YWH9su/Ca4o8YlYBg=" /> <!--bogdan2412-->
+    <meta name="google-site-verification" content="T_HFYNIO3S70696yFC5rkbPn339gjnfVwMqYPmU866I" /> <!--devilkind-->
 <?php
     }
 ?>

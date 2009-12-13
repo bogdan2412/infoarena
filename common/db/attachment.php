@@ -2,6 +2,7 @@
 
 require_once(IA_ROOT_DIR."common/db/db.php");
 require_once(IA_ROOT_DIR."common/attachment.php");
+require_once(IA_ROOT_DIR."common/cache.php");
 
 // Add $attachment to cache if not null and return $attachment.
 function _attachment_cache_add($attachment) {

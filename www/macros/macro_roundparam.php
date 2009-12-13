@@ -1,6 +1,7 @@
 <?php
 
 require_once(IA_ROOT_DIR . "common/db/round.php");
+require_once(IA_ROOT_DIR . "www/format/format.php");
 
 // Displays a round field, be it a hard-coded field such as round title or a grader parameter such as `type`.
 // NOTE: The macro employs a simple caching mechanism (via static variables, cache expires at the end of the request)
@@ -59,7 +60,8 @@ function macro_roundparam($args) {
             if (is_null($round['start_time'])) { 
                 $html .= "data necunoscuta";
             } else {
-                $html .= format_date($round['start_time']);
+                $html .= format_date($round['start_time'],
+                    '%A %e %B %Y, la ora %H:%M:%S');
             }
             break;
 

@@ -5,6 +5,7 @@ require_once(dirname($argv[0]) . "/utilities.php");
 require_once(IA_ROOT_DIR . "common/db/textblock.php");
 
 log_print("Recursive page move, for huge changes.");
+db_connect();
 
 $src = read_line("Source root?", 'task');
 $dst = read_line("Destination root?", 'problema');
@@ -22,7 +23,7 @@ if (!read_bool("Are you sure you want to move ".count($page_list)." pages?", fal
 
 foreach ($page_list as $page) {
     $old_name = $page['name'];
-    $new_name = preg_replace("/^".preg_quote($src, '/').'/si', preg_quote($dst, '/'), $old_name);
+    $new_name = preg_replace("/^".preg_quote($src, '/').'/si', $dst, $old_name);
     textblock_move($old_name, $new_name);
 }
 

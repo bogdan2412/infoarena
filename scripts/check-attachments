@@ -56,7 +56,7 @@ if (count($extra_files) == 0 && count($extra_atts) == 0) {
         }
         if (read_bool("Want to delete them?", false)) {
             foreach ($extra_atts as $att) {
-                attachment_delete($att['id']);
+                attachment_delete_by_id($att['id']);
             }
         }
     }
