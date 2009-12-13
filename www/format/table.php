@@ -92,7 +92,11 @@ function format_table($data, $column_infos = null, $options = null)
             }
 
             $key = getattr($column, 'key');
-            $caption = html_escape(getattr($column, 'title', $key));
+            if (isset($column['html_title'])) {
+                $caption = getattr($column, 'html_title', $key);
+            } else {
+                $caption = html_escape(getattr($column, 'title', $key));
+            }
 
             // sortable columns
             if ($key && getattr($column, 'sortable')) {

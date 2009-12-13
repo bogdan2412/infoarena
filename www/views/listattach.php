@@ -19,6 +19,13 @@ require_once(IA_ROOT_DIR . "www/format/format.php");
         }
 
     }
+    function attachments_toggle_selection(checked) {
+        var check_boxes = getElementsByTagAndClassName('input', 'attach-checkbox');
+
+        for (var index in check_boxes) {
+            check_boxes[index].checked = checked;
+        }
+    }
 </script>
 
 <?php
@@ -51,8 +58,7 @@ function format_attach_size($row) {
 function format_attach_zip($row) {
     $id = html_escape($row["id"]);
     $name = html_escape($row["name"]);
-    $attachurl = "<input type='checkbox' name='$id' value='$name'>";
-
+    $attachurl = "<input type='checkbox' name='$id' value='$name' class='attach-checkbox'>";
     return $attachurl;
 }
 
@@ -78,7 +84,8 @@ function format_operations($row) {
 
 $column_infos = array(
     array (
-        'title' => '',
+        'html_title' => '<input type="checkbox" ' .
+                'onclick="attachments_toggle_selection(this.checked)" />',
         'key' => 'zip',
         'rowform' => 'format_attach_zip'
     ),
