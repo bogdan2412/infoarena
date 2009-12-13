@@ -1,0 +1,47 @@
+#! /usr/bin/env php
+
+<?php
+// This script changes timestamps for revisions so that
+// they won't share any common timestamp
+
+require_once(dirname($argv[0]) . "/utilities.php");
+
+db_connect();
+
+$res = db_query("SELECT name, timestamp from ia_textblock_revision " .
+                "ORDER BY name, timestamp");
+
+$prev_row = array("name" => "", "timestamp" => "");
+$prev_timestamp = 0;
+$count = 0;
+
+while ($row = db_next_row($res)) {
+    if ($row["name"] == $prev_row["name"] &&
+            db_date_parse($row["timestamp"]) <= $prev_timestamp) {
+
+        ++$prev_timestamp;
+        ++$count;
+
+        log_print(sprintf("Changed textblocks's %s timestamp from %s to %s",
+                    $row["name"], $row["timestamp"],
+                    db_date_format($prev_timestamp)));
+
+        db_query(sprintf("UPDATE ia_textblock_revision SET timestamp='%s' " .
+                "WHERE name=%s AND timestamp=%s LIMIT 1",
+                db_escape(db_date_format($prev_timestamp)),
+                db_quote($row["name"]), db_quote($row["timestamp"])));
+    } else {
+        $prev_timestamp = db_date_parse($row["timestamp"]);
+    }
+
+    $prev_row = $row;
+}
+
+log_print(sprintf("Changed %s entries", $count));
+
+db_query("ALTER TABLE `ia_textblock_revision`
+    ADD PRIMARY KEY  USING BTREE(`name`, `timestamp`),
+    DROP INDEX `should_be_primary`");
+log_print("Added PRIMARY KEY to `ia_textblock_revision`");
+
+?>
