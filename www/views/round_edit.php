@@ -92,7 +92,7 @@ $form_fields = array(
    <?= view_form_field_li($form_fields['page_name'], 'page_name') ?>
    <?= view_form_field_li($form_fields['start_time'], 'start_time') ?>
    <?php if ($can_tag) { ?>
-      <?= tag_format_input_box(fval('tags')) ?>
+      <?= tag_format_input_box(array("label" => "Tag-uri", "name" => "tags"), fval('tags')) ?>
    <?php } ?>
    <?= view_form_field_li($form_fields['tasks'], 'tasks') ?>
   </ul>

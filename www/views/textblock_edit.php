@@ -44,7 +44,7 @@ include('views/tags_header.php');
     <?php } ?>
 
     <?php if (identity_can('textblock-tag', $view['page'])) { ?>
-       <?= tag_format_input_box(fval('tags')) ?>
+       <?= tag_format_input_box(array("label" => "Tag-uri", "name" => "tags"), fval('tags')) ?>
     <?php } ?>
 
     <?php if (array_key_exists('security', $form_values)) { ?>

@@ -124,11 +124,40 @@ $form_fields = array(
         <?php if (identity_can('task-change-security', $task)) { ?>
            <?= view_form_field_li($form_fields['hidden'], 'hidden') ?>
         <?php } ?>
-        <?php if (identity_can('task-tag', $task)) { ?>
-           <?= tag_format_input_box(fval('tags')) ?>
-        <?php } ?>
-    </ul>
+   </ul>
     </fieldset>
+
+    <?php if (identity_can('task-tag', $task)) {
+        $tag_fields = Array('author' => Array("label" => "Autor",
+                                                "name" => "tag_author"),
+                            'contest' => Array("label" => "Concurs",
+                                                "name" => "tag_contest"),
+                            'year' => Array("label" => "Anul",
+                                            "name" => "tag_year"),
+                            'round' => Array("label" => "Runda",
+                                            "name" => "tag_round"),
+                            'age_group' => Array("label" => "Grupa de varsta",
+                                        "name" => "tag_age_group"),
+                            'method' => Array("label" => "Metoda de programare",
+                                        "name" => "tag_method"),
+                            'algorithm' => Array("label" => "Algoritm",
+                                        "name" => "tag_algorithm")
+                        );
+    ?>
+        <fieldset>
+            <legend>Taguri</legend>
+            <ul class="form">
+                <?= tag_format_input_box($tag_fields['author'], fval('tag_author')); ?>
+                <?= tag_format_input_box($tag_fields['contest'], fval('tag_contest')); ?>
+                <?= tag_format_input_box($tag_fields['year'], fval('tag_year')); ?>
+                <?= tag_format_input_box($tag_fields['round'], fval('tag_round')); ?>
+                <?= tag_format_input_box($tag_fields['age_group'], fval('tag_age_group')); ?>
+                <?= tag_format_input_box($tag_fields['method'], fval('tag_method')); ?>
+                <?= tag_format_input_box($tag_fields['algorithm'], fval('tag_algorithm')); ?>
+            </ul>
+        </fieldset>
+    <?php } ?>
+
 
 <?php
 // FIXME: Field should be generated from task_get_types()

@@ -64,7 +64,19 @@ function controller_task_details($task_id) {
     }
 
     // Tag data
-    $values['tags'] = request('tags', tag_build_list("task", $task_id, "tag"));
+    $tag_types = Array('author', 'contest', 'year', 'round', 'age_group', 'method', 'algorithm');
+    $tag_parents = Array('year' => 'contest', 'round' => 'year', 'age_group' => 'contest');
+
+    // FIXME: tags that have children such as contest, year or round should have only one tag
+    foreach ($tag_types as $type) {
+        $remove_prefix = isset($tag_parents[$type]);
+        $values['tag_'.$type] = request('tag_'.$type, tag_build_list('task', $task_id, $type, $remove_prefix));
+        $prefix['tag_'.$type] = '';
+        if (isset($tag_parents[$type])) {
+            $parent_type = $tag_parents[$type];
+            $prefix['tag_'.$type] = $prefix['tag_'.$parent_type].$values['tag_'.$parent_type]."@";
+        }
+    }
 
     // Task owner
     if (identity_can('task-edit-owner', $task)) {
@@ -137,7 +149,9 @@ function controller_task_details($task_id) {
             task_update($new_task);
 
             if (identity_can('task-tag', $new_task)) {
-                tag_update("task", $new_task['id'], "tag", $values['tags']);
+                foreach ($tag_types as $type) {
+                    tag_update('task', $new_task['id'], $type, $values['tag_'.$type], $prefix['tag_'.$type]);
+                }
             }
 
             flash("Task-ul a fost modificat cu succes.");
