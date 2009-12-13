@@ -6,7 +6,9 @@ require_once(dirname($argv[0]) . "/utilities.php");
 db_connect();
 db_query("
     ALTER TABLE `ia_tags`
-    ADD COLUMN `type` ENUM('author','contest','year','round','age_group','method','algorithm','tag') NOT NULL
+    ADD COLUMN `type` ENUM('author','contest','year','round','age_group','method','algorithm','tag') NOT NULL,
+    DROP INDEX `name`,
+    ADD UNIQUE INDEX `name_type` USING BTREE(`name`, `type`)
 ");
 db_query('UPDATE `ia_tags` SET `type` = "tag"');
 
