@@ -1,5 +1,18 @@
 <?php
 
+// Changes all special characters ș, ț, Ș, Ț to ş, ţ, Ş, Ţ
+// commabelow to cedille and returns the modified text
+// FIXME: reverse characters in to_change when windows XP dies
+function text_change_special_chars($text) {
+    $to_change = array("ș"=>"ş", "ț"=>"ţ", "Ș"=>"Ş", "Ț"=>"Ţ");
+
+    foreach ($to_change as $bad=>$good) {
+        $text = mb_ereg_replace($bad, $good, $text);
+    }
+
+    return $text;
+}
+
 // Nicer way to get an element from an array. It returns a default value
 // (defaulting to null) instead of throwing an error.
 function getattr($dict, $attribute, $default = null) {

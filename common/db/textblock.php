@@ -5,6 +5,7 @@ require_once(IA_ROOT_DIR."common/db/tags.php");
 require_once(IA_ROOT_DIR."common/db/attachment.php");
 require_once(IA_ROOT_DIR."common/security.php");
 require_once(IA_ROOT_DIR."common/textblock.php");
+require_once(IA_ROOT_DIR."common/common.php");
 
 // Textblock-related db functions.
 //
@@ -17,6 +18,10 @@ function textblock_add_revision(
         $forum_topic = null, $timestamp = null, $creation_timestamp = null,
         $remote_ip_info = null) {
     $name = normalize_page_name($name);
+
+    // Change special characters in content
+    $content = text_change_special_chars($content);
+
     $tb = array(
             'name' => $name,
             'title' => $title,
