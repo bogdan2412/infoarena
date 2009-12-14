@@ -16,16 +16,28 @@ function tag_split($tag_data) {
     return $result;
 }
 
-function tag_validate($data, &$errors) {
-    $tags = getattr($data, 'tags');
+function tag_validate($data, &$errors, $key = null, $parent_key = null) {
+    if (is_null($key)) {
+        $tag_key = 'tags';
+    } else {
+        $tag_key = 'tag_'.$key;
+    }
+    $tags = getattr($data, $tag_key);
     if (is_null($tags)) {
         return;
     }
     $tags = tag_split($tags);
     foreach ($tags as $tag) {
         if (!is_tag_name($tag)) {
-            $errors['tags'] = "Cel putin un tag este gresit";
+            $errors[$tag_key] = "Cel putin un tag este gresit";
             return;
+        }
+    }
+    if (count($tags) > 0 && !is_null($parent_key)) {
+        $parent_tag = getattr($data, 'tag_'.$parent_key, "");
+        if (count(tag_split($parent_tag)) != 1) {
+            $errors['tag_'.$parent_key] = sprintf("Trebuie specificat exact
+                un tag '%s' pentru a specifica taguri '%s'", $parent_key, $key);
         }
     }
 }

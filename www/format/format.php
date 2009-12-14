@@ -90,7 +90,7 @@ function format_post_link($url, $content, $post_data = array(), $escape = true, 
     foreach ($post_data as $key => $value) {
         $form_content .= '<input type="hidden" name="' . html_escape($key) . '" value="' . html_escape($value) . '" />';
     }
-    $form_attr = array("style" => "margin: 0; padding: 0; display: inline",
+    $form_attr = array("class" => "inline_form",
                        "method" => "post",
                        "action" => $url,
                       );

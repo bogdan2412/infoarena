@@ -544,6 +544,12 @@ form {
     font-size: 1em;
 }
 
+form.inline_form {
+    margin: 0;
+    padding: 0;
+    display: inline;
+}
+
 input[type='text'], input[type='password'], select {
     width: 150px;
 }

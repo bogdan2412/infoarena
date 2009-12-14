@@ -5,7 +5,7 @@ require_once(IA_ROOT_DIR."common/common.php");
 
 // Get list of all tag names, filtered by type and parent
 function tag_get_all($types = null, $parent = null) {
-    $query = "SELECT name, type, parent FROM ia_tags";
+    $query = "SELECT id, name, type, parent FROM ia_tags";
     $where = array();
     if (!is_null($types)) {
         log_assert(is_array($types), "types should be an array");
@@ -94,6 +94,25 @@ function tag_assign_id($tag) {
         return db_insert_id();
     }
     return $id;
+}
+
+// Updates name, type or parent for a tag specified by it's id
+function tag_update_by_id($tag_id, $tag) {
+    $query = sprintf(
+        "UPDATE ia_tags SET name = %s, type = %s, parent = %s WHERE id = %s",
+        db_quote($tag["name"]), db_quote($tag["type"]),
+        db_quote($tag["parent"]), db_quote($tag_id));
+    db_query($query);
+    return db_affected_rows() == 1;
+}
+
+// Delete a tag identified by it's id
+function tag_delete_by_id($tag_id) {
+    db_query(sprintf(
+        "DELETE FROM ia_tags WHERE parent = %s", db_quote($tag_id)
+    ));
+    db_query(sprintf("DELETE FROM ia_tags WHERE id = %s", db_quote($tag_id)));
+    return db_affected_rows() == 1;
 }
 
 // Build ugly where clause to be used in subqueries

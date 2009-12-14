@@ -89,6 +89,20 @@ else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'problema') {
     controller_task_details($obj_id);
 }
 
+// Task algorithm tags
+else if ($page == 'admin/task_tags') {
+    require_once(IA_ROOT_DIR.'www/controllers/task_tags.php');
+    if (request("action") == "add") {
+        controller_task_tags_add();
+    } elseif (request("action") == "delete") {
+        controller_task_tags_delete();
+    } elseif (request("action") == "rename") {
+        controller_task_tags_rename();
+    } else {
+        controller_task_tags();
+    }
+}
+
 // Round creator
 else if ($page == 'admin/runda-noua') {
     require_once(IA_ROOT_DIR.'www/controllers/round.php');

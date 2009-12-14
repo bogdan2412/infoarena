@@ -135,7 +135,10 @@ function controller_task_details($task_id) {
         }
 
         // Handle tags
-        tag_validate($values, $errors);
+        foreach ($tag_types as $type) {
+            tag_validate($values, $errors, $type,
+                getattr($tag_parents, $type));
+        }
 
         // If no errors then do the db monkey
         $tags = array();
