@@ -30,27 +30,29 @@ function tag_validate($data, &$errors) {
     }
 }
 
-function tag_build_list($obj, $obj_id, $type, $remove_prefix = true) {
-    $tag_list = tag_get($obj, $obj_id, $type);
+function tag_build_list($obj, $obj_id, $type, $parent = null) {
+    $tag_list = tag_get($obj, $obj_id, $type, $parent);
     $tag_names = array();
     foreach ($tag_list as $tag) {
-        if ($remove_prefix) {
-            $tag_parts = explode('@', $tag['tag_name']);
-            $tag_names[] = trim($tag_parts[ count($tag_parts) - 1 ]);
-        } else {
-            $tag_names[] = $tag['tag_name'];
-        }
+        $tag_names[] = $tag['tag_name'];
     }
     return implode(", ", $tag_names);
 }
 
-function tag_update($obj, $obj_id, $type, $tag_data, $tag_prefix = "") {
+// Receives a list of tags of a certain type and, optionally, with a
+// certain parent and updates the tag list for the specified object.
+// Returns a list of tag ids.
+function tag_update($obj, $obj_id, $type, $tag_data, $parent = 0) {
     tag_clear($obj, $obj_id, $type);
     $tag_data = tag_split($tag_data);
+    $tag_ids = array();
     foreach ($tag_data as $tag_name) {
-        $tag_id = tag_assign_id(array("name" => $tag_prefix.$tag_name, "type" => $type));
+        $tag_id = tag_assign_id(
+            array("name" => $tag_name, "type" => $type, "parent" => $parent));
+        $tag_ids[] = $tag_id;
         tag_add($obj, $obj_id, $tag_id);
     }
+    return $tag_ids;
 }
 
 ?>

@@ -7,8 +7,9 @@ db_connect();
 db_query("
     ALTER TABLE `ia_tags`
     ADD COLUMN `type` ENUM('author','contest','year','round','age_group','method','algorithm','tag') NOT NULL,
+    ADD COLUMN `parent` INTEGER NOT NULL DEFAULT 0,
     DROP INDEX `name`,
-    ADD UNIQUE INDEX `name_type` USING BTREE(`name`, `type`)
+    ADD UNIQUE INDEX `name_type` USING BTREE(`name`, `type`, `parent`)
 ");
 db_query('UPDATE `ia_tags` SET `type` = "tag"');
 

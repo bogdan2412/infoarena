@@ -69,13 +69,8 @@ function controller_task_details($task_id) {
 
     // FIXME: tags that have children such as contest, year or round should have only one tag
     foreach ($tag_types as $type) {
-        $remove_prefix = isset($tag_parents[$type]);
-        $values['tag_'.$type] = request('tag_'.$type, tag_build_list('task', $task_id, $type, $remove_prefix));
-        $prefix['tag_'.$type] = '';
-        if (isset($tag_parents[$type])) {
-            $parent_type = $tag_parents[$type];
-            $prefix['tag_'.$type] = $prefix['tag_'.$parent_type].$values['tag_'.$parent_type]."@";
-        }
+        $values['tag_'.$type] = request('tag_'.$type,
+            tag_build_list('task', $task_id, $type));
     }
 
     // Task owner
@@ -143,6 +138,7 @@ function controller_task_details($task_id) {
         tag_validate($values, $errors);
 
         // If no errors then do the db monkey
+        $tags = array();
         if (!$errors) {
             // FIXME: error handling? Is that even remotely possible in php?
             task_update_parameters($task_id, $new_task_params);
@@ -150,7 +146,12 @@ function controller_task_details($task_id) {
 
             if (identity_can('task-tag', $new_task)) {
                 foreach ($tag_types as $type) {
-                    tag_update('task', $new_task['id'], $type, $values['tag_'.$type], $prefix['tag_'.$type]);
+                    $parent = 0;
+                    if (isset($tag_parents[$type])) {
+                        $parent = $tags[$tag_parents[$type]][0];
+                    }
+                    $tags[$type] = tag_update('task', $new_task['id'], $type,
+                        $values['tag_'.$type], $parent);
                 }
             }
 

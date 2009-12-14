@@ -3,24 +3,32 @@
 require_once(IA_ROOT_DIR."common/db/db.php");
 require_once(IA_ROOT_DIR."common/common.php");
 
-// Get list of all tag names, filtered by type
-function tag_get_all($types = null) {
-    $query = "SELECT name, type FROM ia_tags";
+// Get list of all tag names, filtered by type and parent
+function tag_get_all($types = null, $parent = null) {
+    $query = "SELECT name, type, parent FROM ia_tags";
+    $where = array();
     if (!is_null($types)) {
         log_assert(is_array($types), "types should be an array");
         foreach ($types as $type) {
             log_assert(is_tag_type($type));
         }
 
-        $query .= sprintf(" WHERE type IN (%s)",
+        $where[] = sprintf("(type IN (%s))",
             implode(',', array_map('db_quote', $types))
         );
+    }
+    if (!is_null($parent)) {
+        log_assert(is_tag_id($parent));
+        $where[] = sprintf("(parent = %s)", db_quote($parent));
+    }
+    if (count($where)) {
+        $query .= sprintf(" WHERE %s", implode(" AND ", $where));
     }
     return db_fetch_all($query);
 }
 
 // Get list of all tags for a certain object, filtered by type
-function tag_get($obj, $obj_id, $type = null) {
+function tag_get($obj, $obj_id, $type = null, $parent = null) {
     log_assert(is_taggable($obj));
     log_assert(is_null($type) || is_tag_type($type));
     if (is_null($type)) {
@@ -28,13 +36,19 @@ function tag_get($obj, $obj_id, $type = null) {
     } else {
         $where_type = sprintf(" AND tags.type = %s", db_quote($type));
     }
+    if (is_null($parent)) {
+        $where_parent = "";
+    } else {
+        $where_parent = sprintf(" AND tags.parent = %s", db_quote($parent));
+    }
     $query = sprintf(
-        "SELECT %s_id, tag_id, tags.name AS tag_name, tags.type AS tag_type
+        "SELECT %s_id, tag_id,
+        tags.name AS tag_name, tags.type AS tag_type, tags.parent AS tag_parent
         FROM ia_%s_tags AS obj_tags
         LEFT JOIN ia_tags AS tags ON obj_tags.tag_id = tags.id
-        WHERE %s_id = %s%s",
+        WHERE %s_id = %s%s%s",
         db_escape($obj), db_escape($obj), db_escape($obj),
-        db_quote($obj_id), $where_type
+        db_quote($obj_id), $where_type, $where_parent
     );
     return db_fetch_all($query);
 }
@@ -43,8 +57,8 @@ function tag_get($obj, $obj_id, $type = null) {
 function tag_get_id($tag) {
     log_assert(is_tag($tag));
     $query = sprintf(
-        "SELECT id FROM ia_tags WHERE name = %s AND type = %s",
-        db_quote($tag["name"]), db_quote($tag["type"])
+        "SELECT id FROM ia_tags WHERE name = %s AND type = %s AND parent = %s",
+        db_quote($tag["name"]), db_quote($tag["type"]), db_quote($tag["parent"])
     );
     $result = db_fetch($query);
     return $result['id'];
@@ -55,8 +69,11 @@ function tag_get_ids($tags) {
     $tag_wheres = array();
     foreach ($tags as $tag) {
         log_assert(is_tag($tag));
-        $tag_wheres[] = sprintf("(name = %s AND type = %s)",
-            db_quote($tag["name"]), db_quote($tag["type"]));
+        $tag_wheres[] = sprintf(
+            "(name = %s AND type = %s AND parent = %s)",
+            db_quote($tag["name"]), db_quote($tag["type"]),
+            db_quote($tag["parent"])
+        );
     }
     $query = sprintf("SELECT id FROM ia_tags WHERE %s",
         implode(" OR ", $tag_wheres));
@@ -68,8 +85,11 @@ function tag_assign_id($tag) {
     log_assert(is_tag($tag));
     $id = tag_get_id($tag);
     if (is_null($id)) {
-        $query = sprintf("INSERT INTO ia_tags (name, type) VALUES (%s, %s)",
-            db_quote($tag['name']), db_quote($tag['type']));
+        $query = sprintf(
+            "INSERT INTO ia_tags (name, type, parent) VALUES (%s, %s, %s)",
+            db_quote($tag['name']), db_quote($tag['type']),
+            db_quote($tag['parent'])
+        );
         db_query($query);
         return db_insert_id();
     }

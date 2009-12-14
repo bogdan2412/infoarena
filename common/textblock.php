@@ -48,8 +48,8 @@ function get_snippet($tb, $max_num_words, $whole_news = false,
         // May be there is a better way to find out if $tb is tagged
         // 'stiri'. On the other hand, this operation is cached and we
         // shouldn't worry too much about performance.
-        if ($whole_news && tag_exists('textblock', $tb['name'],
-            tag_get_id(array("name" => 'stiri', "type" => "tag")))) {
+        if ($whole_news && tag_exists('textblock', $tb['name'], tag_get_id(
+            array("name" => 'stiri', "type" => "tag", "parent" => 0)))) {
             // Don't compute snippet for news -- they should be rendered as
             // they are in the snippet.
             $cache_res .= $html_text;

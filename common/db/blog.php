@@ -4,7 +4,8 @@ require_once(IA_ROOT_DIR."common/db/tags.php");
 
 function blog_get_range($tag_name, $start, $range) {
     if (is_tag_name($tag_name)) {
-        $tag_id = tag_get_id(array("name" => $tag_name, "type" => "tag"));
+        $tag_id = tag_get_id(array(
+            "name" => $tag_name, "type" => "tag", "parent" => 0));
         if (is_null($tag_id)) {
             $tag_id = -1;
         }
@@ -37,7 +38,8 @@ function blog_get_comment_count($topic_id) {
 
 function blog_count($tag_name) {
     if (is_tag_name($tag_name)) {
-        $tag_id = tag_get_id(array("name" => $tag_name, "type" => "tag"));
+        $tag_id = tag_get_id(array(
+            "name" => $tag_name, "type" => "tag", "parent" => 0));
         if (is_null($tag_id)) {
             $tag_id = -1;
         }

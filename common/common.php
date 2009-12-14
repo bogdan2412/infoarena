@@ -246,7 +246,14 @@ function is_tag($tag) {
     if (!array_key_exists("type", $tag)) {
         return false;
     }
-    return is_tag_name($tag["name"]) && is_tag_type($tag["type"]);
+    if (!array_key_exists("parent", $tag)) {
+        return false;
+    }
+    return (
+        is_tag_name($tag["name"]) &&
+        is_tag_type($tag["type"]) &&
+        is_tag_id($tag["parent"])
+    );
 }
 
 // Taggable objects
