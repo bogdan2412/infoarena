@@ -14,8 +14,8 @@ db_connect();
 
 // Configuration section.
 
-define("IA_NEWSLETTER_FROM", "cristian@infoarena.ro");
-define("IA_NEWSLETTER_FROM_NAME", "Cristian George Strat");
+define("IA_NEWSLETTER_FROM", "newsletter@infoarena.ro");
+define("IA_NEWSLETTER_FROM_NAME", "Newsletter Infoarena");
 // how many emails to send at once (with no delay)
 define("IA_BURST_LENGTH", 25);
 // pause (milliseconds i.e. 10^-3) between bursts.

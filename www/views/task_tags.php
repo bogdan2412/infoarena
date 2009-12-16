@@ -55,27 +55,30 @@ $column_infos = array(
 
 ?>
 
-<span id="add_category">
+<h1>Editare taguri algoritmi</h1>
+<div id="add_category" class="task_tag_actions">
 [<a href="#">Adauga categorie noua</a><?php
     echo inline_post_form(url_task_tags_add(), array("type" => "method"), "", "Adauga");
 ?>]
-</span>
+</div>
 <?php
 foreach ($categories as $category) {
 ?>
-    <h1><?php echo html_escape($category["name"]); ?></h1>
-    <span class="algorithm_tag_add">[<a class="toggle_add" href="#">Adauga tag nou</a><?php
-        echo inline_post_form(url_task_tags_add(),
-            array("type" => "algorithm", "parent" => $category["id"]),
-            "", "Adauga");
-    ?>]</span>
-    <span class="delete_method">[<?php echo format_post_link(url_task_tags_delete(), "Sterge categorie",
-        array("type" => "method", "name" => $category["name"])); ?>]</span>
-    <span class="rename_method">[<a class="toggle_rename" href="#">Redenumeste categorie</a><?php
-        echo inline_post_form(url_task_tags_rename(),
-            array("type" => "method", "old_name" => $category["name"]),
-            $category["name"], "Redenumeste");
-    ?>]</span>
+    <h2><?php echo html_escape($category["name"]); ?></h2>
+    <ul class="task_tag_actions">
+        <li class="algorithm_tag_add">[<a class="toggle_add" href="#">Adauga tag nou</a><?php
+            echo inline_post_form(url_task_tags_add(),
+                array("type" => "algorithm", "parent" => $category["id"]),
+                "", "Adauga");
+        ?>]</li>
+        <li class="delete_method">[<?php echo format_post_link(url_task_tags_delete(), "Sterge categorie",
+            array("type" => "method", "name" => $category["name"])); ?>]</li>
+        <li class="rename_method">[<a class="toggle_rename" href="#">Redenumeste categorie</a><?php
+            echo inline_post_form(url_task_tags_rename(),
+                array("type" => "method", "old_name" => $category["name"]),
+                $category["name"], "Redenumeste");
+        ?>]</li>
+    </ul>
     <?php
     echo format_table($category["sub_tags"], $column_infos,
         array('css_class' => 'category fill-screen'));
@@ -85,6 +88,7 @@ foreach ($categories as $category) {
 ?>
 <script type="text/javascript" src="<?= html_escape(url_static('js/inline_form.js')) ?>"></script>
 <script type="text/javascript">
+/* <![CDATA[ */
 // Bind add method link to form
 addLoadEvent(function() {
     bindToggleLinkToForm($$("#add_category > a")[0], $$("#add_category > form")[0]);
@@ -111,6 +115,7 @@ var renameMethodLinks = $$(".rename_method a.toggle_rename");
 for (var i = 0; i < addForms.length; i++) {
     bindToggleLinkToForm(renameMethodLinks[i], renameMethodForms[i]);
 }
+/* ]]> */
 </script>
 <?php
 include(IA_ROOT_DIR.'www/views/footer.php');

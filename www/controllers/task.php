@@ -151,7 +151,9 @@ function controller_task_details($task_id) {
                 foreach ($tag_types as $type) {
                     $parent = 0;
                     if (isset($tag_parents[$type])) {
-                        $parent = $tags[$tag_parents[$type]][0];
+                        if (count($tags[$tag_parents[$type]]) > 0) {
+                            $parent = $tags[$tag_parents[$type]][0];
+                        }
                     }
                     $tags[$type] = tag_update('task', $new_task['id'], $type,
                         $values['tag_'.$type], $parent);

@@ -1521,3 +1521,11 @@ ul.okr .comment {
     margin: 0;
     padding: 0;
 }
+
+/* Task algorithm tags page */
+.task_tag_actions {
+    margin: 0.5em;
+}
+ul.task_tag_actions li {
+    display: inline;
+}

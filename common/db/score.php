@@ -34,7 +34,6 @@ function score_update($name, $user_id, $task_id, $round_id, $value)
             ($task_id === null ? 'NULL' : "'".db_escape($task_id)."'"),
             ($round_id === null ? 'NULL' : "'".db_escape($round_id)."'"),
             $value);
-    //log_print($query);
     return db_query($query);
 }
 
