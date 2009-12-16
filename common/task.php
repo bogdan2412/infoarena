@@ -276,4 +276,22 @@ function task_get_topic($task_id) {
     return $task_page["forum_topic"];
 }
 
+// Receives a list of method and algorithm tag ids and adds links them to task_id
+function task_update_tags($task_id, $method_tags_id, $algorithm_tags_id) {
+    log_assert(is_array($method_tags_id), 'method_tags must be an array');
+    log_assert(is_array($algorithm_tags_id), 'algorithm_tags must be an array');
+    log_assert(is_task_id($task_id), "Invalid task_id");
+
+    tag_clear('task', $task_id, 'method');
+    tag_clear('task', $task_id, 'algorithm');
+
+    foreach ($method_tags_id as $tag_id) {
+        tag_add('task', $task_id, $tag_id);
+    }
+
+    foreach ($algorithm_tags_id as $tag_id) {
+        tag_add('task', $task_id, $tag_id);
+    }
+}
+
 ?>

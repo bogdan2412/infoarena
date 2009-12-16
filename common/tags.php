@@ -51,6 +51,28 @@ function tag_build_list($obj, $obj_id, $type, $parent = null) {
     return implode(", ", $tag_names);
 }
 
+// Receives a list of parent tags and children tags
+// For each parent_tag adds an array 'sub_tags' containing
+// an array with all his children tags
+function build_tags_tree($parent_tags, $sub_tags) {
+    log_assert(is_array($parent_tags), "Parent tags is not an array");
+    log_assert(is_array($sub_tags), "Children tags is not an array");
+
+    $parent_tags_key = Array();
+    foreach ($parent_tags as $key => $tag) {
+        $parent_tags[$key]['sub_tags'] = Array();
+        $parent_tags_key[ $tag['tag_id'] ] = $key;
+    }
+
+    foreach ($sub_tags as $tag) {
+        log_assert(isset($parent_tags_key[ $tag['tag_parent'] ]), "Child tag doesn't have a parent");
+        $parent_tag_key = $parent_tags_key[ $tag['tag_parent'] ];
+        $parent_tags[ $parent_tag_key ]['sub_tags'][] = $tag;
+    }
+
+    return $parent_tags;
+}
+
 // Receives a list of tags of a certain type and, optionally, with a
 // certain parent and updates the tag list for the specified object.
 // Returns a list of tag ids.

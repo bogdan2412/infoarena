@@ -53,6 +53,23 @@ function tag_get($obj, $obj_id, $type = null, $parent = null) {
     return db_fetch_all($query);
 }
 
+// Receives an array of tag_id's
+// Return an array with id's of their parents
+// Each parent id appears only once
+function tag_get_parents($tags) {
+    $query = sprintf("SELECT DISTINCT(`parent`)
+            FROM ia_tags
+            WHERE `id` IN (%s)",
+            implode(",", array_map('db_quote', $tags))
+        );
+    $result = db_fetch_all($query);
+    $ret = Array();
+    foreach ($result as $row) {
+        $ret[] = $row['parent'];
+    }
+    return $ret;
+}
+
 // Get tag id for a certain tag
 function tag_get_id($tag) {
     log_assert(is_tag($tag));
@@ -77,6 +94,17 @@ function tag_get_ids($tags) {
     }
     $query = sprintf("SELECT id FROM ia_tags WHERE %s",
         implode(" OR ", $tag_wheres));
+    return db_fetch_all($query);
+}
+
+// Get a list of tags from a list of tag ids
+function tag_get_by_ids($tag_ids) {
+    $query = sprintf(
+            "SELECT `id` AS tag_id, `name` AS tag_name,
+                    `parent` AS tag_parent, `type` AS tag_type
+            FROM ia_tags
+            WHERE `id` IN (%s)", implode(', ', array_map('db_quote', $tag_ids))
+        );
     return db_fetch_all($query);
 }
 
@@ -169,12 +197,13 @@ function tag_clear($obj, $obj_id, $type = null) {
     $query = sprintf("DELETE FROM ia_%s_tags WHERE %s AND tag_id IN (%s)",
         db_escape($obj), $where, "%s"
     );
-    if (is_null($type)) {
-        $join = "";
-    } else {
+
+    $join = "";
+    if (!is_null($type)) {
         $join = "LEFT JOIN ia_tags AS tags ON obj_tags.tag_id = tags.id";
         $where .= sprintf(" AND tags.type = %s", db_quote($type));
     }
+
     $subquery = sprintf("SELECT tag_id FROM ia_%s_tags AS obj_tags %s WHERE %s",
         db_escape($obj), $join, $where);
     $tag_ids = array();

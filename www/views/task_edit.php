@@ -138,10 +138,6 @@ $form_fields = array(
                                             "name" => "tag_round"),
                             'age_group' => Array("label" => "Grupa de varsta",
                                         "name" => "tag_age_group"),
-                            'method' => Array("label" => "Metoda de programare",
-                                        "name" => "tag_method"),
-                            'algorithm' => Array("label" => "Algoritm",
-                                        "name" => "tag_algorithm")
                         );
     ?>
         <fieldset>

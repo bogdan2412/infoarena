@@ -84,9 +84,14 @@ else if ($page == 'admin/sterge-problema') {
 
 // Task detail editor
 else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'problema') {
-    $obj_id = implode("/", array_slice($pagepath, 2));
     require_once(IA_ROOT_DIR.'www/controllers/task.php');
-    controller_task_details($obj_id);
+    $obj_id = implode("/", array_slice($pagepath, 2));
+    $action = request('action');
+    if ($action == 'tag-edit') {
+        controller_task_tag($obj_id);
+    } else {
+        controller_task_details($obj_id);
+    }
 }
 
 // Task algorithm tags
@@ -116,7 +121,7 @@ else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'runda') {
     controller_round_details($obj_id);
 }
 
-// Round registration 
+// Round registration
 else if ($urlstart == 'inregistrare-runda') {
     $obj_id = implode("/", array_slice($pagepath, 1));
     require_once(IA_ROOT_DIR.'www/controllers/round_register.php');

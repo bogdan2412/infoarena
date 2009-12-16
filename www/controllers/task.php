@@ -64,7 +64,7 @@ function controller_task_details($task_id) {
     }
 
     // Tag data
-    $tag_types = Array('author', 'contest', 'year', 'round', 'age_group', 'method', 'algorithm');
+    $tag_types = Array('author', 'contest', 'year', 'round', 'age_group');
     $tag_parents = Array('year' => 'contest', 'round' => 'year', 'age_group' => 'contest');
 
     // FIXME: tags that have children such as contest, year or round should have only one tag
@@ -264,5 +264,83 @@ function controller_task_delete($task_id) {
     redirect(url_home());
 }
 
+// Tag a task
+function controller_task_tag($task_id) {
+    if (!is_task_id($task_id)) {
+        flash_error("Problema inexistenta");
+        redirect(url_home());
+    }
+
+    $task = task_get($task_id);
+    identity_require('task-tag', $task);
+
+    if (!$task) {
+        flash_error("Problema inexistenta");
+        redirect(url_home());
+    }
+
+    if (request_is_post()) {
+        $algorithm_tags_id = request("algorithm_tags");
+        $method_tags_id = tag_get_parents($algorithm_tags_id);
+
+        if (!is_array($algorithm_tags_id)) {
+            flash_error("Datele trimise sunt invalide. Raporteaza aceasta problema unui admin.");
+            redirect(url_task_edit_tag($task_id));
+        }
+
+        foreach ($algorithm_tags_id as $tag_id) {
+            if (!is_tag_id($tag_id)) {
+                flash_error("Datele trimise sunt invalide. Raporteaza aceasta problema unui admin.");
+                redirect(url_task_edit_tag($task_id));
+            }
+        }
+
+        $algorithm_tags = tag_get_by_ids($algorithm_tags_id);
+        $count = 0;
+        foreach ($algorithm_tags as $tag) {
+            if ($tag['tag_type'] == 'algorithm') {
+                $count++;
+            }
+        }
+        if ($count != count($algorithm_tags_id)) {
+            flash_error("Datele trimise sunt invalide. Raporteaza aceasta problema unui admin.");
+            redirect(url_task_edit_tag($task_id));
+        }
+
+        task_update_tags($task_id, $method_tags_id, $algorithm_tags_id);
+        flash("Tagurile au fost salvate cu succes");
+    }
+
+    $tags = tag_get_all( Array('method') );
+    $sub_tags = tag_get_all( Array('algorithm') );
+
+    // Build_tags_tree looks for tag_id, tag_name etc.
+    // tag_get_all return id, name, etc.
+    foreach ($tags as &$tag) {
+        $tag['tag_id'] = $tag['id'];
+        $tag['tag_name'] = $tag['name'];
+        $tag['tag_type'] = $tag['type'];
+        $tag['tag_parent'] = $tag['parent'];
+    }
+
+    // Same for subtags
+    foreach ($sub_tags as &$tag) {
+        $tag['tag_id'] = $tag['id'];
+        $tag['tag_name'] = $tag['name'];
+        $tag['tag_type'] = $tag['type'];
+        $tag['tag_parent'] = $tag['parent'];
+    }
+
+    $tags_tree = build_tags_tree($tags, $sub_tags);
+
+    // Get tags for task_id
+    $task_tags = tag_get('task', $task_id, 'algorithm');
+
+    $view['title'] = "Editeaza tagurile pentru problema ".$task['title'];
+    $view['task'] = $task;
+    $view['tags_tree'] = $tags_tree;
+    $view['task_tags'] = $task_tags;
+    execute_view_die('views/task_tag_edit.php', $view);
+}
 
 ?>
