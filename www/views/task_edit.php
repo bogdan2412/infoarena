@@ -30,10 +30,6 @@ $form_fields = array(
                                  "asupra problemei. Poate fi lasat gol.",
                 'type' => 'string',
         ),
-        'author' => array(
-                'name' => "Autor(i)",
-                'type' => 'string',
-        ),
         'source' => array(
                 'name' => "Sursa",
                 'type' => 'string',
@@ -119,7 +115,6 @@ $form_fields = array(
         <?php if (identity_can('task-edit-owner', $task)) { ?>
             <?= view_form_field_li($form_fields['user'], 'user') ?>
         <?php } ?>
-        <?= view_form_field_li($form_fields['author'], 'author') ?>
         <?= view_form_field_li($form_fields['source'], 'source') ?>
         <?php if (identity_can('task-change-security', $task)) { ?>
            <?= view_form_field_li($form_fields['hidden'], 'hidden') ?>

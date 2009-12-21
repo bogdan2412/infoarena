@@ -1,0 +1,111 @@
+#! /usr/bin/env php
+<?php
+
+require_once(dirname($argv[0]) . "/utilities.php");
+require_once(IA_ROOT_DIR . "common/db/task.php");
+require_once(IA_ROOT_DIR . "common/tags.php");
+db_connect();
+
+$tasks = task_get_all();
+$author_tags = array();
+foreach($tasks as $task) {
+    // Special cases to make my life easier.
+    if ($task["author"] == "") {
+        $task["author"] = "Necunoscut";
+        task_update($task);
+    }
+    if ($task["author"] == "Alin Burtza") {
+        $task["author"] = "Alin Burta";
+        task_update($task);
+    }
+    if ($task["author"] == "Maria si Adrian Nita") {
+        $task["author"] = "Maria Nita si Adrian Nita";
+        task_update($task);
+    }
+
+    // Split authors separated by , & ; or si
+    $authors = preg_split("/,|&|;|(\ssi\s)/", $task["author"]);
+    $authors = array_map('trim', $authors);
+    $author_tags = array_unique(array_merge($author_tags, $authors));
+}
+
+// Split every author into individual words so that when compared "A B"
+// is the same as "B A".
+$authors = array();
+foreach($author_tags as $author) {
+    $authors[$author] = preg_split("/[^a-zA-Z.]/", $author);
+    sort($authors[$author]);
+}
+
+// Check if one array is completely included in another.
+// Used to group "Cosmin-Silvestru Negruseri" and "Cosmin Negruseri" together.
+function included($a, $b) {
+    $intersection = array_values(array_intersect($a, $b));
+    sort($intersection);
+    return $intersection == $a;
+}
+
+// Group same authors together.
+$grouped = array();
+foreach($authors as $key => $author) {
+    if (isset($grouped[$key])) {
+        continue;
+    }
+    // Skip if included in other.
+    $ok = true;
+    foreach($authors as $other) {
+        if ($author == $other) {
+            continue;
+        }
+        if (included($author, $other)) {
+            $ok = false;
+            break;
+        }
+    }
+    if (!$ok) {
+        continue;
+    }
+
+    $group = array();
+    foreach($authors as $key_other => $other) {
+        if (included($other, $author)) {
+            $group[] = $key_other;
+        }
+    }
+
+    // Choose a tag for the group
+    // The admin should check that each tag is in First_Name Last_Name form.
+    $tag = read_line(sprintf(
+        "Alege un tag de forma 'Prenume Nume' pentru grupa:\n- %s\n",
+        implode("\n- ", $group)), $group[0]);
+    foreach($group as $author) {
+        $grouped[$author] = $tag;
+    }
+}
+
+// Add author tags to tasks
+foreach($tasks as $task) {
+    // Split authors separated by , & or si
+    $authors = preg_split("/,|&|;|(\ssi\s)/", $task["author"]);
+    $authors = array_map('trim', $authors);
+
+    tag_clear("task", $task["id"], "author");
+    foreach($authors as $author) {
+        tag_add("task", $task["id"], tag_assign_id(array(
+            "name" => $grouped[$author],
+            "type" => "author",
+            "parent" => 0
+        )));
+    }
+
+    // Change all authors in ia_task to match tags until we remove the column.
+    $new_authors = tag_build_list("task", $task["id"], "author");
+    if ($task["author"] != $new_authors) {
+        log_print(sprintf("Changing task '%s' author from '%s' to '%s'",
+            $task["id"], $task["author"], $new_authors));
+        $task["author"] = $new_authors;
+        task_update($task);
+    }
+}
+
+?>

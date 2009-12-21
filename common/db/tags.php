@@ -24,6 +24,7 @@ function tag_get_all($types = null, $parent = null) {
     if (count($where)) {
         $query .= sprintf(" WHERE %s", implode(" AND ", $where));
     }
+    $query .= " ORDER BY name";
     return db_fetch_all($query);
 }
 
@@ -46,7 +47,8 @@ function tag_get($obj, $obj_id, $type = null, $parent = null) {
         tags.name AS tag_name, tags.type AS tag_type, tags.parent AS tag_parent
         FROM ia_%s_tags AS obj_tags
         LEFT JOIN ia_tags AS tags ON obj_tags.tag_id = tags.id
-        WHERE %s_id = %s%s%s",
+        WHERE %s_id = %s%s%s
+        ORDER BY tag_name",
         db_escape($obj), db_escape($obj), db_escape($obj),
         db_quote($obj_id), $where_type, $where_parent
     );

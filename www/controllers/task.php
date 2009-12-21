@@ -42,7 +42,7 @@ function controller_task_details($task_id) {
     $errors = array();
 
     // Fill in form values from request, defaults in $task
-    $fields = array('author', 'type', 'source', 'hidden', 'title', 'page_name',
+    $fields = array('type', 'source', 'hidden', 'title', 'page_name',
                     'open_source', 'open_tests', 'test_count', 'test_groups',
                     'evaluator', 'use_ok_files', 'public_tests');
 
@@ -145,7 +145,6 @@ function controller_task_details($task_id) {
         if (!$errors) {
             // FIXME: error handling? Is that even remotely possible in php?
             task_update_parameters($task_id, $new_task_params);
-            task_update($new_task);
 
             if (identity_can('task-tag', $new_task)) {
                 foreach ($tag_types as $type) {
@@ -159,6 +158,8 @@ function controller_task_details($task_id) {
                         $values['tag_'.$type], $parent);
                 }
             }
+            $new_task["author"] = tag_build_list("task", $new_task["id"], "author");
+            task_update($new_task);
 
             flash("Task-ul a fost modificat cu succes.");
             redirect(url_task_edit($task_id));
