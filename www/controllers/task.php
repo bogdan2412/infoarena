@@ -65,7 +65,7 @@ function controller_task_details($task_id) {
 
     // Tag data
     $tag_types = Array('author', 'contest', 'year', 'round', 'age_group');
-    $tag_parents = Array('year' => 'contest', 'round' => 'year', 'age_group' => 'contest');
+    $tag_parents = Array('year' => 'contest', 'round' => 'year');
 
     // FIXME: tags that have children such as contest, year or round should have only one tag
     foreach ($tag_types as $type) {

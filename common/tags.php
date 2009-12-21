@@ -61,13 +61,13 @@ function build_tags_tree($parent_tags, $sub_tags) {
     $parent_tags_key = Array();
     foreach ($parent_tags as $key => $tag) {
         $parent_tags[$key]['sub_tags'] = Array();
-        $parent_tags_key[ $tag['tag_id'] ] = $key;
+        $parent_tags_key[$tag['tag_id']] = $key;
     }
 
     foreach ($sub_tags as $tag) {
-        log_assert(isset($parent_tags_key[ $tag['tag_parent'] ]), "Child tag doesn't have a parent");
-        $parent_tag_key = $parent_tags_key[ $tag['tag_parent'] ];
-        $parent_tags[ $parent_tag_key ]['sub_tags'][] = $tag;
+        log_assert(isset($parent_tags_key[$tag['tag_parent']]), "Child tag doesn't have a parent");
+        $parent_tag_key = $parent_tags_key[$tag['tag_parent']];
+        $parent_tags[$parent_tag_key]['sub_tags'][] = $tag;
     }
 
     return $parent_tags;

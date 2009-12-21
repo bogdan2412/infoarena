@@ -45,18 +45,25 @@ function inline_post_form($url, $post_data=array(), $default_value="", $submit_b
 $column_infos = array(
     array(
         'title' => 'Tag',
-        'rowform' => 'format_tag_name'
+        'rowform' => 'format_tag_name',
+        'css_class' => 'tag-name',
+    ),
+    array(
+        'title' => 'Numar probleme',
+        'key' => 'task_count',
+        'css_class' => 'tag-task-count',
     ),
     array(
         'title' => 'Operatii',
         'rowform' => 'format_operations',
+        'css_class' => 'tag-operations',
     ),
 );
 
 ?>
 
 <h1>Editare taguri algoritmi</h1>
-<div id="add_category" class="task_tag_actions">
+<div id="add_category" class="task-tag-actions">
 [<a href="#">Adauga categorie noua</a><?php
     echo inline_post_form(url_task_tags_add(), array("type" => "method"), "", "Adauga");
 ?>]
@@ -65,7 +72,7 @@ $column_infos = array(
 foreach ($categories as $category) {
 ?>
     <h2><?php echo html_escape($category["name"]); ?></h2>
-    <ul class="task_tag_actions">
+    <ul class="task-tag-actions">
         <li class="algorithm_tag_add">[<a class="toggle_add" href="#">Adauga tag nou</a><?php
             echo inline_post_form(url_task_tags_add(),
                 array("type" => "algorithm", "parent" => $category["id"]),
@@ -81,7 +88,7 @@ foreach ($categories as $category) {
     </ul>
     <?php
     echo format_table($category["sub_tags"], $column_infos,
-        array('css_class' => 'category fill-screen'));
+        array('css_class' => 'category fill-screen tag-table'));
     ?>
 <?php
 }

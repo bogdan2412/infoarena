@@ -11,6 +11,9 @@ function controller_task_tags() {
         // Get all sub tags for current category
         $category["sub_tags"] = tag_get_all(array("algorithm"),
             $category["id"]);
+        foreach ($category["sub_tags"] as &$tag) {
+            $tag["task_count"] = tag_count_objects("task", array($tag["id"]));
+        }
     }
 
     // Create view.
@@ -65,6 +68,21 @@ function controller_task_tags_delete() {
     $tag_id = tag_get_id($tag);
     if (is_null($tag_id)) {
         flash_error("Tag inexistent.");
+        redirect(url_task_tags());
+    }
+
+    // Do not delete tags if they have been added to tasks.
+    if ($tag["type"] == "algorithm") {
+        $task_count = tag_count_objects("task", array($tag_id));
+    } else if ($tag["type"] == "method") {
+        $task_count = 0;
+        $sub_tags = tag_get_all(array("algorithm"), $tag_id);
+        foreach ($sub_tags as $sub_tag) {
+            $task_count += tag_count_objects("task", array($sub_tag["id"]));
+        }
+    }
+    if ($task_count != 0) {
+        flash_error("Nu poti sterge un tag care a fost asociat deja unei probleme.");
         redirect(url_task_tags());
     }
 

@@ -8,14 +8,14 @@ function tag_form_event() {
 
 // Format a tag input box
 // FIXME: Width parameter does not work, I hate CSS
-function tag_format_input_box($field, $value = null, $width = "50", $name = "tags", $autocomplete = true) {
+function tag_format_input_box($field, $value = null, $width = "50", $name = "tags") {
     $esc_name = html_escape($field['name']);
     $esc_width = html_escape($width);
     // presume $value is html-escaped
 
     $output = '<li><label for="form_'.$esc_name.'">'.$field['label'].'</label>';
     $output .= ferr_span($name);
-    $output .= '<input class="wickEnabled" type="text" name="'.$esc_name.
+    $output .= '<input class="wickEnabled:wick_'.$name.'" type="text" name="'.$esc_name.
                '" id="form_'.$esc_name.'"';
     if (!is_null($width)) {
         $output .= ' size="'.$esc_width.'"';
@@ -23,9 +23,8 @@ function tag_format_input_box($field, $value = null, $width = "50", $name = "tag
     if (!is_null($value)) {
         $output .= ' value="'.$value.'"';
     }
-    $output .= ' />';
-    $output .= '<script type="text/javascript" language="JavaScript" src="'.
-                html_escape(url_static("js/wick.js")).'"></script>';
+    $output .= ' autocomplete="off" />';
+    $output .= '<table id="wick_'.$name.'" class="floater"><tr><td><div class="wick_content"></div></td></tr></table>';
     $output .= "</li>";
     return $output;
 }
@@ -33,6 +32,7 @@ function tag_format_input_box($field, $value = null, $width = "50", $name = "tag
 
 <link rel="stylesheet" type="text/css" href="<?= html_escape(url_static("css/wick.css")) ?> " />
 <script type="text/javascript" language="JavaScript">
+/* <![CDATA[ */
 function checkForm() {
     answer = true;
     if (siw && siw.selectingSomething) {
@@ -48,4 +48,6 @@ foreach ($tag_names as $tag) {
 }
 echo "];\n";
 ?>
+/* ]]> */
 </script>
+<script type="text/javascript" language="JavaScript" src="<?php echo html_escape(url_static("js/wick.js")) ?>"></script>

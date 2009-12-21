@@ -551,7 +551,7 @@ form.inline_form {
 }
 
 input[type='text'], input[type='password'], select {
-    width: 150px;
+    width: 250px;
 }
 
 #sidebar input[type='text'], #sidebar input[type='password'], #sidebar select {
@@ -1523,9 +1523,16 @@ ul.okr .comment {
 }
 
 /* Task algorithm tags page */
-.task_tag_actions {
+.task-tag-actions {
     margin: 0.5em;
 }
-ul.task_tag_actions li {
+ul.task-tag-actions li {
     display: inline;
+}
+
+.tag-table .tag-task-count {
+    width: 20%;
+}
+.tag-table .tag-operations {
+    width: 25%;
 }

@@ -95,7 +95,7 @@ else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'problema') {
 }
 
 // Task algorithm tags
-else if ($page == 'admin/task_tags') {
+else if ($page == 'admin/task-tags') {
     require_once(IA_ROOT_DIR.'www/controllers/task_tags.php');
     if (request("action") == "add") {
         controller_task_tags_add();

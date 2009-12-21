@@ -271,19 +271,19 @@ function url_task_list($page_name, $filter = null) {
 }
 
 function url_task_tags() {
-    return url_complex("admin/task_tags");
+    return url_complex("admin/task-tags");
 }
 
 function url_task_tags_add() {
-    return url_complex("admin/task_tags", array("action" => "add"));
+    return url_complex("admin/task-tags", array("action" => "add"));
 }
 
 function url_task_tags_delete() {
-    return url_complex("admin/task_tags", array("action" => "delete"));
+    return url_complex("admin/task-tags", array("action" => "delete"));
 }
 
 function url_task_tags_rename() {
-    return url_complex("admin/task_tags", array("action" => "rename"));
+    return url_complex("admin/task-tags", array("action" => "rename"));
 }
 
 function url_round_edit($round_id) {

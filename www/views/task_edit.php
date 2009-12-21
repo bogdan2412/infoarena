@@ -145,7 +145,7 @@ $form_fields = array(
             <ul class="form">
             <?php
                 foreach (array_keys($tag_fields) as $tag) {
-                    echo tag_format_input_box($tag_fields[$tag], fval('tag_'.$tag), 50, 'tag_'.$tag, false);
+                    echo tag_format_input_box($tag_fields[$tag], fval('tag_'.$tag), 50, 'tag_'.$tag);
                 }
             ?>
             </ul>

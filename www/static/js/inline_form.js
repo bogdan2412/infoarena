@@ -5,7 +5,8 @@
 function bindToggleLinkToForm(toggleElement, formElement, originalElement) {
     var initialText = toggleElement.innerHTML;
     formElement.style.display = "none";
-    connect(toggleElement, "onclick", function() {
+    connect(toggleElement, "onclick", function(e) {
+        e.preventDefault();
         if (formElement.style.display == "none") {
             // Display inline form and replace toggleElement with "Anuleaza"
             formElement.style.display = "inline";
