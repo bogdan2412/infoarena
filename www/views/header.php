@@ -67,6 +67,7 @@ header("Content-type: text/html; charset=utf-8");
     <script type="text/javascript" src="<?= html_escape(url_static('js/sh/shBrushPython.js')) ?>"></script>
     <script type="text/javascript" src="<?= html_escape(url_static('js/sh/shInit.js')) ?>"></script>
     <script type="text/javascript" src="<?= html_escape(url_static('js/tags.js')) ?>"></script>
+    <script type="text/javascript" src="<?= html_escape(url_static('js/roundtimer.js')) ?>"></script>
 
     <script type="text/javascript">Sh_Init("<?= html_escape(url_static('swf/clipboard.swf')) ?>")</script>
 
