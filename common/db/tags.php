@@ -2,6 +2,7 @@
 
 require_once(IA_ROOT_DIR."common/db/db.php");
 require_once(IA_ROOT_DIR."common/common.php");
+require_once(IA_ROOT_DIR."common/cache.php");
 
 // Get list of all tag names, filtered by type and parent
 function tag_get_all($types = null, $parent = null) {
@@ -182,13 +183,25 @@ function tag_get_objects($obj, $tag_ids, $content = true) {
 }
 
 // Count the number of objects containing all tags from a list of tag ids
-function tag_count_objects($obj, $tag_ids) {
+function tag_count_objects($obj, $tag_ids, $no_cache=false) {
     log_assert(is_taggable($obj));
     log_assert(is_array($tag_ids));
+    // Cache object count for single tags.
+    if (!$no_cache && count($tag_ids) == 1) {
+        $result = mem_cache_get("$obj-count-with-tag:".$tag_ids[0]);
+        if ($result !== false) {
+            return $result;
+        }
+    }
     $query = sprintf("SELECT COUNT(*) as `cnt` FROM ia_%s WHERE %s", db_escape($obj),
                      tag_build_where($obj, $tag_ids));
     $result = db_fetch($query);
-    return $result['cnt'];
+    $result = $result['cnt'];
+    if (count($tag_ids) == 1) {
+        mem_cache_set("$obj-count-with-tag:".$tag_ids[0], $result,
+            IA_MEM_CACHE_TAGS_EXPIRATION);
+    }
+    return $result;
 }
 
 // Clear all tags, filtered by type

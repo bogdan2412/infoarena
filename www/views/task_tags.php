@@ -8,25 +8,25 @@ require_once(IA_ROOT_DIR.'www/format/table.php');
 function format_tag_name($row) {
     $tag = inline_post_form(url_task_tags_rename(),
         array(
-            "type" => "algorithm",
             "old_name" => $row["name"],
+            "type" => $row["type"],
             "parent" => $row["parent"]
         ),
-        $row["name"], "Redenumeste");
+        $row["name"], "Redenumește");
     $tag .= ' <a class="algorithm_tag" href="#">' . html_escape($row["name"]) . '</a>';
     return $tag;
 }
 
 // Returns a delete tag link and a toggle rename form link
 function format_operations($row) {
-    $delete = format_post_link(url_task_tags_delete(), "Sterge",
+    $delete = format_post_link(url_task_tags_delete(), "Șterge",
         array(
-            "type" => $row["type"],
             "name" => $row["name"],
+            "type" => $row["type"],
             "parent" => $row["parent"]
         )
     );
-    $rename = '<a href="#" class="toggle_rename">Redenumeste</a>';
+    $rename = '<a href="#" class="toggle_rename">Redenumește</a>';
     return sprintf("[%s] [%s]", $delete, $rename);
 }
 
@@ -49,12 +49,12 @@ $column_infos = array(
         'css_class' => 'tag-name',
     ),
     array(
-        'title' => 'Numar probleme',
+        'title' => 'Număr probleme',
         'key' => 'task_count',
         'css_class' => 'tag-task-count',
     ),
     array(
-        'title' => 'Operatii',
+        'title' => 'Operații',
         'rowform' => 'format_operations',
         'css_class' => 'tag-operations',
     ),
@@ -64,8 +64,8 @@ $column_infos = array(
 
 <h1>Editare taguri algoritmi</h1>
 <div id="add_category" class="task-tag-actions">
-[<a href="#">Adauga categorie noua</a><?php
-    echo inline_post_form(url_task_tags_add(), array("type" => "method"), "", "Adauga");
+[<a href="#">Adaugă categorie nouă</a><?php
+    echo inline_post_form(url_task_tags_add(), array("type" => "method"), "", "Adaugă");
 ?>]
 </div>
 <?php
@@ -73,17 +73,17 @@ foreach ($categories as $category) {
 ?>
     <h2><?php echo html_escape($category["name"]); ?></h2>
     <ul class="task-tag-actions">
-        <li class="algorithm_tag_add">[<a class="toggle_add" href="#">Adauga tag nou</a><?php
+        <li class="algorithm_tag_add">[<a class="toggle_add" href="#">Adaugă tag nou</a><?php
             echo inline_post_form(url_task_tags_add(),
                 array("type" => "algorithm", "parent" => $category["id"]),
-                "", "Adauga");
+                "", "Adaugă");
         ?>]</li>
-        <li class="delete_method">[<?php echo format_post_link(url_task_tags_delete(), "Sterge categorie",
+        <li class="delete_method">[<?php echo format_post_link(url_task_tags_delete(), "Șterge categorie",
             array("type" => "method", "name" => $category["name"])); ?>]</li>
-        <li class="rename_method">[<a class="toggle_rename" href="#">Redenumeste categorie</a><?php
+        <li class="rename_method">[<a class="toggle_rename" href="#">Redenumește categorie</a><?php
             echo inline_post_form(url_task_tags_rename(),
                 array("type" => "method", "old_name" => $category["name"]),
-                $category["name"], "Redenumeste");
+                $category["name"], "Redenumește");
         ?>]</li>
     </ul>
     <?php
@@ -93,12 +93,27 @@ foreach ($categories as $category) {
 <?php
 }
 ?>
+<h1>Editare taguri autori</h1>
+<div id="add_author" class="task-tag-actions">[<a class="toggle_add" href="#">Adaugă tag nou</a><?php
+    echo inline_post_form(url_task_tags_add(),
+        array("type" => "author"),
+        "", "Adaugă");
+?>]</div>
+<?php
+echo format_table($authors, $column_infos,
+    array('css_class' => 'category fill-screen tag-table'));
+?>
 <script type="text/javascript" src="<?= html_escape(url_static('js/inline_form.js')) ?>"></script>
 <script type="text/javascript">
 /* <![CDATA[ */
 // Bind add method link to form
 addLoadEvent(function() {
     bindToggleLinkToForm($$("#add_category > a")[0], $$("#add_category > form")[0]);
+});
+
+// Bind add author link to form
+addLoadEvent(function() {
+    bindToggleLinkToForm($$("#add_author > a")[0], $$("#add_author > form")[0]);
 });
 
 // Bind add algorithm links to forms.

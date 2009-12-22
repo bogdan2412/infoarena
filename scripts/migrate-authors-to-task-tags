@@ -8,7 +8,7 @@ db_connect();
 
 $tasks = task_get_all();
 $author_tags = array();
-foreach($tasks as $task) {
+foreach($tasks as &$task) {
     // Special cases to make my life easier.
     if ($task["author"] == "") {
         $task["author"] = "Necunoscut";

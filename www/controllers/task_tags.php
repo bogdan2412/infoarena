@@ -16,10 +16,16 @@ function controller_task_tags() {
         }
     }
 
+    $authors = tag_get_all(array("author"));
+    foreach ($authors as &$author) {
+        $author["task_count"] = tag_count_objects("task", array($author["id"]));
+    }
+
     // Create view.
     $view = array();
     $view['title'] = "Tag-uri probleme";
     $view['categories'] = $categories;
+    $view['authors'] = $authors;
     execute_view_die("views/task_tags.php", $view);
 }
 
@@ -72,15 +78,7 @@ function controller_task_tags_delete() {
     }
 
     // Do not delete tags if they have been added to tasks.
-    if ($tag["type"] == "algorithm") {
-        $task_count = tag_count_objects("task", array($tag_id));
-    } else if ($tag["type"] == "method") {
-        $task_count = 0;
-        $sub_tags = tag_get_all(array("algorithm"), $tag_id);
-        foreach ($sub_tags as $sub_tag) {
-            $task_count += tag_count_objects("task", array($sub_tag["id"]));
-        }
-    }
+    $task_count = tag_count_objects("task", array($tag_id), true);
     if ($task_count != 0) {
         flash_error("Nu poti sterge un tag care a fost asociat deja unei probleme.");
         redirect(url_task_tags());
@@ -115,6 +113,10 @@ function controller_task_tags_rename() {
     }
 
     $tag["name"] = $new_name;
+    if (tag_get_id($tag)) {
+        flash_error("Tagul deja exista.");
+        redirect(url_task_tags());
+    }
     tag_update_by_id($tag_id, $tag);
     flash("Tag-ul a fost redenumit.");
     redirect(url_task_tags());

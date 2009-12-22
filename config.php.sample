@@ -128,6 +128,9 @@ define("IA_MEM_CACHE_ROUND_EXPIRATION", 10);
 // Task TTL. Smaller because of evaluator.
 define("IA_MEM_CACHE_TASK_EXPIRATION", 10);
 
+// TTL for tag caches.
+define("IA_MEM_CACHE_TAGS_EXPIRATION", 600);
+
 // Logging options. Anything else in normal operation is a bug.
 // Filling error_log on a production machine sucks.
 

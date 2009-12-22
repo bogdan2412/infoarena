@@ -10,7 +10,7 @@ function bindToggleLinkToForm(toggleElement, formElement, originalElement) {
         if (formElement.style.display == "none") {
             // Display inline form and replace toggleElement with "Anuleaza"
             formElement.style.display = "inline";
-            toggleElement.innerHTML = "Anuleaza";
+            toggleElement.innerHTML = "Anulează";
             // Hide original content if specified
             if (typeof(originalElement) != "undefined") {
                 originalElement.style.display = "none";
