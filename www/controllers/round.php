@@ -292,8 +292,16 @@ function controller_round_delete($round_id) {
 
     $options = pager_init_options();
 
-    $textblock_list = textblock_grep('%"'.$round_id.'"%', '%', false, $options['first_entry'],
-                                     $options['display_entries']);
+    // This regexp tries to search for the round id inside of a macro
+    // and makes sure that it is preceded and succeded by a character
+    // which is not valid for a round identifier to avoid problems
+    // with ids that are included in each other
+    $regexp = "==[^\n]*[^a-z0-9_.-]".preg_quote($round_id)."[^a-z0-9_.-][^\n]*==";
+    $textblock_list = textblock_grep(
+        $regexp, '%', true,
+        $options['first_entry'], $options['display_entries']
+    );
+    $entries = textblock_grep_count($regexp, '%', true);
 
     for ($i = 0; $i < count ($textblock_list); ++$i) {
         $textblock_list[$i]['id'] = $options['first_entry'] + $i + 1;
@@ -312,7 +320,6 @@ function controller_round_delete($round_id) {
     $view['round'] = $round;
     $view['form_values'] = $values;
     $view['form_errors'] = $errors;
-    $entries = textblock_grep_count('%"'.$round_id.'"%', '%', false);
     $view['total_entries'] = $entries['cnt'];
     $view['first_entry'] = $options['first_entry'];
     $view['display_entries'] = $options['display_entries'];

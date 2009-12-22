@@ -163,7 +163,7 @@ function format_user_tiny($user_name, $user_fullname, $rating = null) {
     $rbadge = format_user_ratingbadge($user_name, $rating);
 
     $result = "";
-    $result .= "<div class=\"tiny-user\">";
+    $result .= "<span class=\"tiny-user\">";
     $result .= format_link($user_url,
                            format_user_avatar($user_name, 16, 16, false).$user_fullname,
                            false);
@@ -171,7 +171,7 @@ function format_user_tiny($user_name, $user_fullname, $rating = null) {
     $result .= "<span class=\"username\">"
                .format_link($user_url, $user_name)
                ."</span> ";
-    $result .= "</div>";
+    $result .= "</span>";
 
     return $result;
 }

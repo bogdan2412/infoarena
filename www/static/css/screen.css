@@ -68,6 +68,7 @@ div.loading img {
     padding: 0.8em;
     background-color: #B7D285;
     -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
 }
 
 #sidebar2 h3 {
@@ -402,10 +403,8 @@ The basic layout of the homepage is as follows:
     float: right;
     clear: right;
     padding-left: 0.5em;
-    -moz-border-radius-bottomleft:8px;
-    -moz-border-radius-bottomright:8px;
-    -moz-border-radius-topleft:8px;
-    -moz-border-radius-topright:8px;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
 }
 
 /* News */
@@ -475,10 +474,8 @@ The basic layout of the homepage is as follows:
     padding-left: 25px;
     background: #f6f6f6 url(../images/documents_16.gif) no-repeat 5px center ;
     font-size:11px;
-    -moz-border-radius-bottomleft:8px;
-    -moz-border-radius-bottomright:8px;
-    -moz-border-radius-topleft:8px;
-    -moz-border-radius-topright:8px;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
     color:#555;
     line-height: 1.5em;
 }
@@ -788,7 +785,7 @@ form.round li#field_tasks select {
 .wiki_text_block table {
     margin: .5em;
     line-height: 2em;
-    width: 95%; /* IE FIX */
+    width: 99%; /* IE FIX */
 }
 
 /* layout table */
@@ -877,10 +874,8 @@ form.round li#field_tasks select {
     margin: .5em;
     padding: .5em;
     background-color: #f0f0f0;
-    -moz-border-radius-bottomleft:8px;
-    -moz-border-radius-bottomright:8px;
-    -moz-border-radius-topleft:8px;
-    -moz-border-radius-topright:8px;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
 }
 
 .vmenu li {
@@ -899,7 +894,7 @@ form.round li#field_tasks select {
 
 .vmenu li a {
     display: block;
-    width: 95%;
+    width: 98%;
     padding-left: .4em;
 }
 
@@ -1073,6 +1068,7 @@ th {
     padding: 5px;
     margin: 0;
     -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
 }
 
 .inlineSubmit .form li {
@@ -1156,20 +1152,19 @@ table.numbers td, table.numbers th {
 }
 
 /* User badges */
-div.tiny-user {
+.tiny-user {
     height: 24px;
-    display:inline;
 }
 
-div.tiny-user a {
+.tiny-user a {
     text-decoration: none;
 }
 
-div.tiny-user .username {
+.tiny-user .username {
     font-weight:bold;
 }
 
-div.tiny-user img {
+.tiny-user img {
     border:1px solid #D8D6CB;
     background:#fff;
     display:inline;
@@ -1197,8 +1192,8 @@ div.normal-user img {
 
 /* monitor */
 table.monitor {
-    width: 95%; /* Fix IE */
-    margin: .5em 0 2em 0;
+    width: 99%; /* Fix IE */
+    margin: .5em auto 2em auto;
 }
 
 /* task list */
@@ -1293,7 +1288,7 @@ td.rating, th.rating {
 }
 
 table.registered-users {
-    width: 95%;
+    width: 99%;
 }
 
 /* dataset filtering form */
@@ -1349,6 +1344,7 @@ ul.filters li.submit {
     padding-right: 0.3ex;
     line-height: 1.2em;
     -moz-border-radius: 7px;
+    -webkit-border-radius: 7px;
 }
 
 .calendar .date {
@@ -1410,6 +1406,7 @@ ul.filters li.submit {
     background-color: #f6f6f6;
     padding: .2em;
     -moz-border-radius: 7px;
+    -webkit-border-radius: 7px;
 }
 
 .comments .comment-author {
@@ -1426,6 +1423,7 @@ ul.filters li.submit {
     padding: .75em;
     background-color: #f6f6f6;
     -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
 }
 
 .comments .toolbar a {
@@ -1437,11 +1435,12 @@ ul.filters li.submit {
     background-color: rgb(210, 244, 219);
     padding: 0.3em;
     display: table;
-    width: 95%;
+    width: 99%;
     margin: 0em auto;
     text-align: center;
     line-height: 2em;
     -moz-border-radius: 7px;
+    -webkit-border-radius: 7px;
 }
 
 .report {
