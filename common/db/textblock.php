@@ -242,7 +242,8 @@ function textblock_get_revision_count($name) {
 }
 
 // Grep through textblocks. This is mostly a hack needed for macro_grep.php
-function textblock_grep($substr, $page, $regexp = false) {
+// Also used for round deletion
+function textblock_grep($substr, $page, $regexp = false, $offset = 0, $count = 0) {
     if (!$regexp) {
         $compare = "LIKE";
     } else {
@@ -254,9 +255,25 @@ function textblock_grep($substr, $page, $regexp = false) {
                       FROM ia_textblock
                       WHERE `name` LIKE '%s' AND
                             (`text` $compare '%s' OR `title` $compare '%s')
-                      ORDER BY `name`",
-                      db_escape($page), db_escape($substr), db_escape($substr));
+                      ORDER BY `name`
+                      LIMIT %s, %s",
+                      db_escape($page), db_escape($substr), db_escape($substr),
+                      db_escape($offset), db_escape($count));
     return db_fetch_all($query);
+}
+
+function textblock_grep_count($substr, $page, $regexp = false) {
+    if (!$regexp) {
+        $compare = "LIKE";
+    } else {
+        $compare = "REGEXP";
+    }
+    $query = sprintf("SELECT COUNT(*) as `cnt`
+                      FROM ia_textblock
+                      WHERE `name` LIKE '%s' AND
+                            (`text` $compare '%s' OR `title` $compare '%s')",
+                      db_escape($page), db_escape($substr), db_escape($substr));
+    return db_fetch($query);
 }
 
 // Delete a certain page, including all revisions and attachments.
@@ -277,9 +294,8 @@ function textblock_delete($page_name) {
 
     db_query("DELETE FROM `ia_textblock_revision` WHERE `name` = '$pageesc'");
     db_query("DELETE FROM `ia_textblock` WHERE `name` = '$pageesc'");
-    if (db_affected_rows() != 1) {
-        return true;
-    }
+
+    return (db_affected_rows() != 0);
 }
 
 // Move a page from old_name to new_name.

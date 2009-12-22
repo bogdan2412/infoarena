@@ -215,6 +215,38 @@ function controller_textblock_delete($page_name) {
     redirect(url_home());
 }
 
+// Delete a list of textblocks
+function controller_textblock_delete_many($textblocks, $redirect) {
+    $deleted = 0;
+    $not_deleted_because_of_permision = 0;
+    $bad_page_names = 0;
+
+    if (!is_array($textblocks)) {
+        flash_error("Nu au fost specificate pagini pentru a fi sterse");
+        redirect($redirect);
+    }
+
+    foreach ($textblocks as $name) {
+        if (!is_page_name($name)) {
+            ++$bad_page_names;
+        } else if (identity_can("textblock-delete", textblock_get_revision($name))) {
+            $deleted += textblock_delete($name);
+        } else {
+            ++$not_deleted_because_of_permision;
+        }
+    }
+
+    flash($deleted." textblockuri au fost sterse.");
+    if ($not_deleted_because_of_permision) {
+        flash($not_deleted_because_of_permision.
+              " textblockuri nu au putut fi sterse din cauza permisiunilor.");
+    }
+    if ($bad_page_names) {
+        flash($bad_page_names." textblockuri au numele corupt");
+    }
+    redirect($redirect);
+}
+
 // Delete a certain revision
 function controller_textblock_delete_revision($page = null, $rev_num = null) {
     if (!request_is_post()) {

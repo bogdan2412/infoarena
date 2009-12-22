@@ -114,11 +114,21 @@ else if ($page == 'admin/runda-noua') {
     controller_round_create();
 }
 
-// Round detail editor
+// Round detail editor and deleter
 else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'runda') {
     $obj_id = implode("/", array_slice($pagepath, 2));
     require_once(IA_ROOT_DIR.'www/controllers/round.php');
-    controller_round_details($obj_id);
+    require_once(IA_ROOT_DIR.'www/controllers/textblock.php');
+    if ($action == 'sterge-runda') {
+        if (request('delete')) {
+            $v = request('textblocks');
+            controller_textblock_delete_many($v, url_round_delete($obj_id));
+        } else {
+            controller_round_delete($obj_id);
+        }
+    } else {
+        controller_round_details($obj_id);
+    }
 }
 
 // Round registration

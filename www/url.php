@@ -305,6 +305,11 @@ function url_round_register_view($round_id) {
     return url_complex("lista-inregistrare/$round_id");
 }
 
+function url_round_delete($round_id) {
+    log_assert(is_round_id($round_id));
+    return url_complex("admin/runda/$round_id", array('action' => 'sterge-runda'));
+}
+
 // Job/monitor stuff.
 
 function url_submit() {

@@ -5,6 +5,8 @@ require_once(IA_ROOT_DIR."common/db/round.php");
 require_once(IA_ROOT_DIR."common/db/task.php");
 require_once(IA_ROOT_DIR."common/round.php");
 require_once(IA_ROOT_DIR."common/tags.php");
+require_once(IA_ROOT_DIR."common/textblock.php");
+require_once(IA_ROOT_DIR."www/format/pager.php");
 
 // Displays form to either create a new round or edit an existing one.
 // This form does not edit round content (its associated textblock)
@@ -40,7 +42,7 @@ function controller_round_details($round_id) {
     // Filter for available round types.
     $round_types = array();
     foreach (round_get_types() as $round_type => $pretty_name) {
-        if (identity_can("round-edit", round_init('round_id', $round_type, 
+        if (identity_can("round-edit", round_init('round_id', $round_type,
             $identity_user)))
             $round_types[$round_type] = $pretty_name;
     }
@@ -50,7 +52,7 @@ function controller_round_details($round_id) {
     $all_tasks = task_get_all();
     $all_task_ids = array();
     foreach ($all_tasks as $idx => $task) {
-        if ($round['type'] != 'user-defined' || 
+        if ($round['type'] != 'user-defined' ||
             identity_can('task-use-in-user-round', $task)) {
             $all_task_ids[$task['id']] = true;
         } else {
@@ -255,7 +257,7 @@ function controller_round_create()
     // Filter for available round types.
     $round_types = array();
     foreach (round_get_types() as $round_type => $pretty_name) {
-        if (identity_can("round-create", round_init("round_id", $round_type, 
+        if (identity_can("round-create", round_init("round_id", $round_type,
             $identity_user)))
             $round_types[$round_type] = $pretty_name;
     }
@@ -269,6 +271,53 @@ function controller_round_create()
     $view['round_types'] = $round_types;
 
     execute_view_die("views/round_create.php", $view);
+}
+
+function controller_round_delete($round_id) {
+    // Validate round_id
+    if (!is_round_id($round_id)) {
+        flash_error('Identificatorul rundei este invalid');
+        redirect(url_home());
+    }
+
+    // Get round
+    $round = round_get($round_id);
+    if (!$round) {
+        flash_error("Runda nu exista");
+        redirect(url_home());
+    }
+
+    // Security check
+    identity_require('round-delete', $round);
+
+    $options = pager_init_options();
+
+    $textblock_list = textblock_grep('%"'.$round_id.'"%', '%', false, $options['first_entry'],
+                                     $options['display_entries']);
+
+    for ($i = 0; $i < count ($textblock_list); ++$i) {
+        $textblock_list[$i]['id'] = $options['first_entry'] + $i + 1;
+    }
+
+    // Form stuff.
+    $values = array();
+    $errors = array();
+
+    // Create view
+    $view = array();
+    $view['textblock_list'] = $textblock_list;
+    $view['title'] = "Stergere textblockuri corelate cu $round_id";
+    $view['page_name'] = url_round_delete($round_id);
+    $view['round_id'] = $round_id;
+    $view['round'] = $round;
+    $view['form_values'] = $values;
+    $view['form_errors'] = $errors;
+    $entries = textblock_grep_count('%"'.$round_id.'"%', '%', false);
+    $view['total_entries'] = $entries['cnt'];
+    $view['first_entry'] = $options['first_entry'];
+    $view['display_entries'] = $options['display_entries'];
+
+    execute_view_die("views/round_delete.php", $view);
 }
 
 ?>

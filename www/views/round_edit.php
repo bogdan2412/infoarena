@@ -72,6 +72,11 @@ $form_fields = array(
 
 <h1>Editare runda <?= format_link(url_textblock($round['page_name']), $round['title']) ?></h1>
 
+<form action="<?= html_escape(url_round_delete($round['id'])) ?>" method="post" style="float: right">
+    <input type="hidden" name="" value="<?= html_escape($round['id']) ?>" />
+    <input onclick="" type="submit" value="Sterge runda" id="form_delete" class="button important" />
+</form>
+
 <?php if ($round['state'] == 'running') { ?>
     <div class="warning">
      Atentie! Runda este activa chiar acum. Orice modificare poate avea urmari neplacute!

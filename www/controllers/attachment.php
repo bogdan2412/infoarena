@@ -310,6 +310,7 @@ function controller_attachment_delete($page_name, $file_name, $more_files = 0) {
 function controller_attachment_delete_many($page_name, $arguments) {
     $files = array();
     $deleted = 0;
+
     foreach($arguments as $value) {
         if(is_numeric($value)) {
             $files[] = request($value);
