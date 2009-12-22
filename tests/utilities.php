@@ -65,7 +65,7 @@ function curl_test($args)
     $res = curl_getinfo($ch);
     $res['content'] = $content;
     curl_close($ch);
-   
+
     if (getattr($args, 'validate_html', false)) {
         validate_html($content);
     }
@@ -131,18 +131,20 @@ function test_prepare()
 // However, tests are only run on a local copy anyway.
 function test_cleanup()
 {
-    db_query("DELETE FROM ia_user WHERE `username` LIKE 'test_%'");
-    db_query("DELETE FROM ia_task WHERE `id` LIKE 'test_%'");
-    db_query("DELETE FROM ia_round WHERE `id` LIKE 'test_%'");
+    $test_accounts = "('test_dudE1', 'teSt_dude2', 'teSt_helper1', 'test_hElper2', 'tEst_adMin')";
+    db_query("DELETE FROM ia_user WHERE `username` IN $test_accounts");
+    db_query("DELETE FROM ia_smf_members WHERE `memberName` IN $test_accounts");
+    db_query("DELETE FROM ia_task WHERE `id` LIKE 'test\_%'");
+    db_query("DELETE FROM ia_round WHERE `id` LIKE 'test\_%'");
     // Remove various stuff from the wiki.
     $prefixes = array('sandbox', 'utilizator', 'runda', 'problema');
     foreach ($prefixes as $prefix) {
         db_query("DELETE FROM `ia_textblock` ".
-                 "WHERE `name` LIKE '$prefix/test_%'");
+                 "WHERE `name` LIKE '$prefix/test\_%'");
         db_query("DELETE FROM `ia_textblock_revision` ".
-                 "WHERE `name` LIKE '$prefix/test_%'");
+                 "WHERE `name` LIKE '$prefix/test\_%'");
         db_query("DELETE FROM `ia_file` ".
-                 "WHERE `page` LIKE '$prefix/test_%'");
+                 "WHERE `page` LIKE '$prefix/test\_%'");
     }
 }
 

@@ -130,7 +130,7 @@ function user_get_by_id($user_id)
 // This also creates an user page and SMF user.
 // $user must be a valid user struct, user_id ignored
 // Returns created $user or throws up on error.
-function user_create($user)
+function user_create($user, $remote_ip_info=null)
 {
     log_assert_valid(user_validate($user));
 
@@ -149,7 +149,7 @@ function user_create($user)
     require_once(IA_ROOT_DIR . "common/textblock.php");
     $replace = array("user_id" => $user['username']);
     textblock_copy_replace("template/newuser", IA_USER_TEXTBLOCK_PREFIX.$user['username'],
-                           $replace, "public", $new_user['id'], remote_ip_info());
+                           $replace, "public", $new_user['id'], $remote_ip_info);
 
     // Create SMF user
     require_once(IA_ROOT_DIR."common/db/smf.php");

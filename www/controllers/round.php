@@ -133,10 +133,6 @@ function controller_round_details($round_id) {
         }
     }
 
-    if (request_is_post() && count($values['tasks']) == 0) {
-        $errors['tasks'] = "Trebuie sa alegi cel putin o problema";
-    }
-
     // Additional validation for user defined tasks
     if (!array_key_exists('tasks', $errors)
         && $values['type'] == 'user-defined' &&

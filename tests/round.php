@@ -73,9 +73,11 @@ $res = curl_test(array(
         'post' => array(
             'type' => 'classic',
             'rating_update' => true,
+            'start_time' => db_date_format(time() + 3600),
 )));
+log_assert(!strstr($res['content'], '<span class="fieldError"'));
+log_assert(strstr($res['content'], '<option value="classic" selected="selected">Concurs clasic'));
 log_assert_equal($res['url'], url_absolute(url_round_edit('test_round')));
-log_assert(strstr($res['content'], 'Concurs clasic'));
 
 log_print("Admin adds tasks adunare and cmmdc to round.");
 $res = curl_test(array(
@@ -196,7 +198,7 @@ $res = curl_test(array(
 ));
 log_assert_equal($res['url'], url_absolute(url_textblock('runda/tEst_Round')));
 log_assert(strstr($res['content'], 'xzx-round-title-xzx'));
-log_assert(!strstr($res['content'], 'Nu esti inscris la'), 
+log_assert(!strstr($res['content'], 'Nu esti inscris la'),
     "Round still waiting, is the evaluator ON?");
 log_assert(strstr($res['content'], 'Nu se mai pot face inscrieri'));
 log_assert(!strstr($res['content'], 'Runda s-a incheiat'));

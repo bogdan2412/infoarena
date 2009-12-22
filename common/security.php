@@ -128,6 +128,7 @@ function security_simplify_action($action) {
         case 'task-edit':
         case 'task-create':
         case 'task-delete':
+        case 'task-tag':
         case 'round-delete':
         case 'textblock-delete':
         case 'textblock-delete-revision':
@@ -142,7 +143,6 @@ function security_simplify_action($action) {
         case 'task-change-open':
         case 'textblock-change-security':
         case 'task-edit-owner':
-        case 'task-tag':
         case 'round-tag':
         case 'textblock-tag':
         case 'job-reeval':
@@ -279,7 +279,6 @@ function security_textblock($user, $action, $textblock) {
 // Jump to security_textblock.
 // FIXME: attach-grader?
 function security_attach($user, $action, $attach) {
-
     $att_name = $attach['name'];
     $att_page = normalize_page_name($attach['page']);
     $usersec = getattr($user, 'security_level', 'anonymous');
@@ -295,18 +294,9 @@ function security_attach($user, $action, $attach) {
                   "(level, action, object)");
     }
 
-    // HACK: magic prefix.
-    if (preg_match('/^grader\_/', $att_name)) {
-        $newaction = preg_replace('/^attach/', 'grader', $action);
-        if (IA_LOG_SECURITY) {
-            log_print("SECURITY: CONVERTING $action to $newaction");
-        }
-        $action = $newaction;
-    }
-
     // Speed hack: avatars are always visible. This is good.
-    if ($action == 'attach-download' && $att_name = 'avatar' &&
-            strstr($att_page, IA_USER_TEXTBLOCK_PREFIX) === $att_page) {
+    if ($action == 'attach-download' && $att_name == 'avatar' &&
+            starts_with($att_page, IA_USER_TEXTBLOCK_PREFIX)) {
         return true;
     }
 
@@ -316,6 +306,17 @@ function security_attach($user, $action, $attach) {
         log_print_r($attach);
     }
     log_assert($tb, "Orphan attachment");
+
+    // Convert action into a grader action if the textblock is a task
+    // textblock and the attachment has the grader_ prefix.
+    if (preg_match("/^ \s* task: \s* (".IA_RE_TASK_ID.") \s* $/xi", $tb["security"]) &&
+        preg_match('/^grader\_/', $att_name)) {
+        $newaction = preg_replace('/^attach/', 'grader', $action);
+        if (IA_LOG_SECURITY) {
+            log_print("SECURITY: CONVERTING $action to $newaction");
+        }
+        $action = $newaction;
+    }
 
     return security_textblock($user, $action, $tb);
 }

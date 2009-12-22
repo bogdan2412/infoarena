@@ -46,7 +46,7 @@ function controller_register() {
             $user['newsletter'] = $data['newsletter'];
 
             // There are no acceptable errors in user_create.
-            user_create($user);
+            user_create($user, remote_ip_info());
             flash("Felicitari! Contul a fost creat. Acum te poti "
                   ."autentifica.");
             redirect(url_login());
@@ -58,7 +58,7 @@ function controller_register() {
         $data['newsletter'] = 1;
         $data['tnc'] = 1;
     }
-    
+
     if(!IA_DEVELOPMENT_MODE) {
         $view['captcha'] = recaptcha_get_html(IA_CAPTCHA_PUBLIC_KEY);
     }

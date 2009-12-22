@@ -38,7 +38,7 @@ $res = curl_test(array(
         'user' => 'test_helper1',
         'post' => array(
                 'title' => 'xzx-task1-title-xzx',
-                'author' => 'xzx-task1-author-xzx',
+                'tag_author' => 'xzx-task1-author-xzx',
                 'source' => 'xzx-task1-source-xzx',
 )));
 log_assert_equal($res['url'], url_absolute(url_task_edit('test_task1')));
@@ -222,7 +222,7 @@ log_assert_equal($res['url'], url_absolute(url_task_edit('test_task1')));
 log_assert(strstr($res['content'], 'xzx-task1-title-xzx'));
 log_assert(strstr($res['content'], 'xzx-task1-author-xzx'));
 log_assert(strstr($res['content'], 'xzx-task1-source-xzx'));
-log_assert(strstr($res['content'], 'name="author"'));
+log_assert(strstr($res['content'], 'name="tag_author"'));
 log_assert(!strstr($res['content'], 'name="hidden"'));
 
 test_cleanup();
