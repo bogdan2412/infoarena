@@ -26,10 +26,15 @@ function macro_algorithmtags($args) {
         return "";
     }
 
+    $cnt_category = count($tags_tree);
+    $category_word = "categorii";
+    if ($cnt_category == 1) {
+        $category_word = "categorie";
+    }
     $html_code = "<div id=\"task_tags\">";
     $html_code .= "<h3> Indicaţii de rezolvare</h3>";
     $html_code .= '<a id="show_tags" href="javascript:show_tags()">
-                Arată '.count($tags_tree).' categorii</a>';
+                Arată '.count($tags_tree).' '.$category_word.'</a>';
 
     $html_code .= '<ul id="task_tags">';
     foreach ($tags_tree as $tag) {
