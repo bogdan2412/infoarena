@@ -169,6 +169,7 @@ function security_simplify_action($action) {
         case 'job-view-source-size':
         case 'job-view-score':
         case 'job-view-partial-feedback':
+        case 'task-view-tags':
             return $action;
 
         default:
@@ -391,6 +392,17 @@ function security_task($user, $action, $task) {
 
         case 'simple-edit':
             return $is_owner || $is_admin;
+
+        // View tags
+        case 'task-view-tags':
+            $in_archive = false;
+            $rounds = task_get_submit_rounds($task['id'], $user['id']);
+            foreach ($rounds as $round_id) {
+                if ($round_id == 'arhiva' || $round_id == 'arhiva-educationala') {
+                    $in_archive = true;
+                }
+            }
+            return $in_archive || $is_owner || $is_admin;
 
         // Admin stuff:
         case 'simple-critical':

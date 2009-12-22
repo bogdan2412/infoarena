@@ -275,16 +275,55 @@ td.number, th.number, td.date, th.date {
     text-align: right;
 }
 
-a.show_tag_list {
-    display: none;
-    padding: 5px;
-    outline-style: none;
+.sub_tag_name {
+    display: inline;
+    background-color: #DDE;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    font-size: 11px;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+    padding-right: 0.3em;
+    padding-left: 0.3em;
 }
 
-ul.tag_list {
-    list-style-type: none;
+.tag_name {
+    display: inline;
+    color: #FFF0E1;
+    font-weight: bold;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    font-size: 10px;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+    padding-right: 0.4em;
+    padding-left: 0.4em;
 }
 
-li.tag_list_item {
-    padding-left: 15px;
+.tag_name.color_scheme_0 {
+    background-color: rgb(204, 0, 0);
+}
+
+.tag_name.color_scheme_1 {
+    background-color: #5229A3;
+}
+
+.tag_name.color_scheme_2 {
+    background-color: rgb(0, 0, 204);
+}
+
+.tag_name.color_scheme_3 {
+    background-color: rgb(0, 102, 51);
+}
+
+.tag_name.color_scheme_4 {
+    background-color: rgb(236, 112, 0);
+}
+
+.tag_name.color_scheme_5 {
+    background-color: rgb(0, 0, 0);
+}
+
+.show_tag_anchor {
+    font-size: 10px;
 }
