@@ -301,7 +301,7 @@ function controller_task_tag($task_id) {
         $algorithm_tags = tag_get_by_ids($algorithm_tags_id);
         $count = 0;
         foreach ($algorithm_tags as $tag) {
-            if ($tag['tag_type'] == 'algorithm') {
+            if ($tag['type'] == 'algorithm') {
                 $count++;
             }
         }
@@ -316,23 +316,6 @@ function controller_task_tag($task_id) {
 
     $tags = tag_get_all( Array('method') );
     $sub_tags = tag_get_all( Array('algorithm') );
-
-    // Build_tags_tree looks for tag_id, tag_name etc.
-    // tag_get_all return id, name, etc.
-    foreach ($tags as &$tag) {
-        $tag['tag_id'] = $tag['id'];
-        $tag['tag_name'] = $tag['name'];
-        $tag['tag_type'] = $tag['type'];
-        $tag['tag_parent'] = $tag['parent'];
-    }
-
-    // Same for subtags
-    foreach ($sub_tags as &$tag) {
-        $tag['tag_id'] = $tag['id'];
-        $tag['tag_name'] = $tag['name'];
-        $tag['tag_type'] = $tag['type'];
-        $tag['tag_parent'] = $tag['parent'];
-    }
 
     $tags_tree = build_tags_tree($tags, $sub_tags);
 

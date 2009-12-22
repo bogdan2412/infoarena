@@ -44,7 +44,7 @@ foreach ($subpages as $subpage) {
     echo '<div class="strap">';
     echo '<strong>Categorii: </strong>';
     foreach ($subpage['tags'] as $tag) {
-        echo format_link(url_blog($tag['tag_name']), $tag['tag_name'], true).' ';
+        echo format_link(url_blog($tag['name']), $tag['name'], true).' ';
     }
     echo '</div></div>';
 }

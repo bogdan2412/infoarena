@@ -46,7 +46,7 @@ function tag_build_list($obj, $obj_id, $type, $parent = null) {
     $tag_list = tag_get($obj, $obj_id, $type, $parent);
     $tag_names = array();
     foreach ($tag_list as $tag) {
-        $tag_names[] = $tag['tag_name'];
+        $tag_names[] = $tag['name'];
     }
     return implode(", ", $tag_names);
 }
@@ -61,12 +61,12 @@ function build_tags_tree($parent_tags, $sub_tags) {
     $parent_tags_key = Array();
     foreach ($parent_tags as $key => $tag) {
         $parent_tags[$key]['sub_tags'] = Array();
-        $parent_tags_key[$tag['tag_id']] = $key;
+        $parent_tags_key[$tag['id']] = $key;
     }
 
     foreach ($sub_tags as $tag) {
-        log_assert(isset($parent_tags_key[$tag['tag_parent']]), "Child tag doesn't have a parent");
-        $parent_tag_key = $parent_tags_key[$tag['tag_parent']];
+        log_assert(isset($parent_tags_key[$tag['parent']]), "Child tag doesn't have a parent");
+        $parent_tag_key = $parent_tags_key[$tag['parent']];
         $parent_tags[$parent_tag_key]['sub_tags'][] = $tag;
     }
 

@@ -275,6 +275,15 @@ td.number, th.number, td.date, th.date {
     text-align: right;
 }
 
+/* Tag lists */
+ul.tag_list { 
+    list-style-type: none; 
+} 
+ 
+li.tag_list_item { 
+    padding-left: 15px; 
+} 
+
 .sub_tag_name {
     display: inline;
     background-color: #DDE;

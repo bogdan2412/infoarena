@@ -28,7 +28,7 @@ echo $text;
 echo '<div class="strap">';
 echo '<strong>Categorii: </strong>';
 foreach ($tags as $tag) {
-    echo format_link(url_blog($tag['tag_name']), $tag['tag_name'], true).' ';
+    echo format_link(url_blog($tag['name']), $tag['name'], true).' ';
 }
 echo '<br/>';
 echo 'Creat la '.html_escape($first_textblock['creation_timestamp']).' de '.format_user_link($first_textblock["user_name"], $first_textblock["user_fullname"]);

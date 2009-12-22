@@ -33,8 +33,8 @@ function macro_algorithmtags($args) {
 
     $html_code .= '<ul id="task_tags">';
     foreach ($tags_tree as $tag) {
-        $tag_id = $tag['tag_id'];
-        $tag_name = $tag['tag_name'];
+        $tag_id = $tag['id'];
+        $tag_name = $tag['name'];
         $cnt_subtags = count($tag['sub_tags']);
         if ($cnt_subtags > 1) {
             $tag_word = 'taguri';
@@ -44,7 +44,7 @@ function macro_algorithmtags($args) {
 
         $subtags_html = Array();
         foreach ($tag['sub_tags'] as $subtag) {
-            $subtags_html[] = '<div class="sub_tag_name">'.$subtag['tag_name'].'</div>';
+            $subtags_html[] = '<div class="sub_tag_name">'.$subtag['name'].'</div>';
         }
 
         $color_scheme = $tag_id % 6;

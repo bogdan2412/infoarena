@@ -10,18 +10,18 @@
 <?php
     $tags_tree = $view['tags_tree'];
     foreach ($tags_tree as $tag) {
-        echo '<h3>'.$tag['tag_name'].'</h3><ul class="tag_list">';
+        echo '<h3>'.$tag['name'].'</h3><ul class="tag_list">';
         foreach ($tag['sub_tags'] as $sub_tag) {
             // Check if tag is already assigned to this task
             $checked = '';
             foreach ($task_tags as $task_tag) {
-                if ($task_tag['tag_id'] == $sub_tag['tag_id']) {
+                if ($task_tag['id'] == $sub_tag['id']) {
                     $checked = "checked";
                 }
             }
             echo '<li class="tag_list_item">
-                    <input type="checkbox" '.$checked.' name="algorithm_tags[]" value="'.$sub_tag['tag_id'].'"/> '
-                    .$sub_tag['tag_name'].
+                    <input type="checkbox" '.$checked.' name="algorithm_tags[]" value="'.$sub_tag['id'].'"/> '
+                    .$sub_tag['name'].
                 '</li>';
         }
         echo "</ul>";

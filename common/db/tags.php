@@ -44,12 +44,12 @@ function tag_get($obj, $obj_id, $type = null, $parent = null) {
         $where_parent = sprintf(" AND tags.parent = %s", db_quote($parent));
     }
     $query = sprintf(
-        "SELECT %s_id, tag_id,
-        tags.name AS tag_name, tags.type AS tag_type, tags.parent AS tag_parent
+        "SELECT %s_id, tag_id AS id,
+        tags.name AS name, tags.type AS type, tags.parent AS parent
         FROM ia_%s_tags AS obj_tags
         LEFT JOIN ia_tags AS tags ON obj_tags.tag_id = tags.id
         WHERE %s_id = %s%s%s
-        ORDER BY tag_name",
+        ORDER BY name",
         db_escape($obj), db_escape($obj), db_escape($obj),
         db_quote($obj_id), $where_type, $where_parent
     );
@@ -103,8 +103,7 @@ function tag_get_ids($tags) {
 // Get a list of tags from a list of tag ids
 function tag_get_by_ids($tag_ids) {
     $query = sprintf(
-            "SELECT `id` AS tag_id, `name` AS tag_name,
-                    `parent` AS tag_parent, `type` AS tag_type
+            "SELECT `id`, `name`, `type`, `parent`
             FROM ia_tags
             WHERE `id` IN (%s)", implode(', ', array_map('db_quote', $tag_ids))
         );
