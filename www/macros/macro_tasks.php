@@ -24,6 +24,18 @@ function format_title($row) {
     return $title;
 }
 
+function format_single_author($tag) {
+    return format_link(url_task_search(array($tag["id"])), $tag["name"]);
+}
+function format_author($row) {
+    $authors = mem_cache_get("task-authors-by-id:".$row["id"]);
+    if ($authors === false) {
+        $authors = tag_get("task", $row["id"], "author");
+        mem_cache_set("task-authors-by-id:".$row["id"], $authors);
+    }
+    return implode(", ", array_map('format_single_author', $authors));
+}
+
 function task_row_style($row) {
     $score = getattr($row, 'score');
     if (is_null($score)) {
@@ -145,7 +157,7 @@ function macro_tasks($args) {
         $column_infos[] = array(
                 'title' => 'Autor',
                 'css_class' => 'author',
-                'key' => 'author',
+                'rowform' => 'format_author',
         );
     }
     if ($show_sources) {

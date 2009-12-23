@@ -144,6 +144,7 @@ function controller_task_details($task_id) {
         $tags = array();
         if (!$errors) {
             // FIXME: error handling? Is that even remotely possible in php?
+            task_update($new_task);
             task_update_parameters($task_id, $new_task_params);
 
             if (identity_can('task-tag', $new_task)) {
@@ -158,8 +159,7 @@ function controller_task_details($task_id) {
                         $values['tag_'.$type], $parent);
                 }
             }
-            $new_task["author"] = tag_build_list("task", $new_task["id"], "author");
-            task_update($new_task);
+            mem_cache_delete("task-authors-by-id:".$new_task["id"]);
 
             flash("Task-ul a fost modificat cu succes.");
             redirect(url_task_edit($task_id));

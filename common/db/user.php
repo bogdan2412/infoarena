@@ -15,7 +15,7 @@ function _user_cache_add($user) {
     if (!is_null($user)) {
         log_assert_valid(user_validate($user));
         mem_cache_set("user-by-name:{$user['username']}", $user);
-        mem_cache_set("user-by-id:{$user['username']}", $user);
+        mem_cache_set("user-by-id:{$user['id']}", $user);
     }
     return $user;
 }
@@ -24,7 +24,7 @@ function _user_cache_add($user) {
 function _user_cache_delete($user) {
     log_assert_valid(user_validate($user));
     mem_cache_delete("user-by-name:{$user['username']}");
-    mem_cache_delete("user-by-id:{$user['username']}");
+    mem_cache_delete("user-by-id:{$user['id']}");
 }
 
 // Test password in IA1 format.

@@ -53,10 +53,8 @@ function task_init($task_id, $task_type, $user = null) {
 
     // User stuff. ugly
     if (is_null($user)) {
-        $task['author'] = 'Unknown';
         $task['user_id'] = 0;
     } else {
-        $task['author'] = $user['full_name'];
         $task['user_id'] = $user['id'];
     }
 

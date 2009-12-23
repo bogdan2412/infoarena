@@ -2,7 +2,9 @@
 
 require_once(IA_ROOT_DIR . "common/db/task.php");
 require_once(IA_ROOT_DIR . "common/db/user.php");
-require_once(IA_ROOT_DIR."www/format/format.php");
+require_once(IA_ROOT_DIR . "common/db/tags.php");
+require_once(IA_ROOT_DIR . "common/cache.php");
+require_once(IA_ROOT_DIR . "www/format/format.php");
 
 // Displays a task field, be it a hard-coded field such as task author or a grader parameter such as `timelimit`.
 // NOTE: The macro employs a simple caching mechanism (via static variables, cache expires at the end of the request)
@@ -34,9 +36,6 @@ function macro_taskparam($args) {
     }
 
     $task = task_get($task_id);
-    if ($task) {
-        $params = task_get_parameters($task_id);
-    }
 
     // validate task id
     if (!$task) {
@@ -52,9 +51,18 @@ function macro_taskparam($args) {
             return html_escape($task['title']);
 
         case 'author':
-            return html_escape($task['author']);
+            $authors = mem_cache_get("task-authors-by-id:".$task["id"]);
+            if ($authors === false) {
+                $authors = tag_get("task", $task["id"], "author");
+                mem_cache_set("task-authors-by-id:".$task["id"], $authors);
+            }
+            function format_author($tag) {
+                return format_link(url_task_search(array($tag["id"])), $tag["name"]);
+            }
+            return implode(", ", array_map('format_author', $authors));
 
         case 'source':
+            // TODO: This should also be converted into tags.
             return html_escape($task['source']);
 
         case 'type':
@@ -79,6 +87,7 @@ function macro_taskparam($args) {
                                     $user['rating_cache']);
 
         default:
+            $params = task_get_parameters($task_id);
             if (!isset($params[$param])) {
                 if (isset($args['default_value'])) {
                     return html_escape($args['default_value']);

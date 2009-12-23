@@ -83,7 +83,6 @@ function round_get_tasks($round_id, $first = 0, $count = null, $user_id = null, 
     $fields = "round_task.task_id AS id, ".
               "task.`order` AS `order`, ".
               "task.`title` AS `title`, ".
-              "task.`author` AS `author`, ".
               "task.`page_name` AS `page_name`, ".
               "task.`source` AS `source`, ".
               "task.`hidden` AS `hidden`, ".

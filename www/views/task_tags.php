@@ -13,7 +13,10 @@ function format_tag_name($row) {
             "parent" => $row["parent"]
         ),
         $row["name"], "Redenumește");
-    $tag .= ' <a class="algorithm_tag" href="#">' . html_escape($row["name"]) . '</a>';
+    $tag .= ' '.format_link(
+        url_task_search(array($row["id"])), $row["name"], true,
+        array("class" => "algorithm_tag")
+    );
     return $tag;
 }
 

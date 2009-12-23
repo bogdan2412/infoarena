@@ -108,4 +108,6 @@ foreach($tasks as $task) {
     }
 }
 
+db_query("ALTER TABLE ia_task DROP COLUMN author");
+
 ?>

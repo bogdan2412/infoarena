@@ -7,6 +7,7 @@ require_once(dirname($argv[0]) . "/utilities.php");
 
 // URLs to benchmark
 $benchmark_urls = array(
+    IA_URL . "arhiva",
     IA_URL . "utilizator/domino?action=download&file=avatar&resize=L32x32",
     IA_URL . "template/preoni-2006?action=download&file=hlogo.gif",
     IA_URL . "utilizator/domino",

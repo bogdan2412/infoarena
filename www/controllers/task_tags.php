@@ -113,11 +113,20 @@ function controller_task_tags_rename() {
     }
 
     $tag["name"] = $new_name;
+    // Check that the new tag doesn't already exist.
     if (tag_get_id($tag)) {
         flash_error("Tagul deja exista.");
         redirect(url_task_tags());
     }
     tag_update_by_id($tag_id, $tag);
+    // Clear author cache for all tasks tagged with the tag.
+    if ($tag["type"] == "author") {
+        $task_ids = tag_get_objects("task", array($tag_id), false);
+        foreach ($task_ids as $task_id) {
+            mem_cache_delete("task-authors-by-id:".$task_id["id"]);
+        }
+    }
+
     flash("Tag-ul a fost redenumit.");
     redirect(url_task_tags());
 }
