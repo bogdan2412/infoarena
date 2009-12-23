@@ -51,11 +51,7 @@ function macro_taskparam($args) {
             return html_escape($task['title']);
 
         case 'author':
-            $authors = mem_cache_get("task-authors-by-id:".$task["id"]);
-            if ($authors === false) {
-                $authors = tag_get("task", $task["id"], "author");
-                mem_cache_set("task-authors-by-id:".$task["id"], $authors);
-            }
+            $authors = task_get_authors($task['id']);
             function format_author($tag) {
                 return format_link(url_task_search(array($tag["id"])), $tag["name"]);
             }

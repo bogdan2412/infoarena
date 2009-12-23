@@ -309,6 +309,24 @@ li.tag_list_item {
     padding-left: 0.4em;
 }
 
+a.sub_tag_search_anchor {
+    color: #000000;
+    outline-style: none;
+}
+
+a.sub_tag_search_anchor:hover {
+    text-decoration: none;
+}
+
+a.tag_search_anchor {
+    color: #FFF0E1;
+    outline-style: none;
+}
+
+a.tag_search_anchor:hover {
+    text-decoration: none;
+}
+
 .tag_name.color_scheme_0 {
     background-color: rgb(204, 0, 0);
 }
@@ -335,4 +353,8 @@ li.tag_list_item {
 
 .show_tag_anchor {
     font-size: 10px;
+}
+
+table.filter_results {
+    width: 99%;
 }

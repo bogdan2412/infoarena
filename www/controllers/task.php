@@ -329,4 +329,40 @@ function controller_task_tag($task_id) {
     execute_view_die('views/task_tag_edit.php', $view);
 }
 
+// Gets a list of tags from request
+// Prints a list of tasks that contain all those tags
+// Tasks must be in 'arhiva' or in 'arhiva educationala'
+function controller_task_search() {
+    $tags = request('tag_id', null);
+    if (is_null($tags)) {
+        $tags = Array();
+    }
+
+    if (!is_array($tags)) {
+        flash_error("Url invalid");
+        redirect(url_home());
+    }
+
+    foreach ($tags as $tag) {
+        if (!is_tag_id($tag)) {
+            flash_error("Url invalid");
+            redirect(url_home());
+        }
+    }
+
+    if (identity_is_anonymous()) {
+        $user_id = null;
+    } else {
+        $user_id = identity_get_user_id();
+    }
+    $tasks = task_filter_by_tags($tags, true, $user_id);
+    foreach ($tasks as &$task) {
+        $task['authors'] = task_get_authors($task['task_id']);
+    }
+
+    $view['title'] = "Rezultatele filtrării";
+    $view['tasks'] = $tasks;
+    execute_view_die('views/task_filter_results.php', $view);
+}
+
 ?>

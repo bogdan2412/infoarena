@@ -4,6 +4,7 @@ require_once(IA_ROOT_DIR . "www/format/list.php");
 require_once(IA_ROOT_DIR . "www/format/table.php");
 require_once(IA_ROOT_DIR . "www/format/pager.php");
 require_once(IA_ROOT_DIR . "common/db/round.php");
+require_once(IA_ROOT_DIR . "common/db/task.php");
 require_once(IA_ROOT_DIR . "common/round.php");
 
 function format_score_column($val) {
@@ -27,12 +28,9 @@ function format_title($row) {
 function format_single_author($tag) {
     return format_link(url_task_search(array($tag["id"])), $tag["name"]);
 }
+
 function format_author($row) {
-    $authors = mem_cache_get("task-authors-by-id:".$row["id"]);
-    if ($authors === false) {
-        $authors = tag_get("task", $row["id"], "author");
-        mem_cache_set("task-authors-by-id:".$row["id"], $authors);
-    }
+    $authors = task_get_authors($row['id']);
     return implode(", ", array_map('format_single_author', $authors));
 }
 

@@ -82,6 +82,12 @@ else if ($page == 'admin/sterge-problema') {
     controller_task_delete(request("task_id"));
 }
 
+// Task search
+else if ($page == 'cauta-probleme') {
+    require_once(IA_ROOT_DIR.'www/controllers/task.php');
+    controller_task_search();
+}
+
 // Task detail editor
 else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'problema') {
     require_once(IA_ROOT_DIR.'www/controllers/task.php');

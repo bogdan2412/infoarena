@@ -51,12 +51,19 @@ function url_from_args($args)
             continue;
         }
         if ($k != 'page') {
-            $url .= ($first ? "?" : "&");
-            $first = false;
-            $url .= $k . '=' . urlencode($v);
+            if (is_array($v)) {
+                foreach ($v as $sv) {
+                    $url .= ($first ? "?" : "&");
+                    $first = false;
+                    $url .= $k. '[]=' . urlencode($sv);
+                }
+            } else {
+                $url .= ($first ? "?" : "&");
+                $first = false;
+                $url .= $k . '=' . urlencode($v);
+            }
         }
     }
-
     return $url;
 }
 
@@ -266,8 +273,8 @@ function url_task_delete() {
 }
 
 function url_task_search($tag_ids) {
-    // STUB
-    return "#" . implode("#", array_map('html_escape', $tag_ids));
+    log_assert(is_array($tag_ids), "Tag ids must be an array");
+    return url_complex("cauta-probleme", array("tag_id" => $tag_ids));
 }
 
 function url_task_list($page_name, $filter = null) {

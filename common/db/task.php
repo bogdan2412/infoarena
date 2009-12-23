@@ -172,4 +172,67 @@ function task_get_submit_rounds($task_id, $user_id) {
     return array_values($rounds);
 }
 
+function task_get_authors($task_id, $no_cache = false) {
+    log_assert(is_task_id($task_id), 'Invalid task_id');
+
+    $authors = false;
+    if (!$no_cache) {
+        $authors = mem_cache_get("task-authors-by-id:".$task_id);
+    }
+
+    if ($authors === false) {
+        $authors = tag_get("task", $task_id, "author");
+        mem_cache_set("task-authors-by-id:".$task_id, $authors);
+    }
+
+    return $authors;
+}
+
+// Task filter
+// Returns only tasks that contain all the tags
+// and are in 'arhiva' or in 'arhiva-educationala'
+// Task from 'arhiva-educationala' are shown first
+function task_filter_by_tags($tag_ids, $scores = true, $user_id = null) {
+    log_assert(is_array($tag_ids), "tag_ids must be an array");
+    foreach ($tag_ids as $tag_id) {
+        log_assert(is_tag_id($tag_id), "invalid tag id");
+    }
+
+    if (count($tag_ids) > 0) {
+        $tag_filter = "AND ".tag_build_where('task', $tag_ids);
+    } else {
+        $tag_filter = "";
+    }
+
+    if ($user_id == null || $scores == false) {
+        $join_score = "";
+        $score_fields = "";
+    } else {
+        $join_score = "LEFT JOIN ia_score ON ia_score.user_id = ".db_quote($user_id)." AND
+                            ia_score.round_id = round.id AND
+                            ia_score.task_id = ia_task.id AND
+                            ia_score.name = 'score'";
+        $score_fields = "ia_score.score,";
+    }
+
+    $query = "SELECT ia_task.id AS task_id,
+                ia_task.title AS task_title,
+                ia_task.order AS 'order',
+                ia_task.page_name AS page_name,
+                ia_task.open_source AS open_source,
+                ia_task.open_tests AS open_tests,
+                round.id AS round_id,
+                $score_fields
+                round.title AS round_title
+    FROM ia_task
+    LEFT JOIN ia_round_task AS round_task ON round_task.task_id = ia_task.id
+    LEFT JOIN ia_round AS round ON round.id = round_task.round_id
+    $join_score
+    WHERE (round.id = 'arhiva' OR round.id = 'arhiva-educationala')
+        AND ia_task.hidden = '0' $tag_filter
+    ORDER BY round.id DESC, ia_task.order";
+    $tasks = db_fetch_all($query);
+
+    return $tasks;
+}
 ?>

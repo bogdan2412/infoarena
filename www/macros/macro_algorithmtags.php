@@ -50,13 +50,16 @@ function macro_algorithmtags($args) {
 
         $subtags_html = Array();
         foreach ($tag['sub_tags'] as $subtag) {
-            $subtags_html[] = '<div class="sub_tag_name">'.$subtag['name'].'</div>';
+            $tag_link = format_link(url_task_search(array($tag_id)), $subtag['name'], true,
+                            array('class' => "sub_tag_search_anchor"));
+            $subtags_html[] = '<div class="sub_tag_name">'.$tag_link.'</div>';
         }
 
         $color_scheme = $tag_id % 6;
+        $tag_link = format_link(url_task_search(array($tag_id)), $tag_name, true, array('class' => 'tag_search_anchor'));
         $html_code .= '
         <li style="display: none;" class="tags_list_item">
-            <span class="tag_name color_scheme_'.$color_scheme.'">'.html_escape($tag_name).'</span>
+            <span class="tag_name color_scheme_'.$color_scheme.'">'.$tag_link.'</span>
             <a href="javascript:show_tag_list('.html_escape($tag_id).')"
                     id="tag_anchor_'.html_escape($tag_id).'"
                     class="show_tag_anchor"
@@ -65,8 +68,8 @@ function macro_algorithmtags($args) {
             </a>
             <div style="display: none;"
                 id="tag_list_'.html_escape($tag_id).'"
-            >:
-                '.implode(' ', $subtags_html).'
+            >&nbsp;
+                '.implode('&nbsp;', $subtags_html).'
             </div>
         </li>';
     }
