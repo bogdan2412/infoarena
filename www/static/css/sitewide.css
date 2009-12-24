@@ -358,3 +358,7 @@ a.tag_search_anchor:hover {
 table.filter_results {
     width: 99%;
 }
+
+table.filter_results td, th {
+    padding: 3px;
+}

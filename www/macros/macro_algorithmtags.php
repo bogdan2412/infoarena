@@ -50,7 +50,7 @@ function macro_algorithmtags($args) {
 
         $subtags_html = Array();
         foreach ($tag['sub_tags'] as $subtag) {
-            $tag_link = format_link(url_task_search(array($tag_id)), $subtag['name'], true,
+            $tag_link = format_link(url_task_search(array($subtag['id'])), $subtag['name'], true,
                             array('class' => "sub_tag_search_anchor"));
             $subtags_html[] = '<div class="sub_tag_name">'.$tag_link.'</div>';
         }
