@@ -9,8 +9,14 @@ log_assert_valid(textblock_validate($textblock));
 ?>
 <div id="wikiOps">
     <ul>
+<?php if (($task_id = textblock_security_is_task($textblock['security'])) && identity_can('task-edit', $task = task_get($task_id))) { ?>
+<li><?= format_link_access(url_task_edit($task['id']), 'Editeaza parametrii', 'p') ?></li>
+<?php } ?>
+<?php if ($task_id && identity_can('task-tag', $task)) { ?>
+<li><?= format_link_access(url_task_edit_tags($task['id']), 'Editeaza tag-uri', 't') ?></li>
+<?php } ?>
 <?php if (identity_can('textblock-edit', $textblock)) { ?>
-<li><?= format_link_access(url_textblock_edit($textblock['name']), 'Editeaza', 'e') ?></li>
+<li><?= format_link_access(url_textblock_edit($textblock['name']), ($task_id) ? 'Editeaza enunt' :'Editeaza', 'e') ?></li>
 <?php } ?>
 <?php if (identity_can('textblock-history', $textblock)) { ?>
 <li><?= format_link_access(url_textblock_history($textblock['name']), 'Istoria', 'i') ?></li>

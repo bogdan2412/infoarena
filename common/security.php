@@ -210,9 +210,9 @@ function security_textblock($user, $action, $textblock) {
     }
 
     // Forward security to task.
-    if (preg_match("/^ \s* task: \s* (".IA_RE_TASK_ID.") \s* $/xi", $textsec, $matches)) {
+    if (($task_id = textblock_security_is_task($textsec))) {
         require_once(IA_ROOT_DIR . "common/db/task.php");
-        $task = task_get($matches[1]);
+        $task = task_get($task_id);
         if ($task === null) {
             log_warn("Bad security descriptor, ask an admin.");
             return $usersec == 'admin';
@@ -309,7 +309,7 @@ function security_attach($user, $action, $attach) {
 
     // Convert action into a grader action if the textblock is a task
     // textblock and the attachment has the grader_ prefix.
-    if (preg_match("/^ \s* task: \s* (".IA_RE_TASK_ID.") \s* $/xi", $tb["security"]) &&
+    if (textblock_security_is_task($tb['security']) &&
         preg_match('/^grader\_/', $att_name)) {
         $newaction = preg_replace('/^attach/', 'grader', $action);
         if (IA_LOG_SECURITY) {

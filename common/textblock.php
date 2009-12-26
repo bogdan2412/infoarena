@@ -187,4 +187,12 @@ function textblock_template_replace(&$textblock, $replace)
     }
 }
 
+// Checks if the textblock is task and return the task_id if true or false if false
+function textblock_security_is_task($textblock) {
+    if (preg_match("/^ \s* task: \s* (".IA_RE_TASK_ID.") \s* $/xi", $textblock, $matches)) {
+        return $matches[1];
+    }
+    return false;
+}
+
 ?>
