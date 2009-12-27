@@ -221,9 +221,9 @@ function security_textblock($user, $action, $textblock) {
     }
 
     // Forward security to round.
-    if (preg_match("/^ \s* round: \s* (".IA_RE_ROUND_ID.") \s* $/xi", $textsec, $matches)) {
+    if (($round_id = textblock_security_is_round($textsec))) {
         require_once(IA_ROOT_DIR . "common/db/round.php");
-        $round = round_get($matches[1]);
+        $round = round_get($round_id);
         if ($round === null) {
             log_warn("Bad security descriptor, ask an admin.");
             return $usersec == 'admin';

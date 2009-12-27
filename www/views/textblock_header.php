@@ -15,8 +15,11 @@ log_assert_valid(textblock_validate($textblock));
 <?php if ($task_id && identity_can('task-tag', $task)) { ?>
 <li><?= format_link_access(url_task_edit_tags($task['id']), 'Editeaza tag-uri', 't') ?></li>
 <?php } ?>
+<?php if (($round_id = textblock_security_is_round($textblock['security'])) && identity_can('round-edit', $round = round_get($round_id))) { ?>
+<li><?= format_link_access(url_round_edit($round['id']), 'Editeaza parametrii', 'p') ?></li>
+<?php } ?>
 <?php if (identity_can('textblock-edit', $textblock)) { ?>
-<li><?= format_link_access(url_textblock_edit($textblock['name']), ($task_id) ? 'Editeaza enunt' :'Editeaza', 'e') ?></li>
+<li><?= format_link_access(url_textblock_edit($textblock['name']), ($task_id) ? 'Editeaza enunt' : 'Editeaza', 'e') ?></li>
 <?php } ?>
 <?php if (identity_can('textblock-history', $textblock)) { ?>
 <li><?= format_link_access(url_textblock_history($textblock['name']), 'Istoria', 'i') ?></li>
