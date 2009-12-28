@@ -243,7 +243,7 @@ function textblock_get_revision_count($name) {
 
 // Grep through textblocks. This is mostly a hack needed for macro_grep.php
 // Also used for round deletion
-function textblock_grep($substr, $page, $regexp = false, $offset = 0, $count = 0) {
+function textblock_grep($substr, $page, $regexp = false, $offset = null, $count = null) {
     if (!$regexp) {
         $compare = "LIKE";
     } else {
@@ -255,10 +255,13 @@ function textblock_grep($substr, $page, $regexp = false, $offset = 0, $count = 0
                       FROM ia_textblock
                       WHERE `name` LIKE '%s' AND
                             (`text` $compare '%s' OR `title` $compare '%s')
-                      ORDER BY `name`
-                      LIMIT %s, %s",
-                      db_escape($page), db_escape($substr), db_escape($substr),
-                      db_escape($offset), db_escape($count));
+                      ORDER BY `name`",
+                      db_escape($page), db_escape($substr), db_escape($substr));
+
+    if (is_whole_number($offset) && is_whole_number($count)) {
+        $query .= sprintf(" LIMIT %s, %s",
+                          db_escape($offset), db_escape($count));
+    }
     return db_fetch_all($query);
 }
 

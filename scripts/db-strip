@@ -5,52 +5,87 @@ require_once(dirname($argv[0]) . "/utilities.php");
 db_connect();
 $smfprefix = IA_SMF_DB_PREFIX;
 
-// Set password=username
+// Set password=username for all users.
+log_print("Clearing passwords for all users.");
 db_query("UPDATE ia_user
           SET `password` = SHA1(CONCAT(LCASE(username), LCASE(username)))");
 db_query("UPDATE {$smfprefix}members
           SET `passwd` = SHA1(CONCAT(LCASE(memberName), LCASE(memberName)))");
-// Delete emails
+
+// Delete emails.
+log_print("Clearing emails for all users.");
 db_query("UPDATE ia_user
           SET email = CONCAT(username, '@example.com')");
 db_query("UPDATE {$smfprefix}members
           SET emailAddress = CONCAT(memberName, '@example.com')");
 
-// Delete smf magic
+// Delete smf private data.
+log_print("Clearing private data and ip information.");
 db_query("UPDATE {$smfprefix}members
           SET secretQuestion = '', secretAnswer='', memberIP='',
               memberIP2=''");
+// Delete ip information.
+db_query("UPDATE ia_file SET remote_ip_info = NULL");
+db_query("UPDATE ia_job SET remote_ip_info = NULL");
+db_query("UPDATE ia_textblock SET remote_ip_info = NULL");
+db_query("UPDATE ia_textblock_revision SET remote_ip_info = NULL");
 
-// Delete all attachments except noimage
+// Delete all attachments except noimage.
+log_print("Deleting all attachments.");
 db_query("DELETE FROM ia_file
           WHERE name <> 'noimage'");
 
 // Delete submissions.
+log_print("Clearing all submissions.");
 db_query("UPDATE ia_job SET file_contents='--gone--'");
 
-// Delete hidden tasks
+// Delete hidden tasks.
+log_print("Deleting hidden tasks.");
 db_query("DELETE FROM ia_task where hidden = 1");
 
-// Only keep first 50 tasks. Keep the dump small.
-$del_task_count = db_query_value("SELECT COUNT(0) FROM ia_task") - 50;
+// Only keep first 100 tasks to keep the dump small.
+log_print("Deleting all tasks except for the first 100.");
+$del_task_count = db_query_value("SELECT COUNT(0) FROM ia_task") - 100;
 if ($del_task_count > 0) {
-    db_query("DELETE FROM ia_task ORDER BY `order` LIMIT $del_task_count");
+    db_query("DELETE FROM ia_task ORDER BY `order` DESC LIMIT $del_task_count");
 }
 
-// Delete extra users. Only kill mortals
-$del_user_count = db_query_value("SELECT COUNT(*) FROM ia_user") - 100;
+// Delete extra users. Only kill mortals.
+log_print("Deleting all normal users except for 200.");
+$del_user_count = db_query_value("SELECT COUNT(*) FROM ia_user") - 200;
 if ($del_user_count > 0) {
     db_query("DELETE FROM ia_user ".
              "WHERE security_level = 'normal' ".
              "ORDER BY RAND() LIMIT $del_user_count");
 }
 
-// Delete orphan smf members
+// Delete orphan smf members.
 db_query("DELETE ia_smf_members FROM ia_smf_members ".
         "LEFT JOIN ia_user on ia_user.username = ia_smf_members.memberName ".
         "WHERE (ia_user.username IS NULL) ");
 
+// Delete orphan user-defined rounds.
+log_print("Deleting orphan user defined rounds.");
+db_query("DELETE ia_round FROM ia_round
+    LEFT JOIN ia_user ON ia_round.user_id = ia_user.id
+    WHERE (ia_user.id IS NULL)");
+
+// Delete orphan users registered in rounds.
+log_print("Deleting orphan users registered in rounds.");
+db_query("DELETE ia_user_round FROM ia_user_round
+    LEFT JOIN ia_user ON ia_user_round.user_id = ia_user.id
+    LEFT JOIN ia_round ON ia_user_round.round_id = ia_round.id
+    WHERE (ia_user.id IS NULL) OR (ia_round.id IS NULL)");
+
+// Delete orphan tasks in rounds.
+log_print("Deleting orphan tasks in rounds.");
+db_query("DELETE ia_round_task FROM ia_round_task
+    LEFT JOIN ia_task ON ia_round_task.task_id = ia_task.id
+    LEFT JOIN ia_round ON ia_round_task.round_id = ia_round.id
+    WHERE (ia_task.id IS NULL) OR (ia_round.id IS NULL)");
+
 // Delete orphan scores.
+log_print("Deleting orphan scores.");
 db_query("DELETE ia_score FROM ia_score ".
         "LEFT JOIN ia_user on ia_user.id = ia_score.user_id ".
         "LEFT JOIN ia_task on ia_task.id = ia_score.task_id ".
@@ -59,70 +94,105 @@ db_query("DELETE ia_score FROM ia_score ".
         "OR (ia_score.task_id IS NOT NULL AND ia_task.id IS NULL) ".
         "OR (ia_score.round_id IS NOT NULL AND ia_round.id IS NULL)");
 
-// Delete orphan jobs
+// Delete orphan jobs.
+log_print("Deleting orphan jobs.");
 db_query("DELETE ia_job FROM ia_job ".
         "LEFT JOIN ia_user on ia_user.id = ia_job.user_id ".
         "LEFT JOIN ia_task on ia_task.id = ia_job.task_id ".
         "WHERE (ia_user.id IS NULL) OR (ia_task.id IS NULL)");
 
 // Delete extra jobs.
-$del_job_count = db_query_value("SELECT COUNT(*) FROM ia_job") - 100;
+log_print("Deleting all but last 1000 submissions.");
+$del_job_count = db_query_value("SELECT COUNT(*) FROM ia_job") - 1000;
 if ($del_job_count > 0) {
-    db_query("DELETE FROM ia_job ORDER BY RAND() LIMIT $del_job_count");
+    db_query("DELETE FROM ia_job ORDER BY id ASC LIMIT $del_job_count");
 }
 
-// Delete orphan job tests
+// Delete orphan job tests.
+log_print("Deleting orphan job tests.");
 db_query("DELETE ia_job_test FROM ia_job_test ".
         "LEFT JOIN ia_job on ia_job_test.job_id = ia_job.id ".
         "WHERE (ia_job.id IS NULL)");
 
-// Delete private pages
+// Delete private pages.
+log_print("Deleting private pages.");
 db_query("DELETE FROM `ia_textblock` WHERE security='private'");
 
-// Delete task pages
+// Delete task pages.
 // This is needed to avoid leaking secret statements.
+log_print("Deleting orphan task pages.");
 db_query("DELETE FROM `ia_textblock` ".
          "WHERE name LIKE 'problema/%' AND name NOT IN ".
          "(SELECT page_name FROM ia_task)");
 
-// Delete dangling user pages.
+// Delete orphan user pages.
 // They take a huge amount of space.
+log_print("Deleting orphan user pages.");
 db_query("DELETE FROM `ia_textblock` ".
          "WHERE name LIKE 'utilizator/%' AND name NOT IN ".
          "(SELECT CONCAT('utilizator/', username) FROM ia_user)");
 
-// Delete dangling old revisions.
+// Delete orphan revisions.
+log_print("Deleting orphan revisions.");
 db_query("DELETE `ia_textblock_revision` FROM ia_textblock_revision ".
          "LEFT JOIN ia_textblock ON ia_textblock_revision.name = ia_textblock.name ".
          "WHERE ia_textblock.name IS NULL");
 
 // Erase worthless history.
-$del_revision_count = db_query_value("SELECT COUNT(*) FROM ia_textblock_revision") - 500;
+log_print("Erasing much of textblock history.");
+$del_revision_count = db_query_value("SELECT COUNT(*) FROM ia_textblock_revision") - 2000;
 if ($del_revision_count > 0) {
     db_query("DELETE FROM ia_textblock_revision ".
              "ORDER BY RAND() LIMIT $del_revision_count");
 }
 
+// Delete orphan task tags.
+log_print("Deleting orphan task tags.");
+db_query("DELETE ia_task_tags FROM ia_task_tags
+    LEFT JOIN ia_task ON ia_task_tags.task_id = ia_task.id
+    WHERE (ia_task.id IS NULL)");
+
+// Delete orphan round tags.
+log_print("Deleting orphan round tags.");
+db_query("DELETE ia_round_tags FROM ia_round_tags
+    LEFT JOIN ia_round ON ia_round_tags.round_id = ia_round.id
+    WHERE (ia_round.id IS NULL)");
+
+// Delete orphan textblock tags.
+log_print("Deleting orphan textblock tags.");
+db_query("DELETE ia_textblock_tags FROM ia_textblock_tags
+    LEFT JOIN ia_textblock ON ia_textblock_tags.textblock_id = ia_textblock.name
+    WHERE (ia_textblock.name IS NULL)");
+
 // Censor forum. FIXME: only censor private stuff.
-// We could look inside smf and only delete some things, but it's fucking hard.
+// We could look inside smf and only delete some things, but it's hard.
 //  - personal and public SMF messages (we have some private threads)
+log_print("Deleting everything from forum.");
 db_query("DELETE FROM `{$smfprefix}messages`");
 db_query("DELETE FROM `{$smfprefix}personal_messages`");
+db_query("DELETE FROM `{$smfprefix}pm_recipients`");
 db_query("DELETE FROM `{$smfprefix}polls`");
 db_query("DELETE FROM `{$smfprefix}poll_choices`");
 db_query("DELETE FROM `{$smfprefix}sessions`");
+db_query("DELETE FROM `{$smfprefix}topics`");
+db_query("DELETE FROM `{$smfprefix}collapsed_categories`");
 //   - SMF logs
 db_query("DELETE FROM `{$smfprefix}log_actions`");
 db_query("DELETE FROM `{$smfprefix}log_activity`");
 db_query("DELETE FROM `{$smfprefix}log_banned`");
+db_query("DELETE FROM `{$smfprefix}log_boards`");
 db_query("DELETE FROM `{$smfprefix}log_errors`");
+db_query("DELETE FROM `{$smfprefix}log_floodcontrol`");
 db_query("DELETE FROM `{$smfprefix}log_karma`");
+db_query("DELETE FROM `{$smfprefix}log_mark_read`");
+db_query("DELETE FROM `{$smfprefix}log_notify`");
 db_query("DELETE FROM `{$smfprefix}log_online`");
 db_query("DELETE FROM `{$smfprefix}log_polls`");
 db_query("DELETE FROM `{$smfprefix}log_search_messages`");
 db_query("DELETE FROM `{$smfprefix}log_search_results`");
 db_query("DELETE FROM `{$smfprefix}log_search_subjects`");
 db_query("DELETE FROM `{$smfprefix}log_search_topics`");
+db_query("DELETE FROM `{$smfprefix}log_search_words`");
 db_query("DELETE FROM `{$smfprefix}log_topics`");
 
 foreach (db_fetch_all("SHOW TABLES") as $row) {
