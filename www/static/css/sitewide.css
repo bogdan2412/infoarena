@@ -354,11 +354,3 @@ a.tag_search_anchor:hover {
 .show_tag_anchor {
     font-size: 10px;
 }
-
-table.filter_results {
-    width: 99%;
-}
-
-table.filter_results td, th {
-    padding: 3px;
-}

@@ -548,7 +548,7 @@ form.inline_form {
 }
 
 input[type='text'], input[type='password'], select {
-    width: 250px;
+    width: 200px;
 }
 
 #sidebar input[type='text'], #sidebar input[type='password'], #sidebar select {
@@ -1534,4 +1534,14 @@ ul.task-tag-actions li {
 }
 .tag-table .tag-operations {
     width: 25%;
+}
+
+/* Task filter by tag page */
+.filter_results {
+    line-height: 2em;
+}
+
+ul.tag_filters {
+    line-height: 1.5em;
+    margin: 0 .5em .5em 2em;
 }

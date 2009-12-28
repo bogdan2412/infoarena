@@ -56,7 +56,7 @@ function task_list_tabs($round_page, $active) {
 
     $tab_names = array(IA_TLF_ALL => 'Toate problemele',
                        IA_TLF_UNSOLVED => 'Nerezolvate',
-                       IA_TLF_TRIED => 'Incercate',
+                       IA_TLF_TRIED => 'Încercate',
                        IA_TLF_SOLVED => 'Rezolvate');
 
     foreach ($tab_names as $id => $text) {
@@ -140,7 +140,7 @@ function macro_tasks($args) {
     $column_infos = array();
     if ($show_numbers) {
         $column_infos[] = array(
-                'title' => 'Numar',
+                'title' => 'Număr',
                 'css_class' => 'number',
                 'rowform' => create_function_cached('$row',
                         'return str_pad($row["order"] - 1, 3, \'0\', STR_PAD_LEFT);'),
@@ -160,14 +160,14 @@ function macro_tasks($args) {
     }
     if ($show_sources) {
         $column_infos[] = array(
-                'title' => 'Sursa',
+                'title' => 'Sursă',
                 'css_class' => 'source',
                 'key' => 'source',
         );
     }
     if (!is_null($user_id)) {
         $column_infos[] = array (
-                'title' => 'Scorul tau',
+                'title' => 'Scorul tău',
                 'css_class' => 'number score',
                 'key' => 'score',
                 'valform' => 'format_score_column',

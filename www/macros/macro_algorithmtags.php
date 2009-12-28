@@ -16,7 +16,7 @@ function macro_algorithmtags($args) {
     $tags = tag_get('task', $task_id, 'method');
     $sub_tags = tag_get('task', $task_id, 'algorithm');
 
-    $tags_tree = build_tags_tree($tags, $sub_tags);
+    $tags_tree = tag_build_tree(array_merge($tags, $sub_tags));
 
     $task = task_get($task_id);
     if (!identity_can('task-view-tags', $task)) {
@@ -33,7 +33,7 @@ function macro_algorithmtags($args) {
         $category_word = "categorie";
     }
     $html_code = "<div id=\"task_tags\">";
-    $html_code .= "<h3> Indicaţii de rezolvare</h3>";
+    $html_code .= "<h3> Indicii de rezolvare</h3>";
     $html_code .= '<a id="show_tags" href="javascript:show_tags()">
                 Arată '.count($tags_tree).' '.$category_word.'</a>';
 

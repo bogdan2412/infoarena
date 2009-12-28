@@ -51,26 +51,41 @@ function tag_build_list($obj, $obj_id, $type, $parent = null) {
     return implode(", ", $tag_names);
 }
 
-// Receives a list of parent tags and children tags
-// For each parent_tag adds an array 'sub_tags' containing
-// an array with all his children tags
-function build_tags_tree($parent_tags, $sub_tags) {
-    log_assert(is_array($parent_tags), "Parent tags is not an array");
-    log_assert(is_array($sub_tags), "Children tags is not an array");
+// Receives a list of tags which will be arranged in a tree-like structure
+// according to their respective parents.
+function tag_build_tree($tags) {
+    log_assert(is_array($tags), "tag_build_tree expects an array of tags");
+    $tags_by_id = array();
+    // Group tags by id
+    foreach ($tags as &$tag) {
+        log_assert(is_tag($tag), "tag_build_tree expects an array of tags");
+        log_assert(isset($tag["id"]),
+            "tag_build_tree expects an array of tags with id");
 
-    $parent_tags_key = Array();
-    foreach ($parent_tags as $key => $tag) {
-        $parent_tags[$key]['sub_tags'] = Array();
-        $parent_tags_key[$tag['id']] = $key;
+        $tags_by_id[$tag["id"]] =& $tag;
     }
 
-    foreach ($sub_tags as $tag) {
-        log_assert(isset($parent_tags_key[$tag['parent']]), "Child tag doesn't have a parent");
-        $parent_tag_key = $parent_tags_key[$tag['parent']];
-        $parent_tags[$parent_tag_key]['sub_tags'][] = $tag;
+    // Add 'sub_tags' attribute to all tags which have children.
+    $has_parent = array();
+    foreach ($tags as &$tag) {
+        if (array_key_exists($tag["parent"], $tags_by_id)) {
+            $has_parent[$tag["id"]] = true;
+
+            if (!isset($tags_by_id[$tag["parent"]]["sub_tags"])) {
+                $tags_by_id[$tag["parent"]]["sub_tags"] = array();
+            }
+            $tags_by_id[$tag["parent"]]["sub_tags"][] =& $tag;
+        }
     }
 
-    return $parent_tags;
+    // Return only tree roots (tags which have no parents).
+    $roots = array();
+    foreach ($tags_by_id as &$tag) {
+        if (!isset($has_parent[$tag["id"]])) {
+            $roots[] = $tag;
+        }
+    }
+    return $roots;
 }
 
 // Receives a list of tags of a certain type and, optionally, with a

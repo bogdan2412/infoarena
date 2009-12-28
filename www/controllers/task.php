@@ -314,10 +314,7 @@ function controller_task_tag($task_id) {
         flash("Tagurile au fost salvate cu succes");
     }
 
-    $tags = tag_get_all( Array('method') );
-    $sub_tags = tag_get_all( Array('algorithm') );
-
-    $tags_tree = build_tags_tree($tags, $sub_tags);
+    $tags_tree = tag_build_tree(tag_get_all(array("method", "algorithm")));
 
     // Get tags for task_id
     $task_tags = tag_get('task', $task_id, 'algorithm');
@@ -335,17 +332,16 @@ function controller_task_tag($task_id) {
 function controller_task_search() {
     $tags = request('tag_id', null);
     if (is_null($tags)) {
-        $tags = Array();
+        $tags = array();
     }
 
     if (!is_array($tags)) {
-        flash_error("Url invalid");
+        flash_error("Filtru invalid");
         redirect(url_home());
     }
-
     foreach ($tags as $tag) {
         if (!is_tag_id($tag)) {
-            flash_error("Url invalid");
+            flash_error("Filtru invalid");
             redirect(url_home());
         }
     }
@@ -360,8 +356,20 @@ function controller_task_search() {
         $task['authors'] = task_get_authors($task['task_id']);
     }
 
+    // Fetch the tags and all their parents so they can be displayed
+    // in a tree-like fashion
+    if (count($tags) > 0) {
+        while ((
+            $new_tags = array_unique(array_merge($tags, tag_get_parents($tags)))
+        ) != $tags) {
+            $tags = $new_tags;
+        }
+        $tags = tag_build_tree(tag_get_by_ids($tags));
+    }
+
     $view['title'] = "Rezultatele filtrării";
     $view['tasks'] = $tasks;
+    $view['tags'] = $tags;
     execute_view_die('views/task_filter_results.php', $view);
 }
 

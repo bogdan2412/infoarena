@@ -59,14 +59,14 @@ function tag_get($obj, $obj_id, $type = null, $parent = null) {
 // Receives an array of tag_id's
 // Return an array with id's of their parents
 // Each parent id appears only once
-function tag_get_parents($tags) {
+function tag_get_parents($tag_ids) {
     $query = sprintf("SELECT DISTINCT(`parent`)
             FROM ia_tags
-            WHERE `id` IN (%s)",
-            implode(",", array_map('db_quote', $tags))
+            WHERE `id` IN (%s) AND `parent` != 0",
+            implode(",", array_map('db_quote', $tag_ids))
         );
     $result = db_fetch_all($query);
-    $ret = Array();
+    $ret = array();
     foreach ($result as $row) {
         $ret[] = $row['parent'];
     }

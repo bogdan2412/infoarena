@@ -1,16 +1,13 @@
 <?php
-require_once(IA_ROOT_DIR . "common/db/tags.php");
+require_once(IA_ROOT_DIR . "common/tags.php");
 require_once(IA_ROOT_DIR . "common/string.php");
 
 // Displays an interface in which admins can define algorithm tag categories
 function controller_task_tags() {
     identity_require("task-tag");
 
-    $categories = tag_get_all(array("method"));
+    $categories = tag_build_tree(tag_get_all(array("method", "algorithm")));
     foreach ($categories as &$category) {
-        // Get all sub tags for current category
-        $category["sub_tags"] = tag_get_all(array("algorithm"),
-            $category["id"]);
         foreach ($category["sub_tags"] as &$tag) {
             $tag["task_count"] = tag_count_objects("task", array($tag["id"]));
         }

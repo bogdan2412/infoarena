@@ -98,19 +98,19 @@ ia_template_topnav($topnav_select, $smf_admin);
     <ul id="nav" class="clear">
         <li><a href="<?= html_escape(url_home()) ?>">Home</a></li>
         <li><?= format_link_access(url_textblock('arhiva'), "Arhiva de probleme", 'a') ?></li>
-        <li><a href="<?= html_escape(url_textblock('arhiva-educationala')) ?>">Arhiva educationala</a></li>
+        <li><a href="<?= html_escape(url_textblock('arhiva-educationala')) ?>">Arhiva educatională</a></li>
         <li><a href="<?= html_escape(url_textblock('concursuri')) ?>">Concursuri</a></li>
         <li><a href="<?= html_escape(url_textblock('concursuri-virtuale')) ?>">Concursuri virtuale<span style="color: red; font-weight:bold;"><sup>nou!</sup></span></a></li> 
         <li><a href="<?= html_escape(url_textblock('clasament-rating')) ?>">Clasament</a></li>
         <li><a href="<?= html_escape(url_textblock('articole')) ?>">Articole</a></li>
         <li><a href="<?= html_escape(url_textblock('downloads')) ?>">Downloads</a></li>
         <li><a href="<?= html_escape(url_textblock('links')) ?>">Links</a></li>
-        <li><a href="<?= html_escape(url_textblock('documentatie')) ?>">Documentatie</a></li>
+        <li><a href="<?= html_escape(url_textblock('documentatie')) ?>">Documentaţie</a></li>
         <li><a href="<?= html_escape(url_textblock('despre-infoarena')) ?>">Despre infoarena</a></li>
         <li class="separator"><hr/></li>
         <li><?= format_link_access(url_monitor(array('user' => identity_get_username())), "Monitorul de evaluare", 'm') ?></li>
         <?php if (!identity_is_anonymous()) { ?>
-        <li><a href="<?= html_escape(url_submit()) ?>"><strong>Trimite solutii</strong></a></li>
+        <li><a href="<?= html_escape(url_submit()) ?>"><strong>Trimite soluţii</strong></a></li>
         <li><?= format_link_access(url_account(), "Contul meu", 'c') ?></li>
         <?php } ?>
         </ul>

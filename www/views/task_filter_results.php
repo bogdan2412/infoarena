@@ -46,12 +46,40 @@ function task_row_style($row) {
     }
 }
 
-echo "<h1>Rezultatele Filtrarii</h1>";
+function tag_print($tags) {
+    if (count($tags) == 0) {
+        return "";
+    }
+
+    $tag_types = array(
+        "author" => "Autor",
+        "contest" => "Concurs",
+        "year" => "Editie",
+        "round" => "Runda",
+        "age_group" => "Grupa de varsta",
+        "method" => "Categorie",
+        "algorithm" => "Algoritm",
+        "tag" => "Tag"
+    );
+    $output = '<ul class="tag_filters">';
+    foreach ($tags as $tag) {
+        $output .= sprintf("<li>%s%s</li>",
+            format_link(url_task_search(array($tag["id"])), sprintf("%s: %s",
+                $tag_types[$tag["type"]], $tag["name"])),
+            tag_print(getattr($tag, "sub_tags", array()))
+        );
+    }
+    $output .= "</ul>";
+    return $output;
+}
+
+echo "<h1>Rezultatele filtrării</h1>";
+echo tag_print($view["tags"]);
 $tasks = $view['tasks'];
 $options = pager_init_options();
 $options['total_entries'] = count($tasks);
 $options['row_style'] = 'task_row_style';
-$options['css_class'] = 'tasks filter_results';
+$options['css_class'] = 'tasks fill-screen filter_results';
 $options['show_count'] = true;
 $options['show_display_entries'] = false;
 
@@ -63,7 +91,7 @@ if (identity_is_anonymous()) {
 
 $column_infos = array();
 $column_infos[] = array(
-        'title' => 'Numar',
+        'title' => 'Număr',
         'css_class' => 'number',
         'rowform' => create_function_cached('$row',
         'return str_pad($row["order"] - 1, 3, \'0\', STR_PAD_LEFT);'));
@@ -74,21 +102,27 @@ $column_infos[] = array(
         'rowform' => 'format_title');
 $column_infos[] = array(
         'title' => 'Autor(i)',
+        'css_class' => 'author',
         'rowform' => 'format_authors');
 $column_infos[] = array(
-        'title' => 'Sursa',
+        'title' => 'Sursă',
         'css_class' => 'source',
-        'key' => 'round_title',);
+        'key' => 'round_title');
 if (!is_null($user_id)) {
     $column_infos[] = array (
-            'title' => 'Scorul tau',
+            'title' => 'Scorul tău',
             'css_class' => 'number score',
             'key' => 'score',
             'valform' => 'format_score_column');
 }
 
-$task_chunks = array_chunk($tasks, $options['display_entries']);
-$chunk = $task_chunks[$options['first_entry'] / $options['display_entries']];
-echo format_table($chunk, $column_infos, $options);
+if (!count($tasks)) {
+    echo "Nicio problemă gasită.";
+} else {
+    $task_chunks = array_chunk($tasks, $options['display_entries']);
+    $chunk = $task_chunks[$options['first_entry'] / $options['display_entries']];
+    echo format_table($chunk, $column_infos, $options);
+}
+
 include('footer.php');
 ?>
