@@ -75,7 +75,7 @@ function macro_roundtimer($args) {
     $html .= 'newRoundTimer(' .
         '"' . html_escape($timer_id) . '"' .
         ',"' . html_escape(format_date($round['start_time'],
-                                        "%Y-%m-%d %H:%M:%S %z")) . '"' .
+                                        "%Y/%m/%d %H:%M:%S %z")) . '"' .
         ',' . html_escape($params['duration']) .
         ',' . html_escape($units) .
         ',' . html_escape($show_message) . ');' .

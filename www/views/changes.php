@@ -15,25 +15,19 @@ include('header.php');
     <li>
 
 <?php
+$created = ($rev["timestamp"] == $rev["creation_timestamp"]);
 $userlink = format_user_tiny($rev['user_name'], $rev['user_fullname']);
-$pagelink = format_link(url_absolute(url_textblock($rev['name'])), $rev['title']);
-$diffurl_params = array(
-        'action' => 'diff',
-        'rev_to' => $rev['revision_id'],
-        'rev_from' => $rev['revision_id'] - 1,
-);
-$difflink = format_link(url_textblock_diff(
-            $rev['name'],
-            $rev['revision_id'] - 1,
-            $rev['revision_id']),
-            "diff");
+$pagelink = format_link(url_textblock($rev['name'], true), "{$rev['title']} ({$rev['name']})");
+$diffurl = url_textblock_diff($rev['name'], $rev['revision_id'] - 1, $rev['revision_id']);
+$difflink = (!$created) ? " (".format_link($diffurl, "modificari").")" : "";
 $tstamp = format_date($rev['timestamp']);
+$created_or_changed = $created ? "creat" : "modificat";
 if (identity_can('textblock-view-ip', $rev) && $rev['remote_ip_info']) {
     $remote_ip = '('.$rev['remote_ip_info'].') ';
 } else {
     $remote_ip = '';
 }
-echo "$tstamp: $userlink {$remote_ip}a modificat $pagelink ($difflink).";
+echo "$tstamp: $userlink $remote_ip a $created_or_changed $pagelink$difflink.";
 ?>
     </li>
 <?php } ?>

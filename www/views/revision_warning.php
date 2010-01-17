@@ -1,10 +1,11 @@
 <div class="warning">
     <?php
     if ($view['revision'] < $view['revision_count']) {
-        echo "Atenţie! Această pagina nu este actuală (este varianta de la ".html_escape($textblock['timestamp']).")</br>\n";
+        echo "Atenţie! Aceasta este o versiune veche a paginii";
     } else {
-        echo "Atenţie! Aceasta este ultima versiune a paginii, scrisă la ".html_escape($textblock['timestamp']).")</br>\n";
+        echo "Atenţie! Aceasta este ultima versiune a paginii";
     }
+    echo ", scrisă la " . html_escape($textblock['timestamp']) . ".<br />";
     if ($view['revision'] > 1) {
         echo format_link(url_textblock_revision($view['page_name'], $view['revision'] - 1), "Revizia anterioară");
     }

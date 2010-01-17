@@ -170,7 +170,7 @@ function format_user_tiny($user_name, $user_fullname, $rating = null) {
     $result .= ' '.$rbadge;
     $result .= "<span class=\"username\">"
                .format_link($user_url, $user_name)
-               ."</span> ";
+               ."</span>";
     $result .= "</span>";
 
     return $result;
@@ -193,7 +193,7 @@ function format_user_normal($user_name, $user_fullname, $rating = null) {
     $result .= $rbadge;
     $result .= "<span class=\"username\">"
                .format_link($user_url, $user_name)
-               ."</span> ";
+               ."</span>";
     $result .= "</div>";
 
     return $result;

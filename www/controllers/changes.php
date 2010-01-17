@@ -31,22 +31,24 @@ function controller_changes($page_name) {
         $view['channel']['title'] = 'Modificari pe infoarena';
         $view['channel']['link'] = url_absolute(url_changes());
         $view['channel']['description'] = 'Ultimele modificari din wiki-ul http://infoarena.ro';
-        $view['channel']['language'] = 'ro-ro'; 
+        $view['channel']['language'] = 'ro-ro';
         $view['channel']['copyright'] = '2007 - asociatia infoarena';
 
         $view['item'] = array();
 
         foreach ($revisions as $rev) {
             $item = array();
-            $item['title'] = sprintf("%s modificat de %s",
-                    $rev['title'] , $rev['user_name']);
+            $created = ($rev["timestamp"] == $rev["creation_timestamp"]);
+            $item['title'] = sprintf("%s (%s) %s de %s",
+                $rev['title'], $rev['name'], $created ? "creat" : "modificat", $rev['user_name']);
 
             $userlink = format_user_tiny($rev['user_name'], $rev['user_fullname']);
-            $pagelink = format_link(url_textblock($rev['name'], true), $rev['title']);
+            $pagelink = format_link(url_textblock($rev['name'], true), "{$rev['title']} ({$rev['name']})");
             $diffurl = url_textblock_diff($rev['name'], $rev['revision_id'] - 1, $rev['revision_id']);
-            $difflink = format_link($diffurl, "modificari");
+            $difflink = (!$created) ? " (".format_link($diffurl, "modificari").")" : "";
             $tstamp = format_date($rev['timestamp']);
-            $item['description'] = "La data de $tstamp pagina $pagelink a fost modificata de $userlink($difflink).";
+            $created_or_changed = $created ? "creata" : "modificata";
+            $item['description'] = "La data de $tstamp pagina $pagelink a fost $created_or_changed de $userlink$difflink.";
 
             $item['guid'] = sha1($rev['name'] . $rev['timestamp']);
             $item['link'] = url_absolute(url_textblock($rev['name']));
