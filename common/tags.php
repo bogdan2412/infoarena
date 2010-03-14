@@ -82,6 +82,10 @@ function tag_build_tree($tags) {
     $roots = array();
     foreach ($tags_by_id as &$tag) {
         if (!isset($has_parent[$tag["id"]])) {
+            // Set the array for the tags with no parents and no children
+            if (!isset($tag["sub_tags"])) {
+                $tag["sub_tags"] = array();
+            }
             $roots[] = $tag;
         }
     }

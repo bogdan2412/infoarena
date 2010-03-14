@@ -60,6 +60,10 @@ function tag_get($obj, $obj_id, $type = null, $parent = null) {
 // Return an array with id's of their parents
 // Each parent id appears only once
 function tag_get_parents($tag_ids) {
+    if (count($tag_ids) == 0) {
+        return array();
+    }
+
     $query = sprintf("SELECT DISTINCT(`parent`)
             FROM ia_tags
             WHERE `id` IN (%s) AND `parent` != 0",
@@ -102,6 +106,10 @@ function tag_get_ids($tags) {
 
 // Get a list of tags from a list of tag ids
 function tag_get_by_ids($tag_ids) {
+    if (count($tag_ids) == 0) {
+        return array();
+    }
+
     $query = sprintf(
             "SELECT `id`, `name`, `type`, `parent`
             FROM ia_tags

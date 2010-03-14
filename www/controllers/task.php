@@ -283,18 +283,18 @@ function controller_task_tag($task_id) {
     }
 
     if (request_is_post()) {
-        $algorithm_tags_id = request("algorithm_tags");
+        $algorithm_tags_id = request("algorithm_tags", array());
         $method_tags_id = tag_get_parents($algorithm_tags_id);
 
         if (!is_array($algorithm_tags_id)) {
             flash_error("Datele trimise sunt invalide. Raporteaza aceasta problema unui admin.");
-            redirect(url_task_edit_tag($task_id));
+            redirect(url_task_edit_tags($task_id));
         }
 
         foreach ($algorithm_tags_id as $tag_id) {
             if (!is_tag_id($tag_id)) {
                 flash_error("Datele trimise sunt invalide. Raporteaza aceasta problema unui admin.");
-                redirect(url_task_edit_tag($task_id));
+                redirect(url_task_edit_tags($task_id));
             }
         }
 
@@ -307,7 +307,7 @@ function controller_task_tag($task_id) {
         }
         if ($count != count($algorithm_tags_id)) {
             flash_error("Datele trimise sunt invalide. Raporteaza aceasta problema unui admin.");
-            redirect(url_task_edit_tag($task_id));
+            redirect(url_task_edit_tags($task_id));
         }
 
         task_update_tags($task_id, $method_tags_id, $algorithm_tags_id);
