@@ -10,7 +10,9 @@ if (!$display_only_table) {
     include('header.php');
 }
 
-if (!$display_only_table && identity_can('job-reeval') && $view['total_entries'] <= IA_REEVAL_MAXJOBS) {
+if (!$display_only_table && (identity_can('job-reeval')
+        || (request("task") && identity_can('task-reeval', task_get(request("task")))))
+        && $view['total_entries'] <= IA_REEVAL_MAXJOBS) {
     echo '<form enctype="multipart/form-data" action="'.html_escape(url_reeval($view['filters'])).'"
                method="post" class="reeval" id="job_reeval" onsubmit="return confirm(\'Se vor reevalua '.
                html_escape($view['total_entries']).' job-uri! Continuam?\')">';

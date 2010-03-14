@@ -129,6 +129,7 @@ function security_simplify_action($action) {
         case 'task-create':
         case 'task-delete':
         case 'task-tag':
+        case 'task-reeval':
         case 'round-delete':
         case 'textblock-delete':
         case 'textblock-delete-revision':
