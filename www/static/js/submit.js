@@ -5,26 +5,6 @@
 
 var Submit_CompilerDisplay;
 
-function Submit_Init() {
-    if (!$('task_submit')) {
-        // no such form on this page
-        return;
-    }
-
-    var fSolution = $('form_solution');
-    var fTask = $('form_task');
-
-    Submit_CompilerDisplay = $('field_compiler').style.display;
-    Submit_RoundDisplay = $('field_round').style.display;
-
-    connect(fSolution, 'onchange', Submit_UpdateSolution);
-    if ('hidden' != fTask.type) {
-        connect(fTask, 'onchange', Submit_UpdateTask);
-    }
-
-    Submit_UpdateTask();
-}
-
 function Submit_HasCompiler(taskId) {
     var o = $('output_only');
     return taskId && (!o ||  (0 > o.value.indexOf(':' + taskId + ':')));
@@ -53,8 +33,8 @@ function Submit_AutoCompiler() {
         }
     }
     else {
-        alert('Atentie! Pentru fisierul selectat nu am putut alege automat ' 
-              + 'un compilator.');
+        alert('Atentie! Pentru fisierul selectat nu am putut alege automat ' +
+            'un compilator.');
         compiler.value = '-';
     }
 }
@@ -96,21 +76,23 @@ function Submit_UpdateTask() {
                     warning_container.innerHTML = '';
                 }
             }
-            for (key in rounds) {
-                var option = document.createElement("option");
-                option.value = rounds[key]["id"];
-                if (rounds[key]["id"] == default_round) {
-                    option.selected = "selected";
+            for (var key in rounds) {
+                if (rounds.hasOwnProperty(key)) {
+                    var option = document.createElement('option');
+                    option.value = rounds[key]["id"];
+                    if (rounds[key]["id"] == default_round) {
+                        option.selected = 'selected';
+                    }
+                    var text = document.createTextNode(rounds[key]["title"]);
+                    option.appendChild(text);
+                    $('form_round').appendChild(option);
                 }
-                var text = document.createTextNode(rounds[key]["title"])
-                option.appendChild(text);
-                $('form_round').appendChild(option);
             }
-        }
+        };
 
         var error = function(error) {
             window.alert('Eroare! Nu pot determina rundele. Incercati din nou.');
-        }
+        };
 
         d.addCallbacks(ready, error);
     } else {
@@ -121,6 +103,26 @@ function Submit_UpdateTask() {
     if (0 < $('form_solution').value.length) {
         Submit_AutoCompiler();
     }
+}
+
+function Submit_Init() {
+    if (!$('task_submit')) {
+        // no such form on this page
+        return;
+    }
+
+    var fSolution = $('form_solution');
+    var fTask = $('form_task');
+
+    Submit_CompilerDisplay = $('field_compiler').style.display;
+    Submit_RoundDisplay = $('field_round').style.display;
+
+    connect(fSolution, 'onchange', Submit_UpdateSolution);
+    if ('hidden' != fTask.type) {
+        connect(fTask, 'onchange', Submit_UpdateTask);
+    }
+
+    Submit_UpdateTask();
 }
 
 connect(window, 'onload', Submit_Init);
