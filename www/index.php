@@ -126,11 +126,13 @@ else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'runda') {
     require_once(IA_ROOT_DIR.'www/controllers/round.php');
     require_once(IA_ROOT_DIR.'www/controllers/textblock.php');
     if ($action == 'sterge-runda') {
-        if (request('delete')) {
+        if (request('delete-pages')) {
             $v = request('textblocks');
             controller_textblock_delete_many($v, url_round_delete($obj_id));
-        } else {
+        } elseif (request('delete-round')) {
             controller_round_delete($obj_id);
+        } else {
+            controller_round_delete_view($obj_id);
         }
     } else {
         controller_round_details($obj_id);

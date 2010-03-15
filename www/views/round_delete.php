@@ -69,8 +69,12 @@ $column_infos = array(
 
         if ($view['total_entries']) {
     ?>
-        <br /><input type="submit" value="Sterge Paginile" class="button" name="delete" onclick="return confirm('Aceasta actiune este ireversibila! Doresti sa continui?');" />
+        <br /><input type="submit" value="Sterge Paginile" class="button" name="delete-pages" onclick="return confirm('Aceasta actiune este ireversibila! Doresti sa continui?');" />
     <?php } ?>
+    </form>
+
+    <form method = 'post' action = ''>
+    <input type="submit" value="Sterge Runda, Forever..." class="button" name="delete-round" onclick="return confirm('Aceasta actiune este ireversibila! Doresti sa continui?');" />
     </form>
 
 <?php include('footer.php'); ?>

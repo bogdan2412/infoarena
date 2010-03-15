@@ -422,4 +422,74 @@ function round_get_many($options) {
     return $rounds;
 }
 
+function round_delete($round_id) {
+    log_assert(is_round_id($round_id));
+
+    // Delete round from cache
+    _round_cache_delete($round_id);
+
+    // Delete job_tests
+    $query = sprintf("SELECT `id`
+                      FROM `ia_job`
+                      WHERE `round_id` = %s",
+                      db_quote($round_id));
+
+    $job_ids_fetched = db_fetch_all($query);
+
+    $job_ids = array();
+    foreach ($job_ids_fetched as $job) {
+        $job_ids[] = (int)$job["id"];
+    }
+
+    if (count($job_ids)) {
+        $formated_job_ids = implode(", ", array_map("db_quote", $job_ids));
+        $query = sprintf("DELETE FROM `ia_job_test`
+                          WHERE `job_id` IN (%s)",
+                          $formated_job_ids);
+        db_query($query);
+
+        $query = sprintf("DELETE FROM `ia_job`
+                          WHERE `id` IN (%s)",
+                          $formated_job_ids);
+        db_query($query);
+    }
+
+    // Delete entries from ia_parameter_value...
+    $query = sprintf("DELETE FROM `ia_parameter_value`
+                      WHERE `object_type` = 'round'
+                        AND `object_id` = %s",
+                      db_quote($round_id));
+    db_query($query);
+
+    // Delete entries from round-task
+    $query = sprintf("DELETE FROM `ia_round_task`
+                      WHERE `round_id` = %s",
+                      db_quote($round_id));
+    db_query($query);
+
+    // Delete entries from user-round
+    $query = sprintf("DELETE FROM `ia_user_round`
+                      WHERE `round_id` = %s",
+                      db_quote($round_id));
+    db_query($query);
+
+    // Delete entries from round-task
+    $query = sprintf("DELETE FROM `ia_round_task`
+                      WHERE `round_id` = %s",
+                      db_quote($round_id));
+    db_query($query);
+
+    // Delete entries from ia_score
+    $query = sprintf("DELETE FROM `ia_score`
+                      WHERE `round_id` = %s",
+                      db_quote($round_id));
+    db_query($query);
+
+    // ACTUALLY DELETE THE ROUND
+    $query = sprintf("DELETE FROM `ia_round`
+                      WHERE `id` = %s",
+                      db_quote($round_id));
+    db_query($query);
+}
+
 ?>

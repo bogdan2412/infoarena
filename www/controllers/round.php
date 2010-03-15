@@ -269,7 +269,7 @@ function controller_round_create()
     execute_view_die("views/round_create.php", $view);
 }
 
-function controller_round_delete($round_id) {
+function controller_round_delete_view($round_id) {
     // Validate round_id
     if (!is_round_id($round_id)) {
         flash_error('Identificatorul rundei este invalid');
@@ -321,6 +321,34 @@ function controller_round_delete($round_id) {
     $view['display_entries'] = $options['display_entries'];
 
     execute_view_die("views/round_delete.php", $view);
+}
+
+function controller_round_delete($round_id) {
+    if (!request_is_post()) {
+        flash_error('Runda nu a putut fi stearsa.');
+    }
+
+    // Validate round_id
+    if (!is_round_id($round_id)) {
+        flash_error('Identificatorul rundei este invalid.');
+        redirect(url_home());
+    }
+
+    // Get round
+    $round = round_get($round_id);
+    if (!$round) {
+        flash_error('Runda nu exista.');
+        redirect(url_home());
+    }
+
+    // Security check
+    identity_require('round-delete', $round);
+
+    // Delete all the round related information from the database
+    round_delete($round_id);
+
+    flash('Runda a fost stearsa.');
+    redirect(url_home());
 }
 
 ?>
