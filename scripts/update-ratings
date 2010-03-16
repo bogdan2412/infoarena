@@ -79,7 +79,7 @@ foreach ($round_users as $row) {
 
 // read round scores
 log_print("Reading round scores...");
-$round_rows = score_get_range("score", null, null, $round_id, "user_id", 0, $usercount);
+$round_rows = score_get_rankings($round_id, null, 0, $usercount);
 log_print(count($round_rows) . " users were scored in this round.");
 foreach ($round_rows as $row) {
     log_assert(isset($row['user_name']) && isset($row['score']));
@@ -97,10 +97,8 @@ foreach ($round_users as $row) {
     $username = $row['username'];
     $user_id = $row['user_id'];
     // for this round (history)
-    score_update("rating", $user_id, null, $round_id,
-                 $users[$username]['rating']);
-    score_update("deviation", $user_id, null, $round_id,
-                 $users[$username]['deviation']);
+    score_update_rating($user_id, $round_id, $users[$username]['deviation'], $users[$username]['rating']);
+
     // cache rating
     $user = $ucheck[$username];
     $user['rating_cache'] = $users[$username]['rating'];

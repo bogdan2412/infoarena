@@ -245,6 +245,13 @@ function db_quote($arg) {
     }
 }
 
+// Escape an array of strings.
+function db_escape_array($array) {
+    $ret = implode(',', array_map('db_quote', $array));
+
+    return $ret;
+}
+
 // Executes query, fetches only FIRST result row
 function db_fetch($query) {
     $result = db_query($query, true);

@@ -130,10 +130,10 @@ function macro_tasks($args) {
     $tasks = round_get_tasks($round_id,
              $options['first_entry'],
              $options['display_entries'],
-             $user_id, ($scores ? 'score' : null),
+             $user_id, $scores,
              $filter);
     $options['total_entries'] = round_get_task_count(
-             $round_id, $user_id, ($scores ? 'score' : null), $filter);
+             $round_id, $user_id, $filter);
     $options['row_style'] = 'task_row_style';
     $options['css_class'] = 'tasks';
 

@@ -217,10 +217,10 @@ function user_submitted_tasks($user_id, $solved = true, $failed = true) {
         $where = '';
     }
     elseif ($solved) {
-        $where = 'AND ia_score.score = 100';
+        $where = 'AND ia_score_user_round_task.score = 100';
     }
     elseif ($failed) {
-        $where = 'AND ia_score.score < 100';
+        $where = 'AND ia_score_user_round_task.score < 100';
     }
     else {
         // This shouldn't happen
@@ -228,10 +228,10 @@ function user_submitted_tasks($user_id, $solved = true, $failed = true) {
     }
 
     $query = sprintf("SELECT *
-        FROM ia_score
-        LEFT JOIN ia_task ON ia_task.id = ia_score.task_id
-        WHERE ia_score.`name` = 'score' AND ia_score.user_id = '%s'
-              AND ia_score.round_id = 'arhiva' AND NOT ia_task.id IS NULL %s
+        FROM ia_score_user_round_task
+        LEFT JOIN ia_task ON ia_task.id = ia_score_user_round_task.task_id
+        WHERE ia_score_user_round_task.user_id = '%s'
+              AND ia_score_user_round_task.round_id = 'arhiva' AND NOT ia_task.id IS NULL %s
         GROUP BY ia_task.id
         ORDER BY ia_task.`order`", $user_id, $where);
 
@@ -242,9 +242,9 @@ function user_submitted_tasks($user_id, $solved = true, $failed = true) {
 function user_submitted_rounds($user_id) {
     // FIXME: Find a way to remove the hard-coded "<> 'arhiva'"
     $query = "SELECT *
-        FROM ia_score
-        LEFT JOIN ia_round ON ia_round.id = ia_score.round_id
-        WHERE ia_score.`name` = 'score' AND ia_score.user_id = '%s'
+        FROM ia_score_user_round_task
+        LEFT JOIN ia_round ON ia_round.id = ia_score_user_round_task.round_id
+        WHERE ia_score_user_round_task.user_id = '%s'
               AND NOT ia_round.id IS NULL AND ia_round.id <> 'arhiva'
         GROUP BY ia_round.id";
     $query = sprintf($query, $user_id);

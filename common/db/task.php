@@ -65,12 +65,21 @@ function task_delete($task) {
     // Delete problem page
     textblock_delete($task["page_name"]);
 
-    // Remove task from all rounds
-    db_query("DELETE FROM `ia_round_task`
+    // Delete all scores received on task
+    db_query("DELETE FROM `ia_score_user_round_task`
               WHERE `task_id` = " . db_quote($task["id"]));
 
-    // Delete all scores received on task
-    db_query("DELETE FROM `ia_score`
+    // Recompute round scores
+    $query = "SELECT `round_id` FROM `ia_round_task`
+                WHERE `task_id` = ".db_quote($task['id']);
+    $rounds = db_fetch_all($query);
+
+    foreach ($rounds as $round) {
+        round_recompute_score($round['round_id']);
+    }
+
+    // Remove task from all rounds
+    db_query("DELETE FROM `ia_round_task`
               WHERE `task_id` = " . db_quote($task["id"]));
 
     // Delete task jobs

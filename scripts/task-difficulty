@@ -62,9 +62,9 @@ $diff = array();
 foreach ($tasks as $task) {
     $query = <<<SQL
         SELECT COUNT(*)
-        FROM ia_score
+        FROM ia_score_user_round_task
         LEFT JOIN ia_user ON ia_user.id = user_id
-        WHERE rating_cache > 0 AND ia_score.name='score' AND round_id='arhiva'
+        WHERE rating_cache > 0 AND round_id='arhiva'
                 AND task_id='%s'
 SQL;
     $sample_space = (int)db_query_value(sprintf($query, db_escape($task)));
@@ -79,9 +79,9 @@ SQL;
     $query = <<<SQL
         SELECT AVG(rating_cache) FROM (
             SELECT rating_cache
-            FROM ia_score
+            FROM ia_score_user_round_task
             LEFT JOIN ia_user ON ia_user.id = user_id
-            WHERE rating_cache > 0 AND ia_score.name='score' AND round_id='arhiva'
+            WHERE rating_cache > 0 AND round_id='arhiva'
                     AND task_id='%s'
             ORDER BY rating_cache
             LIMIT %d

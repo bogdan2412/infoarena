@@ -18,7 +18,7 @@ function round_event_job_score($round, $score, $time, $user_id, $task_id) {
     $rstart = db_date_parse($round['start_time']);
     $rduration = getattr($rparams, 'duration', 10000000) * 60 * 60;
     if ($time >= $rstart && $time <= $rstart + $rduration) {
-        score_update('score', $user_id, $task_id, $round['id'], $score);
+        score_update($user_id, $task_id, $round['id'], $score);
     }
 }
 

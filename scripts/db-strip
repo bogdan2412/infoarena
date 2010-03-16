@@ -94,6 +94,29 @@ db_query("DELETE ia_score FROM ia_score ".
         "OR (ia_score.task_id IS NOT NULL AND ia_task.id IS NULL) ".
         "OR (ia_score.round_id IS NOT NULL AND ia_round.id IS NULL)");
 
+db_query("DELETE ia_score_user_round_task FROM ia_score_user_round_task ".
+         "LEFT JOIN ia_user on ia_user.id = ia_score_user_round_task.user_id ".
+         "LEFT JOIN ia_task on ia_task.id = ia_score_user_round_task.task_id ".
+         "LEFT JOIN ia_round on ia_round.id = ia_score_user_round_task.round_id ".
+         "WHERE (ia_score_user_round_task.user_id IS NOT NULL AND ia_user.id IS NULL) ".
+         "OR (ia_score_user_round_task.task_id IS NOT NULL AND ia_task.id IS NULL) ".
+         "OR (ia_score_user_round_task.round_id IS NOT NULL AND ia_round.id IS NULL)");
+
+// Recompute ia_score_user_round
+db_query("DELETE FROM ia_score_user_round");
+$rounds = db_fetch_all("SELECT id FROM ia_round");
+
+foreach ($rounds as $round) {
+    round_recompute_score($round['round_id']);
+}
+
+// Delete orphan rating entries
+db_query("DELETE ia_rating FROM ia_rating ".
+        "LEFT JOIN ia_user on ia_user.id = ia_rating.user_id ".
+        "LEFT JOIN ia_round on ia_round.id = ia_rating.round_id ".
+        "WHERE (ia_rating.user_id IS NOT NULL AND ia_user.id IS NULL) ".
+        "OR (ia_rating.round_id IS NOT NULL AND ia_round.id IS NULL)");
+
 // Delete orphan jobs.
 log_print("Deleting orphan jobs.");
 db_query("DELETE ia_job FROM ia_job ".
