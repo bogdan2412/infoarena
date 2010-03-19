@@ -6,28 +6,28 @@
     db_connect();
 
     $query = "CREATE TABLE `ia_score_user_round` (
-                user_id int,
-                round_id varchar(64) CHARACTER SET latin1 COLLATE latin1_general_ci,
-                score decimal(11, 4),
-                CONSTRAINT user_round UNIQUE (user_id, round_id)
+                user_id int NOT NULL,
+                round_id varchar(64) CHARACTER SET utf8 NOT NULL,
+                score decimal(11, 4) NOT NULL,
+                PRIMARY KEY user_round (user_id, round_id)
                 )";
     db_query($query);
 
     $query = "CREATE TABLE `ia_score_user_round_task` (
-                user_id int,
-                round_id varchar(64) CHARACTER SET latin1 COLLATE latin1_general_ci,
-                task_id varchar(64) CHARACTER SET latin1 COLLATE latin1_general_ci,
-                score decimal(11, 4),
-                CONSTRAINT user_round_task UNIQUE (user_id, round_id, task_id)
+                user_id int NOT NULL,
+                round_id varchar(64) CHARACTER SET utf8 NOT NULL,
+                task_id varchar(64) CHARACTER SET utf8 NOT NULL,
+                score decimal(11, 4) NOT NULL,
+                PRIMARY KEY user_round_task (user_id, round_id, task_id)
                 )";
     db_query($query);
 
     $query = "CREATE TABLE `ia_rating` (
-                user_id int,
-                round_id varchar(64) CHARACTER SET latin1 COLLATE latin1_general_ci,
-                deviation decimal(11, 4),
-                rating decimal(11, 4),
-                CONSTRAINT user_round UNIQUE (user_id, round_id)
+                user_id int NOT NULL,
+                round_id varchar(64) CHARACTER SET utf8 NOT NULL,
+                deviation decimal(11, 4) NOT NULL,
+                rating decimal(11, 4) NOT NULL,
+                PRIMARY KEY user_round (user_id, round_id)
                 )";
     db_query($query);
 
@@ -45,15 +45,19 @@
                             VALUES (".db_quote($score['user_id']).", ".db_quote($score['round_id']).", '0', '0')";
                  db_query($query);
             }
- 
+
             $query = "UPDATE `ia_rating` SET `".$score['name']."` = ".db_quote($score['score'])." WHERE ".$where;
             db_query($query);
         } else if ($score['name'] == 'score') {
+            if (is_null($score["round_id"])) {
+                echo implode(' | ', $score)." dumped\n";
+                continue;
+            }
             $query = "INSERT INTO `ia_score_user_round_task` (`user_id`, `round_id`, `task_id`, `score`)
                         VALUES (".implode(',',
                             array(
                                 db_quote($score['user_id']),
-                                db_quote($score['round_id']), 
+                                db_quote($score['round_id']),
                                 db_quote($score['task_id']),
                                 db_quote($score['score']))
                             ).")";
@@ -79,12 +83,16 @@
                         `round_id` = ".db_quote($score['round_id']);
             }
             db_query($query);
-        } else echo implode(' | ', $score)." dumped\n";
+        } else if ($score["name"] == "submit_count") {
+            // submit_count is useless and can be ignored
+        } else {
+            echo implode(' | ', $score)." dumped\n";
+        }
     }
 
     $query = "SELECT * FROM `ia_round`";
     $rounds = db_fetch_all($query);
 
-//    $query = "DROP TABLE `ia_score`";
-//    db_query($query)
+    $query = "DROP TABLE `ia_score`";
+    db_query($query)
 ?>
