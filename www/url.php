@@ -254,14 +254,9 @@ function url_task($task_id) {
     return url_complex("problema/$task_id");
 }
 
-function url_task_edit($task_id) {
+function url_task_edit($task_id, $action = 'edit') {
     log_assert(is_task_id($task_id));
-    return url_complex("admin/problema/$task_id");
-}
-
-function url_task_edit_tags($task_id) {
-    log_assert(is_task_id($task_id));
-    return url_complex("admin/problema/{$task_id}", array( 'action' => 'tag-edit'));
+    return url_complex("problema/$task_id", array('action' => $action));
 }
 
 function url_task_create() {

@@ -2,12 +2,15 @@
 require_once(IA_ROOT_DIR."common/task.php");
 require_once(IA_ROOT_DIR."common/tags.php");
 require_once(IA_ROOT_DIR."www/format/form.php");
+require_once(IA_ROOT_DIR."www/views/task_edit_header.php");
 
 $view['head'] = getattr($view, 'head').
     "<script type=\"text/javascript\" src=\"" . html_escape(url_static("js/parameditor.js")) . "\"></script>";
 
 include('views/header.php');
 include('views/tags_header.php');
+
+echo task_edit_tabs($view['task_id'], request("action"));
 
 // Validate task.
 log_assert_valid(task_validate($task));
@@ -94,7 +97,8 @@ $form_fields = array(
 
 ?>
 
-<h1>Editare <a href="<?= html_escape(url_task($view['task_id'])) ?>"><?= html_escape($view['title']) ?></a></h1>
+<h1>Editare parametri <a href="<?= html_escape(url_task($view['task_id'])) ?>">
+<?= html_escape($view['task_id']) ?></a></h1>
 
 <?php if (identity_can("task-delete", $task)) { ?>
 <form action="<?= html_escape(url_task_delete()) ?>" method="post" style="float: right">
@@ -103,7 +107,7 @@ $form_fields = array(
 </form>
 <?php } ?>
 
-<form action="<?= html_escape(url_task_edit($task_id)) ?>"
+<form action="<?= html_escape(url_task_edit($task_id, 'task-edit-params')) ?>"
       method="post"
       class="task"
       <?= tag_form_event() ?>>

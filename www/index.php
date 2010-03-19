@@ -88,16 +88,25 @@ else if ($page == 'cauta-probleme') {
     controller_task_search();
 }
 
-// Task detail editor
-else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'problema') {
+// Task edit parameters
+else if ($urlstart == 'problema' && $action == 'task-edit-params') {
     require_once(IA_ROOT_DIR.'www/controllers/task.php');
-    $obj_id = implode("/", array_slice($pagepath, 2));
-    $action = request('action');
-    if ($action == 'tag-edit') {
-        controller_task_tag($obj_id);
-    } else {
-        controller_task_details($obj_id);
-    }
+    $task_id = implode("/", array_slice($pagepath, 1));
+    controller_task_details($task_id);
+}
+
+// Task edit tags
+else if ($urlstart == 'problema' && $action == 'task-edit-tags') {
+    require_once(IA_ROOT_DIR.'www/controllers/task.php');
+    $task_id = implode("/", array_slice($pagepath, 1));
+    controller_task_tag($task_id);
+}
+
+// Task edit ratings
+else if ($urlstart == 'problema' && $action == 'task-edit-ratings') {
+    require_once(IA_ROOT_DIR.'www/controllers/task.php');
+    $task_id = implode("/", array_slice($pagepath, 1));
+    controller_task_ratings($task_id);
 }
 
 // Task algorithm tags

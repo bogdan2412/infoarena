@@ -1,11 +1,17 @@
 <?php
+    require_once(IA_ROOT_DIR."www/views/task_edit_header.php");
+
     include('header.php');
+    $task_id = $view['task']['id'];
     $task_link = url_task($view['task']['id']);
     $task_title = $view['task']['title'];
-    $action_link = url_task_edit_tags($view['task']['id']);
+    $action_link = url_task_edit($view['task']['id'], 'task-edit-tags');
     $task_tags = $view['task_tags'];
+
+    echo task_edit_tabs($task_id, request("action"));
 ?>
-<h1>Taguri pentru problema <a href="<?= $task_link ?>"><?= $task_title ?></a></h1>
+
+<h1>Editare taguri <a href="<?= $task_link ?>"><?= $task_id ?></a></h1>
 <form name="task_tags" action="<?= $action_link ?>" method="post">
 <?php
     $tags_tree = $view['tags_tree'];
@@ -27,7 +33,7 @@
         echo "</ul>";
     }
 ?>
-<input type="submit" class="button important" value="Submit" />
+<input type="submit" class="button important" value="Salveaza" />
 </form>
 
 <?php include('footer.php'); ?>

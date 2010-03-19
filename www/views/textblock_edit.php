@@ -5,7 +5,16 @@ $view['head'] = getattr($view, 'head')."<script type=\"text/javascript\" src=\""
 
 include('views/header.php');
 include('views/tags_header.php');
+
+// insert task edit tabs
+if (($task_id = textblock_security_is_task($page['security'])) &&
+    (identity_can('task-edit', task_get($task_id)))) {
+    require_once(IA_ROOT_DIR."www/views/task_edit_header.php");
+    echo task_edit_tabs($task_id, request("action"));
 ?>
+<h1>Editare enunț <a href="<?= html_escape(url_task($task_id)) ?>">
+<?= html_escape($task_id) ?></a></h1>
+<?php } ?>
 
 <form accept-charset="utf-8" action="<?= html_escape(url_textblock_edit($page_name)) ?>" method="post" id="form_wikiedit" <?= tag_form_event() ?>>
 <input type="hidden" id="form_page_name" value="<?= html_escape(isset($page_name) ? $page_name : '') ?>" />

@@ -3,6 +3,7 @@
 require_once(IA_ROOT_DIR . "common/db/task.php");
 require_once(IA_ROOT_DIR . "common/task.php");
 require_once(IA_ROOT_DIR . "common/tags.php");
+require_once(IA_ROOT_DIR . "common/task_rating.php");
 
 // Displays form to either create a new task or edit an existing one.
 // This form does not edit task content (its associated textblock)
@@ -161,8 +162,8 @@ function controller_task_details($task_id) {
             }
             mem_cache_delete("task-authors-by-id:".$new_task["id"]);
 
-            flash("Task-ul a fost modificat cu succes.");
-            redirect(url_task_edit($task_id));
+            flash("Parametrii au fost salvati cu succes!");
+            redirect(url_task_edit($task_id, 'task-edit-params'));
         } else {
             flash_error("Sunt erori in datele introduse.");
         }
@@ -170,7 +171,7 @@ function controller_task_details($task_id) {
 
     // Create view.
     $view = array();
-    $view['title'] = $task_id;
+    $view['title'] = 'Editeaza parametrii pentru problema '.$task['title'];
     $view['page_name'] = url_task_edit($task_id);
     $view['task_id'] = $task_id;
     $view['task'] = $task;
@@ -223,7 +224,7 @@ function controller_task_create() {
             // This should never fail.
             log_assert(task_create($task, $task_params, remote_ip_info()));
             flash("Un nou task a fost creeat, acum poti sa-l editezi");
-            redirect(url_task_edit($task['id']));
+            redirect(url_task_edit($task['id'], 'task-edit-params'));
         }
     }
 
@@ -267,6 +268,59 @@ function controller_task_delete($task_id) {
     redirect(url_home());
 }
 
+// Edit ratings for a task
+function controller_task_ratings($task_id) {
+    // Validate task id
+    if (!is_task_id($task_id)) {
+        flash_error("Problema inexistenta");
+        redirect(url_home());
+    }
+
+    // Get task
+    $task = task_get($task_id);
+    if (!$task) {
+        falsh_error("Problema inexistenta");
+        redirect(url_home());
+    }
+
+    // Security check
+    identity_require('task-edit-ratings', $task);
+    $user_id = identity_get_user_id();
+
+    // Form stuff
+    $ratings = array();
+    $errors = array();
+
+    if (request_is_post()) {
+        $rating_fields = array('idea', 'theory', 'coding');
+
+        foreach ($rating_fields as $rating_field) {
+            $rating_value = request($rating_field);
+
+            if (!task_is_rating_value($rating_value)) {
+                flash_error("Datele introduse nu sunt valide!");
+                redirect(url_task_edit($task_id, 'task-edit-ratings'));
+            }
+
+            $ratings[$rating_field] = $rating_value;
+        }
+
+        task_rating_add($task_id, $user_id, $ratings);
+
+        flash("Ratingurile au fost salvate cu succes!");
+        redirect(url_task_edit($task_id, 'task-edit-ratings'));
+    }
+
+    $ratings = task_rating_get($task_id, $user_id);
+
+    $view['title'] = "Editeaza ratingurile pentru problema " . $task['title'];
+    $view['task_id'] = $task_id;
+    $view['form_values'] = $ratings;
+    $view['form_errors'] = $errors;
+
+    execute_view_die('views/task_rating_edit.php', $view);
+}
+
 // Tag a task
 function controller_task_tag($task_id) {
     if (!is_task_id($task_id)) {
@@ -288,13 +342,13 @@ function controller_task_tag($task_id) {
 
         if (!is_array($algorithm_tags_id)) {
             flash_error("Datele trimise sunt invalide. Raporteaza aceasta problema unui admin.");
-            redirect(url_task_edit_tags($task_id));
+            redirect(url_task_edit($task_id, 'task-edit-tags'));
         }
 
         foreach ($algorithm_tags_id as $tag_id) {
             if (!is_tag_id($tag_id)) {
                 flash_error("Datele trimise sunt invalide. Raporteaza aceasta problema unui admin.");
-                redirect(url_task_edit_tags($task_id));
+                redirect(url_task_edit($task_id, 'task-edit-tags'));
             }
         }
 
@@ -307,11 +361,12 @@ function controller_task_tag($task_id) {
         }
         if ($count != count($algorithm_tags_id)) {
             flash_error("Datele trimise sunt invalide. Raporteaza aceasta problema unui admin.");
-            redirect(url_task_edit_tags($task_id));
+            redirect(url_task_edit($task_id, 'task-edit-tags'));
         }
 
         task_update_tags($task_id, $method_tags_id, $algorithm_tags_id);
-        flash("Tagurile au fost salvate cu succes");
+        flash("Tagurile au fost salvate cu succes!");
+        redirect(url_task_edit($task_id, 'task-edit-tags'));
     }
 
     $tags_tree = tag_build_tree(tag_get_all(array("method", "algorithm")));

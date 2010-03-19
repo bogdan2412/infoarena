@@ -144,6 +144,7 @@ function security_simplify_action($action) {
         case 'task-change-open':
         case 'textblock-change-security':
         case 'task-edit-owner':
+        case 'task-edit-ratings':
         case 'round-tag':
         case 'textblock-tag':
         case 'job-reeval':
