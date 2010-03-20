@@ -103,4 +103,9 @@ function remove_old_files($dir, $keep_newest = 10) {
     }
 }
 
+function is_backup_filename($filename, &$matches) {
+    $pattern = "/^db-(\d{4})(\d{2})(\d{2})\.sql\.gz\.gpg$/";
+    return preg_match($pattern, $filename, $matches);
+}
+
 ?>

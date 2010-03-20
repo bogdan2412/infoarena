@@ -1,0 +1,100 @@
+#! /usr/bin/env php
+<?php
+
+require_once(dirname($argv[0]) . "/utilities.php");
+
+// This script deletes unnecessary backups.
+// It assumes that backups are made daily.
+// This script should be run after every backup.
+// Backups will be held from every 2^x days before(approximately).
+
+// Parameters:  1. The path to the backups directory (compulsory) ex: /backups/
+//              2. Normal/Safe mode (optional) ex: safe
+
+// Important: Set the first date when the script will be run.
+define('START', mktime(0, 0, 0, 3, 19, 2010));
+
+
+function compare_by_timestamp($first, $second) {
+    if ($first["timestamp"] == $second["timestamp"]) {
+        return 0;
+    } else {
+        return ($first["timestamp"] > $second["timestamp"]) ? -1 : 1;
+    }
+}
+
+function days_between($timestamp1, $timestamp2) {
+    return round(abs($timestamp1 - $timestamp2) / 60 / 60 / 24);
+}
+
+// Validate the directory
+log_assert(isset($argv[1]), "Specify backup directory!");
+$dir_path = $argv[1];
+if ($dir_path[strlen($dir_path) - 1] != '/') {
+    $dir_path .= "/";
+}
+log_assert(is_dir($dir_path), "The argument is not a valid directory!\n");
+$dir = dir($dir_path);
+
+// Today's timestamp at 00:00
+$now = mktime(0, 0, 0);
+
+// Find the existing backups
+$backups = array();
+$backup_today = false;
+while (false !== ($file = $dir->read())) {
+    $matches = array();
+    if (is_file($dir->path . $file) && is_backup_filename($file, $matches)) {
+        $year = $matches[1];
+        $month = $matches[2];
+        $day = $matches[3];
+        $time = mktime(0, 0, 0, $month, $day, $year);
+        if ($time >= START) {
+            if ($now == $time) {
+                $backup_today = true;
+            } else {
+                $backups[] = array("timestamp" => $time, "filename" => $file);
+            }
+        }
+    }
+}
+usort($backups, "compare_by_timestamp");
+
+// Verifying previous backups
+log_assert($backup_today == true, "There was no backup made today.");
+if (count($backups) == 0) {
+    log_print("There are no previous backups to delete.");
+    exit;
+}
+for ($index = 1; $index < count($backups); $index++) {
+    $dday = days_between($backups[$index]["timestamp"], $now);
+    log_assert((pow(2, $index - 1) <= $dday && $dday <= pow(2, $index)),
+            "The current backups do not respect the backup schedule.");
+}
+
+// Finding any unnecessary backup
+$days_passed = days_between($now, START);
+if ($days_passed % pow(2, count($backups) - 1) == 0) {
+    $dfile = null;
+} else {
+    for ($index = count($backups) - 1; $index > 0; $index--) {
+        if ($days_passed % pow(2, $index - 1) == 0) {
+            $dfile = $backups[$index]["filename"];
+            break;
+        }
+    }
+}
+
+// Deleting the unnecessary backup
+if (isset($dfile)) {
+    log_print("Deleting file: ".$dfile);
+    if (!(isset($argv[2]) && $argv[2] == "safe")) {
+        unlink($dir->path . $dfile);
+    } else {
+        log_print("No files deleted. (safe mode)");
+    }
+} else {
+    log_print("Not deleting anything.");
+}
+
+?>
