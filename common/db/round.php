@@ -103,7 +103,9 @@ function round_update($round) {
 // FIXME: cache tasks.
 //
 // if user_id is non-null a join is done on $score
-function round_get_tasks($round_id, $first = 0, $count = null, $user_id = null, $fetch_scores = false, $filter = null) {
+function round_get_tasks($round_id, $first = 0, $count = null,
+                         $user_id = null, $fetch_scores = false,
+                         $filter = null, $progress = false) {
     if ($count === null) {
         $count = 666013;
     }
@@ -140,7 +142,36 @@ function round_get_tasks($round_id, $first = 0, $count = null, $user_id = null, 
                          db_escape($round_id), db_escape($filter_clause),
                          db_escape($first), db_escape($count));
     }
-    return db_fetch_all($query);
+
+    $res = db_fetch_all($query);
+
+    if ($progress) {
+        $task_ids = array();
+        foreach ($res as $row) {
+            $task_ids[] = $row['id'];
+        }
+
+        $query_ratings = sprintf(
+              "SELECT task_ratings.task_id AS id, count(*) AS rating_count
+               FROM ia_task_ratings AS task_ratings
+               WHERE task_ratings.task_id IN (%s)
+               GROUP BY id",
+               implode(',', array_map('db_quote', $task_ids))
+        );
+
+        $res_ratings = db_fetch_all($query_ratings);
+
+        $rating_count = array();
+        foreach ($res_ratings as $res_rating) {
+            $rating_count[$res_rating['id']] = $res_rating['rating_count'];
+        }
+
+        foreach ($res as &$row) {
+            $row['progress'] = getattr($rating_count, $row['id']);
+        }
+    }
+
+    return $res;
 }
 
 function round_get_task_count($round_id, $user_id, $filter)

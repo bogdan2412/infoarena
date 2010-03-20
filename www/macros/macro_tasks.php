@@ -15,6 +15,14 @@ function format_score_column($val) {
     }
 }
 
+function format_progress_column($val) {
+    if (is_null($val)) {
+        return 'N/A';
+    } else {
+        return $val;
+    }
+}
+
 function format_title($row) {
     $title = "<span style=\"float:left;\">".format_link(url_textblock($row["page_name"]), $row["title"])."</span>";
     if ($row['open_source'] || $row['open_tests']) {
@@ -126,12 +134,15 @@ function macro_tasks($args) {
     $show_authors = getattr($args, 'show_authors', true);
     $show_sources = getattr($args, 'show_sources', true);
 
+    $show_progress = getattr($args, 'show_progress', false) &&
+                     identity_can("round-view-progress", $round);
+
     // get round tasks
     $tasks = round_get_tasks($round_id,
              $options['first_entry'],
              $options['display_entries'],
              $user_id, $scores,
-             $filter);
+             $filter, $show_progress);
     $options['total_entries'] = round_get_task_count(
              $round_id, $user_id, $filter);
     $options['row_style'] = 'task_row_style';
@@ -171,6 +182,14 @@ function macro_tasks($args) {
                 'css_class' => 'number score',
                 'key' => 'score',
                 'valform' => 'format_score_column',
+        );
+    }
+    if ($show_progress) {
+        $column_infos[] = array (
+                'title' => 'Note',
+                'css_class' => 'number',
+                'key' => 'progress',
+                'valform' => 'format_progress_column',
         );
     }
 

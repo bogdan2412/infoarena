@@ -146,6 +146,7 @@ function security_simplify_action($action) {
         case 'task-edit-owner':
         case 'task-edit-ratings':
         case 'round-tag':
+        case 'round-view-progress':
         case 'textblock-tag':
         case 'job-reeval':
         case 'simple-critical':
