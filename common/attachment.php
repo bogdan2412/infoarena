@@ -117,4 +117,32 @@ function dos_to_unix($file_path) {
     system("dos2unix ".$file_path);
 }
 
+function is_grader_testfile($file_name) {
+    $pattern = '/^grader_test(\d)*\.(ok|in)$/';
+    if (preg_match($pattern, $file_name) == false) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function is_problem_page($page_name) {
+    $pattern = '/^problema\/' . IA_RE_TASK_ID . '$/';
+    if (preg_match($pattern, $page_name) == false) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function add_ending_newline($file_path) {
+    $content = file_get_contents($file_path);
+    if ($content[strlen($content) - 1] != "\n") {
+        $content .= "\n";
+        file_put_contents($file_path, $content);
+        return true;
+    }
+    return false;
+}
+
 ?>

@@ -1,0 +1,45 @@
+#! /usr/bin/env php
+<?php
+require_once(dirname($argv[0]) . "/utilities.php");
+require_once(IA_ROOT_DIR . "common/attachment.php");
+
+$verbose = getattr($argv, 1, false);
+
+db_connect();
+$files = db_fetch_all("SELECT `id`, `page`, `name`, `mime_type`
+                       FROM `ia_file`");
+if ($verbose) {
+    log_print(count($files) . " rows fetched.");
+}
+
+$nr_notfound = 0;
+$nr_changed = 0;
+
+foreach ($files as $file) {
+    $file_path = attachment_get_filepath($file);
+
+    if (is_file($file_path)) {
+        if (is_textfile($file['mime_type']) &&
+            is_grader_testfile($file['name']) &&
+            is_problem_page($file['page'])) {
+            if (add_ending_newline($file_path)) {
+                if ($verbose) {
+                    log_print("Added newline to file " . $file_path);
+                }
+                db_query("UPDATE `ia_file`" .
+                        " SET `size` = " . db_quote(filesize($file_path)) .
+                        " WHERE `id` = " . db_quote($file['id']));
+                $nr_changed++;
+            }
+        }
+    } else {
+        $nr_notfound++;
+    }
+}
+
+if ($verbose) {
+    log_print($nr_changed . " grader testfiles updated.");
+    log_print($nr_notfound . " files not found.");
+}
+
+?>

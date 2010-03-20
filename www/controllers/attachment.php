@@ -174,6 +174,10 @@ function controller_attachment_submit($page_name) {
 
             if (is_textfile($file_att['type'])) {
                 dos_to_unix($file_att['disk_name']);
+                if (is_grader_testfile($file_att['name']) &&
+                    is_problem_page($page_name)) {
+                    add_ending_newline($file_att['disk_name']);
+                }
                 $file_att['size'] = filesize($file_att['disk_name']);
             }
 
