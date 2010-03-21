@@ -91,7 +91,7 @@ function macro_rankings($args) {
                         'type' => 'task',
                         'title' => $task['title']
                     ));
-                    array_push($tasks, $task);
+                    array_push($tasks, $task['id']);
                 }
             }
 

@@ -96,6 +96,9 @@ function score_build_where_clauses($user, $task, $round)
 // Count function to be used for score_get_rankings
 function score_get_count($user, $task, $round) {
     $where = score_build_where_clauses($user, $task, $round);
+    if (count($where) == 0) {
+        return 0;
+    }
     $query = sprintf("SELECT COUNT(DISTINCT user_id) AS `cnt`
             FROM ia_score_user_round
             WHERE %s",
@@ -361,10 +364,10 @@ function rating_clear() {
 // if detail_round == true, extra columns for each round will be created
 function score_get_rankings($rounds, $tasks, $start = 0, $count = 999999,
                             $detail_task = false, $detail_round = false) {
-    if (count($rounds) == 0) {
+    $where = score_build_where_clauses(null, null, $rounds);
+    if (count($where) == 0) {
         return array();
     }
-    $where = score_build_where_clauses(null, null, $rounds);
 
     // Get the total score for all rounds
     $query = "
@@ -441,8 +444,7 @@ function score_get_rankings($rounds, $tasks, $start = 0, $count = 999999,
 
         //task columns
         if ($detail_task == true) {
-            foreach ($tasks as $task) {
-                $task_id = $task['id'];
+            foreach ($tasks as $task_id) {
                 if (isset($task_scores[$user_id][$task_id])) {
                     $score = $task_scores[$user_id][$task_id];
                 } else {
