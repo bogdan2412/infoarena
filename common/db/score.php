@@ -77,25 +77,15 @@ function score_build_where_clauses($user, $task, $round)
         }
     }
     if ($round != null) {
-        if (is_string($round))
+        if (is_string($round)) {
             $round = array($round);
+        }
 
-        if (is_array($round) && count($round) > 0) {
-            $rounds_where = "(`id` IN (" . db_escape_array($round) . "))";
-            $query = "SELECT `id`, `state`, `public_eval` FROM `ia_round` WHERE " . $rounds_where;
-            $round_objects = db_fetch_all($query);
-            $allowed_round_ids = array();
-
-            foreach ($round_objects as $round) {
-                if (identity_can('round-view-scores', $round)) {
-                    $allowed_round_ids[] = $round["id"];
-                }
-            }
-
-            if (count($allowed_round_ids) == 0) {
-                $where[] = "(TRUE = FALSE)";
+        if (is_array($round)) {
+            if (count($round) > 0) {
+                $where[] = "(`round_id` IN (" . db_escape_array($round) . "))";
             } else {
-                $where[] = "(`round_id` IN (" . db_escape_array($allowed_round_ids) . "))";
+                $where[] = "(TRUE = FALSE)";
             }
         }
     }
@@ -369,19 +359,25 @@ function rating_clear() {
 // returns entries from start to count
 // if detail_task == true, extra columns for each task will be created
 // if detail_round == true, extra columns for each round will be created
-function score_get_rankings($rounds, $tasks, $start = 0, $count = 999999, $detail_task = false, $detail_round = false)
-{
+function score_get_rankings($rounds, $tasks, $start = 0, $count = 999999,
+                            $detail_task = false, $detail_round = false) {
+    if (count($rounds) == 0) {
+        return array();
+    }
     $where = score_build_where_clauses(null, null, $rounds);
 
     // Get the total score for all rounds
-    $query = "SELECT SUM(score) AS score, user_id, ia_user.username AS user_name, ia_user.full_name AS user_full,
-                    ia_user.rating_cache AS user_rating
-                FROM ia_score_user_round
-                LEFT JOIN ia_user ON ia_user.id = ia_score_user_round.user_id
-                WHERE ".implode('AND', $where)."
-                GROUP BY `user_id`
-                ORDER BY score DESC
-                LIMIT ".db_escape($start).", ".db_escape($count);
+    $query = "
+        SELECT ".(count($rounds) > 1 ? "SUM(score) AS score" : "score").",
+                user_id, ia_user.username AS user_name,
+                ia_user.full_name AS user_full,
+                ia_user.rating_cache AS user_rating
+        FROM ia_score_user_round
+        LEFT JOIN ia_user ON ia_user.id = ia_score_user_round.user_id
+        WHERE".implode('AND', $where)."
+        ".(count($rounds) > 1 ? "GROUP BY `user_id`" : "")."
+        ORDER BY score DESC
+        LIMIT ".db_escape($start).", ".db_escape($count);
 
     $rankings = db_fetch_all($query);
     if (count($rankings) == 0) {

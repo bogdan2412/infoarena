@@ -51,11 +51,13 @@ function macro_rankings($args) {
     $rounds = array();
     foreach ($round_param as $param) {
         $round = preg_split('/\s*\:\s*/', $param);
+        if (!identity_can('round-view-scores', round_get($round[0]))) {
+            continue;
+        }
         array_push($rounds, array(
             'round_id' => $round[0],
             'round_name' => getattr($round, 1, ' ')
-            )
-        );
+        ));
     }
 
     // Generating Table
@@ -71,7 +73,7 @@ function macro_rankings($args) {
             'title' => 'Nume',
             'key' => 'user_full',
             'rowform' => create_function_cached('$row',
-                                         'return format_user_normal($row["user_name"], $row["user_full"], $row["user_rating"]);'),
+                'return format_user_normal($row["user_name"], $row["user_full"], $row["user_rating"]);'),
         ),
     );
 
@@ -82,14 +84,14 @@ function macro_rankings($args) {
             $round_id = $round['round_id'];
 
             if ($detail_task == true) {
-            $new_tasks = round_get_tasks($round_id, null, null, null, null, null);
-            foreach ($new_tasks as $task) {
-                array_push($columns, array(
-                    'name' => $task['id'],
-                    'type' => 'task',
-                    'title' => $task['title']
-                ));
-                array_push($tasks, $task);
+                $new_tasks = round_get_tasks($round_id);
+                foreach ($new_tasks as $task) {
+                    array_push($columns, array(
+                        'name' => $task['id'],
+                        'type' => 'task',
+                        'title' => $task['title']
+                    ));
+                    array_push($tasks, $task);
                 }
             }
 
@@ -109,7 +111,7 @@ function macro_rankings($args) {
             'key' => $column['name'],
             'rowform' => create_function_cached('$row', 'return round($row[\''.$column['name'].'\']);'),
             'css_class' => 'number score'
-            ));
+        ));
     }
 
     $total = 'Scor';
@@ -117,12 +119,11 @@ function macro_rankings($args) {
         $total = 'Total';
     }
     array_push($column_infos, array(
-            'title' => $total,
-            'key' => 'score',
-            'rowform' => create_function_cached('$row', 'return round($row[\'score\']);'),
-            'css_class' => 'number score'
-        )
-    );
+        'title' => $total,
+        'key' => 'score',
+        'rowform' => create_function_cached('$row', 'return round($row[\'score\']);'),
+        'css_class' => 'number score'
+    ));
 
     $round_ids = array();
     foreach ($rounds as $round) {
