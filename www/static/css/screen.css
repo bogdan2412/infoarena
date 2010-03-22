@@ -1545,3 +1545,13 @@ ul.tag_filters {
     line-height: 1.5em;
     margin: 0 .5em .5em 2em;
 }
+
+/* Proper Security UI */
+.security_show {
+    display: inline;
+    margin-left: 0.5em;
+}
+
+.security_hide {
+    display: none;
+}

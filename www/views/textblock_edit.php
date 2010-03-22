@@ -16,6 +16,20 @@ if (($task_id = textblock_security_is_task($page['security'])) &&
 <?= html_escape($task_id) ?></a></h1>
 <?php } ?>
 
+<script type="text/javascript">
+    function toggleSpecial() {
+        var select = document.getElementById("security_select");
+        var option = select.options[select.selectedIndex].value;
+        var special = document.getElementById("special");
+
+        if (option == "round" || option == "task") {
+            special.className = "security_show";
+        } else {
+            special.className = "security_hide";
+        }
+    }
+</script>
+
 <form accept-charset="utf-8" action="<?= html_escape(url_textblock_edit($page_name)) ?>" method="post" id="form_wikiedit" <?= tag_form_event() ?>>
 <input type="hidden" id="form_page_name" value="<?= html_escape(isset($page_name) ? $page_name : '') ?>" />
 <input type="hidden" name="last_revision" value="<?=html_escape($last_revision)?>" />
@@ -59,8 +73,42 @@ if (($task_id = textblock_security_is_task($page['security'])) &&
     <?php if (array_key_exists('security', $form_values)) { ?>
     <li id="field_security">
         <label for="form_security">Nivel de securitate al paginii
-        <a href="<?= html_escape(url_textblock('documentatie/securitate')) ?>">(?)</a></label> 
-        <input type="text" name="security" value="<?= fval('security') ?>" id="form_security" />
+        <a href="<?= html_escape(url_textblock('documentatie/securitate')) ?>">(?)</a></label>
+
+        <select id="security_select" name="security" onchange="toggleSpecial()">
+        <?php
+            $options = array(
+                array('value' => 'public', 'html' => 'Public'),
+                array('value' => 'protected', 'html' => 'Protected'),
+                array('value' => 'private', 'html' => 'Private'),
+                array('value' => 'round', 'html' => 'Round'),
+                array('value' => 'task', 'html' => 'Task')
+            );
+
+            foreach ($options as $option) {
+                if ($option['value'] == fval('security')) {
+                    echo sprintf('<option value="%s" selected="selected">%s
+                                 </option>', $option['value'], $option['html']);
+                } else {
+                    echo sprintf('<option value="%s">%s</option>',
+                                 $option['value'], $option['html']);
+                }
+            }
+        ?>
+        </select>
+
+        <?php
+            if (in_array(fval('security'), array('round', 'task'))) {
+                $css_class = "security_show";
+            } else {
+                $css_class = "security_hide";
+            }
+
+            echo sprintf('<input name="security_special" id="special"
+                          type="text" value="%s" class="%s">',
+                          fval('security_special'), $css_class);
+        ?>
+
         <?= ferr_span('security') ?>
     </li>
     <?php } ?>

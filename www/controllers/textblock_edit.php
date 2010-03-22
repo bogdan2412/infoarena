@@ -33,7 +33,15 @@ function controller_textblock_edit($page_name, $security = 'public') {
     $values = array();
     $values['text'] = request('text', $page['text']);
     $values['title'] = request('title', $page['title']);
-    $values['security'] = request('security', $page['security']);
+
+    $security_values = array_map('trim', explode(':', $page['security']));
+    $values['security'] = request('security', $security_values[0]);
+    if (count($security_values) > 1) {
+        $values['security_special'] = request('security_special', $security_values[1]);
+    } else {
+        $values['security_special'] = request('security_special', '');
+    }
+
     $values['forum_topic'] = request('forum_topic', $page['forum_topic']);
     $values['tags'] = request('tags', tag_build_list("textblock", $page_name, "tag"));
     $values['creation_timestamp'] = getattr($page, 'creation_timestamp');
@@ -44,7 +52,14 @@ function controller_textblock_edit($page_name, $security = 'public') {
         $new_page['name'] = $page_name;
         $new_page['text'] = $values['text'];
         $new_page['title'] = $values['title'];
-        $new_page['security'] = $values['security'];
+
+        if ($values['security_special'] != '') {
+            $new_page['security'] = sprintf('%s: %s', $values['security'],
+                                            $values['security_special']);
+        } else {
+            $new_page['security'] = $values['security'];
+        }
+
         $new_page['forum_topic'] = $values['forum_topic'];
         $new_page['creation_timestamp'] = $values['creation_timestamp'];
         $new_page['timestamp'] = $values['timestamp'];
