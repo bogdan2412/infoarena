@@ -6,6 +6,7 @@ require_once(IA_ROOT_DIR . "www/format/pager.php");
 require_once(IA_ROOT_DIR . "common/db/round.php");
 require_once(IA_ROOT_DIR . "common/db/task.php");
 require_once(IA_ROOT_DIR . "common/round.php");
+require_once(IA_ROOT_DIR . "www/macros/macro_stars.php");
 
 function format_score_column($val) {
     if (is_null($val)) {
@@ -20,6 +21,19 @@ function format_progress_column($val) {
         return 'N/A';
     } else {
         return $val;
+    }
+}
+
+function format_rating_column($val) {
+    if (is_null($val)) {
+        return 'N/A';
+    } else {
+        $stars_args = array(
+            'rating' => $val,
+            'scale' => 5,
+            'type' => 'normal'
+        );
+        return macro_stars($stars_args);
     }
 }
 
@@ -133,7 +147,7 @@ function macro_tasks($args) {
     $show_numbers = getattr($args, 'show_numbers', false);
     $show_authors = getattr($args, 'show_authors', true);
     $show_sources = getattr($args, 'show_sources', true);
-
+    $show_ratings = getattr($args, 'show_ratings', false);
     $show_progress = getattr($args, 'show_progress', false) &&
                      identity_can("round-view-progress", $round);
 
@@ -147,6 +161,7 @@ function macro_tasks($args) {
              $round_id, $user_id, $filter);
     $options['row_style'] = 'task_row_style';
     $options['css_class'] = 'tasks';
+    $options['css_row_parity'] = true;
 
     $column_infos = array();
     if ($show_numbers) {
@@ -176,10 +191,18 @@ function macro_tasks($args) {
                 'key' => 'source',
         );
     }
+    if ($show_ratings) {
+        $column_infos[] = array(
+                'html_title' => 'Dificultate<span style="color: red; font-weight:bold;"><sup>nou!</sup></span>',
+                'css_class' => 'rating',
+                'key' => 'rating',
+                'valform' => 'format_rating_column',
+        );
+    }
     if (!is_null($user_id)) {
         $column_infos[] = array (
                 'title' => 'Scorul tău',
-                'css_class' => 'number score',
+                'css_class' => 'score',
                 'key' => 'score',
                 'valform' => 'format_score_column',
         );

@@ -117,7 +117,8 @@ function round_get_tasks($round_id, $first = 0, $count = null,
               "task.`hidden` AS `hidden`, ".
               "task.`type` AS `type`,
                task.`open_source` AS `open_source`,
-               task.`open_tests` AS `open_tests`";
+               task.`open_tests` AS `open_tests`,
+               task.`rating` AS `rating`";
     if ($user_id == null || $fetch_scores == false) {
         $query = sprintf("SELECT $fields
                           FROM ia_round_task as round_task

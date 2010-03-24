@@ -1052,10 +1052,10 @@ table td, table th {
 }
 
 tr.odd td {
-    background: #fff;
 }
 
 tr.even td {
+    background-color: #f0f0f0;
 }
 
 th {
@@ -1212,6 +1212,12 @@ table.monitor {
 }
 .tasks td.number {
     Width: 5%;
+}
+.tasks td.rating {
+    padding-left: 4px;
+    width: 10%;
+    font-size: .7em;
+    color: gray;
 }
 .tasks tr.solved td.task {
     background-image: url('../images/icons/task_solved.gif');
