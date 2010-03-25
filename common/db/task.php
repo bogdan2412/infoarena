@@ -217,11 +217,11 @@ function task_filter_by_tags($tag_ids, $scores = true, $user_id = null) {
         $join_score = "";
         $score_fields = "";
     } else {
-        $join_score = "LEFT JOIN ia_score ON ia_score.user_id = ".db_quote($user_id)." AND
-                            ia_score.round_id = round.id AND
-                            ia_score.task_id = ia_task.id AND
-                            ia_score.name = 'score'";
-        $score_fields = "ia_score.score,";
+        $join_score = "LEFT JOIN ia_score_user_round_task AS score ON
+                            score.`user_id` = ".db_quote($user_id)." AND
+                            score.`round_id` = round_task.`round_id` AND
+                            score.`task_id` = round_task.`task_id`";
+        $score_fields = "score.`score` AS `score`,";
     }
 
     $query = "SELECT ia_task.id AS task_id,
@@ -230,6 +230,7 @@ function task_filter_by_tags($tag_ids, $scores = true, $user_id = null) {
                 ia_task.page_name AS page_name,
                 ia_task.open_source AS open_source,
                 ia_task.open_tests AS open_tests,
+                ia_task.rating AS rating,
                 round.id AS round_id,
                 $score_fields
                 round.title AS round_title
@@ -240,6 +241,7 @@ function task_filter_by_tags($tag_ids, $scores = true, $user_id = null) {
     WHERE (round.id = 'arhiva' OR round.id = 'arhiva-educationala')
         AND ia_task.hidden = '0' $tag_filter
     ORDER BY round.id DESC, ia_task.order";
+
     $tasks = db_fetch_all($query);
 
     return $tasks;

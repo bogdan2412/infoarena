@@ -534,8 +534,20 @@ function round_delete($round_id) {
                       db_quote($round_id));
     db_query($query);
 
-    // Delete entries from ia_score
-    $query = sprintf("DELETE FROM `ia_score`
+    // Delete entries from ia_score_user_round
+    $query = sprintf("DELETE FROM `ia_score_user_round`
+                      WHERE `round_id` = %s",
+                      db_quote($round_id));
+    db_query($query);
+
+    // Delete entries from ia_score_user_round_task
+    $query = sprintf("DELETE FROM `ia_score_user_round_task`
+                      WHERE `round_id` = %s",
+                      db_quote($round_id));
+    db_query($query);
+
+    // Delete entries from ia_rating
+    $query = sprintf("DELETE FROM `ia_rating`
                       WHERE `round_id` = %s",
                       db_quote($round_id));
     db_query($query);

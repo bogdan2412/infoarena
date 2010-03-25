@@ -1,4 +1,6 @@
 <?php
+require_once(IA_ROOT_DIR . "www/macros/macro_stars.php");
+
 include('header.php');
 include('format/table.php');
 
@@ -17,6 +19,19 @@ function format_score_column($val) {
         return 'N/A';
     } else {
         return round($val);
+    }
+}
+
+function format_rating_column($val) {
+    if (is_null($val)) {
+        return 'N/A';
+    } else {
+        $stars_args = array(
+            'rating' => $val,
+            'scale' => 5,
+            'type' => 'normal'
+        );
+        return macro_stars($stars_args);
     }
 }
 
@@ -108,10 +123,15 @@ $column_infos[] = array(
         'title' => 'Sursă',
         'css_class' => 'source',
         'key' => 'round_title');
+$column_infos[] = array(
+        'title' => 'Dificultate',
+        'css_class' => 'rating',
+        'key' => 'rating',
+        'valform' => 'format_rating_column');
 if (!is_null($user_id)) {
     $column_infos[] = array (
             'title' => 'Scorul tău',
-            'css_class' => 'number score',
+            'css_class' => 'score',
             'key' => 'score',
             'valform' => 'format_score_column');
 }
