@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.6                                           *
+* Software Version:           SMF 1.1.11                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -201,8 +201,26 @@ function ViewMemberlist()
 		deleteMembers($_POST['delete']);
 	}
 
+	// Build a search for a specific group or post group.
+	if ($context['sub_action'] === 'query')
+	{
+		if (isset($_GET['group']))
+			$_POST['membergroups'] = array(
+				array((int) $_GET['group']),
+				array((int) $_GET['group']),
+			);
+		elseif (isset($_GET['pgroup']))
+			$_POST['postgroups'] = array((int) $_GET['pgroup']);
+	}
+
+	if ($context['sub_action'] == 'query' && !empty($_REQUEST['params']) && empty($_POST))
+	{
+		$search_params = base64_decode(stripslashes($_REQUEST['params']));
+		$_POST += addslashes__recursive(@unserialize($search_params));
+	}
+
 	// Check input after a member search has been submitted.
-	if ($context['sub_action'] == 'query' && empty($_REQUEST['params']))
+	if ($context['sub_action'] == 'query')
 	{
 		// Retrieving the membergroups and postgroups.
 		$context['membergroups'] = array(
@@ -398,14 +416,14 @@ function ViewMemberlist()
 		// Construct the where part of the query.
 		$where = empty($query_parts) ? '1' : implode('
 			AND ', $query_parts);
+
+		$search_params = base64_encode(serialize(stripslashes__recursive($_POST)));
 	}
-	// If the query information was already packed in the URL, decode it.
-	// !!! Change this.
-	elseif ($context['sub_action'] == 'query')
-		$where = base64_decode(strtr($_REQUEST['params'], array(' ' => '+')));
+	else
+		$search_params = null;
 
 	// Construct the additional URL part with the query info in it.
-	$context['params_url'] = $context['sub_action'] == 'query' ? ';sa=query;params=' . base64_encode($where) : '';
+	$context['params_url'] = $context['sub_action'] == 'query' ? ';sa=query;params=' . $search_params : '';
 
 	// Get the title and sub template ready..
 	$context['page_title'] = $txt[9];

@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1                                             *
+* Software Version:           SMF 1.1.11                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -92,31 +92,36 @@ function ViewModlog()
 			$search_params[$key] = addslashes($value);
 	}
 
-	// If we have no search, a broken search, or a new search - then create a new array.
-	if (!isset($search_params['string']) || (!empty($_REQUEST['search']) && $search_params['string'] != $_REQUEST['search']))
-	{
-		// This array houses all the valid search types.
-		$searchTypes = array(
-			'action' => array('sql' => 'lm.action', 'label' => $txt['modlog_action']),
-			'member' => array('sql' => 'mem.realName', 'label' => $txt['modlog_member']),
-			'group' => array('sql' => 'mg.groupName', 'label' => $txt['modlog_position']),
-			'ip' => array('sql' => 'lm.ip', 'label' => $txt['modlog_ip'])
-		);
+	// This array houses all the valid search types.
+	$searchTypes = array(
+		'action' => array('sql' => 'lm.action', 'label' => $txt['modlog_action']),
+		'member' => array('sql' => 'mem.realName', 'label' => $txt['modlog_member']),
+		'group' => array('sql' => 'mg.groupName', 'label' => $txt['modlog_position']),
+		'ip' => array('sql' => 'lm.ip', 'label' => $txt['modlog_ip'])
+	);
 
-		$search_params = array(
-			'string' => empty($_REQUEST['search']) ? '' : $_REQUEST['search'],
-			'type' => isset($_REQUEST['search_type']) && isset($searchTypes[$_REQUEST['search_type']]) ? $_REQUEST['search_type'] : isset($searchTypes[$context['order']]) ? $context['order'] : 'member',
-			'type_sql' => isset($_REQUEST['search_type']) && isset($searchTypes[$_REQUEST['search_type']]) ? $searchTypes[$_REQUEST['search_type']]['sql'] : isset($searchTypes[$context['order']]) ? $context['columns'][$context['order']]['sql'] : 'mem.realName',
-			'type_label' => isset($_REQUEST['search_type']) && isset($searchTypes[$_REQUEST['search_type']]) ? $searchTypes[$_REQUEST['search_type']]['label'] : isset($searchTypes[$context['order']]) ? $context['columns'][$context['order']]['label'] : $txt['modlog_member'],
-		);
-	}
+	if (!isset($search_params['string']) || (!empty($_REQUEST['search']) && $search_params['string'] != $_REQUEST['search']))
+		$search_params_string = empty($_REQUEST['search']) ? '' : $_REQUEST['search'];
+	else
+		$search_params_string = $search_params['string'];
+
+	if (isset($_REQUEST['search_type']) || empty($search_params['type']) || !isset($searchTypes[$search_params['type']]))
+		$search_params_type = isset($_REQUEST['search_type']) && isset($searchTypes[$_REQUEST['search_type']]) ? $_REQUEST['search_type'] : (isset($searchTypes[$context['order']]) ? $context['order'] : 'member');
+	else
+		$search_params_type = $search_params['type'];
+
+	$search_params_column = $searchTypes[$search_params_type]['sql'];
+	$search_params = array(
+		'string' => $search_params_string,
+		'type' => $search_params_type,
+	);
 
 	// Setup the search context.
 	$context['search_params'] = empty($search_params['string']) ? '' : base64_encode(serialize($search_params));
 	$context['search'] = array(
 		'string' => stripslashes($search_params['string']),
 		'type' => $search_params['type'],
-		'label' => $search_params['type_label']
+		'label' => $searchTypes[$search_params_type]['label'],
 	);
 
 	// Provide extra information about each column - the link, whether it's selected, etc.
@@ -167,7 +172,7 @@ function ViewModlog()
 		FROM {$db_prefix}log_actions AS lm
 			LEFT JOIN {$db_prefix}members AS mem ON (mem.ID_MEMBER = lm.ID_MEMBER)
 			LEFT JOIN {$db_prefix}membergroups AS mg ON (mg.ID_GROUP = IF(mem.ID_GROUP = 0, mem.ID_POST_GROUP, mem.ID_GROUP))" . (!empty($search_params['string']) ? "
-		WHERE INSTR($search_params[type_sql], '$search_params[string]')" : ''), __FILE__, __LINE__);
+		WHERE INSTR($search_params_column, '$search_params[string]')" : ''), __FILE__, __LINE__);
 	list ($context['entry_count']) = mysql_fetch_row($result);
 	mysql_free_result($result);
 
@@ -183,7 +188,7 @@ function ViewModlog()
 		FROM {$db_prefix}log_actions AS lm
 			LEFT JOIN {$db_prefix}members AS mem ON (mem.ID_MEMBER = lm.ID_MEMBER)
 			LEFT JOIN {$db_prefix}membergroups AS mg ON (mg.ID_GROUP = IF(mem.ID_GROUP = 0, mem.ID_POST_GROUP, mem.ID_GROUP))" . (!empty($search_params['string']) ? "
-		WHERE INSTR($search_params[type_sql], '$search_params[string]')" : '') . "
+		WHERE INSTR($search_params_column, '$search_params[string]')" : '') . "
 		ORDER BY $orderType" . (isset($_REQUEST['d']) ? '' : ' DESC') . "
 		LIMIT $context[start], $displaypage", __FILE__, __LINE__);
 

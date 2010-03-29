@@ -891,14 +891,6 @@ function template_edit_post_settings()
 				<td valign="top">
 					<input type="checkbox" name="enableSpellChecking" id="enableSpellChecking_check"', empty($modSettings['enableSpellChecking']) ? '' : ' checked="checked"', ' class="check" />
 				</td>
-
-			</tr><tr class="windowbg2">
-				<th width="50%" align="right">
-					<label for="visual_verification_guest_post_check">', $txt['visual_verification_guest_post'], '</label>:
-				</th>
-				<td valign="top">
-					<input type="checkbox" name="visual_verification_guest_post" id="visual_verification_guest_post_check"', empty($modSettings['visual_verification_guest_post']) ? '' : ' checked="checked"', ' class="check" />
-				</td>
 			</tr><tr class="windowbg2">
 				<td colspan="2"><hr /></td>
 			</tr><tr class="windowbg2">

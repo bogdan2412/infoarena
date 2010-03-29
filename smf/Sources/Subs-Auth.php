@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.10                                          *
+* Software Version:           SMF 1.1.11                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -277,17 +277,17 @@ function adminLogin()
 		{
 			// Only if it's not already in the $scripturl!
 			if (!isset($temp[$k]))
-				$context['get_data'] .= $k . '=' . $v . ';';
+				$context['get_data'] .= urlencode($k) . '=' . urlencode($v) . ';';
 			// If it changed, put it out there, but with an ampersand.
 			elseif ($temp[$k] != $_GET[$k])
-				$context['get_data'] .= $k . '=' . $v . '&amp;';
+				$context['get_data'] .= urlencode($k) . '=' . urlencode($v) . '&amp;';
 		}
 	}
 	else
 	{
 		// Add up all the data from $_GET into get_data.
 		foreach ($_GET as $k => $v)
-			$context['get_data'] .= $k . '=' . $v . ';';
+			$context['get_data'] .= urlencode($k) . '=' . urlencode($v) . ';';
 	}
 
 	$context['get_data'] = substr($context['get_data'], 0, -1);
@@ -325,7 +325,7 @@ function adminLogin_outputPostVars($k, $v)
 {
 	if (!is_array($v))
 		return '
-<input type="hidden" name="' . $k . '" value="' . strtr(stripslashes($v), array('"' => '&quot;', '<' => '&lt;', '>' => '&gt;')) . '" />';
+<input type="hidden" name="' . htmlspecialchars($k) . '" value="' . strtr(stripslashes($v), array('"' => '&quot;', '<' => '&lt;', '>' => '&gt;')) . '" />';
 	else
 	{
 		$ret = '';

@@ -87,8 +87,16 @@ $show_groups = $view['group_tests'] &&
             $test_row++;
         }
         echo '<td class="number">'.$test['test_number'].'</td>';
-        echo '<td class="number">'.$test['exec_time'].'ms</td>';
-        echo '<td class="number">'.$test['mem_used'].'kb</td>';
+        if ($test["grader_message"] == "Time limit exceeded.") {
+            echo '<td class="number">Depăşit</td>';
+        } else {
+            echo '<td class="number">'.$test['exec_time'].'ms</td>';
+        }
+        if ($test["grader_message"] == "Memory limit exceeded.") {
+            echo '<td class="number">Depăşit</td>';
+        } else {
+            echo '<td class="number">'.$test['mem_used'].'kb</td>';
+        }
         echo '<td>'.html_escape($test['grader_message']).'</td>';
         echo '<td class="number">'.$test['points'].'</td>';
         if ($show_groups && $test['test_group'] != $last_group) {

@@ -14,7 +14,7 @@ require_once("../config.php");
 
 // Webmaster email (e-mail where it sends reports in case shit)
 // Also serves as address to send emails from
-$webmaster_email = 'strat.cristian@gmail.com';
+$webmaster_email = 'no-reply@infoarena.ro';
 
 // Decent defaults below (edit only if you get bored)
 // ---------------------------------------------------------------

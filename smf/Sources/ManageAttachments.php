@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.10                                          *
+* Software Version:           SMF 1.1.11                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -338,7 +338,7 @@ function BrowseFiles()
 				'name' => htmlspecialchars($row['filename']),
 				'downloads' => $row['downloads'],
 				'href' => $row['attachmentType'] == 1 ? $modSettings['custom_avatar_url'] . '/' . $row['filename'] : ($scripturl . '?action=dlattach;' . ($context['browse_type'] == 'avatars' ? 'type=avatar;' : 'topic=' . $row['ID_TOPIC'] . '.0;') . 'id=' . $row['ID_ATTACH']),
-				'link' => '<a href="' . ($row['attachmentType'] == 1 ? $modSettings['custom_avatar_url'] . '/' . $row['filename'] : ($scripturl . '?action=dlattach;' . ($context['browse_type'] == 'avatars' ? 'type=avatar;' : 'topic=' . $row['ID_TOPIC'] . '.0;') . 'id=' . $row['ID_ATTACH'])) . '"' . (empty($row['width']) || empty($row['height']) ? '' : ' onclick="return reqWin(this.href + \'' . ($modSettings['custom_avatar_url'] ? '' : ';image') . '\', ' . ($row['width'] + 20) . ', ' . ($row['height'] + 20) . ', true);"') . '>' . htmlspecialchars($row['filename']) . '</a>'
+				'link' => '<a href="' . ($row['attachmentType'] == 1 ? $modSettings['custom_avatar_url'] . '/' . $row['filename'] : ($scripturl . '?action=dlattach;' . ($context['browse_type'] == 'avatars' ? 'type=avatar;' : 'topic=' . $row['ID_TOPIC'] . '.0;') . 'id=' . $row['ID_ATTACH'])) . '"' . (empty($row['width']) || empty($row['height']) ? '' : ' onclick="return reqWin(this.href + \'' . ($row['attachmentType'] == 1 ? '' : ';image') . '\', ' . ($row['width'] + 20) . ', ' . ($row['height'] + 20) . ', true);"') . '>' . htmlspecialchars($row['filename']) . '</a>'
 			),
 			'topic' => $row['ID_TOPIC'],
 			'subject' => $row['subject'],
@@ -561,7 +561,8 @@ function removeAttachments($condition, $query_type = '', $return_affected_messag
 	$request = db_query("
 		SELECT
 			a.filename, a.file_hash, a.attachmentType, a.ID_ATTACH, a.ID_MEMBER" . ($query_type == 'messages' ? ', m.ID_MSG' : ', a.ID_MSG') . ",
-			IFNULL(thumb.ID_ATTACH, 0) AS ID_THUMB, thumb.filename AS thumb_filename, thumb_parent.ID_ATTACH AS ID_PARENT
+			IFNULL(thumb.ID_ATTACH, 0) AS ID_THUMB, thumb.filename AS thumb_filename, thumb_parent.ID_ATTACH AS ID_PARENT,
+			thumb.file_hash as thumb_file_hash
 		FROM ({$db_prefix}attachments AS a" .($query_type == 'members' ? ", {$db_prefix}members AS mem" : ($query_type == 'messages' ? ", {$db_prefix}messages AS m" : '')) . ")
 			LEFT JOIN {$db_prefix}attachments AS thumb ON (thumb.ID_ATTACH = a.ID_THUMB)
 			LEFT JOIN {$db_prefix}attachments AS thumb_parent ON (a.attachmentType = 3 AND thumb_parent.ID_THUMB = a.ID_ATTACH)
@@ -585,7 +586,7 @@ function removeAttachments($condition, $query_type = '', $return_affected_messag
 			// If this attachments has a thumb, remove it as well.
 			if (!empty($row['ID_THUMB']) && $autoThumbRemoval)
 			{
-				$thumb_filename = getAttachmentFilename($row['thumb_filename'], $row['ID_THUMB'], false, $row['file_hash']);
+				$thumb_filename = getAttachmentFilename($row['thumb_filename'], $row['ID_THUMB'], false, $row['thumb_file_hash']);
 				@unlink($thumb_filename);
 				$attach[] = $row['ID_THUMB'];
 			}

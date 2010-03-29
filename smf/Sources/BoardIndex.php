@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1                                             *
+* Software Version:           SMF 1.1.11                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -95,7 +95,7 @@ function BoardIndex()
 				'name' => $row_board['catName'],
 				'is_collapsed' => isset($row_board['canCollapse']) && $row_board['canCollapse'] == 1 && $row_board['isCollapsed'] > 0,
 				'can_collapse' => isset($row_board['canCollapse']) && $row_board['canCollapse'] == 1,
-				'collapse_href' => isset($row_board['canCollapse']) ? $scripturl . '?action=collapse;c=' . $row_board['ID_CAT'] . ';sa=' . ($row_board['isCollapsed'] > 0 ? 'expand' : 'collapse;') . '#' . $row_board['ID_CAT'] : '',
+				'collapse_href' => isset($row_board['canCollapse']) ? $scripturl . '?action=collapse;c=' . $row_board['ID_CAT'] . ';sa=' . ($row_board['isCollapsed'] > 0 ? 'expand' : 'collapse') . ';sesc=' . $context['session_id'] . '#' . $row_board['ID_CAT'] : '',
 				'collapse_image' => isset($row_board['canCollapse']) ? '<img src="' . $settings['images_url'] . '/' . ($row_board['isCollapsed'] > 0 ? 'expand.gif" alt="+"' : 'collapse.gif" alt="-"') . ' border="0" />' : '',
 				'href' => $scripturl . '#' . $row_board['ID_CAT'],
 				'boards' => array(),

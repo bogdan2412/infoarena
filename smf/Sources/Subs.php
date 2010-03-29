@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.9                                           *
+* Software Version:           SMF 1.1.11                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -1234,13 +1234,21 @@ function parse_bbc($message, $smileys = true, $cache_id = '')
 				'tag' => 'ftp',
 				'type' => 'unparsed_content',
 				'content' => '<a href="$1" target="_blank">$1</a>',
-				'validate' => create_function('&$tag, &$data, $disabled', '$data = strtr($data, array(\'<br />\' => \'\'));'),
+				'validate' => create_function('&$tag, &$data, $disabled', '
+					$data = strtr($data, array(\'<br />\' => \'\'));
+					if (strpos($data, \'ftp://\') !== 0 && strpos($data, \'ftps://\') !== 0)
+						$data = \'ftp://\' . $data;
+				'),
 			),
 			array(
 				'tag' => 'ftp',
 				'type' => 'unparsed_equals',
 				'before' => '<a href="$1" target="_blank">',
 				'after' => '</a>',
+				'validate' => create_function('&$tag, &$data, $disabled', '
+					if (strpos($data, \'ftp://\') !== 0 && strpos($data, \'ftps://\') !== 0)
+						$data = \'ftp://\' . $data;
+				'),
 				'disallow_children' => array('email', 'ftp', 'url', 'iurl'),
 				'disabled_after' => ' ($1)',
 			),
@@ -1258,7 +1266,10 @@ function parse_bbc($message, $smileys = true, $cache_id = '')
 				'content' => ($context['browser']['is_ie'] && !$context['browser']['is_mac_ie'] ? '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="$2" height="$3"><param name="movie" value="$1" /><param name="play" value="true" /><param name="loop" value="true" /><param name="quality" value="high" /><param name="AllowScriptAccess" value="never" /><embed src="$1" width="$2" height="$3" play="true" loop="true" quality="high" AllowScriptAccess="never" /><noembed><a href="$1" target="_blank">$1</a></noembed></object>' : '<embed type="application/x-shockwave-flash" src="$1" width="$2" height="$3" play="true" loop="true" quality="high" AllowScriptAccess="never" /><noembed><a href="$1" target="_blank">$1</a></noembed>'),
 				'validate' => create_function('&$tag, &$data, $disabled', '
 					if (isset($disabled[\'url\']))
-						$tag[\'content\'] = \'$1\';'),
+						$tag[\'content\'] = \'$1\';
+					elseif (strpos($data[0], \'http://\') !== 0 && strpos($data[0], \'https://\') !== 0)
+						$data[0] = \'http://\' . $data[0];
+				'),
 				'disabled_content' => '<a href="$1" target="_blank">$1</a>',
 			),
 			array(
@@ -1295,14 +1306,22 @@ function parse_bbc($message, $smileys = true, $cache_id = '')
 					'height' => array('optional' => true, 'value' => ' height="$1"', 'match' => '(\d+)'),
 				),
 				'content' => '<img src="$1" alt="{alt}"{width}{height} border="0" />',
-				'validate' => create_function('&$tag, &$data, $disabled', '$data = strtr($data, array(\'<br />\' => \'\'));'),
+				'validate' => create_function('&$tag, &$data, $disabled', '
+					$data = strtr($data, array(\'<br />\' => \'\'));
+					if (strpos($data, \'http://\') !== 0 && strpos($data, \'https://\') !== 0)
+						$data = \'http://\' . $data;
+				'),
 				'disabled_content' => '($1)',
 			),
 			array(
 				'tag' => 'img',
 				'type' => 'unparsed_content',
 				'content' => '<img src="$1" alt="" border="0" />',
-				'validate' => create_function('&$tag, &$data, $disabled', '$data = strtr($data, array(\'<br />\' => \'\'));'),
+				'validate' => create_function('&$tag, &$data, $disabled', '
+					$data = strtr($data, array(\'<br />\' => \'\'));
+					if (strpos($data, \'http://\') !== 0 && strpos($data, \'https://\') !== 0)
+						$data = \'http://\' . $data;
+				'),
 				'disabled_content' => '($1)',
 			),
 			array(
@@ -1314,7 +1333,11 @@ function parse_bbc($message, $smileys = true, $cache_id = '')
 				'tag' => 'iurl',
 				'type' => 'unparsed_content',
 				'content' => '<a href="$1">$1</a>',
-				'validate' => create_function('&$tag, &$data, $disabled', '$data = strtr($data, array(\'<br />\' => \'\'));'),
+				'validate' => create_function('&$tag, &$data, $disabled', '
+					$data = strtr($data, array(\'<br />\' => \'\'));
+					if (strpos($data, \'http://\') !== 0 && strpos($data, \'https://\') !== 0)
+						$data = \'http://\' . $data;
+				'),
 			),
 			array(
 				'tag' => 'iurl',
@@ -1323,7 +1346,10 @@ function parse_bbc($message, $smileys = true, $cache_id = '')
 				'after' => '</a>',
 				'validate' => create_function('&$tag, &$data, $disabled', '
 					if (substr($data, 0, 1) == \'#\')
-						$data = \'#post_\' . substr($data, 1);'),
+						$data = \'#post_\' . substr($data, 1);
+					elseif (strpos($data, \'http://\') !== 0 && strpos($data, \'https://\') !== 0)
+						$data = \'http://\' . $data;
+				'),
 				'disallow_children' => array('email', 'ftp', 'url', 'iurl'),
 				'disabled_after' => ' ($1)',
 			),
@@ -1576,13 +1602,21 @@ function parse_bbc($message, $smileys = true, $cache_id = '')
 				'tag' => 'url',
 				'type' => 'unparsed_content',
 				'content' => '<a href="$1" target="_blank">$1</a>',
-				'validate' => create_function('&$tag, &$data, $disabled', '$data = strtr($data, array(\'<br />\' => \'\'));'),
+				'validate' => create_function('&$tag, &$data, $disabled', '
+					$data = strtr($data, array(\'<br />\' => \'\'));
+					if (strpos($data, \'http://\') !== 0 && strpos($data, \'https://\') !== 0)
+						$data = \'http://\' . $data;
+				'),
 			),
 			array(
 				'tag' => 'url',
 				'type' => 'unparsed_equals',
 				'before' => '<a href="$1" target="_blank">',
 				'after' => '</a>',
+				'validate' => create_function('&$tag, &$data, $disabled', '
+					if (strpos($data, \'http://\') !== 0 && strpos($data, \'https://\') !== 0)
+						$data = \'http://\' . $data;
+				'),
 				'disallow_children' => array('email', 'ftp', 'url', 'iurl'),
 				'disabled_after' => ' ($1)',
 			),
@@ -1718,7 +1752,7 @@ function parse_bbc($message, $smileys = true, $cache_id = '')
 			// Take care of some HTML!
 			if (!empty($modSettings['enablePostHTML']) && strpos($data, '&lt;') !== false)
 			{
-				$data = preg_replace('~&lt;a\s+href=(?:&quot;)?((?:http://|ftp://|https://|ftps://|mailto:).+?)(?:&quot;)?&gt;~i', '[url=$1]', $data);
+				$data = preg_replace('~&lt;a\s+href=((?:&quot;)?)((?:https?://|ftps?://|mailto:)\S+?)\\1&gt;~i', '[url=$2]', $data);
 				$data = preg_replace('~&lt;/a&gt;~i', '[/url]', $data);
 
 				// <br /> should be empty.
@@ -1738,15 +1772,13 @@ function parse_bbc($message, $smileys = true, $cache_id = '')
 				}
 
 				// Do <img ... /> - with security... action= -> action-.
-				preg_match_all('~&lt;img\s+src=(?:&quot;)?((?:http://|ftp://|https://|ftps://).+?)(?:&quot;)?(?:\s+alt=(?:&quot;)?(.*?)(?:&quot;)?)?(?:\s?/)?&gt;~i', $data, $matches, PREG_PATTERN_ORDER);
+				preg_match_all('~&lt;img\s+src=((?:&quot;)?)((?:https?://|ftps?://)\S+?)\\1(?:\s+alt=(&quot;.*?&quot;|\S*?))?(?:\s?/)?&gt;~i', $data, $matches, PREG_PATTERN_ORDER);
 				if (!empty($matches[0]))
 				{
 					$replaces = array();
-					foreach ($matches[1] as $match => $imgtag)
+					foreach ($matches[2] as $match => $imgtag)
 					{
-						// No alt?
-						if (!isset($matches[2][$match]))
-							$matches[2][$match] = '';
+						$alt = empty($matches[3][$match]) ? '' : ' alt=' . preg_replace('~^&quot;|&quot;$~', '', $matches[3][$match]);
 
 						// Remove action= from the URL - no funny business, now.
 						if (preg_match('~action(=|%3d)(?!dlattach)~i', $imgtag) != 0)
@@ -1770,10 +1802,10 @@ function parse_bbc($message, $smileys = true, $cache_id = '')
 							}
 
 							// Set the new image tag.
-							$replaces[$matches[0][$match]] = '<img src="' . $imgtag . '" width="' . $width . '" height="' . $height . '" alt="' . $matches[2][$match] . '" border="0" />';
+							$replaces[$matches[0][$match]] = '[img width=' . $width . ' height=' . $height . $alt . ']' . $imgtag . '[/img]';
 						}
 						else
-							$replaces[$matches[0][$match]] = '<img src="' . $imgtag . '" alt="' . $matches[2][$match] . '" border="0" />';
+							$replaces[$matches[0][$match]] = '[img' . $alt . ']' . $imgtag . '[/img]';
 					}
 
 					$data = strtr($data, $replaces);
@@ -1805,7 +1837,17 @@ function parse_bbc($message, $smileys = true, $cache_id = '')
 					{
 						// Switch out quotes really quick because they can cause problems.
 						$data = strtr($data, array('&#039;' => '\'', '&nbsp;' => $context['utf8'] ? "\xC2\xA0" : "\xA0", '&quot;' => '>">', '"' => '<"<', '&lt;' => '<lt<'));
-						$data = preg_replace(array('~(?<=[\s>\.(;\'"]|^)((?:http|https|ftp|ftps)://[\w\-_%@:|]+(?:\.[\w\-_%]+)*(?::\d+)?(?:/[\w\-_\~%\.@,\?&;=#+:\'\\\\]*|[\(\{][\w\-_\~%\.@,\?&;=#(){}+:\'\\\\]*)*[/\w\-_\~%@\?;=#}\\\\])~i', '~(?<=[\s>(\'<]|^)(www(?:\.[\w\-_]+)+(?::\d+)?(?:/[\w\-_\~%\.@,\?&;=#+:\'\\\\]*|[\(\{][\w\-_\~%\.@,\?&;=#(){}+:\'\\\\]*)*[/\w\-_\~%@\?;=#}\\\\])~i'), array('[url]$1[/url]', '[url=http://$1]$1[/url]'), $data);
+
+						// Only do this if the preg survives.
+						if (is_string($result = preg_replace(array(
+							'~(?<=[\s>\.(;\'"]|^)((?:http|https|ftp|ftps)://[\w\-_%@:|]+(?:\.[\w\-_%]+)*(?::\d+)?(?:/[\w\-_\~%\.@,\?&;=#(){}+:\'\\\\]*)*[/\w\-_\~%@\?;=#}\\\\])~i', 
+							'~(?<=[\s>(\'<]|^)(www(?:\.[\w\-_]+)+(?::\d+)?(?:/[\w\-_\~%\.@,\?&;=#(){}+:\'\\\\]*)*[/\w\-_\~%@\?;=#}\\\\])~i'
+						), array(
+							'[url]$1[/url]',
+							'[url=http://$1]$1[/url]'
+						), $data)))
+							$data = $result;
+
 						$data = strtr($data, array('\'' => '&#039;', $context['utf8'] ? "\xC2\xA0" : "\xA0" => '&nbsp;', '>">' => '&quot;', '<"<' => '"', '<lt<' => '&lt;'));
 					}
 
@@ -2436,7 +2478,7 @@ function parsesmileys(&$message)
 		{
 			$smileyfromcache[] = '/(?<=[>:\?\.\s' . $non_breaking_space . '[\]()*\\\;]|^)(' . preg_quote($smileysfrom[$i], '/') . '|' . preg_quote(htmlspecialchars($smileysfrom[$i], ENT_QUOTES), '/') . ')(?=[^[:alpha:]0-9]|$)/' . ($context['utf8'] ? 'u' : '');
 			// Escape a bunch of smiley-related characters in the description so it doesn't get a double dose :P.
-			$smileytocache[] = '<img src="' . $modSettings['smileys_url'] . '/' . $user_info['smiley_set'] . '/' . $smileysto[$i] . '" alt="' . strtr(htmlspecialchars($smileysdescs[$i]), array(':' => '&#58;', '(' => '&#40;', ')' => '&#41;', '$' => '&#36;', '[' => '&#091;')) . '" border="0" />';
+			$smileytocache[] = '<img src="' . htmlspecialchars($modSettings['smileys_url'] . '/' . $user_info['smiley_set'] . '/' . $smileysto[$i]) . '" alt="' . strtr(htmlspecialchars($smileysdescs[$i]), array(':' => '&#58;', '(' => '&#40;', ')' => '&#41;', '$' => '&#36;', '[' => '&#091;')) . '" border="0" />';
 		}
 	}
 

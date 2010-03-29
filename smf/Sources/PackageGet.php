@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.9                                           *
+* Software Version:           SMF 1.1.11                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -139,8 +139,8 @@ function PackageServers()
 	while ($row = mysql_fetch_assoc($request))
 	{
 		$context['servers'][] = array(
-			'name' => $row['name'],
-			'url' => $row['url'],
+			'name' => htmlspecialchars($row['name']),
+			'url' => htmlspecialchars($row['url']),
 			'id' => $row['ID_SERVER'],
 		);
 	}
@@ -687,6 +687,8 @@ function PackageServerAdd()
 function PackageServerRemove()
 {
 	global $db_prefix;
+
+	checkSession('get');
 
 	db_query("
 		DELETE FROM {$db_prefix}package_servers

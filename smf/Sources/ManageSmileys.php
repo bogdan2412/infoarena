@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.1                                           *
+* Software Version:           SMF 1.1.11                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -174,8 +174,8 @@ function EditSmileySettings()
 	foreach ($context['smiley_sets'] as $i => $set)
 		$context['smiley_sets'][$i] = array(
 			'id' => $i,
-			'path' => $set,
-			'name' => $set_names[$i],
+			'path' => htmlspecialchars($set),
+			'name' => htmlspecialchars($set_names[$i]),
 			'selected' => $set == $modSettings['smiley_sets_default']
 		);
 }
@@ -266,8 +266,8 @@ function EditSmileySets()
 	foreach ($context['smiley_sets'] as $i => $set)
 		$context['smiley_sets'][$i] = array(
 			'id' => $i,
-			'path' => $set,
-			'name' => $set_names[$i],
+			'path' => htmlspecialchars($set),
+			'name' => htmlspecialchars($set_names[$i]),
 			'selected' => $set == $modSettings['smiley_sets_default']
 		);
 
@@ -279,7 +279,7 @@ function EditSmileySets()
 
 		// Sanity check - then import.
 		if (isset($context['smiley_sets'][$_GET['set']]))
-			ImportSmileys($context['smiley_sets'][$_GET['set']]['path']);
+			ImportSmileys(un_htmlspecialchars($context['smiley_sets'][$_GET['set']]['path']));
 
 		// Force the process to continue.
 		$context['sub_action'] = 'modifyset';
@@ -361,8 +361,8 @@ function AddSmiley()
 	foreach ($context['smiley_sets'] as $i => $set)
 		$context['smiley_sets'][$i] = array(
 			'id' => $i,
-			'path' => $set,
-			'name' => $set_names[$i],
+			'path' => htmlspecialchars($set),
+			'name' => htmlspecialchars($set_names[$i]),
 			'selected' => $set == $modSettings['smiley_sets_default']
 		);
 
@@ -398,7 +398,7 @@ function AddSmiley()
 			$writeErrors = array();
 			foreach ($context['smiley_sets'] as $set)
 			{
-				if (!is_writable($context['smileys_dir'] . '/' . $set['path']))
+				if (!is_writable($context['smileys_dir'] . '/' . un_htmlspecialchars($set['path'])))
 					$writeErrors[] = $set['path'];
 			}
 			if (!empty($writeErrors))
@@ -428,20 +428,20 @@ function AddSmiley()
 			// Check if the file already exists... and if not move it to EVERY smiley set directory.
 			$i = 0;
 			// Keep going until we find a set the file doesn't exist in. (or maybe it exists in all of them?)
-			while (isset($context['smiley_sets'][$i]) && file_exists($context['smileys_dir'] . '/' . $context['smiley_sets'][$i]['path'] . '/' . $destName))
+			while (isset($context['smiley_sets'][$i]) && file_exists($context['smileys_dir'] . '/' . un_htmlspecialchars($context['smiley_sets'][$i]['path']) . '/' . $destName))
 				$i++;
 
 			// Okay, we're going to put the smiley right here, since it's not there yet!
 			if (isset($context['smiley_sets'][$i]['path']))
 			{
-				$smileyLocation = $context['smileys_dir'] . '/' . $context['smiley_sets'][$i]['path'] . '/' . $destName;
+				$smileyLocation = $context['smileys_dir'] . '/' . un_htmlspecialchars($context['smiley_sets'][$i]['path']) . '/' . $destName;
 				move_uploaded_file($_FILES['uploadSmiley']['tmp_name'], $smileyLocation);
 				@chmod($smileyLocation, 0644);
 
 				// Now, we want to move it from there to all the other sets.
 				for ($n = count($context['smiley_sets']); $i < $n; $i++)
 				{
-					$currentPath = $context['smileys_dir'] . '/' . $context['smiley_sets'][$i]['path'] . '/' . $destName;
+					$currentPath = $context['smileys_dir'] . '/' . un_htmlspecialchars($context['smiley_sets'][$i]['path']) . '/' . $destName;
 
 					// The file is already there!  Don't overwrite it!
 					if (file_exists($currentPath))
@@ -472,6 +472,9 @@ function AddSmiley()
 
 			foreach ($context['smiley_sets'] as $i => $set)
 			{
+				$set['name'] = un_htmlspecialchars($set['name']);
+				$set['path'] = un_htmlspecialchars($set['path']);
+
 				if (!isset($_FILES['individual_' . $set['name']]['name']) || $_FILES['individual_' . $set['name']]['name'] == '')
 					continue;
 
@@ -546,10 +549,10 @@ function AddSmiley()
 	{
 		foreach ($context['smiley_sets'] as $smiley_set)
 		{
-			if (!file_exists($context['smileys_dir'] . '/' . $smiley_set['path']))
+			if (!file_exists($context['smileys_dir'] . '/' . un_htmlspecialchars($smiley_set['path'])))
 				continue;
 
-			$dir = dir($context['smileys_dir'] . '/' . $smiley_set['path']);
+			$dir = dir($context['smileys_dir'] . '/' . un_htmlspecialchars($smiley_set['path']));
 			while ($entry = $dir->read())
 			{
 				if (!in_array($entry, $context['filenames']) && in_array(strrchr($entry, '.'), array('.jpg', '.gif', '.jpeg', '.png')))
@@ -664,8 +667,8 @@ function EditSmileys()
 	foreach ($context['smiley_sets'] as $i => $set)
 		$context['smiley_sets'][$i] = array(
 			'id' => $i,
-			'path' => $set,
-			'name' => $set_names[$i],
+			'path' => htmlspecialchars($set),
+			'name' => htmlspecialchars($set_names[$i]),
 			'selected' => $set == $modSettings['smiley_sets_default']
 		);
 
@@ -705,7 +708,7 @@ function EditSmileys()
 			foreach ($context['smiley_sets'] as $smiley_set)
 			{
 				foreach ($context['smileys'] as $smiley_id => $smiley)
-					if (!file_exists($modSettings['smileys_dir'] . '/' . $smiley_set['path'] . '/' . $smiley['filename']))
+					if (!file_exists($modSettings['smileys_dir'] . '/' . un_htmlspecialchars($smiley_set['path']) . '/' . $smiley['filename']))
 						$context['smileys'][$smiley_id]['sets_not_found'][] = $smiley_set['path'];
 			}
 		}
@@ -723,8 +726,8 @@ function EditSmileys()
 		foreach ($context['smiley_sets'] as $i => $set)
 			$context['smiley_sets'][$i] = array(
 				'id' => $i,
-				'path' => $set,
-				'name' => $set_names[$i],
+				'path' => htmlspecialchars($set),
+				'name' => htmlspecialchars($set_names[$i]),
 				'selected' => $set == $modSettings['smiley_sets_default']
 			);
 
@@ -736,10 +739,10 @@ function EditSmileys()
 		{
 			foreach ($context['smiley_sets'] as $smiley_set)
 			{
-				if (!file_exists($context['smileys_dir'] . '/' . $smiley_set['path']))
+				if (!file_exists($context['smileys_dir'] . '/' . un_htmlspecialchars($smiley_set['path'])))
 					continue;
 
-				$dir = dir($context['smileys_dir'] . '/' . $smiley_set['path']);
+				$dir = dir($context['smileys_dir'] . '/' . un_htmlspecialchars($smiley_set['path']));
 				while ($entry = $dir->read())
 				{
 					if (!in_array($entry, $context['filenames']) && in_array(strrchr($entry, '.'), array('.jpg', '.gif', '.jpeg', '.png')))

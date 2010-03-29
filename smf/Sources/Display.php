@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.9                                           *
+* Software Version:           SMF 1.1.11                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -928,7 +928,7 @@ function prepareDisplayContext($reset = false)
 // Download an attachment.
 function Download()
 {
-	global $txt, $modSettings, $db_prefix, $user_info, $scripturl, $context, $sourcedir;
+	global $txt, $modSettings, $db_prefix, $user_info, $scripturl, $context, $sourcedir, $topic;
 
 	$context['no_last_modified'] = true;
 
@@ -951,15 +951,18 @@ function Download()
 	// This is just a regular attachment...
 	else
 	{
+		// This checks only the current board for $board/$topic's permissions.
 		isAllowedTo('view_attachments');
 
 		// Make sure this attachment is on this board.
+		// NOTE: We must verify that $topic is the attachment's topic, or else the permission check above is broken.
 		$request = db_query("
 			SELECT a.filename, a.ID_ATTACH, a.attachmentType, a.file_hash
 			FROM ({$db_prefix}boards AS b, {$db_prefix}messages AS m, {$db_prefix}attachments AS a)
 			WHERE b.ID_BOARD = m.ID_BOARD
 				AND $user_info[query_see_board]
 				AND m.ID_MSG = a.ID_MSG
+				AND m.ID_TOPIC = $topic
 				AND a.ID_ATTACH = $_REQUEST[attach]
 			LIMIT 1", __FILE__, __LINE__);
 	}

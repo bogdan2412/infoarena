@@ -69,6 +69,8 @@ header("Content-type: text/html; charset=utf-8");
     <script type="text/javascript" src="<?= html_escape(url_static('js/tags.js')) ?>"></script>
     <script type="text/javascript" src="<?= html_escape(url_static('js/roundtimer.js')) ?>"></script>
 
+    <script type="text/javascript" src="http://summify.com/client/v1/249f00c6/client.js"></script>
+
     <script type="text/javascript">Sh_Init("<?= html_escape(url_static('swf/clipboard.swf')) ?>")</script>
 
 <?php

@@ -54,37 +54,6 @@ function template_main()
 			<tr>
 				<td class="windowbg">';
 
-	if ($context['visual_verification'])
-	{
-		echo '
-					<script language="JavaScript" type="text/javascript"><!-- // -->
-					function refreshImages()
-					{
-						// Make sure we are using a new rand code.
-						var new_url = new String("', $context['verificiation_image_href'], '");
-						new_url = new_url.substr(0, new_url.indexOf("rand=") + 5);
-
-						// Quick and dirty way of converting decimal to hex
-						var hexstr = "0123456789abcdef";
-						for(var i=0; i < 32; i++)
-							new_url = new_url + hexstr.substr(Math.floor(Math.random() * 16), 1);';
-
-						if ($context['use_graphic_library'])
-							echo '
-						document.getElementById("verificiation_image").src = new_url;';
-						else
-							echo '
-						document.getElementById("verificiation_image_1").src = new_url + ";letter=1";
-						document.getElementById("verificiation_image_2").src = new_url + ";letter=2";
-						document.getElementById("verificiation_image_3").src = new_url + ";letter=3";
-						document.getElementById("verificiation_image_4").src = new_url + ";letter=4";
-						document.getElementById("verificiation_image_5").src = new_url + ";letter=5";';
-						echo '
-					}
-						// ]]&gt;</script>';
-	}
-
-
 	if ($context['simple_search'])
 	{
 		echo '
@@ -99,38 +68,6 @@ function template_main()
 						<td align="right" class="smalltext">', $txt['search_example'], '</td>
 						<td></td>
 					</tr>';
-
-			if ($context['visual_verification'])
-			{
-				echo '
-					<tr>
-						<td>
-							<div style="font-weight: bold;">
-								', $txt['visual_verification_label'], ':
-								<div class="smalltext">', $txt['visual_verification_description'], '</div>
-							</div>
-							<div>';
-			if ($context['use_graphic_library'])
-				echo '
-								<img src="', $context['verificiation_image_href'], '" alt="', $txt['visual_verification_description'], '" id="verificiation_image" /><br />';
-			else
-				echo '
-								<img src="', $context['verificiation_image_href'], ';letter=1" alt="', $txt['visual_verification_description'], '" id="verificiation_image_1" />
-								<img src="', $context['verificiation_image_href'], ';letter=2" alt="', $txt['visual_verification_description'], '" id="verificiation_image_2" />
-								<img src="', $context['verificiation_image_href'], ';letter=3" alt="', $txt['visual_verification_description'], '" id="verificiation_image_3" />
-								<img src="', $context['verificiation_image_href'], ';letter=4" alt="', $txt['visual_verification_description'], '" id="verificiation_image_4" />
-								<img src="', $context['verificiation_image_href'], ';letter=5" alt="', $txt['visual_verification_description'], '" id="verificiation_image_5" />';
-			echo '
-								<input type="text" name="visual_verification_code" size="30" tabindex="', $context['tabindex']++, '" />
-								<div class="smalltext">
-									<a href="', $context['verificiation_image_href'], ';sound" onclick="return reqWin(this.href, 400, 120);">', $txt['visual_verification_sound'], '</a> | <a href="', $scripturl, '" onclick="refreshImages(); return false;">', $txt['visual_verification_request_new'], '</a>
-								</div>
-							</div>
-						</td>
-					</tr>';
-			}
-
-
 		echo '
 					</table><br /><br />
 					<a href="', $scripturl, '?action=search;advanced" onclick="this.href += \';search=\' + escape(document.searchform.search.value);">', $txt['smf298'], '</a>
@@ -219,40 +156,6 @@ function template_main()
 							</td>
 							<td></td>
 						</tr>
-';
-
-			if ($context['visual_verification'])
-			{
-				echo '
-						<tr>
-							<td style="padding-top: 2ex;">
-								<div style="font-weight: bold;">
-									', $txt['visual_verification_label'], ':
-									<div class="smalltext">', $txt['visual_verification_description'], '</div>
-								</div>
-								<div>';
-				if ($context['use_graphic_library'])
-					echo '
-									<img src="', $context['verificiation_image_href'], '" alt="', $txt['visual_verification_description'], '" id="verificiation_image" /><br />';
-				else
-					echo '
-									<img src="', $context['verificiation_image_href'], ';letter=1" alt="', $txt['visual_verification_description'], '" id="verificiation_image_1" />
-									<img src="', $context['verificiation_image_href'], ';letter=2" alt="', $txt['visual_verification_description'], '" id="verificiation_image_2" />
-									<img src="', $context['verificiation_image_href'], ';letter=3" alt="', $txt['visual_verification_description'], '" id="verificiation_image_3" />
-									<img src="', $context['verificiation_image_href'], ';letter=4" alt="', $txt['visual_verification_description'], '" id="verificiation_image_4" />
-									<img src="', $context['verificiation_image_href'], ';letter=5" alt="', $txt['visual_verification_description'], '" id="verificiation_image_5" />';
-				echo '
-									<input type="text" name="visual_verification_code" size="30" tabindex="', $context['tabindex']++, '" />
-									<div class="smalltext">
-										<a href="', $context['verificiation_image_href'], ';sound" onclick="return reqWin(this.href, 400, 120);">', $txt['visual_verification_sound'], '</a> | <a href="', $scripturl, '" onclick="refreshImages(); return false;">', $txt['visual_verification_request_new'], '</a>
-									</div>
-								</div>
-							</td>
-						</tr>';
-			}
-
-echo '
-
 					</table><br />';
 
 		// If $context['search_params']['topic'] is set, that means we're searching just one topic.
@@ -317,36 +220,6 @@ function template_results()
 
 	if (isset($context['did_you_mean']) || empty($context['topics']))
 	{
-
-		if ($context['visual_verification'])
-		{
-			echo '
-						<script language="JavaScript" type="text/javascript"><!-- // -->
-						function refreshImages()
-						{
-							// Make sure we are using a new rand code.
-							var new_url = new String("', $context['verificiation_image_href'], '");
-							new_url = new_url.substr(0, new_url.indexOf("rand=") + 5);
-
-							// Quick and dirty way of converting decimal to hex
-							var hexstr = "0123456789abcdef";
-							for(var i=0; i < 32; i++)
-								new_url = new_url + hexstr.substr(Math.floor(Math.random() * 16), 1);';
-
-							if ($context['use_graphic_library'])
-								echo '
-							document.getElementById("verificiation_image").src = new_url;';
-							else
-								echo '
-							document.getElementById("verificiation_image_1").src = new_url + ";letter=1";
-							document.getElementById("verificiation_image_2").src = new_url + ";letter=2";
-							document.getElementById("verificiation_image_3").src = new_url + ";letter=3";
-							document.getElementById("verificiation_image_4").src = new_url + ";letter=4";
-							document.getElementById("verificiation_image_5").src = new_url + ";letter=5";';
-							echo '
-						}
-							// ]]&gt;</script>';
-		}
 		echo '
 	<div class="tborder">
 		<table width="100%" cellpadding="4" cellspacing="0" border="0" class="bordercolor" style="margin-bottom: 2ex;">
@@ -366,33 +239,6 @@ function template_results()
 						<b>', $txt[582], ':</b><br />
 						<input type="text" name="search"', !empty($context['search_params']['search']) ? ' value="' . $context['search_params']['search'] . '"' : '', ' size="40" />
 						<input type="submit" name="submit" value="', $txt['search_adjust_submit'], '" />
-
-						';
-
-						if ($context['visual_verification'])
-						{
-							echo '<br /><br />
-							<b>', $txt['visual_verification_label'], ':</b><br />
-							<div class="smalltext">', $txt['visual_verification_description'], '</div>';
-
-							if ($context['use_graphic_library'])
-								echo '
-												<img src="', $context['verificiation_image_href'], '" alt="', $txt['visual_verification_description'], '" id="verificiation_image" /><br />';
-							else
-								echo '
-												<img src="', $context['verificiation_image_href'], ';letter=1" alt="', $txt['visual_verification_description'], '" id="verificiation_image_1" />
-												<img src="', $context['verificiation_image_href'], ';letter=2" alt="', $txt['visual_verification_description'], '" id="verificiation_image_2" />
-												<img src="', $context['verificiation_image_href'], ';letter=3" alt="', $txt['visual_verification_description'], '" id="verificiation_image_3" />
-												<img src="', $context['verificiation_image_href'], ';letter=4" alt="', $txt['visual_verification_description'], '" id="verificiation_image_4" />
-												<img src="', $context['verificiation_image_href'], ';letter=5" alt="', $txt['visual_verification_description'], '" id="verificiation_image_5" />';
-							echo '
-												<input type="text" name="visual_verification_code" size="30" tabindex="', $context['tabindex']++, '" />
-												<div class="smalltext">
-													<a href="', $context['verificiation_image_href'], ';sound" onclick="return reqWin(this.href, 400, 120);">', $txt['visual_verification_sound'], '</a> | <a href="', $scripturl, '" onclick="refreshImages(); return false;">', $txt['visual_verification_request_new'], '</a>
-												</div><br />';
-						}
-
-		echo '
 
 						<input type="hidden" name="searchtype" value="', !empty($context['search_params']['searchtype']) ? $context['search_params']['searchtype'] : 0, '" />
 						<input type="hidden" name="userspec" value="', !empty($context['search_params']['userspec']) ? $context['search_params']['userspec'] : '', '" />

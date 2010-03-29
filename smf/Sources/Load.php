@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.9                                           *
+* Software Version:           SMF 1.1.11                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -1365,6 +1365,9 @@ function loadTheme($ID_THEME = 0, $initialize = true)
 	$context['browser']['is_ie'] = $context['browser']['is_ie4'] || $context['browser']['is_ie5'] || $context['browser']['is_ie5.5'] || $context['browser']['is_ie6'] || $context['browser']['is_ie7'];
 	$context['browser']['needs_size_fix'] = ($context['browser']['is_ie5'] || $context['browser']['is_ie5.5'] || $context['browser']['is_ie4'] || $context['browser']['is_opera6']) && strpos($_SERVER['HTTP_USER_AGENT'], 'Mac') === false;
 
+	// 1.1.x doesn't detect IE8, so render as IE7.
+	$context['html_headers'] .= '<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />';
+
 	// This isn't meant to be reliable, it's just meant to catch most bots to prevent PHPSESSID from showing up.
 	$ci_user_agent = strtolower($_SERVER['HTTP_USER_AGENT']);
 	$context['browser']['possibly_robot'] = (strpos($_SERVER['HTTP_USER_AGENT'], 'Mozilla') === false && strpos($_SERVER['HTTP_USER_AGENT'], 'Opera') === false) || strpos($ci_user_agent, 'googlebot') !== false || strpos($ci_user_agent, 'slurp') !== false || strpos($ci_user_agent, 'crawl') !== false;
@@ -1913,6 +1916,7 @@ function template_include($filename, $once = false)
 function loadSession()
 {
 	global $sc;
+	global $HTTP_SESSION_VARS, $modSettings, $boardurl;
 
 	// Most of this was commented for [infoarena] integration.
 	// PHP session should have already been started by [infoarena]'s sessions

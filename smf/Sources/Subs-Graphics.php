@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.9                                           *
+* Software Version:           SMF 1.1.11                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -264,7 +264,7 @@ function createThumbnail($source, $max_width, $max_height)
 	$destName = $source . '_thumb.tmp';
 
 	// Ask for more memory: we need it for this, and it'll only happen once!
-	@ini_set('memory_limit', '48M');
+	@ini_set('memory_limit', '90M');
 
 	$success = false;
 	$sizes = getimagesize($source);

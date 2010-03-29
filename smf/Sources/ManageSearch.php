@@ -143,8 +143,6 @@ function EditSearchSettings()
 
 		updateSettings(array(
 			'simpleSearch' => isset($_POST['simpleSearch']) ? '1' : '0',
-
-			'visual_verification_guest_search' => isset($_POST['visual_verification_guest_search']) ? '1' : '0',
 			'search_results_per_page' => (int) $_POST['search_results_per_page'],
 			'search_max_results' => (int) $_POST['search_max_results'],
 		));

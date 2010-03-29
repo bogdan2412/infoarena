@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1; SplitTopics
+// Version: 1.1.11; SplitTopics
 
 function template_ask()
 {
@@ -398,6 +398,7 @@ function template_merge_extra_options()
 					<td class="windowbg" align="right">
 						<input type="submit" value="' . $txt['smf252'] . '" />
 						<input type="hidden" name="sa" value="execute" />
+						<input type="hidden" name="sc" value="', $context['session_id'], '" />
 					</td>
 				</tr>
 			</table>

@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1.8; Packages
+// Version: 1.1.11; Packages
 
 function template_main()
 {
@@ -710,7 +710,7 @@ function template_servers()
 								<a href="' . $scripturl . '?action=packageget;sa=browse;server=' . $server['id'] . '">[ ' . $txt['smf184'] . ' ]</a>
 							</td>
 							<td>
-								<a href="' . $scripturl . '?action=packageget;sa=remove;server=' . $server['id'] . '">[ ' . $txt['smf138'] . ' ]</a>
+								<a href="' . $scripturl . '?action=packageget;sa=remove;server=' . $server['id'] . ';sesc=', $context['session_id'], '">[ ' . $txt['smf138'] . ' ]</a>
 							</td>
 						</tr>';
 	echo '

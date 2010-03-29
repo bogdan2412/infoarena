@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.10                                          *
+* Software Version:           SMF 1.1.11                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -561,7 +561,7 @@ function saveProfileChanges(&$profile_vars, &$post_errors, $memID)
 	{
 		if (strlen(trim($_POST['websiteUrl'])) > 0 && strpos($_POST['websiteUrl'], '://') === false)
 			$_POST['websiteUrl'] = 'http://' . $_POST['websiteUrl'];
-		if (strlen($_POST['websiteUrl']) < 8)
+		if (strlen($_POST['websiteUrl']) < 8 || (substr($_POST['websiteUrl'], 0, 7) !== 'http://' && substr($_POST['websiteUrl'], 0, 8) !== 'https://'))
 			$_POST['websiteUrl'] = '';
 	}
 
@@ -2490,13 +2490,13 @@ function theme($memID)
 	foreach ($context['smiley_sets'] as $i => $set)
 	{
 		$context['smiley_sets'][$i] = array(
-			'id' => $set,
-			'name' => $set_names[$i],
+			'id' => htmlspecialchars($set),
+			'name' => htmlspecialchars($set_names[$i]),
 			'selected' => $set == $context['member']['smiley_set']['id']
 		);
 
 		if ($context['smiley_sets'][$i]['selected'])
-			$context['member']['smiley_set']['name'] = $set_names[$i];
+			$context['member']['smiley_set']['name'] = htmlspecialchars($set_names[$i]);
 	}
 
 	loadThemeOptions($memID);

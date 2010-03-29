@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.5                                           *
+* Software Version:           SMF 1.1.11                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -189,7 +189,7 @@ function PermissionIndex()
 			'allow_delete' => false,
 			'allow_modify' => true,
 			'can_search' => true,
-			'href' => $scripturl . '?action=viewmembers;sa=query;params=' . base64_encode('ID_GROUP = 0'),
+			'href' => $scripturl . '?action=viewmembers;sa=query;group=0',
 			'is_post_group' => false,
 			'color' => '',
 			'stars' => '',
@@ -220,7 +220,7 @@ function PermissionIndex()
 			'allow_delete' => $row['ID_GROUP'] > 4,
 			'allow_modify' => $row['ID_GROUP'] > 1,
 			'can_search' => $row['ID_GROUP'] != 3,
-			'href' => $scripturl . '?action=viewmembers;sa=query;params=' . base64_encode($row['minPosts'] == -1 ? "ID_GROUP = $row[ID_GROUP] OR FIND_IN_SET($row[ID_GROUP], additionalGroups)" : "ID_POST_GROUP = $row[ID_GROUP]"),
+			'href' => $scripturl . '?action=viewmembers;sa=query' . ($row['minPosts'] == -1 ? ';group=' . (int) $row['ID_GROUP'] : ';pgroup=' . (int) $row['ID_GROUP']),
 			'is_post_group' => $row['minPosts'] != -1,
 			'color' => empty($row['onlineColor']) ? '' : $row['onlineColor'],
 			'stars' => !empty($row['stars'][0]) && !empty($row['stars'][1]) ? str_repeat('<img src="' . $settings['images_url'] . '/' . $row['stars'][1] . '" alt="*" border="0" />', $row['stars'][0]) : '',

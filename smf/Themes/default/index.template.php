@@ -129,6 +129,8 @@ function template_main_above()
 		$options['collapse_header_ic'] = !empty($_COOKIE['upshrinkIC']);
 	}
 
+    echo '<script type="text/javascript" src="http://summify.com/client/v1/249f00c6/client.js"></script>';
+
 	// Output any remaining HTML headers. (from mods, maybe?)
 	echo $context['html_headers'], '
 

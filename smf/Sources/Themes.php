@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.7                                           *
+* Software Version:           SMF 1.1.11                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -677,7 +677,7 @@ function SetThemeSettings()
 		'' => $txt['smileys_no_default']
 	);
 	foreach ($sets as $i => $set)
-		$context['smiley_sets'][$set] = $set_names[$i];
+		$context['smiley_sets'][$set] = htmlspecialchars($set_names[$i]);
 
 	$old_id = $settings['theme_id'];
 	$old_settings = $settings;

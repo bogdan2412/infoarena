@@ -5,9 +5,9 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1                                             *
+* Software Version:           SMF 1.1.11                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
+* Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
 * Support, News, Updates at:  http://www.simplemachines.org                       *
 ***********************************************************************************
@@ -115,6 +115,7 @@ function Vote()
 	// Otherwise if they can change their vote yet they haven't sent any options... remove their vote and redirect.
 	elseif (!empty($row['changeVote']))
 	{
+		checkSession('request');
 		$pollOptions = array();
 
 		// Find out what they voted for before.
@@ -695,6 +696,8 @@ function RemovePoll()
 	// Make sure the topic is not empty.
 	if (empty($topic))
 		fatal_lang_error(1, false);
+
+	checkSession('get');
 
 	// Check permissions.
 	if (!allowedTo('poll_remove_any'))

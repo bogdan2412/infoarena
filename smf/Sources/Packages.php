@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.10                                          *
+* Software Version:           SMF 1.1.11                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -731,10 +731,10 @@ function PackageRemove()
 	// Ack, don't allow deletion of arbitrary files here, could become a security hole somehow!
 	if (!isset($_GET['package']) || $_GET['package'] == 'index.php' || $_GET['package'] == 'installed.list')
 		redirectexit('action=packages;sa=browse');
-	$_GET['package'] = preg_replace('~[\.]+~', '.', strtr($_GET['package'], '/', '_'));
+	$_GET['package'] = preg_replace('~[\.]+~', '.', strtr($_GET['package'], array('/' => '_', '\\' => '_')));
 
 	// Can't delete what's not there.
-	if (file_exists($boarddir . '/Packages/' . $_GET['package']))
+	if (file_exists($boarddir . '/Packages/' . $_GET['package']) && (substr($_GET['package'], -4) == '.zip' || substr($_GET['package'], -4) == '.tgz' || substr($_GET['package'], -7) == '.tar.gz' || is_dir($boarddir . '/Packages/' . $_GET['package'])) && $_GET['package'] != 'backups' && substr($_GET['package'], 0, 1) != '.')
 	{
 		packageRequireFTP($scripturl . '?action=packages;sa=remove;package=' . $_GET['package'], array($boarddir . '/Packages/' . $_GET['package']));
 
@@ -909,6 +909,8 @@ function PackageOptions()
 
 	if (isset($_POST['submit']))
 	{
+		checkSession('post');
+
 		updateSettings(array(
 			'package_server' => $_POST['pack_server'],
 			'package_port' => $_POST['pack_port'],

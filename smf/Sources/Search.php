@@ -66,29 +66,6 @@ function PlushSearch1()
 	loadLanguage('Search');
 	loadTemplate('Search');
 
-	// Generate a visual verification code to make sure the user is no bot.
-	$context['visual_verification'] = (empty($modSettings['disable_visual_verification']) || $modSettings['disable_visual_verification'] != 1) && ($user_info['is_guest'] && $modSettings['visual_verification_guest_search']);
-	if ($context['visual_verification'])
-	{
-		loadLanguage('Login');
-
-		$context['use_graphic_library'] = in_array('gd', get_loaded_extensions());
-		$context['verificiation_image_href'] = $scripturl . '?action=verificationcode;rand=' . md5(rand());
-
-		// Only generate a new code if one hasn't been set yet
-		if (!isset($_SESSION['visual_verification_code']))
-		{
-			// Skip I, J, L, O and Q.
-			$character_range = array_merge(range('A', 'H'), array('K', 'M', 'N', 'P'), range('R', 'Z'));
-
-			// Generate a new code.
-			$_SESSION['visual_verification_code'] = '';
-			for ($i = 0; $i < 5; $i++)
-				$_SESSION['visual_verification_code'] .= $character_range[array_rand($character_range)];
-		}
-	}
-
-
 	// Check the user's permissions.
 	isAllowedTo('search_posts');
 
@@ -292,21 +269,6 @@ function PlushSearch2()
 	// Are you allowed?
 	isAllowedTo('search_posts');
 
-	// Check whether the visual verification code was entered correctly.
-	// We don't want to require it for extra pages though.
-	if ((empty($modSettings['disable_visual_verification']) || $modSettings['disable_visual_verification'] != 1) && ($user_info['is_guest'] && $modSettings['visual_verification_guest_search']) && ($_REQUEST['start'] < 2))
-	{
-		if ((empty($_REQUEST['visual_verification_code']) || strtoupper($_REQUEST['visual_verification_code']) !== $_SESSION['visual_verification_code']))
-		{
-			$_SESSION['visual_errors'] = isset($_SESSION['visual_errors']) ? $_SESSION['visual_errors'] + 1 : 1;
-			if ($_SESSION['visual_errors'] > 3 && isset($_SESSION['visual_verification_code']))
-				unset($_SESSION['visual_verification_code']);
-
-				fatal_lang_error('visual_verification_failed', false);
-		}
-	}
-
-
 	require_once($sourcedir . '/Display.php');
 
 	if (!empty($modSettings['search_index']) && $modSettings['search_index'] == 'fulltext')
@@ -369,30 +331,6 @@ function PlushSearch2()
 		$search_params['minage'] = !empty($search_params['minage']) ? (int) $search_params['minage'] : (int) $_REQUEST['minage'];
 
 	// Maximum age of messages. Default to infinite (9999 days: param not set).
-
-	// Generate a visual verification code to make sure the user is no bot.
-	// Used if the search form is shown on the page (for when there are no results)
-	$context['visual_verification'] = (empty($modSettings['disable_visual_verification']) || $modSettings['disable_visual_verification'] != 1) && ($user_info['is_guest'] && $modSettings['visual_verification_guest_search']);
-	if ($context['visual_verification'])
-	{
-		loadLanguage('Login');
-
-		$context['use_graphic_library'] = in_array('gd', get_loaded_extensions());
-		$context['verificiation_image_href'] = $scripturl . '?action=verificationcode;rand=' . md5(rand());
-
-		// Only generate a new code if one hasn't been set yet
-		if (!isset($_SESSION['visual_verification_code']))
-		{
-			// Skip I, J, L, O and Q.
-			$character_range = array_merge(range('A', 'H'), array('K', 'M', 'N', 'P'), range('R', 'Z'));
-
-			// Generate a new code.
-			$_SESSION['visual_verification_code'] = '';
-			for ($i = 0; $i < 5; $i++)
-				$_SESSION['visual_verification_code'] .= $character_range[array_rand($character_range)];
-		}
-	}
-
 	if (!empty($search_params['maxage']) || (!empty($_REQUEST['maxage']) && $_REQUEST['maxage'] != 9999))
 		$search_params['maxage'] = !empty($search_params['maxage']) ? (int) $search_params['maxage'] : (int) $_REQUEST['maxage'];
 

@@ -275,8 +275,6 @@ function ModifyPostSettings()
 			'removeNestedQuotes' => empty($_POST['removeNestedQuotes']) ? '0' : '1',
 			'enableEmbeddedFlash' => empty($_POST['enableEmbeddedFlash']) ? '0' : '1',
 			'enableSpellChecking' => empty($_POST['enableSpellChecking']) ? '0' : '1',
-
-			'visual_verification_guest_post' => empty($_POST['visual_verification_guest_post']) ? '0' : '1',
 			'max_messageLength' => empty($_POST['max_messageLength']) ? '0' : (int) $_POST['max_messageLength'],
 			'fixLongWords' => empty($_POST['fixLongWords']) ? '0' : (int) $_POST['fixLongWords'],
 			'topicSummaryPosts' => empty($_POST['topicSummaryPosts']) ? '0' : (int) $_POST['topicSummaryPosts'],
