@@ -293,9 +293,21 @@ function url_task_tags_rename() {
     return url_complex("admin/task-tags", array("action" => "rename"));
 }
 
+function url_round($round_id) {
+    log_assert(is_round_id($round_id));
+    $round = round_get($round_id);
+    return url_complex($round['page_name']);
+}
+
 function url_round_edit($round_id) {
     log_assert(is_round_id($round_id));
-    return url_complex("admin/runda/$round_id");
+    $round = round_get($round_id);
+    return url_complex($round['page_name'], array('action' => 'edit'));
+}
+
+function url_round_edit_params($round_id) {
+    log_assert(is_round_id($round_id));
+    return url_complex("admin/runda/" . $round_id);
 }
 
 function url_round_create() {

@@ -14,6 +14,16 @@ if (($task_id = textblock_security_is_task($page['security'])) &&
 ?>
 <h1>Editare enunț <a href="<?= html_escape(url_task($task_id)) ?>">
 <?= html_escape($task_id) ?></a></h1>
+<?php }
+
+// insert round edit tabs
+if (($round_id = textblock_security_is_round($page['security'])) &&
+    (identity_can('round-edit', $round = round_get($round_id)))) {
+    require_once(IA_ROOT_DIR."www/views/round_edit_header.php");
+    echo round_edit_tabs($round_id, request("action"));
+?>
+<h1>Editare pagină <a href="<?= html_escape(url_round($round_id)) ?>">
+<?= html_escape($round['title']) ?></a></h1>
 <?php } ?>
 
 <script type="text/javascript">

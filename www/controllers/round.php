@@ -184,7 +184,7 @@ function controller_round_details($round_id) {
         }
 
         flash("Runda a fost modificata cu succes.");
-        redirect(url_round_edit($round_id));
+        redirect(url_round_edit_params($round_id));
     }
 
     // Create view.
