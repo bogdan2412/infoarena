@@ -86,6 +86,9 @@ function format_table($data, $column_infos = null, $options = null)
             $args = array();
             if (isset($column['css_class'])) {
                 $args['class'] = $column['css_class'];
+                if (isset($column['title_css_class'])) {
+                    $args['class'] .= ' ' . $column['title_css_class'];
+                }
             }
             if (isset($column['css_style'])) {
                 $args['style'] = $column['css_style'];

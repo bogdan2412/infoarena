@@ -193,7 +193,8 @@ function macro_tasks($args) {
     }
     if ($show_ratings) {
         $column_infos[] = array(
-                'html_title' => 'Dificultate<span style="color: red; font-weight:bold;"><sup>nou!</sup></span>',
+                'html_title' => 'Dificultate',
+                'title_css_class' => 'new_feature',
                 'css_class' => 'rating',
                 'key' => 'rating',
                 'valform' => 'format_rating_column',

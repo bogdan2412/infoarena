@@ -1561,3 +1561,11 @@ ul.tag_filters {
 .security_hide {
     display: none;
 }
+
+.new_feature:after {
+    color: red;
+    font-weight: bold;
+    content: "nou!";
+    font-size: 10px;
+    vertical-align: super;
+}
