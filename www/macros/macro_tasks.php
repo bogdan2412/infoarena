@@ -166,7 +166,7 @@ function macro_tasks($args) {
     $options['row_style'] = 'task_row_style';
     $options['css_row_parity'] = true;
 
-    $options['css_class'] = 'tasks';
+    $options['css_class'] = 'tasks sortable';
     if (getattr($args, 'drag_and_drop', false))
       $options['css_class'] .= ' dragndrop';
 
