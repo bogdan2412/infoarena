@@ -129,22 +129,35 @@ else if ($page == 'admin/runda-noua') {
     controller_round_create();
 }
 
-// Round detail editor and deleter
-else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'runda') {
-    $obj_id = implode("/", array_slice($pagepath, 2));
+// Round edit parameters
+else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'runda' &&
+         $action == 'edit-params') {
+    require_once(IA_ROOT_DIR.'www/controllers/round.php');
+    $round_id = implode("/", array_slice($pagepath, 2));
+    controller_round_details($round_id);
+}
+
+// Round edit task order
+else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'runda' &&
+         $action == 'edit-task-order') {
+    require_once(IA_ROOT_DIR.'www/controllers/round.php');
+    $round_id = implode("/", array_slice($pagepath, 2));
+    controller_round_task_order($round_id);
+}
+
+// Round delete
+else if ($urlstart == 'admin' && getattr($pagepath, 1) == 'runda' &&
+         $action == 'sterge-runda') {
     require_once(IA_ROOT_DIR.'www/controllers/round.php');
     require_once(IA_ROOT_DIR.'www/controllers/textblock.php');
-    if ($action == 'sterge-runda') {
-        if (request('delete-pages')) {
-            $v = request('textblocks');
-            controller_textblock_delete_many($v, url_round_delete($obj_id));
-        } elseif (request('delete-round')) {
-            controller_round_delete($obj_id);
-        } else {
-            controller_round_delete_view($obj_id);
-        }
+    $round_id = implode("/", array_slice($pagepath, 2));
+    if (request('delete-pages')) {
+        $v = request('textblocks');
+        controller_textblock_delete_many($v, url_round_delete($round_id));
+    } elseif (request('delete-round')) {
+        controller_round_delete($round_id);
     } else {
-        controller_round_details($obj_id);
+        controller_round_delete_view($round_id);
     }
 }
 

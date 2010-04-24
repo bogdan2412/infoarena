@@ -9,15 +9,18 @@ function round_edit_tabs($round_id, $active) {
 
     $tab_names = array(
         'edit' => 'Pagină',
-        'round-edit-params' => 'Parametri');
+        'round-edit-params' => 'Parametri',
+        'round-edit-task-order' => 'Ordine probleme');
 
     $tab_urls = array(
         'edit' => url_round_edit($round_id),
-        'round-edit-params' => url_round_edit_params($round_id));
+        'round-edit-params' => url_round_edit_params($round_id),
+        'round-edit-task-order' => url_round_edit_task_order($round_id));
 
     $permissions = array(
         'edit' => 'round-edit',
-        'round-edit-params' => 'round-edit');
+        'round-edit-params' => 'round-edit',
+        'round-edit-task-order' => 'round-edit');
 
     $round = round_get($round_id);
 

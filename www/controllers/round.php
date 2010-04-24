@@ -2,6 +2,7 @@
 
 require_once(IA_ROOT_DIR."common/db/db.php");
 require_once(IA_ROOT_DIR."common/db/round.php");
+require_once(IA_ROOT_DIR."common/db/round_task.php");
 require_once(IA_ROOT_DIR."common/db/task.php");
 require_once(IA_ROOT_DIR."common/round.php");
 require_once(IA_ROOT_DIR."common/tags.php");
@@ -200,6 +201,84 @@ function controller_round_details($round_id) {
     $view['round_types'] = $round_types;
 
     execute_view_die("views/round_edit.php", $view);
+}
+
+function controller_round_task_order($round_id) {
+    // Validate round_id
+    if (!is_round_id($round_id)) {
+        flash_error('Identificatorul rundei este invalid');
+        redirect(url_home());
+    }
+
+    // Get round
+    $round = round_get($round_id);
+    if (!$round) {
+        flash_error("Runda nu exista");
+        redirect(url_home());
+    }
+
+    // Security check
+    identity_require('round-edit', $round);
+
+    if (request_is_post()) {
+        // Request a list of ids with the new task order
+        $task_order_strings = explode(';', request('task_order', ''));
+
+        // Evil users, abort post.
+        foreach ($task_order_strings as $order_string) {
+            if (!is_numeric($order_string)) {
+                redirect(url_round_edit_task_order($round_id));
+            }
+        }
+
+        // Parse the values
+        $task_order = array_map("intval", $task_order_strings);
+
+        // Increment by 1
+        foreach ($task_order as &$order_id) {
+            $order_id += 1;
+        }
+        unset($order_id);
+
+        // Get the tasks
+        $first = min($task_order) - 1;
+        $count = count($task_order);
+        $tasks = round_get_tasks($round_id, $first, $count);
+
+        $task_ids = array();
+        foreach ($tasks as $task) {
+            $task_ids[$task['order']] = $task['id'];
+        }
+
+        // Check each order_id has an associated task_id
+        // Another evil users check
+        foreach ($task_order as $order_id) {
+            if (!getattr($task_ids, $order_id)) {
+                redirect(url_round_edit_task_order($round_id));
+            }
+        }
+
+        $current_id = $first + 1;
+        foreach ($task_order as $order_id) {
+            $task_id = $task_ids[$order_id];
+
+            if ($current_id != $order_id) {
+                round_task_update_order_id($round_id, $task_id, $current_id);
+                task_update_forum_topic($task_id);
+            }
+
+            $current_id += 1;
+        }
+    }
+
+    // Create view.
+    $view = array();
+    $view['title'] = "Editare ordine probleme $round_id";
+    $view['page_name'] = url_round_edit_task_order($round_id);
+    $view['round_id'] = $round_id;
+    $view['round'] = $round;
+
+    execute_view_die("views/round_task_order.php", $view);
 }
 
 // Creates a round. Minimalist

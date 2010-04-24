@@ -1043,6 +1043,9 @@ ul.htabs-2 {
 /* Basic table css */
 table {
     border-collapse: collapse;
+    line-height: 2em;
+    margin: 0.5em;
+    width: 99%;
 }
 
 table td, table th {

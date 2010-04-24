@@ -2,6 +2,7 @@
 
 require_once(IA_ROOT_DIR."common/db/db.php");
 require_once(IA_ROOT_DIR."common/db/parameter.php");
+require_once(IA_ROOT_DIR."common/db/round_task.php");
 
 function _round_cache_add($round) {
     mem_cache_set("round-by-id:{$round['id']}", $round, IA_MEM_CACHE_ROUND_EXPIRATION);
@@ -110,7 +111,7 @@ function round_get_tasks($round_id, $first = 0, $count = null,
         $count = 666013;
     }
     $fields = "round_task.task_id AS id, ".
-              "task.`order` AS `order`, ".
+              "round_task.`order_id` AS `order`, ".
               "task.`title` AS `title`, ".
               "task.`page_name` AS `page_name`, ".
               "task.`source` AS `source`, ".
@@ -124,7 +125,7 @@ function round_get_tasks($round_id, $first = 0, $count = null,
                           FROM ia_round_task as round_task
                           LEFT JOIN ia_task as task ON task.id = round_task.task_id
                           WHERE `round_task`.`round_id` = '%s'
-                          ORDER BY task.`order` LIMIT %d, %d",
+                          ORDER BY round_task.`order_id` LIMIT %d, %d",
                           db_escape($round_id), db_escape($first), db_escape($count));
     } else {
         $filter_clause = db_get_task_filter_clause($filter, 'score');
@@ -138,7 +139,7 @@ function round_get_tasks($round_id, $first = 0, $count = null,
                                 score.user_id = '%s'
                           WHERE `round_task`.`round_id` = '%s'
                             AND %s
-                          ORDER BY task.`order` LIMIT %d, %d",
+                          ORDER BY round_task.`order_id` LIMIT %d, %d",
                          db_escape($user_id),
                          db_escape($round_id), db_escape($filter_clause),
                          db_escape($first), db_escape($count));
@@ -217,11 +218,22 @@ function round_update_parameters($round_id, $param_values) {
 function round_update_task_list($round_id, $old_tasks, $tasks) {
     log_assert(is_round_id($round_id));
 
-    // delete all round-task relations
-    $query = sprintf("DELETE FROM ia_round_task
-                      WHERE round_id = '%s'",
-                     db_escape($round_id));
-    db_query($query);
+    $old_tasks_count = count($old_tasks);
+
+    // Do nothing with common tasks, be smart.
+    $common_tasks = array_intersect($old_tasks, $tasks);
+    $old_tasks = array_diff($old_tasks, $common_tasks);
+    $tasks = array_diff($tasks, $common_tasks);
+
+    // delete round-task relations
+    if (count($old_tasks) > 0) {
+        $query = sprintf("DELETE FROM ia_round_task
+                          WHERE round_id = %s AND task_id IN (%s)",
+                         db_quote($round_id),
+                         implode(',', array_map("db_quote", $old_tasks)));
+        db_query($query);
+    }
+
     foreach($old_tasks as $task) {
         // Update parent round cache for old tasks
         task_get_parent_rounds($task, true);
@@ -230,10 +242,13 @@ function round_update_task_list($round_id, $old_tasks, $tasks) {
     if (count($tasks) > 0) {
         // insert new relations
         $values = array();
+        $order_id = $old_tasks_count;
         foreach ($tasks as $task_id) {
-            $values[] = "('".db_escape($round_id)."', '".db_escape($task_id)."')";
+            $order_id += 1;
+            $values[] = "('".db_escape($round_id)."', '".
+                        db_escape($task_id)."', '".db_escape($order_id)."')";
         }
-        $query = "INSERT INTO ia_round_task (round_id, task_id)
+        $query = "INSERT INTO ia_round_task (round_id, task_id, order_id)
                   VALUES ". implode(', ', $values);
         db_query($query);
         foreach($tasks as $task) {
@@ -241,6 +256,8 @@ function round_update_task_list($round_id, $old_tasks, $tasks) {
             task_get_parent_rounds($task, true);
         }
     }
+
+    round_task_recompute_order($round_id);
 }
 
 // Returns boolean whether given user is registered to round $round_id

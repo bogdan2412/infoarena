@@ -152,16 +152,23 @@ function macro_tasks($args) {
                      identity_can("round-view-progress", $round);
 
     // get round tasks
-    $tasks = round_get_tasks($round_id,
+    $tasks = round_get_tasks(
+             $round_id,
              $options['first_entry'],
              $options['display_entries'],
-             $user_id, $scores,
-             $filter, $show_progress);
+             $user_id,
+             $scores,
+             $filter,
+             $show_progress);
+
     $options['total_entries'] = round_get_task_count(
              $round_id, $user_id, $filter);
     $options['row_style'] = 'task_row_style';
-    $options['css_class'] = 'tasks';
     $options['css_row_parity'] = true;
+
+    $options['css_class'] = 'tasks';
+    if (getattr($args, 'drag_and_drop', false))
+      $options['css_class'] .= ' dragndrop';
 
     $column_infos = array();
     if ($show_numbers) {

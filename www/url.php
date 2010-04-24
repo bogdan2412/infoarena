@@ -307,7 +307,14 @@ function url_round_edit($round_id) {
 
 function url_round_edit_params($round_id) {
     log_assert(is_round_id($round_id));
-    return url_complex("admin/runda/" . $round_id);
+    return url_complex("admin/runda/" . $round_id,
+                       array('action' => 'edit-params'));
+}
+
+function url_round_edit_task_order($round_id) {
+    log_assert(is_round_id($round_id));
+    return url_complex("admin/runda/" . $round_id,
+                       array('action' => 'edit-task-order'));
 }
 
 function url_round_create() {

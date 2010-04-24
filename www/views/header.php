@@ -68,6 +68,8 @@ header("Content-type: text/html; charset=utf-8");
     <script type="text/javascript" src="<?= html_escape(url_static('js/sh/shInit.js')) ?>"></script>
     <script type="text/javascript" src="<?= html_escape(url_static('js/tags.js')) ?>"></script>
     <script type="text/javascript" src="<?= html_escape(url_static('js/roundtimer.js')) ?>"></script>
+    <script type="text/javascript" src="<?= html_escape(url_static('js/foreach.js')) ?>"></script>
+    <script type="text/javascript" src="<?= html_escape(url_static('js/tablednd.js')) ?>"></script>
 
     <script type="text/javascript" src="http://summify.com/client/v1/249f00c6/client.js"></script>
 

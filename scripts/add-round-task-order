@@ -1,0 +1,54 @@
+#! /usr/bin/env php
+<?php
+
+require_once(dirname($argv[0])."/utilities.php");
+require_once(dirname($argv[0])."/../common/db/task.php");
+
+db_connect();
+
+// Add new column in ia_round_task
+$query = "ALTER TABLE ia_round_task ADD COLUMN order_id INT";
+db_query($query);
+
+// Get all the round ids
+$query = "SELECT DISTINCT id FROM ia_round";
+$res = db_fetch_all($query);
+
+// Complete order_id column for each round
+foreach ($res as $row) {
+    $round_id = $row['id'];
+
+    // Get all tasks for a round
+    $query = sprintf(
+        "SELECT ia_round_task.task_id, ia_task.order
+         FROM ia_round_task
+         LEFT JOIN ia_task ON ia_round_task.task_id = ia_task.id
+         WHERE (round_id = %s)
+         ORDER BY ia_task.order",
+         db_quote($round_id));
+    $res = db_fetch_all($query);
+
+    $count = 1;
+    foreach ($res as $row) {
+        $task_id = $row['task_id'];
+
+        $query = sprintf(
+            "UPDATE ia_round_task
+             SET order_id = %s
+             WHERE (round_id = %s AND task_id = %s)",
+             db_quote($count), db_quote($round_id), db_quote($task_id));
+        db_query($query);
+
+        $count += 1;
+    }
+}
+
+// Update forum topics
+$query = "SELECT task_id FROM ia_round_task
+          WHERE round_id = 'arhiva'";
+$res = db_fetch_all($query);
+foreach ($res as $task) {
+    task_update_forum_topic($task['task_id']);
+}
+
+?>

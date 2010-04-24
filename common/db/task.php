@@ -3,6 +3,7 @@
 require_once(IA_ROOT_DIR . "common/db/db.php");
 require_once(IA_ROOT_DIR . "common/task.php");
 require_once(IA_ROOT_DIR . "common/db/parameter.php");
+require_once(IA_ROOT_DIR . "common/db/round_task.php");
 
 // Add $task to cache if not null, return $task.
 function _task_cache_add($task) {
@@ -54,6 +55,22 @@ function task_create($task, $task_params, $remote_ip_info = null) {
     return $res;
 }
 
+// Deletes a task from ia_round_task
+function task_delete_from_rounds($task_id) {
+    // Get all rounds for the task
+    $query = "SELECT DISTINCT round_id FROM ia_round_task
+              WHERE task_id = " . db_quote($task_id);
+    $res = db_fetch_all($query);
+
+    // Delete task
+    db_query("DELETE FROM ia_round_task WHERE task_id = ".db_quote($task_id));
+
+    // Repair rounds order
+    foreach ($res as $row) {
+        round_task_recompute_order($row['round_id']);
+    }
+}
+
 // Delete a task, including scores, jobs and page
 // WARNING: This is irreversible.
 function task_delete($task) {
@@ -79,8 +96,7 @@ function task_delete($task) {
     }
 
     // Remove task from all rounds
-    db_query("DELETE FROM `ia_round_task`
-              WHERE `task_id` = " . db_quote($task["id"]));
+    task_delete_from_rounds($task['id']);
 
     // Delete task jobs
     $job_ids_fetched = db_fetch_all("
@@ -246,4 +262,86 @@ function task_filter_by_tags($tag_ids, $scores = true, $user_id = null) {
 
     return $tasks;
 }
+
+// Updates the forum topic associated with a task.
+function task_update_forum_topic($task_id, $round_id = "arhiva") {
+    if (!is_task_id($task_id)) {
+        log_error("Invalid task id");
+    }
+
+    // Get task info
+    $query = "SELECT title, page_name FROM ia_task
+              WHERE id = " . db_quote($task_id);
+    $task = db_fetch($query);
+
+    // Get the forum topic
+    $query = "SELECT forum_topic
+              FROM ia_textblock
+              WHERE name = " . db_quote($task['page_name']);
+    $res = db_fetch($query);
+    $topic_id = $res['forum_topic'];
+
+    // Check the textblock has an associated forum topic.
+    if (is_null($topic_id)) {
+        return;
+    }
+
+    // Get the first message from the topic
+    $query = "SELECT ID_FIRST_MSG AS `msg_id`
+              FROM ia_smf_topics
+              WHERE ID_TOPIC = " . db_quote($topic_id);
+    $res = db_fetch($query);
+    // Topic id doesn't exist
+    if (is_null($res)) {
+        return;
+    }
+    $message_id = $res['msg_id'];
+
+    // Get the subject and the body of the message
+    $query = "SELECT subject, body FROM ia_smf_messages
+              WHERE ID_MSG = " . db_quote($message_id);
+    $message = db_fetch($query);
+
+    // Find the number associated with the (task, round) pair.
+    $query = sprintf(
+        "SELECT order_id FROM ia_round_task
+         WHERE round_id = %s AND task_id = %s",
+         db_quote($round_id), db_quote($task_id));
+    $res = db_fetch($query);
+    $task_number = sprintf("%03d", $res['order_id'] - 1);
+
+    // New info
+    $new_subject = $task_number . " " . $task['title'];
+    $body_start = mb_substr($message['body'], 0, 35);
+    if ($body_start != "Aici puteti discuta despre problema" &&
+        $body_start != "Aici puteÈ›i discuta despre prob" &&
+        $body_start != "Aici puteÅ£i discuta despre probl") {
+        $new_body = 'Aici puteÅ£i discuta despre problema ' .
+                    '[url=http://infoarena.ro/problema/' . $task_id . ']' .
+                    $task['title'] . '[/url].';
+    } else {
+        $new_body = $message['body'];
+    }
+
+    // Finally, update the message
+    $query = sprintf(
+        "UPDATE ia_smf_messages
+         SET subject = %s, body = %s
+         WHERE ID_MSG = %s",
+         db_quote($new_subject), db_quote($new_body), db_quote($message_id));
+    db_query($query);
+
+    // Not finished yet, must change replies too.
+    // This is extremely time consuming.
+    if ($new_subject != $message['subject']) {
+        $query = sprintf(
+            "UPDATE ia_smf_messages
+             SET subject = %s
+             WHERE subject LIKE %s",
+             db_quote("RÄƒspuns: " . $new_subject),
+             db_quote("%" . $message['subject']));
+        db_query($query);
+    }
+}
+
 ?>
