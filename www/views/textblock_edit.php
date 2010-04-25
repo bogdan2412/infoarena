@@ -12,7 +12,7 @@ if (($task_id = textblock_security_is_task($page['security'])) &&
     require_once(IA_ROOT_DIR."www/views/task_edit_header.php");
     echo task_edit_tabs($task_id, request("action"));
 ?>
-<h1>Editare enunț <a href="<?= html_escape(url_task($task_id)) ?>">
+<h1>Editare enunţ <a href="<?= html_escape(url_task($task_id)) ?>">
 <?= html_escape($task_id) ?></a></h1>
 <?php }
 

@@ -49,30 +49,30 @@ care s-au abonat să le primească.</p>
 <div class="notice">
     <?php if (identity_is_anonymous()) { ?>
 
-      <p>Ca să primești newsletter-ul infoarena trebuie să fii
+      <p>Ca să primeşti newsletter-ul infoarena trebuie să fii
         <a href="<?= url_register() ?>">înregistrat</a>.</p>
 
       <p>Dacă ai deja cont pe infoarena
-        <a href="<?= url_account() ?>">verifică opțiunile contului tău</a>.</p>
+        <a href="<?= url_account() ?>">verifică opţiunile contului tău</a>.</p>
 
     <?php } elseif ($identity_user['newsletter']) { ?>
 
-      <p>Ești abonat la newsletter-ul infoarena cu adresa de email
+      <p>Eşti abonat la newsletter-ul infoarena cu adresa de email
       <strong><em><?= $identity_user['email'] ?></em></strong>.</p>
 
-      <p>Dacă nu mai dorești să primești newsletter-ul infoarena, te poți
+      <p>Dacă nu mai doreşti să primeşti newsletter-ul infoarena, te poţi
       dezabona din <a href="<?= url_account(identity_get_username()) ?>">
-      opțiunile contului tău</a>.</p>
+      opţiunile contului tău</a>.</p>
 
     <?php } else { ?>
 
-      <p><strong>Nu ești abonat la newsletter-ul infoarena.</strong> :(
+      <p><strong>Nu eşti abonat la newsletter-ul infoarena.</strong> :(
 
       Te rugăm sa te abonezi modificând
-      <a href="<?= url_account(identity_get_username()) ?>">opțiunile contului
+      <a href="<?= url_account(identity_get_username()) ?>">opţiunile contului
       tău</a>.</p>
 
-      <p>Te poți dezabona oricând ulterior.</p>
+      <p>Te poţi dezabona oricând ulterior.</p>
 
     <?php } ?>
 </div>

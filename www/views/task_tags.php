@@ -12,7 +12,7 @@ function format_tag_name($row) {
             "type" => $row["type"],
             "parent" => $row["parent"]
         ),
-        $row["name"], "Redenumește");
+        $row["name"], "Redenumeşte");
     $tag .= ' '.format_link(
         url_task_search(array($row["id"])), $row["name"], true,
         array("class" => "algorithm_tag")
@@ -29,7 +29,7 @@ function format_operations($row) {
             "parent" => $row["parent"]
         )
     );
-    $rename = '<a href="#" class="toggle_rename">Redenumește</a>';
+    $rename = '<a href="#" class="toggle_rename">Redenumeşte</a>';
     return sprintf("[%s] [%s]", $delete, $rename);
 }
 
@@ -57,7 +57,7 @@ $column_infos = array(
         'css_class' => 'tag-task-count',
     ),
     array(
-        'title' => 'Operații',
+        'title' => 'Operaţii',
         'rowform' => 'format_operations',
         'css_class' => 'tag-operations',
     ),
@@ -83,10 +83,10 @@ foreach ($categories as $category) {
         ?>]</li>
         <li class="delete_method">[<?php echo format_post_link(url_task_tags_delete(), "Șterge categorie",
             array("type" => "method", "name" => $category["name"])); ?>]</li>
-        <li class="rename_method">[<a class="toggle_rename" href="#">Redenumește categorie</a><?php
+        <li class="rename_method">[<a class="toggle_rename" href="#">Redenumeşte categorie</a><?php
             echo inline_post_form(url_task_tags_rename(),
                 array("type" => "method", "old_name" => $category["name"]),
-                $category["name"], "Redenumește");
+                $category["name"], "Redenumeşte");
         ?>]</li>
     </ul>
     <?php
