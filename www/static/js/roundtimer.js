@@ -3,7 +3,9 @@ var timers = {};
 function relativeTime(timerId) {
     var now = new Date();
 
-    var diff = timers[timerId].startTime.getTime() - now.getTime();
+    var diff = timers[timerId].startTime.getTime() +
+               timers[timerId].timeDifference -
+               now.getTime();
     diff = (diff - diff % 1000) / 1000;
 
     var message = "";
@@ -94,8 +96,11 @@ function updateTime(timerId) {
     $(timerId).innerHTML = relativeTime(timerId);
 }
 
-function newRoundTimer(timerId, startTime, duration, units, showMessage) {
+function newRoundTimer(timerId, serverTime, startTime,
+                        duration, units, showMessage) {
     timers[timerId] = {};
+    timers[timerId].timeDifference = (new Date()).getTime() -
+                                     (new Date(serverTime)).getTime();
     timers[timerId].startTime = new Date(startTime);
     timers[timerId].duration = duration * 3600;
     timers[timerId].units = units;
