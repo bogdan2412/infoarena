@@ -242,7 +242,7 @@ function task_filter_by_tags($tag_ids, $scores = true, $user_id = null) {
 
     $query = "SELECT ia_task.id AS task_id,
                 ia_task.title AS task_title,
-                ia_task.order AS 'order',
+                round_task.`order_id` AS 'order',
                 ia_task.page_name AS page_name,
                 ia_task.open_source AS open_source,
                 ia_task.open_tests AS open_tests,
@@ -256,7 +256,7 @@ function task_filter_by_tags($tag_ids, $scores = true, $user_id = null) {
     $join_score
     WHERE (round.id = 'arhiva' OR round.id = 'arhiva-educationala')
         AND ia_task.hidden = '0' $tag_filter
-    ORDER BY round.id DESC, ia_task.order";
+    ORDER BY round.id DESC, round_task.`order_id`";
 
     $tasks = db_fetch_all($query);
 
