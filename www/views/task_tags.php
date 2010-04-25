@@ -22,7 +22,7 @@ function format_tag_name($row) {
 
 // Returns a delete tag link and a toggle rename form link
 function format_operations($row) {
-    $delete = format_post_link(url_task_tags_delete(), "Șterge",
+    $delete = format_post_link(url_task_tags_delete(), "Şterge",
         array(
             "name" => $row["name"],
             "type" => $row["type"],
@@ -81,7 +81,7 @@ foreach ($categories as $category) {
                 array("type" => "algorithm", "parent" => $category["id"]),
                 "", "Adaugă");
         ?>]</li>
-        <li class="delete_method">[<?php echo format_post_link(url_task_tags_delete(), "Șterge categorie",
+        <li class="delete_method">[<?php echo format_post_link(url_task_tags_delete(), "Şterge categorie",
             array("type" => "method", "name" => $category["name"])); ?>]</li>
         <li class="rename_method">[<a class="toggle_rename" href="#">Redenumeşte categorie</a><?php
             echo inline_post_form(url_task_tags_rename(),
