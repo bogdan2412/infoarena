@@ -56,30 +56,33 @@ function round_create($round, $round_params, $user_id, $remote_ip_info = null) {
 }
 
 function round_recompute_score($round_id) {
-    $query = "SELECT * FROM `ia_score_user_round`
-        WHERE `round_id` = ".db_quote($round_id);
-    $rows = db_fetch_all($query);
-    $users = array();
-    foreach ($rows as $row) {
-      $users[] = $row['user_id'];
-    }
-
+    db_query("DELETE FROM ia_score_user_round
+        WHERE round_id = ".db_quote($round_id));
     $query = "SELECT SUM(`score`) AS score, user_id
-            FROM ia_score_user_round_task
-            WHERE `user_id` IN ('".implode("', '", $users)."') AND
-                  `round_id` = ".db_quote($round_id)."
-            GROUP BY `user_id`";
+        FROM ia_score_user_round_task
+        WHERE `round_id` = ".db_quote($round_id)."
+        GROUP BY `user_id`";
     $rows = db_fetch_all($query);
+    if (empty($rows)) {
+        return false;
+    }
+    $query = "INSERT INTO `ia_score_user_round`
+        (`user_id`, `round_id`, `score`)
+        VALUES ";
+    $first = true;
     foreach($rows as $row) {
         $user_id = $row['user_id'];
         $score = $row['score'];
 
-        $query = "UPDATE `ia_score_user_round`
-                    SET `score` = ".db_quote($score)."
-                    WHERE `user_id` = ".db_quote($user_id)." &&
-                          `round_id` = ".db_quote($round_id);
-        db_query($query);
+        if (!$first) {
+            $query .= ", ";
+        } else {
+            $first = false;
+        }
+        $query .= sprintf("(%s, %s, %s)",
+            db_quote($user_id), db_quote($round_id), db_quote($score));
     }
+    db_query($query);
 }
 
 // Update a round.
