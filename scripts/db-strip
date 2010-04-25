@@ -101,14 +101,6 @@ db_query("DELETE ia_task_ratings FROM ia_task_ratings
 
 // Delete orphan scores.
 log_print("Deleting orphan scores.");
-db_query("DELETE ia_score FROM ia_score ".
-        "LEFT JOIN ia_user on ia_user.id = ia_score.user_id ".
-        "LEFT JOIN ia_task on ia_task.id = ia_score.task_id ".
-        "LEFT JOIN ia_round on ia_round.id = ia_score.round_id ".
-        "WHERE (ia_score.user_id IS NOT NULL AND ia_user.id IS NULL) ".
-        "OR (ia_score.task_id IS NOT NULL AND ia_task.id IS NULL) ".
-        "OR (ia_score.round_id IS NOT NULL AND ia_round.id IS NULL)");
-
 db_query("DELETE ia_score_user_round_task FROM ia_score_user_round_task ".
          "LEFT JOIN ia_user on ia_user.id = ia_score_user_round_task.user_id ".
          "LEFT JOIN ia_task on ia_task.id = ia_score_user_round_task.task_id ".
