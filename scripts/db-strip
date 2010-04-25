@@ -2,6 +2,8 @@
 <?php
 
 require_once(dirname($argv[0]) . "/utilities.php");
+require_once(dirname($argv[0]) . "/../common/db/round_task.php");
+
 db_connect();
 $smfprefix = IA_SMF_DB_PREFIX;
 
@@ -84,6 +86,19 @@ db_query("DELETE ia_round_task FROM ia_round_task
     LEFT JOIN ia_round ON ia_round_task.round_id = ia_round.id
     WHERE (ia_task.id IS NULL) OR (ia_round.id IS NULL)");
 
+// Recompute round task order
+$rounds = db_fetch_all("SELECT DISTINCT `round_id` AS `id` FROM ia_round_task");
+foreach ($rounds as $round) {
+    round_task_recompute_order($round['id']);
+}
+
+// Delete orphan task ratings.
+log_print("Deleting orphan task_ratings");
+db_query("DELETE ia_task_ratings FROM ia_task_ratings
+    LEFT JOIN ia_task ON ia_task_ratings.task_id = ia_task.id
+    LEFT JOIN ia_user on ia_task_ratings.user_id = ia_user.id
+    WHERE (ia_user.id IS NULL) OR (ia_task.id IS NULL)");
+
 // Delete orphan scores.
 log_print("Deleting orphan scores.");
 db_query("DELETE ia_score FROM ia_score ".
@@ -107,7 +122,7 @@ db_query("DELETE FROM ia_score_user_round");
 $rounds = db_fetch_all("SELECT id FROM ia_round");
 
 foreach ($rounds as $round) {
-    round_recompute_score($round['round_id']);
+    round_recompute_score($round['id']);
 }
 
 // Delete orphan rating entries
