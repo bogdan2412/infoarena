@@ -264,7 +264,9 @@ function controller_round_task_order($round_id) {
 
             if ($current_id != $order_id) {
                 round_task_update_order_id($round_id, $task_id, $current_id);
-                task_update_forum_topic($task_id);
+                if ($round_id == 'arhiva' or $round_id == 'arhiva-educationala') {
+                    task_update_forum_topic($task_id, $round_id);
+                }
             }
 
             $current_id += 1;

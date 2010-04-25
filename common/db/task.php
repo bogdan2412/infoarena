@@ -337,9 +337,11 @@ function task_update_forum_topic($task_id, $round_id = "arhiva") {
         $query = sprintf(
             "UPDATE ia_smf_messages
              SET subject = %s
-             WHERE subject LIKE %s",
+             WHERE subject LIKE %s
+               AND ID_MSG <> %s",
              db_quote("RÄƒspuns: " . $new_subject),
-             db_quote("%" . $message['subject']));
+             db_quote("%" . $message['subject']),
+             db_quote($message_id));
         db_query($query);
     }
 }
