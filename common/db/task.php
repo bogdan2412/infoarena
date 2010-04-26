@@ -346,4 +346,27 @@ function task_update_forum_topic($task_id, $round_id = "arhiva") {
     }
 }
 
+// Returns the score a user got on a task in the archive.
+// Optionally, a different round parameter can be specified.
+function task_get_user_score($task_id, $user_id, $round_id = 'arhiva') {
+    // Validate
+    if (!is_round_id($round_id)) {
+        log_error("Invalid round id");
+    }
+    if (!is_task_id($task_id)) {
+        log_error("Invalid task id");
+    }
+    if (!is_user_id($user_id)) {
+        log_error("Invalid user id");
+    }
+
+    $query = sprintf(
+        "SELECT `score` FROM ia_score_user_round_task
+         WHERE round_id = %s AND task_id = %s AND user_id = %s",
+         db_quote($round_id), db_quote($task_id), db_quote($user_id));
+    $res = db_fetch($query);
+
+    return getattr($res, "score", null);
+}
+
 ?>

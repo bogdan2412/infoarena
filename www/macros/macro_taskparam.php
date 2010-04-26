@@ -5,6 +5,7 @@ require_once(IA_ROOT_DIR . "common/db/user.php");
 require_once(IA_ROOT_DIR . "common/db/tags.php");
 require_once(IA_ROOT_DIR . "common/cache.php");
 require_once(IA_ROOT_DIR . "www/format/format.php");
+require_once(IA_ROOT_DIR . "www/macros/macro_stars.php");
 
 // Displays a task field, be it a hard-coded field such as task author or a grader parameter such as `timelimit`.
 // NOTE: The macro employs a simple caching mechanism (via static variables, cache expires at the end of the request)
@@ -81,6 +82,28 @@ function macro_taskparam($args) {
             $user = user_get_by_id($task['user_id']);
             return format_user_tiny($user['username'], $user['full_name'],
                                     $user['rating_cache']);
+
+        case 'difficulty':
+            if (is_null($task['rating'])) {
+                return 'N/A';
+            }
+            $star_args = array('rating' => $task['rating'],
+                               'scale' => 5,
+                               'type' => 'normal');
+            return macro_stars($star_args);
+
+        case 'archivescore':
+            $user = identity_get_user();
+            if (is_null($user)) {
+                return 'N/A';
+            } else {
+                $score = task_get_user_score($task['id'], $user['id']);
+                if (is_null($score)) {
+                    return 'N/A';
+                } else {
+                    return intval($score) . " puncte";
+                }
+            }
 
         default:
             $params = task_get_parameters($task_id);
