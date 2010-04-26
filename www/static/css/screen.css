@@ -1567,6 +1567,7 @@ ul.tag_filters {
     display: none;
 }
 
+/* Show new feature indicator */
 .new_feature:after {
     color: red;
     font-weight: bold;
@@ -1578,4 +1579,9 @@ ul.tag_filters {
 /* Sort tables */
 .hidden {
     display: none;
+}
+
+/* Show pointer cursor on sortable table headers */
+table.sortable th {
+    cursor: pointer;
 }
