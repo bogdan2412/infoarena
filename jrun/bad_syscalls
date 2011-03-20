@@ -17,7 +17,6 @@ setresuid
 setregid
 getegid
 getppid
-kill
 signal
 sigaction
 sigprocmask
@@ -32,16 +31,5 @@ setrlimit
 getrusage
 reboot
 mount
-umount
-accept
-bind
-connect
-getsockname
-getsockopt
-listen
-recv
-recvfrom
-send
-setsockopt
-socket
-socketpair
+umount2
+socketcall

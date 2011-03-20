@@ -25,7 +25,7 @@
  *      -w --wall-time-limit: Global "wall" time limit, in miliseconds.
  *              Wall time measures actual real-world time and should be a bigger limit.
  *              This is required to avoid stalling on sleep(), etc.
- *               
+ *
  *          Security stuff:
  *
  *      -u --uid: UID for impersonation
@@ -36,7 +36,7 @@
  *      --block-syscalls: Blocked system call list. Separate with ",", needs ptrace
  *      --block-syscalls-file: A file with blocked system calls. Better than the above.
  *
- 
+
  *      Returns 0
  *      See stdout for information.
  */
@@ -80,7 +80,7 @@ void copy_libs(void)
                     sprintf(cmd, "mkdir -p ./%s", path);
                     *strrchr(cmd, '/') = 0;
                     system(cmd);
-                    
+
                     sprintf(cmd, "cp -f %s ./%s", path, path);
                     system(cmd);
                 }
@@ -245,8 +245,13 @@ int get_syscall_number(void)
     int val;
 
     errno = 0;
-    // 44, trust me. It's 4 * ORIG_EAX from ptrace.h in the kernel
+#ifdef __x86_64__
+    // 120, trust me. It's ORIG_RAX from ptrace.h in the kernel.
+    val = ptrace(PTRACE_PEEKUSER, child_pid, (char *)(120), 0);
+#else
+    // 44, trust me. It's 4 * ORIG_EAX from ptrace.h in the kernel.
     val = ptrace(PTRACE_PEEKUSER, child_pid, (char *)(44), 0);
+#endif
     if (val == -1 && errno) {
         perror("ERROR: failed to get system call number");
         exit(-1);
@@ -288,7 +293,7 @@ void update_from_proc(void)
     child_time = (utime + stime) * JRUN_JIFFIE_DURATION;
     fclose(f);
 
-    // Memory, from /proc/$pid/stat
+    // Memory, from /proc/$pid/statm
     sprintf(path, "/proc/%d/statm", child_pid);
     if (!(f = fopen(path, "rt"))) {
         perror("ERROR: failed to read from /proc");
@@ -318,6 +323,8 @@ void update_from_rusage(struct rusage *usage)
 
     child_time = usage->ru_utime.tv_sec * 1000 + usage->ru_utime.tv_usec / 1000;
     child_time += usage->ru_stime.tv_sec * 1000 + usage->ru_stime.tv_usec / 1000;
+
+    child_memory = usage->ru_maxrss;
 }
 
 // Does a couple of standard checks on the process.
@@ -416,7 +423,7 @@ void main_loop()
                 sig = 0;
 
                 if (jopt.verbose) {
-                    fprintf(stderr, "Halt on syscall %d(%s)\n", 
+                    fprintf(stderr, "Halt on syscall %d(%s)\n",
                             syscall_number, syscall_name[syscall_number]);
                 }
                 if (jopt.syscall_block[syscall_number] && !first_syscall) {
@@ -429,7 +436,7 @@ void main_loop()
                     continue;
                 } else {
                     if (jopt.verbose) {
-                        fprintf(stderr, "Syscall %s allowed.\n", 
+                        fprintf(stderr, "Syscall %s allowed.\n",
                                 syscall_name[syscall_number]);
                     }
                 }
@@ -461,7 +468,7 @@ void main_loop()
             exit_gracefully();
         } else if (wres == child_pid && WIFSIGNALED(status)) {
             if (jopt.verbose) {
-                fprintf(stderr, "Halt on kill by signal %d(%s).\n", 
+                fprintf(stderr, "Halt on kill by signal %d(%s).\n",
                         WTERMSIG(status), signal_name[WTERMSIG(status)]);
             }
 
