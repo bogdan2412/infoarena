@@ -20,6 +20,7 @@ require_once(IA_ROOT_DIR."common/db/round.php");
 //  - normal        registered & authenticated users.
 //  - helper        Trusted users. They can make their own tasks, but
 //                  can't publish them. For teachers or high ratings.
+//  - interns       Trusted users, future core team members.
 //  - admin         Can do anything. For core team members.
 
 // Returns boolean whether $user can perform $action onto $object

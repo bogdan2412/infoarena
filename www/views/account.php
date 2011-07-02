@@ -54,6 +54,7 @@ if (array_key_exists('security_level', $form_values)) {
             'values' => array(
                     'normal' => 'Utilizator normal',
                     'helper' => 'Propunator de probleme',
+                    'intern' => 'Intern',
                     'admin' => 'Admin smenar',
             ),
             'default' => 'normal',

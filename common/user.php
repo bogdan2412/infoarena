@@ -92,7 +92,8 @@ function user_validate($user) {
         $errors['security_level'] = "Lipseste nivelul de securitate";
     } else if ($user['security_level'] != 'normal' &&
                $user['security_level'] != 'helper' &&
-               $user['security_level'] != 'admin') {
+               $user['security_level'] != 'admin' &&
+               $user['security_level'] != 'intern') {
         $errors['security_level'] = "Nivel de securitate invalid";
     }
 
