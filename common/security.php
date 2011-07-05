@@ -131,9 +131,11 @@ function security_simplify_action($action) {
         case 'task-delete':
         case 'task-tag':
         case 'task-reeval':
-        case 'round-delete':
+        case 'task-edit-ratings': 
         case 'textblock-delete':
         case 'textblock-delete-revision':
+        case 'round-tag':
+        case 'round-view-progress': 
         case 'grader-overwrite':
         case 'grader-delete':
         case 'grader-rename':
@@ -144,12 +146,10 @@ function security_simplify_action($action) {
         case 'task-change-security':
         case 'task-change-open':
         case 'textblock-change-security':
-        case 'task-edit-owner':
-        case 'task-edit-ratings':
-        case 'round-tag':
-        case 'round-view-progress':
         case 'textblock-tag':
         case 'job-reeval':
+        case 'round-delete':
+        case 'task-edit-owner':
         case 'simple-critical':
             return 'simple-critical';
 
@@ -374,7 +374,9 @@ function security_user($user, $action, $target_user) {
 function security_task($user, $action, $task) {
     $usersec = getattr($user, 'security_level', 'anonymous');
     $is_admin = $usersec == 'admin';
+    $is_intern = $usersec == 'intern';
     $is_owner = ($task['user_id'] == $user['id'] && $usersec == 'helper');
+    $is_boss = $is_admin || $is_intern || $is_owner;
 
     // Log query response.
     $action = security_simplify_action($action);
@@ -389,14 +391,14 @@ function security_task($user, $action, $task) {
     switch ($action) {
         // Read-only access.
         case 'simple-view':
-            return ($task['hidden'] == false) || $is_owner || $is_admin;
+            return ($task['hidden'] == false) || $is_boss;
 
         // Edit access.
         case 'simple-rev-edit':
-            return $is_owner || $is_admin;
+            return $is_boss;
 
         case 'simple-edit':
-            return $is_owner || $is_admin;
+            return $is_boss;
 
         // View tags
         case 'task-view-tags':
@@ -407,7 +409,7 @@ function security_task($user, $action, $task) {
                     $in_archive = true;
                 }
             }
-            return $in_archive || $is_owner || $is_admin;
+            return $in_archive || $is_boss;
 
         // Admin stuff:
         case 'simple-critical':
@@ -440,7 +442,7 @@ function security_task($user, $action, $task) {
             if ($usersec == 'anonymous') {
                 return false;
             }
-            if ($is_owner || $is_admin) {
+            if ($is_boss) {
                 return true;
             }
             $is_running = false;
@@ -464,7 +466,7 @@ function security_task($user, $action, $task) {
             return $can_view || $is_owner || $is_admin;
 
         case 'sensitive-info':
-            return ($usersec == 'admin' || $usersec == 'helper');
+            return $is_boss;
 
         default:
             log_error('Invalid task action: '.$action);
@@ -475,6 +477,7 @@ function security_task($user, $action, $task) {
 function security_round($user, $action, $round) {
     $usersec = getattr($user, 'security_level', 'anonymous');
     $is_admin = $usersec == 'admin';
+    $is_intern = $usersec == 'intern';
 
     // Log query response.
     $action = security_simplify_action($action);
@@ -494,7 +497,7 @@ function security_round($user, $action, $round) {
           if ($round['type'] == 'user-defined') {
               return $usersec != 'anonymous';
           } else {
-              return $is_admin;
+              return $is_admin || $is_intern;
           }
 
         case 'round-edit':
@@ -503,17 +506,19 @@ function security_round($user, $action, $round) {
               return false;
           }
           if ($round['type'] == 'user-defined') {
-              return $user['id'] == $round['user_id'] || $is_admin;
+              return $user['id'] == $round['user_id'] || $is_admin || $is_intern;
           } else {
-              return $is_admin;
+              return $is_admin || $is_intern;
           }
 
         case 'round-view-tasks':
-            return $round['state'] != 'waiting' || $is_admin;
+            return $round['state'] != 'waiting' || $is_admin || $is_intern;
         case 'round-view-scores':
-            return $round['public_eval'] == true || $is_admin;
+            return $round['public_eval'] == true || $is_admin || $is_intern;
 
         case 'simple-edit':
+            return $is_admin || $is_intern;
+
         case 'simple-critical':
             return $is_admin;
 
@@ -529,7 +534,7 @@ function security_round($user, $action, $round) {
             return $round["state"] == "running";
 
         case 'sensitive-info':
-            return ($usersec == 'admin' || $usersec == 'helper');
+            return in_array($usersec, array('admin', 'intern', 'helper'));
 
         default:
             log_error('Invalid round action: '.$action);
@@ -576,16 +581,18 @@ function security_blog($user, $action, $round) {
 function security_job($user, $action, $job) {
     $usersec = getattr($user, 'security_level', 'anonymous');
     $is_admin = $usersec == 'admin';
+    $is_intern = $usersec == 'intern';
     $is_owner = ($job['user_id'] == $user['id']);
     $is_task_owner = ($job['task_owner_id'] == $user['id'] && $usersec == 'helper');
     $can_view_job = ($job['task_hidden'] == false) || $is_task_owner || $is_admin;
-    $can_view_source = ($job['task_open_source'] == true) || $is_task_owner || $is_owner || $is_admin;
+    $can_view_source = ($job['task_open_source'] == true) || $is_task_owner || 
+                       $is_owner || $is_admin || $is_intern;
     $can_view_source_size = ($job['round_type'] == "archive") ||
                             ($job['round_type'] != "archive" && $job['round_state'] == "complete") ||
                             $can_view_source;
-    $can_view_score = ($job['round_public_eval'] == true) || $is_task_owner || $is_admin;
-    $can_view_partial_feedback = $is_owner || $is_admin;
-    $can_view_sensitive_info = ($usersec == 'admin' || $usersec == 'helper');
+    $can_view_score = ($job['round_public_eval'] == true) || $is_task_owner || $is_admin || $is_intern;
+    $can_view_partial_feedback = $is_owner || $is_admin || $is_intern;
+    $can_view_sensitive_info = in_array($usersec, array('admin', 'intern', 'helper'));
 
     // Log query response.
     $action = security_simplify_action($action);
@@ -599,7 +606,7 @@ function security_job($user, $action, $job) {
 
     switch ($action) {
         case 'simple-critical':
-            return $is_admin;
+            return $is_admin || $is_intern;
 
         case 'job-view':
             return $can_view_job;
