@@ -65,6 +65,15 @@ function classic_task_grade_job($task, $tparams, $job) {
     // for Python scripts.
     $capture_std = ('py' == $job['compiler_id']);
 
+    // Adjust time and memory limit for Python jobs.
+    if ('py' == $job['compiler_id']) {
+        $factor_memlimit = 2.0;
+        $factor_timelimit = 12.0;
+    } else {
+        $factor_memlimit = 1.0;
+        $factor_timelimit = 1.0;
+    }
+
     // Running tests.
     $test_score = array();
     for ($testno = 1; $testno <= $task['test_count']; ++$testno) {
@@ -110,9 +119,12 @@ function classic_task_grade_job($task, $tparams, $job) {
             log_assert("Failed to chmod a+x user program");
 
             // Run user program.
-            $jrunres = jail_run($userfile, $jaildir, $tparams['timelimit'] * 1000,
-                        $tparams['memlimit'], $capture_std);
-            log_assert($jrunres['result'] != 'ERROR', "Error in jrun.");
+            $jrunres = jail_run($userfile, $jaildir,
+                        (int)($tparams['timelimit'] * 1000 * $factor_timelimit),
+                        (int)($tparams['memlimit'] * $factor_memlimit),
+                        $capture_std);
+            log_assert($jrunres['result'] != 'ERROR',
+                        "Error in jrun: ".$jrunres['message']);
             if ($jrunres['result'] == 'FAIL') {
                 log_print("Test $testno: User program failed: {$jrunres['message']} ".
                         "{$jrunres['time']}ms {$jrunres['memory']}kb");
