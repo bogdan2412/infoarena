@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1.9; Index
+// Version: 1.1.15; Index
 
 global $forum_copyright, $forum_version, $webmaster_email;
 
@@ -410,8 +410,7 @@ $txt['online8'] = 'Statistică';
 $txt['topbottom4'] = 'În sus';
 $txt['topbottom5'] = 'În jos';
 
-$forum_copyright = '<a href="http://www.simplemachines.org/" title="Simple Machines Forum" target="_blank">Powered by ' . $forum_version . '</a> | 
-<a href="http://www.simplemachines.org/about/copyright.php" title="Free Forum Software" target="_blank">SMF &copy; 2006-2009, Simple Machines LLC</a>';
+$forum_copyright = '<a href="http://www.simplemachines.org/" title="Simple Machines Forum" target="_blank">Powered by ' . $forum_version . '</a> | <a href="http://www.simplemachines.org/about/copyright.php" title="Free Forum Software" target="_blank">SMF &copy; 2006-2011, Simple Machines LLC</a>';
 
 $txt['calendar3'] = 'Zile de naştere:';
 $txt['calendar4'] = 'Evenimente:';

@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1; Admin
+// Version: 1.1.13; Admin
 
 $txt[4] = 'Forumuri';
 $txt[5] = 'Utilizatori';
