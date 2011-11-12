@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.9                                           *
+* Software Version:           SMF 1.1.15                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -873,8 +873,17 @@ function registerMember(&$regOptions)
 // Check if a name is in the reserved words list. (name, current member id, name/username?.)
 function isReservedName($name, $current_ID_MEMBER = 0, $is_name = true, $fatal = true)
 {
-	global $user_info, $modSettings, $db_prefix, $func;
+	global $user_info, $modSettings, $db_prefix, $func, $context;
 
+	// No cheating with entities please.
+	$replaceEntities = create_function('$string', '
+		$num = substr($string, 0, 1) === \'x\' ? hexdec(substr($string, 1)) : (int) $string;
+		if ($num === 0x202E || $num === 0x202D) return \'\'; if (in_array($num, array(0x22, 0x26, 0x27, 0x3C, 0x3E))) return \'&#\' . $num . \';\';' .
+		(empty($context['utf8']) ? 'return $num < 0x20 ? \'\' : ($num < 0x80 ? chr($num) : \'&#\' . $string . \';\');' : '
+		return $num < 0x20 || $num > 0x10FFFF || ($num >= 0xD800 && $num <= 0xDFFF) ? \'\' : ($num < 0x80 ? chr($num) : ($num < 0x800 ? chr(192 | $num >> 6) . chr(128 | $num & 63) : ($num < 0x10000 ? chr(224 | $num >> 12) . chr(128 | $num >> 6 & 63) . chr(128 | $num & 63) : chr(240 | $num >> 18) . chr(128 | $num >> 12 & 63) . chr(128 | $num >> 6 & 63) . chr(128 | $num & 63))));')
+	);
+
+	$name = preg_replace('~(&#(\d{1,7}|x[0-9a-fA-F]{1,6});)~e', '$replaceEntities(\'\\2\')', $name);
 	$checkName = $func['strtolower']($name);
 
 	// Administrators are never restricted ;).
@@ -890,8 +899,13 @@ function isReservedName($name, $current_ID_MEMBER = 0, $is_name = true, $fatal =
 			if ($reserved == '')
 				continue;
 
+			// The admin might've used entities too, level the playing field.
+			$reservedCheck = preg_replace('~(&#(\d{1,7}|x[0-9a-fA-F]{1,6});)~e', '$replaceEntities(\'\\2\')', $reserved);
+
 			// Case sensitive name?
-			$reservedCheck = empty($modSettings['reserveCase']) ? $func['strtolower']($reserved) : $reserved;
+			if (empty($modSettings['reserveCase']))
+				$reservedCheck = $func['strtolower']($reservedCheck);
+
 			// If it's not just entire word, check for it in there somewhere...
 			if ($checkMe == $reservedCheck || ($func['strpos']($checkMe, $reservedCheck) !== false && empty($modSettings['reserveWord'])))
 			{

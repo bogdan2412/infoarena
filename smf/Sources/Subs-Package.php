@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.5                                           *
+* Software Version:           SMF 1.1.12                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -1077,9 +1077,26 @@ function matchPackageVersion($version, $versions)
 			continue;
 
 		list ($lower, $upper) = explode('-', $list);
+		$lower = explode('.', $lower);
+		$upper = explode('.', $upper);
+		$version = explode('.', $version);
 
-		if (trim($lower) <= $version && trim($upper) >= $version)
-			return true;
+		foreach ($upper as $key => $high)
+		{
+			// Let's check that this is at or below the upper... obviously.
+			if (isset($version[$key]) && trim($version[$key]) > trim($high))
+				return false;
+
+			// OK, let's check it's above the lower key... if it exists!
+			if (isset($lower[$key]))
+			{
+				// The version either needs to have something here (i.e. can't be 1.0 on a 1.0.11) AND needs to be greater or equal to.
+				// Note that if it's a range lower[key] might be blank, in that case version can not be set!
+				if (!empty($lower[$key]) && (!isset($version[$key]) || trim($version[$key]) < trim($lower[$key])))
+					return false;
+			}
+		}
+		return true;
 	}
 
 	// Well, I guess it doesn't match...
@@ -2111,7 +2128,7 @@ function fetch_web_data($url, $post_data = '', $keep_alive = false)
 	global $webmaster_email;
 	static $keep_alive_dom = null, $keep_alive_fp = null;
 
-	preg_match('~^(http|ftp)(s)?://([^/:]+)(:(\d))?(.+)$~', $url, $match);
+	preg_match('~^(http|ftp)(s)?://([^/:]+)(:(\d+))?(.+)$~', $url, $match);
 
 	// An FTP url.  We should try connecting and RETRieving it...
 	if (isset($match[1]) && $match[1] == 'ftp')

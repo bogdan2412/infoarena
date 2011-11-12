@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.2                                           *
+* Software Version:           SMF 1.1.12                                           *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -416,13 +416,19 @@ function CreateMessageIndex()
 			db_query("
 				DROP TABLE IF EXISTS {$db_prefix}log_search_words", __FILE__, __LINE__);
 
+			// MySQL users below 4.0 can not use Engine
+			if (version_compare('4', preg_replace('~\-.+?$~', '', min(mysql_get_server_info(), mysql_get_client_info()))) > 0)
+				$schema_type = 'TYPE=';
+			else
+				$schema_type = 'ENGINE=';
+
 			db_query("
 				CREATE TABLE {$db_prefix}log_search_words (
 					ID_WORD " . $index_properties[$context['index_settings']['bytes_per_word']]['column_definition'] . " unsigned NOT NULL default '0',
 					ID_MSG int(10) unsigned NOT NULL default '0',
 					PRIMARY KEY (ID_WORD, ID_MSG)
-				) TYPE=MyISAM", __FILE__, __LINE__);
-			
+				) " . $schema_type . "MyISAM", __FILE__, __LINE__);
+
 			// Temporarily switch back to not using a search index.
 			if (!empty($modSettings['search_index']) && $modSettings['search_index'] == 'custom')
 				updateSettings(array('search_index' => ''));

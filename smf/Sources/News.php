@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1                                             *
+* Software Version:           SMF 1.1.12                                             *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -458,6 +458,9 @@ function getXmlMembers($xml_format)
 {
 	global $db_prefix, $scripturl;
 
+	if (!allowedTo('view_mlist'))
+		return array();
+
 	// Find the most recent members.
 	$request = db_query("
 		SELECT ID_MEMBER, memberName, realName, dateRegistered, lastLogin
@@ -721,7 +724,7 @@ function getXmlProfile($xml_format)
 	$_GET['u'] = (int) $_GET['u'];
 
 	// Load the member's contextual information!
-	if (!loadMemberContext($_GET['u']))
+	if (!loadMemberContext($_GET['u']) || !allowedTo('profile_view_any'))
 		return array();
 
 	// Okay, I admit it, I'm lazy.  Stupid $_GET['u'] is long and hard to type.

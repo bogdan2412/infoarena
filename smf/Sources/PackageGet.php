@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.11                                          *
+* Software Version:           SMF 1.1.12                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -139,8 +139,8 @@ function PackageServers()
 	while ($row = mysql_fetch_assoc($request))
 	{
 		$context['servers'][] = array(
-			'name' => htmlspecialchars($row['name']),
-			'url' => htmlspecialchars($row['url']),
+			'name' => $row['name'],
+			'url' => $row['url'],
 			'id' => $row['ID_SERVER'],
 		);
 	}
@@ -674,11 +674,17 @@ function PackageServerAdd()
 	// If they put a slash on the end, get rid of it.
 	if (substr($_POST['serverurl'], -1) == '/')
 		$_POST['serverurl'] = substr($_POST['serverurl'], 0, -1);
+	$servername = htmlspecialchars($_POST['servername']);
+	$serverurl = htmlspecialchars($_POST['serverurl']);
+
+	// Make sure the URL has the correct prefix.
+	if (strpos($serverurl, 'http://') !== 0 && strpos($serverurl, 'https://') !== 0)
+		$serverurl = 'http://' . $serverurl;
 
 	db_query("
 		INSERT INTO {$db_prefix}package_servers
 			(name, url)
-		VALUES (SUBSTRING('$_POST[servername]', 1, 255), SUBSTRING('$_POST[serverurl]', 1, 255))", __FILE__, __LINE__);
+		VALUES (SUBSTRING('$servername', 1, 255), SUBSTRING('$serverurl', 1, 255))", __FILE__, __LINE__);
 
 	redirectexit('action=packageget');
 }

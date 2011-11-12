@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.5                                           *
+* Software Version:           SMF 1.1.13                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -1364,7 +1364,7 @@ function PlushSearch2()
 						t.ID_FIRST_MSG,
 						1
 					FROM ({$db_prefix}topics AS t, {$db_prefix}" . ($createTemporary ? 'tmp_' : '') . "log_search_topics AS lst)
-					WHERE lst.ID_TOPIC = t.ID_TOPIC" . (empty($modSettings['search_max_results']) ? '' : "
+					WHERE " . ($createTemporary ? '' : 'lst.ID_SEARCH = ' . $_SESSION['search_cache']['ID_SEARCH'] . ' AND ') . 'lst.ID_TOPIC = t.ID_TOPIC' . (empty($modSettings['search_max_results']) ? '' : "
 					LIMIT " . ($modSettings['search_max_results'] - $_SESSION['search_cache']['num_results'])), __FILE__, __LINE__);
 
 				$_SESSION['search_cache']['num_results'] += db_affected_rows();

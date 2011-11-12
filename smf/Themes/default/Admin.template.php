@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1.1; Admin
+// Version: 1.1.12; Admin
 
 // This contains the html for the side bar of the admin center, which is used for all admin pages.
 function template_admin_above()
@@ -665,6 +665,34 @@ function template_view_versions()
 				return false;
 			}
 
+			function compareVersions(current, target)
+			{
+				// Are they equal, maybe?
+				if (current == target)
+					return false;
+
+				var currentVersion = current.split(".");
+				var targetVersion = target.split(".");
+
+				for (var i = 0, n = (currentVersion.length > targetVersion.length ? currentVersion.length : targetVersion.length); i < n; i++)
+				{
+					// Make sure both are set.
+					if (typeof(currentVersion[i]) == "undefined")
+						currentVersion[i] = "0";
+					else if (typeof(targetVersion[i]) == "undefined")
+						targetVersion[i] = "0";
+
+					// If they are same, move to the next set.
+					if (currentVersion[i] == targetVersion[i])
+						continue;
+					// Otherwise a simple comparison...
+					else
+						return (parseInt(currentVersion[i]) < parseInt(targetVersion[i]));
+				}
+
+				return false;
+			}
+
 			function smfDetermineVersions()
 			{
 				var highYour = {"Sources": "??", "Default" : "??", "Languages": "??", "Templates": "??"};
@@ -698,18 +726,18 @@ function template_view_versions()
 
 					if (typeof(versionType) != "undefined")
 					{
-						if ((highYour[versionType] < yourVersion || highYour[versionType] == "??") && !lowVersion[versionType])
+						if ((compareVersions(highYour[versionType], yourVersion) || highYour[versionType] == "??") && !lowVersion[versionType])
 							highYour[versionType] = yourVersion;
-						if (highCurrent[versionType] < smfVersions[filename] || highCurrent[versionType] == "??")
+						if (compareVersions(highCurrent[versionType], smfVersions[filename]) || highCurrent[versionType] == "??")
 							highCurrent[versionType] = smfVersions[filename];
 
-						if (yourVersion < smfVersions[filename])
+						if (compareVersions(yourVersion, smfVersions[filename]))
 						{
 							lowVersion[versionType] = yourVersion;
 							document.getElementById("your" + filename).style.color = "red";
 						}
 					}
-					else if (yourVersion < smfVersions[filename])
+					else if (compareVersions(yourVersion, smfVersions[filename]))
 						lowVersion[versionType] = yourVersion;
 
 					setInnerHTML(document.getElementById("current" + filename), smfVersions[filename]);
@@ -731,12 +759,12 @@ function template_view_versions()
 						yourVersion = getInnerHTML(document.getElementById("your" + filename + knownLanguages[i]));
 						setInnerHTML(document.getElementById("your" + filename + knownLanguages[i]), yourVersion);
 
-						if ((highYour["Languages"] < yourVersion || highYour["Languages"] == "??") && !lowVersion["Languages"])
+						if ((compareVersions(highYour["Languages"], yourVersion) || highYour["Languages"] == "??") && !lowVersion["Languages"])
 							highYour["Languages"] = yourVersion;
-						if (highCurrent["Languages"] < smfLanguageVersions[filename] || highCurrent["Languages"] == "??")
+						if (compareVersions(highCurrent["Languages"], smfLanguageVersions[filename]) || highCurrent["Languages"] == "??")
 							highCurrent["Languages"] = smfLanguageVersions[filename];
 
-						if (yourVersion < smfLanguageVersions[filename])
+						if (compareVersions(yourVersion, smfLanguageVersions[filename]))
 						{
 							lowVersion["Languages"] = yourVersion;
 							document.getElementById("your" + filename + knownLanguages[i]).style.color = "red";

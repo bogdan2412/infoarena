@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1                                             *
+* Software Version:           SMF 1.1.12                                             *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -64,7 +64,8 @@ function DumpDatabase2()
 
 	// Attempt to stop from dying...
 	@set_time_limit(600);
-	@ini_set('memory_limit', '128M');
+	if (@ini_get('memory_limit') < 256)
+		@ini_set('memory_limit', '256M');
 
 	// Start saving the output... (don't do it otherwise for memory reasons.)
 	if (isset($_REQUEST['compress']) && function_exists('gzencode'))
@@ -101,7 +102,7 @@ function DumpDatabase2()
 			ob_clean();
 
 		// Tell the client to save this file, even though it's text.
-		header('Content-Type: application/octetstream');
+		header('Content-Type: ' . ($context['browser']['is_ie'] || $context['browser']['is_opera'] ? 'application/octetstream' : 'application/octet-stream'));
 		header('Content-Encoding: none');
 
 		// This time the extension should just be .sql.
@@ -326,8 +327,14 @@ function getTableSQLData($tableName)
 	$row = @mysql_fetch_assoc($result);
 	@mysql_free_result($result);
 
+	// MySQL users below 4.0 can not use Engine
+	if (version_compare('4', preg_replace('~\-.+?$~', '', min(mysql_get_server_info(), mysql_get_client_info()))) > 0)
+		$schema_type = 'TYPE=';
+	else 
+		$schema_type = 'ENGINE=';
+	
 	// Probably MyISAM.... and it might have a comment.
-	$schema_create .= $crlf . ') TYPE=' . (isset($row['Type']) ? $row['Type'] : $row['Engine']) . ($row['Comment'] != '' ? ' COMMENT="' . $row['Comment'] . '"' : '');
+	$schema_create .= $crlf . ') ' . $schema_type . (isset($row['Type']) ? $row['Type'] : $row['Engine']) . ($row['Comment'] != '' ? ' COMMENT="' . $row['Comment'] . '"' : '');
 
 	return $schema_create;
 }

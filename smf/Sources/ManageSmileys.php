@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.11                                          *
+* Software Version:           SMF 1.1.12                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -48,6 +48,12 @@ if (!defined('SMF'))
 		// !!!
 
 	void ImportSmileys($smileyPath)
+		// !!!
+
+	void EditMessageIcons()
+		// !!!
+
+	void sortSmileyTable()
 		// !!!
 */
 
@@ -150,6 +156,10 @@ function EditSmileySettings()
 		checkSession();
 
 		$context['smiley_sets'] = explode(',', $modSettings['smiley_sets_known']);
+
+		// Make sure that the smileys are in the right order after enabling them.
+		if (isset($_POST['smiley_enable']))
+			sortSmileyTable();
 
 		updateSettings(array(
 			'smiley_sets_default' => empty($context['smiley_sets'][$_POST['default_smiley_set']]) ? 'default' : $context['smiley_sets'][$_POST['default_smiley_set']],
@@ -652,9 +662,7 @@ function EditSmileys()
 				WHERE ID_SMILEY = $_POST[smiley]", __FILE__, __LINE__);
 
 			// Sort all smiley codes for more accurate parsing (longest code first).
-			db_query("
-				ALTER TABLE {$db_prefix}smileys
-				ORDER BY LENGTH(code) DESC", __FILE__, __LINE__);
+			sortSmileyTable();
 		}
 
 		cache_put_data('parsing_smileys', null, 480);
@@ -988,9 +996,7 @@ function ImportSmileys($smileyPath)
 				', $new_smileys), __FILE__, __LINE__);
 
 		// Make sure the smiley codes are still in the right order.
-		db_query("
-			ALTER TABLE {$db_prefix}smileys
-			ORDER BY LENGTH(code) DESC", __FILE__, __LINE__);
+		sortSmileyTable();
 
 		cache_put_data('parsing_smileys', null, 480);
 		cache_put_data('posting_smileys', null, 480);
@@ -1134,6 +1140,32 @@ function EditMessageIcons()
 			$context['boards'][$row['ID_BOARD']] = $row['name'];
 		mysql_free_result($request);
 	}
+}
+
+// This function sorts the smiley table by code length, it is needed as MySQL withdrew support for functions in order by.
+function sortSmileyTable()
+{
+	global $db_prefix;
+
+	// Add a sorting column.
+	db_query("
+		ALTER TABLE {$db_prefix}smileys
+		ADD temp_order mediumint(8) not null", __FILE__, __LINE__);
+
+	// Set the contents of this column.
+	db_query("
+		UPDATE {$db_prefix}smileys
+		SET temp_order = LENGTH(code)", __FILE__, __LINE__);
+
+	// Order the table by this column.
+	db_query("
+		ALTER TABLE {$db_prefix}smileys
+		ORDER BY temp_order DESC", __FILE__, __LINE__);
+
+	// Remove the sorting column.
+	db_query("
+		ALTER TABLE {$db_prefix}smileys
+		DROP temp_order", __FILE__, __LINE__);
 }
 
 ?>
