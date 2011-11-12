@@ -238,8 +238,15 @@ function url_user_stats($username) {
     ));
 }
 
-function url_user_avatar($username, $resize = "50x50") {
-    return url_image_resize(IA_USER_TEXTBLOCK_PREFIX . $username, 'avatar', $resize);
+/**
+ * Returns an url to an user's avatar with a given size
+ *
+ * @param  string  $username
+ * @param  string  $size_type
+ * @return string
+ */
+function url_user_avatar($username, $size_type = "full") {
+    return url_complex("avatar/".$size_type."/".$username);
 }
 
 function url_unsubscribe($username, $key) {

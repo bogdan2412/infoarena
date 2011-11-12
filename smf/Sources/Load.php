@@ -1004,7 +1004,7 @@ function loadMemberContext($user)
 	}
 
 	// use infoarena avatars
-	$avatar_img_src = url_user_avatar($profile['memberName'], '75x75', true);
+	$avatar_img_src = url_user_avatar($profile['memberName'], 'forum', true);
 
 	// What a monstrous array...
 	$memberContext[$user] = array(

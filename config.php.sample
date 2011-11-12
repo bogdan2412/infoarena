@@ -32,6 +32,9 @@ define("IA_URL_HOST", "--write-me-IA_URL_HOST--");
 // Slashes at both ends.
 define("IA_URL_PREFIX", "--write-me-IA_URL_PREFIX--");
 
+// Define the place the avatars are being stored
+define("IA_AVATAR_FOLDER", "--write-me-IA_AVATAR_FOLDER--");
+
 
 // Congratulations! You're done with the essential configuration.
 // --------------------------------------------------------------

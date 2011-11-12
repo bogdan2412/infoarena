@@ -167,7 +167,7 @@ function user_create($user, $remote_ip_info=null)
 function user_update($user)
 {
     log_assert_valid(user_validate($user));
-    
+
     // Update DB
     db_update("ia_user", $user, "id = ".db_quote($user['id']));
 

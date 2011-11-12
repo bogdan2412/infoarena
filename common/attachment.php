@@ -145,4 +145,85 @@ function add_ending_newline($file_path) {
     return false;
 }
 
+/**
+ * Resizes an image whose filepath is given by the parameters into a new
+ * location specified by the other parameters
+ *
+ * Returns whether or not the image has been successfully resized
+ * Note that it returns false if the image doesn't have a known file-type
+ *
+ * The $new_filepath parameter if ommited or given as null will result in the
+ * image being outputted directly to the client
+ *
+ * @param  array   $image_info         An array containing information about the
+ *                                     original image: width, height, mime-type
+ * @param  string  $filepath
+ * @param  array   $new_image_info     An array containing the new width and
+ *                                     height
+ * @param  string  $new_filepath
+ * @return bool
+ */
+function image_resize($image_info, $filepath, $new_image_info,
+        $new_filepath = null) {
+    list($image_width, $image_height, $image_type, $image_attribute) = $image_info;
+    list($new_image_width, $new_image_height) = $new_image_info;
+
+    switch ($image_type) {
+        case IMAGETYPE_GIF:
+            // NOTE: animated GIFs become static. Only the first frame is saved
+            // Seems like a good thing anyway
+            $image = imagecreatefromgif($filepath);
+            $image_resized = imagecreate($new_image_width, $new_image_height);
+            // reset palette and transparent color to that of the original file
+            $trans_col = imagecolortransparent($image);
+            imagepalettecopy($image_resized, $image);
+            imagefill($image_resized, 0, 0, $trans_col);
+            imagecolortransparent($image_resized, $trans_col);
+            imagecopyresampled($image_resized, $image, 0, 0, 0, 0,
+                    $new_image_width, $new_image_height, $image_width,
+                    $image_height);
+
+            if ($new_filepath != null) {
+                return imagegif($image_resized, $new_filepath);
+            }
+            return imagegif($image_resized);
+
+        case IMAGETYPE_JPEG:
+            $image = imagecreatefromjpeg($filepath);
+            $image_resized = imagecreatetruecolor($new_image_width,
+                    $new_image_height);
+            imagecopyresampled($image_resized, $image, 0, 0, 0, 0,
+                    $new_image_width, $new_image_height, $image_width,
+                    $image_height);
+
+            if ($new_filepath != null) {
+                return imagejpeg($image_resized, $new_filepath);
+            }
+            return imagejpeg($image_resized);
+
+        case IMAGETYPE_PNG:
+            $image = imagecreatefrompng($filepath);
+            $image_resized = imagecreatetruecolor($new_image_width,
+                    $new_image_height);
+            // turn off the alpha blending to keep the alpha channel
+            imagealphablending($image_resized, false);
+            // allocate transparent color
+            $col = imagecolorallocatealpha($image_resized, 0, 0, 0, 127);
+            // fill the image with the new color
+            imagefilledrectangle($image_resized, 0, 0, $new_image_width,
+                    $new_image_height, $col);
+            imagecopyresampled($image_resized, $image, 0, 0, 0, 0,
+                    $new_image_width, $new_image_height, $image_width,
+                    $image_height);
+            imagesavealpha($image_resized, true);
+            if ($new_filepath != null) {
+                return imagepng($image_resized, $new_filepath);
+            }
+            return imagepng($image_resized);
+
+        default:
+            // unsupported image type
+            return false;
+    }
+}
 ?>

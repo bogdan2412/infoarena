@@ -15,7 +15,7 @@ function ia_template_header() {
 <div id="header" class="clear">
     <?php if (!identity_is_anonymous()) { $username = $identity_user['username']; ?>
         <div id="userbox">
-        <?= format_link(url_user_profile($username, true), format_user_avatar($username, 50, 50, true), false) ?>
+        <?= format_link(url_user_profile($username, true), format_user_avatar($username, "normal", true), false) ?>
             <div class="user">
                 <strong><?= html_escape($identity_user['full_name']) ?></strong><br/>
                 <?= format_user_ratingbadge($username, $identity_user['rating_cache']) ?>

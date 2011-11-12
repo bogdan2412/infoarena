@@ -3,7 +3,9 @@
 require_once(IA_ROOT_DIR."common/db/user.php");
 require_once(IA_ROOT_DIR."common/db/attachment.php");
 require_once(IA_ROOT_DIR."common/db/smf.php");
+require_once(IA_ROOT_DIR."common/avatar.php");
 require_once(IA_ROOT_DIR."www/controllers/account_validator.php");
+require_once(IA_ROOT_DIR."www/config.php");
 
 // identify target user and check permission to edit profile
 // Yields flash_error & redirect when username invalid or security error
@@ -130,6 +132,15 @@ function controller_account($username = null) {
                                             $disk_name)) {
                         $errors['avatar'] = 'Fisierul nu a putut fi incarcat '
                                             .'pe server.';
+                    } else {
+                        // resize the avatar if it is a correct mime-type
+                        global $IA_SAFE_MIME_TYPES;
+                        $img_info = getimagesize($disk_name);
+                        // check if mime-type is from accepted ones
+                        if (in_array($img_info['mime'], $IA_SAFE_MIME_TYPES)) {
+                            avatar_cache_resized($disk_name, $img_info,
+                                    "a".$user['username']);
+                        }
                     }
                 }
             }

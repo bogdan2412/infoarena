@@ -261,6 +261,17 @@ function is_taggable($obj) {
     return $obj == 'user' || $obj == 'task' || $obj == 'round' || $obj == 'textblock';
 }
 
+/**
+ * Returns whether or not the size type given is an existent one on the site
+ *
+ * @param  string  $size_type
+ * @return bool
+ */
+function is_valid_size_type($size_type) {
+    $size_types = array("full", "tiny", "small", "normal", "forum", "big");
+    return in_array($size_type, $size_types);
+}
+
 // Cached version of create_function_cached.
 // Never use create_function_cached directly because it's a memory leak.
 // It's better to try avoid create_function_cached anyway, but if you

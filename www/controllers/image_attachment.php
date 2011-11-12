@@ -69,46 +69,11 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
     // Actual image resizing
     // Image is placed in output buffer, cached, then flushed.
     ob_start();
-    switch ($img_type) {
-        case IMAGETYPE_GIF:
-            // NOTE: animated GIFs become static. Only the first frame is saved
-            // Seems like a good thing anyway
-            $im = imagecreatefromgif($real_name);
-            $im_resized = imagecreate($new_width, $new_height);
-            // reset palette and transparent color to that of the original file
-            $trans_col = imagecolortransparent($im);
-            imagepalettecopy($im_resized, $im);
-            imagefill($im_resized, 0, 0, $trans_col);
-            imagecolortransparent($im_resized, $trans_col);
-            imagecopyresampled($im_resized, $im, 0, 0, 0, 0, $new_width, $new_height, $img_width, $img_height);
-            imagegif($im_resized);
-            break;
+    $image_supported = image_resize($ret, $real_name, array($new_width, $new_height));
 
-        case IMAGETYPE_JPEG:
-            $im = imagecreatefromjpeg($real_name);
-            $im_resized = imagecreatetruecolor($new_width, $new_height);
-            imagecopyresampled($im_resized, $im, 0, 0, 0, 0, $new_width, $new_height, $img_width, $img_height);
-            imagejpeg($im_resized);
-            break;
-
-        case IMAGETYPE_PNG:
-            $im = imagecreatefrompng($real_name);
-            $im_resized = imagecreatetruecolor($new_width, $new_height);
-            // turn off the alpha blending to keep the alpha channel
-            imagealphablending($im_resized, false);
-            // allocate transparent color
-            $col = imagecolorallocatealpha($im_resized, 0, 0, 0, 127);
-            // fill the image with the new color
-            imagefilledrectangle($im_resized, 0, 0, $new_width, $new_height, $col);
-            imagecopyresampled($im_resized, $im, 0, 0, 0, 0, $new_width, $new_height, $img_width, $img_height);
-            imagesavealpha($im_resized, true);
-            imagepng($im_resized);
-            break;
-
-        default:
-            ob_end_clean();
-            // unsupported image type
-            die_http_error(500, "Unsupported image type");
+    if ($image_supported == false) {
+        ob_end_clean();
+        die_http_error(500, "Unsupported image");
     }
 
     // Store in cache, if enabled
@@ -119,7 +84,7 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
     // HTTP headers
     header("Content-Type: " . image_type_to_mime_type($img_type));
     header("Content-Disposition: inline; filename=" . urlencode($file_name) . ";");
-    // WARNING: strlen() is supposed to be binary safe but some say it may 
+    // WARNING: strlen() is supposed to be binary safe but some say it may
     // be shadowed by mb_strlen() and treat strings as unicode by default,
     // thus reporting invalid lengths for random binary buffers.
     // What is the alternative?

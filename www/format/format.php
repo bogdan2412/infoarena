@@ -129,12 +129,11 @@ function format_img($src, $alt, $attr = array()) {
 }
 
 // Format avatar img.
-function format_user_avatar($user_name, $width = 50, $height = 50,
+function format_user_avatar($user_name, $size_type = "full",
                             $absolute = false)
 {
-    log_assert(is_whole_number($width), "Invalid width");
-    log_assert(is_whole_number($height), "Invalid height");
-    $url = url_user_avatar($user_name, "L{$width}x{$height}");
+    log_assert(is_valid_size_type($size_type), "Invalid size type");
+    $url = url_user_avatar($user_name, $size_type);
     if ($absolute) {
         $url = url_absolute($url);
     }
@@ -165,7 +164,7 @@ function format_user_tiny($user_name, $user_fullname, $rating = null) {
     $result = "";
     $result .= "<span class=\"tiny-user\">";
     $result .= format_link($user_url,
-                           format_user_avatar($user_name, 16, 16, false).$user_fullname,
+                           format_user_avatar($user_name, "tiny", false).$user_fullname,
                            false);
     $result .= ' '.$rbadge;
     $result .= "<span class=\"username\">"
@@ -187,7 +186,7 @@ function format_user_normal($user_name, $user_fullname, $rating = null) {
     $result = "";
     $result .= "<div class=\"normal-user\">";
     $result .= format_link($user_url,
-                           format_user_avatar($user_name, 32, 32, false),
+                           format_user_avatar($user_name, "small", false),
                            false);
     $result .= "<span class=\"fullname\">$user_fullname</span><br />";
     $result .= $rbadge;
