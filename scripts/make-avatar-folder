@@ -1,21 +1,22 @@
 #! /usr/bin/env php
 <?php
 
-require_once(dirname($argv[0])."/utilities.php");
-require_once(IA_ROOT_DIR.'common/db/db.php');
-require_once(IA_ROOT_DIR.'www/controllers/attachment.php');
-require_once(IA_ROOT_DIR.'www/controllers/image_attachment.php');
-require_once(IA_ROOT_DIR.'common/db/attachment.php');
-require_once(IA_ROOT_DIR.'common/cache.php');
-require_once(IA_ROOT_DIR.'common/db/user.php');
-require_once(IA_ROOT_DIR.'common/avatar.php');
-require_once(IA_ROOT_DIR.'common/db/textblock.php');
+require_once(dirname($argv[0]) . '/utilities.php');
+require_once(IA_ROOT_DIR . 'common/db/db.php');
+require_once(IA_ROOT_DIR . 'www/controllers/attachment.php');
+require_once(IA_ROOT_DIR . 'www/controllers/image_attachment.php');
+require_once(IA_ROOT_DIR . 'common/db/attachment.php');
+require_once(IA_ROOT_DIR . 'common/cache.php');
+require_once(IA_ROOT_DIR . 'common/db/user.php');
+require_once(IA_ROOT_DIR . 'common/avatar.php');
+require_once(IA_ROOT_DIR . 'common/db/textblock.php');
 
 // Database connect
 db_connect();
+$verbose = getattr($argv, 1, false) === '-v';
 
 // Managing the userinfo template from the textblock table
-if (read_bool("Do you want to change the template/userinfo textblock?",
+if (read_bool('Do you want to change the template/userinfo textblock?',
         false)) {
     $textfortextblock = "table(compact). |=/5. ==UserImage".
     "(user=\"%user%\" size=\"big\")==\r\n{'Vezi solutiile trimise':monitor?use".
@@ -27,7 +28,7 @@ if (read_bool("Do you want to change the template/userinfo textblock?",
     "==SmfLink(user=\"%user%\" link=\"stats\" caption=\"vezi activitate\")== |".
     "\r\n\r\n\r\n";
     textblock_add_revision('template/userinfo', 'template/userinfo',
-            $textfortextblock, 1, "protected");
+            $textfortextblock, 1, 'protected');
 }
 
 // getting the user list
@@ -39,11 +40,11 @@ $noimage_filepath = attachment_get_filepath(attachment_get('noimage',
 // creating the avatar folder if it does not exists, and grant it permissions
 if (file_exists(IA_AVATAR_FOLDER) == false) {
     mkdir(IA_AVATAR_FOLDER, 0777);
-    $size_types = array("tiny", "small", "normal", "forum", "big", "full");
-    foreach ($size_types as $size) {
-        if (file_exists(IA_AVATAR_FOLDER."/".$size) == false) {
-            mkdir(IA_AVATAR_FOLDER."/".$size, 0777);
-        }
+}
+$size_types = array('tiny', 'small', 'normal', 'forum', 'big', 'full');
+foreach ($size_types as $size) {
+    if (file_exists(IA_AVATAR_FOLDER . '/' . $size) == false) {
+        mkdir(IA_AVATAR_FOLDER . '/' . $size, 0777);
     }
 }
 
@@ -53,14 +54,19 @@ avatar_cache_resized($noimage_filepath, $img_info, 'noimage');
 
 // Going through all the users
 foreach ($userlist as $user) {
-    $attach = attachment_get('avatar', 'utilizator/'.$user);
+    if (!is_user_name($user)) {
+        log_warn('Invalid username: ' . $user);
+        continue;
+    }
+    $attach = attachment_get('avatar', 'utilizator/' . $user);
     $found = !is_null($attach);
 
     if ($found) {
         $real_name = attachment_get_filepath($attach);
         $found = file_exists($real_name);
-        if (!$found)
-            log_warn("File does not exists but it is in the Database.");
+        if (!$found) {
+            log_warn('File does not exists but it is in the Database.');
+        }
     }
 
     if (!$found) {
@@ -73,6 +79,9 @@ foreach ($userlist as $user) {
     }
 
     // The user has a valid image, resizing it, but keeping the attachment
+    if ($verbose) {
+        log_print('Processing user: ' . $user);
+    }
     avatar_cache_resized($real_name, $img_info, "a".$user);
 }
 

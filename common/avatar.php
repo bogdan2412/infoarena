@@ -20,8 +20,16 @@ function avatar_cache_resized($filepath, $image_info, $new_filename) {
     $resize_sizes = array('L16x16' => 'tiny/', 'L32x32' => 'small/',
             'L50x50' => 'normal/' , '75x75'=> 'forum/', '150x150' => 'big/');
 
-    // Copying the original image
-    copy($filepath, IA_AVATAR_FOLDER.'full/'.$new_filename);
+    // Hardlink / Copy the original image
+    $new_filepath = IA_AVATAR_FOLDER . 'full/' . $new_filename;
+    if (is_file($new_filepath) || is_link($new_filepath)) {
+        unlink($new_filepath);
+    }
+    if (!link($filepath, $new_filepath)) {
+        if (!copy($filepath, $new_filepath)) {
+            log_error('Unable to copy user avatar into avatar folder');
+        }
+    }
 
     list($image_width, $image_height, $image_type, $image_attribute) =
             $image_info;
