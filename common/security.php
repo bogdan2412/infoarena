@@ -192,10 +192,7 @@ function security_textblock($user, $action, $textblock) {
 
     // HACK: Forward security to user.
     // HACK: based on name
-    if (preg_match("/^ ".
-                preg_quote(IA_USER_TEXTBLOCK_PREFIX, '/').
-                '('.IA_RE_USER_NAME.") (\/?.*) $/xi",
-                $textblock['name'], $matches)) {
+    if (count($matches = get_page_user_name($textblock['name'])) > 0) {
         require_once(IA_ROOT_DIR . "common/db/user.php");
         $ouser = user_get_by_username($matches[1]);
         if ($ouser === null) {
@@ -204,9 +201,6 @@ function security_textblock($user, $action, $textblock) {
         }
         // This is a horrible hack to prevent deleting or moving an user page.
         // This is pure evil.
-        if ($matches[2] != '') {
-            return false;
-        }
         if ($action == 'textblock-delete' || $action == 'textblock-move') {
             $action = 'simple-critical';
         }

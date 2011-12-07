@@ -5,6 +5,7 @@ require_once(IA_ROOT_DIR."common/db/textblock.php");
 require_once(IA_ROOT_DIR."common/db/attachment.php");
 require_once(IA_ROOT_DIR.'www/controllers/zip_attachment.php');
 require_once(IA_ROOT_DIR."common/external_libs/zipfile.php");
+require_once(IA_ROOT_DIR."common/avatar.php");
 
 // Try to get the textblock model for a certain page.
 // If it fails it will flash and redirect
@@ -108,21 +109,24 @@ function controller_attachment_submit($page_name) {
     $attachments = array();
     if (!$form_errors) {
         if ($autoextract) {
-            $zip_files = get_zipped_attachments($_FILES['file_name']['tmp_name']);
+            $zip_files = get_zipped_attachments(
+                    $_FILES['file_name']['tmp_name']);
 
             if (false === $zip_files) {
-                $form_errors['file_name'] = 'Arhiva ZIP este invalida sau nu poate fi recunoscuta';
+                $form_errors['file_name'] = 'Arhiva ZIP este invalida sau nu '
+                        . 'poate fi recunoscuta';
             } else {
                 $attachments = $zip_files['attachments'];
-                $skipped_files = $zip_files['total_files'] - count($attachments);
+                $skipped_files = $zip_files['total_files'] -
+                        count($attachments);
             }
         }
         else {
             // simple (single) file attachment
             $attachments = array(
-                array('name' => $form_values['file_name'], 'size' => $form_values['file_size'],
-                      'disk_name' => $_FILES['file_name']['tmp_name'])
-            );
+                array('name' => $form_values['file_name'],
+                        'size' => $form_values['file_size'],
+                        'disk_name' => $_FILES['file_name']['tmp_name']));
         }
     }
 
@@ -140,7 +144,8 @@ function controller_attachment_submit($page_name) {
             // extract archived file to a tempory file on disk
             $tmpname = tempnam(IA_ROOT_DIR . 'attach/', 'iatmp');
             log_assert($tmpname);
-            $res = extract_zipped_attachment($ziparchive, $att['zipindex'], $tmpname);
+            $res = extract_zipped_attachment($ziparchive, $att['zipindex'],
+                    $tmpname);
             if ($res) {
                 $att['disk_name'] = $tmpname;
                 $extract_okcount++;
@@ -164,6 +169,7 @@ function controller_attachment_submit($page_name) {
     // Create database entries
     $rewrite_count = 0;
     $attach_okcount = 0;
+    $extra_errors = '';
     if (!$form_errors) {
         for ($i = 0; $i < count($attachments); $i++) {
             $file_att =& $attachments[$i];
@@ -179,6 +185,16 @@ function controller_attachment_submit($page_name) {
                     add_ending_newline($file_att['disk_name']);
                 }
                 $file_att['size'] = filesize($file_att['disk_name']);
+            }
+
+            if (is_avatar_attachment($file_att['name'], $page_name)) {
+                if (isset($skipped_files)) {
+                    $skipped_files++;
+                }
+                $extra_errors .= ' A fost intalnit un fisier cu numele avatar' .
+                        '. Pentru a va modifica imaginea de profil va rugam ' .
+                        'folositi pagina "Contul meu".';
+                 continue;
             }
 
             $attach = attachment_get($file_att['name'], $page_name);
@@ -215,7 +231,8 @@ function controller_attachment_submit($page_name) {
             }
             $disk_name = attachment_get_filepath($file_att['attach_obj']);
             if (is_uploaded_file($file_att['disk_name'])) {
-                $move_ok = move_uploaded_file($file_att['disk_name'], $disk_name);
+                $move_ok = move_uploaded_file($file_att['disk_name'],
+                        $disk_name);
             } else {
                 $move_ok = @rename($file_att['disk_name'], $disk_name);
             }
@@ -231,37 +248,44 @@ function controller_attachment_submit($page_name) {
     }
 
     // custom error message for simple (single) file uploads
-    if (!$form_errors && !$autoextract && 0 >= $attach_okcount) {
-        $form_errors['file_name'] = 'Fisierul nu a putut fi atasat! Eroare necunoscuta ...';
+    if (!$form_errors && !$autoextract && 0 >= $attach_okcount &&
+                !$extra_errors) {
+        $form_errors['file_name'] = 'Fisierul nu a putut fi atasat! Eroare ' .
+                'necunoscuta ...';
     }
 
     // display error/confirmation message
     if (!$form_errors) {
         if ($autoextract) {
             if ($attach_okcount == 1) {
-                $msg = "Am extras si incarcat un fisier.";
+                $msg = 'Am extras si incarcat un fisier.';
             } else {
                 $msg = "Am extras si incarcat {$attach_okcount} fisiere.";
             }
 
             if ($rewrite_count == 1) {
-                $msg .= " Un fisier mai vechi a fost rescris.";
+                $msg .= ' Un fisier mai vechi a fost rescris.';
             } else if ($rewrite_count > 1) {
                 $msg .= " {$rewrite_count} fisiere mai vechi au fost rescrise.";
             }
 
             if ($skipped_files == 1) {
-                $msg .= " Un fisier nu a fost dezarhivat deoarece era prea mare sau era invalid.";
+                $msg .= ' Un fisier nu a fost dezarhivat deoarece era prea ' .
+                        'mare sau era invalid.';
             } else if ($skipped_files > 1) {
-                $msg .= " {$skipped_files} fisiere nu au fost dezarhivate deoarece erau prea mari sau erau invalide.";
+                $msg .= " {$skipped_files} fisiere nu au fost dezarhivate " .
+                        'deoarece erau prea mari sau erau invalide.';
             }
+            $msg .= $extra_errors;
         }
         else {
-            if ($rewrite_count) {
-                $msg = "Fisierul trimis a fost atasat cu succes. Un atasamant mai vechi a fost rescris.";
-            }
-            else {
-                $msg = "Fisierul trimis a fost atasat cu succes.";
+            if ($extra_errors) {
+                $msg = $extra_errors;
+            } else if($rewrite_count) {
+                $msg = 'Fisierul trimis a fost atasat cu succes. Un atasament' .
+                        'mai vechi a fost rescris.';
+            } else {
+                $msg = 'Fisierul trimis a fost atasat cu succes.';
             }
         }
 
@@ -269,6 +293,7 @@ function controller_attachment_submit($page_name) {
         redirect(url_textblock($page_name));
     }
 
+    $form_errors['file_name'] .= $extra_errors;
     // Errors, print view template.
     $view['form_errors'] = $form_errors;
     $view['form_values'] = $form_values;
@@ -300,6 +325,11 @@ function controller_attachment_delete($page_name, $file_name, $more_files = 0) {
         redirect(url_textblock($page_name));
     }
 
+    // Delete the resizedimages in case the page is an avatar
+    $matches = get_page_user_name($page_name);
+    if (is_avatar_attachment($file_name, $page_name)) {
+        avatar_delete($matches[1]);
+    }
     // We've got big balls.
 
     if(!$more_files) {
@@ -341,6 +371,18 @@ function controller_attachment_rename($page_name, $old_name, $new_name) {
     // don't be redundant
     if ($old_name == $new_name) {
         redirect(url_attachment_list($page_name));
+    }
+
+    if (is_avatar_attachment($old_name, $page_name)) {
+        flash_error('Atasamentul "avatar" nu poate fi redenumit.');
+        redirect(url_textblock($page_name));
+    }
+
+    if (is_avatar_attachment($new_name, $page_name)) {
+        flash_error('Nu puteti numi un atasament "avatar". Pentru '
+                . 'a va modifica imaginea de profil va rugam folositi '
+                . 'pagina "Contul meu".');
+        redirect(url_textblock($page_name));
     }
 
     $old_attach = attachment_get($old_name, $page_name);

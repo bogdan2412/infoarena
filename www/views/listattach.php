@@ -36,7 +36,7 @@ function format_attach_id($row) {
 
 function format_attach_name($row) {
     global $page_name;
-    
+
     $attachurl = '<span id="rename_'.$row['id'].'" style="display: none">';
     $attachurl .= '<form action="'.url_attachment_rename($page_name).'" method="post">';
     $attachurl .= '<input type="hidden" name="old_name" value="'.$row['name'].'"/>';
@@ -125,8 +125,8 @@ $column_infos = array(
     ),
 );
 ?>
-    <form method = 'post' action = ''> 
-    <input type = 'hidden' name = 'action' value = 'download-zip'>
+    <form method = 'post' action = ''>
+    <input type = 'hidden' name = 'action' value = 'attach-bulk-action'>
     <h1>Atasamente pentru pagina <?= format_link(url_textblock($view['page_name']), $view['page_name']) ?></h1>
     <?php
         $options = array(

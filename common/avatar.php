@@ -6,7 +6,49 @@ require_once(IA_ROOT_DIR.'www/controllers/image_attachment.php');
 require_once(IA_ROOT_DIR.'common/db/attachment.php');
 require_once(IA_ROOT_DIR.'www/controllers/account_validator.php');
 require_once(IA_ROOT_DIR.'common/common.php');
+require_once(IA_ROOT_DIR.'www/config.php');
 require_once(IA_ROOT_DIR.'common/attachment.php');
+
+/**
+ * Returns whether the attachment of the given page is an avatar attachment
+ * @param  string  $attachment_name
+ * @param  string  $page_name
+ * @return bool
+ */
+function is_avatar_attachment($attachment_name, $page_name) {
+    $matches = get_page_user_name($page_name);
+
+    if ($attachment_name === 'avatar' && $matches) {
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * Resizes a newly uploaded avatar and returns errors if any
+ * @param  string  $temporary_name
+ * @param  string  $filepath          The filepath where to copy the attachment
+ * @param  string  $username
+ * @return mixed   Error message or null on success
+ */
+function avatar_update($temporary_name, $filepath, $username) {
+    // resize the avatar if it has a correct mime-type
+    $avatar_mime_types = array('image/gif', 'image/jpeg', 'image/png');
+    $image_info = getimagesize($temporary_name);
+    if (!in_array($image_info['mime'], $avatar_mime_types)) {
+        return 'Fisierul nu este o imagine acceptata pe site. ' .
+                'Utilizati doar imagini GIF, JPEG sau PNG.';
+    }
+
+    // write the file on disk.
+    if (!move_uploaded_file($temporary_name, $filepath)) {
+        return 'Fisierul nu a putut fi incarcat pe server.';
+    }
+    // resize the avatar
+    avatar_cache_resized($filepath, $image_info, "a".$username);
+    return null;
+}
 
 /**
  * It takes an avatar image file given by it's filepath and resizes it in the
@@ -44,4 +86,27 @@ function avatar_cache_resized($filepath, $image_info, $new_filename) {
     }
 }
 
+/**
+ * Delete's an user avatar, the rest is done from the attachment page
+ *
+ * @param  string  $username
+ */
+function avatar_delete($username) {
+    $resize_folders = array('tiny/', 'small/', 'normal/', 'forum/', 'big/');
+
+    // Unlink the hardlinked full-sized image
+    $filepath = IA_AVATAR_FOLDER . 'full/a' . $username;
+    if (is_file($filepath) || is_link($filepath)) {
+        unlink($filepath);
+    }
+
+    // Delete the resized ones
+    foreach ($resize_folders as $resize_folder) {
+        $filepath = IA_AVATAR_FOLDER . $resize_folder . 'a'
+                . $username;
+        if (is_file($filepath) || is_link($filepath)) {
+            unlink($filepath);
+        }
+    }
+}
 ?>

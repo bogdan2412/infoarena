@@ -177,7 +177,9 @@ function image_resize($image_info, $filepath, $new_image_info,
             // reset palette and transparent color to that of the original file
             $trans_col = imagecolortransparent($image);
             imagepalettecopy($image_resized, $image);
-            imagefill($image_resized, 0, 0, $trans_col);
+            if ($trans_col != -1) {
+                imagefill($image_resized, 0, 0, $trans_col);
+            }
             imagecolortransparent($image_resized, $trans_col);
             imagecopyresampled($image_resized, $image, 0, 0, 0, 0,
                     $new_image_width, $new_image_height, $image_width,

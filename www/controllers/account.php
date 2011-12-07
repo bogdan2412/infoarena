@@ -6,6 +6,7 @@ require_once(IA_ROOT_DIR."common/db/smf.php");
 require_once(IA_ROOT_DIR."common/avatar.php");
 require_once(IA_ROOT_DIR."www/controllers/account_validator.php");
 require_once(IA_ROOT_DIR."www/config.php");
+require_once(IA_ROOT_DIR."common/avatar.php");
 
 // identify target user and check permission to edit profile
 // Yields flash_error & redirect when username invalid or security error
@@ -128,20 +129,9 @@ function controller_account($username = null) {
                 // write the file on disk.
                 if (!$errors) {
                     $disk_name = attachment_get_filepath($attach);
-                    if (!move_uploaded_file($_FILES['avatar']['tmp_name'],
-                                            $disk_name)) {
-                        $errors['avatar'] = 'Fisierul nu a putut fi incarcat '
-                                            .'pe server.';
-                    } else {
-                        // resize the avatar if it is a correct mime-type
-                        global $IA_SAFE_MIME_TYPES;
-                        $img_info = getimagesize($disk_name);
-                        // check if mime-type is from accepted ones
-                        if (in_array($img_info['mime'], $IA_SAFE_MIME_TYPES)) {
-                            avatar_cache_resized($disk_name, $img_info,
-                                    "a".$user['username']);
-                        }
-                    }
+                    $errors['avatar'] = avatar_update(
+                            $_FILES['avatar']['tmp_name'], $disk_name,
+                            $user['username']);
                 }
             }
 
@@ -211,6 +201,8 @@ function controller_account($username = null) {
     $view['form_errors'] = $errors;
     $view['form_values'] = $data;
     $view['action'] = url_account($user['username']);
+    $view['avatar_exists'] = attachment_get('avatar', IA_USER_TEXTBLOCK_PREFIX .
+            $user['username']);
     if ($ownprofile) {
         $view['topnav_select'] = 'profile';
     }

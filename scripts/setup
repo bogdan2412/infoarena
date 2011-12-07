@@ -229,7 +229,6 @@ if (running_as_root() &&
     $sitename = read_line("Site name?", $sitename);
     system("chmod g+ws {$ia_root}attach");
     system("chmod g+ws {$ia_root}cache");
-    system("chmod g+ws {$ia_root}www/static/images/avatar");
     system("chmod g+ws {$ia_root}www/static/images/tmp");
     system("chmod g+ws {$ia_root}www/static/images/latex");
 
@@ -268,6 +267,8 @@ if (running_as_root() &&
     }
 }
 
+// Running scripts to keep things simple for new developers
+system("./{$ia_root}scripts/make-avatar-folder");
 // FIXME: configure forum
 if (read_bool("Should I try to configure the forum (ugly db stuff)?", true)) {
     system("{$ia_root}scripts/forum-fix");

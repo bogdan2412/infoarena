@@ -96,6 +96,16 @@ if (array_key_exists('security_level', $form_values)) {
             ?>
         </li>
         <li>
+            <?php
+                if ($view['avatar_exists']) {
+                    echo format_post_link(url_attachment_delete(
+                                IA_USER_TEXTBLOCK_PREFIX . $user['username'],
+                                'avatar'), "Sterge Avatar", array(), true,
+                                array('onclick' => "return confirm('Aceasta " .
+                                        'actiune este ireversibila! Doresti ' .
+                                        "sa continui?')"));
+                }
+            ?>
             <label for="form_avatar">Avatar nou</label>
             <?= ferr_span('avatar') ?>
             <input type="file" name="avatar" id="form_avatar" />

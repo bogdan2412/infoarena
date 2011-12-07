@@ -279,7 +279,7 @@ else if ($action == 'download') {
         controller_attachment_download($page, request('file'), request('safe_only', false) == 'true');
     }
 }
-else if ($action == 'download-zip') {
+else if ($action == 'attach-bulk-action') {
     require_once(IA_ROOT_DIR.'www/controllers/attachment.php');
     if(request('download')) {
         controller_attachment_download_zip($page, request_args());

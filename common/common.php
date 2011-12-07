@@ -155,6 +155,20 @@ function is_page_name($page_name) {
     return preg_match('/^'.IA_RE_PAGE_NAME.'$/xi', $page_name);
 }
 
+/**
+ * Validates user page name
+ *
+ * @param  string  $page_name
+ * @return array                returns an array containing the matched user
+ */
+function get_page_user_name($page_name) {
+    preg_match("/^ ".
+                preg_quote(IA_USER_TEXTBLOCK_PREFIX, '/').
+                '('.IA_RE_USER_NAME.") (\/?.*) $/xi",
+                $page_name, $matches);
+    return $matches;
+}
+
 // returns boolean whether specified attach name is valid
 // NOTE: We hereby limit file names. No spaces, please. Not that we have
 // a problem with spaces inside URLs. Everything should be (and hopefully is)
