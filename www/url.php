@@ -394,6 +394,10 @@ function url_forum() {
     return IA_SMF_URL;
 }
 
+function url_userwidget($user_id) {
+    return url_complex("userwidget/".$user_id, array());
+}
+
 // Newsletter
 
 function url_newsletter($page_name, $rev = null) {

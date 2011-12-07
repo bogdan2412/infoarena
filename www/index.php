@@ -49,7 +49,7 @@ $directmaps = array_flip(array('register', 'changes',
                                'login', 'logout', 'json', 'job_detail',
                                'monitor', 'projector', 'submit', 'userinfo',
                                'plot', 'search',
-                               'unsubscribe', 'resetpass', 'reeval'
+                               'unsubscribe', 'resetpass', 'reeval', 'userwidget'
 ));
 
 //
