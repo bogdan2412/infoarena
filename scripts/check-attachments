@@ -8,13 +8,13 @@ db_connect();
 log_print("Checking attachment dir...");
 log_warn("This script consumes tons of memory so errors might occur");
 
-$res = db_query("SELECT `id`, `name`, `page` FROM ia_file");
+$res = db_query("SELECT `id`, `name`, `page`, `size` FROM ia_file");
 
 $extra_files = array_flip(glob(IA_ROOT_DIR . "attach/*"));
-
 $extra_atts = array();
 $total_files = count($extra_files);
 $total_atts = 0;
+$mismatched_sizes = array();
 
 // Check attachments.
 while ($att = db_next_row($res)) {
@@ -25,6 +25,10 @@ while ($att = db_next_row($res)) {
     } else {
         $extra_atts[] = $att;
     }
+    if (filesize($fname) != $att['size']) {
+        $att['file_size'] = filesize($fname);
+        $mismatched_sizes[] = $att;
+    }
 }
 
 // FIXME: check cache.
@@ -33,7 +37,7 @@ $extra_files = array_keys($extra_files);
 if (count($extra_files) == 0 && count($extra_atts) == 0) {
     log_print("Database and attach dir are in perfect sync, $total_files total files.");
 } else {
-    log_print("There are are ".count($extra_files)." out of ".$total_files." disk files with no db entry.");
+    log_print("There are ".count($extra_files)." out of ".$total_files." disk files with no db entry.");
     if (count($extra_files)) {
         if (read_bool("Do you want to see a list?", false)) {
             foreach ($extra_files as $file) {
@@ -47,7 +51,7 @@ if (count($extra_files) == 0 && count($extra_atts) == 0) {
         }
     }
 
-    log_print("There are are ".count($extra_atts)." out of ".$total_atts." db files with no disk file.");
+    log_print("There are ".count($extra_atts)." out of ".$total_atts." db files with no disk file.");
     if (count($extra_atts)) {
         if (read_bool("Do you want to see a list?", false)) {
             foreach ($extra_atts as $att) {
@@ -64,6 +68,53 @@ if (count($extra_files) == 0 && count($extra_atts) == 0) {
 
 unset($extra_atts);
 unset($extra_files);
+
+if (count($mismatched_sizes) != 0) {
+    log_print('There are ' . count($mismatched_sizes) . ' files with ' .
+              'mismatching sizes on disk and in the db');
+    if (read_bool('Do you want to see a list?', false)) {
+        foreach ($mismatched_sizes as $att) {
+            log_print(sprintf('page %s name %s file_size %s db_size %s',
+                              $att['page'], $att['name'], $att['file_size'],
+                              $att['size']));
+        }
+    }
+    if (read_bool('Do you want to try to fix this?', false)) {
+        foreach ($mismatched_sizes as $att) {
+            if ($att['file_size'] == 0 && $att['size'] != 0) {
+                // File was likely uploaded when disk was out of space.
+                // Nothing we can do, delete it.
+                log_print(sprintf('Deleting attachment page %s name %s',
+                                  $att['page'], $att['name']));
+                attachment_delete_by_id($att['id']);
+                continue;
+            }
+
+            $safe_update = false;
+            if (starts_with($att['name'], 'grader_test') &&
+                $att['file_size'] == $att['size'] + 1) {
+                // A script was run that added missing trailing endlines
+                // to grader tests.
+                $safe_update = true;
+            }
+            if ($att['file_size'] != 0 && $att['size'] == 0) {
+                $safe_update = true;
+            }
+
+            if ($safe_update) {
+                $new_att = attachment_get_by_id($att['id']);
+                $new_att['size'] = $att['file_size'];
+                attachment_update($new_att['id'], $new_att['name'],
+                                  $new_att['size'], $new_att['mime_type'],
+                                  $new_att['page'], $new_att['user_id'],
+                                  $new_att['remote_ip_info']);
+                continue;
+            }
+            log_print(sprintf('I don\'t know how to handle attachment page ' .
+                              $att['page'] . ' name ' . $att['name']));
+        }
+    }
+}
 
 // Again, in case we changed something.
 $files = glob(IA_ROOT_DIR . "attach/*");
