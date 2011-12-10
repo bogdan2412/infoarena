@@ -6,7 +6,7 @@ require_once(IA_ROOT_DIR."common/db/task.php");
 function controller_reeval() {
     $filters = job_get_filters();
 
-    if (!$filters["task"] ||
+    if (!isset($filters["task"]) ||
             !identity_can('task-reeval', task_get($filters['task']))) {
         identity_require('job-reeval');
     }

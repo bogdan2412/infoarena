@@ -577,7 +577,8 @@ function security_job($user, $action, $job) {
     $is_admin = $usersec == 'admin';
     $is_intern = $usersec == 'intern';
     $is_owner = ($job['user_id'] == $user['id']);
-    $is_task_owner = ($job['task_owner_id'] == $user['id'] && $usersec == 'helper');
+    $is_task_owner = ($job['task_owner_id'] == $user['id'] && 
+                      in_array($usersec, array('helper', 'intern')));
     $can_view_job = ($job['task_hidden'] == false) || $is_task_owner || $is_admin;
     $can_view_source = ($job['task_open_source'] == true) || $is_task_owner || 
                        $is_owner || $is_admin || $is_intern;
