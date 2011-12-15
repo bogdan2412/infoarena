@@ -21,11 +21,17 @@ function controller_textblock_view($page_name, $rev_num = null,
         // Checks if $rev_num is the latest.
         $rev_count = textblock_get_revision_count($page_name);
         if ($rev_num && $rev_num != $rev_count) {
+            if (!is_numeric($rev_num) || (int)$rev_num < 1) {
+                flash_error('Revizia "' . $rev_num . '" este invalida.');
+                redirect(url_textblock($page_name));
+            } else {
+                $rev_num = (int)$rev_num;
+            }
             identity_require("textblock-history", $crpage);
             $page = textblock_get_revision($page_name, $rev_num);
 
             if (!$page) {
-                flash_error("Revizia \"{$rev_num}\" nu exista.");
+                flash_error('Revizia "' . $rev_num . '" nu exista.');
                 redirect(url_textblock($page_name));
             }
         } else {

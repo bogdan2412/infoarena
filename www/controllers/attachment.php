@@ -413,7 +413,7 @@ function controller_attachment_rename($page_name, $old_name, $new_name) {
 //
 // Returns attachment model
 function try_attachment_get($page_name, $file_name) {
-    if (!$file_name) {
+    if (!$file_name || !is_attachment_name($file_name)) {
         die_http_error();
     }
 

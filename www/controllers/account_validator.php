@@ -120,12 +120,11 @@ function validate_user_data($data, $register, $user = null) {
     }
 
     // Security
-    log_print($user['security_level']);
     if (!$register && array_key_exists('security_level', $data)) {
-        if ($user['security_level'] != 'normal' &&
-               $user['security_level'] != 'helper' &&
-               $user['security_level'] != 'admin' &&
-               $user['security_level'] != 'intern') {
+        if ($data['security_level'] != 'normal' &&
+            $data['security_level'] != 'helper' &&
+            $data['security_level'] != 'admin' &&
+            $data['security_level'] != 'intern') {
             $errors['security_level'] = "Nivel de securitate invalid";
         }
     }

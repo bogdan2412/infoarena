@@ -6,6 +6,12 @@ require_once(IA_ROOT_DIR."common/common.php");
 require_once(IA_ROOT_DIR."common/db/db.php");
 require_once(IA_ROOT_DIR."common/db/user.php");
 
+if (!IA_DEVELOPMENT_MODE) {
+    // These tests alter the database and can remove user created content
+    // by mistake (it has happened in the past).
+    log_error("You should never run these tests in a production environment");
+}
+
 // Test with curl. $args format:
 // * url: url to curl. If http:// is ommited IA_URL_HOST is assumed.
 // * post: post arguments (use url_ functions for get args).
