@@ -2,6 +2,18 @@
 
 require_once(IA_ROOT_DIR . 'www/url.php');
 require_once(IA_ROOT_DIR . 'common/db/tokens.php');
+
+require_once(IA_ROOT_DIR . 'www/xhp/base/init.php');
+require_once(IA_ROOT_DIR . 'www/xhp/ia/base.php');
+require_once(IA_ROOT_DIR . 'www/xhp/ia/sitewide.php');
+require_once(IA_ROOT_DIR . 'www/xhp/ia/sidebar.php');
+require_once(IA_ROOT_DIR . 'www/xhp/ia/calendar.php');
+require_once(IA_ROOT_DIR . 'www/xhp/ia/google_search.php');
+require_once(IA_ROOT_DIR . 'www/xhp/ia/user_count.php');
+require_once(IA_ROOT_DIR . 'www/xhp/ia/server_time.php');
+require_once(IA_ROOT_DIR . 'www/xhp/ui/breadcrumbs.php');
+require_once(IA_ROOT_DIR . 'www/xhp/ui/flash_message.php');
+
 // Wrapper around htmlentities which defaults charset to UTF-8
 function html_escape($string, $quote_style = ENT_COMPAT, $charset = "UTF-8")
 {
@@ -22,7 +34,7 @@ function xml_escape($string, $quote_style = ENT_COMPAT, $charset = "UTF-8")
         '&#226;','&#227;','&#228;','&#229;','&#230;','&#231;','&#232;','&#233;',
         '&#234;','&#235;','&#236;','&#237;','&#238;','&#239;','&#240;','&#241;',
         '&#242;','&#243;','&#244;','&#245;','&#246;','&#247;','&#248;','&#249;',
-        '&#250;','&#251;','&#252;','&#253;','&#254;','&#255;', '&#8221;', 
+        '&#250;','&#251;','&#252;','&#253;','&#254;','&#255;', '&#8221;',
         '&#8222;',
     );
     $html = array('&quot;','&amp;','&amp;','&lt;','&gt;','&nbsp;','&iexcl;',
@@ -153,7 +165,7 @@ function http_serve($disk_file_name, $http_file_name, $mime_type = null, $cache_
         }
     }
 
-    // HTTP headers.  
+    // HTTP headers.
     header("Content-Type: {$mime_type}");
     header("Content-Disposition: {$disposition}; filename="
            .urlencode($http_file_name).";");
@@ -194,65 +206,167 @@ function flash_error($message) {
     flash($message, 'flashError');
 }
 
-// Execute a view. Variables in $view are placed in the
-// local namespace as variables. This is the preffered
-// way of calling a template, because globals are not
-// easily accessible.
-function execute_view($view_file_name, $view) {
-    global $identity_user;
-
-    // retrieve recent page history
-    // some pages display it as navigation breadcrumbs
+/**
+ * Composes a XHP object that provides the page frame, containing the default
+ * header, footer, navigation bars, breadcrumbs and flash messages. The object
+ * expects a <ia:content> child containg the main page content to be appended
+ * before rendering.
+ *
+ * @param   string  $title
+ * @param   string  $top_navbar_selected
+ * @param   bool    $hide_sidebar_login_form
+ * @param   string  $charset
+ * @return  :ia:page
+ */
+function default_view_compose($title = null,
+                              $top_navbar_selected = "infoarena",
+                              $hide_sidebar_login_form = false,
+                              $charset = "UTF-8") {
+    // Retrieve recent page history to display as navigation breadcrumbs
     $recent_pages = getattr($_SESSION, '_ia_recent_pages', array());
 
-    // update recent page history
-    $query = url_from_args($_GET);
-    if (!preg_match('/\/(json|plot|changes)\//', $query) && !request_is_post()) {
-        $hashkey = strtolower($query);
-        $recent_pages[$hashkey] = array($query, getattr($view, 'title', $query)); 
+    // Update recent page history
+    $current_page = url_from_args($_GET);
+    if (!request_is_post() &&
+        !preg_match('/\/(json|plot|changes)\//', $current_page)) {
+        $current_page_key = strtolower($current_page);
+        $recent_pages[$current_page_key] =
+            array($current_page, is_null($title) ? $current_page : $title);
         if (5 < count($recent_pages)) {
             array_shift($recent_pages);
         }
         $_SESSION['_ia_recent_pages'] = $recent_pages;
+    } else {
+        $current_page_key = null;
     }
 
-    // let view access recent_pages
-    $view['current_url_key'] = strtolower($query);
-    $view['recent_pages'] = $recent_pages;
+    // Display flash message if it exists.
+    if (isset($_SESSION['_ia_flash'])) {
+        $flash_message =
+          <ui:flash-message class={getattr($_SESSION, '_ia_flash_class')}>
+            {$_SESSION['_ia_flash']}
+          </ui:flash-message>;
 
-    // give access to request statistics
+        // Clear flash message.
+        unset($_SESSION['_ia_flash']);
+        if (isset($_SESSION['_ia_flash_class'])) {
+            unset($_SESSION['_ia_flash_class']);
+        }
+    } else {
+        $flash_message = <x:frag />;
+    }
+
+    // Add google custom search bar only if not in development mode
+    if (!IA_DEVELOPMENT_MODE) {
+        $google_search = <ia:google-search />;
+    } else {
+        $google_search = <x:frag />;
+    }
+    // Show the login form in the sidebar only if user is not authenticated.
+    // Get the user's unread personal message count if he is.
+    if (identity_is_anonymous()) {
+        $sidebar_login =
+          <ia:sidebar-login
+            show_login_form={!$hide_sidebar_login_form}/>;
+        $user = null;
+        $user_pm_count = null;
+    } else {
+        $sidebar_login = <x:frag />;
+        $user = identity_get_user();
+        $user_pm_count = smf_get_pm_count(identity_get_username());
+    }
+
+    // Compose and return the page.
+    return
+      <ia:page title={$title} user={$user} charset={$charset}>
+        <ia:header />
+        <ia:top-navbar selected={$top_navbar_selected}
+          user_pm_count={$user_pm_count} />
+
+        <ia:left-col>
+          <ia:left-navbar />
+          {$google_search}
+          <ia:calendar />
+          {$sidebar_login}
+          <ia:user-count />
+          <ia:server-time />
+          <ia:sidebar-ad />
+        </ia:left-col>
+
+        <ui:breadcrumbs entries={$recent_pages} current={$current_page_key} />
+        {$flash_message}
+
+        <ia:footer />
+      </ia:page>;
+}
+
+/**
+ * Renders an XHP based view and performs cleanup
+ */
+function render_and_die($xhp_page) {
+    echo $xhp_page;
     if (IA_DEVELOPMENT_MODE) {
+        // Development mode: display current page's log in site footer
         global $execution_stats;
-        $view['execution_stats'] = $execution_stats;
+        log_execution_stats();
+        $buffer = $execution_stats['log_copy'];
+        echo
+          <textarea id="log" rows="50" cols="80">
+            {$buffer}
+          </textarea>;
     }
+    session_write_close();
+    save_tokens();
+    die();
+}
 
-    // expand $view members into global scope
+/*
+ * DEPRECATED: Please use XHP based views.
+ *
+ * Execute as view. Variables in $view are placed in the local namespace as
+ * variables. This is the preffered way of calling a template, because globals
+ * are not easily accessible.
+ *
+ * @param   string  $view_file_name
+ * @param   array   $view
+ */
+function compose_legacy_view($view_file_name, $view) {
+    $_xhp_page = default_view_compose(
+        getattr($view, 'title'),
+        getattr($view, 'topnav_select', 'infoarena'),
+        getattr($view, 'no_sidebar_login', false),
+        getattr($view, 'charset', 'UTF-8'));
+
+    require_once(IA_ROOT_DIR . 'www/views/utilities.php');
+    // Expand $view members into global scope
     $GLOBALS['view'] = $view;
-
     foreach ($view as $view_hash_key => $view_hash_value) {
         if ($view_hash_key == 'view_hash_key') continue;
         if ($view_hash_key == 'view_hash_value') continue;
         if ($view_hash_key == 'view_file_name') continue;
         if ($view_hash_key == 'view') continue;
-        //echo "added $view_hash_key = $view_hash_value into globals";
         $GLOBALS[$view_hash_key] = $view_hash_value;
         $$view_hash_key = $view_hash_value;
     }
 
-    // NOTE: no includes here, unless you want to get
-    // warnings about function redeclaration.
+    ob_start();
     include($view_file_name);
+    $rendered = ob_get_clean();
+
+    $_xhp_page->appendChild(
+      <ia:content>
+        {HTML($rendered)}
+      </ia:content>);
+    return $_xhp_page;
 }
 
-// Execute view and then die.
+/*
+ * DEPRECATED: Please use XHP based views.
+ *
+ * Executes view and then dies.
+ */
 function execute_view_die($view_file_name, $view) {
-    execute_view($view_file_name, $view);
-    if (IA_DEVELOPMENT_MODE) {
-        log_execution_stats();
-    }
-    session_write_close();
-    save_tokens();
-    die();
+    render_and_die(compose_legacy_view($view_file_name, $view));
 }
 
 ?>

@@ -106,6 +106,13 @@ function format_post_link($url, $content, $post_data = array(), $escape = true, 
 // FIXME: Improve this logic.
 function format_highlight_access_key($string, $key) {
     if (($pos = stripos($string, $key)) !== false) {
+        require_once(IA_ROOT_DIR . 'www/xhp/base/init.php');
+        return
+            <x:frag>
+                {substr($string, 0, $pos)}
+                <span class="access-key">{$string[$pos]}</span>
+                {substr($string, $pos + 1)}
+            </x:frag>;
         return substr_replace($string,
                 '<span class="access-key">'.$string[$pos].'</span>', $pos, 1);
     } else {

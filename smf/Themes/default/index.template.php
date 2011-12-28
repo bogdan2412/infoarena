@@ -29,7 +29,7 @@
 	http://www.simplemachines.org/
 */
 
-require_once(IA_ROOT_DIR.'www/views/sitewide.php');
+require_once(IA_ROOT_DIR . 'www/xhp/ia/sitewide.php');
 
 // Initialize the template... mainly little settings.
 function template_init()
@@ -209,7 +209,7 @@ function template_main_above()
 </div>
 
 <?php*/
-	ia_template_header();
+	echo <ia:header user={identity_get_user()} />;
 
 	// Show the menu here, according to the menu sub template.
 	template_menu();
@@ -255,7 +255,7 @@ function template_main_below()
 		<span class="smalltext">', $txt['smf301'], $context['load_time'], $txt['smf302'], $context['load_queries'], $txt['smf302b'], '</span>';
 
 	// throw in infoarena footer
-	ia_template_footer();
+	echo <ia:footer />;
 
 	// This is an interesting bug in Internet Explorer AND Safari. Rather annoying, it makes overflows just not tall enough.
 	if (($context['browser']['is_ie'] && !$context['browser']['is_ie4']) || $context['browser']['is_mac_ie'] || $context['browser']['is_safari'] || $context['browser']['is_firefox'])
@@ -388,7 +388,10 @@ function template_menu() {
 	$smf_admin = $context['allow_admin'];
 
 	// display menu
-	ia_template_topnav($current_action, $smf_admin);
+	echo <ia:top-navbar
+		user={identity_get_user()} selected={$current_action}
+		user_pm_count={identity_is_anonymous() ? null :
+		               smf_get_pm_count(identity_get_username())} />;
 	if ($context['user']['is_logged']) {
 		echo '<div style="float: right; padding: 3pt">',
 			 '<a href="', $scripturl, '?action=search', '"><strong>Cauta in forum</strong></a> | ',

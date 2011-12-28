@@ -1,6 +1,5 @@
 <?php
 
-require_once(IA_ROOT_DIR.'www/views/sitewide.php');
 require_once(IA_ROOT_DIR.'www/format/table.php');
 require_once(IA_ROOT_DIR.'www/format/format.php');
 require_once(IA_ROOT_DIR.'www/format/list.php');

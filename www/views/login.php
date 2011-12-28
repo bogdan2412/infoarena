@@ -6,7 +6,7 @@
 <?= format_link(url_register(), "inregistra aici") ?>;
 daca ti-ai uitat parola, o poti <a href="<?= html_escape(url_resetpass()) ?>">reseta aici</a>.</p>
 
-<?php include(IA_ROOT_DIR.'www/views/form_login.php'); ?>
+<?php echo <ia:login_form />; ?>
 
 <?php wiki_include('template/login'); ?>
 

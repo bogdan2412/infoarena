@@ -92,23 +92,6 @@ function controller_blog_view($page_name, $rev_num = null) {
 
     log_assert_valid(textblock_validate($page));
 
-    if (!IA_DEVELOPMENT_MODE) {
-        // FIXME: add meta description to each blog post
-        // FIXME: extend to textblocks?
-        $meta_info = array();
-        // Facebook like meta data
-        $meta_info[] = array('property' => 'og:title', 'content' => $page['title']);
-        $meta_info[] = array('property' => 'og:type', 'content' => 'blog');
-        $meta_info[] = array('property' => 'og:url', 'content' => url_absolute(url_textblock($page['name'])));
-        $meta_info[] = array('property' => 'og:image', 'content' => url_absolute(url_static('images/icon-user-64.gif')));
-        $meta_info[] = array('property' => 'og:site_name', 'content' => 'infoarena.ro');
-        $meta_info[] = array('property' => 'fb:app_id', 'content' => IA_FACEBOOK_APP_ID);
-
-        // General meta data
-        $meta_info[] = array('name' => 'title', 'content' => $page['title']);
-    }
-
-
     // Build view.
     $view = array();
     $view['topnav_select'] = 'blog';
@@ -132,7 +115,30 @@ function controller_blog_view($page_name, $rev_num = null) {
     }
 
 
-    execute_view_die('views/blog_view.php', $view);
+    $xhp_page = compose_legacy_view('views/blog_view.php', $view);
+    if (!IA_DEVELOPMENT_MODE) {
+        // FIXME: add meta description to each blog post
+        // FIXME: extend to textblocks?
+        // Facebook like meta data
+        $this->appendChild(
+            <meta property="og:title" content={$page['title']} />);
+        $this->appendChild(
+            <meta property="og:type" content="blog" />);
+        $this->appendChild(
+            <meta property="og:url"
+              content={url_absolute(url_textblock($page['name']))} />);
+        $this->appendChild(
+            <meta property="og:image"
+              content={url_absolute(url_static('images/icon-user-64.gif'))} />);
+        $this->appendChild(
+            <meta property="og:site_name" content="infoarena.ro" />);
+        $this->appendChild(
+            <meta property="fb:app_id" content={IA_FACEBOOK_APP_ID} />);
+
+        // General meta data
+        $this->appendChild(<meta name="title" content={$page['title']} />);
+    }
+    render_and_die($xhp_page);
 }
 
 ?>

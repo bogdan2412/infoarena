@@ -5,7 +5,7 @@
 
 function Page_Init() {
     // fade away flash message
-    var flash = $('#flash');
+    var flash = $('.flash')[0];
     if (flash.length && !flash.hasClass('flashError')) {
         var callback = function() {
             flash.hide();

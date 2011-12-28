@@ -16,13 +16,15 @@
 */
 
 abstract class :x:base {
-  abstract public function __construct();
+  // abstract public function __construct();
   abstract public function appendChild($child);
   abstract public function getAttribute($attr);
   abstract public function setAttribute($attr, $val);
   abstract public function categoryOf($cat);
   abstract public function __toString();
-  abstract protected static function &__xhpAttributeDeclaration();
+  protected static function &__xhpAttributeDeclaration() {
+    throw new BadMethodCallException();
+  }
   abstract protected function &__xhpCategoryDeclaration();
   abstract protected function &__xhpChildrenDeclaration();
 
