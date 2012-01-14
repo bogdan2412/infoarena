@@ -331,7 +331,7 @@ function check_requirements()
     }
 
     // Check for retarded php.ini settings.
-    if (IA_HTTP_ENV) {
+    if (IA_HTTP_ENV && !defined('IA_HPHP_ENV')) {
         log_assert(!ini_get("session.auto_start"),
                    "Please disable session.auto_start. It kills babies!");
         log_assert(ini_get("session.use_cookies"),

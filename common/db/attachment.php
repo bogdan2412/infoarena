@@ -150,8 +150,8 @@ function attachment_delete_by_id($attid) {
 //
 // You may use % as a wildcard
 function attachment_get_all($page, $name='%', $start = 0, $count = 99999999) {
-    assert(is_whole_number($start));
-    assert(is_whole_number($count));
+    log_assert(is_whole_number($start));
+    log_assert(is_whole_number($count));
     $query = sprintf("SELECT ia_file.*, ia_user.username, ia_user.full_name as user_fullname
                       FROM ia_file
                       LEFT JOIN ia_user ON ia_user.id = ia_file.user_id
@@ -164,8 +164,8 @@ function attachment_get_all($page, $name='%', $start = 0, $count = 99999999) {
 
 // _count for the above.
 function attachment_get_count($page, $name='%', $start = 0, $count = 99999999) {
-    assert(is_whole_number($start));
-    assert(is_whole_number($count));
+    log_assert(is_whole_number($start));
+    log_assert(is_whole_number($count));
     $query = sprintf("SELECT COUNT(*)
                       FROM ia_file
                       LEFT JOIN ia_user ON ia_user.id = ia_file.user_id
@@ -183,7 +183,7 @@ function attachment_get_count($page, $name='%', $start = 0, $count = 99999999) {
 // with the judge since it`s dependent on the www server setup.
 // FIXME: does this belong here?
 function attachment_get_filepath($attach) {
-    assert(is_array($attach));
+    log_assert(is_array($attach));
     return IA_ROOT_DIR.'attach/'.
             strtolower(preg_replace('/[^a-z0-9\.\-_]/i', '_', $attach['page'])) . '_' .
             preg_replace('/[^a-z0-9\.\-_]/i', '_', $attach['name']) . '_' .

@@ -1,0 +1,85 @@
+PidFile = /var/infoarena/hphp_pid
+
+Log {
+  Level = Info
+  Header = true
+
+  UseLogFile = true
+  File = /var/infoarena/log/hphp_error_log
+
+  Access {
+    * {
+      File = /var/infoarena/log/hphp_access_log
+    }
+  }
+}
+
+Server {
+  Port = 8000
+  ThreadCount = 50
+
+  SourceRoot = --write-me-IA_ROOT_DIR--
+  IncludeSearchPaths {
+    * = --write-me-IA_ROOT_DIR--www/
+  }
+
+  RequestTimeoutSeconds = 30
+  RequestMemoryMaxBytes = 67108864
+  EnableMemoryManager = true
+  MaxPostSize = 65
+
+  FatalErrorMessage = Something went terribly wrong... Check back :)
+
+  GzipCompressionLevel = 3
+  EnableKeepAlive = true
+  EnableEarlyFlush = true
+  ForceChunkedEncoding = false
+  APC {
+    EnableApc = true
+  }
+}
+
+VirtualHost {
+  default {
+    PathTranslation = hphp/endpoint/
+
+    RewriteRules {
+      news_redirect {
+        pattern = ^/stiri/(.*)$
+        to = /blog/$1
+        qsa = true
+        redirect = 301
+      }
+
+      news_feed_redirect {
+        pattern = ^/news_feed$
+        to = /blog?action=rss
+        qsa = true
+        redirect = 301
+      }
+
+      www {
+        pattern = ^/(.*)$
+        to = index.php?page=$1
+        qsa = true
+
+        conditions {
+          static_files {
+            pattern = ^/static/.*$
+            negate = true
+          }
+
+          robots {
+            pattern = ^/robots\.txt$
+            negate = true
+          }
+
+          favicon {
+            pattern = ^/favicon\.ico$
+            negate = true
+          }
+        }
+      }
+    }
+  }
+}

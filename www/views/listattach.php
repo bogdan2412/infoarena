@@ -1,17 +1,17 @@
-<?php 
+<?php
 include('header.php');
 require_once(IA_ROOT_DIR . "www/format/table.php");
 require_once(IA_ROOT_DIR . "www/format/format.php");
 
 ?>
-    
+
 <script type="text/javascript">
     function rename_form(id) {
         if (document.getElementById("rename_"+id).style.display == "none") {
             document.getElementById("rename_"+id).style.display = "inline";
             document.getElementById("link_"+id).style.display = "none";
             document.getElementById("rename_link_"+id).textContent = "Anuleaza";
-        } 
+        }
         else {
             document.getElementById("rename_"+id).style.display = "none";
             document.getElementById("link_"+id).style.display = "inline";
@@ -72,7 +72,7 @@ function format_ip($row) {
 
 function format_operations($row) {
     global $page_name;
-    
+
     $delurl = format_post_link(url_attachment_delete($page_name, $row['name']),
                                "Sterge", array(), true,
                                array("onclick" => "return confirm('Aceasta actiune este ireversibila! Doresti sa continui?')"));
@@ -102,8 +102,9 @@ $column_infos = array(
     array(
         'title' => 'Utilizator',
         'key' => 'username',
-        'rowform' => create_function_cached('$row',
-                'return format_user_tiny($row["username"], $row["user_fullname"]);'),
+        'rowform' => function($row) {
+            return format_user_tiny($row['username'], $row['user_fullname']);
+        },
     ),
     array(
         'title' => 'Marime',

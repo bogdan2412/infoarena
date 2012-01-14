@@ -3,7 +3,7 @@ require_once(IA_ROOT_DIR."common/round.php");
 require_once(IA_ROOT_DIR."www/format/form.php");
 require_once(IA_ROOT_DIR."www/views/round_edit_header.php");
 require_once(IA_ROOT_DIR."www/macros/macro_tasks.php");
-include("views/header.php");
+include('header.php');
 
 echo round_edit_tabs($view['round_id'], 'round-edit-task-order');
 ?>

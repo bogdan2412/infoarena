@@ -3,8 +3,8 @@
 // link JS
 $view['head'] = getattr($view, 'head')."<script type=\"text/javascript\" src=\"" . html_escape(url_static("js/wikiedit.js")) . "\"></script>";
 
-include('views/header.php');
-include('views/tags_header.php');
+include('header.php');
+include('tags_header.php');
 
 // insert task edit tabs
 if (($task_id = textblock_security_is_task($page['security'])) &&

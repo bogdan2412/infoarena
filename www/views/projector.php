@@ -88,8 +88,9 @@ if (!$jobs) {
         array(
             'title' => 'Utilizator',
             'key' => 'username',
-            'rowform' => create_function_cached('$row',
-                 'return format_user_tiny($row["user_name"], $row["user_fullname"]);'),
+            'rowform' => function($row) {
+                 return format_user_tiny($row['user_name'], $row['user_fullname']);
+            },
         ),
         array(
             'title' => 'Problema',

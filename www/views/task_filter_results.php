@@ -108,8 +108,9 @@ $column_infos = array();
 $column_infos[] = array(
         'title' => 'Număr',
         'css_class' => 'number',
-        'rowform' => create_function_cached('$row',
-        'return str_pad($row["order"] - 1, 3, \'0\', STR_PAD_LEFT);'));
+        'rowform' => function($row) {
+            return str_pad($row["order"] - 1, 3, '0', STR_PAD_LEFT);
+        });
 
 $column_infos[] = array(
         'title' => 'Titlul problemei',

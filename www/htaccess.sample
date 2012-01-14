@@ -33,7 +33,6 @@ php_value error_reporting 65535
 php_value display_errors true
 php_value log_errors true
 php_value html_errors false
-php_value memory_limit "16M"
-php_value post_max_size "71M"
-php_value upload_max_filesize "70M"
-
+php_value memory_limit "64M"
+php_value post_max_size "65M"
+php_value upload_max_filesize "64M"

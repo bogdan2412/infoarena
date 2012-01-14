@@ -126,9 +126,9 @@ function format_standard_pager($options)
     $surround_pages = getattr($options, 'surround_pages', 5);
     $access_keys = getattr($options, 'use_digit_access_keys', true);
 
-    assert(is_whole_number($display_entries));
-    assert(is_whole_number($first_entry));
-    assert(is_whole_number($total_entries));
+    log_assert(is_whole_number($display_entries));
+    log_assert(is_whole_number($first_entry));
+    log_assert(is_whole_number($total_entries));
 
     $curpage = (int)($first_entry / $display_entries);
     $totpages = (int)(($total_entries + $display_entries - 1) / $display_entries);

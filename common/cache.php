@@ -143,7 +143,6 @@ function disk_cache_purge() {
 //
 //      mem_cache_purge deletes everything from the cache. Try to avoid calling it.
 //
-// FIXME: cache is not logged. See IA_LOG_MEM_CACHE.
 if (IA_MEM_CACHE_METHOD == 'none') {
 
     // Fake cache implementation/
@@ -257,6 +256,47 @@ if (IA_MEM_CACHE_METHOD == 'none') {
         if (IA_LOG_MEM_CACHE) {
             log_print("MEM CACHE: purge");
         }
+    }
+
+} else if (IA_MEM_CACHE_METHOD == 'apc') {
+    // APC cache implementation
+    function mem_cache_get($cache_id) {
+        $res = apc_fetch($cache_id);
+        if ($res === false) {
+            if (IA_LOG_MEM_CACHE) {
+                log_print("MEM CACHE: miss on $cache_id");
+            }
+            return false;
+        } else {
+            if (IA_LOG_MEM_CACHE) {
+                log_print("MEM CACHE: hit on $cache_id");
+            }
+            return unserialize($res);
+        }
+    }
+
+    function mem_cache_set($cache_id, $object, $ttl = IA_MEM_CACHE_EXPIRATION) {
+        log_assert($object !== 'false', "Can't cache false values");
+        apc_store($cache_id, serialize($object), $ttl);
+
+        if (IA_LOG_MEM_CACHE) {
+            log_print("MEM CACHE: store $cache_id");
+        }
+        return $object;
+    }
+
+    function mem_cache_delete($cache_id) {
+        apc_delete($cache_id);
+        if (IA_LOG_MEM_CACHE) {
+            log_print("MEM CACHE: delete $cache_id");
+        }
+    }
+
+    function mem_cache_purge() {
+        if (IA_LOG_MEM_CACHE) {
+            log_print("MEM CACHE: purge");
+        }
+        apc_clear_cache();
     }
 }
 

@@ -66,15 +66,15 @@ function macro_rankings($args) {
     $column_infos = array(
         array(
             'title' => 'Pozitie',
-            'key' => 'pos',
-            'rowform' => create_function_cached('$row', 'return $row["ranking"];'),
+            'key' => 'ranking',
             'css_class' => 'number rank'
         ),
         array(
             'title' => 'Nume',
             'key' => 'user_full',
-            'rowform' => create_function_cached('$row',
-                'return format_user_normal($row["user_name"], $row["user_full"], $row["user_rating"]);'),
+            'rowform' => function($row) {
+                return format_user_normal($row['user_name'], $row['user_full'], $row['user_rating']);
+            },
         ),
     );
 
@@ -110,7 +110,9 @@ function macro_rankings($args) {
         array_push($column_infos, array(
             'title' => $column['title'],
             'key' => $column['name'],
-            'rowform' => create_function_cached('$row', 'return round($row[\''.$column['name'].'\']);'),
+            'rowform' => function($row) use ($column) {
+                return round($row[$column['name']]);
+            },
             'css_class' => 'number score'
         ));
     }
@@ -122,7 +124,9 @@ function macro_rankings($args) {
     array_push($column_infos, array(
         'title' => $total,
         'key' => 'score',
-        'rowform' => create_function_cached('$row', 'return round($row[\'score\']);'),
+        'rowform' => function($row) {
+            return round($row['score']);
+        },
         'css_class' => 'number score'
     ));
 

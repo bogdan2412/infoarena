@@ -1,5 +1,5 @@
 <?php
-include('views/header.php');
+include('header.php');
 ?>
 
 <h1>Inregistrare la <?= format_link(url_textblock($round['page_name']), $round['title']) ?></h1>

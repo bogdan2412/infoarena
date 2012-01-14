@@ -772,20 +772,31 @@ class Textile {
     if ($this->options['trim_spaces']) { $str = preg_replace('/ +$/m', '', $str); }
 
     // preserve contents of the '==', 'pre', 'blockcode' sections
+    $me =& $this;
     $str = preg_replace_callback('/( (?<=\n\n)== | (?<=^)== )  (.+?)  ( ==(?=\n\n) | ==(?=$) )  /sx',
-                                 $this->_cb('$me->_repl($me->repl[0], $me->format_block(array("text" => $m[2])))'), $str);
+                                 function($m) use ($me) {
+                                   return $me->_repl($me->repl[0], $me->format_block(array("text" => $m[2])));
+                                 }, $str);
 
     if (!$this->disable_html()) {
       // preserve style, script tag contents
-      $str = preg_replace_callback('!(<(style|script)(?:>| .+?>).*?</\2>)!s', $this->_cb('$me->_repl($me->repl[0], $m[1])'), $str);
+      $str = preg_replace_callback('!(<(style|script)(?:>| .+?>).*?</\2>)!s',
+                                   function($m) use ($me) {
+                                     return $me->_repl($me->repl[0], $m[1]);
+                                   }, $str);
 
       // preserve HTML comments
-      $str = preg_replace_callback('|(<!--.+?-->)|s', $this->_cb('$me->_repl($me->repl[0], $m[1])'), $str);
+      $str = preg_replace_callback('|(<!--.+?-->)|s',
+                                   function($m) use ($me) {
+                                     return $me->_repl($me->repl[0], $m[1]);
+                                   }, $str);
 
       // preserve pre block contents, encode contents by default
       $pre_start = count($this->repl[0]);
       $str = preg_replace_callback('{(<pre(?: [^>]*)?>)(.+?)(</pre>)}s',
-                                   $this->_cb('"\n\n" . $me->_repl($me->repl[0], $m[1] . $me->encode_html($m[2], 1) . $m[3]) . "\n\n"'), $str);
+                                   function($m) use ($me) {
+                                     return "\n\n" . $me->_repl($me->repl[0], $m[1] . $me->encode_html($m[2], 1) . $m[3]) . "\n\n";
+                                   }, $str);
       // fix code tags within pre blocks we just saved.
       for ($i = $pre_start; $i < count($this->repl[0]); $i++) {
         $this->repl[0][$i] = preg_replace('|&lt;(/?)code(.*?)&gt;|s', '<$1code$2>', $this->repl[0][$i]);
@@ -793,16 +804,23 @@ class Textile {
 
       // preserve code blocks by default, encode contents
       $str = preg_replace_callback('{(<code(?: [^>]+)?>)(.+?)(</code>)}s',
-                                   $this->_cb('$me->_repl($me->repl[0], $m[1] . $me->encode_html($m[2], 1) . $m[3])'), $str);
+                                   function($m) use ($me) {
+                                     return $me->_repl($me->repl[0], $m[1] . $me->encode_html($m[2], 1) . $m[3]);
+                                   }, $str);
 
       // encode blockcode tag (an XHTML 2 tag) and encode it's
       // content by default
       $str = preg_replace_callback('{(<blockcode(?: [^>]+)?>)(.+?)(</blockcode>)}s',
-                                   $this->_cb('"\n\n" . $me->_repl($me->repl[0], $m[1] . $me->encode_html($m[2], 1) . $m[3]) . "\n\n"'), $str);
+                                   function($m) use ($me) {
+                                     return "\n\n" . $me->_repl($me->repl[0], $m[1] . $me->encode_html($m[2], 1) . $m[3]) . "\n\n";
+                                   }, $str);
     }
 
     // LaTeX code
-    $str = preg_replace_callback('!((<tex>)(.*?)(<\/tex>))!s', $this->_cb('$me->_repl($me->repl[0], $me->format_latex(array("text" => $m[3])))'), $str);
+    $str = preg_replace_callback('!((<tex>)(.*?)(<\/tex>))!s',
+                                 function($m) use ($me) {
+                                   return $me->_repl($me->repl[0], $me->format_latex(array("text" => $m[3])));
+                                 }, $str);
 
     // pass through and remove links that follow this format
     // [id_without_spaces (optional title text)]url
@@ -810,7 +828,9 @@ class Textile {
     // referred to using the "link text":id_without_spaces syntax
     //$links = array();
     $str = preg_replace_callback('{(?:\n|^) [ ]* \[ ([^ ]+?) [ ]*? (?:\( (.+?) \) )?  \] ((?:(?:ftp|https?|telnet|nntp)://|/)[^ ]+?) [ ]* (\n|$)}mx',
-                                 $this->_cb('($me->links[$m[1]] = array("url" => $m[3], "title" => $m[2])) ? $m[4] : $m[4]'), $str);
+                                 function($m) use ($me) {
+                                   return ($me->links[$m[1]] = array("url" => $m[3], "title" => $m[2])) ? $m[4] : $m[4];
+                                 }, $str);
     //$this->links = $links;
 
     // eliminate starting/ending blank lines
@@ -1031,7 +1051,9 @@ class Textile {
         //$para = preg_replace_callback('{(?:^|(?<=[\s>])|([{[]))
         //                                ==(.+?)==
         //                                (?:$|([\]}])|(?=' . $this->punct . '{1,2}|\s))}sx',
-        //                              $this->_cb('$me->_repl($me->repl[0], $me->format_block(array("text" => $m[2], "inline" => 1, "pre" => $m[1], "post" => $m[3])))'), $para);
+        //                              function($m) use ($me) {
+        //                                return $me->_repl($me->repl[0], $me->format_block(array("text" => $m[2], "inline" => 1, "pre" => $m[1], "post" => $m[3])));
+        //                              }, $para);
         $buffer .= $this->encode_html_basic($para, 1);
         $buffer = preg_replace('/&lt;textile#(\d+)&gt;/', '<textile#$1>', $buffer);
         if ($sticky == 0) {
@@ -1208,10 +1230,13 @@ class Textile {
     $buffer = (isset($args['text']) ? $args['text'] : '');
 
     array_unshift($this->repl, array());
+    $me =& $this;
     $buffer = preg_replace_callback('{(?:^|(?<=[\s>])|([{[]))
                                       ==(.+?)==
                                       (?:$|([\]}])|(?=' . $this->punct . '{1,2}|\s))}sx',
-                                    $this->_cb('$me->_repl($me->repl[0], $me->format_block(array("text" => $m[2], "inline" => 1, "pre" => $m[1], "post" => $m[3])))'), $buffer);
+                                    function($m) use ($me) {
+                                      return $me->_repl($me->repl[0], $me->format_block(array("text" => $m[2], "inline" => 1, "pre" => $m[1], "post" => $m[3])));
+                                    }, $buffer);
 
     unset($tokens);
     if (preg_match('/</', $buffer)) {  // optimization -- no point in tokenizing if we
@@ -1316,7 +1341,11 @@ class Textile {
 
     array_unshift($this->repl, array());
 
-    $text = preg_replace_callback('{' . $this->codere . '}mx', $this->_cb('$me->_repl($me->repl[0], $me->format_code(array("text" => $m[2] . $m[4], "lang" => $m[1] . $m[3])))'), $text);
+    $me =& $this;
+    $text = preg_replace_callback('{' . $this->codere . '}mx',
+                                  function($m) use ($me) {
+                                    return $me->_repl($me->repl[0], $me->format_code(array("text" => $m[2] . $m[4], "lang" => $m[1] . $m[3])));
+                                  }, $text);
 
     // images must be processed before encoding the text since they might
     // have the <, > alignment specifiers...
@@ -1333,7 +1362,10 @@ class Textile {
                                     !                            # closing
                                     (?::(\d+|' . $this->urlre . '))? # $7: optional URL
                                     (?:$|([\]}])|(?=' . $this->punct . '{1,2}|\s)) # $8: closing brace/bracket
-                                   }mx', $this->_cb('$me->_repl($me->repl[0], $me->format_image(array("pre" => $m[1], "src" => $m[5], "align" => ($m[2] ? $m[2] : $m[4]), "extra" => $m[6], "url" => $m[7], "clsty" => $m[3], "post" => $m[8])))'), $text);
+                                   }mx',
+                                  function($m) use ($me) {
+                                    return $me->_repl($me->repl[0], $me->format_image(array("pre" => $m[1], "src" => $m[5], "align" => ($m[2] ? $m[2] : $m[4]), "extra" => $m[6], "url" => $m[7], "clsty" => $m[3], "post" => $m[8])));
+                                  }, $text);
 
     $text = preg_replace_callback('{(?:^|(?<=[\s>])|([{[]))     # $1: open brace/bracket
                                     %                           # opening
@@ -1345,7 +1377,10 @@ class Textile {
                                     %                           # closing
                                     (?::(\d+|' . $this->urlre . '))? # $6: optional URL
                                     (?:$|([]}])|(?=' . $this->punct . '{1,2}|\s)) # $7: closing brace/bracket
-                                   }mx', $this->_cb('$me->_repl($me->repl[0], $me->format_span(array("pre" => $m[1], "text" => $m[5], "align" => ($m[2] ? $m[2] : $m[4]), "cite" => $m[6], "clsty" => $m[3], "post" => $m[7])))'), $text);
+                                   }mx',
+                                  function($m) use ($me) {
+                                    return $me->_repl($me->repl[0], $me->format_span(array("pre" => $m[1], "text" => $m[5], "align" => ($m[2] ? $m[2] : $m[4]), "cite" => $m[6], "clsty" => $m[3], "post" => $m[7])));
+                                  }, $text);
 
     $text = $this->encode_html($text);
     $text = preg_replace('!&lt;textile#(\d+)&gt;!', '<textile#$1>', $text);
@@ -1377,7 +1412,10 @@ class Textile {
                                     :(.+?)                                           # $8: URL suffix
                                     [\]}]
                                    )
-                                   }mx', $this->_cb('$me->_repl($me->repl[0], $me->format_link(array("text" => $m[1], "linktext" => $m[3] . $m[6], "title" => $me->encode_html_basic($m[4] . $m[7]), "url" => $m[8], "clsty" => $m[2] . $m[5])))'), $text);
+                                   }mx',
+                                  function($m) use ($me) {
+                                    return $me->_repl($me->repl[0], $me->format_link(array("text" => $m[1], "linktext" => $m[3] . $m[6], "title" => $me->encode_html_basic($m[4] . $m[7]), "url" => $m[8], "clsty" => $m[2] . $m[5])));
+                                  }, $text);
 
     $text = preg_replace_callback('{((?:^|(?<=[\s>\(]))                              # $1: open brace/bracket
                                     (?: (?:"                                         # quote character "
@@ -1396,7 +1434,10 @@ class Textile {
                                     )
                                     :(\d+|' . $this->urlre . ')                      # $8: URL suffix
                                     (?:$|(?=' . $this->punct . '{1,2}|\s)))          # $9: closing brace/bracket
-                                   }mx', $this->_cb('$me->_repl($me->repl[0], $me->format_link(array("text" => $m[1], "linktext" => $m[3] . $m[6], "title" => $me->encode_html_basic($m[4] . $m[7]), "url" => $m[8], "clsty" => $m[2] . $m[5])))'), $text);
+                                   }mx',
+                                  function($m) use ($me) {
+                                    return $me->_repl($me->repl[0], $me->format_link(array("text" => $m[1], "linktext" => $m[3] . $m[6], "title" => $me->encode_html_basic($m[4] . $m[7]), "url" => $m[8], "clsty" => $m[2] . $m[5])));
+                                  }, $text);
 
     if (preg_match('/^xhtml2/', $this->flavor())) {
       // citation with cite link
@@ -1406,7 +1447,10 @@ class Textile {
                                       \?\?                                           # closing \'??\'
                                       :(\d+|' . $this->urlre . ')                    # $3: optional citation URL
                                       (?:$|([\]}])|(?=' . $this->punct . '{1,2}|\s)) # $4: closing brace/bracket
-                                     }mx', $this->_cb('$me->_repl($me->repl[0], $me->format_cite(array("pre" => $m[1], "text" => $m[2], "cite" => $m[3], "post" => $m[4])))'), $text);
+                                     }mx',
+                                    function($m) use ($me) {
+                                      return $me->_repl($me->repl[0], $me->format_cite(array("pre" => $m[1], "text" => $m[2], "cite" => $m[3], "post" => $m[4])));
+                                    }, $text);
     }
 
     // footnotes
@@ -1419,7 +1463,9 @@ class Textile {
 
     // translate macros:
     $text = preg_replace_callback('{(\{)(.+?)(\})}x',
-                                  $this->_cb('$me->format_macro(array("pre" => $m[1], "post" => $m[3], "macro" => $m[2]))'), $text);
+                                  function($m) use ($me) {
+                                    return $me->format_macro(array("pre" => $m[1], "post" => $m[3], "macro" => $m[2]));
+                                  }, $text);
 
     // these were present with textile 1 and are common enough
     // to not require macro braces...
@@ -1449,7 +1495,10 @@ class Textile {
                                                       ([^' . $cls . '\s].*?)                         # $3 - content
                                                       (?<=\S)' . $qf . '                             #
                                                       (?:$|([\]}])|(?=' . $this->punct . '{1,2}|\s)) # $4 - post
-                                                     }mx', $this->_cb('$me->format_tag(array("tag" => end($me->tmp["r"]), "marker" => end($me->tmp["f"]), "pre" => $m[1], "text" => $m[3], "clsty" => $m[2], "post" => $m[4]))'), $text))) {
+                                                     }mx',
+                                                    function($m) use ($me) {
+                                                      return $me->format_tag(array("tag" => end($me->tmp["r"]), "marker" => end($me->tmp["f"]), "pre" => $m[1], "text" => $m[3], "clsty" => $m[2], "post" => $m[4]));
+                                                    }, $text))) {
           $redo = ($redo || ($last != $text));
           $last = $text;
         }
@@ -1462,14 +1511,19 @@ class Textile {
 
     // ABC(Aye Bee Cee) -> acronym
     $text = preg_replace_callback('{\b([A-Z][A-Za-z0-9]*?[A-Z0-9]+?)\b(?:[(]([^)]*)[)])}',
-                                  $this->_cb('$me->_repl($me->repl[0],"<acronym title=\"" . $me->encode_html_basic($m[2]) . "\">$m[1]</acronym>")'), $text);
+                                  function($m) use ($me) {
+                                    return $me->_repl($me->repl[0],"<acronym title=\"" . $me->encode_html_basic($m[2]) . "\">$m[1]</acronym>");
+                                  }, $text);
 
     // ABC -> 'capped' span
     if ($this->tmp['caps'][] = $this->options['css']['class_caps']) {
       $text = preg_replace_callback('/(^|[^"][>\s])  # "
                                       ((?:[A-Z](?:[A-Z0-9\.,\']|\&amp;){2,}\ *)+?) # \'
                                       (?=[^A-Z\.0-9]|$)
-                                     /mx', $this->_cb('$m[1] . $me->_repl($me->repl[0], "<span class=\"" . end($me->tmp["caps"]) . "\">$m[2]</span>")'), $text);
+                                     /mx',
+                                    function($m) use ($me) {
+                                      return $m[1] . $me->_repl($me->repl[0], "<span class=\"" . end($me->tmp["caps"]) . "\">$m[2]</span>");
+                                    }, $text);
     }
     array_pop($this->tmp['caps']);
 
@@ -2101,7 +2155,11 @@ class Textile {
     }
     $url = preg_replace('/&(?!amp;)/', '&amp;', $url);
     $url = preg_replace('/\ /', '+', $url);
-    $url = preg_replace_callback('/^((?:.+?)\?)(.+)$/', $this->_cb('$m[1] . $me->encode_url($m[2])'), $url);
+    $me =& $this;
+    $url = preg_replace_callback('/^((?:.+?)\?)(.+)$/',
+                                 function($m) use ($me) {
+                                   return $m[1] . $me->encode_url($m[2]);
+                                 }, $url);
     return $url;
   } // function format_url
 
@@ -2628,6 +2686,8 @@ class Textile {
    * @private
    */
   function apply_filters($args) {
+    log_error("Filters are not supported in infoarena's fork of Textile.php " .
+              "because they use old-style anonymous functions.");
     $text = $args['text'];
     if (!$text) { return ''; }
     $list = $args['filters'];
@@ -2638,7 +2698,7 @@ class Textile {
     foreach ($list as $filter) {
       if (!isset($filters[$filter])) { continue; }
       if (is_string($filters[$filter])) {
-        $text = (($f = create_function_cached('$text, $param', $filters[$filter])) ? $f($text, $param) : $text);
+        $text = (($f = create_function('$text, $param', $filters[$filter])) ? $f($text, $param) : $text);
       }
     }
     return $text;
@@ -2768,9 +2828,11 @@ class Textile {
    * @private
    */
   function encode_url($str) {
+    $me =& $this;
     $str = preg_replace_callback('!([^A-Za-z0-9_\.\-\+\&=%;])!x',
-                            $this->_cb('ord($m[1]) > 255 ? \'%u\' . sprintf("%04X", ord($m[1]))
-                                                       : \'%\'  . sprintf("%02X", ord($m[1]))'), $str);
+                                 function($m) use ($me) {
+                                   return ord($m[1]) > 255 ? '%u' . sprintf("%04X", ord($m[1])) : '%'  . sprintf("%02X", ord($m[1]));
+                                 }, $str);
     return $str;
   } // function encode_url
 
@@ -2785,9 +2847,11 @@ class Textile {
    */
   function mail_encode($addr) {
     // granted, this is simple, but it gives off warm fuzzies
+    $me =& $this;
     $addr = preg_replace_callback('!([^\$])!x',
-                             $this->_cb('ord($m[1]) > 255 ? \'%u\' . sprintf("%04X", ord($m[1]))
-                                                        : \'%\'  . sprintf("%02X", ord($m[1]))'), $addr);
+                                  function($m) use ($me) {
+                                    return ord($m[1]) > 255 ? '%u' . sprintf("%04X", ord($m[1])) : '%'  . sprintf("%02X", ord($m[1]));
+                                  }, $addr);
     return $addr;
   } // function mail_encode
 
@@ -3240,64 +3304,6 @@ class Textile {
      */
     return array("text" => "2.0.8", "build" => 2005032100);
   } // function version
-
-/**
-   * Creates a custom callback function from the provided PHP
-   * code. The result is used as the callback in
-   * @c preg_replace_callback calls. *JHR*
-   *
-   * @param $function A @c string specifying the PHP code for the
-   *        function body.
-   *
-   * @return A @c function to be used for the callback.
-   *
-   * @private
-   */
-  function _cb($function) {
-    $current =& Textile::_current_store($this);
-    return create_function_cached('$m',
-            '$me =& Textile::_current(); return '.$function .';');
-  } // function _cb
-
-  /**
-   * Stores a static variable for the Textile class. This helper
-   * function is used by @c _current to simulate a static
-   * class variable in PHP. *JHR*
-   *
-   * @param $new If a non-@c NULL object reference, the Textile object
-   *        to be set as the current object.
-   *
-   * @return The @c array containing a reference to the current
-   *         Textile object at index 0. An array is used because PHP
-   *         does not allow static variables to be references.
-   *
-   * @static
-   * @private
-   */
- /* static */ function &_current_store(&$new) {
-   static $current = array();
-
-   if ($new != NULL) {
-     $current = array(&$new);
-   }
-
-   return $current;
- } // function _current_store
-
-  /**
-   * Returns the "current" Textile object. This is used within
-   * anonymous callback functions which cannot have the scope of a
-   * specific object. *JHR*
-   *
-   * @return An @c object reference to the current Textile object.
-   *
-   * @static
-   * @private
-   */
- /* static */ function &_current() {
-   $current =& Textile::_current_store($null = NULL);
-   return $current[0];
- } // function _current
 } // class Textile
 
 /**
@@ -3463,7 +3469,7 @@ class MTLikeTextile extends Textile {
  *
  * A pre-formatted block of text. Textile will not add any
  * HTML tags for individual lines. Whitespace is also preserved.
- * 
+ *
  * Note that within a "pre" block, \< and \> are
  * translated into HTML entities automatically.</li>
  *
@@ -3473,7 +3479,7 @@ class MTLikeTextile extends Textile {
  * a preformatted section like the 'pre' block, but it also
  * gets a \<code\> tag (or for XHTML 2, a \<blockcode\>
  * tag is used instead).
- * 
+ *
  * Note that within a "bc" block, \< and \> are
  * translated into HTML entities automatically.</li>
  *

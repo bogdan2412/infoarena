@@ -241,7 +241,6 @@ function execute_view($view_file_name, $view) {
     // NOTE: no includes here, unless you want to get
     // warnings about function redeclaration.
     include($view_file_name);
-    //include('views/vardump.php');
 }
 
 // Execute view and then die.

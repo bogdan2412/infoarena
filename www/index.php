@@ -1,5 +1,7 @@
 <?php
-require_once("../config.php");
+if (!defined('IA_HPHP_ENV')) {
+    require_once("../config.php");
+}
 require_once(IA_ROOT_DIR."www/config.php");
 require_once(IA_ROOT_DIR."common/log.php");
 require_once(IA_ROOT_DIR."common/common.php");

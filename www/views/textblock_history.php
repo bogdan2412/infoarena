@@ -83,8 +83,9 @@ $column_infos = array(
     array(
         'title' => 'Utilizator',
         'key' => 'username',
-        'rowform' => create_function_cached('$row',
-                'return format_user_tiny($row["user_name"], $row["user_fullname"], $row["rating_cache"]);'),
+        'rowform' => function($row) {
+            return format_user_tiny($row['user_name'], $row['user_fullname'], $row['rating_cache']);
+        },
     ),
     array(
         'title' => 'Data',
@@ -118,7 +119,7 @@ $options = array(
     'surround_pages' => 3,
 );
 
-?>                                                         
+?>
 
 <form
     action = "<?php echo html_escape(url_textblock_diff($page_name, null, null)); ?>"
@@ -152,4 +153,4 @@ echo format_table($revisions, $column_infos, $options);
 </div>
 </form>
 
-<?php include('footer.php'); ?> 
+<?php include('footer.php'); ?>

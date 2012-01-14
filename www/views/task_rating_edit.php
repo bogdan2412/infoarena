@@ -3,7 +3,7 @@
 require_once(IA_ROOT_DIR . "www/format/form.php");
 require_once(IA_ROOT_DIR . "www/views/task_edit_header.php");
 
-include('views/header.php');
+include('header.php');
 
 echo task_edit_tabs($view['task_id'], request("action"));
 
@@ -52,4 +52,4 @@ $form_fields = array(
 </div>
 </form>
 
-<?php include('views/footer.php');
+<?php include('footer.php');

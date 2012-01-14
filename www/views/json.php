@@ -4,7 +4,7 @@ require_once(IA_ROOT_DIR.'www/JSON.php');
 
 // encode JSON
 $json = new Services_JSON();
-assert($view['json']);
+log_assert($view['json']);
 $output = $json->encode($view['json']);
 
 // serve JSON

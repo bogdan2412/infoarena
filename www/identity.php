@@ -114,7 +114,13 @@ function init_php_session($remember_user = false) {
     } else {
         session_set_cookie_params(0, '/', IA_COOKIE_DOMAIN);
     }
-    session_start();
+    if (defined('IA_HPHP_ENV')) {
+        // FIXME: Raises PHP Warning: Constant SID already defined when
+        // init_php_session is called a second time.
+        @session_start();
+    } else {
+        session_start();
+    }
 }
 
 // identity information from cookie-based session

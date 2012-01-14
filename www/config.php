@@ -15,7 +15,7 @@ define("IA_CLIENT_CACHE_ENABLE", true);
 define("IA_CLIENT_CACHE_AGE", 604800);
 
 // maximum attachment size for wiki pages
-define("IA_ATTACH_MAXSIZE", 70*1024*1024);
+define("IA_ATTACH_MAXSIZE", 64*1024*1024);
 
 // maximum jobs to reeval
 define("IA_REEVAL_MAXJOBS", 512);
