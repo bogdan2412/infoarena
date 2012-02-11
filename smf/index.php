@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.15                                          *
+* Software Version:           SMF 1.1.16                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -34,7 +34,7 @@
 	with the URL index.php?action=action-in-url.  Relatively simple, no?
 */
 
-$forum_version = 'SMF 1.1.15';
+$forum_version = 'SMF 1.1.16';
 
 // Get everything started up...
 define('SMF', 1);
@@ -45,7 +45,7 @@ $time_start = microtime();
 // Make sure some things simply do not exist.
 foreach (array('db_character_set') as $variable)
 	if (isset($GLOBALS[$variable]))
-		unset($GLOBALS[$variable]);
+		unset($GLOBALS[$variable], $GLOBALS[$variable]);
 
 // Load the settings...
 require_once(dirname(__FILE__) . '/Settings.php');

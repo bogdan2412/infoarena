@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.11                                          *
+* Software Version:           SMF 1.1.16                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -912,9 +912,9 @@ function PackageOptions()
 		checkSession('post');
 
 		updateSettings(array(
-			'package_server' => $_POST['pack_server'],
-			'package_port' => $_POST['pack_port'],
-			'package_username' => $_POST['pack_user'],
+			'package_server' => htmlspecialchars($_POST['pack_server'], ENT_QUOTES),
+			'package_port' => htmlspecialchars($_POST['pack_port'], ENT_QUOTES),
+			'package_username' => htmlspecialchars($_POST['pack_user'], ENT_QUOTES),
 			'package_make_backups' => !empty($_POST['package_make_backups'])
 		));
 

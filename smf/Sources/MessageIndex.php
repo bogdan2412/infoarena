@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1                                             *
+* Software Version:           SMF 1.1.16                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -48,6 +48,10 @@ function MessageIndex()
 
 	// View all the topics, or just a few?
 	$maxindex = isset($_REQUEST['all']) && !empty($modSettings['enableAllMessages']) ? $board_info['num_topics'] : $modSettings['defaultMaxTopics'];
+
+	// We only know these.
+	if (isset($_REQUEST['sort']) && !in_array($_REQUEST['sort'], array('subject', 'starter', 'last_poster', 'replies', 'views', 'first_post', 'last_post')))
+		$_REQUEST['sort'] = 'last_post';
 
 	// Make sure the starting place makes sense and construct the page index.
 	if (isset($_REQUEST['sort']))

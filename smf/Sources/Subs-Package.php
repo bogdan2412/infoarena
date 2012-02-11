@@ -2258,7 +2258,7 @@ class xmlArray
 	function xmlArray($data, $auto_trim = false, $level = null, $is_clone = false)
 	{
 		// If we're using this try to get some more memory.
- 		@ini_set('memory_limit', '32M');
+ 		@ini_set('memory_limit', '64M');
 
 		// Set the debug level.
 		$this->debug_level = $level !== null ? $level : error_reporting();
