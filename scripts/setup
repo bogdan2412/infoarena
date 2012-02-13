@@ -143,7 +143,7 @@ $config_vars['IA_AVATAR_FOLDER'] =
 $config_vars['IA_AVATAR_FOLDER'] = read_line("Avatar Folder?",
         $config_vars['IA_AVATAR_FOLDER']);
 $config_vars['IA_AVATAR_FOLDER'] = slash_string(
-        realpath($config_vars['IA_AVATAR_FOLDER']), true, true);
+        $config_vars['IA_AVATAR_FOLDER'], true, true);
 $config_vars['IA_URL_HOST'] = read_line("Host part of url (with http)?",
         $config_vars['IA_URL_HOST']);
 $config_vars['IA_URL_HOST'] = slash_string(
