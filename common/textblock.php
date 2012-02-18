@@ -77,6 +77,7 @@ function get_snippet($tb, $max_num_words, $whole_news = false,
 
             $cache_res .= '<a href="' . html_escape($url) .
                 '"> &raquo; Citeste restul insemnarii</a>';
+            $html_dom->__destruct();
             unset($html_dom);
         }
 

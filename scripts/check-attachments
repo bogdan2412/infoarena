@@ -24,6 +24,7 @@ while ($att = db_next_row($res)) {
         unset($extra_files[$fname]);
     } else {
         $extra_atts[] = $att;
+        continue;
     }
     if (filesize($fname) != $att['size']) {
         $att['file_size'] = filesize($fname);

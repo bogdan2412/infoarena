@@ -67,7 +67,7 @@ define("IA_SIDEBAR_PAGE", "sidebar-ad");
 define("IA_BLOG_SIDEBAR", "blog-sidebar");
 
 // LaTeX support
-define("IA_LATEX_ENABLE", false);
+define("IA_LATEX_ENABLE", !IA_DEVELOPMENT_MODE);
 
 // List of safe MIME types
 // FIXME: add more?

@@ -186,9 +186,13 @@ function image_resize($image_info, $filepath, $new_image_info,
                     $image_height);
 
             if ($new_filepath != null) {
-                return imagegif($image_resized, $new_filepath);
+                $ret = imagegif($image_resized, $new_filepath);
+            } else {
+                $ret = imagegif($image_resized);
             }
-            return imagegif($image_resized);
+            imagedestroy($image);
+            imagedestroy($image_resized);
+            return $ret;
 
         case IMAGETYPE_JPEG:
             $image = imagecreatefromjpeg($filepath);
@@ -199,9 +203,13 @@ function image_resize($image_info, $filepath, $new_image_info,
                     $image_height);
 
             if ($new_filepath != null) {
-                return imagejpeg($image_resized, $new_filepath);
+                $ret = imagejpeg($image_resized, $new_filepath);
+            } else {
+                $ret = imagejpeg($image_resized);
             }
-            return imagejpeg($image_resized);
+            imagedestroy($image);
+            imagedestroy($image_resized);
+            return $ret;
 
         case IMAGETYPE_PNG:
             $image = imagecreatefrompng($filepath);
@@ -218,10 +226,15 @@ function image_resize($image_info, $filepath, $new_image_info,
                     $new_image_width, $new_image_height, $image_width,
                     $image_height);
             imagesavealpha($image_resized, true);
+            imagecolordeallocate($image_resized, $col);
             if ($new_filepath != null) {
-                return imagepng($image_resized, $new_filepath);
+                $ret = imagepng($image_resized, $new_filepath);
+            } else {
+                $ret = imagepng($image_resized);
             }
-            return imagepng($image_resized);
+            imagedestroy($image);
+            imagedestroy($image_resized);
+            return $ret;
 
         default:
             // unsupported image type

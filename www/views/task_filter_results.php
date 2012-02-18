@@ -1,8 +1,8 @@
 <?php
-require_once(IA_ROOT_DIR . "www/macros/macro_stars.php");
+require_once(IA_ROOT_DIR . 'www/macros/macro_stars.php');
+require_once(IA_ROOT_DIR . 'www/format/table.php');
 
 include('header.php');
-include('format/table.php');
 
 function format_title($row) {
     $title = "<span style=\"float:left;\">".format_link(url_textblock($row["page_name"]), $row["task_title"])."</span>";

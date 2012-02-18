@@ -12,4 +12,7 @@ clean-cache:
 clean-hphp:
 	rm -rf hphp/build/*
 
-clean: clean-cache clean-hphp
+clean-sessions:
+	find /var/infoarena/sessions/ -name sess_\* -exec rm {} +
+
+clean: clean-cache clean-hphp clean-sessions
