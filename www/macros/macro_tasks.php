@@ -73,6 +73,29 @@ function task_row_style($row) {
     }
 }
 
+/**
+ * Returns whether or not an user received a score different than 0
+ * For use in penalty-round tasks
+ * @param array $row   the task in the round for which the above question
+ *                     is asked
+ * @return string
+ */
+function task_row_style_absolute($row) {
+    $score = getattr($row, 'score');
+    if (is_null($score)) {
+        return '';
+    }
+
+    log_assert(is_numeric($score));
+    $score = (int)$score;
+
+    if ($score > 0) {
+        return 'solved';
+    } else {
+        return 'tried';
+    }
+}
+
 function task_list_tabs($round_page, $active) {
     $tabs = array();
 
@@ -163,7 +186,12 @@ function macro_tasks($args) {
 
     $options['total_entries'] = round_get_task_count(
              $round_id, $user_id, $filter);
-    $options['row_style'] = 'task_row_style';
+
+    if (getattr($args, 'absolute_style') !== null) {
+        $options['row_style'] = 'task_row_style_absolute';
+    } else {
+        $options['row_style'] = 'task_row_style';
+    }
     $options['css_row_parity'] = true;
 
     $options['css_class'] = 'tasks sortable';

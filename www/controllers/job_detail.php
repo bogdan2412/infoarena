@@ -63,6 +63,47 @@ function controller_job_view($job_id) {
                 $view['group_score'][$group] = 0;
             }
         }
+
+        /**
+         * Get penalty amount and description
+         */
+        if ($job['round_type'] == 'penalty-round') {
+            $round_parameters = round_get_parameters($job['round_id']);
+            $description = '';
+            $amount = 0;
+
+            /**
+             * Don't add time penalty if it is 0
+             */
+            $time_penalty = (int)((db_date_parse($job['submit_time']) -
+                    db_date_parse($job['round_start_time'])) /
+                    $round_parameters['decay_period']);
+
+            if ($time_penalty > 0) {
+                $description .= sprintf(
+                    "%d (pentru %.1f minute)", $time_penalty,
+                    ((db_date_parse($job['submit_time'])) -
+                     db_date_parse($job['round_start_time'])) / 60);
+                $amount += $time_penalty;
+            }
+            /**
+             * Don't add submit penalty if it is 0
+             */
+            if ($job['submissions'] > 0) {
+                if ($description != '') {
+                    $description .= ' + ';
+                }
+                $description .= sprintf(
+                    "%d (pentru %s)",
+                    $job['submissions'] * $round_parameters['submit_cost'],
+                    $job['submissions'] == 1 ? 'o submisie' :
+                    ($job['submissions'] . ' submisii'));
+                $amount += $job['submissions'] * $round_parameters['submit_cost'];
+            }
+
+            $view['job']['penalty']['amount'] = $amount;
+            $view['job']['penalty']['description'] = $description;
+        }
     } else {
         $view['group_tests'] = false;
         $view['job']['score'] = NULL;

@@ -107,6 +107,12 @@ $show_groups = $view['group_tests'] &&
         }
         echo '</tr>';
     }
+    if (getattr($job, 'penalty') !== null) {
+        echo '<tr><td colspan="'.($show_groups ? 5 : 4).'"> Penalizare '
+                . $job['penalty']['description'] . '</td><td class="number">-'
+                . $job['penalty']['amount'] . '</td></tr>';
+    }
+
     if (!is_null($job['score'])) {
         echo '<tr><td colspan="'.($show_groups ? 5 : 4).'">'.
              'Punctaj total</td><td class="total_score number">'.$job['score'].'</td></tr>';

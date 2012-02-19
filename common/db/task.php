@@ -369,4 +369,51 @@ function task_get_user_score($task_id, $user_id, $round_id = 'arhiva') {
     return getattr($res, "score", null);
 }
 
+/**
+ * Returns the number of previous submits of an users to a task in a contest
+ *
+ * @param int $user_id
+ * @param string $round_id
+ * @param string $task_id
+ * @return int
+ */
+function task_user_get_submit_count($user_id, $round_id, $task_id) {
+    if (is_null($round_id) || $round_id === '') {
+        // No round id means that the task is still being added by its author.
+        return 0;
+    }
+    log_assert(is_user_id($user_id));
+    log_assert(is_round_id($round_id));
+    log_assert(is_task_id($task_id));
+
+    $query = sprintf("SELECT `submits` FROM ia_score_user_round_task
+            WHERE `user_id` = %s AND `round_id` = %s AND `task_id` = %s",
+            db_quote($user_id), db_quote($round_id), db_quote($task_id));
+    $res = db_fetch($query);
+
+    return getattr($res, "submits", 0);
+}
+
+/**
+ * Increment the submission counter for a specific user, round and task
+ *
+ * @param int $user_id
+ * @param string $round_id
+ * @param string $task_id
+ * @parm int $submission
+ */
+function task_user_update_submit_count($user_id, $round_id, $task_id) {
+    if (is_null($round_id) || $round_id === '') {
+        // No round id means that the task is still being added by its author.
+        return;
+    }
+    log_assert(is_user_id($user_id));
+    log_assert(is_round_id($round_id));
+    log_assert(is_task_id($task_id));
+
+    $query = sprintf('INSERT INTO `ia_score_user_round_task` VALUES (%s,%s,%s'
+            . ', 0, 1) ON DUPLICATE KEY UPDATE `submits` = `submits` + 1',
+           db_quote($user_id), db_quote($round_id), db_quote($task_id));
+    db_query($query);
+}
 ?>

@@ -1,10 +1,11 @@
-<?php
+B0;95;c<?php
 // This module implements round and round-param related stuff.
 
 // Get valid round types.
 function round_get_types() {
     return array(
             'classic' => 'Concurs clasic',
+            'penalty-round' => 'Concurs cu penalizare',
             'archive' => 'Arhiva de pregatire',
             'user-defined' => 'Concurs virtual',
     );
@@ -26,6 +27,45 @@ function round_get_parameter_infos() {
                                 "afecteaza rating-urile concurentilor",
                             'default' => '1',
                             'type' => 'bool',
+                    ),
+                ),
+            'penalty-round' => array(
+                    'duration' => array(
+                            'name' => 'Durata',
+                            'description' => 'Durata concursului, in ore',
+                            'default' => '2',
+                            'type' => 'float',
+                    ),
+                    'rating_update' => array(
+                            'name' => 'Afecteaza rating-urile',
+                            'description' => 'Daca rezultatele din acest concu'
+                                . 'rs afecteaza rating-urile concurentilor',
+                            'default' => '1',
+                            'type' => 'bool',
+                    ),
+                    'decay_period' => array(
+                            'name' => 'Perioada de pierdere a unui procent din'
+                                . ' punctaj',
+                            'description' => 'Intervalul de timp(in secunde) '
+                                . 'in care un concurent pierde 1 procent din '
+                                . 'punctajul sau pe problema',
+                            'default' => '120',
+                            'type' => 'integer',
+                    ),
+                    'submit_cost' => array(
+                            'name' => 'Procentajul pierdut pe submisie',
+                            'description' => 'Procentul din punctaj pierdut pe'
+                                . ' submisii ulterioare',
+                            'default' => '3',
+                            'type' => 'integer',
+                    ),
+                    'minimum_score' => array(
+                            'name' => 'Procentul minim pe problema',
+                            'description' => 'Procentul minim din punctaj pe c'
+                                . 'are il poate obtine un concurent pe o probl'
+                                . 'ema rezolvata corect',
+                            'default' => '50',
+                            'type' => 'integer',
                     ),
                 ),
             'archive' => array(
@@ -50,8 +90,9 @@ function round_get_parameter_infos() {
 // Validate parameters. Return erros as $form_errors convention.
 function round_validate_parameters($round_type, $parameters) {
     $errors = array();
-    if ($round_type == 'classic' or $round_type == 'user-defined'
-            or $round_type == 'archive') {
+    if ($round_type == 'classic' || $round_type == 'user-defined'
+            || $round_type == 'archive'
+            || $round_type == 'penalty-round') {
         // Check duration
         $duration = getattr($parameters, 'duration');
         if (is_null($duration)) {

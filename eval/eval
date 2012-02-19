@@ -51,6 +51,30 @@ function job_handle($job) {
         log_error("Nu stiu sa evaluez task-uri de tip ".$task['type']);
     }
 
+    $submit_count = 0;
+    /**
+     * Check if the task was in a penalty type round
+     * Also increase the submit_count
+     */
+    if (!is_null($job['round_id']) && $job['round_id'] !== '') {
+        $round = round_get($job['round_id']);
+        if ($round['type'] == 'penalty-round') {
+            $round_parameters = round_get_parameters($job['round_id']);
+            /*
+            * Check the number of submits (so we can add to penalty)
+            */
+            if ($job_result['score'] > 0) {
+                $percent = max($round_parameters['minimum_score'], 100 -
+                        $job['submissions'] * $round_parameters['submit_cost'] -
+                        (int)((db_date_parse($job['submit_time']) -
+                            db_date_parse($round['start_time'])) /
+                        $round_parameters['decay_period']));
+                $job_result['score'] = (int)($percent * $job_result['score']
+                        / 100);
+            }
+        }
+    }
+
     // Send job result and update score magic.
     job_send_result($job['id'], $job_result);
     score_update_for_job(

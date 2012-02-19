@@ -13,7 +13,7 @@ $form_fields = array(
                 'type' => 'enum',
                 'values' => $round_types,
                 'default' => 'user-defined',
-        ), 
+        ),
 );
 
 ?>

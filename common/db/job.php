@@ -23,16 +23,27 @@ require_once(IA_ROOT_DIR."common/db/db.php");
 // Creates new eval job
 function job_create($task_id, $round_id, $user_id, $compiler_id, $file_contents,
         $remote_ip_info = null) {
+    /**
+     * Check which submission is the current one(first, second, ...)
+     * Counting from 0
+     */
+    $submission = task_user_get_submit_count($user_id, $round_id, $task_id);
     $query = <<<SQL
         INSERT INTO ia_job
             (`task_id`, `round_id`, `user_id`, `compiler_id`, `file_contents`,
-             `submit_time`, `remote_ip_info`)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
+             `submit_time`, `remote_ip_info`, `submissions`)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
 SQL;
     $query = sprintf($query,
             db_quote($task_id), db_quote($round_id), db_quote($user_id),
             db_quote($compiler_id), db_quote($file_contents),
-            db_quote(db_date_format()), db_quote($remote_ip_info));
+            db_quote(db_date_format()), db_quote($remote_ip_info),
+            db_quote($submission));
+
+    /**
+     * Increment the submission count
+     */
+    task_user_update_submit_count($user_id, $round_id, $task_id);
     return db_query($query);
 }
 
@@ -43,7 +54,7 @@ function job_get_next_job() {
 SELECT `job`.`id`, `job`.`user_id`, `job`.`task_id`, `job`.`round_id`,
        `job`.`compiler_id`, `job`.`status`, `job`.`submit_time`,
        `job`.`eval_message`, `job`.`score`, `job`.`file_contents`,
-       `job`.`remote_ip_info`
+       `job`.`remote_ip_info`, `job`.`submissions`
     FROM `ia_job` AS `job`
     WHERE `job`.`id` = (
         SELECT MIN(id)
@@ -87,7 +98,7 @@ function job_get_by_id($job_id, $contents = false) {
     log_assert(is_whole_number($job_id));
     $field_list = "`job`.`id`, job.`user_id`, `job`.`compiler_id`, `job`.`status`,
                    `job`.`submit_time`, `job`.`eval_message`, `job`.`score`,
-                   `job`.`eval_log`, `job`.`remote_ip_info`,
+                   `job`.`eval_log`, `job`.`remote_ip_info`, `job`.`submissions`,
                    OCTET_LENGTH(`job`.`file_contents`) AS `job_size`,
                    `user`.`username` AS `user_name`, `user`.`full_name` AS `user_fullname`,
                    `task`.`id` AS `task_id`,
@@ -100,7 +111,8 @@ function job_get_by_id($job_id, $contents = false) {
                    `round`.`title` AS `round_title`,
                    `round`.`type` AS `round_type`,
                    `round`.`state` AS `round_state`,
-                   `round`.`public_eval` AS `round_public_eval`";
+                   `round`.`public_eval` AS `round_public_eval`,
+                   `round`.`start_time` AS `round_start_time`";
     if ($contents) {
         $field_list .= ", job.file_contents";
     }
