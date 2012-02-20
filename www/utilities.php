@@ -81,7 +81,7 @@ function redirect($absolute_url, $code = 302) {
     } elseif ($code === 302) {
         header('HTTP/1.1 302 Found');
     }
-    header("Location: {$absolute_url}\n\n");
+    header('Location: ' . $absolute_url);
     session_write_close();
     save_tokens();
     die();

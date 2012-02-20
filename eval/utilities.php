@@ -367,18 +367,21 @@ function jrun_get_result_many($jrun_processes) {
 
         $result = jrun_parse_message($message);
         if ($result == false) {
-            return jrun_make_error('Failed executing jail');
+            $results[] = jrun_make_error('Failed executing jail');
+            continue;
         }
 
         if ($jrun_process['capture_std']) {
             $jaildir = $jrun_process['jaildir'];
             $result['stdout'] = @file_get_contents($jaildir.'jailed_stdout');
             if ($result['stdout'] === false) {
-                return jrun_make_error('Failed reading captured stdout');
+                $results[] = jrun_make_error('Failed reading captured stdout');
+                continue;
             }
             $result['stderr'] = @file_get_contents($jaildir.'jailed_stderr');
             if ($result['stderr'] === false) {
-                return jrun_make_error('Failed reading captured stderr');
+                $results[] = jrun_make_error('Failed reading captured stderr');
+                continue;
             }
         }
 
