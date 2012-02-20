@@ -418,6 +418,25 @@ while (true) {
             log_print("{$count_ok} ok; {$count_error} errors; ".count($list)
                       ." total (total includes skipped)");
             break;
+        case "single":
+            if (!$param) {
+                log_print('Forgot to specify the user');
+                break;
+            }
+
+            $recipient = user_get_by_username($param);
+            if (!$recipient) {
+                log_print("No such username");
+                break;
+            }
+            $phpmail = phpmail_create($textblock, $recipient);
+            $success = $phpmail -> Send();
+            if ($success) {
+                log_print("Success!");
+            } else {
+                log_print("Error");
+            }
+            break;
 
         default:
             log_print("Invalid command");
@@ -430,6 +449,7 @@ list <list-id>
 count <list-id>
 send
 log
+single [username]     ** Careful, it's experimental
 EOS;
             // valid subscriber lists
             echo "\nValid subscriber lists: ".join(', ', list_valid_ids())

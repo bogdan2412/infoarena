@@ -3,9 +3,16 @@
 require_once(IA_ROOT_DIR . "www/format/pager.php");
 require_once(IA_ROOT_DIR . "www/format/format.php");
 require_once(IA_ROOT_DIR . "common/db/textblock.php");
+require_once(IA_ROOT_DIR . "common/user.php");
+require_once(IA_ROOT_DIR . "www/url.php");
 
 // View recent changes.
 function controller_changes($page_name) {
+    if (!user_is_admin(identity_get_user())) {
+        flash_error('Nu ai suficiente permisiuni pentru a accesa pagina de ' .
+                    'schimbari.');
+        redirect(url_home());
+    }
     $pager_opts = pager_init_options();
     $view = array();
     $title = 'Schimbari pe www.infoarena.ro';

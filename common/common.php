@@ -319,7 +319,8 @@ function check_requirements() {
     if (array_search('gd', $extensions) === false) {
         log_warn("gd extension missing.");
     }
-    if (array_search('zip', $extensions) === false) {
+    if (!defined('IA_HPHP_ENV') &&
+        array_search('zip', $extensions) === false) {
         log_warn("zip extension missing.");
     }
     if (array_search('mbstring', $extensions) === false) {
@@ -399,11 +400,15 @@ function remote_ip_info() {
     if ($ip_address && !is_valid_ip_address($ip_address)) {
         log_warn("Invalid IP address: {$ip_address}", true, 1);
     }
+    // If server runs behind a proxy (such as nginx), don't add proxy server
+    // to ip information.
+    $ip_address = '';
     // FIXME: Also validate XFF header.
     if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        return getattr($_SERVER, 'REMOTE_ADDR')."; "
-                .$_SERVER['HTTP_X_FORWARDED_FOR'];
-    } else {
-        return getattr($_SERVER, 'REMOTE_ADDR');
+        if ($ip_address !== '') {
+            $ip_address .= '; ';
+        }
+        $ip_address .= $_SERVER['HTTP_X_FORWARDED_FOR'];
     }
+    return $ip_address;
 }

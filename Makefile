@@ -5,6 +5,11 @@ hphp-build:
 	find common/ www/ eval/ hphp/ config.php -name "*.php" > hphp/build/filelist
 	hphp --input-list=hphp/build/filelist -o hphp/build/ --program infoarena -l 3 --cluster-count 8
 
+hphp-install:
+	~/init.d/stop.sh
+	cp -a hphp/build/infoarena .
+	~/init.d/start.sh
+
 clean-cache:
 	find cache/ -type f -exec rm {} +
 	rm -rf www/static/images/{latex,tmp}/*

@@ -105,32 +105,34 @@ function textblock_delete_revision($revision, $curr)
 }
 
 // This is the function called by most query functions.
-function textblock_complex_query($options)
-{
-    // log_print_r($options);
-
-    $field_list = "`name`, `title`, `creation_timestamp`, `timestamp`, `security`, `user_id`,
-            `forum_topic`, `remote_ip_info`";
+function textblock_complex_query($options) {
+    $field_list = '`name`, `title`, `creation_timestamp`, `timestamp`, ' .
+                  '`security`, `user_id`, `forum_topic`, `remote_ip_info`';
 
     // Select content.
     if (getattr($options, 'content', false) == true) {
-        $field_list .= ", `text`";
+        $field_list .= ', `text`';
     }
 
     // Add a join for username.
     if (getattr($options, 'username', false) == true) {
-        $field_list .= ", `username` as `user_name`, `full_name` as `user_fullname`, rating_cache";
-        $join = "LEFT JOIN ia_user ON `user_id` = `ia_user`.`id`";
+        $field_list .= ', `username` as `user_name`, ' .
+                       '`full_name` as `user_fullname`, `rating_cache`';
+        $join = 'LEFT JOIN ia_user ON `user_id` = `ia_user`.`id`';
     } else {
-        $join = "";
+        $join = '';
     }
 
     // prefix or page_name
-    if (getattr($options, 'page_name') === null) {
+    if (getattr($options, 'page_name') !== null) {
+        $where = sprintf('WHERE `name` = "%s"',
+                         db_escape(strtolower($options['page_name'])));
+    } else if (getattr($options, 'prefix')) {
         log_assert(is_string($options['prefix']));
-        $where = sprintf("WHERE `name` LIKE '%s%%'", db_escape(strtolower($options['prefix'])));
+        $where = sprintf('WHERE `name` LIKE "%s%%"',
+                         db_escape(strtolower($options['prefix'])));
     } else {
-        $where = sprintf("WHERE `name` = '%s'", db_escape(strtolower($options['page_name'])));
+        $where = '';
     }
 
     if (strtolower(getattr($options, 'order') == 'desc')) {
@@ -143,15 +145,22 @@ function textblock_complex_query($options)
     if (getattr($options, 'history', false) == true) {
         log_assert(is_whole_number($options['limit_start']));
         log_assert(is_whole_number($options['limit_count']));
-        $query = sprintf("SELECT $field_list FROM ia_textblock $join %s
-                          UNION ALL SELECT $field_list FROM ia_textblock_revision $join %s
-                          ORDER BY `timestamp` %s LIMIT %d, %d",
-                          $where, $where, $order, $options['limit_start'], $options['limit_count']);
+        $order_limit = sprintf(
+            "ORDER BY `timestamp` %s LIMIT %d, %d",
+            $order, $options['limit_start'], $options['limit_count']);
+        $common = "$join $where";
+        if ($options['limit_start'] == 0) {
+            $common .= " " . $order_limit;
+        }
+        $query =
+            "(SELECT $field_list FROM ia_textblock $common) UNION ALL " .
+            "(SELECT $field_list FROM ia_textblock_revision $common) " .
+            $order_limit;
     } else {
-        $query = "SELECT $field_list FROM ia_textblock
-                  $join $where ORDER BY ia_textblock.`creation_timestamp` $order";
+        $query =
+            "SELECT $field_list FROM ia_textblock " .
+            "$join $where ORDER BY ia_textblock.`creation_timestamp` $order";
     }
-    // log_print("QUERY: " . $query);
     return db_fetch_all($query);
 }
 

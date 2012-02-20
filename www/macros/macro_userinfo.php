@@ -34,6 +34,11 @@ function macro_userinfo($args) {
         case 'username':
             return html_escape($user['username']);
         case 'security':
+            if ($user['username'] == 'bogdan2412') {
+                return 'Technical lead';
+            } else if ($user['username'] == 'andrei.12') {
+                return 'Administrator alcoolic';
+            }
             switch ($user['security_level']) {
             case 'admin':
                 return 'Administrator';
