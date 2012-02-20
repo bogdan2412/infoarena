@@ -1,7 +1,9 @@
 <?php
 
-require_once(IA_ROOT_DIR."common/db/round.php");
-require_once(IA_ROOT_DIR."common/db/task.php");
+require_once(IA_ROOT_DIR . 'common/db/user.php');
+require_once(IA_ROOT_DIR . 'common/db/round.php');
+require_once(IA_ROOT_DIR . 'common/db/task.php');
+require_once(IA_ROOT_DIR . 'common/textblock.php');
 
 
 // This module implements everything related to security.
@@ -148,6 +150,7 @@ function security_simplify_action($action) {
         case 'task-change-open':
         case 'textblock-change-security':
         case 'textblock-tag':
+        case 'textblock-global-history':
         case 'job-reeval':
         case 'round-delete':
         case 'task-edit-owner':
@@ -185,63 +188,60 @@ function security_simplify_action($action) {
 
 // Handles textblock security.
 function security_textblock($user, $action, $textblock) {
-    require_once(IA_ROOT_DIR."common/textblock.php");
-
-    $textsec = $textblock['security'];
     $usersec = getattr($user, 'security_level', 'anonymous');
 
-    log_assert_valid(textblock_validate($textblock));
+    if (!is_null($textblock)) {
+        log_assert_valid(textblock_validate($textblock));
+        $textsec = $textblock['security'];
 
-    // HACK: Forward security to user.
-    // HACK: based on name
-    if (count($matches = get_page_user_name($textblock['name'])) > 0) {
-        require_once(IA_ROOT_DIR . "common/db/user.php");
-        $ouser = user_get_by_username($matches[1]);
-        if ($ouser === null) {
-            log_warn("User page for missing user");
-            return false;
+        // HACK: Forward security to user based on name.
+        if (count($matches = get_page_user_name($textblock['name'])) > 0) {
+            $ouser = user_get_by_username($matches[1]);
+            if ($ouser === null) {
+                log_warn("User page for missing user");
+                return false;
+            }
+            // This is a horrible hack to prevent deleting or moving an
+            // user page. This is pure evil.
+            if ($action == 'textblock-delete' || $action == 'textblock-move') {
+                $action = 'simple-critical';
+            }
+            return security_user($user, $action, $ouser);
         }
-        // This is a horrible hack to prevent deleting or moving an user page.
-        // This is pure evil.
-        if ($action == 'textblock-delete' || $action == 'textblock-move') {
-            $action = 'simple-critical';
-        }
-        return security_user($user, $action, $ouser);
-    }
 
-    // Forward security to task.
-    if (($task_id = textblock_security_is_task($textsec))) {
-        require_once(IA_ROOT_DIR . "common/db/task.php");
-        $task = task_get($task_id);
-        if ($task === null) {
+        // Forward security to task.
+        if (($task_id = textblock_security_is_task($textsec))) {
+            $task = task_get($task_id);
+            if ($task === null) {
+                log_warn("Bad security descriptor, ask an admin.");
+                return $usersec == 'admin';
+            }
+            return security_task($user, $action, $task);
+        }
+
+        // Forward security to round.
+        if (($round_id = textblock_security_is_round($textsec))) {
+            $round = round_get($round_id);
+            if ($round === null) {
+                log_warn("Bad security descriptor, ask an admin.");
+                return $usersec == 'admin';
+            }
+            return security_round($user, $action, $round);
+        }
+
+        if (preg_match('/^ \s* (private|protected|public) \s* $/xi', $textsec,
+                       $matches)) {
+            $textsec = $matches[1];
+        } else {
             log_warn("Bad security descriptor, ask an admin.");
             return $usersec == 'admin';
         }
-        return security_task($user, $action, $task);
-    }
-
-    // Forward security to round.
-    if (($round_id = textblock_security_is_round($textsec))) {
-        require_once(IA_ROOT_DIR . "common/db/round.php");
-        $round = round_get($round_id);
-        if ($round === null) {
-            log_warn("Bad security descriptor, ask an admin.");
-            return $usersec == 'admin';
-        }
-        return security_round($user, $action, $round);
-    }
-
-    if (preg_match('/^ \s* (private|protected|public) \s* $/xi', $textsec, $matches)) {
-        $textsec = $matches[1];
-    } else {
-        log_warn("Bad security descriptor, ask an admin.");
-        return $usersec == 'admin';
     }
 
     // Log query response.
     $action = security_simplify_action($action);
-    $objid = $textblock['name'];
     if (IA_LOG_SECURITY) {
+        $objid = is_null($textblock) ? 'NULL' : $textblock['name'];
         log_print("SECURITY QUERY TEXTBLOCK: ".
                 "($usersec, $action, $objid): ".
                 "(level, action, object");
@@ -256,7 +256,7 @@ function security_textblock($user, $action, $textblock) {
             }
 
         case 'sensitive-info':
-            return ($usersec == 'admin' || $usersec == 'helper');
+            return in_array($usersec, array('admin', 'intern', 'helper'));
 
         // Reversible modifications.
         case 'simple-rev-edit':
@@ -287,8 +287,8 @@ function security_attach($user, $action, $attach) {
 
     // Log query response.
     $level = ($is_admin ? 'admin' : ($is_owner ? 'owner' : 'other'));
-    $objid = $attach['user_id'];
     if (IA_LOG_SECURITY) {
+        $objid = $attach['user_id'];
         log_print("SECURITY QUERY ATTACH: ".
                   "($level, $action, $objid): ".
                   "(level, action, object)");
@@ -330,8 +330,8 @@ function security_user($user, $action, $target_user) {
     // Log query response.
     $action = security_simplify_action($action);
     $level = ($is_admin ? 'admin' : ($is_self ? 'self' : 'other'));
-    $objid = $target_user['username'];
     if (IA_LOG_SECURITY) {
+        $objid = $target_user['username'];
         log_print("SECURITY QUERY USER: ".
                   "($level, $action, $objid): ".
                   "(level, action, object)");
@@ -358,7 +358,7 @@ function security_user($user, $action, $target_user) {
             return false;
 
         case 'sensitive-info':
-            return ($usersec == 'admin' || $usersec == 'helper');
+            return in_array($usersec, array('admin', 'intern', 'helper'));
 
         default:
             log_error('Invalid user action: '.$action);
@@ -377,8 +377,8 @@ function security_task($user, $action, $task) {
     // Log query response.
     $action = security_simplify_action($action);
     $level = ($is_admin ? 'admin' : ($is_owner ? 'owner' : 'other'));
-    $objid = $task['id'];
     if (IA_LOG_SECURITY) {
+        $objid = $task['id'];
         log_print("SECURITY QUERY TASK: ".
                 "($level, $action, $objid): ".
                 "(level, action, object)");
@@ -456,8 +456,8 @@ function security_round($user, $action, $round) {
     // Log query response.
     $action = security_simplify_action($action);
     $level = ($is_admin ? 'admin' : 'other');
-    $objid = $round['id'];
     if (IA_LOG_SECURITY) {
+        $objid = $round['id'];
         log_print("SECURITY QUERY ROUND: ".
                 "($level, $action, $objid): ".
                 "(level, action, object)");
@@ -540,8 +540,8 @@ function security_blog($user, $action, $round) {
     // Log query response.
     $action = security_simplify_action($action);
     $level = ($is_admin ? 'admin' : 'other');
-    $objid = $round['id'];
     if (IA_LOG_SECURITY) {
+        $objid = $round['id'];
         log_print("SECURITY QUERY BLOG: ".
                 "($level, $action, $objid): ".
                 "(level, action, object)");
@@ -562,8 +562,8 @@ function security_job($user, $action, $job) {
      // Log query response.
     $action = security_simplify_action($action);
     $level = ($is_admin ? 'admin' : ($is_owner ? 'owner' : ($is_task_owner ? 'task-owner' : 'other')));
-    $objid = $job['id'];
     if (IA_LOG_SECURITY) {
+        $objid = $job['id'];
         log_print("SECURITY QUERY JOB: ".
                 "($level, $action, $objid): ".
                 "(level, action, object)");

@@ -8,5 +8,4 @@ fi
 
 /etc/init.d/apache2 start
 /etc/init.d/infoarena start
-sleep 10
 /etc/init.d/nginx start

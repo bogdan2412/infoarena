@@ -322,19 +322,21 @@ function check_requirements() {
     if (array_search('gd', $extensions) === false) {
         log_warn("gd extension missing.");
     }
-    if (array_search('zip', $extensions) === false) {
-        log_warn("zip extension missing.");
+    if (!defined('IA_HPHP_ENV')) {
+        if (array_search('zip', $extensions) === false) {
+            log_warn("zip extension missing.");
+        }
+        if (!function_exists("finfo_open")) {
+            log_warn('finfo_open missing, falling back to mime_content_type.');
+            if (!function_exists("mime_content_type")) {
+                log_warn('mime_content_type missing, mime-types will ' .
+                         'default to application/octet-stream.');
+            }
+        }
     }
     if (array_search('mbstring', $extensions) === false) {
         log_warn('mbstring extension missing. inline diff and ' .
                  'character normalisation will not be available.');
-    }
-    if (!function_exists("finfo_open")) {
-        log_warn('finfo_open missing, falling back to mime_content_type.');
-        if (!function_exists("mime_content_type")) {
-            log_warn('mime_content_type missing, mime-types will default to ' .
-                     'application/octet-stream.');
-        }
     }
 
     // Check for retarded php.ini settings.
@@ -399,15 +401,19 @@ function is_connection_secure() {
  * @return string
  */
 function remote_ip_info() {
-    $ip_address = getattr($_SERVER, 'REMOTE_ADDR');
+    $ip_address = getattr($_SERVER, 'HTTP_X_REAL_IP',
+                          getattr($_SERVER, 'REMOTE_ADDR'));
     if ($ip_address && !is_valid_ip_address($ip_address)) {
         log_warn("Invalid IP address: {$ip_address}", true, 1);
     }
     // FIXME: Also validate XFF header.
     if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        return getattr($_SERVER, 'REMOTE_ADDR')."; "
-                .$_SERVER['HTTP_X_FORWARDED_FOR'];
-    } else {
-        return getattr($_SERVER, 'REMOTE_ADDR');
+        $forwarded_for = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        if (strstr($ip_address, $forwarded_for)) {
+            $ip_address = $forwarded_for;
+        } else {
+            $ip_address .= '; ' . $forwarded_for;
+        }
     }
+    return $ip_address;
 }

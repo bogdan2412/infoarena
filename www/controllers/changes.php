@@ -3,9 +3,12 @@
 require_once(IA_ROOT_DIR . "www/format/pager.php");
 require_once(IA_ROOT_DIR . "www/format/format.php");
 require_once(IA_ROOT_DIR . "common/db/textblock.php");
+require_once(IA_ROOT_DIR . "www/identity.php");
 
 // View recent changes.
 function controller_changes($page_name) {
+    identity_require('textblock-global-history');
+
     $pager_opts = pager_init_options();
     $view = array();
     $title = 'Schimbari pe www.infoarena.ro';
@@ -64,5 +67,3 @@ function controller_changes($page_name) {
         execute_view_die('views/changes.php', $view);
     }
 }
-
-?>

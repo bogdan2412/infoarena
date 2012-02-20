@@ -4,4 +4,3 @@ require("../../../config.php");
 ?>
 
 BASE_HREF = '<?= IA_URL_PREFIX ?>';
-
