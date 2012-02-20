@@ -197,6 +197,14 @@ if (array_key_exists('l', $options)) {
     ini_set('error_log', $options['l']);
 }
 
+system('cpufreq-set -c 0 -g performance', $return_var);
+if ($return_var !== 0) {
+    log_error('Unable to disable cpu frequency scaling');
+}
+system('echo 0 > /sys/devices/system/cpu/cpu1/online', $return_var);
+if ($return_var !== 0) {
+    log_print('Unable to disable hyperthreading');
+}
 judge_main_loop();
 
 ?>

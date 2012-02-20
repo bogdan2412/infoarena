@@ -246,7 +246,7 @@ void ptrace_detach(void)
     }
     if (ptrace(PTRACE_DETACH, child_pid, 0, 0)) {
         perror("ERROR: failed ptrace detach.");
-        exit(-1);
+        // exit(-1);
     }
 }
 

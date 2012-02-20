@@ -35,11 +35,6 @@ header("Content-type: text/html; charset=utf-8");
 ?>
     <meta name="Description" content="Concursuri de programare, Stiri si articole de informatica, Comunitate online. Arhiva de probleme, Evaluare 24/24, Forum, Resurse educationale, Pregatire pentru olimpiada." />
     <meta name="keywords" content="Cocursuri, Informatica, Programare, Comunitate, Algoritmi, Articole, Evaluare, Pregatire" />
-    <meta name="verify-v1" content="j9UCDYvsDL2pLtkJDDkE4HnHVmXakgvz30vOyIJ+6cI=" />
-    <meta name="verify-v1" content="ac36ilLp6y4xp71sJgZEjFMgow6YCLkyQLrG/b2iT/Q=" />
-    <meta name="verify-v1" content="PQDTb5Advw297iADXVUYuxh0z+iQKfq1wtYWnfHCb1Y=" />
-    <meta name="verify-v1" content="GUKPcDm0TzwAR7r5xbagq576p/YWH9su/Ca4o8YlYBg=" /> <!--bogdan2412-->
-    <meta name="google-site-verification" content="T_HFYNIO3S70696yFC5rkbPn339gjnfVwMqYPmU866I" /> <!--devilkind-->
 <?php
     }
 
@@ -111,6 +106,7 @@ ia_template_topnav($topnav_select, $is_admin);
         <li><?= format_link_access(url_textblock('arhiva'), "Arhiva de probleme", 'a') ?></li>
         <li><a href="<?= html_escape(url_textblock('arhiva-educationala')) ?>">Arhiva educatională</a></li>
         <li><a href="<?= html_escape(url_textblock('arhiva-monthly')) ?>">Arhiva monthly</a></li>
+        <li><a href="<?= html_escape(url_textblock('arhiva-acm')) ?>">Arhiva ACM</a></li>
         <li><a href="<?= html_escape(url_textblock('concursuri')) ?>">Concursuri</a></li>
         <li><a href="<?= html_escape(url_textblock('concursuri-virtuale')) ?>">Concursuri virtuale</a></li>
         <li><a href="<?= html_escape(url_textblock('clasament-rating')) ?>">Clasament</a></li>
