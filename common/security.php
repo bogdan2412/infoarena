@@ -1,6 +1,7 @@
 <?php
 
 require_once(IA_ROOT_DIR."common/db/round.php");
+require_once(IA_ROOT_DIR."common/db/task.php");
 
 
 // This module implements everything related to security.
@@ -570,26 +571,16 @@ function security_blog($user, $action, $round) {
     return $is_admin;
 }
 
-
 // There is no job-eval, jobs are evaluated on the spot, we check job-view instead.
 function security_job($user, $action, $job) {
     $usersec = getattr($user, 'security_level', 'anonymous');
     $is_admin = $usersec == 'admin';
     $is_intern = $usersec == 'intern';
     $is_owner = ($job['user_id'] == $user['id']);
-    $is_task_owner = ($job['task_owner_id'] == $user['id'] && 
+    $is_task_owner = ($job['task_owner_id'] == $user['id'] &&
                       in_array($usersec, array('helper', 'intern')));
-    $can_view_job = ($job['task_hidden'] == false) || $is_task_owner || $is_admin;
-    $can_view_source = ($job['task_open_source'] == true) || $is_task_owner || 
-                       $is_owner || $is_admin || $is_intern;
-    $can_view_source_size = ($job['round_type'] == "archive") ||
-                            ($job['round_type'] != "archive" && $job['round_state'] == "complete") ||
-                            $can_view_source;
-    $can_view_score = ($job['round_public_eval'] == true) || $is_task_owner || $is_admin || $is_intern;
-    $can_view_partial_feedback = $is_owner || $is_admin || $is_intern;
-    $can_view_sensitive_info = in_array($usersec, array('admin', 'intern', 'helper'));
 
-    // Log query response.
+     // Log query response.
     $action = security_simplify_action($action);
     $level = ($is_admin ? 'admin' : ($is_owner ? 'owner' : ($is_task_owner ? 'task-owner' : 'other')));
     $objid = $job['id'];
@@ -598,11 +589,28 @@ function security_job($user, $action, $job) {
                 "($level, $action, $objid): ".
                 "(level, action, object)");
     }
+    if ($action == 'simple-critical') {
+        return $is_admin || $is_intern;
+    }
+
+    $can_view_job = ($job['task_hidden'] == false) || $is_task_owner || $is_admin;
+    $can_view_source = ($job['task_open_source'] == true) || $is_task_owner ||
+                       $is_owner || $is_admin || $is_intern;
+    // make ALL solved tasks visible
+    if (!$can_view_source && is_user_id($user['id']) && $job['round_type'] == "archive") {
+        $score = task_get_user_score($job['task_id'], $user['id'], $job['round_id']);
+        if ($score == 100) {
+            $can_view_source = true;
+        }
+    }
+    $can_view_source_size = ($job['round_type'] == "archive") ||
+                            ($job['round_type'] != "archive" && $job['round_state'] == "complete") ||
+                            $can_view_source;
+    $can_view_score = ($job['round_public_eval'] == true) || $is_task_owner || $is_admin || $is_intern;
+    $can_view_partial_feedback = $is_owner || $is_admin || $is_intern;
+    $can_view_sensitive_info = in_array($usersec, array('admin', 'intern', 'helper'));
 
     switch ($action) {
-        case 'simple-critical':
-            return $is_admin || $is_intern;
-
         case 'job-view':
             return $can_view_job;
 

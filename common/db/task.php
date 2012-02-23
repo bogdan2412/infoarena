@@ -360,13 +360,24 @@ function task_get_user_score($task_id, $user_id, $round_id = 'arhiva') {
         log_error("Invalid user id");
     }
 
+    // Check the cache
+    if (($res = mem_cache_get("user-task-round:".$user_id."-".$task_id."-".$round_id)) != false) {
+        log_var_dump($res);
+        return $res;
+    }
+
+    // Query database
     $query = sprintf(
         "SELECT `score` FROM ia_score_user_round_task
          WHERE round_id = %s AND task_id = %s AND user_id = %s",
          db_quote($round_id), db_quote($task_id), db_quote($user_id));
     $res = db_fetch($query);
+    $score = getattr($res, "score", null);
 
-    return getattr($res, "score", null);
+    // Keep in cache
+    mem_cache_set("user-task-round:".$user_id."-".$task_id."-".$round_id, (int)$score);
+
+    return $score;
 }
 
 /**

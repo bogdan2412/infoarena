@@ -1,4 +1,4 @@
-B0;95;c<?php
+<?php
 // This module implements round and round-param related stuff.
 
 // Get valid round types.

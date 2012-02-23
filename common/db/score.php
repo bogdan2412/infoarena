@@ -4,6 +4,7 @@ require_once(IA_ROOT_DIR."common/db/db.php");
 require_once(IA_ROOT_DIR."common/db/round.php");
 require_once(IA_ROOT_DIR."common/parameter.php");
 require_once(IA_ROOT_DIR."common/rating.php");
+require_once(IA_ROOT_DIR."common/cache.php");
 
 // Updates a user's rating and deviation
 function score_update_rating($user_id, $round_id, $deviation, $rating)
@@ -26,6 +27,9 @@ function score_update($user_id, $task_id, $round_id, $value) {
     log_assert(is_user_id($user_id), "Bad user id '$user_id'");
     log_assert(is_task_id($task_id), "Bad task id '$task_id'");
     log_assert(is_round_id($round_id), "Bad round id '$round_id'");
+
+    // Add user_id score for task_id at round_id to cache
+    mem_cache_set("user-task-round:".$user_id."-".$task_id."-".$round_id, (int)$value);
 
     // Update user_id score for task_id at round_id
     $query = "INSERT INTO `ia_score_user_round_task` (`user_id`, `round_id`, `task_id`, `score`)
