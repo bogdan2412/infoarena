@@ -5,6 +5,7 @@ require_once(IA_ROOT_DIR . "www/format/table.php");
 require_once(IA_ROOT_DIR . "www/format/pager.php");
 require_once(IA_ROOT_DIR . "common/db/round.php");
 require_once(IA_ROOT_DIR . "common/db/task.php");
+require_once(IA_ROOT_DIR . "common/db/user.php");
 require_once(IA_ROOT_DIR . "common/round.php");
 require_once(IA_ROOT_DIR . "www/macros/macro_stars.php");
 
@@ -150,8 +151,16 @@ function macro_tasks($args) {
     $scores = getattr($args, 'score') && identity_can("round-view-scores", $round);
     if (identity_is_anonymous() || $scores == false) {
         $user_id = null;
+        $filter_user_id = null;
     } else {
         $user_id = identity_get_user_id();
+        $filter_username = request('user', identity_get_user());
+        $filter_user = user_get_by_username($filter_username);
+        if ($filter_user != null) {
+            $filter_user_id = $filter_user['id'];
+        } else {
+            $filter_user_id = $user_id;
+        }
     }
 
     $display_tabs = getattr($args, 'show_filters');
@@ -179,7 +188,7 @@ function macro_tasks($args) {
              $round_id,
              $options['first_entry'],
              $options['display_entries'],
-             $user_id,
+             $filter_user_id,
              $scores,
              $filter,
              $show_progress);
