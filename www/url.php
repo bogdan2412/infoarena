@@ -409,4 +409,8 @@ function url_newsletter_preview_body($page_name, $rev = null) {
             'preview' => 'body'));
 }
 
+function url_admin() {
+    return url_textblock('admin');
+}
+
 ?>

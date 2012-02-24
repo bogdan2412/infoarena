@@ -221,7 +221,7 @@ if (nlog_exists($newsletter_id)) {
 // main menu
 while (true) {
     $cmd = read_line("newsletter>");
-    $elems = split(" ", $cmd);
+    $elems = explode(" ", $cmd);
     if (1 < count($elems)) {
         $cmd = $elems[0];
         array_shift($elems);

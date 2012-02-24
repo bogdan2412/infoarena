@@ -2,6 +2,7 @@
 <?php
 
 require_once(dirname($argv[0]) . "/utilities.php");
+require_once(IA_ROOT_DIR . "common/attachment.php");
 require_once(IA_ROOT_DIR . "common/db/attachment.php");
 db_connect();
 
@@ -76,8 +77,8 @@ if (count($mismatched_sizes) != 0) {
     if (read_bool('Do you want to see a list?', false)) {
         foreach ($mismatched_sizes as $att) {
             log_print(sprintf('page %s name %s file_size %s db_size %s',
-                              $att['page'], $att['name'], $att['file_size'],
-                              $att['size']));
+                              $att['page'], $att['name'],
+                              $att['file_size'], $att['size']));
         }
     }
     if (read_bool('Do you want to try to fix this?', false)) {
@@ -115,10 +116,49 @@ if (count($mismatched_sizes) != 0) {
                               $att['page'] . ' name ' . $att['name']));
         }
     }
+} else {
+    log_print('Stored file sizes match those of the files on disk.');
 }
 
-// Again, in case we changed something.
-$files = glob(IA_ROOT_DIR . "attach/*");
+if (read_bool("Check mimetypes (could take a long time)?", false)) {
+    $res = db_query("SELECT `id`, `name`, `page`, `mime_type` FROM ia_file");
+    $mismatched_mimetypes = array();
+    while ($att = db_next_row($res)) {
+        $fname = attachment_get_filepath($att);
+        if (!is_file($fname)) {
+            continue;
+        }
+        if (get_mime_type($fname) != $att['mime_type']) {
+            $att['file_mime_type'] = get_mime_type($fname);
+            $mismatched_mimetypes[] = $att;
+        }
+    }
+
+    if (count($mismatched_mimetypes) != 0) {
+        log_print('There are ' . count($mismatched_mimetypes) . ' files with ' .
+                  'mismatching mimetypes on disk and in the db');
+        if (read_bool('Do you want to see a list?', false)) {
+            foreach ($mismatched_mimetypes as $att) {
+                log_print(
+                    sprintf('page %s name %s file_mime_type %s db_mime_type %s',
+                            $att['page'], $att['name'],
+                            $att['file_mime_type'], $att['mime_type']));
+            }
+        }
+        if (read_bool('Do you want to update them?', false)) {
+            foreach ($mismatched_mimetypes as $att) {
+                $new_att = attachment_get_by_id($att['id']);
+                $new_att['mime_type'] = $att['file_mime_type'];
+                attachment_update($new_att['id'], $new_att['name'],
+                                  $new_att['size'], $new_att['mime_type'],
+                                  $new_att['page'], $new_att['user_id'],
+                                  $new_att['remote_ip_info']);
+            }
+        }
+    } else {
+        log_print('Stored mime_types match those of the files on disk.');
+    }
+}
 
 if (read_bool("Enforce permissions?", false)) {
     $defowner = null;
@@ -127,26 +167,22 @@ if (read_bool("Enforce permissions?", false)) {
     }
     $userown = read_line("Owning user?", $defowner);
     $groupown = read_line("Owning group?", $defowner);
-    $quiet = read_bool("Do it quietly?", true);
     $errs = false;
+    $files = glob(IA_ROOT_DIR . "attach/*");
     foreach ($files as $file) {
         $err = array();
-        if (@chmod($file, 0660) == false) {
+        if (@chmod($file, 0640) == false) {
             $err[] = "chmod";
         }
         if (@chown($file, $userown) == false) {
             $err[] = "chown";
         }
-        if (@chgrp($file, $userown) == false) {
+        if (@chgrp($file, $groupown) == false) {
             $err[] = "chgrp";
         }
         $errs |= $err;
-        if (!$quiet) {
-            if ($err) {
-                log_print("Failed ".implode(', ', $err)." on $file");
-            } else {
-                log_print("Fixed permissions for $file");
-            }
+        if ($err) {
+            log_print("Failed ".implode(', ', $err)." on $file");
         }
     }
     if ($errs) {

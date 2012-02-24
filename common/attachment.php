@@ -37,14 +37,13 @@ function attachment_validate($att) {
 function get_mime_type($filename) {
     if (function_exists("finfo_open")) {
         // FIXME: cache.
-        $finfo = finfo_open(FILEINFO_MIME);
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
 
         log_assert($finfo !== false,
                    'fileinfo is active but finfo_open() failed');
 
         $res = finfo_file($finfo, $filename);
         finfo_close($finfo);
-        log_print('get_mime_type('.$filename.'): finfo yields '.$res);
         return $res;
     }
     if (function_exists("mime_content_type")) {

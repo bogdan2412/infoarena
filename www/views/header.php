@@ -93,8 +93,8 @@ if (!isset($topnav_select)) {
     $topnav_select = 'infoarena';
 }
 ia_template_header();
-$smf_admin = ('admin' == getattr($identity_user, 'security_level'));
-ia_template_topnav($topnav_select, $smf_admin);
+$is_admin = ('admin' == getattr($identity_user, 'security_level'));
+ia_template_topnav($topnav_select, $is_admin);
 ?>
 
 <div id="content_small" class="clear">
@@ -104,7 +104,7 @@ ia_template_topnav($topnav_select, $smf_admin);
         <li><?= format_link_access(url_textblock('arhiva'), "Arhiva de probleme", 'a') ?></li>
         <li><a href="<?= html_escape(url_textblock('arhiva-educationala')) ?>">Arhiva educatională</a></li>
         <li><a href="<?= html_escape(url_textblock('concursuri')) ?>">Concursuri</a></li>
-        <li><a href="<?= html_escape(url_textblock('concursuri-virtuale')) ?>">Concursuri virtuale</a></li> 
+        <li><a href="<?= html_escape(url_textblock('concursuri-virtuale')) ?>">Concursuri virtuale</a></li>
         <li><a href="<?= html_escape(url_textblock('clasament-rating')) ?>">Clasament</a></li>
         <li><a href="<?= html_escape(url_textblock('articole')) ?>">Articole</a></li>
         <li><a href="<?= html_escape(url_textblock('downloads')) ?>">Downloads</a></li>

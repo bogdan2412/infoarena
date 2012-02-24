@@ -54,7 +54,9 @@ function controller_textblock_view($page_name, $rev_num = null,
     $view['page_name'] = $page['name'];
     $view['textblock'] = $page;
     $view['forum_topic'] = $page['forum_topic'];
-
+    if ($page_name == 'admin') {
+        $view['topnav_select'] = 'admin';
+    }
     execute_view_die($display_view, $view);
 }
 

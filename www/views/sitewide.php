@@ -37,7 +37,7 @@ function ia_template_header() {
 }
 
 // display main navigation bar
-function ia_template_topnav($selected = 'infoarena', $smf_admin = false) {
+function ia_template_topnav($selected = 'infoarena', $is_admin = false) {
     global $identity_user;
 
     $pre = array($selected => '<strong>');
@@ -92,7 +92,12 @@ function ia_template_topnav($selected = 'infoarena', $smf_admin = false) {
 	<?php } ?>
         <?= getattr($post, 'pm') ?>
     </li>
-<?php if ($smf_admin) { ?>
+<?php if ($is_admin) { ?>
+    <li>
+        <?= getattr($pre, 'admin') ?>
+        <?= format_link(url_admin(), 'admin') ?>
+        <?= getattr($post, 'admin') ?>
+    </li>
     <li>
         <?= getattr($pre, 'smf_admin') ?>
         <?= format_link(url_forum() . "?action=admin", "forum admin") ?>

@@ -19,16 +19,25 @@ foreach ($files as $file) {
     $file_path = attachment_get_filepath($file);
 
     if (is_file($file_path)) {
-        if (is_textfile($file['mime_type']) &&
-            is_grader_testfile($file['name']) &&
+        if (is_grader_testfile($file['name']) &&
             is_problem_page($file['page'])) {
+            if (!is_textfile($file['mime_type'])) {
+                log_print('Test file ' . $file['name'] . ' on page ' .
+                          $file['page'] . ' of size ' . filesize($file_path) .
+                          ' has an unexpected mime type: ' .
+                          $file['mime_type']);
+                if (read_bool('Do you want to skip file?', true)) {
+                    continue;
+                }
+            }
+
             if (add_ending_newline($file_path)) {
                 if ($verbose) {
                     log_print("Added newline to file " . $file_path);
                 }
                 db_query("UPDATE `ia_file`" .
-                        " SET `size` = " . db_quote(filesize($file_path)) .
-                        " WHERE `id` = " . db_quote($file['id']));
+                         " SET `size` = " . db_quote(filesize($file_path)) .
+                         " WHERE `id` = " . db_quote((int)$file['id']));
                 $nr_changed++;
             }
         }
