@@ -32,6 +32,7 @@ foreach ($subpages as $subpage) {
     } else {
         echo '<h1>'.format_link($url, $subpage['title']).'</h1>';
     }
+    echo format_social_buttons($subpage);
     echo "<div class=\"wiki_text_block\">$text</div>";
 
     // Display comment link

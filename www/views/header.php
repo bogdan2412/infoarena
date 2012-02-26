@@ -42,7 +42,14 @@ header("Content-type: text/html; charset=utf-8");
     <meta name="google-site-verification" content="T_HFYNIO3S70696yFC5rkbPn339gjnfVwMqYPmU866I" /> <!--devilkind-->
 <?php
     }
+
+    // Add aditional meta data for other pages such as blog posts
+    $meta_info = getattr($view, 'meta_info', array());
+    foreach ($meta_info as $tag) {
+        echo format_tag('meta', null, $tag);
+    }
 ?>
+
     <title><?= html_escape(getattr($view, 'title')) ?></title>
 
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/sitewide.css')) ?>"/>

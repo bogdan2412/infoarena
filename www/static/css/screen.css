@@ -1542,3 +1542,10 @@ ul.tag_filters {
 table.sortable th {
     cursor: pointer;
 }
+
+/* Make social buttons appear on the right */
+div.social_buttons {
+    float:right;
+    margin-left: 5px;
+    height: 65px;
+}

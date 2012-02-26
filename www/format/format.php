@@ -285,4 +285,49 @@ function format_date($date, $format = null) {
     return $res;
 }
 
+/**
+ * Formats the Facebook, Google+ and Twitter social buttons
+ *
+ * @param string $textblock_name   The textblock
+ * @param array $buttons     Which buttons to display(like, +1 and/or tweet)
+ * @return string
+ */
+function format_social_buttons($textblock,
+                               $buttons = array('like', '+1', 'tweet')) {
+    if (IA_DEVELOPMENT_MODE) {
+        return '';
+    }
+    $social = '<div class="social_buttons">';
+
+    $url = url_absolute(url_textblock($textblock['name']));
+
+    if (in_array('like', $buttons)) {
+        $social .= '<iframe src="//www.facebook.com/plugins/like.php?href='
+                . html_escape(urlencode($url))
+                . '&amp;send=false&amp;layout=box_count&amp;width=55&amp;'
+                . 'show_faces=false&amp;action=like&amp;colorscheme=light&'
+                . 'amp;font&amp;height=62" scrolling="no" frameborder="0" '
+                . 'style="border:none; overflow:hidden; width:55px; heigh'
+                . 't:62px;" allowTransparency="true"></iframe>';
+    }
+
+    if (in_array('+1', $buttons)) {
+        $social .= '<script type="text/javascript" src="https://apis.googl'
+                . 'e.com/js/plusone.js"></script><g:plusone size="tall" hr'
+                . 'ef="' . html_escape($url) . '"> </g:plusone>';
+    }
+
+    if (in_array('tweet', $buttons)) {
+        $social .= '<iframe allowtransparency="true" frameborder="0" scrol'
+                . 'ling="no" src="//platform.twitter.com/widgets/tweet_but'
+                . 'ton.html?count=vertical&url=' . html_escape(urlencode($url))
+                . ' &text=' . rawurlencode($textblock['title']) . '%20' . $url
+                .'&via=' . IA_TWITTER_ACCOUNT .'" style="width:55px; height: 6'
+                . '2px; margin-left:5px"></iframe>';
+    }
+
+    $social .= '</div>';
+
+    return $social;
+}
 ?>
