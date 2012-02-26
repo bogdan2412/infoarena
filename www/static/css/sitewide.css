@@ -180,33 +180,40 @@ body#infoarena {
 /* color-coded user ratings */
 /* put some extra work to override SMF CSS */
 a.rating-badge-1, a.rating-badge-2, a.rating-badge-3, a.rating-badge-4,
-a.rating-badge-1:link, a.rating-badge-2:link, a.rating-badge-3:link, a.rating-badge-4:link {
+a.rating-badge-5,
+a.rating-badge-1:link, a.rating-badge-2:link, a.rating-badge-3:link,
+a.rating-badge-4:link, a.rating-badge-5:link {
     font-size: 12pt;
     font-weight: normal;
     padding: 0 0 0 .1em;
     margin: .1em .1em .1em 0;
     border: 1px solid white;
 }
-a.rating-badge-1:hover, a.rating-badge-2:hover, a.rating-badge-3:hover, a.rating-badge-4:hover {
+a.rating-badge-1:hover, a.rating-badge-2:hover, a.rating-badge-3:hover,
+a.rating-badge-4:hover, a.rating-badge-5:hover {
     border: 1px solid gray;
     text-decoration: none;
 }
-a.rating-badge-4:link, a.rating-badge-4:visited { color: #ffa000; }
-a.rating-badge-3:link, a.rating-badge-3:visited { color: #00a900; }
+a.rating-badge-5:link, a.rating-badge-5:visited { color: #000000; }
+a.rating-badge-4:link, a.rating-badge-4:visited { color: #00a900; }
+a.rating-badge-3:link, a.rating-badge-3:visited { color: #0000ff; }
 a.rating-badge-2:link, a.rating-badge-2:visited { color: #ddcc00; }
 a.rating-badge-1:link, a.rating-badge-1:visited { color: #ee0000; }
-a.rating-badge-4:hover { border-color: #ffa000; }
-a.rating-badge-3:hover { border-color: #00a900; }
+a.rating-badge-5:hover { border-color: #000000; }
+a.rating-badge-4:hover { border-color: #00a900; }
+a.rating-badge-3:hover { border-color: #0000ff; }
 a.rating-badge-2:hover { border-color: #ddcc00; }
 a.rating-badge-1:hover { border-color: #ee0000; }
-#header a.rating-badge-1, #header a.rating-badge-2, #header a.rating-badge-3, #header a.rating-badge-4 {
+#header a.rating-badge-1, #header a.rating-badge-2, #header a.rating-badge-3,
+#header a.rating-badge-4, #header a.rating-badge-5 {
     padding-right: .1em;
     margin-right: .1em;
     border: 0;
     font-size: 12pt;
 }
-#header a.rating-badge-4 { color: #ffa000; }
-#header a.rating-badge-3 { color: #00a900; }
+#header a.rating-badge-5 { color: #000000; }
+#header a.rating-badge-4 { color: #00a900; }
+#header a.rating-badge-3 { color: #0000ff; }
 #header a.rating-badge-2 { color: #ddcc00; }
 #header a.rating-badge-1 { color: #ee0000; }
 

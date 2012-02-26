@@ -154,7 +154,7 @@ function macro_tasks($args) {
         $filter_user_id = null;
     } else {
         $user_id = identity_get_user_id();
-        $filter_username = request('user', identity_get_user());
+        $filter_username = request('user', identity_get_username());
         $filter_user = user_get_by_username($filter_username);
         if ($filter_user != null) {
             $filter_user_id = $filter_user['id'];

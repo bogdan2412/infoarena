@@ -1,5 +1,6 @@
 <?php
 
+require_once(IA_ROOT_DIR."www/format/format.php");
 require_once(IA_ROOT_DIR."www/php-ofc-library/open-flash-chart.php");
 
 // get data ranges
@@ -74,14 +75,8 @@ foreach ($history as $round_id => $round) {
     }
 
     $current_y = rating_scale($round['rating']);
-    if ($current_y < 520) {
-        $colour = "#00a900";
-    } elseif ($current_y < 600) {
-        $colour = "#ddcc00";
-    } else {
-        $colour = "#ee0000";
-    }
-    $dot = new dot_value($current_y, $colour);
+    $rating_group = rating_group($current_y);
+    $dot = new dot_value($current_y, $rating_group["colour"]);
     if ($current_y == $peak_point) {
         $dot->set_tooltip("Max: #val#<br>" . $round['round_title']);
     } else {

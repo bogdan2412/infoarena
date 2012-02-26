@@ -1,5 +1,6 @@
 <?php
 
+require_once(IA_ROOT_DIR."www/format/format.php");
 require_once(IA_ROOT_DIR."www/php-ofc-library/open-flash-chart.php");
 
 // create the rating chart
@@ -70,14 +71,8 @@ foreach ($distribution as $bucket => $count) {
         ($current_rating + rating_scale($bucket_size) - 1)
         . "<br>" . $count . ($count == 1 ? " concurent" : " concurenti"));
 
-    if (rating_scale($bucket * $bucket_size) < 520) {
-        $bar_value->set_colour("#00a900");
-    } elseif (rating_scale($bucket * $bucket_size) < 600) {
-        $bar_value->set_colour("#ddcc00");
-    } else {
-        $bar_value->set_colour("ee0000");
-    }
-
+    $rating_group = rating_group(rating_scale($bucket * $bucket_size));
+    $bar_value->set_colour($rating_group["colour"]);
     $bar->append_value($bar_value);
     ++$p;
 }

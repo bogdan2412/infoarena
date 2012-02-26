@@ -146,7 +146,8 @@ function format_user_link($user_name, $user_fullname, $rating = null) {
     if (is_null($rating)) {
         $attr = array();
     } else {
-        $attr = array('class' => 'user_'.rating_group($rating));
+        $rating_group = rating_group($rating);
+        $attr = array('class' => 'user_'.$rating_group["group"]);
     }
 
     $rbadge = format_user_ratingbadge($user_name, $rating);
@@ -198,29 +199,33 @@ function format_user_normal($user_name, $user_fullname, $rating = null) {
     return $result;
 }
 
-// Return rating group based on user's absolute rating.
-// Rating groups (from highest to lowest ranking): 1, 2, 3, 0
+// Return rating group and colour based on user's sclaed rating scale.
+// Rating groups (from highest to lowest ranking): 1, 2, 3, 4, 0
 // NOTE: It outputs 0 when user is not rated
-function rating_group($absolute_rating, $is_admin = false) {
+function rating_group($rating, $is_admin = false) {
     if ($is_admin) {
-        // all mighty admin
-        return 4;
+        // all mighty admin - black
+        return array("group" => 5, "colour" => "#000000");
     }
-    if (!$absolute_rating) {
-        return 0;
+    if (!$rating) {
+        // user unrated - white
+        return array("group" => 0, "colour" => "#ffffff");
     }
-    $rating = rating_scale($absolute_rating);
-    if ($rating < 520) {
+    if ($rating < 540) {
         // green
-        return 3;
+        return array("group" => 4, "colour" => "#00a900");
     }
     else if ($rating < 600) {
+        // blue
+        return array("group" => 3, "colour" => "#0000ff");
+    }
+    else if ($rating < 700) {
         // yellow
-        return 2;
+        return array("group" => 2, "colour" => "#ddcc00");
     }
     else {
         // red
-        return 1;
+        return array("group" => 1, "colour" => "#ee0000");
     }
 }
 
@@ -229,8 +234,9 @@ function rating_group($absolute_rating, $is_admin = false) {
 function format_user_ratingbadge($username, $rating) {
     if ($rating) {
         $is_admin = user_is_admin(user_get_by_username($username));
-        $class = rating_group($rating, $is_admin);
         $rating = rating_scale($rating);
+        $rating_group = rating_group($rating, $is_admin);
+        $class = $rating_group["group"];
         $att = array(
             'title' => 'Rating '.html_escape($username).': '.$rating,
             'class' => 'rating-badge-'.$class,
