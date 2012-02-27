@@ -1,6 +1,7 @@
 <?php
 
-require_once(IA_ROOT_DIR.'www/config.php');
+require_once(IA_ROOT_DIR . 'www/config.php');
+require_once(IA_ROOT_DIR . 'common/common.php');
 
 // Creates URLs to various parts of the infoarena website.
 // Please avoid hard-coding URLs throughout the code.
@@ -16,25 +17,34 @@ require_once(IA_ROOT_DIR.'www/config.php');
 //
 // If $absolute is true(default false) then IA_URL_HOST will be included in
 // the url.
-function url_complex($document = '', $args = array(), $absolute = false) {
+function url_complex($document = '', $args = array(), $absolute = false,
+        $secure_connection = false) {
     log_assert(false === strpos($document, '?'), 'Page name contains ?');
     log_assert(is_array($args), "Argument list must be an array");
     log_assert(!array_key_exists("page", $args), "Argument list contains page");
-
+    if ($secure_connection == true) {
+        log_assert($absolute == true);
+    }
     $args['page'] = $document;
     $url = url_from_args($args, $absolute);
     if ($absolute) {
-        return url_absolute($url);
+        return url_absolute($url, $secure_connection);
     } else  {
         return $url;
     }
 }
 
 // Makes an url absolute. It just prepends IA_URL_HOST
-function url_absolute($url)
+function url_absolute($url, $force_secure_connection = false)
 {
     log_assert(strpos($url, 'http') !== 0, "Url begins with http");
-    return IA_URL_HOST . $url;
+    $url = IA_URL_HOST . $url;
+    if ($force_secure_connection == true || is_connection_secure()) {
+        $count = 1;
+        $url = str_replace('http', 'https', $url, $count);
+    }
+
+    return $url;
 }
 
 // Construct an URL from an argument list.
@@ -190,7 +200,7 @@ function url_image_resize($page, $file, $resize)
 // User stuff
 
 function url_login() {
-    return url_complex("login");
+    return url_complex("login", array(), true, true);
 }
 
 function url_logout() {
@@ -206,7 +216,7 @@ function url_account($user = false) {
 }
 
 function url_register() {
-    return url_complex("register");
+    return url_complex("register", array(), true, true);
 }
 
 function url_resetpass($username = false) {

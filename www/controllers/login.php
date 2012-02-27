@@ -3,15 +3,21 @@
 require_once(IA_ROOT_DIR . "common/db/user.php");
 
 function controller_login() {
+    if (!is_connection_secure()) {
+        redirect(url_login());
+    }
+
     global $identity_user;
 
     // `data` dictionary is a dictionary with data to be displayed by form view
     // when displaying the form for the first time, this is filled with
     $data = array();
 
-    // here we store validation errors.
-    // It is a dictionary, indexed by field names
-    $errors = array();
+    // array for the captcha error
+    $form_errors = array();
+
+    // The flash error
+    $errors = '';
 
     // process input?
     $submit = request_is_post();
@@ -25,7 +31,8 @@ function controller_login() {
         if (!$user) {
             $user = user_test_ia1_password($data['username'], $data['password']);
             if (!$user) {
-                $errors = true;
+                $errors = 'Numele de utilizator inexistent sau parola ' .
+                          'incorecta. Incearca din nou.';
             }
             else {
                 // update password to the SHA1 algorithm
@@ -35,15 +42,30 @@ function controller_login() {
             }
         }
 
+        // Get some tokens from the captcha
+        // It's not like that matters in any way because we do not receive
+        // enough for the login cost
+        $form_errors['captcha'] = check_captcha_for_tokens();
+
         // obtain referer
         $referer = getattr($_SERVER, 'HTTP_REFERER', '');
-        if ($referer == url_absolute(url_login())) {
+        if ($referer == url_login()) {
             // we don't care about the login page
             $referer = null;
         }
 
+        // pay tokens for loging in
+        if (!pay_tokens(IA_TOKENS_LOGIN)) {
+            if ($form_errors['captcha']) {
+                $errors = 'Va rugam confirmati ca sunteti om';
+                unset($form_errors['captcha']);
+            }
+        }
+
         // process
         if (!$errors) {
+            // good user receives some tokens back enough to logout and login as a different user
+            pay_tokens(-IA_TOKENS_LOGIN);
             // persist user to session (login)
             $remember_user = ($data['remember'] ? true : false);
             identity_start_session($user, $remember_user);
@@ -73,8 +95,7 @@ function controller_login() {
                 $_SESSION['_ia_redirect'] = $_SERVER['HTTP_REFERER'];
             }
 
-            flash_error('Numele de utilizator inexistent sau parola ' .
-                        'incorecta. Incearca din nou.');
+            flash_error($errors);
         }
     }
 
@@ -84,9 +105,14 @@ function controller_login() {
     $view['page_name'] = "login";
     $view['title'] = "Autentificare";
     $view['form_values'] = $data;
-    $view['form_errors'] = array();
+    $view['form_errors'] = $form_errors;
     $view['topnav_select'] = 'login';
     $view['no_sidebar_login'] = true;
+
+    if (get_tokens() < IA_TOKENS_LOGIN) {
+        $view['captcha'] = recaptcha_get_html(IA_CAPTCHA_PUBLIC_KEY, null,
+                true);
+    }
 
     execute_view_die('views/login.php', $view);
 }

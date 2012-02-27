@@ -1549,3 +1549,11 @@ div.social_buttons {
     margin-left: 5px;
     height: 65px;
 }
+
+/* Make form tables have no border */
+table.form {
+    width: 100%;
+}
+table.form td {
+    border: 0px;
+}

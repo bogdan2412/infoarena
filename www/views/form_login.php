@@ -1,4 +1,7 @@
 <form action="<?= html_escape(url_login()) ?>" method="post" class="login">
+<table class="form">
+  <tr>
+    <td>
 <fieldset>
     <legend><img src="<?= html_escape(url_static('images/icons/login.png')) ?>" alt="!" /> Autentificare</legend>
     <ul class="form">
@@ -17,10 +20,40 @@
             <input type="checkbox" value="on" id="form_remember" name="remember" class="checkbox"<?= fval('remember') ? ' checked="checked"' : '' ?>/>
             <label class="checkbox" for="form_remember">Pastreaza-ma autentificat 5 zile</label>
         </li>
+    </ul>
+</fieldset>
+    </td>
+<?php
+if (isset($view['captcha'])) {
+?>
+    <td>
+<fieldset>
+    <legend>Verificare</legend>
+    <ul class="form">
         <li>
-            <input type="submit" value="Autentificare" id="form_submit" class="button important" />
+            <script type="text/javascript">
+                var RecaptchaOptions = {
+                theme : 'clean',
+                };
+            </script>
+
+            <label>Scrieti cuvintele de mai jos:</label>
+            <?= ferr_span('captcha') ?>
+            <?= $view['captcha'] ?>
+            <span class="fieldHelp">Va rugam sa transcrieti cuvintele de mai sus in aceasta casuta pentru verificare</span>
         </li>
     </ul>
 </fieldset>
+    </td>
+<?php
+    }
+?>
+</tr>
+</table>
+<ul class="form clear">
+  <li>
+    <input type="submit" value="Autentificare" id="form_submit" class="button important" />
+  </li>
+</ul>
 </form>
 

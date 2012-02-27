@@ -1,7 +1,7 @@
 <?php
 
-require_once(IA_ROOT_DIR."www/url.php");
-
+require_once(IA_ROOT_DIR . 'www/url.php');
+require_once(IA_ROOT_DIR . 'common/db/tokens.php');
 // Wrapper around htmlentities which defaults charset to UTF-8
 function html_escape($string, $quote_style = ENT_COMPAT, $charset = "UTF-8")
 {
@@ -77,6 +77,7 @@ function request_is_post() {
 function redirect($absolute_url) {
     header("Location: {$absolute_url}\n\n");
     session_write_close();
+    save_tokens();
     die();
 }
 
@@ -250,24 +251,8 @@ function execute_view_die($view_file_name, $view) {
         log_execution_stats();
     }
     session_write_close();
+    save_tokens();
     die();
-}
-
-// Return information about the remote IP address. Useful for logging.
-// This isn't necessarily just an IP address. It might contain proxy
-// information when available.
-function remote_ip_info() {
-    $ip_address = getattr($_SERVER, 'REMOTE_ADDR');
-    if ($ip_address && !is_valid_ip_address($ip_address)) {
-        log_warn("Invalid IP address: {$ip_address}", true, 1);
-    }
-    // FIXME: Also validate XFF header.
-    if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        return getattr($_SERVER, 'REMOTE_ADDR')."; "
-                .$_SERVER['HTTP_X_FORWARDED_FOR'];
-    } else {
-        return getattr($_SERVER, 'REMOTE_ADDR');
-    }
 }
 
 ?>

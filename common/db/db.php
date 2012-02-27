@@ -84,7 +84,7 @@ function db_query_value($query, $default_value = null) {
 
     $rows = db_fetch_all($query);
 
-    if (is_null($rows)) {
+    if (count($rows) == 0) {
         return $default_value;
     }
 

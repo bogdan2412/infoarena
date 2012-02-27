@@ -75,7 +75,7 @@
 </fieldset>
 
 <?php
-    if(!IA_DEVELOPMENT_MODE) {
+    if(isset($view['captcha'])) {
 ?>
 <fieldset>
     <legend>Verificare</legend>

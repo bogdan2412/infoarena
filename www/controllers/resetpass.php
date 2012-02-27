@@ -127,7 +127,7 @@ Parola noua: {$new_password}
 Numele contului: {$user['username']}
 
 Te poti autentifica aici:
-".url_absolute(url_login())."
+".url_login()."
 
 Echipa infoarena
 ".IA_URL."\n";

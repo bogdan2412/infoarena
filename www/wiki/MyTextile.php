@@ -5,7 +5,7 @@ require_once(IA_ROOT_DIR."common/attachment.php");
 require_once(IA_ROOT_DIR."common/string.php");
 require_once(IA_ROOT_DIR."www/wiki/latex.php");
 require_once(IA_ROOT_DIR."www/utilities.php");
-
+require_once(IA_ROOT_DIR . 'www/url.php');
 class MyTextile extends Textile {
     // FIXME: If you see a pointless textile error try tweaking this value.
     private $my_error_reporting = 0xF7F7;
@@ -112,7 +112,7 @@ class MyTextile extends Textile {
             if (preg_match("/^ ([^\?]+) \? (".IA_RE_ATTACHMENT_NAME.") $/sxi", $url, $matches)) {
                 $args['url'] = url_attachment($matches[1], $matches[2]);
             } else {
-                $args['url'] = IA_URL . $url;
+                $args['url'] = IA_URL_PREFIX . $url;
             }
         } else {
             $args['clsty'] .= "(wiki_link_external)";
