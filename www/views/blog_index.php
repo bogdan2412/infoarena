@@ -18,10 +18,6 @@ echo '<h1>Blog infoarena</h1>';
 // Include each blog post
 foreach ($subpages as $subpage) {
     echo '<div class="item">';
-    echo '<span class="date">';
-    echo format_user_link($subpage["user_name"], $subpage["user_fullname"]).' &#8226; ';
-    echo html_escape(date('d M Y', strtotime($subpage['creation_timestamp'])));
-    echo '</span>';
 
     $url = url_textblock($subpage['name']);
     $text = wiki_process_textblock_recursive($subpage);
@@ -32,7 +28,9 @@ foreach ($subpages as $subpage) {
     } else {
         echo '<h1>'.format_link($url, $subpage['title']).'</h1>';
     }
-    echo format_social_buttons($subpage);
+
+    // Blog author and social buttons
+    echo format_blogpost_author($subpage);
     echo "<div class=\"wiki_text_block\">$text</div>";
 
     // Display comment link

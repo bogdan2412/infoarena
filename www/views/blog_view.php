@@ -24,15 +24,13 @@ echo '<div class="wiki_text_block">';
 echo '<div class="blog">';
 $text = wiki_process_textblock($textblock);
 echo hijack_title($text, null, $textblock['title']);
-echo format_social_buttons($textblock);
+echo format_blogpost_author($first_textblock);
 echo $text;
 echo '<div class="strap">';
 echo '<strong>Categorii: </strong>';
 foreach ($tags as $tag) {
     echo format_link(url_blog($tag['name']), $tag['name'], true).' ';
 }
-echo '<br/>';
-echo 'Creat la '.html_escape($first_textblock['creation_timestamp']).' de '.format_user_link($first_textblock["user_name"], $first_textblock["user_fullname"]);
 echo '</div>';
 // blog comments
 if (getattr($view, 'forum_topic')) {

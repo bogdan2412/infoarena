@@ -336,4 +336,23 @@ function format_social_buttons($textblock,
 
     return $social;
 }
+
+/**
+ * Formats the blog post author
+ *
+ * @param array $blogpost    the blogpost textblock
+ * @return string
+ */
+function format_blogpost_author($blogpost) {
+    $text = '<div class="strap blogheader">'
+          . format_social_buttons($blogpost)
+          . format_user_avatar($blogpost['user_name'], 'forum')
+          . '<br />'
+          . format_user_link($blogpost['user_name'],
+                             $blogpost['user_fullname'])
+          . '<br />'
+          . format_date($blogpost['creation_timestamp'], "%d %B %G")
+          . '</div>';
+    return $text;
+}
 ?>
