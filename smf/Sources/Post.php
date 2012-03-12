@@ -1392,6 +1392,18 @@ function Post2()
 		$_POST['email'] = addslashes($user_info['email']);
 	}
 
+	// FIXME: IA HACK:
+	// Check if the captcha was correct by guest
+	if ($posterIsGuest && !isset($_REQUEST['msg']) && !IA_DEVELOPMENT_MODE) {
+		if (recaptcha_check_answer(IA_CAPTCHA_PRIVATE_KEY,
+									$_SERVER["REMOTE_ADDR"],
+									$_POST['recaptcha_challenge_field'],
+									$_POST['recaptcha_response_field'])
+					-> is_valid == false) {
+			$post_errors[] = 'wrong_captcha';
+		}
+	}
+
 	// Any mistakes?
 	if (!empty($post_errors))
 	{

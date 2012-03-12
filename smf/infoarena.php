@@ -9,13 +9,13 @@
 
 define("IA_FROM_SMF", true);
 
-require_once(IA_ROOT_DIR."common/common.php");
-require_once(IA_ROOT_DIR."common/log.php");
+require_once(IA_ROOT_DIR . 'common/common.php');
+require_once(IA_ROOT_DIR . 'common/external_libs/recaptchalib.php');
+require_once(IA_ROOT_DIR . 'common/log.php');
 check_requirements();
-require_once(IA_ROOT_DIR."common/security.php");
-require_once(IA_ROOT_DIR."www/utilities.php");
-require_once(IA_ROOT_DIR."www/identity.php");
-
+require_once(IA_ROOT_DIR . 'common/security.php');
+require_once(IA_ROOT_DIR . 'www/utilities.php');
+require_once(IA_ROOT_DIR . 'www/identity.php');
 
 // init SMF hooks to integrate with infoarena
 // These are native integration features built into SMF. Sweet!

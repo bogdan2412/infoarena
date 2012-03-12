@@ -487,11 +487,6 @@ The basic layout of the homepage is as follows:
     font-size: 13px;
     padding-left: 5px;
     background-color: transparent;
-    border: 1px solid;
-}
-
-.blogheader span {
-    vertical-align: middle;
 }
 
 .blogheader img {

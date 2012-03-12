@@ -335,6 +335,25 @@ function template_main()
 									<input type="text" name="email" size="25" value="', $context['email'], '" tabindex="', $context['tabindex']++, '" />
 								</td>
 							</tr>';
+
+		if (!IA_DEVELOPMENT_MODE) {
+			// FIXME: IA HACK: recaptcha for visitors posting
+			echo '
+							<tr>
+								<td align="right" style="font-weight: bold;', isset($context['post_error']['wrong_captcha']) ? 'color:red' : '', '" id="caption_captcha">
+									Verificati-va identitatea:
+								</td>
+								<td>
+									<script type="text/javascript">
+										var RecaptchaOptions = {
+											theme : "clean",
+											tabindex : ', $context['tabindex']++, '
+										};
+									</script>
+									', recaptcha_get_html(IA_CAPTCHA_PUBLIC_KEY),
+								'</td>
+							</tr>';
+		}
 	}
 
 	// Are you posting a calendar event?
