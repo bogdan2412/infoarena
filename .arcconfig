@@ -1,0 +1,7 @@
+{
+  "project_id": "infoarena",
+  "lint_engine": "InfoarenaLintEngine",
+  "phutil_libraries": {
+    "lint": "lint/"
+  }
+}

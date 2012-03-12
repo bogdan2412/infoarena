@@ -1,4 +1,4 @@
-.PHONY: hphp-build clean-cache clean-hphp clean
+.PHONY: hphp-build clean-cache clean-hphp clean lint
 
 hphp-build:
 	mkdir -p hphp/build/
@@ -16,3 +16,19 @@ clean-sessions:
 	find /var/infoarena/sessions/ -name sess_\* -exec rm {} +
 
 clean: clean-cache clean-hphp clean-sessions
+
+arcanist:
+	git clone git://github.com/facebook/arcanist.git
+
+libphutil:
+	git clone git://github.com/facebook/libphutil.git
+	libphutil/scripts/build_xhpast.sh
+
+lint: arcanist libphutil
+	arcanist/bin/arc lint --apply-patches
+
+lint-all: arcanist libphutil
+	arcanist/bin/arc lint --apply-patches --lintall
+
+lint-repo: arcanist libphutil
+	find . -name \*.php | xargs arcanist/bin/arc lint --lintall --never-apply-patches
