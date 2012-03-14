@@ -66,7 +66,7 @@ define("IA_COOKIE_DOMAIN", null);
 
 // infoarena session lifetime
 // defaults to 5days
-define("IA_SESSION_LIFETIME_SECONDS", 5*24*3600);
+define("IA_SESSION_LIFETIME_SECONDS", 5 * 24 * 3600);
 
 // Fatal error mask.
 // These are the errors the scripts halts on.
@@ -125,14 +125,28 @@ define("IA_MEM_CACHE_METHOD", "none");
 // Default TTL for cache items.
 define("IA_MEM_CACHE_EXPIRATION", 3600);
 
-// Round TTL. Smaller because of evaluator.
-define("IA_MEM_CACHE_ROUND_EXPIRATION", 10);
-
-// Task TTL. Smaller because of evaluator.
-define("IA_MEM_CACHE_TASK_EXPIRATION", 10);
-
 // TTL for tag caches.
-define("IA_MEM_CACHE_TAGS_EXPIRATION", 600);
+define("IA_MEM_CACHE_TAGS_EXPIRATION", 3600);
+
+if (IA_MEM_CACHE_METHOD === "memcached") {
+    define('IA_MEMCACHED_HOST', '127.0.0.1');
+    define('IA_MEMCACHED_PORT', 11211);
+
+    // Round TTL.
+    define("IA_MEM_CACHE_ROUND_EXPIRATION", 3600);
+
+    // Task TTL.
+    define("IA_MEM_CACHE_TASK_EXPIRATION", 3600);
+} else {
+    // Smaller TTLs because evaluator doesn't have access to cache to
+    // invalidate old data on updates.
+
+    // Round TTL.
+    define("IA_MEM_CACHE_ROUND_EXPIRATION", 10);
+
+    // Task TTL.
+    define("IA_MEM_CACHE_TASK_EXPIRATION", 10);
+}
 
 // Logging options. Anything else in normal operation is a bug.
 // Filling error_log on a production machine sucks.
@@ -162,5 +176,3 @@ define("IA_FACEBOOK_APP_ID", '159779000715246');
 
 // Twitter Account
 define("IA_TWITTER_ACCOUNT", 'infoarena.ro');
-
-?>

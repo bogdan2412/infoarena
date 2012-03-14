@@ -90,19 +90,19 @@ define("IA_USER_DEFINED_ROUND_TASK_LIMIT", '25');
 // FIXME: Not fully tested!
 if (!function_exists('checkdnsrr')) {
     log_warn("Function checkdnsrr does not exist. ".
-             "Presuming Windows NT enviroment and reimplementing it.");
+             "Presuming Windows NT environment and reimplementing it.");
 
-    function checkdnsrr($hostName, $recType = "MX")
-    {
-        if (empty($hostName)) {
+    function checkdnsrr($host_name, $rec_type = "MX") {
+        if (empty($host_name)) {
             return false;
         }
 
-        exec("nslookup -type=$recType $hostName", $result);
+        $result = array();
+        exec("nslookup -type=$rec_type $host_name", $result);
         // Check each line to find the one that starts with the host name.
         // If it exists then the function succeeded.
         foreach ($result as $line) {
-            if (eregi("^$hostName" ,$line)) {
+            if (eregi("^$host_name", $line)) {
                 return true;
             }
         }
@@ -162,6 +162,7 @@ function is_page_name($page_name) {
  * @return array                returns an array containing the matched user
  */
 function get_page_user_name($page_name) {
+    $matches = array();
     preg_match("/^ ".
                 preg_quote(IA_USER_TEXTBLOCK_PREFIX, '/').
                 '('.IA_RE_USER_NAME.") (\/?.*) $/xi",
@@ -272,7 +273,8 @@ function is_tag($tag) {
 
 // Taggable objects
 function is_taggable($obj) {
-    return $obj == 'user' || $obj == 'task' || $obj == 'round' || $obj == 'textblock';
+    return $obj == 'user' || $obj == 'task' || $obj == 'round' ||
+           $obj == 'textblock';
 }
 
 /**
@@ -295,7 +297,8 @@ function create_function_cached($args, $code) {
         return create_function($args, $code);
     }
     static $_cache = array();
-    $key = str_replace('|', '<|>', $args) . '|' . str_replace('|', '<|>', $code);
+    $key = str_replace('|', '<|>', $args) . '|' .
+           str_replace('|', '<|>', $code);
     if (!array_key_exists($key, $_cache)) {
         $_cache[$key] = create_function($args, $code);
     }
@@ -304,8 +307,7 @@ function create_function_cached($args, $code) {
 
 // Checks system requirements.
 // This will fail early if something is missing.
-function check_requirements()
-{
+function check_requirements() {
     $extensions = get_loaded_extensions();
 
     if (version_compare(phpversion(), '5.0', '<')) {
@@ -324,9 +326,10 @@ function check_requirements()
         log_warn("mbstring extension missing. inline diff will not be enabled");
     }
     if (!function_exists("finfo_open")) {
-        log_warn("finfo_open missing, falling back to mime_content_type.");
+        log_warn('finfo_open missing, falling back to mime_content_type.');
         if (!function_exists("mime_content_type")) {
-            log_warn("mime_content_type missing, mime-types will default to application/octet-stream.");
+            log_warn('mime_content_type missing, mime-types will default to ' .
+                     'application/octet-stream.');
         }
     }
 
@@ -378,14 +381,14 @@ function is_connection_secure() {
     $https = getattr($_SERVER, 'HTTPS', null);
 
     if ($https == 'on' || $https == '1' ||
-            getattr($_SERVER, 'SERVER_PORT', 80) == 443) {
+        getattr($_SERVER, 'HTTP_X_FORWARDED_PROTO') === 'https') {
         return true;
     }
     return false;
 }
 
 /*
- *Return information about the remote IP address. Useful for logging.
+ * Return information about the remote IP address. Useful for logging.
  * This isn't necessarily just an IP address. It might contain proxy
  * information when available.
  *
@@ -404,6 +407,3 @@ function remote_ip_info() {
         return getattr($_SERVER, 'REMOTE_ADDR');
     }
 }
-
-
-?>

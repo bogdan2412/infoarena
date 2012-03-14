@@ -9,7 +9,8 @@ require_once(IA_ROOT_DIR . "common/db/round_task.php");
 function _task_cache_add($task) {
     if (!is_null($task)) {
         log_assert_valid(task_validate($task));
-        mem_cache_set("task-by-id:{$task['id']}", $task, IA_MEM_CACHE_TASK_EXPIRATION);
+        mem_cache_set("task-by-id:{$task['id']}", $task,
+                      IA_MEM_CACHE_TASK_EXPIRATION);
     }
     return $task;
 }
@@ -31,7 +32,8 @@ function task_get($task_id) {
                      db_escape($task_id));
 
     // This way nulls (missing tasks) get cached too.
-    return mem_cache_set("task-by-id:$task_id", db_fetch($query), IA_MEM_CACHE_TASK_EXPIRATION);
+    return mem_cache_set("task-by-id:$task_id", db_fetch($query),
+                         IA_MEM_CACHE_TASK_EXPIRATION);
 }
 
 // Create new task
@@ -46,9 +48,11 @@ function task_create($task, $task_params, $remote_ip_info = null) {
 
         // Copy templates.
         require_once(IA_ROOT_DIR . "common/textblock.php");
-        $replace = array("task_id" => $task['id'], "task_title" => ucfirst($task['id']));
+        $replace = array("task_id" => $task['id'],
+                         "task_title" => ucfirst($task['id']));
         textblock_copy_replace("template/newtask", $task['page_name'],
-                $replace, "task: {$task['id']}", $task['user_id'], $remote_ip_info);
+                               $replace, "task: {$task['id']}",
+                               $task['user_id'], $remote_ip_info);
 
         _task_cache_add($task);
     }
@@ -118,7 +122,8 @@ function task_delete($task) {
     }
 
     // Delete task
-    db_query("DELETE FROM `ia_task` WHERE `id` = '" . db_escape($task["id"]) . "'");
+    db_query("DELETE FROM `ia_task` WHERE `id` = '" .
+             db_escape($task["id"]) . "'");
 
     // Delete all task parameters
     task_update_parameters($task["id"], array());
@@ -156,7 +161,7 @@ function task_get_all() {
 }
 
 // Returns list of round ids that include this task
-function task_get_parent_rounds($task_id, $force_no_cache=false) {
+function task_get_parent_rounds($task_id, $force_no_cache = false) {
     log_assert(is_task_id($task_id));
     if (!$force_no_cache) {
         $result = mem_cache_get("task-rounds-by-id:$task_id");
@@ -188,7 +193,7 @@ function task_get_parent_rounds($task_id, $force_no_cache=false) {
 // $user_id can submit
 function task_get_submit_rounds($task_id, $user_id) {
     $rounds = task_get_parent_rounds($task_id);
-    foreach($rounds as $id => $round) {
+    foreach ($rounds as $id => $round) {
         $round = round_get($rounds[$id]);
         if (!security_query($user_id, "round-submit", $round)) {
             unset($rounds[$id]);
@@ -361,8 +366,8 @@ function task_get_user_score($task_id, $user_id, $round_id = 'arhiva') {
     }
 
     // Check the cache
-    if (($res = mem_cache_get("user-task-round:".$user_id."-".$task_id."-".$round_id)) != false) {
-        log_var_dump($res);
+    $cache_key = 'user-task-round:'.$user_id.'-'.$task_id.'-'.$round_id;
+    if (($res = mem_cache_get($cache_key)) != false) {
         return $res;
     }
 
@@ -375,7 +380,7 @@ function task_get_user_score($task_id, $user_id, $round_id = 'arhiva') {
     $score = getattr($res, "score", null);
 
     // Keep in cache
-    mem_cache_set("user-task-round:".$user_id."-".$task_id."-".$round_id, (int)$score);
+    mem_cache_set($cache_key, (int)$score);
 
     return $score;
 }
@@ -427,4 +432,3 @@ function task_user_update_submit_count($user_id, $round_id, $task_id) {
            db_quote($user_id), db_quote($round_id), db_quote($task_id));
     db_query($query);
 }
-?>

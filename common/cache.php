@@ -43,7 +43,7 @@ function disk_cache_has($cache_id, $date = null) {
 
         // Delete old stuff.
         if ($mtime === false || $mtime < $date) {
-            @unlink($fname);
+            @unlink($file_name);
             return false;
         } else {
             return true;
@@ -126,7 +126,8 @@ function disk_cache_purge() {
 
 //
 // Memory caching implementation depends on IA_MEM_CACHE_METHOD.
-// There are only four functions, which should be enough for just about everything.
+// There are only four functions, which should be enough for just about
+// everything.
 //
 // You can store arrays, ints, string, null but not booleans because they're
 // used by the mem_cache_get function. You could store booleans as 0/1 however.
@@ -141,12 +142,11 @@ function disk_cache_purge() {
 //      mem_cache_delete removes something from the cache, use this when the
 //      object is no longer valid.
 //
-//      mem_cache_purge deletes everything from the cache. Try to avoid calling it.
+//      mem_cache_purge deletes everything from the cache.
+//      Try to avoid calling it.
 //
 if (IA_MEM_CACHE_METHOD == 'none') {
-
-    // Fake cache implementation/
-
+    // Fake cache implementation
     function mem_cache_get($cache_id) {
         return false;
     }
@@ -156,17 +156,16 @@ if (IA_MEM_CACHE_METHOD == 'none') {
     }
 
     function mem_cache_delete($cache_id) {
+        return false;
     }
 
     function mem_cache_purge() {
+        return false;
     }
-
 } else if (IA_MEM_CACHE_METHOD == 'eaccelerator') {
-
     // eAccelerator SHM memory cache
-
     function mem_cache_get($cache_id) {
-        $res = eaccelerator_get($cache_id);
+        $res = @eaccelerator_get($cache_id);
         if ($res === null) {
             if (IA_LOG_MEM_CACHE) {
                 log_print("MEM CACHE: miss on $cache_id");
@@ -181,42 +180,37 @@ if (IA_MEM_CACHE_METHOD == 'none') {
     }
 
     function mem_cache_set($cache_id, $object, $ttl = IA_MEM_CACHE_EXPIRATION) {
-        log_assert($object !== 'false', "Can't cache false values");
-        eaccelerator_put($cache_id, serialize($object), $ttl);
-
+        log_assert($object !== false, "Can't cache false values");
+        if (!@eaccelerator_put($cache_id, serialize($object), $ttl)) {
+            log_warn('Error occurred while storing ' . $cache_id . ' in cache');
+        }
         if (IA_LOG_MEM_CACHE) {
             log_print("MEM CACHE: store $cache_id");
         }
-
         return $object;
     }
 
     function mem_cache_delete($cache_id) {
-        eaccelerator_rm($cache_id);
         if (IA_LOG_MEM_CACHE) {
             log_print("MEM CACHE: delete $cache_id");
         }
+        return @eaccelerator_rm($cache_id);
     }
 
-    // Purge the entire SHM cache.
-    // FIXME: This does not work
     function mem_cache_purge() {
         if (IA_LOG_MEM_CACHE) {
             log_print("MEM CACHE: purge");
         }
-        eaccelerator_gc();
+        return @eaccelerator_gc();
     }
-
 } else if (IA_MEM_CACHE_METHOD == 'memcached') {
-
-    // memcached cache implementation.
-
-    $_memcache = memcache_pconnect('localhost');
+    // Memcached cache implementation.
+    $_memcache = memcache_pconnect(IA_MEMCACHED_HOST, IA_MEMCACHED_PORT);
 
     function mem_cache_get($cache_id) {
         global $_memcache;
-        $res = memcache_get($_memcache, $cache_id);
-        if ($res === false) {
+        $res = @memcache_get($_memcache, $cache_id);
+        if ($res === false || $res === null) {
             if (IA_LOG_MEM_CACHE) {
                 log_print("MEM CACHE: miss on $cache_id");
             }
@@ -225,15 +219,16 @@ if (IA_MEM_CACHE_METHOD == 'none') {
             if (IA_LOG_MEM_CACHE) {
                 log_print("MEM CACHE: hit on $cache_id");
             }
-            return unserialize($res);
+            return $res;
         }
     }
 
     function mem_cache_set($cache_id, $object, $ttl = IA_MEM_CACHE_EXPIRATION) {
         global $_memcache;
-        log_assert($object !== 'false', "Can't cache false values");
-        memcache_set($_memcache, $cache_id, serialize($object), 0, $ttl);
-
+        log_assert($object !== false, "Can't cache false values");
+        if (!@memcache_set($_memcache, $cache_id, $object, 0, $ttl)) {
+            log_warn('Error occurred while storing ' . $cache_id . ' in cache');
+        }
         if (IA_LOG_MEM_CACHE) {
             log_print("MEM CACHE: store $cache_id");
         }
@@ -242,26 +237,23 @@ if (IA_MEM_CACHE_METHOD == 'none') {
 
     function mem_cache_delete($cache_id) {
         global $_memcache;
-        memcache_delete($_memcache, $cache_id);
-
         if (IA_LOG_MEM_CACHE) {
             log_print("MEM CACHE: delete $cache_id");
         }
+        return @memcache_delete($_memcache, $cache_id);
     }
 
     function mem_cache_purge() {
         global $_memcache;
-        memcache_flush($_memcache);
-
         if (IA_LOG_MEM_CACHE) {
             log_print("MEM CACHE: purge");
         }
+        return @memcache_flush($_memcache);
     }
-
 } else if (IA_MEM_CACHE_METHOD == 'apc') {
     // APC cache implementation
     function mem_cache_get($cache_id) {
-        $res = apc_fetch($cache_id);
+        $res = @apc_fetch($cache_id);
         if ($res === false) {
             if (IA_LOG_MEM_CACHE) {
                 log_print("MEM CACHE: miss on $cache_id");
@@ -276,9 +268,10 @@ if (IA_MEM_CACHE_METHOD == 'none') {
     }
 
     function mem_cache_set($cache_id, $object, $ttl = IA_MEM_CACHE_EXPIRATION) {
-        log_assert($object !== 'false', "Can't cache false values");
-        apc_store($cache_id, serialize($object), $ttl);
-
+        log_assert($object !== false, "Can't cache false values");
+        if (!@apc_store($cache_id, serialize($object), $ttl)) {
+            log_warn('Error occurred while storing ' . $cache_id . ' in cache');
+        }
         if (IA_LOG_MEM_CACHE) {
             log_print("MEM CACHE: store $cache_id");
         }
@@ -286,18 +279,16 @@ if (IA_MEM_CACHE_METHOD == 'none') {
     }
 
     function mem_cache_delete($cache_id) {
-        apc_delete($cache_id);
         if (IA_LOG_MEM_CACHE) {
             log_print("MEM CACHE: delete $cache_id");
         }
+        return @apc_delete($cache_id);
     }
 
     function mem_cache_purge() {
         if (IA_LOG_MEM_CACHE) {
             log_print("MEM CACHE: purge");
         }
-        apc_clear_cache();
+        return @apc_clear_cache();
     }
 }
-
-?>

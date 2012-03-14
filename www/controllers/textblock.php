@@ -17,7 +17,6 @@ function controller_textblock_view($page_name, $rev_num = null,
 
     // If the page is missing jump to the edit/create controller.
     if ($crpage) {
-        // FIXME: hack to properly display latest revision.
         // Checks if $rev_num is the latest.
         $rev_count = textblock_get_revision_count($page_name);
         if ($rev_num && $rev_num != $rev_count) {
@@ -103,12 +102,15 @@ function controller_textblock_diff($page_name) {
     // Get diffs.
     $diff_title = diff_inline(array($revfrom['title'], $revto['title']));
     $diff_content = diff_inline(array($revfrom['text'], $revto['text']));
-    $diff_security = diff_inline(array($revfrom['security'], $revto['security']));
-    $diff_forum = diff_string(array($revfrom['forum_topic'], $revto['forum_topic']));
+    $diff_security = diff_inline(array($revfrom['security'],
+                                       $revto['security']));
+    $diff_forum = diff_string(array($revfrom['forum_topic'],
+                                    $revto['forum_topic']));
 
     $view = array();
     $view['page_name'] = $page['name'];
-    $view['title'] = "Diferente pentru $page_name intre reviziile $revfrom_id si $revto_id";
+    $view['title'] = 'Diferente pentru ' . $page_name . ' intre reviziile ' .
+                     $revfrom_id . ' si ' . $revto_id;
     $view['rev_count'] = $rev_count;
     $view['revfrom_id'] = $revfrom_id;
     $view['revto_id'] = $revto_id;
@@ -180,7 +182,6 @@ function controller_textblock_history($page_name) {
     } else {
         $count = $options['display_entries'];
     }
-    //log_print($options['first_entry']." -> ".$options['display_entries']. " $start -> $count, $total");
     $revs = textblock_get_revision_list(
             $page_name, false, true,
             $start, $count);
@@ -237,7 +238,8 @@ function controller_textblock_delete_many($textblocks, $redirect) {
     foreach ($textblocks as $name) {
         if (!is_page_name($name)) {
             ++$bad_page_names;
-        } else if (identity_can("textblock-delete", textblock_get_revision($name))) {
+        } else if (identity_can("textblock-delete",
+                                textblock_get_revision($name))) {
             $deleted += textblock_delete($name);
         } else {
             ++$not_deleted_because_of_permision;
@@ -277,7 +279,8 @@ function controller_textblock_delete_revision($page = null, $rev_num = null) {
         redirect(url_home());
     }
 
-    $revision = textblock_get_revision($page, $rev_num == $total_revs ? null : $rev_num);
+    $revision = textblock_get_revision(
+        $page, $rev_num == $total_revs ? null : $rev_num);
     if ($total_revs == 1) {
         identity_require('textblock-delete', $revision);
         textblock_delete($page);
@@ -295,5 +298,3 @@ function controller_textblock_delete_revision($page = null, $rev_num = null) {
     flash("Revizia a fost stearsa");
     redirect(url_textblock_history($page));
 }
-
-?>
