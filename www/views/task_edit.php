@@ -37,17 +37,12 @@ $form_fields = array(
                 'name' => "Sursa",
                 'type' => 'string',
         ),
-        'hidden' => array(
-                'name' => 'Vizibilitate',
-                'description' => 'Daca problema este vizibila pentru utilizatorii '.
-                                 'de rand. Cand o runda incepe probleme devin automat '.
-                                 'vizibile',
+        'security' => array(
+                'name' => 'Securitate',
+                'description' => 'Nivelul de securitate al problemei',
                 'type' => 'enum',
-                'values' => array(
-                        '1' => 'Task ascuns',
-                        '0' => 'Task vizibil',
-                ),
-                'default' => '1',
+                'values' => task_get_security_types(),
+                'default' => 'private',
         ),
         'type' => array(
                 'name' => 'Tipul problemei',
@@ -121,7 +116,7 @@ $form_fields = array(
         <?php } ?>
         <?= view_form_field_li($form_fields['source'], 'source') ?>
         <?php if (identity_can('task-change-security', $task)) { ?>
-           <?= view_form_field_li($form_fields['hidden'], 'hidden') ?>
+           <?= view_form_field_li($form_fields['security'], 'security') ?>
         <?php } ?>
    </ul>
     </fieldset>

@@ -41,9 +41,9 @@ db_query("DELETE FROM ia_file
 log_print("Clearing all submissions.");
 db_query("UPDATE ia_job SET file_contents='--gone--'");
 
-// Delete hidden tasks.
-log_print("Deleting hidden tasks.");
-db_query("DELETE FROM ia_task where hidden = 1");
+// Delete private tasks.
+log_print("Deleting private tasks.");
+db_query("DELETE FROM ia_task WHERE security = 'private'");
 
 // Only keep first 100 tasks to keep the dump small.
 log_print("Deleting all tasks except for the first 100.");

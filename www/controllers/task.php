@@ -43,7 +43,7 @@ function controller_task_details($task_id) {
     $errors = array();
 
     // Fill in form values from request, defaults in $task
-    $fields = array('type', 'source', 'hidden', 'title', 'page_name',
+    $fields = array('type', 'source', 'security', 'title', 'page_name',
                     'open_source', 'open_tests', 'test_count', 'test_groups',
                     'evaluator', 'use_ok_files', 'public_tests');
 
@@ -111,7 +111,7 @@ function controller_task_details($task_id) {
         $errors = $task_errors;
 
         // Check security.
-        if ($new_task['hidden'] != $task['hidden']) {
+        if ($new_task['security'] != $task['security']) {
             identity_require('task-change-security', $task);
         }
 
@@ -171,7 +171,7 @@ function controller_task_details($task_id) {
 
     // Create view.
     $view = array();
-    $view['title'] = 'Editeaza parametrii pentru problema '.$task['title'];
+    $view['title'] = 'Editeaza parametrii pentru problema '. $task['title'];
     $view['page_name'] = url_task_edit($task_id);
     $view['task_id'] = $task_id;
     $view['task'] = $task;
@@ -313,6 +313,7 @@ function controller_task_ratings($task_id) {
 
     $ratings = task_rating_get($task_id, $user_id);
 
+    $view = array();
     $view['title'] = "Editeaza ratingurile pentru problema " . $task['title'];
     $view['task_id'] = $task_id;
     $view['form_values'] = $ratings;
@@ -374,7 +375,8 @@ function controller_task_tag($task_id) {
     // Get tags for task_id
     $task_tags = tag_get('task', $task_id, 'algorithm');
 
-    $view['title'] = "Editeaza tagurile pentru problema ".$task['title'];
+    $view = array();
+    $view['title'] = "Editeaza tagurile pentru problema " . $task['title'];
     $view['task'] = $task;
     $view['tags_tree'] = $tags_tree;
     $view['task_tags'] = $task_tags;
@@ -383,7 +385,7 @@ function controller_task_tag($task_id) {
 
 // Gets a list of tags from request
 // Prints a list of tasks that contain all those tags
-// Tasks must be in 'arhiva' or in 'arhiva educationala'
+// Tasks security must be public
 function controller_task_search() {
     $tags = request('tag_id', null);
     if (is_null($tags)) {
@@ -422,10 +424,9 @@ function controller_task_search() {
         $tags = tag_build_tree(tag_get_by_ids($tags));
     }
 
+    $view = array();
     $view['title'] = "Rezultatele filtrării";
     $view['tasks'] = $tasks;
     $view['tags'] = $tags;
     execute_view_die('views/task_filter_results.php', $view);
 }
-
-?>

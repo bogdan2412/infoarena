@@ -220,8 +220,7 @@ function task_get_authors($task_id, $no_cache = false) {
 
 // Task filter
 // Returns only tasks that contain all the tags
-// and are in 'arhiva' or in 'arhiva-educationala'
-// Task from 'arhiva-educationala' are shown first
+// and are public
 function task_filter_by_tags($tag_ids, $scores = true, $user_id = null) {
     log_assert(is_array($tag_ids), "tag_ids must be an array");
     foreach ($tag_ids as $tag_id) {
@@ -259,8 +258,8 @@ function task_filter_by_tags($tag_ids, $scores = true, $user_id = null) {
     LEFT JOIN ia_round_task AS round_task ON round_task.task_id = ia_task.id
     LEFT JOIN ia_round AS round ON round.id = round_task.round_id
     $join_score
-    WHERE (round.id = 'arhiva' OR round.id = 'arhiva-educationala')
-        AND ia_task.hidden = '0' $tag_filter
+    WHERE ia_task.security = 'public'
+    $tag_filter
     ORDER BY round.id DESC, round_task.`order_id`";
 
     $tasks = db_fetch_all($query);
@@ -431,4 +430,43 @@ function task_user_update_submit_count($user_id, $round_id, $task_id) {
             . ', 0, 1) ON DUPLICATE KEY UPDATE `submits` = `submits` + 1',
            db_quote($user_id), db_quote($round_id), db_quote($task_id));
     db_query($query);
+}
+
+/**
+ * Updates the task security (default checks if the target is in an archive
+ * if so it makes the task public, otherwise protected)
+ * @param string $task_id
+ * @param string $security
+ */
+function task_update_security($task_id, $security = 'check') {
+    log_assert(is_task_id($task_id));
+    log_assert(array_key_exists($security,
+                                array_merge(task_get_security_types(),
+                                            array('check' => NULL))));
+
+    if ($security == 'check') {
+        $security = task_in_archive_rounds($task_id) ? 'public' : 'protected';
+    }
+
+    $new_task = task_get($task_id);
+    $new_task['security'] = $security;
+    task_update($new_task);
+}
+
+/**
+ * Checks whether the current task is in an archive
+ *
+ * @param string $task_id
+ * @return bool
+ */
+function task_in_archive_rounds ($task_id) {
+    log_assert(is_task_id($task_id));
+    $parent_rounds = task_get_parent_rounds($task_id);
+    foreach ($parent_rounds as $round_id) {
+        $round = round_get($round_id);
+        if ($round['type'] == 'archive') {
+            return true;
+        }
+    }
+    return false;
 }

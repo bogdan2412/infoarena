@@ -103,7 +103,8 @@ function job_get_by_id($job_id, $contents = false) {
                    `user`.`username` AS `user_name`, `user`.`full_name` AS `user_fullname`,
                    `task`.`id` AS `task_id`,
                    `task`.`page_name` AS `task_page_name`, task.`title` AS `task_title`,
-                   `task`.`hidden` AS `task_hidden`, `task`.`user_id` AS `task_owner_id`,
+                   `task`.`security` AS `task_security`,
+                   `task`.`user_id` AS `task_owner_id`,
                    `task`.`open_source` AS `task_open_source`,
                    `task`.`open_tests` AS `task_open_tests`,
                    `round`.`id` AS `round_id`,
@@ -130,7 +131,7 @@ function job_get_by_id($job_id, $contents = false) {
 // that relate only to ia_job table
 function job_get_range_wheres_job($filters) {
     $user = getattr($filters, 'user');
-    $task_hidden = getattr($filters, 'task_hidden');
+    $task_security = getattr($filters, 'task_security');
 
     $task = getattr($filters, 'task');
     $round = getattr($filters, 'round');
@@ -203,7 +204,7 @@ function job_get_range_wheres_job($filters) {
 // that are not related to ia_job table
 function job_get_range_wheres($filters) {
     $user = getattr($filters, 'user');
-    $task_hidden = getattr($filters, 'task_hidden');
+    $task_security = getattr($filters, 'task_security');
 
     $task = getattr($filters, 'task');
     $round = getattr($filters, 'round');
@@ -225,8 +226,9 @@ function job_get_range_wheres($filters) {
     if (!is_null($score_end) && is_whole_number($score_end)) {
         $wheres[] = sprintf("(`job`.`score` <= '%s') AND (`round`.`public_eval` = 1)", db_escape($score_end));
     }
-    if (!is_null($task_hidden) && is_whole_number($task_hidden)) {
-        $wheres[] = sprintf("`task`.`hidden` = %s", db_escape($task_hidden));
+    if (array_key_exists($task_security, task_get_security_types())) {
+        $wheres[] = sprintf("`task`.`security` = %s",
+            db_escape($task_security));
     }
 
     return $wheres;
@@ -260,7 +262,7 @@ function job_get_range($filters, $start, $range) {
             `user`.`full_name` AS `user_fullname`,
             `task`.`page_name` AS `task_page_name`,
             `task`.`title` AS `task_title`,
-            `task`.`hidden` AS `task_hidden`,
+            `task`.`security` AS `task_security`,
             `task`.`user_id` AS `task_owner_id`,
             `task`.`open_source` AS `task_open_source`,
             `round`.`page_name` AS `round_page_name`,
@@ -292,6 +294,7 @@ function job_get_range($filters, $start, $range) {
             ORDER BY `id` DESC LIMIT {$start}, {$range}";
 
         $job_ids_fetched = db_fetch_all($subquery);
+        $job_ids = array();
         foreach ($job_ids_fetched as $job_id) {
             $job_ids[] = $job_id["ID"];
         }
@@ -320,7 +323,7 @@ function job_get_count($filters) {
         FROM
             `ia_job` AS `job`";
 
-    if (getattr($filters, 'task_hidden')) {
+    if (getattr($filters, 'task_security')) {
         $query .= "
             LEFT JOIN `ia_task` AS `task` ON `job`.`task_id` = `task`.`id`";
     }
@@ -406,5 +409,3 @@ function job_test_get_public($job_id) {
         implode(", ", array_map("db_quote", array_values($test_ids))));
     return db_fetch_all($query);
 }
-
-?>

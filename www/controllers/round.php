@@ -178,13 +178,21 @@ function controller_round_details($round_id) {
         identity_require("round-edit", $new_round);
         round_update($new_round);
         round_update_parameters($round_id, $new_round_params);
-        round_update_task_list($round_id, $round_tasks, $new_round_tasks);
+        /**
+         * Update task security if the new or old round are of type archive
+         * Also update all the tasks if changing round type
+         */
+        round_update_task_list($round_id, $round_tasks, $new_round_tasks,
+            $round['type'] == 'archive' ||
+                $new_round['type'] == 'archive',
+            $round['type'] != $new_round['type']);
 
         if (identity_can('round-tag', $new_round)) {
             tag_update("round", $new_round['id'], "tag", $values['tags']);
         }
 
         flash("Runda a fost modificata cu succes.");
+        // FIXME: don't redirect, update $view information instead
         redirect(url_round_edit_params($round_id));
     }
 
@@ -284,8 +292,7 @@ function controller_round_task_order($round_id) {
 }
 
 // Creates a round. Minimalist
-function controller_round_create()
-{
+function controller_round_create() {
     global $identity_user;
 
     // Security check.
@@ -297,7 +304,6 @@ function controller_round_create()
 
     // Get form values
     $values['id'] = strtolower(request('id', ''));
-    // FIXME: type hidden
     $values['type'] = request('type', 'user-defined');
 
     if (request_is_post()) {
@@ -431,5 +437,3 @@ function controller_round_delete($round_id) {
     flash('Runda a fost stearsa.');
     redirect(url_home());
 }
-
-?>

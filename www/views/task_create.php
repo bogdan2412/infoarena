@@ -8,7 +8,7 @@ $form_fields = array (
                 'type' => 'enum',
                 'values' => task_get_types(),
                 'default' => 'classic',
-        ), 
+        ),
         'id' => array(
                 'name' => 'Id-ul problemei',
                 'description' => 'Identificatorul unic si permanent al problemei.',

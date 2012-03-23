@@ -132,11 +132,11 @@ function security_simplify_action($action) {
         case 'task-delete':
         case 'task-tag':
         case 'task-reeval':
-        case 'task-edit-ratings': 
+        case 'task-edit-ratings':
         case 'textblock-delete':
         case 'textblock-delete-revision':
         case 'round-tag':
-        case 'round-view-progress': 
+        case 'round-view-progress':
         case 'grader-overwrite':
         case 'grader-delete':
         case 'grader-rename':
@@ -386,7 +386,7 @@ function security_task($user, $action, $task) {
     switch ($action) {
         // Read-only access.
         case 'simple-view':
-            return ($task['hidden'] == false) || $is_boss;
+            return ($task['security'] != 'private') || $is_boss;
 
         // Edit access.
         case 'simple-rev-edit':
@@ -397,14 +397,7 @@ function security_task($user, $action, $task) {
 
         // View tags
         case 'task-view-tags':
-            $in_archive = false;
-            $rounds = task_get_submit_rounds($task['id'], $user['id']);
-            foreach ($rounds as $round_id) {
-                if ($round_id == 'arhiva' || $round_id == 'arhiva-educationala') {
-                    $in_archive = true;
-                }
-            }
-            return $in_archive || $is_boss;
+            return ($task['security'] == 'public') || $is_boss;
 
         // Admin stuff:
         case 'simple-critical':
@@ -414,21 +407,7 @@ function security_task($user, $action, $task) {
             if ($usersec == 'anonymous') {
                 return false;
             }
-            if ($is_admin) {
-                return true;
-            }
-            $is_valid = true;
-            $rounds = task_get_parent_rounds($task['id']);
-            foreach ($rounds as $rid) {
-                $r = round_get($rid);
-                // You can use a task in an user defined contest ONLY IF it's
-                // not being used in a waiting or running classic contest.
-                if ($r['type'] == 'classic' && $r['state'] != 'complete') {
-                    $is_valid = false;
-                    break;
-                }
-            }
-            return ($task['hidden'] == false && $is_valid);
+            return ($task['security'] == 'public') || $is_admin;
 
         // Special: submit. Check for at least one registered contest for the task.
         // FIXME: contest logic?
@@ -450,15 +429,11 @@ function security_task($user, $action, $task) {
                 $is_running = true;
                 break;
             }
-            return ($task['hidden'] == false && $is_running);
+            return ($task['security'] != 'private' && $is_running);
 
         case 'grader-download':
-            if ($task['open_tests']) {
-                $can_view = $task['hidden'] == false;
-            } else {
-                $can_view = false;
-            }
-            return $can_view || $is_owner || $is_admin;
+            return ($task['open_tests'] && $task['security'] == 'public')
+                    || $is_boss;
 
         case 'sensitive-info':
             return $is_boss;
@@ -593,9 +568,11 @@ function security_job($user, $action, $job) {
         return $is_admin || $is_intern;
     }
 
-    $can_view_job = ($job['task_hidden'] == false) || $is_task_owner || $is_admin;
-    $can_view_source = ($job['task_open_source'] == true) || $is_task_owner ||
-                       $is_owner || $is_admin || $is_intern;
+    $can_view_job = ($job['task_security'] != 'private') || $is_task_owner
+                 || $is_admin || $is_intern;
+    $can_view_source = ($job['task_security'] != 'private' &&
+                            $job['task_open_source'] == true) ||
+                       $is_task_owner || $is_owner || $is_admin || $is_intern;
     // make ALL solved tasks visible
     if (!$can_view_source && is_user_id($user['id']) && $job['round_type'] == "archive") {
         $score = task_get_user_score($job['task_id'], $user['id'], $job['round_id']);
@@ -633,5 +610,3 @@ function security_job($user, $action, $job) {
             log_error('Invalid job action: '.$action);
     }
 }
-
-?>

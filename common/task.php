@@ -11,6 +11,17 @@ function task_get_types() {
     );
 }
 
+/**
+ * Get valid task security types
+ * @return array
+ */
+function task_get_security_types() {
+    return array(
+            'private' => 'Private',
+            'protected' => 'Protected',
+            'public' => 'Public');
+}
+
 // Get parameter infos.
 function task_get_parameter_infos() {
     return array(
@@ -39,7 +50,7 @@ function task_init($task_id, $task_type, $user = null) {
             'id' => $task_id,
             'type' => $task_type,
             'title' => ucfirst($task_id),
-            'hidden' => 1,
+            'security' => 'private',
             'source' => 'ad-hoc',
             'page_name' => IA_TASK_TEXTBLOCK_PREFIX . $task_id,
             'open_source' => 0,
@@ -49,6 +60,7 @@ function task_init($task_id, $task_type, $user = null) {
             'public_tests' => NULL,
             'evaluator' => NULL,
             'use_ok_files' => 1,
+            'rating' => NULL,
     );
 
     // User stuff. ugly
@@ -83,9 +95,9 @@ function task_validate($task) {
         $errors['user_id'] = 'ID de utilizator invalid';
     }
 
-    $hidden = getattr($task, 'hidden');
-    if ($hidden != '0' && $hidden != '1') {
-        $errors['hidden'] = 'Se accepta doar 0/1';
+    if (!array_key_exists(getattr($task, 'security'),
+            task_get_security_types())) {
+        $errors['security'] = 'Tipul securitatii este invalid';
     }
 
     $open_source = getattr($task, 'open_source');
@@ -291,5 +303,3 @@ function task_update_tags($task_id, $method_tags_id, $algorithm_tags_id) {
         tag_add('task', $task_id, $tag_id);
     }
 }
-
-?>

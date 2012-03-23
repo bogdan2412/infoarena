@@ -11,6 +11,16 @@ function round_get_types() {
     );
 }
 
+/**
+ * Get valid contest type rounds
+ * Those which use private tasks
+ *
+ * @return array
+ */
+function round_get_contest_types() {
+    return array('classic', 'penalty-round');
+}
+
 // Get parameter infos.
 function round_get_parameter_infos() {
     return array(
@@ -193,7 +203,7 @@ function round_event_start($round) {
     $round['state'] = 'running';
     round_update($round);
     // User defined rounds always contain already visible tasks.
-    if ($round["type"] != "user-defined") {
+    if (in_array($round['type'], round_get_contest_types())) {
         round_unhide_all_tasks($round['id']);
     }
 }
@@ -205,6 +215,7 @@ function round_event_stop($round) {
     $round['state'] = 'complete';
     // Results should be immediately visible after a round ends
     // if it's type is not classic.
+    // FIXME: make this a parameter
     if ($round["type"] != "classic") {
         $round['public_eval'] = 1;
     }
@@ -221,9 +232,7 @@ function round_event_wait($round) {
     // If such a round is postponed, do not (re)hide the tasks
     // like for classic rounds, where the tasks are not visible
     // before the round starts.
-    if ($round["type"] != "user-defined") {
+    if (in_array($round['type'], round_get_contest_types())) {
         round_hide_all_tasks($round['id']);
     }
 }
-
-?>

@@ -55,7 +55,7 @@ function cluster_rows($rows, $pivot, $valueCol = null, $subpivot = null, $reduce
 
 
 
-$query = "SELECT id FROM ia_task WHERE hidden = 0";
+$query = "SELECT id FROM ia_task WHERE security != 'private'";
 $tasks = array_values(cluster_rows(db_fetch_all($query), 'id', 'id', null, 0));
 
 $diff = array();
