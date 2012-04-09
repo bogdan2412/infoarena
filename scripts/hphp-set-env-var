@@ -1,0 +1,6 @@
+export PREFIX=$HOME/hphp/
+
+export CMAKE_PREFIX_PATH="$PREFIX/install"
+export HPHP_HOME="$PREFIX/hiphop-php"
+export HPHP_LIB="$PREFIX/hiphop-php/bin"
+export PATH=$PATH:$HPHP_HOME/src/hphp/:$HPHP_HOME/src/hphpi/
