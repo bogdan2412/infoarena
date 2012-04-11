@@ -237,30 +237,27 @@ function task_filter_by_tags($tag_ids, $scores = true, $user_id = null) {
         $join_score = "";
         $score_fields = "";
     } else {
+        // we get only the biggest score, round doesn't matter
         $join_score = "LEFT JOIN ia_score_user_round_task AS score ON
                             score.`user_id` = ".db_quote($user_id)." AND
-                            score.`round_id` = round_task.`round_id` AND
-                            score.`task_id` = round_task.`task_id`";
-        $score_fields = "score.`score` AS `score`,";
+                            score.`task_id` = task_id";
+        $score_fields = ",MAX(score.`score`) AS `score`";
     }
 
     $query = "SELECT ia_task.id AS task_id,
                 ia_task.title AS task_title,
-                round_task.`order_id` AS 'order',
                 ia_task.page_name AS page_name,
                 ia_task.open_source AS open_source,
                 ia_task.open_tests AS open_tests,
                 ia_task.rating AS rating,
-                round.id AS round_id,
+                ia_task.source AS source
                 $score_fields
-                round.title AS round_title
     FROM ia_task
-    LEFT JOIN ia_round_task AS round_task ON round_task.task_id = ia_task.id
-    LEFT JOIN ia_round AS round ON round.id = round_task.round_id
     $join_score
     WHERE ia_task.security = 'public'
     $tag_filter
-    ORDER BY round.id DESC, round_task.`order_id`";
+    GROUP BY ia_task.id
+    ORDER BY task_title";
 
     $tasks = db_fetch_all($query);
 

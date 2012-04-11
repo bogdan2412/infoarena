@@ -105,11 +105,13 @@ if (identity_is_anonymous()) {
 }
 
 $column_infos = array();
+
+$current_row = 0;
 $column_infos[] = array(
         'title' => 'Număr',
         'css_class' => 'number',
-        'rowform' => function($row) {
-            return str_pad($row["order"] - 1, 3, '0', STR_PAD_LEFT);
+        'rowform' => function($row) use (&$current_row) {
+            return str_pad(++$current_row, 3, '0', STR_PAD_LEFT);
         });
 
 $column_infos[] = array(
@@ -123,7 +125,7 @@ $column_infos[] = array(
 $column_infos[] = array(
         'title' => 'Sursă',
         'css_class' => 'source',
-        'key' => 'round_title');
+        'key' => 'source');
 $column_infos[] = array(
         'title' => 'Dificultate',
         'css_class' => 'rating',
