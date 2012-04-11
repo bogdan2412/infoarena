@@ -240,7 +240,7 @@ function task_filter_by_tags($tag_ids, $scores = true, $user_id = null) {
         // we get only the biggest score, round doesn't matter
         $join_score = "LEFT JOIN ia_score_user_round_task AS score ON
                             score.`user_id` = ".db_quote($user_id)." AND
-                            score.`task_id` = task_id";
+                            score.`task_id` = ia_task.`id`";
         $score_fields = ",MAX(score.`score`) AS `score`";
     }
 

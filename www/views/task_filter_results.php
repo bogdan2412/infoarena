@@ -106,7 +106,7 @@ if (identity_is_anonymous()) {
 
 $column_infos = array();
 
-$current_row = 0;
+$current_row = getattr($options, 'first_entry', 0);
 $column_infos[] = array(
         'title' => 'Număr',
         'css_class' => 'number',
@@ -142,8 +142,15 @@ if (!is_null($user_id)) {
 if (!count($tasks)) {
     echo "Nicio problemă gasită.";
 } else {
-    $task_chunks = array_chunk($tasks, $options['display_entries']);
-    $chunk = $task_chunks[$options['first_entry'] / $options['display_entries']];
+    $chunk = array();
+    $first_entry = getattr($options, 'first_entry', 0);
+    $display_entries = getattr($options, 'display_entries', 25);
+    $total_entries = count($tasks);
+
+    for ($i = $first_entry; $i < $first_entry + $display_entries
+                                && $i < $total_entries; ++$i) {
+        $chunk[] = $tasks[$i];
+    }
     echo format_table($chunk, $column_infos, $options);
 }
 
