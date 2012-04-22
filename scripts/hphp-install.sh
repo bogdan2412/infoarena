@@ -43,7 +43,7 @@ sudo apt-get install -y cmake \
                         libboost-dev \
                         libboost-system-dev \
                         libboost-program-options-dev \
-                        libboost-filesystem-dev
+                        libboost-filesystem-dev \
                         libmysqlclient-dev \
                         libmemcached-dev \
                         libpcre3-dev \
@@ -60,10 +60,10 @@ sudo apt-get install -y cmake \
                         libcap-dev \
                         binutils-dev \
                         libzip-dev
-# sudo yum install boost-devel flex bison re2c mysql-devel libxml2-devel
-# libmcrypt-devel libicu-devel openssl-devel binutils-devel libcap-devel
-# gd-devel zlib-devel tbb-devel pcre-devel expat-devel libmemcached-devel
-# bzip2-devel readline-devel openldap-devel oniguruma-devel uw-imap-devel
+# sudo yum install boost-devel flex bison re2c mysql-devel libxml2-devel \
+# libmcrypt-devel libicu-devel openssl-devel binutils-devel libcap-devel \
+# gd-devel zlib-devel tbb-devel pcre-devel expat-devel libmemcached-devel \
+# bzip2-devel readline-devel openldap-devel oniguruma-devel uw-imap-devel \
 # pam-devel
 
 # Build HPHP

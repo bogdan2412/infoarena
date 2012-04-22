@@ -16,7 +16,7 @@ require_once(IA_ROOT_DIR.'common/db/user.php');
 
 require_once(IA_ROOT_DIR.'eval/utilities.php');
 require_once(IA_ROOT_DIR.'eval/download.php');
-require_once(IA_ROOT_DIR.'eval/classic_grader.php');
+require_once(IA_ROOT_DIR.'eval/ClassicGrader.php');
 
 error_reporting(0xFFFF);
 
@@ -37,19 +37,23 @@ function job_handle($job) {
     // Get task
     $task = task_get($job['task_id']);
     log_assert(!is_null($task), "Nu am gasit task-ul " . $job['task_id']);
+    log_assert_valid(task_validate($task));
 
     // Get task parameters.
     $task_parameters = task_get_parameters($job['task_id']);
     log_assert(!is_null($task_parameters),
             "Nu am putut paramtetrii task-ul " . $job['task_id']);
+    log_assert_valid(task_validate_parameters($task['type'],
+                                              $task_parameters));
 
     // Make the grader and execute it.
     log_print("Job #{$job['id']} task {$task['id']} round {$job['round_id']} type {$task['type']}");
     if ($task['type'] == 'classic') {
-        $job_result = classic_task_grade_job($task, $task_parameters, $job);
+        $grader = new ClassicGrader($task, $task_parameters, $job);
     } else {
         log_error("Nu stiu sa evaluez task-uri de tip ".$task['type']);
     }
+    $job_result = $grader->grade();
 
     $submit_count = 0;
     /**
