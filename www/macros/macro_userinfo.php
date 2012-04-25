@@ -34,7 +34,14 @@ function macro_userinfo($args) {
         case 'username':
             return html_escape($user['username']);
         case 'security':
-            return html_escape($user['security_level']);
+            switch ($user['security_level']) {
+            case 'admin':
+                return 'Administrator';
+            case 'normal':
+                return 'Utilizator normal';
+            default:
+                return html_escape(ucfirst($user['security_level']));
+            }
         case 'rating':
             if ($user['rating_cache']) {
                 return html_escape(rating_scale($user['rating_cache']));
@@ -45,4 +52,3 @@ function macro_userinfo($args) {
             return macro_error("Invalid info paramater");
     }
 }
-?>

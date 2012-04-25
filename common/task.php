@@ -140,7 +140,9 @@ function task_validate($task) {
         }
     }
 
-    if (task_get_testgroups($task) === false) {
+    if (strlen(getattr($task, 'test_groups', '')) > 256) {
+        $errors['test_groups'] = 'Expresia este prea lunga.';
+    } else if (task_get_testgroups($task) === false) {
         $errors['test_groups'] = "Eroare de sintaxa in expresie.";
     }
 

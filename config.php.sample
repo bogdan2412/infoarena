@@ -60,6 +60,10 @@ define("IA_URL", IA_URL_HOST . IA_URL_PREFIX);
 // Example: http://localhost/infoarena_smf
 define("IA_SMF_URL", IA_URL . 'forum');
 
+// Enable support for https connections. If enabled, secure connections are
+// enforced for login and register pages.
+define("IA_HTTPS_ENABLED", !IA_DEVELOPMENT_MODE);
+
 // cookie domain
 // leave null when working on localhost
 define("IA_COOKIE_DOMAIN", null);

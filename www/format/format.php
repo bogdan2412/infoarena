@@ -327,8 +327,8 @@ function format_social_buttons($textblock,
         $social .= '<iframe allowtransparency="true" frameborder="0" scrol'
                 . 'ling="no" src="//platform.twitter.com/widgets/tweet_but'
                 . 'ton.html?count=vertical&url=' . html_escape(urlencode($url))
-                . ' &text=' . rawurlencode($textblock['title']) . '%20' . $url
-                .'&via=' . IA_TWITTER_ACCOUNT .'" style="width:55px; height: 6'
+                . '&text=' . rawurlencode($textblock['title'])
+                . '&via=' . IA_TWITTER_ACCOUNT .'" style="width:55px; height: 6'
                 . '2px; margin-left:5px"></iframe>';
     }
 
@@ -355,4 +355,3 @@ function format_blogpost_author($blogpost) {
           . '</div>';
     return $text;
 }
-?>

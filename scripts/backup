@@ -1,29 +1,38 @@
 #! /usr/bin/env php
 <?php
 
-require_once(dirname($argv[0]) . "/utilities.php");
+require_once(dirname($argv[0]) . '/utilities.php');
 
-define("IA_BACKUP_DIR", "/home/backup/ia-backup");
-define("IA_LIVE_DIR", "/home/infoarena");
-define("IA_BACKUP_USER", "backup");
+define('IA_BACKUP_DIR', '/home/backup/ia-backup');
+define('IA_LIVE_DIR', '/home/infoarena');
+define('IA_BACKUP_USER', 'backup');
 // Passphrase file to use with GPG, leave blank to disable encryption.
-define("IA_BACKUP_DB_ENCRYPT_KEY", "/root/.backup-passphrase");
+define('IA_BACKUP_DB_ENCRYPT_KEY', '/root/.backup-passphrase');
 
 $BACKUP_PATHS_WEEKLY = array(
-    "conf/conf-" => array(IA_LIVE_DIR."/trac.htpasswd",
-            IA_LIVE_DIR."/apache.conf", IA_ROOT_DIR."/config.php"),
-    "hackers/svn/svn-" => array(IA_LIVE_DIR."/svn"),
-    "hackers/trac/trac-" => array(IA_LIVE_DIR."/trac"),
-    "hackers/reviewboard/reviewboard-" => array("/var/www/reviewboard"),
+    'conf/conf-' => array(IA_LIVE_DIR.'/trac.htpasswd',
+                          IA_LIVE_DIR.'/nginx.conf',
+                          IA_LIVE_DIR.'/apache.conf',
+                          IA_ROOT_DIR.'/hphp/config.hdf',
+                          IA_ROOT_DIR.'/config.php'),
+    'hackers/svn/svn-' => array(IA_LIVE_DIR.'/svn'),
+    'hackers/trac/trac-' => array(IA_LIVE_DIR.'/trac'),
+    'hackers/reviewboard/reviewboard-' => array(IA_LIVE_DIR.'/reviewboard'),
 );
 
 function backup_init_dirs() {
-    log_assert(is_dir(IA_BACKUP_DIR), "Invalid directory: ".IA_BACKUP_DIR);
-    log_assert(is_dir(IA_LIVE_DIR), "Invalid directory: ".IA_LIVE_DIR);
-    system(sprintf("mkdir -p %s/{db,conf,hackers}", IA_BACKUP_DIR));
-    system(sprintf("mkdir -p %s/hackers/{svn,trac,reviewboard}", IA_BACKUP_DIR));
-    system(sprintf("chown -R %s:%s %s/*", IA_BACKUP_USER, IA_BACKUP_USER,
-            IA_BACKUP_DIR));
+    log_assert(is_dir(IA_BACKUP_DIR), 'Invalid directory: '.IA_BACKUP_DIR);
+    log_assert(is_dir(IA_LIVE_DIR), 'Invalid directory: '.IA_LIVE_DIR);
+    $dirs = array('db', 'conf', 'hackers',
+                  'hackers/svn', 'hackers/trac', 'hackers/reviewboard');
+    foreach ($dirs as $dir) {
+        $path = IA_BACKUP_DIR . '/' . $dir;
+        if (!is_dir($path)) {
+            mkdir($path, 0755, true);
+        }
+    }
+    system(sprintf('chown -R %s:%s %s/*', IA_BACKUP_USER, IA_BACKUP_USER,
+           IA_BACKUP_DIR));
 }
 
 function backup_db() {
@@ -36,7 +45,7 @@ function backup_db() {
         log_assert(file_exists(IA_BACKUP_DB_ENCRYPT_KEY));
         $backup_file .= ".gpg";
         log_print("Encrypting database dump to {$backup_file}");
-        system(sprintf("gpg -c --batch --no-tty --passphrase-file='%s' "
+        system(sprintf("gpg -c --no-use-agent --batch --no-tty --passphrase-file='%s' "
                 ."< %s > %s", IA_BACKUP_DB_ENCRYPT_KEY, $temp_file,
                 $backup_file));
         unlink($temp_file);

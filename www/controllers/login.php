@@ -3,7 +3,7 @@
 require_once(IA_ROOT_DIR . "common/db/user.php");
 
 function controller_login() {
-    if (!is_connection_secure()) {
+    if (IA_HTTPS_ENABLED && !is_connection_secure()) {
         redirect(url_login());
     }
 
@@ -102,6 +102,7 @@ function controller_login() {
     // always reset password before displaying web form
     $data['password'] = '';
 
+    $view = array();
     $view['page_name'] = "login";
     $view['title'] = "Autentificare";
     $view['form_values'] = $data;
@@ -116,5 +117,3 @@ function controller_login() {
 
     execute_view_die('views/login.php', $view);
 }
-
-?>

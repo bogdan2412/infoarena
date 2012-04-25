@@ -200,7 +200,7 @@ function url_image_resize($page, $file, $resize)
 // User stuff
 
 function url_login() {
-    return url_complex("login", array(), true, true);
+    return url_complex("login", array(), true, IA_HTTPS_ENABLED);
 }
 
 function url_logout() {
@@ -216,7 +216,7 @@ function url_account($user = false) {
 }
 
 function url_register() {
-    return url_complex("register", array(), true, true);
+    return url_complex("register", array(), true, IA_HTTPS_ENABLED);
 }
 
 function url_resetpass($username = false) {
@@ -422,5 +422,3 @@ function url_newsletter_preview_body($page_name, $rev = null) {
 function url_admin() {
     return url_textblock('admin');
 }
-
-?>

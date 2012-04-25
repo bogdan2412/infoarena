@@ -6,7 +6,7 @@ require_once(IA_ROOT_DIR . 'www/controllers/account_validator.php');
 require_once(IA_ROOT_DIR . 'common/db/tokens.php');
 
 function controller_register() {
-    if (!is_connection_secure()) {
+    if (IA_HTTPS_ENABLED && !is_connection_secure()) {
         redirect(url_register());
     }
     $submit = request_is_post();
@@ -75,5 +75,3 @@ function controller_register() {
     $view['no_sidebar_login'] = true;
     execute_view_die('views/register.php', $view);
 }
-
-?>
