@@ -355,3 +355,25 @@ function format_blogpost_author($blogpost) {
           . '</div>';
     return $text;
 }
+
+/**
+ * Formats the task author tags
+ *
+ * @param array $authors    an array containing the author tags
+ * @return array
+ */
+function format_task_author_tags($authors) {
+    if ($authors == null)
+      return array();
+
+    log_assert(is_array($authors));
+
+    $authors_formatted = array();
+    foreach ($authors as $tag) {
+      $authors_formatted[] =
+          format_link(
+              url_task_search(array($tag["id"])), $tag["name"]);
+    }
+
+    return $authors_formatted;
+}

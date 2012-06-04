@@ -382,6 +382,40 @@ function task_get_user_score($task_id, $user_id, $round_id = 'arhiva') {
 }
 
 /**
+ * Returns the maximum last score a user got on a task in archives.
+ *
+ * @param $task_id string
+ * @param $user_id string
+ * @return int
+*/
+function task_get_user_last_score($task_id, $user_id) {
+    // Validate
+    log_assert(is_task_id($task_id));
+    log_assert(is_user_id($user_id));
+
+    // Check the cache
+    $cache_key = 'user-task-last-score:'.$user_id.'-'.$task_id;
+    if (($res = mem_cache_get($cache_key)) != false) {
+        return $res;
+    }
+
+    // Query database
+    $query = sprintf(
+        "SELECT MAX(`score`) as maxscore FROM ia_score_user_round_task
+         LEFT JOIN ia_round ON ia_round.id = round_id AND
+         ia_round.type = 'archive' WHERE task_id = %s AND
+         ia_score_user_round_task.user_id = %s ",
+         db_quote($task_id), db_quote($user_id)) ;
+    $res = db_fetch($query);
+    $score = getattr($res, "maxscore", null);
+
+    // Keep in cache
+    mem_cache_set($cache_key, (int)$score);
+
+    return $score;
+}
+
+/**
  * Returns the number of previous submits of an users to a task in a contest
  *
  * @param int $user_id

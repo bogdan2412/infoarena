@@ -53,10 +53,7 @@ function macro_taskparam($args) {
 
         case 'author':
             $authors = task_get_authors($task['id']);
-            function format_author($tag) {
-                return format_link(url_task_search(array($tag["id"])), $tag["name"]);
-            }
-            return implode(", ", array_map('format_author', $authors));
+            return implode(", ", format_task_author_tags($authors));
 
         case 'source':
             // TODO: This should also be converted into tags.
@@ -92,12 +89,13 @@ function macro_taskparam($args) {
                                'type' => 'normal');
             return macro_stars($star_args);
 
-        case 'archivescore':
+        case 'lastscore':
             $user = identity_get_user();
-            if (is_null($user)) {
+            if (is_null($user) ||
+                !identity_can("task-view-last-score", $task)) {
                 return 'N/A';
             } else {
-                $score = task_get_user_score($task['id'], $user['id']);
+                $score = task_get_user_last_score($task['id'], $user['id']);
                 if (is_null($score)) {
                     return 'N/A';
                 } else {
@@ -118,4 +116,4 @@ function macro_taskparam($args) {
             }
     }
 }
-?>
+

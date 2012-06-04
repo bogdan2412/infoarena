@@ -159,6 +159,7 @@ function security_simplify_action($action) {
         case 'grader-download':
         case 'task-use-in-user-round':
         case 'task-submit':
+        case 'task-view-last-score':
         case 'round-edit':
         case 'round-create':
         case 'round-submit':
@@ -430,6 +431,9 @@ function security_task($user, $action, $task) {
                 break;
             }
             return ($task['security'] != 'private' && $is_running);
+
+        case 'task-view-last-score':
+            return $task['security'] == 'public' || $is_boss;
 
         case 'grader-download':
             return ($task['open_tests'] && $task['security'] == 'public')

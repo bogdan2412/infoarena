@@ -31,6 +31,14 @@ function score_update($user_id, $task_id, $round_id, $value) {
     // Add user_id score for task_id at round_id to cache
     mem_cache_set("user-task-round:".$user_id."-".$task_id."-".$round_id, (int)$value);
 
+    // Also update user-task-max-score if it's in the cache
+    $cache_key = 'user-task-last-score:'.$user_id.'-'.$task_id;
+    if (($res = mem_cache_get($cache_key)) != false) {
+        if ($value > $res) {
+            mem_cache_set($cache_key, $value);
+        }
+    }
+
     // Update user_id score for task_id at round_id
     $query = "INSERT INTO `ia_score_user_round_task` (`user_id`, `round_id`, `task_id`, `score`)
             VALUES (".implode(',',
@@ -410,6 +418,7 @@ function score_get_rankings($rounds, $tasks, $start = 0, $count = 999999,
                 FROM ia_score_user_round
                 WHERE ".implode('AND', $where);
         $scores = db_fetch_all($query);
+        $round_scores = array(array());
         foreach ($scores as $score) {
             $user_id = $score['user_id'];
             $round_id = $score['round_id'];
@@ -424,6 +433,7 @@ function score_get_rankings($rounds, $tasks, $start = 0, $count = 999999,
                 FROM ia_score_user_round_task
                 WHERE ".implode('AND', $where);
         $scores = db_fetch_all($query);
+        $task_scores = array(array());
         foreach ($scores as $score) {
             $user_id = $score['user_id'];
             $task_id = $score['task_id'];
@@ -487,4 +497,4 @@ function score_get_rankings($rounds, $tasks, $start = 0, $count = 999999,
 }
 
 
-?>
+
