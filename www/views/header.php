@@ -59,7 +59,7 @@ header("Content-type: text/html; charset=utf-8");
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/sh/shCore.css')) ?>"/>
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/sh/shThemeDefault.css')) ?>"/>
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/print.css')) ?>" media="print" />
-    <link rel="icon" href="<?= IA_URL."favicon.ico" ?>" type="image/vnd.microsoft.icon" />
+    <link rel="icon" href="<?= IA_URL_PREFIX."favicon.ico" ?>" type="image/vnd.microsoft.icon" />
     <script type="text/javascript" src="<?= html_escape(url_static('js/config.js.php')) ?>"></script>
     <script type="text/javascript" src="<?= html_escape(url_static('js/MochiKit.js')) ?>"></script>
     <script type="text/javascript" src="<?= html_escape(url_static('js/default.js')) ?>"></script>

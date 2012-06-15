@@ -1,5 +1,5 @@
 <!-- Google CSE Search Box Begins -->
-  <form id="searchbox_010130381492294265836:kw-fmmvpxco" action="http://infoarena.ro/search">
+  <form id="searchbox_010130381492294265836:kw-fmmvpxco" action=<?= url_search() ?>>
   <fieldset>
   <legend><img src="<?= html_escape(url_static('images/icons/search.png')) ?>" alt="!" /> Cautare</legend>
     <input type="hidden" name="cx" value="010130381492294265836:kw-fmmvpxco" />
@@ -8,5 +8,5 @@
     <input type="submit" name="sa" value="Cauta" class="button important"/>
   </fieldset>
   </form>
-  <script type="text/javascript" src="http://www.google.com/coop/cse/brand?form=searchbox_010130381492294265836%3Akw-fmmvpxco"></script>
+  <script type="text/javascript" src="//www.google.com/coop/cse/brand?form=searchbox_010130381492294265836%3Akw-fmmvpxco"></script>
 <!-- Google CSE Search Box Ends -->

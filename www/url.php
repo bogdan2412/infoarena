@@ -401,7 +401,7 @@ function url_changes_rss() {
 }
 
 function url_forum() {
-    return IA_SMF_URL;
+    return url_complex("forum", array());
 }
 
 function url_userwidget($user_id) {
@@ -421,4 +421,12 @@ function url_newsletter_preview_body($page_name, $rev = null) {
 
 function url_admin() {
     return url_textblock('admin');
+}
+
+/**
+ * Url to the site search(Google Search)
+ * @return string
+ */
+function url_search() {
+    return url_complex("search", array());
 }
