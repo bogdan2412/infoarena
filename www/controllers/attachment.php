@@ -53,6 +53,7 @@ function controller_attachment_create($page_name) {
     identity_require('textblock-attach', $page);
 
     // Initial attachment page. Rather empty.
+    $view = array();
     $view['title'] = 'Ataseaza la pagina '.$page_name;
     $view['page_name'] = $page_name;
     $view['form_values'] = array();
@@ -74,69 +75,84 @@ function controller_attachment_submit($page_name) {
     $form_values = array();
     $form_errors = array();
 
-    if (!isset($_FILES['file_name'])) {
+    if (!isset($_FILES['files']) && is_array($_FILES['files'])) {
         flash_error("Eroare! Nu s-a putut atasa fisierul.");
-        redirect(url_textblock($page_name));
+        redirect(url_attachment_new($page_name));
     }
 
-    // Process upload data.
-    $form_values['file_name'] = basename($_FILES['file_name']['name']);
-    $form_values['file_size'] = $_FILES['file_name']['size'];
-    // - determine if attached file is (zip) archive and needs to be extracted
-    $form_values['autoextract'] =
-        preg_match('/^.+\.zip$/i', $form_values['file_name'])
-        && request('autoextract', false);
-    $autoextract = $form_values['autoextract'];
-
-    // Validate filename.
-    if (!is_attachment_name($form_values['file_name'])) {
-        $form_errors['file_name'] = 'Nume de fisier invalid. '
-                                    .'Nu se pot folosi spatii.';
+    if (count($_FILES['files']['name']) > 1 && request('autoextract', false)) {
+        flash_error("Eroare! Numai un singur fisier ZIP poate fi "
+                              . "expandat");
+        redirect(url_attachment_new($page_name));
     }
 
-    // Check min file size. An invalid file results in a size of 0.
-    if ($form_values['file_size'] <= 0) {
-        $form_errors['file_size'] = 'Fisier invalid';
+    $file_count = count($_FILES['files']['name']);
+    $form_errors['files'] = array();
+    $form_errors['file_size'] = array();
+
+    for ($i = 0; $i < $file_count; ++$i) {
+        $file_name = $_FILES['files']['name'][$i];
+        $file_size = $_FILES['files']['size'][$i];
+
+        // Validate filename(s).
+        if (!is_attachment_name($file_name)) {
+            $form_errors['files'][] = 'Nume de fisier invalid: '
+                                . html_escape($file_name)
+                                . '. Nu se pot folosi spatii.';
+        }
+
+        // Check min file size. An invalid file results in a size of 0.
+        if ($file_size <= 0) {
+            $form_errors['file_size'][] = 'Fisierul: '
+                                    . html_escape($file_name)
+                                    . ' este invalid';
+        }
+
+        // Check max file size.
+        if ($file_size > IA_ATTACH_MAXSIZE) {
+            $form_errors['file_size'][] = 'Fisierul: '
+                                    . html_escape($file_name)
+                                    . ' depaseste limita de '
+                                    . (IA_ATTACH_MAXSIZE / 1024 / 1024).'MB';
+        }
     }
 
-    // Check max file size.
-    if ($form_values['file_size'] > IA_ATTACH_MAXSIZE) {
-        $form_errors['file_size'] = 'Fisierul depaseste limita de ' .
-                                    (IA_ATTACH_MAXSIZE/1024/1024).'MB';
-    }
-
-    // create attachment list
+    // We have to extract a zip, let's hope for the best
     $attachments = array();
-    if (!$form_errors) {
-        if ($autoextract) {
-            $zip_files = get_zipped_attachments(
-                    $_FILES['file_name']['tmp_name']);
-
+    $autoextract = false;
+    if (count($form_errors, COUNT_RECURSIVE) == 2) {
+        if (request('autoextract', false)
+            &&  preg_match('/^.+\.zip$/i', $_FILES['files']['name'][0])) {
+                $autoextract = true;
+             $zip_files = get_zipped_attachments(
+                    $_FILES['files']['tmp_name'][0]);
             if (false === $zip_files) {
-                $form_errors['file_name'] = 'Arhiva ZIP este invalida sau nu '
+                $form_errors['files'][] = 'Arhiva ZIP este invalida sau nu '
                         . 'poate fi recunoscuta';
             } else {
                 $attachments = $zip_files['attachments'];
                 $skipped_files = $zip_files['total_files'] -
                         count($attachments);
             }
-        }
-        else {
-            // simple (single) file attachment
-            $attachments = array(
-                array('name' => $form_values['file_name'],
-                        'size' => $form_values['file_size'],
-                        'disk_name' => $_FILES['file_name']['tmp_name']));
+        } else {
+            // Multiple attachments
+            for ($i = 0; $i < $file_count; ++$i) {
+                $attachments[] =
+                    array('name' => $_FILES['files']['name'][$i],
+                          'size' => $_FILES['files']['size'][$i],
+                          'disk_name' => $_FILES['files']['tmp_name'][$i]);
+            }
+            $skipped_files = 0;
         }
     }
 
     // extract (zip) archive file contents to temporary disk files
     $extract_okcount = 0;
-    if (!$form_errors && $autoextract) {
-        $ziparchive = $_FILES['file_name']['tmp_name'];
+    if (count($form_errors, COUNT_RECURSIVE) == 2 && $autoextract) {
+        $ziparchive = $_FILES['files']['tmp_name'][0];
 
         for ($i = 0; $i < count($attachments); $i++) {
-            $att =& $attachments[$i];
+            $att = & $attachments[$i];
             if (isset($att['disk_name']) || !isset($att['zipindex'])) {
                 continue;
             }
@@ -154,9 +170,9 @@ function controller_attachment_submit($page_name) {
     }
 
     // compute mime type for each file on disk
-    if (!$form_errors) {
+    if (count($form_errors, COUNT_RECURSIVE) == 2) {
         for ($i = 0; $i < count($attachments); $i++) {
-            $att =& $attachments[$i];
+            $att = & $attachments[$i];
             if (!isset($att['disk_name'])) {
                 continue;
             }
@@ -165,14 +181,13 @@ function controller_attachment_submit($page_name) {
         }
     }
 
-
     // Create database entries
     $rewrite_count = 0;
     $attach_okcount = 0;
     $extra_errors = '';
-    if (!$form_errors) {
+    if (count($form_errors, COUNT_RECURSIVE) == 2) {
         for ($i = 0; $i < count($attachments); $i++) {
-            $file_att =& $attachments[$i];
+            $file_att = & $attachments[$i];
 
             if (!isset($file_att['disk_name'])) {
                 continue;
@@ -223,9 +238,9 @@ function controller_attachment_submit($page_name) {
         }
     }
     // move files from temporary locations to their final storage place
-    if (!$form_errors) {
+    if (count($form_errors, COUNT_RECURSIVE) == 2) {
         for ($i = 0; $i < count($attachments); $i++) {
-            $file_att =& $attachments[$i];
+            $file_att = & $attachments[$i];
             if (!isset($file_att['attach_id'])) {
                 continue;
             }
@@ -250,50 +265,47 @@ function controller_attachment_submit($page_name) {
     // custom error message for simple (single) file uploads
     if (!$form_errors && !$autoextract && 0 >= $attach_okcount &&
                 !$extra_errors) {
-        $form_errors['file_name'] = 'Fisierul nu a putut fi atasat! Eroare ' .
+        $form_errors['files'][] = 'Fisierul nu a putut fi atasat! Eroare ' .
                 'necunoscuta ...';
     }
 
     // display error/confirmation message
-    if (!$form_errors) {
+    if (count($form_errors, COUNT_RECURSIVE) == 2) {
+        $msg = 'Am ';
         if ($autoextract) {
-            if ($attach_okcount == 1) {
-                $msg = 'Am extras si incarcat un fisier.';
-            } else {
-                $msg = "Am extras si incarcat {$attach_okcount} fisiere.";
-            }
-
-            if ($rewrite_count == 1) {
-                $msg .= ' Un fisier mai vechi a fost rescris.';
-            } else if ($rewrite_count > 1) {
-                $msg .= " {$rewrite_count} fisiere mai vechi au fost rescrise.";
-            }
-
-            if ($skipped_files == 1) {
-                $msg .= ' Un fisier nu a fost dezarhivat deoarece era prea ' .
-                        'mare sau era invalid.';
-            } else if ($skipped_files > 1) {
-                $msg .= " {$skipped_files} fisiere nu au fost dezarhivate " .
-                        'deoarece erau prea mari sau erau invalide.';
-            }
-            $msg .= $extra_errors;
+            $msg .= 'extras si ';
         }
-        else {
-            if ($extra_errors) {
-                $msg = $extra_errors;
-            } else if($rewrite_count) {
-                $msg = 'Fisierul trimis a fost atasat cu succes. Un atasament' .
-                        'mai vechi a fost rescris.';
-            } else {
-                $msg = 'Fisierul trimis a fost atasat cu succes.';
-            }
+
+        if ($attach_okcount == 1) {
+            $msg .= 'incarcat un fisier.';
+        } else {
+            $msg .= "incarcat {$attach_okcount} fisiere.";
         }
+
+        if ($rewrite_count == 1) {
+            $msg .= ' Un fisier mai vechi a fost rescris.';
+        } else if ($rewrite_count > 1) {
+            $msg .= " {$rewrite_count} fisiere mai vechi au fost rescrise.";
+        }
+
+        if ($skipped_files == 1) {
+            $msg .= ' Un fisier nu a fost dezarhivat deoarece era prea ' .
+                    'mare sau era invalid.';
+        } else if ($skipped_files > 1) {
+            $msg .= " {$skipped_files} fisiere nu au fost dezarhivate " .
+                    'deoarece erau prea mari sau erau invalide.';
+        }
+
+        $msg .= $extra_errors;
 
         flash($msg);
         redirect(url_textblock($page_name));
     }
 
-    $form_errors['file_name'] .= $extra_errors;
+    if ($extra_errors) {
+        $form_errors['files'][] = $extra_errors;
+    }
+
     // Errors, print view template.
     $view['form_errors'] = $form_errors;
     $view['form_values'] = $form_values;
@@ -332,7 +344,7 @@ function controller_attachment_delete($page_name, $file_name, $more_files = 0) {
     }
     // We've got big balls.
 
-    if(!$more_files) {
+    if (!$more_files) {
         flash('Fisierul '.$file_name.' a fost sters cu succes.');
         redirect(url_textblock($page_name));
     } else {
@@ -345,12 +357,12 @@ function controller_attachment_delete_many($page_name, $arguments) {
     $files = array();
     $deleted = 0;
 
-    foreach($arguments as $value) {
-        if(is_numeric($value)) {
+    foreach ($arguments as $value) {
+        if (is_numeric($value)) {
             $files[] = request($value);
         }
     }
-    foreach($files as $file_name) {
+    foreach ($files as $file_name) {
        $deleted += controller_attachment_delete($page_name, $file_name, 1);
     }
     flash($deleted . ' fisiere au fost sterse cu succes.');
@@ -394,7 +406,8 @@ function controller_attachment_rename($page_name, $old_name, $new_name) {
 
     $new_attach = attachment_get($new_name, $page_name);
     if ($new_attach) {
-        flash_error("Exista deja un fisier cu numele $new_name atasat paginii $page_name.");
+        flash_error("Exista deja un fisier cu numele $new_name "
+                  . "atasat paginii $page_name.");
         redirect(url_textblock($page_name));
     };
 
@@ -423,7 +436,8 @@ function try_attachment_get($page_name, $file_name) {
         die_http_error();
     }
     if (!identity_can('attach-download', $attach)) {
-        flash_error('Nu aveti permisiuni pentru a descarca fisierul '.$file_name);
+        flash_error('Nu aveti permisiuni pentru a descarca fisierul '
+                  . $file_name);
         redirect(url_textblock($page_name));
     }
 
@@ -436,7 +450,8 @@ function try_attachment_get($page_name, $file_name) {
 }
 
 // download an attachment
-function controller_attachment_download($page_name, $file_name, $restrict_to_safe_mime_types = false) {
+function controller_attachment_download($page_name, $file_name,
+                                        $restrict_to_safe_mime_types = false) {
     // referer check
     if (http_referer_check()) {
         $attach = try_attachment_get($page_name, $file_name);
@@ -459,15 +474,15 @@ function controller_attachment_download($page_name, $file_name, $restrict_to_saf
 }
 
 function controller_attachment_download_zip($page_name, $arguments) {
-    if(http_referer_check()) {
+    if (http_referer_check()) {
         $files = array();
-        foreach($arguments as $value) {
-            if(is_numeric($value)) {
+        foreach ($arguments as $value) {
+            if (is_numeric($value)) {
                 $files[] = request($value);
             }
         }
         $zipfile = new zipfile();
-        foreach($files as $filename) {
+        foreach ($files as $filename) {
             $attach = try_attachment_get($page_name, $filename);
             $local_file_path = attachment_get_filepath($attach);
             $fh = fopen($local_file_path, "r");
@@ -483,5 +498,3 @@ function controller_attachment_download_zip($page_name, $arguments) {
         redirect(url_absolute(url_home()));
     }
 }
-
-?>

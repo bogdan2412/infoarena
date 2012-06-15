@@ -45,11 +45,18 @@ function ferr($param_name, $escape_html = true) {
         return null;
     }
 
-    if ($escape_html) {
-        return html_escape(getattr($view['form_errors'], $param_name));
-    } else {
-        return getattr($view['form_errors'], $param_name);
+    $error = getattr($view['form_errors'], $param_name);
+    if (!is_array($error)) {
+        $error = array($error);
     }
+
+    if ($escape_html) {
+        foreach ($error as &$message) {
+            $message = html_escape($message);
+        }
+    }
+
+    return implode("<BR/>", $error);
 }
 
 // returns a form error span, html-escaped by default.
@@ -103,7 +110,9 @@ function view_form_field_tr($field_info, $field_name) {
     $row = format_form_field($field_info, $field_name,
             getattr($form_values, $field_name),
             getattr($form_errors, $field_name), true);
+    $return = "";
     $return .= "<tr id=\"field_$field_name\">\n$row</tr>\n";
+    return $return;
 }
 
 ?>
