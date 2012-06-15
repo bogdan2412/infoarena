@@ -1,4 +1,5 @@
 <?php
+// Just a simple modification
 if (!defined('IA_HPHP_ENV')) {
     require_once("../config.php");
 }

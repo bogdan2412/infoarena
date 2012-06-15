@@ -30,7 +30,7 @@ function macro_triluliluvideo($args) {
         return macro_error('Invalid `width` / `height` argument');
     }
 
-    $url = "http://www.trilulilu.ro/embed-video/{$doc_user}/{$doc_id}";
+    $url = "//www.trilulilu.ro/embed-video/{$doc_user}/{$doc_id}";
 
     $html = "<script type=\"text/javascript\" language=\"javascript\" ".
             "src=\"{$url}\">".
@@ -41,5 +41,3 @@ function macro_triluliluvideo($args) {
 
     return $html;
 }
-
-?>

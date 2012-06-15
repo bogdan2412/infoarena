@@ -469,7 +469,7 @@ function controller_attachment_download($page_name, $file_name,
         http_serve(attachment_get_filepath($attach), $file_name, $mime_type);
     } else {
         // redirect to main page
-        redirect(url_absolute(url_home()));
+        redirect(url_home());
     }
 }
 
@@ -495,6 +495,6 @@ function controller_attachment_download_zip($page_name, $arguments) {
         echo $zipfile->file();
     } else {
         // redirect to main page
-        redirect(url_absolute(url_home()));
+        redirect(url_home());
     }
 }

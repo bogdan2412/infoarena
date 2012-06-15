@@ -318,7 +318,7 @@ function task_update_forum_topic($task_id, $round_id = "arhiva") {
         $body_start != "Aici puteÈ›i discuta despre prob" &&
         $body_start != "Aici puteÅ£i discuta despre probl") {
         $new_body = 'Aici puteÅ£i discuta despre problema ' .
-                    '[url=http://infoarena.ro/problema/' . $task_id . ']' .
+                    '[url=//infoarena.ro/problema/' . $task_id . ']' .
                     $task['title'] . '[/url].';
     } else {
         $new_body = $message['body'];

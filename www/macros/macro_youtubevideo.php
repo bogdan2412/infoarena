@@ -24,7 +24,7 @@ function macro_youtubevideo($args) {
         return macro_error('Invalid `width` / `height` argument');
     }
 
-    $url = "http://www.youtube.com/v/{$doc_id}";
+    $url = "//www.youtube.com/v/{$doc_id}";
 
     $html = "<embed src=\"{$url}\" type=\"application/x-shockwave-flash\" "
             ."allowscriptaccess=\"always\" allowfullscreen=\"true\" "
@@ -32,5 +32,3 @@ function macro_youtubevideo($args) {
 
     return $html;
 }
-
-?>

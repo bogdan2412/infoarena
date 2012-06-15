@@ -24,7 +24,7 @@ function macro_googlevideo($args) {
         return macro_error('Invalid `width` / `height` argument');
     }
 
-    $url = "http://video.google.com/googleplayer.swf?docId={$doc_id}&hl=en";
+    $url = "//video.google.com/googleplayer.swf?docId={$doc_id}&hl=en";
 
     $html = "<embed style=\"width: {$width}px; height: {$height}px;\" "
             ."id=\"VideoPlayback\" type=\"application/x-shockwave-flash\" "
@@ -32,5 +32,3 @@ function macro_googlevideo($args) {
 
     return $html;
 }
-
-?>

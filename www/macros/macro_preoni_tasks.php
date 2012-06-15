@@ -19,6 +19,7 @@ function macro_preoni_tasks($args) {
         $cnt[$i] = 0;
     }
     $total_cnt = 0;
+    $matches = array();
     foreach ($tasks as $task) {
         if (preg_match('/\[([0-9?])\]/', $task['subject'], $matches)) {
            $cnt[$matches[1]]++;
@@ -37,13 +38,16 @@ function macro_preoni_tasks($args) {
         if ($v > 0) {
             $html .= '<sub>'.$v.'</sub>';
         }
-        $html .= '<img src="http://infoarena.ro/planificare/preoni-2008?action=download&file=bardot.gif" width="20" height="'.($v*10).'">';
+        $html .= '<img src="//infoarena.ro/planificare/preoni-2008?action='
+               . 'download&file=bardot.gif" width="20" height="'.($v * 10).'">';
         $html .= '</td>';
     }
     $html .= '</tr>';
     $html .= '<tr>';
     foreach ($cnt as $k => $v) {
-        $html .= '<td style="border-color: #000000 #FFFFFF #FFFFFF; border-style: solid; border-width:1px;" width="160" valign="top" align="center">';
+        $html .= '<td style="border-color: #000000 #FFFFFF #FFFFFF; border-styl'
+               . 'e: solid; border-width:1px;" width="160" valign="top" align="'
+               . 'center">';
         $html .= '<strong><sup>'.$k.'</sup></strong>';
         $html .= '</td>';
     }
@@ -53,5 +57,3 @@ function macro_preoni_tasks($args) {
 
     return $html;
 }
-
-?>

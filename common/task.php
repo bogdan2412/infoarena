@@ -176,9 +176,9 @@ function task_parse_test_group($string, $test_count) {
         if (count($tests) < 1 || count($tests) > 2) {
             return false;
         }
-        foreach ($tests as &$test) {
-            $test = trim($test);
-            if (!is_whole_number($test)) {
+        foreach ($tests as &$testnumber) {
+            $testnumber = trim($testnumber);
+            if (!is_whole_number($testnumber)) {
                 return false;
             }
         }
@@ -235,8 +235,8 @@ function task_get_testgroups($task) {
         if (!$current_group) {
             return false;
         }
-        foreach ($current_group as $test) {
-            $used_count[$test]++;
+        foreach ($current_group as $testnumber) {
+            $used_count[$testnumber]++;
         }
         $testgroups[] = $current_group;
     }
