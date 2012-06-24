@@ -7,5 +7,4 @@ function RoundEdit_Init() {
     DlbInit('form_tasks');
 }
 
-connect(window, 'onload', RoundEdit_Init);
-
+$(window).one("load", RoundEdit_Init);

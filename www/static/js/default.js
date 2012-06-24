@@ -5,29 +5,27 @@
 
 function Page_Init() {
     // fade away flash message
-    var flash = $('flash');
-    if (flash && !hasElementClass(flash, 'flashError')) {
+    var flash = $('#flash');
+    if (flash.length && !flash.hasClass('flashError')) {
         var callback = function() {
-            hideElement(flash);
+            flash.hide();
         }
         setTimeout(callback, 13000);
     }
 
     // page log (used in development mode)
-    var log = $('log');
-    if (log) {
+    var log = $('#log');
+    if (log.length) {
         // scroll down
-        log.scrollTop = log.scrollHeight;
+        log.scrollTop(log.prop('scrollHeight') - log.height());
 
         // maximize on click
         var callback = function(event) {
-            log.style.height = log.scrollHeight+'px';
-            log.onclick = null;
-            log.id = 'log_active';
+            log.height(log.prop('scrollHeight'));
+            log.prop('id', 'log_active');
         }
-        connect(log, 'onclick', callback);
+        log.one('click', callback);
     }
 }
 
-connect(window, 'onload', Page_Init);
-
+$(document).ready(Page_Init);

@@ -6,45 +6,46 @@
 var Submit_CompilerDisplay;
 
 function Submit_HasCompiler(taskId) {
-    var o = $('output_only');
-    return taskId && (!o ||  (0 > o.value.indexOf(':' + taskId + ':')));
+    var o = $('#output_only');
+    return taskId && (o.length == 0);
 }
 
 function Submit_AutoCompiler() {
-    var f = $('form_solution');
-    var compiler = $('form_compiler');
+    var f = $('#form_solution');
+    var compiler = $('#form_compiler');
 
     // we simply map file extensions to hard-coded compiler IDs
     var k = -1;
-    for (var i = f.value.length - 1; 0 <= i; i--) {
-        if ('.' == f.value.charAt(i)) {
+    for (var i = f.val().length - 1; 0 <= i; i--) {
+        if ('.' == f.val().charAt(i)) {
             k = i;
             break;
         }
     }
-    var ext = f.value.substring(k + 1).toLowerCase();
+    var ext = f.val().substring(k + 1).toLowerCase();
+
     if ('c' == ext || 'cc' == ext || 'cpp' == ext || 'pas' == ext || 'py' == ext) {
         if ('pas' == ext) {
             // choose FreePascal compiler
-            compiler.value = 'fpc';
+            compiler.val('fpc');
         }
         else if ('cc' == ext) {
             // choose GNU C++ compiler
-            compiler.value = 'cpp';
+            compiler.val('cpp');
         }
         else {
-            compiler.value = ext;
+            compiler.val(ext);
         }
     }
     else {
         alert('Atentie! Pentru fisierul selectat nu am putut alege automat ' +
             'un compilator.');
-        compiler.value = '-';
+        compiler.val('-');
     }
 }
 
 function Submit_UpdateSolution() {
-    if (!Submit_HasCompiler($('form_task').value)) {
+    if (!Submit_HasCompiler($('#form_task').val())) {
         return;
     }
 
@@ -53,81 +54,86 @@ function Submit_UpdateSolution() {
 }
 
 function Submit_UpdateTask() {
-    var t = $('form_task');
+    var t = $('#form_task');
 
     // toggle displaying compiler select box
-    if (Submit_HasCompiler(t.value)) {
-        $('field_compiler').style.display = Submit_CompilerDisplay;
+    if (Submit_HasCompiler(t.val())) {
+        $('#field_compiler').css('display', Submit_CompilerDisplay);
     } else {
-        $('field_compiler').style.display = 'none';
+        $('#field_compiler').css('display', 'none');
     }
 
-    if (t.value) {
-        $('field_round').style.display = Submit_RoundDisplay;
-        var d = doXHR(BASE_HREF + 'json/task-get-rounds?task_id=' + escape(t.value), {method: 'POST'});
+    if (t.val()) {
+        $('#field_round').css('display', Submit_RoundDisplay);
 
-        var ready = function(xhr) {
-            var data = evalJSONRequest(xhr);
-            var rounds = data["rounds"];
-            var default_round = data["default"];
-
-            $('form_round').innerHTML = '';
-            warning_container = $('field_round_warning');
-            if (warning_container) {
-                if (rounds.length != 1) {
-                    warning_container.innerHTML = '<p class="submit-warning">Această problemă face parte din mai multe concursuri. Selectează-l pe cel la care participi!</p>';
-                } else {
-                    warning_container.innerHTML = '';
+        $.ajax({
+            url:BASE_HREF + 'json/task-get-rounds?task_id=' + escape(t.val()),
+            dataType: 'json', type: 'POST', success:
+            function(response, postStatus, xhr) {
+                if (postStatus == 'error') {
+                    alert('Eroare! Nu pot determina rundele. Incercati din nou.');
+                    return;
                 }
-            }
-            for (var key in rounds) {
-                if (rounds.hasOwnProperty(key)) {
-                    var option = document.createElement('option');
-                    option.value = rounds[key]["id"];
-                    if (rounds[key]["id"] == default_round) {
-                        option.selected = 'selected';
+                var data = response;//$.parseJSON(response);
+                var rounds = data["rounds"];
+                var default_round = data["default"];
+
+                $('#form_round').html('');
+                warning_container = $('#field_round_warning');
+                if (warning_container.length > 0) {
+                    if (rounds.length != 1) {
+                        warning_container.html(
+                            '<p class="submit-warning">Această problemă face p'
+                          + 'arte din mai multe concursuri. Selectează-l pe ce'
+                          + 'l la care participi!</p>');
+                    } else {
+                        warning_container.html('');
                     }
+                }
+
+                for (var key in rounds) {
+                    if (rounds.hasOwnProperty(key)) {
+                        var option = document.createElement('option');
+                        option.value = rounds[key]["id"];
+                        if (rounds[key]["id"] == default_round) {
+                            option.selected = 'selected';
+                        }
                     var text = document.createTextNode(rounds[key]["title"]);
                     option.appendChild(text);
-                    $('form_round').appendChild(option);
+                    $('#form_round').append(option);
                 }
             }
-        };
-
-        var error = function(error) {
-            window.alert('Eroare! Nu pot determina rundele. Incercati din nou.');
-        };
-
-        d.addCallbacks(ready, error);
+        }});
     } else {
-        $('field_round').style.display = 'none';
+        $('#field_round').hide();
     }
 
     // auto-choose compiler
-    if (0 < $('form_solution').value.length) {
+    if ($('#form_solution').val()) {
         Submit_AutoCompiler();
     }
 }
 
 function Submit_Init() {
-    if (!$('task_submit')) {
+    if ($('#task_submit').length == 0) {
         // no such form on this page
         return;
     }
 
-    var fSolution = $('form_solution');
-    var fTask = $('form_task');
+    var fSolution = $('#form_solution');
+    var fTask = $('#form_task');
 
-    Submit_CompilerDisplay = $('field_compiler').style.display;
-    Submit_RoundDisplay = $('field_round').style.display;
+    Submit_CompilerDisplay = $('#field_compiler').css('display');
+    Submit_RoundDisplay = $('#field_round').css('display');
 
-    connect(fSolution, 'onchange', Submit_UpdateSolution);
+    fSolution.on("change", Submit_UpdateSolution);
+
     if ('hidden' != fTask.type) {
-        connect(fTask, 'onchange', Submit_UpdateTask);
+        fTask.on("change", Submit_UpdateTask);
     }
 
     Submit_UpdateTask();
 }
 
-connect(window, 'onload', Submit_Init);
-
+$(document).ready(Submit_Init);
+//connect(window, 'onload', Submit_Init);

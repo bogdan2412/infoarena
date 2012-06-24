@@ -1,4 +1,4 @@
-var srv = $("srv_time");
+var srv = $("#srv_time");
 var h, m, s;
 var timeInterval;
 
@@ -7,7 +7,7 @@ function displayTime(){
     hours = h<10?('0'+h):h;
     minutes = m<10?('0'+m):m;
     seconds = s<10?('0'+s):s;
-    srv.innerHTML = hours+':'+minutes+':'+seconds;
+    srv.html(hours+':'+minutes+':'+seconds);
 }
 
 function calcTime(){

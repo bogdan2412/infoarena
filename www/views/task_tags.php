@@ -106,42 +106,7 @@ foreach ($categories as $category) {
 echo format_table($authors, $column_infos,
     array('css_class' => 'category fill-screen tag-table'));
 ?>
-<script type="text/javascript" src="<?= html_escape(url_static('js/inline_form.js')) ?>"></script>
-<script type="text/javascript">
-/* <![CDATA[ */
-// Bind add method link to form
-addLoadEvent(function() {
-    bindToggleLinkToForm($$("#add_category > a")[0], $$("#add_category > form")[0]);
-});
-
-// Bind add author link to form
-addLoadEvent(function() {
-    bindToggleLinkToForm($$("#add_author > a")[0], $$("#add_author > form")[0]);
-});
-
-// Bind add algorithm links to forms.
-var addForms = $$(".algorithm_tag_add form");
-var addLinks = $$(".algorithm_tag_add a.toggle_add");
-for (var i = 0; i < addForms.length; i++) {
-    bindToggleLinkToForm(addLinks[i], addForms[i]);
-}
-
-// Bind rename algorithm links to forms
-var renameForms = $$("table.category form");
-var renameLinks = $$("table.category a.toggle_rename");
-var renameOrigs = $$("table.category a.algorithm_tag");
-for (var i = 0; i < renameForms.length; i++) {
-    bindToggleLinkToForm(renameLinks[i], renameForms[i], renameOrigs[i]);
-}
-
-// Bind rename method links to forms
-var renameMethodForms = $$(".rename_method form");
-var renameMethodLinks = $$(".rename_method a.toggle_rename");
-for (var i = 0; i < addForms.length; i++) {
-    bindToggleLinkToForm(renameMethodLinks[i], renameMethodForms[i]);
-}
-/* ]]> */
-</script>
+<script type="text/javascript" src="<?= html_escape(url_static('js/task_tags.js')) ?>"></script>
 <?php
 include(IA_ROOT_DIR.'www/views/footer.php');
 ?>

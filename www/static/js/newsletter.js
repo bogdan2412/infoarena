@@ -25,8 +25,7 @@ function Newsletter_Init() {
 // Hijack all anchor clicks to Newsletter_LinkClick.
 // This only applies inside the iframe.
 function Newsletter_HijackLinks() {
-    map(function(anchor) { anchor.onclick=Newsletter_LinkClick; },
-        MochiKit.DOM.getElementsByTagAndClassName('a'));
+    $('a').on('click', Newsletter_LinkClick);
 }
 
 // Click handler for links inside the iframe.
@@ -39,4 +38,4 @@ function Newsletter_LinkClick(event) {
     return false;
 }
 
-connect(window, 'onload', Newsletter_Init);
+$(document).ready(Newsletter_Init);

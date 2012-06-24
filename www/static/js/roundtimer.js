@@ -93,7 +93,7 @@ function relativeTime(timerId) {
 }
 
 function updateTime(timerId) {
-    $(timerId).innerHTML = relativeTime(timerId);
+    $("#" + timerId).html(relativeTime(timerId));
 }
 
 function newRoundTimer(timerId, serverTime, startTime,

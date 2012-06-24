@@ -5,30 +5,26 @@
 
 var RemoteBox_Url = '';
 
-function RemoteBox_Load(remotebox_function) {
-    var container = $('remotebox');
-    if (!container || !RemoteBox_Url) {
+function RemoteBox_Load(remotebox_function ) {
+    var container = $('#remotebox');
+
+    if (container.length == 0 || !RemoteBox_Url) {
         // no remotebox in this page
         return;
     }
 
     // visual clue to indicate that remotebox is loading
-    container.innerHTML = '<div class="loading"> <img src="/static/images/indicator.gif" />Se incarca ...</div>';
+    container.html('<div class="loading"> <img src="/static/images/indicator.gif" />Se incarca ...</div>');
 
-    var d = doSimpleXMLHttpRequest(RemoteBox_Url);
-
-    var ready = function(data) {
-        if (data) {
-            container.innerHTML = data.responseText;
-        }
-    }
-
-    var error = function(error) {
-        container.innerHTML = '<div class="macro_error">Continutul nu a putut fi descarcat. Incercati din nou.</div>';
-    }
-
-    d.addCallbacks(ready, error);
-    d.addCallbacks(remotebox_function, null);
+    container.load(RemoteBox_Url, {},
+        function(responseText, textStatus, req) {
+            if (textStatus == 'error') {
+                 container.html('<div class="macro_error">Continutul nu a putut fi descarcat. Incercati din nou.</div>');
+            }
+            if (typeof remotebox_function === 'function') {
+                remotebox_function();
+            }
+        });
 }
 
 function RemoteBox_Comments(begin_comm, max_comm, focus_on_comments, display) {
@@ -50,5 +46,4 @@ function RemoteBox_Comments(begin_comm, max_comm, focus_on_comments, display) {
     RemoteBox_Url = RemoteBox_Base_Url;
 }
 
-connect(window, 'onload', RemoteBox_Load);
-
+$(document).ready(RemoteBox_Load);
