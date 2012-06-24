@@ -7,26 +7,31 @@ function milisleep($ms) {
 
 // Delete and remake a directory.
 // Return success value.
-function clean_dir($dir)
-{
-    system("rm -rf " . $dir, $res);
-    if (mkdir($dir, 0777, true) === false) {
+function clean_dir($dir) {
+    system("rm -rf " . $dir);
+    if (@mkdir($dir, 0777, true) === false) {
         log_warn("Failed re-creating directory $dir");
         return false;
     }
-    if (chmod($dir, 0777) == false) {
+    if (@chmod($dir, 0777) == false) {
         log_warn("Failed chmod 0777 directory $dir");
         return false;
     }
     return true;
 }
 
+function eval_assert($condition, $message = 'Assertion Error') {
+    if (!$condition) {
+        log_print('Evaluator assertion failed: ' . $message);
+        throw new EvalSystemError($message);
+    }
+}
+
 // Compile a certain file.
 // Returns success value, and a friendly error message in $compiler_message.
 //
 // Can currently handle C, C++, FreePascal, and Python.
-function compile_file($input_file_name, $output_file_name, &$compiler_message)
-{
+function compile_file($input_file_name, $output_file_name, &$compiler_message) {
     $compiler_message = false;
     $compiler_lines = array(
             // Make sure -lm stays after source file & target output
@@ -36,7 +41,9 @@ function compile_file($input_file_name, $output_file_name, &$compiler_message)
             'fpc' => 'fpc -O2 -Xs %file_name%',
             'py' => IA_JUDGE_PY_COMPILER.' %file_name% %exe_name%',
     );
-    if (!preg_match("/^(.*)\.(c|cpp|pas|fpc|py)$/i", $input_file_name, $matches)) {
+    $matches = array();
+    if (!preg_match("/^(.*)\.(c|cpp|pas|fpc|py)$/i",
+                    $input_file_name, $matches)) {
         $compiler_message = "Nu am putut sa determin compilatorul ".
                 "pentru '$input_file_name'.";
         return false;
@@ -62,10 +69,8 @@ function compile_file($input_file_name, $output_file_name, &$compiler_message)
 
     // Rename to $output_file_name.
     if ($exe_name != $output_file_name) {
-        if (!@rename($exe_name, $output_file_name)) {
-            log_error("Failed renaming $exe_name to $output_file_name");
-            return false;
-        }
+        eval_assert(@rename($exe_name, $output_file_name),
+                    "Failed renaming $exe_name to $output_file_name");
     }
 
     // Hooray!
@@ -78,8 +83,8 @@ function compile_file($input_file_name, $output_file_name, &$compiler_message)
 // Result is 'OK', 'FAIL' or 'ERROR'
 // If result is ERROR time and memory are not available
 // Returns false on error.
-function jrun_parse_message($message)
-{
+function jrun_parse_message($message) {
+    $matches = array();
     if (!preg_match("/^(ERROR|FAIL|OK):\ (.*)$/", $message, $matches)) {
         log_warn("Invalid jrun output: $message");
         return false;
@@ -106,8 +111,7 @@ function jrun_parse_message($message)
 
 // Returns a jrun message array for an error.
 // Sort of a hack.
-function jrun_make_error($message)
-{
+function jrun_make_error($message) {
     return array('result' => "ERROR", 'message' => $message);
 }
 
@@ -130,10 +134,10 @@ function jrun_make_error($message)
 // All timings are in miliseconds and memory is in kilobytes
 //
 // If result is ERROR time, memory, stdin and stdout are never set.
-function jail_run($program, $jaildir, $time, $memory, $capture_std = false)
-{
-    log_assert(is_whole_number($time));
-    log_assert(is_whole_number($memory));
+function jail_run($program, $jaildir, $time, $memory, $capture_std = false) {
+    eval_assert(is_whole_number($time));
+    eval_assert(is_whole_number($memory));
+
     $cmdline = IA_ROOT_DIR . 'jrun/jrun';
     $cmdline .= " --prog=./" . $program;
     $cmdline .= " --dir=" . $jaildir;
@@ -181,14 +185,10 @@ function jail_run($program, $jaildir, $time, $memory, $capture_std = false)
     }
 
     if ($result['result'] == 'OK') {
-        if ($result['time'] > $time || $result['memory'] > $memory) {
-            log_print_r($result);
-            log_print("time $time memory $memory limits");
-            log_error("JRun says ok, but limits broken");
-        }
+        eval_assert($result['time'] <= $jrun_process['time'] &&
+                    $result['memory'] <= $jrun_process['memory'],
+                    'JRun returns OK, but time or memory limit is broken');
     }
 
     return $result;
 }
-
-?>

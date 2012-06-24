@@ -4,12 +4,15 @@
 // commabelow to cedille and returns the modified text
 // FIXME: reverse characters in to_change when windows XP dies
 function text_change_special_chars($text) {
+    if (!extension_loaded('mbstring')) {
+        return $text;
+    }
+
     $to_change = array("ș"=>"ş", "ț"=>"ţ", "Ș"=>"Ş", "Ț"=>"Ţ");
 
     foreach ($to_change as $bad=>$good) {
         $text = mb_ereg_replace($bad, $good, $text);
     }
-
     return $text;
 }
 
@@ -323,7 +326,8 @@ function check_requirements() {
         log_warn("zip extension missing.");
     }
     if (array_search('mbstring', $extensions) === false) {
-        log_warn("mbstring extension missing. inline diff will not be enabled");
+        log_warn('mbstring extension missing. inline diff and ' .
+                 'character normalisation will not be available.');
     }
     if (!function_exists("finfo_open")) {
         log_warn('finfo_open missing, falling back to mime_content_type.');

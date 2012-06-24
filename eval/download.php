@@ -3,8 +3,7 @@
 require_once(IA_ROOT_DIR . 'common/common.php');
 require_once(IA_ROOT_DIR . 'common/db/attachment.php');
 
-function copy_grader_file($task, $filename, $target)
-{
+function copy_grader_file($task, $filename, $target) {
     $attempts = 0;
     while (true) {
         $result = copy_attachment_file($task['page_name'], "grader_".$filename, $target);
@@ -25,11 +24,12 @@ function copy_grader_file($task, $filename, $target)
 // This will download the file from the server and cache it.
 //
 // Return success value.
-function copy_attachment_file($pagename, $filename, $target)
-{
+function copy_attachment_file($pagename, $filename, $target) {
     $pagename = normalize_page_name($pagename);
-    log_assert(is_page_name($pagename), "Invalid page name '$pagename'");
-    log_assert(is_attachment_name($filename), "Invalid attachment name '$filename'");
+    eval_assert(is_page_name($pagename),
+                "Invalid page name '$pagename'");
+    eval_assert(is_attachment_name($filename),
+                "Invalid attachment name '$filename'");
 
     // Get attachment from database.
     $att = attachment_get($filename, $pagename);
@@ -99,5 +99,3 @@ function copy_attachment_file($pagename, $filename, $target)
     }
     return true;
 }
-
-?>

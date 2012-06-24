@@ -3,12 +3,11 @@
 require_once(IA_ROOT_DIR."common/task.php");
 
 abstract class BaseGrader {
-    protected $task, $tparams, $job;
+    protected $task, $job;
     protected $result, $testResults;
 
     public function __construct($task, $tparams, $job) {
-        $this->task = $task;
-        $this->tparams = $tparams;
+        $this->task = array_merge($task, $tparams);
         $this->job = $job;
     }
 
@@ -19,8 +18,6 @@ abstract class BaseGrader {
      * The interactive program is used in 'interactive' tasks. This program is
      * run in parallel with the user's program and comunication between them
      * is implemented through pipes.
-     *
-     * @return boolean          true on success, false on error
      */
     protected function compileEvaluators() {
         $evals = array(
@@ -36,72 +33,46 @@ abstract class BaseGrader {
             if (!copy_grader_file($this->task, $this->task[$eval_type],
                                   $source_file)) {
                 log_print("Task $eval_type not found");
-                $this->result = array(
-                    'score' => 0,
-                    'message' => 'Eroare in setarile problemei',
-                    'log' => ("Lipseste $eval_desc.\n" .
-                              "Ar trebui sa existe un atasament ".
-                              "'grader_{$this->task[$eval_type]}' " .
-                              "la pagina cu enuntul problemei"),
-                );
-                return false;
+                throw new EvalTaskOwnerError(
+                    "Lipşeşte {$eval_desc}.\nPagina cu enunţul problemei " .
+                    "trebuie să conţină un ataşament 'grader_" .
+                    $this->task[$eval_type] . "'");
             }
 
             $compiler_messages = '';
             if (!compile_file($source_file, $eval_type, $compiler_messages)) {
                 log_print("Task $eval_type compile error");
-                $this->result = array(
-                    'score' => 0,
-                    'message' => "Eroare de compilare in $eval_desc",
-                    'log' => ("Eroare de compilare in $eval_desc:\n" .
-                              $compiler_messages),
-                );
-                return false;
+                throw new EvalTaskOwnerError('Eroare de compilare în ' .
+                                             $eval_desc . ":\n" .
+                                             $compiler_messages);
             }
         }
-        return true;
     }
 
     /**
      * Processes the user submission. For classic and interactive tasks, this
      * means compiling the user's source file.
-     *
-     * @return boolean          true on success, false on error
      */
     protected function processUserSubmission() {
         $source_file = 'user.' . $this->job['compiler_id'];
-        if (file_put_contents($source_file,
-                              $this->job['file_contents']) === false) {
-            log_print('User program could not be written to disk');
-            $this->result = array(
-                'score' => 0,
-                'message' => 'Eroare de sistem',
-                'log' => 'Contacteaza un administrator',
-            );
-            return false;
-        }
+        $res = @file_put_contents($source_file,
+                                  $this->job['file_contents']);
+        eval_assert($res !== false,
+                    'User program could not be written to disk');
 
         $compiler_messages = '';
         if (!compile_file($source_file, 'user', $compiler_messages)) {
             log_print('User program compile error');
             log_print($compiler_messages);
-            $this->result = array(
-                'score' => 0,
-                'message' => 'Eroare de compilare',
-                'log' => "Eroare de compilare:\n" . $compiler_messages,
-            );
-            return false;
+            throw new EvalUserCompileError($compiler_messages);
         }
         $this->result['log'] = "Compilare:\n" . $compiler_messages . "\n";
-        return true;
     }
 
     /**
      * Perform any necessary actions before running test cases.
      * These include compiling evaluators or interactive programs and
      * compiling user source files.
-     *
-     * @return boolean          true on success, false on error
      */
     protected function preTestCases() {
         $this->result = array(
@@ -111,38 +82,26 @@ abstract class BaseGrader {
         );
 
         // Clean temporary directory and chdir to it
-        $ret = clean_dir(IA_ROOT_DIR . 'eval/temp/');
-        log_assert($ret, "Can't clean to temp dir.");
-        $ret = chdir(IA_ROOT_DIR . 'eval/temp/');
-        log_assert($ret, "Can't chdir to temp dir.");
+        eval_assert(clean_dir(IA_ROOT_DIR . 'eval/temp/'),
+                    "Can't clean temp dir.");
+        eval_assert(@chdir(IA_ROOT_DIR . 'eval/temp/'),
+                    "Can't chdir to temp dir.");
 
         // Compile all source files
-        if (!$this->compileEvaluators()) {
-            return false;
-        }
-        if (!$this->processUserSubmission()) {
-            return false;
-        }
-        return true;
+        $this->compileEvaluators();
+        $this->processUserSubmission();
     }
 
     /**
      * Perform any necessary actions after running all test cases.
-     *
-     * @return boolean          true on success, false on error
      */
     protected function postTestCases() {
         $this->result['message'] = 'Evaluare completa';
         if ($this->result['score'] < 0 ||
             $this->result['score'] > IA_JUDGE_MAX_SCORE) {
-            $this->result = array(
-                'score' => 0,
-                'message' => 'Eroare in evaluatorul problemei',
-                'log' => 'Evaluatorul a returnat un scor invalid.',
-            );
-            return false;
+            throw new EvalTaskOwnerError(
+                'Evaluatorul a returnat un scor invalid.');
         }
-        return true;
     }
 
     protected function getInFile($jaildir) {
@@ -157,17 +116,11 @@ abstract class BaseGrader {
         return $jaildir . $this->task['id'] . '.ok';
     }
 
-    protected function getUserFile($jaildir, $testno) {
-        // FIXME: jrun does not work with absolute paths because of chroot
-        return 'user_' . $this->job['id'] . '_' . $testno;
-    }
-
     /**
      * Evaluates the contestant's output on a particular test case.
      *
      * @param  int     $testno
      * @param  string  $jaildir
-     * @return bool                  true on success, false on failure
      */
     protected function testCaseJudgeOutputs($testno, $jaildir) {
         $test_result = &$this->testResults[$testno];
@@ -179,15 +132,10 @@ abstract class BaseGrader {
             if (!copy_grader_file($this->task, 'test' . $testno . '.ok',
                                   $okfile)) {
                 log_print("Test $testno: .ok file not found");
-                $this->result = array(
-                    'score' => 0,
-                    'message' => 'Eroare in testele problemei',
-                    'log' => ("Lipseste fisierul .ok al testului $testno.\n" .
-                              "Ar trebui sa existe un atasament".
-                              " 'grader_test$testno.ok' ".
-                              "la pagina cu enuntul problemei"),
-                );
-                return false;
+                throw new EvalTaskOwnerError(
+                    "Lipşeşte fişierul .ok al testului $testno.\nPagina cu " .
+                    "enunţul problemei trebuie să conţină un ataşament " .
+                    "'grader_test{$testno}.ok'");
             }
         }
 
@@ -211,35 +159,30 @@ abstract class BaseGrader {
                 $test_result['message'] = 'Fisier de iesire lipsa';
                 $test_result['score'] = 0;
             }
-            return true;
+            return;
         }
 
         // Custom grader.
-        $ret = copy(IA_ROOT_DIR . 'eval/temp/evaluator',
-                    $jaildir . 'evaluator');
-        log_assert($ret, "Failed copying custom grader");
-        $ret = chmod('evaluator', 0555);
-        log_assert("Failed to chmod a+x user program");
+        $ret = @copy(IA_ROOT_DIR . 'eval/temp/evaluator',
+                     $jaildir . 'evaluator');
+        eval_assert($ret, 'Failed to copy custom grader');
+        eval_assert(chmod('evaluator', 0555),
+                    'Failed to chmod a+x user program');
 
         // Run task eval, and check result
         $jrunres = jail_run('evaluator', $jaildir,
                             IA_JUDGE_TASK_EVAL_TIMELIMIT,
                             IA_JUDGE_TASK_EVAL_MEMLIMIT,
                             true);
-        log_assert($jrunres['result'] != 'ERROR', "Error in jrun");
+        eval_assert($jrunres['result'] != 'ERROR', "Error in jrun");
 
         // Task eval is not allowed to fail.
         if ($jrunres['result'] == 'FAIL') {
             log_print("Test $testno: Task eval failed");
-            $this->result = array(
-                'score' => 0,
-                'message' => 'Eroare in evaluatorul problemei',
-                'log' => ("A aparut o eroare in rularea evaluatorului ".
-                          "pe testul $testno: {$jrunres['message']}".
-                          ": timp {$jrunres['time']}ms".
-                          ": mem {$jrunres['memory']}kb"),
-            );
-            return false;
+            throw new EvalTaskOwnerError(
+                "A apărut o eroare în rularea evaluatorului pe testul " .
+                "$testno: {$jrunres['message']}: timp {$jrunres['time']}ms: " .
+                "mem {$jrunres['memory']}kb");
         }
 
         // Get score.
@@ -247,13 +190,9 @@ abstract class BaseGrader {
         if ($jrunres['stdout'] === '' ||
             !is_whole_number($jrunres['stdout'])) {
             log_print("Test $testno: Task eval score broken or empty");
-            $this->result = array(
-                'score' => 0,
-                'message' => 'Eroare in evaluatorul problemei',
-                'log' => ("Evaluatorul nu a returnat un numar la stdout ".
-                          "pe testul $testno (se ignora spatii, newline, etc)"),
-            );
-            return false;
+            throw new EvalTaskOwnerError(
+                "Evaluatorul nu a returnat un număr la stdout " .
+                "pe testul $testno (se ignoră spaţii, newline, etc)");
         }
 
         $test_result['grader_time'] = $jrunres['time'];
@@ -262,39 +201,25 @@ abstract class BaseGrader {
         if ($test_result['score'] < 0 ||
             $test_result['score'] > IA_JUDGE_MAX_SCORE) {
             log_print("Test $testno: Invalid score returned by evaluator");
-            $this->result = array(
-                'score' => 0,
-                'message' => 'Eroare in evaluatorul problemei',
-                'log' => 'Evaluatorul a returnat un scor invalid.',
-            );
-            return false;
+            throw new EvalTaskOwnerError(
+                'Evaluatorul a returnat un scor invalid.');
         }
 
         // Get message.
         $message = $jrunres['stderr'];
-        $match = array();
-        if (!preg_match("/^([^\n]*)/i", $message, $match)) {
-            log_error("Broken preg_match???");
-        }
-        $message = $match[1];
-        if (strpos($message, "\n") ||
+        $message = strtok($message, "\n");
+        if (strlen($message) == 0 ||
             strlen($message) > IA_JUDGE_MAX_EVAL_MESSAGE) {
             log_print("Test $testno: Task eval message broken");
-            $this->result = array(
-                'score' => 0,
-                'message' => 'Eroare in evaluatorul problemei',
-                'log' =>
-                    ('Evaluatorul a returnat un mesaj mai lung de ' .
-                     IA_JUDGE_MAX_EVAL_MESSAGE . 'de caractere la stdout'),
-            );
-            return false;
+            throw new EvalTaskOwnerError(
+                'Evaluatorul a returnat un mesaj gol sau mai lung de ' .
+                IA_JUDGE_MAX_EVAL_MESSAGE . 'de caractere la stdout');
         }
         $test_result['message'] = $message;
 
         // Log.
         log_print("Test $testno: Eval gave {$test_result['score']} points " .
                   "and said {$test_result['message']}");
-        return true;
     }
 
     /**
@@ -304,7 +229,6 @@ abstract class BaseGrader {
      *
      * @param  int     $testno
      * @param  string  $jaildir
-     * @return bool                  true on success, false on failure
      */
     abstract protected function testCaseJudge($testno, $jaildir);
 
@@ -315,9 +239,7 @@ abstract class BaseGrader {
      *                          fields
      */
     public function grade() {
-        if (!$this->preTestCases()) {
-            return $this->result;
-        }
+        $this->preTestCases();
 
         // Running tests.
         $this->testResults = array();
@@ -336,14 +258,10 @@ abstract class BaseGrader {
                 }
 
                 // Clean and chdir to jail dir.
-                $ret = clean_dir($jaildir);
-                log_assert($ret, "Can't clean jail dir.");
-                $ret = chdir($jaildir);
-                log_assert($ret, "Can't chdir to jail dir.");
+                eval_assert(clean_dir($jaildir), "Can't clean jail dir.");
+                eval_assert(@chdir($jaildir), "Can't chdir to jail dir.");
 
-                if (!$this->testCaseJudge($testno, $jaildir)) {
-                    return $this->result;
-                }
+                $this->testCaseJudge($testno, $jaildir);
                 $test_result = &$this->testResults[$testno];
                 job_test_update($this->job['id'], $testno, $group_idx,
                                 $test_result['test_time'],

@@ -16,6 +16,7 @@ require_once(IA_ROOT_DIR.'common/db/user.php');
 
 require_once(IA_ROOT_DIR.'eval/utilities.php');
 require_once(IA_ROOT_DIR.'eval/download.php');
+require_once(IA_ROOT_DIR.'eval/Exceptions.php');
 require_once(IA_ROOT_DIR.'eval/ClassicGrader.php');
 
 error_reporting(0xFFFF);
@@ -53,7 +54,15 @@ function job_handle($job) {
     } else {
         log_error("Nu stiu sa evaluez task-uri de tip ".$task['type']);
     }
-    $job_result = $grader->grade();
+    try {
+        $job_result = $grader->grade();
+    } catch (EvalException $e) {
+        $job_result = array(
+            'score' => 0,
+            'message' => $e->getShortMessage(),
+            'log' => $e->getMessage(),
+        );
+    }
 
     $submit_count = 0;
     /**
