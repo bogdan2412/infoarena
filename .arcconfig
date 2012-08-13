@@ -1,5 +1,6 @@
 {
   "project_id": "infoarena",
+  "conduit_uri": "https://hackers.infoarena.ro/",
   "lint_engine": "InfoarenaLintEngine",
   "phutil_libraries": {
     "lint": "lint/"
