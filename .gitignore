@@ -1,7 +1,13 @@
+arc
+arcanist
+libphutil
+
 config.php
 eval/config.php
 
 hphp/config.hdf
+hphp/build
+infoarena
 nginx.conf
 apache.conf
 www/.htaccess
