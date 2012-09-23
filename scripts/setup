@@ -1,61 +1,20 @@
 #! /usr/bin/env php
 <?php
 
-// Duplicated, this script has no includes.
-
-// Asks the user a question.
-// $default is the default answer
-function read_line($question, $default = null) {
-    if ($default === null) {
-        echo "$question ";
-    } else {
-        echo "$question"." (default:$default) ";
-    }
-    $r = trim(fgets(STDIN));
-    if ($r == "") {
-        $r = $default;
-    }
-    return $r;
-}
-
-// Same as read_line, but returns true/false.
-// default must be true/false, or null.
-function read_bool($question, $default = null) {
-    while (true) {
-        if ($default === null) {
-            $answer = read_line($question);
-        } else if ($default) {
-            $answer = read_line($question, "yes");
-        } else {
-            $answer = read_line($question, "no");
-        }
-        if (preg_match("/^(true|y|yes|da)$/i", $answer)) {
-            return true;
-        }
-        if (preg_match("/^(false|n|no|nu)$/i", $answer)) {
-            return false;
-        }
-        echo "Answer with true/false/yes/no/etc.\n";
-    }
-}
+define('IA_SETUP_SCRIPT', true);
+require_once(dirname($argv[0]) . '/utilities.php');
 
 // Add slashes to a string.
-function slash_string($string, $start, $end)
-{
-    // Strip start/end slash
-    if ($string[0] == '/') {
-        $string = substr($string, 1);
-    }
-    if ($string[strlen($string) - 1] == '/') {
-        $string = substr($string, 0, strlen($string) - 1);
-    }
+function slash_string($string, $start, $end) {
+    // Strip existing start/end slash
+    $string = trim($string, '/');
 
     // Add start/end slash
     if ($start) {
-        $string = '/'.$string;
+        $string = '/' . $string;
     }
     if ($end) {
-        $string = $string.'/';
+        $string = $string . '/';
     }
 
     // Tada.
@@ -63,40 +22,37 @@ function slash_string($string, $start, $end)
 }
 
 // Checks if the script is running as root.
-function running_as_root()
-{
+function running_as_root() {
     return posix_getuid() == 0;
 }
 
 // Replace config values in $srcfile and copy to $dstfile
-function handle_config_file($vars, $srcfile, $dstfile)
-{
+function generate_config_file($vars, $srcfile, $dstfile) {
     $contents = file_get_contents($srcfile);
     foreach ($vars as $k => $v) {
         $contents = str_replace("--write-me-$k--", $v, $contents);
     }
     file_put_contents($dstfile, $contents);
 
-    // FIXME perms when running as root
-    if (running_as_root()) {
-        chown($dstfile, getmyuid());
-        chgrp($dstfile, getmygid());
-    }
+    chown($dstfile, getmyuid());
+    chgrp($dstfile, getmygid());
+    chmod($dstfile, 0644);
 }
 
 // Compiles longest common substrig written in c++
-function compile_lcs($IA_ROOT_DIR)
-{
-    $command = "g++ " . $IA_ROOT_DIR . "common/lcs.cpp -O2 -static -o " .
-        $IA_ROOT_DIR . "common/lcs";
+function compile_lcs($IA_ROOT_DIR) {
+    $IA_ROOT_DIR = escapeshellarg($IA_ROOT_DIR);
+    $command = 'g++ ' . $IA_ROOT_DIR . 'common/lcs.cpp -O2 -static -o ' .
+        $IA_ROOT_DIR . 'common/lcs';
 
     $last_line = system($command, $ret_val);
 
-    if ($ret_val) { // check for errors
-        print("\nWARNING!!! There has been a problem when trying to compile a " .
-            "cpp source! Check your gcc/g++ installation then rerun " .
-            "the script.\nThis will not affect the setup except for " .
-            "comparing revisons, but you should take a look at this!\n\n");
+    if ($ret_val) {
+        // Check for errors
+        print("\nWARNING!!! There has been a problem when trying to compile " .
+              "a cpp source! Check your gcc/g++ installation then rerun " .
+              "the script.\nThis will not affect the setup except for " .
+              "comparing revisons, but you should take a look at this!\n\n");
         return 0;
     }
 
@@ -107,21 +63,19 @@ function compile_lcs($IA_ROOT_DIR)
 // Real code starts here
 // ---
 
-print("\nHello, I am the infoarena setup script and I will try to guide ".
-          "you through setting up an infoarena developement working copy.\n");
+print("Hello, I am the infoarena setup script and I will try to guide ".
+      "you through setting up an infoarena developement working copy.\n");
 
-if (running_as_root()) {
-    print("I see you are running as root, this is good.\n");
-} else {
-    print("You are not root. This is fine with me, but you'll probably ".
-        "have to do some thing by hand(as root)\n");
+if (!running_as_root()) {
+    print("First of all, please run me as root.\n");
+    die();
 }
 
-print("I'm going to ask you a couple of questions. Just press enter if you like ".
-      "the default value. I'm pretty good at guessing ;).\n\n");
+print("I'm going to ask you a couple of questions. Just press enter if you ".
+      "like the default value. I'm pretty good at guessing ;).\n\n");
 
 // FIXME: Check dependencies? pecl nonsense is no longer mandatory.
-// It should be done it setup.sh anyway, since we can't relie on php-cli.
+// It should be done it setup.sh anyway, since we can't rely on php-cli.
 
 // Initialize config vars.
 $config_vars = array();
@@ -134,44 +88,42 @@ $config_vars['IA_DB_PASS'] = '';
 $config_vars['IA_DB_NAME'] = 'infoarena2';
 
 // Ask user.
-$config_vars['IA_ROOT_DIR'] = read_line("SVN checkout dir?",
-        $config_vars['IA_ROOT_DIR']);
+$config_vars['IA_ROOT_DIR'] = read_line('SVN checkout dir?',
+                                        $config_vars['IA_ROOT_DIR']);
 $config_vars['IA_ROOT_DIR'] = slash_string(
-        realpath($config_vars['IA_ROOT_DIR']), true, true);
+    realpath($config_vars['IA_ROOT_DIR']), true, true);
 $config_vars['IA_AVATAR_FOLDER'] =
-        $config_vars['IA_ROOT_DIR'].'www/static/images/avatar/';
-$config_vars['IA_AVATAR_FOLDER'] = read_line("Avatar Folder?",
-        $config_vars['IA_AVATAR_FOLDER']);
+    $config_vars['IA_ROOT_DIR'] . 'www/static/images/avatar/';
+$config_vars['IA_AVATAR_FOLDER'] = read_line('Avatar Folder?',
+                                             $config_vars['IA_AVATAR_FOLDER']);
 $config_vars['IA_AVATAR_FOLDER'] = slash_string(
-        $config_vars['IA_AVATAR_FOLDER'], true, true);
-$config_vars['IA_URL_HOST'] = read_line("Host part of url (with http)?",
-        $config_vars['IA_URL_HOST']);
-$config_vars['IA_URL_HOST'] = slash_string(
-        $config_vars['IA_URL_HOST'], false, false);
-$config_vars['IA_URL_PREFIX'] = read_line("Prefix part of url?",
-        $config_vars['IA_URL_PREFIX']);
-$config_vars['IA_URL_PREFIX'] = slash_string(
-        $config_vars['IA_URL_PREFIX'], true, true);
+    $config_vars['IA_AVATAR_FOLDER'], true, true);
+$config_vars['IA_URL_HOST'] = read_line('Host part of url (with http)?',
+                                        $config_vars['IA_URL_HOST']);
+$config_vars['IA_URL_HOST'] = slash_string($config_vars['IA_URL_HOST'],
+                                           false, false);
+$config_vars['IA_URL_PREFIX'] = read_line('Prefix part of url?',
+                                          $config_vars['IA_URL_PREFIX']);
+$config_vars['IA_URL_PREFIX'] = slash_string($config_vars['IA_URL_PREFIX'],
+                                             true, true);
 
 // Compile needed files
 compile_lcs($config_vars['IA_ROOT_DIR']);
 
 // Database configuration here.
 while (true) {
-    $config_vars['IA_DB_HOST'] = read_line("Database host?",
-            $config_vars['IA_DB_HOST']);
-    $config_vars['IA_DB_USER'] = read_line("Database connection username?",
-            $config_vars['IA_DB_USER']);
-    $config_vars['IA_DB_PASS'] = read_line("Database password?",
-            $config_vars['IA_DB_PASS']);
-    $config_vars['IA_DB_NAME'] = read_line("Database name?",
-            $config_vars['IA_DB_NAME']);
-    // FIXME: check database connection.
+    $config_vars['IA_DB_HOST'] = read_line('Database host?',
+                                           $config_vars['IA_DB_HOST']);
+    $config_vars['IA_DB_USER'] = read_line('Database connection username?',
+                                           $config_vars['IA_DB_USER']);
+    $config_vars['IA_DB_PASS'] = read_line('Database password?',
+                                           $config_vars['IA_DB_PASS']);
+    $config_vars['IA_DB_NAME'] = read_line('Database name?',
+                                           $config_vars['IA_DB_NAME']);
 
-    $dblink = mysql_connect(
-            $config_vars['IA_DB_HOST'],
-            $config_vars['IA_DB_USER'],
-            $config_vars['IA_DB_PASS']);
+    $dblink = mysql_connect($config_vars['IA_DB_HOST'],
+                            $config_vars['IA_DB_USER'],
+                            $config_vars['IA_DB_PASS']);
 
     if (!$dblink) {
         print("Can't connect to database, something must be wrong.\n");
@@ -186,10 +138,12 @@ while (true) {
         print("Can't select database.\n");
         if (read_bool("Should I try to create the database?", true)) {
             if (!mysql_query("CREATE DATABASE {$config_vars['IA_DB_NAME']}")) {
-                die("Failed creating database, sorry.");
+                print("Failed creating database, sorry.");
+                continue;
             }
             if (!mysql_select_db($config_vars['IA_DB_NAME'], $dblink)) {
-                die("Still can't select database.\n");
+                print("Still can't select database.\n");
+                continue;
             }
         }
     }
@@ -199,82 +153,119 @@ while (true) {
 // Do the config monkey.
 $ia_root = $config_vars['IA_ROOT_DIR'];
 $ia_url = $config_vars['IA_URL_HOST'] . $config_vars['IA_URL_PREFIX'];
-handle_config_file($config_vars,
-        $ia_root.'config.php.sample', $ia_root.'config.php');
-handle_config_file($config_vars,
-        $ia_root.'www/htaccess.sample', $ia_root.'www/.htaccess');
-handle_config_file($config_vars,
-        $ia_root.'eval/config.php.sample', $ia_root.'eval/config.php');
-handle_config_file($config_vars,
-        $ia_root.'apache.conf.sample', $ia_root.'apache.conf');
+generate_config_file($config_vars,
+                     $ia_root . 'config.php.sample',
+                     $ia_root . 'config.php');
+generate_config_file($config_vars,
+                     $ia_root . 'www/htaccess.sample',
+                     $ia_root . 'www/.htaccess');
+generate_config_file($config_vars,
+                     $ia_root . 'eval/config.php.sample',
+                     $ia_root . 'eval/config.php');
+generate_config_file($config_vars,
+                     $ia_root . 'apache.conf.sample',
+                     $ia_root . 'apache.conf');
 
-if ($dblink && read_bool("Should I try to import the sample database?", true)) {
-    $cmd = sprintf("mysql --user=%s --password=%s --host=%s %s < %s",
-            $config_vars['IA_DB_USER'],
-            $config_vars['IA_DB_PASS'],
-            $config_vars['IA_DB_HOST'],
-            $config_vars['IA_DB_NAME'],
-            $config_vars['IA_ROOT_DIR'] . "db.sql");
+if ($dblink && read_bool('Should I try to import the sample database?', true)) {
+    $cmd = sprintf('mysql --user=%s --password=%s --host=%s %s < %s',
+                   escapeshellarg($config_vars['IA_DB_USER']),
+                   escapeshellarg($config_vars['IA_DB_PASS']),
+                   escapeshellarg($config_vars['IA_DB_HOST']),
+                   escapeshellarg($config_vars['IA_DB_NAME']),
+                   escapeshellarg($config_vars['IA_ROOT_DIR'] . 'db.sql'));
     print("Running $cmd\n");
     system($cmd);
+    print("Done importing sample database\n\n");
 }
 
 // Configure apache
-if (!running_as_root()) {
-    print("I'd try to configure apache, but I'm not root.\n");
-}
-if (running_as_root() &&
-        read_bool("Should I try to configure apache for you?", true)) {
+if (read_bool('Should I try to configure apache for you?', true)) {
     $sitename = slash_string($config_vars['IA_URL_PREFIX'], false, false);
-    $sitename = read_line("Site name?", $sitename);
-    system("chmod g+ws {$ia_root}attach");
-    system("chmod g+ws {$ia_root}cache");
-    system("chmod g+ws {$ia_root}www/static/images/tmp");
-    system("chmod g+ws {$ia_root}www/static/images/latex");
+    $sitename = read_line('Site name?', $sitename);
 
-    $username = null;
-    if (preg_match('/\/home\/([^\/]*)/', IA_ROOT, $matches)) {
-        $username = $matches[1];
+    $dirs = array($ia_root . 'attach',
+                  $ia_root . 'cache',
+                  $config_vars['IA_AVATAR_FOLDER'],
+                  $ia_root . 'www/static/images/latex',
+                  $ia_root . 'www/static/images/tmp',
+                  $ia_root . 'smf/attachments');
+    foreach ($dirs as $dir) {
+        if (!is_dir($dir)) {
+            mkdir($dir);
+        }
+        system('chmod 2750 ' . escapeshellarg($dir));
     }
-    // Debian/Ubuntu
-    if (is_dir('/etc/apache2/sites-available/') &&
-        is_dir('/etc/apache2/sites-enabled/')) {
+
+    $sitename = escapeshellarg($sitename);
+    if (php_uname('s') === 'Darwin') {
+        // OS X installation
+        print("You seem to have an OS X setup.\n");
+        system("rm -rf /etc/apache2/other/$sitename.conf");
+        system("ln -sf {$ia_root}apache.conf /etc/apache2/other/$sitename.conf");
+
+        $httpd_contents = file_get_contents('/etc/apache2/httpd.conf');
+        $httpd_contents = str_replace(
+            '#LoadModule php5_module libexec/apache2/libphp5.so',
+            'LoadModule php5_module libexec/apache2/libphp5.so',
+            $httpd_contents);
+        file_put_contents('/etc/apache2/httpd.conf', $httpd_contents);
+        system("apachectl -k restart");
+        foreach ($dirs as $dir) {
+            system('chown _www:' . getmygid() . ' ' . escapeshellarg($dir));
+        }
+    } else if (is_dir('/etc/apache2/sites-available/') &&
+               is_dir('/etc/apache2/sites-enabled/')) {
+        // Debian/Ubuntu
         print("You seem to have a debian-ish apache2 setup.\n");
         system("rm -rf /etc/apache2/sites-available/$sitename");
         system("rm -rf /etc/apache2/sites-enabled/$sitename");
         system("ln -sf {$ia_root}apache.conf ".
-                "/etc/apache2/sites-available/$sitename");
+               "/etc/apache2/sites-available/$sitename");
 
         // Enable site ad modules, then reload
         system("a2enmod php5");
         system("a2enmod rewrite");
         system("a2ensite $sitename");
         system("/etc/init.d/apache2 reload");
-        if ($username != null) {
-            system("adduser www-data {$username}");
+        foreach ($dirs as $dir) {
+            system('chown www-data:' . getmygid() . ' ' . escapeshellarg($dir));
         }
-    // Fedora/Redhat/others?
     } else if (is_dir('/etc/httpd/conf.d/')) {
+        // Fedora/Redhat/others?
         print('You seem to have a redhat-ish apache2 setup.\n');
         system("rm -rf /etc/httpd/infoarena2-dev");
         system("ln -sf {$ia_root}apache.conf /etc/httpd/conf.d/$sitename");
         system("service httpd restart");
-        if ($username != null) {
-            system("usermod -G `id -g $username` -a apache");
+        foreach ($dirs as $dir) {
+            system('chown apache:' . getmygid() . ' ' . escapeshellarg($dir));
         }
     } else {
-        print("I can't figure out your system. I'm scared.\n");
+        print("I can not figure out how to setup the webserver on your " .
+              "operating system. You will have to do it yourself\n");
+        if (!read_bool("Would you like to continue with the rest of " .
+                       "the setup script?", true)) {
+            die();
+        }
     }
+    print("Done configuring apache\n\n");
 }
 
-// Running scripts to keep things simple for new developers
-system("./{$ia_root}scripts/make-avatar-folder");
-// FIXME: configure forum
+if (php_uname('s') === 'Darwin') {
+    print("Evaluator is not supported on OS X installations.\n\n");
+} else {
+    print("FIXME: eval won't work, but it doesn't matter.\n");
+    print("Done configuring evaluator\n\n");
+}
+
+// Run any other scripts
+if (read_bool("Should I try to build the avatar cache folder?", true)) {
+    print("Building the avatar cache folder\n");
+    system("{$ia_root}scripts/make-avatar-folder");
+    print("Done building the avatar cache folder\n\n");
+}
+
+// Try and configure forum
 if (read_bool("Should I try to configure the forum (ugly db stuff)?", true)) {
     system("{$ia_root}scripts/forum-fix");
+    print("Done configuring the forum\n\n");
 }
-
-print("FIXME: forum is not completely functional\n");
-print("FIXME: eval won't work, but it doesn't matter.\n");
-
-?>

@@ -27,15 +27,24 @@ clean-hphp:
 clean-sessions:
 	find /var/infoarena/sessions/ -name sess_\* -exec rm {} +
 
+clean-tools:
+	rm -rf arc arcanist libphutil
+
 clean: clean-cache clean-hphp clean-sessions
+
+distclean: clean-tools clean
 
 arcanist:
 	git clone git://github.com/facebook/arcanist.git
+	ln -s arcanist/bin/arc .
 
 libphutil:
 	git clone git://github.com/facebook/libphutil.git
 	libphutil/scripts/build_xhpast.sh || true
 	libphutil/scripts/build_xhpast.sh
+
+setup: arcanist libphutil
+	sudo scripts/setup
 
 lint-repo: arcanist libphutil
 	find . -name \*.php | xargs arcanist/bin/arc lint --lintall --never-apply-patches

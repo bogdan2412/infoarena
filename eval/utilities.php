@@ -185,8 +185,8 @@ function jail_run($program, $jaildir, $time, $memory, $capture_std = false) {
     }
 
     if ($result['result'] == 'OK') {
-        eval_assert($result['time'] <= $jrun_process['time'] &&
-                    $result['memory'] <= $jrun_process['memory'],
+        eval_assert($result['time'] <= $time &&
+                    $result['memory'] <= $memory,
                     'JRun returns OK, but time or memory limit is broken');
     }
 

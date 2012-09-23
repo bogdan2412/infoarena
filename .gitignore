@@ -1,7 +1,3 @@
-arc
-arcanist
-libphutil
-
 config.php
 eval/config.php
 
@@ -23,5 +19,7 @@ www/static/images/avatar/
 www/static/images/latex/
 www/static/images/tmp/
 
+
+arc
 arcanist/
 libphutil/

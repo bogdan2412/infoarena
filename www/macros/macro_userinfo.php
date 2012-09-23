@@ -34,6 +34,12 @@ function macro_userinfo($args) {
         case 'username':
             return html_escape($user['username']);
         case 'security':
+            $custom_swag = array(
+                'bogdan2412' => 'Technical lead',
+                'andrei.12' => 'Administrator alcoolic');
+            if (array_key_exists($user['username'], $custom_swag)) {
+                return $custom_swag[$user['username']];
+            }
             switch ($user['security_level']) {
             case 'admin':
                 return 'Administrator';

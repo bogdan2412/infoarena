@@ -20,11 +20,7 @@ require_once(IA_ROOT_DIR . "www/format/format.php");
 
     }
     function attachments_toggle_selection(checked) {
-        var check_boxes = getElementsByTagAndClassName('input', 'attach-checkbox');
-
-        for (var index in check_boxes) {
-            check_boxes[index].checked = checked;
-        }
+        $('input.attach-checkbox').prop("checked", checked);
     }
 </script>
 
