@@ -6,13 +6,7 @@
     $background = imagecolorallocate($my_img, 154, 205, 50);
     $text_color = imagecolorallocate($my_img, 255, 255, 255);
     $rating_value = (int) $view['rating'];
-    if($rating_value >= 600) {
-        $line_color = imagecolorallocate($my_img, 178, 34, 34);
-    } else if ($rating_value >= 520) {
-        $line_color = imagecolorallocate($my_img, 255, 255, 0);
-    } else {
-        $line_color = imagecolorallocate($my_img, 50, 205, 50);
-    }
+    $line_color = imagecolorallocate($my_img, $view['red'], $view['green'], $view['blue']);
     imagestring($my_img, 3, 15, 42, $view['name'], $text_color);
     imagestring($my_img, 3, 115, 5, $print_rating, $text_color);
     imagestring($my_img, 3, 95, 19, "Succes: " . $view['succes'], $text_color);
