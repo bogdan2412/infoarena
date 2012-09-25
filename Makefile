@@ -43,8 +43,5 @@ libphutil:
 	libphutil/scripts/build_xhpast.sh || true
 	libphutil/scripts/build_xhpast.sh
 
-setup: arcanist libphutil
-	sudo scripts/setup
-
 lint-repo: arcanist libphutil
 	find . -name \*.php | xargs arcanist/bin/arc lint --lintall --never-apply-patches
