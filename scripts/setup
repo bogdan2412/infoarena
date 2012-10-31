@@ -165,6 +165,9 @@ generate_config_file($config_vars,
 generate_config_file($config_vars,
                      $ia_root . 'apache.conf.sample',
                      $ia_root . 'apache.conf');
+generate_config_file($config_vars,
+                     $ia_root . 'hphp/config.hdf.sample',
+                     $ia_root . 'hphp/config.hdf');
 
 if ($dblink && read_bool('Should I try to import the sample database?', true)) {
     $cmd = sprintf('mysql --user=%s --password=%s --host=%s %s < %s',
