@@ -42,10 +42,10 @@ class LatexRender {
     var $_xsize_limit = 800;
     var $_ysize_limit = 600;
     var $_string_length_limit = 10000;
-	var $_font_size = 10;
-	var $_latexclass = "article"; //install extarticle class if you wish to have smaller font sizes
+    var $_font_size = 10;
+    var $_latexclass = "article"; // install extarticle class if you wish to have smaller font sizes
     var $_tmp_filename;
-	var $_image_format = "gif"; //change to png if you prefer
+    var $_image_format = "gif"; // change to png if you prefer
     // this most certainly needs to be extended. in the long term it is planned to use
     // a positive list for more security. this is hopefully enough for now. i'd be glad
     // to receive more bad tags !
@@ -58,7 +58,7 @@ class LatexRender {
         "\\afterassignment","\\expandafter","\\noexpand","\\special"
         );
     var $_errorcode = 0;
-	var $_errorextra = "";
+    var $_errorextra = "";
 
 
     // ====================================================================================
@@ -71,7 +71,7 @@ class LatexRender {
      * @param string path where the rendered pictures should be stored
      * @param string same path, but from the httpd chroot
      */
-    function LatexRender($picture_path,$picture_path_httpd,$tmp_dir) {
+    function __construct($picture_path, $picture_path_httpd, $tmp_dir) {
         $this->_picture_path = $picture_path;
         $this->_picture_path_httpd = $picture_path_httpd;
         $this->_tmp_dir = $tmp_dir;
@@ -144,7 +144,7 @@ class LatexRender {
         } else {
             // security filter: reject too long formulas
             if (strlen($latex_formula) > $this->_string_length_limit) {
-            	$this->_errorcode = 1;
+                $this->_errorcode = 1;
                 $this->_errorextra = ": ".strlen($latex_formula)." > ".$this->_string_length_limit;
                 return false;
             }
@@ -152,7 +152,7 @@ class LatexRender {
             // security filter: try to match against LaTeX-Tags Blacklist
             for ($i=0;$i<sizeof($this->_latex_tags_blacklist);$i++) {
                 if (stristr($latex_formula,$this->_latex_tags_blacklist[$i])) {
-                	$this->_errorcode = 2;
+                    $this->_errorcode = 2;
                     $this->_errorextra = ": ".$this->_latex_tags_blacklist[$i];
                     return false;
                 }
@@ -160,11 +160,11 @@ class LatexRender {
 
             // security checks assume correct formula, let's render it
             if ($this->renderLatex($latex_formula)) {
-            	//offset: look for extended file name
+                // offset: look for extended file name
                 return $this->getPicturePathHTTPD()."/".$this->FindFile($filename);
             } else {
                 // uncomment if required
-                $this->_errorcode = 3;
+                // $this->_errorcode = 3;
                 return false;
             }
         }
@@ -172,16 +172,16 @@ class LatexRender {
 
     //offset: find the file whose name starts with $formula_hash
     function FindFile($lookforfile) {
-    	$lookforfile = str_replace(".".$this->_image_format,"",$lookforfile);
-	$dp=opendir($this->getPicturePath());
-	$filenametofind = "";
-	while($file=readdir($dp) AND $filenametofind=="") {
-	  if (substr($file,0,strlen($lookforfile))==$lookforfile) {
-		$filenametofind = $file;
-	    }
-	  }
-	closedir($dp);
-	return $filenametofind;
+        $lookforfile = str_replace(".".$this->_image_format, "", $lookforfile);
+    $dp = opendir($this->getPicturePath());
+    $filenametofind = "";
+    while ($file = readdir($dp) AND $filenametofind == "") {
+      if (substr($file, 0, strlen($lookforfile)) == $lookforfile) {
+        $filenametofind = $file;
+        }
+      }
+    closedir($dp);
+    return $filenametofind;
     }
 
     // ====================================================================================
@@ -197,35 +197,35 @@ class LatexRender {
      * @returns minimalistic LaTeX document containing the given formula
      */
     function wrap_formula($latex_formula) {
-        $string  = "\documentclass[".$this->_font_size."pt]{".$this->_latexclass."}\n";
-        $string .= "\usepackage[latin1]{inputenc}\n";
-        $string .= "\usepackage{amsmath}\n";
-        $string .= "\usepackage{amsfonts}\n";
-        $string .= "\usepackage{amssymb}\n";
-        $string .= "\usepackage{color}\n";
-        $string .= "\pagestyle{empty}\n";
-	$string .= "\\newsavebox{\formulabox}\n";
-	$string .= "\\newlength{\formulawidth}\n";
-	$string .= "\\newlength{\formulaheight}\n";
-	$string .= "\\newlength{\formuladepth}\n";
-	$string .= "\setlength{\\topskip}{0pt}\n";
-	$string .= "\setlength{\parindent}{0pt}\n";
-	$string .= "\setlength{\abovedisplayskip}{0pt}\n";
-	$string .= "\setlength{\belowdisplayskip}{0pt}\n";
-	$string .= "\begin{lrbox}{\formulabox}\n";
-	$string .= "$\\ ".$latex_formula."$\n";
-	$string .= "\end{lrbox}\n";
-	$string .= "\settowidth {\formulawidth}  {\usebox{\formulabox}}\n";
-	$string .= "\settoheight{\formulaheight} {\usebox{\formulabox}}\n";
-	$string .= "\settodepth {\formuladepth}  {\usebox{\formulabox}}\n";
-	$string .= "\\newwrite\foo\n";
-	$string .= "\immediate\openout\foo=\jobname.depth\n";
- 	$string .= "    \addtolength{\formuladepth} {1pt}\n";
-	$string .= "    \immediate\write\foo{\\the\formuladepth}\n";
-	$string .= "\closeout\foo\n";
-        $string .= "\begin{document}\n";
-	$string .= "\usebox{\formulabox}\n";
-        $string .= "\end{document}\n";
+        $string  = "\\documentclass[".$this->_font_size."pt]{".$this->_latexclass."}\n";
+        $string .= "\\usepackage[latin1]{inputenc}\n";
+        $string .= "\\usepackage{amsmath}\n";
+        $string .= "\\usepackage{amsfonts}\n";
+        $string .= "\\usepackage{amssymb}\n";
+        $string .= "\\usepackage{color}\n";
+        $string .= "\\pagestyle{empty}\n";
+        $string .= "\\newsavebox{\\formulabox}\n";
+        $string .= "\\newlength{\\formulawidth}\n";
+        $string .= "\\newlength{\\formulaheight}\n";
+        $string .= "\\newlength{\\formuladepth}\n";
+        $string .= "\\setlength{\\topskip}{0pt}\n";
+        $string .= "\\setlength{\\parindent}{0pt}\n";
+        $string .= "\\setlength{\\abovedisplayskip}{0pt}\n";
+        $string .= "\\setlength{\\belowdisplayskip}{0pt}\n";
+        $string .= "\\begin{lrbox}{\\formulabox}\n";
+        $string .= "$\\ ".$latex_formula."$\n";
+        $string .= "\\end{lrbox}\n";
+        $string .= "\\settowidth {\\formulawidth}  {\usebox{\\formulabox}}\n";
+        $string .= "\\settoheight{\\formulaheight} {\usebox{\\formulabox}}\n";
+        $string .= "\\settodepth {\\formuladepth}  {\usebox{\\formulabox}}\n";
+        $string .= "\\newwrite\\foo\n";
+        $string .= "\\immediate\\openout\\foo=\\jobname.depth\n";
+         $string .= "    \\addtolength{\\formuladepth} {1pt}\n";
+        $string .= "    \\immediate\\write\\foo{\\the\\formuladepth}\n";
+        $string .= "\\closeout\\foo\n";
+        $string .= "\\begin{document}\n";
+        $string .= "\\usebox{\\formulabox}\n";
+        $string .= "\\end{document}\n";
 
         return $string;
     }
@@ -288,7 +288,7 @@ class LatexRender {
 
         // imagemagick convert ps to image and trim picture
         $command = $this->_convert_path." -density ".$this->_formula_density.
-                    " -trim -transparent \"#FFFFFF\" ".$this->_tmp_filename.".ps ".
+                    " -flatten -trim -transparent \"#FFFFFF\" ".$this->_tmp_filename.".ps ".
                     $this->_tmp_filename.".".$this->_image_format;
 
         $status_code = exec($command);
@@ -306,17 +306,17 @@ class LatexRender {
 
         // copy temporary formula file to cahed formula directory
         $latex_hash = md5($latex_formula);
-	// offset: change file name to include depth information
-	$depthfile = $this->_tmp_filename.".depth";
-	if(is_readable($depthfile)) {
-		$offset = file($depthfile);
-		$filename = $this->getPicturePath()."/".$latex_hash."_".rtrim($offset[0]).".".$this->_image_format;
-	} else {
-		$filename = $this->getPicturePath()."/".$latex_hash.".".$this->_image_format;
-	}
-	
+    // offset: change file name to include depth information
+    $depthfile = $this->_tmp_filename.".depth";
+    if (is_readable($depthfile)) {
+        $offset = file($depthfile);
+        $filename = $this->getPicturePath()."/".$latex_hash."_".rtrim($offset[0]).".".$this->_image_format;
+    } else {
+        $filename = $this->getPicturePath()."/".$latex_hash.".".$this->_image_format;
+    }
+
         $status_code = copy($this->_tmp_filename.".".$this->_image_format,$filename);
-        
+
         $this->cleanTemporaryDirectory();
 
         if (!$status_code) { chdir($current_dir); $this->_errorcode = 6; return false; }
@@ -345,5 +345,3 @@ class LatexRender {
     }
 
 }
-
-?>
