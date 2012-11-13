@@ -766,7 +766,8 @@ form.round li#field_tasks select {
 
 .wiki_text_block a.wiki_link_external {
     color: #549DC6;
-	background: transparent url(../images/external.png) no-repeat scroll center right;
+    background: transparent url(../images/external.png) scroll center right;
+    background-repeat: no-repeat;
     padding-right: 13px;
 }
 
@@ -1056,7 +1057,6 @@ ul.htabs-2 {
 /* Tasks table */
 table.tasks {
     line-height: 2em;
-    width: 99%;
 }
 
 /* Basic table css */
@@ -1570,4 +1570,194 @@ table.form {
 }
 table.form td {
     border: 0px;
+}
+
+/* Selected filters div for task filtering */
+.vertical-align-wrapper {
+}
+
+#selected-filters-wrapper.vertical-align-wrapper {
+    width: 100%;
+    height: 30px;
+    text-align: center;
+}
+
+#selected-filters {
+    width: 70%;
+    height: 30px;
+    background: #171717;
+    border: solid 0px;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+
+    margin: auto;
+    margin-top: 10px;
+
+    -webkit-box-shadow: 0px 2px 3px #555;
+    text-shadow: 0px 2px 3px #171717;
+
+}
+
+#selected-filters a {
+    color: #555;
+    font-size: 14px;
+    line-height: 30px;
+    font-family: monospace;
+    text-shadow: 0px 2px 3px #171717;
+
+    transition: color 0.1s ease-in;
+    -webkit-transition: color 0.1s ease-in;
+}
+
+#selected-filters a:hover {
+    text-decoration: none;
+    color: #fff;
+}
+
+/* Menu for task filtering */
+#task-filter-menu {
+    margin-top: 30px;
+    position: relative;
+    text-align: center;
+
+    width: 200px;
+    height: 100%;
+    float: left;
+}
+
+#task-filter-menu ul {
+    margin-bottom: 50px;
+    list-style: none;
+}
+
+.mainmenu li {
+    position: relative;
+}
+
+.mainmenu li a {
+    border: solid 1px #699A0A;
+    background-color: #BAD48A;
+    display: block;
+    text-align: left;
+    width: 200px;
+    padding: 2px;
+    height: 26px;
+    font-family: monospace;
+    color: #555;
+    text-shadow: 0px 2px 3px #BAD48A;
+    line-height: 26px;
+
+    transition: background-color 0.2s ease-in;
+    -webkit-transition: background-color 0.2s ease-in;
+    -moz-transition: background-color 0.2s ease-in;
+    -o-transition: background-color 0.2s ease-in;
+}
+
+.mainmenu li+li a {
+    border-top: solid 1px #fff;
+}
+
+
+.mainmenu li a:hover {
+    background-color: #699A0A;
+    text-decoration: none;
+    color: #fff;
+    text-shadow-color: #699A0A;
+}
+
+/* Just some round corners, won't work in IE < 9 but it's okay*/
+.mainmenu > li:first-child > a {
+     border-top-left-radius: 10px;
+    -webkit-border-top-left-radius-t: 10px;
+    -moz-border-top-left-radius: 10px;
+}
+
+/* Now the submenus */
+.submenu {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    z-index: 100;
+    top: 0px;
+    left: 206px;
+
+    transition: visibility 0s ease-in 0.2s, opacity 0.2s ease-in;
+    -webkit-transition: visibility 0s ease-in 0.2s, opacity 0.2s ease-in;
+    -moz-transition: visibility 0s ease-in 0.2s, opacity 0.2s ease-in;
+    -o-transition: visibility 0s ease-in 0.2s, opacity 0.2s ease-in;
+}
+
+.submenu li a{
+    width: 250px;
+    border-left-color: #fff;
+}
+
+li:hover > ul.submenu {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+    -webkit-transition-delay: 0s;
+    -moz-transition-delay: 0s;
+    -o-transition-delay: 0s;
+}
+
+/* Help for task filtering */
+#task-filter-help {
+    text-align: center;
+    width: 100%;
+    height: 20px;
+}
+
+#task-filter-help div {
+    display: inline-block;
+    vertical-align: middle;
+    border: solid 1px #699A0A;
+    background-color: #BAD48A;
+    width: 20px;
+    height: 20px;
+    margin-left: 20px;
+
+    transition: background-color 0.2s ease-in;
+    -webkit-transition: background-color 0.2s ease-in;
+    -moz-transition: background-color 0.2s ease-in;
+    -o-transition: background-color 0.2s ease-in;
+}
+
+#task-filter-help div:hover {
+    background-color:  #699A0A;
+}
+
+li.selected-filter > a, #task-filter-help div.selected-filter {
+    background-color: #E86C6C;
+}
+
+li.selected-filter > a:hover, #task-filter-help div.selected-filter:hover {
+    background-color: #C12425;
+}
+
+li.sub-selected-filters > a, #task-filter-help div.sub-selected-filters {
+    background-color: #72ADE8;
+}
+
+li.sub-selected-filters > a:hover,
+#task-filter-help div.sub-selected-filters:hover {
+    background-color: #2285E8;
+}
+
+li.selected-filter.sub-selected-filters > a,
+#task-filter-help div.selected-filter.sub-selected-filters {
+    background-color: #B6A8E8;
+}
+
+li.selected-filter.sub-selected-filters > a:hover,
+#task-filter-help div.selected-filter.sub-selected-filters:hover {
+    background-color: #896EE8;
+}
+
+/* Task filtering table */
+#task-filter-table {
+    display: block;
+    margin-left: 200px;
+    padding: 10px;
 }

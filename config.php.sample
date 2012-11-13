@@ -132,6 +132,9 @@ define("IA_MEM_CACHE_EXPIRATION", 3600);
 // TTL for tag caches.
 define("IA_MEM_CACHE_TAGS_EXPIRATION", 3600);
 
+// Maximum tags to use in cache
+define("IA_MAX_TAGS_TO_CACHE", 2);
+
 if (IA_MEM_CACHE_METHOD === "memcached") {
     define('IA_MEMCACHED_HOST', '127.0.0.1');
     define('IA_MEMCACHED_PORT', 11211);

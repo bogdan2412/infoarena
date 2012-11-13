@@ -250,6 +250,25 @@ if (IA_MEM_CACHE_METHOD == 'none') {
         }
         return @memcache_flush($_memcache);
     }
+
+    function mem_cache_multiget($cache_ids) {
+        global $_memcache;
+        log_assert(is_array($cache_ids));
+        if (IA_LOG_MEM_CACHE) {
+            log_print("MEM CACHE: multiget " . implode(' ', $cache_ids));
+        }
+
+        $res = @memcache_get($_memcache, $cache_ids);
+        if ($res === null)
+            $res = array();
+
+        if (count($cache_ids) > 0) {
+            log_print('MEM CACHE: multiget hit ' . count($res) . '/' .
+                       count($cache_ids));
+        }
+
+        return $res;
+    }
 } else if (IA_MEM_CACHE_METHOD == 'apc') {
     // APC cache implementation
     function mem_cache_get($cache_id) {
@@ -290,5 +309,29 @@ if (IA_MEM_CACHE_METHOD == 'none') {
             log_print("MEM CACHE: purge");
         }
         return @apc_clear_cache();
+    }
+}
+
+if (IA_MEM_CACHE_METHOD != 'memcached') {
+    function mem_cache_multiget($cache_ids) {
+        log_assert(is_array($cache_ids));
+        if (IA_LOG_MEM_CACHE) {
+            log_print("MEM CACHE: multiget " . implode(' ', $cache_ids));
+        }
+
+        $res = array();
+        foreach ($cache_ids as $cache_key) {
+            $result = mem_cache_get($cache_key);
+            if ($result !== false) {
+                $res[$cache_key] = $result;
+            }
+        }
+
+        if (count($cache_ids) > 0) {
+            log_print('MEM CACHE: multiget hit ' . count($res) . '/' .
+                       count($cache_ids));
+        }
+
+        return $res;
     }
 }

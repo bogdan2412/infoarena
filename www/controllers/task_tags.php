@@ -6,17 +6,11 @@ require_once(IA_ROOT_DIR . "common/string.php");
 function controller_task_tags() {
     identity_require("task-tag");
 
-    $categories = tag_build_tree(tag_get_all(array("method", "algorithm")));
-    foreach ($categories as &$category) {
-        foreach ($category["sub_tags"] as &$tag) {
-            $tag["task_count"] = tag_count_objects("task", array($tag["id"]));
-        }
-    }
+    $categories = tag_build_tree(
+                    tag_get_with_counts(array("method", "algorithm"),
+                                      array(), true));
 
-    $authors = tag_get_all(array("author"));
-    foreach ($authors as &$author) {
-        $author["task_count"] = tag_count_objects("task", array($author["id"]));
-    }
+    $authors = tag_get_with_counts(array("author"), array(), true);
 
     // Create view.
     $view = array();
@@ -127,4 +121,3 @@ function controller_task_tags_rename() {
     flash("Tag-ul a fost redenumit.");
     redirect(url_task_tags());
 }
-?>

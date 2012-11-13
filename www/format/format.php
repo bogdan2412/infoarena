@@ -66,7 +66,9 @@ function format_tag($tag, $content = null, $attribs = array(), $escape = true) {
 // You can set escape_content to false.
 function format_link($url, $content, $escape = true, $attr = array()) {
     log_assert(is_array($attr), '$attr is not an array');
-    $attr['href'] = $url;
+    if ($url) {
+        $attr['href'] = $url;
+    }
     return format_tag("a", $content, $attr, $escape);
 }
 
@@ -376,4 +378,109 @@ function format_task_author_tags($authors) {
     }
 
     return $authors_formatted;
+}
+
+/**
+ * Formats a small box containing the name of the filter(with category) and a
+ * link for removing the filter on browsers not supporting javascript
+ *
+ * @param string $tag_name
+ * @return string
+ */
+function format_selected_task_filter($tag) {
+    return
+        '<div class="selected-filter">' . '#' . html_escape($tag['name']) .
+        ($tag['parent_name'] ? '(' . html_escape($tag['parent_name']) . ')' :
+        '') . '</div>';
+}
+
+/**
+ * Format's a link for adding or removing a tag on task filtering
+ *
+ * @param array $tag
+ * @param array $tag_ids
+ * @param bool $has_subtags_selected
+ * @return string
+ */
+function format_task_filter_tag($tag, $tag_ids) {
+    log_assert(is_array($tag), 'tag must be an array');
+    log_assert(is_array($tag_ids), 'tag_ids must be an array');
+
+    if ($tag['id']) {
+        if (in_array($tag['id'], $tag_ids)) {
+            $link_tags = array_diff($tag_ids, array($tag['id']));
+        } else {
+            // written like this just for similarity
+            $link_tags = array_merge($tag_ids, array($tag['id']));
+        }
+    } else {
+        $link_tags = $tag_ids;
+    }
+
+    // If we press a category we automatically deselect all subfilters
+    // This has a nice property, we can deselect all authors with the same
+    // capital
+    $bad_tags = array();
+    foreach (getattr($tag, 'sub_tags', array()) as $subtag) {
+        $bad_tags[] = $subtag['id'];
+    }
+    // If we press a filter we deselect its parent
+    if (isset($tag['parent'])) {
+        $bad_tags[] = $tag['parent'] ;
+    }
+    // for categories like A-E, so not clicked tags are not regarded as bad
+    // tags
+    $bad_tags = array_intersect($bad_tags, $link_tags);
+    $link_tags = array_diff($link_tags, $bad_tags);
+
+    // if we can't calculate the number of tasks after clicking this tag don't
+    // do it
+    if (getattr($tag, 'nocount')) {
+        $tag['task_count'] = null;
+    }
+
+    if (count($bad_tags) > 0 || $tag['id']) {
+        $link = url_task_search($link_tags);
+    } else {
+        $link = '';
+    }
+
+    return format_link($link,
+                     $tag['name'] .
+                     (getattr($tag, 'task_count') ?
+                          '(' . $tag['task_count'] . ')' : ''));
+}
+
+/**
+ * Formats a task tag drag-and-drop menu
+ *
+ * @param array $tags
+ * @param array $selected_tags
+ * @return string
+ */
+function format_task_tag_menu($tags, $selected_tags) {
+    log_assert(is_array($tags), 'tags should be an array');
+    log_assert(is_array($selected_tags), 'selected_tags should be an array');
+    $menu = '<ul class="mainmenu">';
+
+    foreach ($tags as $tag) {
+        $classes = array();
+
+        $menu .= '<li class="' . implode(' ', $tag['classes']) . '">';
+
+        $menu .= format_task_filter_tag($tag, $selected_tags);
+
+        // we get the subtags, there must be one because we can't pick
+        // categories as task tags
+        $menu .= '<ul class="submenu">';
+        foreach ($tag['sub_tags'] as $subtag) {
+            $menu .= '<li class="' . implode(' ', $subtag['classes']) . '">';
+            $menu .= format_task_filter_tag($subtag, $selected_tags);
+            $menu .= '</li>';
+        }
+        $menu .= '</ul>';
+        $menu .= '</li>';
+    }
+    $menu .= '</ul>';
+    return $menu;
 }

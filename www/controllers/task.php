@@ -361,7 +361,8 @@ function controller_task_tag($task_id) {
             }
         }
         if ($count != count($algorithm_tags_id)) {
-            flash_error("Datele trimise sunt invalide. Raporteaza aceasta problema unui admin.");
+            flash_error('Datele trimise sunt invalide. Raporteaza aceasta '.
+                        'problema unui admin.');
             redirect(url_task_edit($task_id, 'task-edit-tags'));
         }
 
@@ -415,18 +416,25 @@ function controller_task_search() {
 
     // Fetch the tags and all their parents so they can be displayed
     // in a tree-like fashion
+    $selected_tags = array();
     if (count($tags) > 0) {
+        $selected_tags = $tags;
         while ((
-            $new_tags = array_unique(array_merge($tags, tag_get_parents($tags)))
+            $new_tags = array_unique(array_merge($tags,
+                                                 tag_get_parents($tags)))
         ) != $tags) {
             $tags = $new_tags;
         }
-        $tags = tag_build_tree(tag_get_by_ids($tags));
     }
 
+    $authors = tag_get_with_counts(array('author'), $tags);
+    $tags = tag_build_tree(tag_get_with_counts(array('method', 'algorithm'),
+                                                 $tags));
     $view = array();
     $view['title'] = "Rezultatele filtrării";
     $view['tasks'] = $tasks;
     $view['tags'] = $tags;
+    $view['selected_tags'] = $selected_tags;
+    $view['authors'] = $authors;
     execute_view_die('views/task_filter_results.php', $view);
 }

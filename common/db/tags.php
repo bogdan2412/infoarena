@@ -105,17 +105,45 @@ function tag_get_ids($tags) {
 }
 
 // Get a list of tags from a list of tag ids
-function tag_get_by_ids($tag_ids) {
-    if (count($tag_ids) == 0) {
-        return array();
+function tag_get_by_ids($tag_ids, $cache = true) {
+    $cache_keys = array();
+    foreach ($tag_ids as &$tag) {
+        $cache_keys[] = "tag-by-id:" . $tag;
     }
 
-    $query = sprintf(
-            "SELECT `id`, `name`, `type`, `parent`
-            FROM ia_tags
-            WHERE `id` IN (%s)", implode(', ', array_map('db_quote', $tag_ids))
-        );
-    return db_fetch_all($query);
+    $result = mem_cache_multiget($cache_keys);
+
+    $tags = array();
+    $tags_hit = array();
+    foreach ($result as $key => $value) {
+        $tags[] = $value;
+        $tags_hit[] = $value['id'];
+    }
+
+    $tag_ids = array_diff($tag_ids, $tags_hit);
+    if (count($tag_ids) == 0) {
+        return $tags;
+    }
+
+    $query = 'SELECT `ia_tags`.`id`, `ia_tags`.`name`, `ia_tags`.`type`,
+                     `ia_tags`.`parent`';
+
+    $query .= ', `parent_tags`.`name` AS `parent_name`';
+
+    $query .= ' FROM ia_tags';
+
+    $query .= ' LEFT JOIN ia_tags AS parent_tags ON parent_tags.id =
+                `ia_tags`.`parent`';
+
+
+    $query .= sprintf(" WHERE `ia_tags`.`id` IN (%s)",
+                      implode(', ', array_map('db_quote', $tag_ids)));
+    $result = db_fetch_all($query);
+    foreach ($result as $row) {
+        mem_cache_set("tag-by-id:" . $row['id'], $row);
+    }
+
+    return array_merge($tags, $result);
 }
 
 // Assign numeric id to a given tag name
@@ -154,19 +182,24 @@ function tag_delete_by_id($tag_id) {
 }
 
 // Build ugly where clause to be used in subqueries
-function tag_build_where($obj, $tag_ids, $parent_table = null) {
+function tag_build_where($obj, $tag_ids, $parent_table = null, $field = null) {
     log_assert(is_taggable($obj));
     log_assert(is_array($tag_ids));
     if (is_null($parent_table)) {
         $parent_table = "ia_".db_escape($obj);
     }
-    if ($obj == 'textblock') {
-        $field = 'name';
-    } else {
-        $field = 'id';
+
+    if ($field === null) {
+        if ($obj == 'textblock') {
+            $field = 'name';
+        } else {
+            $field = 'id';
+        }
     }
-    $where = sprintf("(SELECT COUNT(*) FROM ia_%s_tags WHERE %s_id = %s.%s".
-                     " AND tag_id IN (%s)) = %d",
+
+    $where = sprintf("(SELECT COUNT(*) FROM ia_%s_tags AS sub WHERE
+                                sub.%s_id = %s.%s".
+                     " AND sub.tag_id IN (%s)) = %d",
                      db_escape($obj), db_escape($obj),
                      db_escape($parent_table), db_escape($field),
                      implode(", ", $tag_ids), count($tag_ids));
@@ -272,4 +305,70 @@ function tag_add($obj, $obj_id, $tag_id) {
             db_escape($obj), db_escape($tag_id), db_quote($obj_id));
     db_query($query);
 }
-?>
+
+/**
+ * Returns all tags which after being added to the list of tags still produce
+ * matches.
+ * If show_all is set to true selects all tags with the given types(even
+ * if they have no matches) and doesn't restrict to public tasks
+ *
+ * @param array $types
+ * @param array $tags
+ * @param bool $show_all
+ * @return array
+ */
+function tag_get_with_counts($types = array(), $tags = array(),
+                           $show_all = false, $cache = true) {
+    log_assert(is_array($types), 'types should be an array');
+    log_assert(is_array($tags), 'tags should be an array');
+    log_assert(is_bool($show_all));
+
+    $cache_key = 'tag-get-with-counts:' . implode(',', $tags) . ':' .
+                 implode(',', $types) . ':' . ($show_all ? 'true' : 'false');
+
+    if ($cache && count($tags) <= IA_MAX_TAGS_TO_CACHE) {
+        $result = mem_cache_get($cache_key);
+        if ($result !== false) {
+            return $result;
+        }
+    }
+
+    $types_where = '';
+    if (count($types) > 0) {
+        foreach ($types as &$type) {
+            log_assert(is_tag_type($type),
+                       'types must contain only tag types');
+            $type = db_quote($type);
+        }
+        $types_where = sprintf(" WHERE ia_tags.type IN (%s)",
+                               implode(", ", $types));
+    }
+
+    $task_filter = '';
+    if (count($tags) > 0) {
+        foreach ($tags as $id) {
+            log_assert(is_tag_id($id), 'tags should contain only tag ids');
+        }
+
+        $task_filter = " AND ". tag_build_where('task', $tags, 'tasks',
+                                                  'task_id');
+    }
+
+
+    $query = 'SELECT ia_tags.id AS id, ia_tags.name AS name,
+                     ia_tags.type AS type, ia_tags.parent AS parent,
+                     COUNT(tasks.tag_id) AS task_count FROM ia_tags ' .
+                     ($show_all ? 'LEFT' : 'INNER') . ' JOIN ia_task_tags
+                     AS tasks ON ia_tags.id = tasks.tag_id ' . $task_filter .
+                     (!$show_all ? ' INNER JOIN ia_task AS ia_task ON ia_ta' .
+                                  'sk.security = "public" AND ia_task.id =' .
+                                  ' tasks.task_id' : '') . $types_where;
+
+    $query .= " GROUP BY id";
+    $result = db_fetch_all($query);
+    if ($cache && count($tags) <= IA_MAX_TAGS_TO_CACHE) {
+        mem_cache_set($cache_key, $result, IA_MEM_CACHE_TAGS_EXPIRATION);
+    }
+
+    return $result;
+}
