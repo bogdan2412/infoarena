@@ -10,7 +10,7 @@ class MyTextile extends Textile {
     // FIXME: If you see a pointless textile error try tweaking this value.
     private $my_error_reporting = 0xF7F7;
 
-    function MyTextile($options = array()) {
+    function __construct($options = array()) {
         @Textile::Textile($options);
     }
 
@@ -20,6 +20,7 @@ class MyTextile extends Textile {
         //log_backtrace();
         $str = trim($str);
         $argvalexp = '"(([^"]*("")*)*)"';
+        $matches = array();
         if (preg_match('/^([a-z][a-z0-9_]*)\s*\((\s*
                         (   [a-z][a-z0-9_]* \s*  = \s* '.$argvalexp.' \s* )*
                         )\)$/ix', $str, $matches)) {
@@ -59,7 +60,7 @@ class MyTextile extends Textile {
         $type = strtolower($type);
         $matches = array();
         // Code!
-        if (preg_match('/code\((c|cpp|pas|java)\)/i', $type, $matches)) {
+        if (preg_match('/code\((c|cpp|pas|java|python)\)/i', $type, $matches)) {
             // syntax highlighting
             $lang = $matches[1];
 
@@ -88,7 +89,9 @@ class MyTextile extends Textile {
     // you can inject arbritary html.
     function do_format_block($args) {
         $str = getattr($args, 'text', '');
-        if (preg_match('/^  \s*  ([a-z][a-z0-9\+\#\-\(\)\.]*)  \s* \|(.*)/sxi', $str, $matches)) {
+        $matches = array();
+        if (preg_match('/^  \s*  ([a-z][a-z0-9\+\#\-\(\)\.]*)  \s* \|(.*)/sxi',
+                       $str, $matches)) {
             return $this->process_pipe_block($matches[1], $matches[2]);
         } else {
             return $this->process_macro($str);
@@ -109,6 +112,7 @@ class MyTextile extends Textile {
     function do_format_link($args) {
         $url = getattr($args, 'url', '');
         if ($this->is_wiki_link($url)) {
+            $matches = array();
             if (preg_match("/^ ([^\?]+) \? (".IA_RE_ATTACHMENT_NAME.") $/sxi", $url, $matches)) {
                 $args['url'] = url_attachment($matches[1], $matches[2]);
             } else {
@@ -127,6 +131,7 @@ class MyTextile extends Textile {
         $srcpath = getattr($args, 'src', '');
 
         $extra = $args['extra'];
+        $match = array();
         $alt = (preg_match("/\([^\)]+\)/", $extra, $match) ? $match[0] : '');
         $args['extra'] = $alt;
 
@@ -145,6 +150,7 @@ class MyTextile extends Textile {
 
         // Catch internal images
         if (!preg_match('/^'.IA_RE_EXTERNAL_URL.'$/xi', $srcpath)) {
+            $matches = array();
             if (preg_match('/^ ('.IA_RE_PAGE_NAME.') \? '.
                            '('.IA_RE_ATTACHMENT_NAME.')'.
                            '$/ix', $srcpath, $matches)) {
@@ -259,5 +265,3 @@ class MyTextile extends Textile {
         return $res;
     }
 }
-
-?>
