@@ -409,3 +409,20 @@ function job_test_get_public($job_id) {
         implode(", ", array_map("db_quote", array_values($test_ids))));
     return db_fetch_all($query);
 }
+
+/**
+ * Counts the number of waiting jobs on the given user only in 'archive' type
+ * rounds
+ *
+ * @param array @user
+ * @return int
+ */
+function job_archive_waiting_number($user) {
+    $query = sprintf("
+        SELECT COUNT(*) FROM `ia_job`
+        LEFT JOIN `ia_round` ON `ia_round`.`id` = `ia_job`.`round_id` AND
+            `ia_round`.`type` = 'archive'
+        WHERE `ia_job`.`user_id` = %d AND `ia_job`.`status` = 'waiting'",
+            db_quote($user['id']));
+    return db_query_value($query);
+}

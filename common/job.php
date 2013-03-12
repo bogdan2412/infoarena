@@ -74,6 +74,14 @@ function safe_job_submit($args, $user) {
         $errors[] = "Nu poti sa trimiti la aceasta runda.";
     }
 
+    // Check if the user has submitted too many times
+
+    if (job_archive_waiting_number($user) == IA_USER_MAX_ARCHIVE_WAITING_JOBS) {
+        $errors['submit_limit'] = "Nu ai dreptul sa ai mai mult de " .
+                    IA_USER_MAX_ARCHIVE_WAITING_JOBS .
+                    " submisii in asteptare la un moment dat";
+    }
+
     // Only now create the job.
     if (count($errors) === 0) {
         job_create($args['task_id'], $args['round_id'], $user['id'],

@@ -33,6 +33,12 @@ function controller_submit() {
         if (!isset($errors["round_id"])) {
             $_SESSION["_ia_last_submit_round"] = $values["round_id"];
         }
+
+        if (isset($errors['submit_limit']) && count($errors) == 1) {
+            flash_error($errors['submit_limit']);
+            redirect(getattr($_SERVER, 'HTTP_REFERER', url_submit()));
+        }
+
         if ($errors) {
             flash_error('NU am salvat solutia trimisa! Unul sau mai multe campuri
                          nu au fost completate corect.');
@@ -58,5 +64,3 @@ function controller_submit() {
 
     execute_view_die('views/submit.php', $view);
 }
-
-?>
