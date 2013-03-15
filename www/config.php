@@ -79,4 +79,4 @@ define('IA_TOKENS_REGEN', 300);
 // FIXME: add more?
 $IA_SAFE_MIME_TYPES = array('image/jpeg', 'image/png', 'image/gif', 'image/bmp', 'image/x-ms-bmp');
 
-define('IA_USER_MAX_ARCHIVE_WAITING_JOBS', 3);
+define('IA_USER_MAX_ARCHIVE_WAITING_JOBS', 1);

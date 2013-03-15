@@ -76,7 +76,7 @@ function safe_job_submit($args, $user) {
 
     // Check if the user has submitted too many times
 
-    if (job_archive_waiting_number($user) == IA_USER_MAX_ARCHIVE_WAITING_JOBS) {
+    if (job_archive_waiting_number($user) >= IA_USER_MAX_ARCHIVE_WAITING_JOBS) {
         $errors['submit_limit'] = "Nu ai dreptul sa ai mai mult de " .
                     IA_USER_MAX_ARCHIVE_WAITING_JOBS .
                     " submisii in asteptare la un moment dat";
