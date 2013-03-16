@@ -76,6 +76,7 @@ function job_update($job_id, $status = null,  $eval_message = null,
     if ($status !== null) {
         log_assert($status == 'processing' ||
                    $status == 'waiting' ||
+                   $status == 'skipped' ||
                    $status == 'done', "Invalid status");
         $set_statements[] = "`status` = '".db_escape($status)."'";
     }

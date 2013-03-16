@@ -8,6 +8,13 @@ require_once(IA_ROOT_DIR."www/format/form.php");
 if (!$display_only_table) {
     $view['head'] = '<script type="text/javascript" src="'.html_escape(url_static('js/monitor.js')).'"></script>';
     include('header.php');
+    $monitor_params = array('only_table' => 1, 'first_entry' => $first_entry, 'display_entries' => $view['display_entries']);
+    $url_monitor = url_absolute(url_complex('monitor', $view['filters'] + $monitor_params));
+?>
+    <script type="text/javascript">
+        Monitor_Url = '<?= $url_monitor ?>';
+    </script>
+<?php
 }
 
 if (!$display_only_table && (identity_can('job-reeval')
@@ -99,6 +106,11 @@ if (!$jobs) {
             $msg = '<span class="job-stats-waiting">in asteptare</span>';
             return format_link($url, $msg, false);
         }
+
+        if ($row['status'] == 'skipped') {
+            $msg = '<span class="job-status-skipped">Submisie ignorata</span>';
+            return format_link($url, $msg, false);
+        }
         log_error("Invalid job status");
     }
 
@@ -142,6 +154,31 @@ if (!$jobs) {
         return $size;
     }
 
+    function format_skip($row) {
+        if ($row['status'] == 'skipped') {
+            return 'Ignorata';
+        }
+
+        if ($row['can_skip']) {
+            $msg = format_tag(
+                    "input",
+                    "",
+                    array(
+                        "type" => "checkbox",
+                        "class" => "skip_job",
+                        "value" => $row['id']));
+            $msg .= format_tag(
+                    'a',
+                    'Ignora!',
+                    array(
+                        "type" => "button",
+                        "class" => "skip-job-link"));
+            return $msg;
+        }
+
+        return "";
+    }
+
     $column_infos = array(
         array(
             'title' => 'ID',
@@ -177,6 +214,19 @@ if (!$jobs) {
             'rowform' => 'format_state',
         ),
     );
+
+    $can_skip_something = false;
+    foreach ($jobs as $job) {
+        if ($job['can_skip']) {
+            $can_skip_something = true;
+            break;
+        }
+    }
+
+    if ($can_skip_something) {
+        $column_infos[] = array('title' => 'Ignora submisii', 'rowform' => 'format_skip');
+    }
+
     $options = array(
         'css_class' => 'monitor',
         'show_count' => true,
@@ -189,21 +239,28 @@ if (!$jobs) {
     );
 
     print format_table($jobs, $column_infos, $options);
+
+    if ($can_skip_something) {
+        ?>
+    <div class ="skip-job">
+        <form id="skip-jobs-form" enctype="multipart/form-data" action="<?= html_escape(url_job_skip($view['filters'])) ?>"
+               method="post" class="reeval" id="job_reeval">
+        <input type="hidden" name="skipped-jobs" id="skipped-jobs"/>
+        <input type="checkbox" id="skip-all-checkbox" />
+        <input type="submit" class="button important" value="Ignora submisiile selectate"/>
+        </form>
+    </div>
+
+        <?php
+    }
 }
 
 // Please don't use wiki_include() here because this is traffic
 // intensive page.
 
 if (!$display_only_table) {
-    $monitor_params = array('only_table' => 1, 'first_entry' => $first_entry, 'display_entries' => $view['display_entries']);
-    $url_monitor = url_absolute(url_complex('monitor', $view['filters'] + $monitor_params));
-
 ?>
     </div>
-
-    <script type="text/javascript">
-        Monitor_Url = '<?= $url_monitor ?>';
-    </script>
 
     <p>
         <input type="checkbox" checked="checked" id="autorefresh" onclick="Monitor_ToggleRefresh(this.checked)" />

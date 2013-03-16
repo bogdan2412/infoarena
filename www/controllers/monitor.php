@@ -33,6 +33,12 @@ function controller_monitor() {
             $job["job_size"] = NULL;
         }
 
+        if (identity_can('job-skip', $job)) {
+            $job["can_skip"] = true;
+        } else {
+            $job["can_skip"] = false;
+        }
+
         $jobs[] = $job;
     }
 
@@ -45,5 +51,3 @@ function controller_monitor() {
 
     execute_view_die('views/monitor.php', $view);
 }
-
-?>

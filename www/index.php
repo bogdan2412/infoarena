@@ -50,7 +50,7 @@ $action = request('action', 'view');
 $directmaps = array_flip(array('register', 'changes',
                                'login', 'logout', 'json', 'job_detail',
                                'monitor', 'projector', 'submit', 'userinfo',
-                               'plot', 'search',
+                               'plot', 'search', 'job_skip',
                                'unsubscribe', 'resetpass', 'reeval', 'userwidget'
 ));
 
@@ -332,5 +332,3 @@ else {
     flash_error('URL invalid');
     redirect(url_home());
 }
-
-?>

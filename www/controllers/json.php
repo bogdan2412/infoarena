@@ -3,6 +3,7 @@
 require_once(IA_ROOT_DIR.'common/db/textblock.php');
 require_once(IA_ROOT_DIR.'common/db/task.php');
 require_once(IA_ROOT_DIR.'www/wiki/wiki.php');
+require_once(IA_ROOT_DIR.'common/db/job.php');
 
 // This controller serves as a data server for AJAX requests.
 // Instead of generating HTML content to be displayed in a browser,
@@ -58,9 +59,30 @@ function controller_json($suburl) {
 
             // Output JSON
             execute_view_die('views/json.php', $view);
+
+        case 'job-skip':
+            $job_id = request('job_id');
+            if (!is_job_id($job_id)) {
+                die_http_error(400, 'Job invalid');
+            }
+
+            $job = job_get_by_id($job_id);
+            if ($job === null) {
+                die_http_error(400, 'Job inexistent');
+            }
+
+            if (!identity_can('job-skip', $job)) {
+                die_http_error(403, 'Nu ai destule permisiuni');
+            }
+
+            job_update($job['id'], 'skipped');
+            $view = array(
+                'json' => true,
+                'debug' => request('debug', null));
+            execute_view_die('views/json.php', $view);
+            break;
+
         default:
             die_http_error(400, 'Actiune invalida.');
     }
 }
-
-?>

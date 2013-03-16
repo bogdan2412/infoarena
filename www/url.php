@@ -373,6 +373,14 @@ function url_reeval($filters = null) {
     return url_complex("reeval", $filters);
 }
 
+function url_job_skip($filters = null) {
+    if (is_null($filters)) {
+        $filters = array();
+    }
+
+    return url_complex("job_skip", $filters);
+}
+
 function url_job_detail($job_id) {
     log_assert(is_numeric($job_id));
     return url_complex("job_detail/".$job_id, array());

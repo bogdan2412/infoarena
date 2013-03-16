@@ -998,6 +998,9 @@ ul.htabs-2 {
     text-decoration:underline;
 }
 
+.job-status-skipped {
+    color: #555;
+}
 /* Job details */
 .job {
     width: 100%;
@@ -1760,4 +1763,16 @@ li.selected-filter.sub-selected-filters > a:hover,
     display: block;
     margin-left: 200px;
     padding: 10px;
+}
+
+.skip-job {
+    float: right;
+}
+
+.skip-job input {
+    display: inline;
+}
+
+.skip-job-link {
+    cursor: pointer;
 }

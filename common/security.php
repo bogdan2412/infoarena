@@ -179,6 +179,7 @@ function security_simplify_action($action) {
         case 'job-view-score':
         case 'job-view-partial-feedback':
         case 'task-view-tags':
+        case 'job-skip':
             return $action;
 
         default:
@@ -570,6 +571,11 @@ function security_job($user, $action, $job) {
     }
     if ($action == 'simple-critical') {
         return $is_admin || $is_intern;
+    }
+
+    if ($action == 'job-skip') {
+        // FIXME: add extra people to do this, we're too few
+        return $is_admin;
     }
 
     $can_view_job = ($job['task_security'] != 'private') || $is_task_owner
