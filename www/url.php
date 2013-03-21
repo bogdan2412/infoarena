@@ -18,7 +18,7 @@ require_once(IA_ROOT_DIR . 'common/common.php');
 // If $absolute is true(default false) then IA_URL_HOST will be included in
 // the url.
 function url_complex($document = '', $args = array(), $absolute = false,
-        $secure_connection = false) {
+                     $secure_connection = false) {
     log_assert(false === strpos($document, '?'), 'Page name contains ?');
     log_assert(is_array($args), "Argument list must be an array");
     log_assert(!array_key_exists("page", $args), "Argument list contains page");
@@ -35,13 +35,12 @@ function url_complex($document = '', $args = array(), $absolute = false,
 }
 
 // Makes an url absolute. It just prepends IA_URL_HOST
-function url_absolute($url, $force_secure_connection = false)
-{
+function url_absolute($url, $secure_connection = false) {
     log_assert(strpos($url, 'http') !== 0, "Url begins with http");
-    $url = IA_URL_HOST . $url;
-    if ($force_secure_connection == true || is_connection_secure()) {
-        $count = 1;
-        $url = str_replace('http', 'https', $url, $count);
+    if ($secure_connection) {
+        $url = IA_URL_HTTPS_HOST . $url;
+    } else {
+        $url = IA_URL_HOST . $url;
     }
 
     return $url;
@@ -49,8 +48,7 @@ function url_absolute($url, $force_secure_connection = false)
 
 // Construct an URL from an argument list.
 // These are the exact $args you will receive in $_GET
-function url_from_args($args)
-{
+function url_from_args($args) {
     // First part.
     $url = IA_URL_PREFIX . getattr($args, "page", "home");
 
@@ -184,8 +182,7 @@ function url_attachment_rename($page_name) {
     return url_complex($page_name, array('action' => 'attach-rename'));
 }
 
-function url_image_resize($page, $file, $resize)
-{
+function url_image_resize($page, $file, $resize) {
     if ($resize) {
         return url_complex($page, array(
                 'action' => 'download',

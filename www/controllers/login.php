@@ -3,12 +3,6 @@
 require_once(IA_ROOT_DIR . "common/db/user.php");
 
 function controller_login() {
-    if (IA_HTTPS_ENABLED && !is_connection_secure()) {
-        redirect(url_login());
-    }
-
-    global $identity_user;
-
     // `data` dictionary is a dictionary with data to be displayed by form view
     // when displaying the form for the first time, this is filled with
     $data = array();

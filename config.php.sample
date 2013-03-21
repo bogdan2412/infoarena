@@ -26,6 +26,7 @@ define("IA_DB_KEEP_ALIVE", false);
 
 // Web host. This is probably localhost. no trailing slash here
 define("IA_URL_HOST", "--write-me-IA_URL_HOST--");
+define("IA_URL_HTTPS_HOST", "--write-me-IA_URL_HOST--");
 
 // URL prefix, without the IA_URL_HOST part
 // (only the part relative to the web server).

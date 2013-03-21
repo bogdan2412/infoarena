@@ -105,7 +105,7 @@ function identity_require($action, $object = null) {
 //
 // Here's a good example why PHP sucks.
 function init_php_session($remember_user = false) {
-    session_name('infoarena_session');
+    session_name('infoarena2_session');
     ini_set('session.gc_maxlifetime', IA_SESSION_LIFETIME_SECONDS);
     if ($remember_user) {
         session_cache_limiter('private');
@@ -211,5 +211,3 @@ function identity_end_session() {
     session_write_close();
     init_php_session();
 }
-
-?>

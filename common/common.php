@@ -408,11 +408,22 @@ function remote_ip_info() {
     }
     // FIXME: Also validate XFF header.
     if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        // X-Forwarded-For: client, proxy1, proxy2, ...
         $forwarded_for = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        if (strstr($ip_address, $forwarded_for)) {
+        if (strstr($forwarded_for, $ip_address)) {
             $ip_address = $forwarded_for;
+            // Cloudflare + nginx real ip module results in X-Forwarded-For
+            // headers of the form {ip}, {ip}
+            $ip_address_list = explode(', ', $ip_address);
+            if (count($ip_address_list) > 1 &&
+                $ip_address_list[0] === $ip_address_list[1]) {
+                unset($ip_address_list[0]);
+                $ip_address = implode(', ', $ip_address_list);
+            }
         } else {
+            // The IP address should always be part of the XFF header
             $ip_address .= '; ' . $forwarded_for;
+            log_warn("Invalid X-Forwarded-For header detected: {$ip_address}");
         }
     }
     return $ip_address;
