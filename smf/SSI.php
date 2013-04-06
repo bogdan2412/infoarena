@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.13                                          *
+* Software Version:           SMF 1.1.17                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -1599,7 +1599,7 @@ function ssi_todaysCalendar($output_method = 'echo')
 // Show the latest news, with a template... by board.
 function ssi_boardNews($board = null, $limit = null, $start = null, $length = null, $output_method = 'echo')
 {
-	global $scripturl, $db_prefix, $txt, $settings, $modSettings, $context;
+	global $scripturl, $db_prefix, $txt, $settings, $modSettings, $context, $user_info;
 	global $func;
 
 	loadLanguage('Stats');
@@ -1653,10 +1653,12 @@ function ssi_boardNews($board = null, $limit = null, $start = null, $length = nu
 
 	// Find the post ids.
 	$request = db_query("
-		SELECT ID_FIRST_MSG
-		FROM {$db_prefix}topics
-		WHERE ID_BOARD = $board
-		ORDER BY ID_FIRST_MSG DESC
+		SELECT t.ID_FIRST_MSG
+		FROM {$db_prefix}topics as t
+			LEFT JOIN {$db_prefix}boards as b ON (b.ID_BOARD = t.ID_BOARD)
+		WHERE t.ID_BOARD = $board
+			AND $user_info[query_see_board]
+		ORDER BY t.ID_FIRST_MSG DESC
 		LIMIT $start, $limit", __FILE__, __LINE__);
 	$posts = array();
 	while ($row = mysql_fetch_assoc($request))

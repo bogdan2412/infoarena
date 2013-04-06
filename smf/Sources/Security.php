@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.9                                           *
+* Software Version:           SMF 1.1.17                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -133,6 +133,7 @@ function validateSession()
 		if ($good_password || $_POST['admin_hash_pass'] == sha1($user_info['passwd'] . $sc))
 		{
 			$_SESSION['admin_time'] = time();
+			unset($_SESSION['request_referer']);
 			return;
 		}
 	}
@@ -150,10 +151,16 @@ function validateSession()
 		if ($good_password || sha1(strtolower($user_info['username']) . $_POST['admin_pass']) == $user_info['passwd'])
 		{
 			$_SESSION['admin_time'] = time();
+			unset($_SESSION['request_referer']);
 			return;
 		}
 	}
 
+	// Better be sure to remember the real referer
+	if (empty($_SESSION['request_referer']))
+		$_SESSION['request_referer'] = isset($_SERVER['HTTP_REFERER']) ? @parse_url($_SERVER['HTTP_REFERER']) : array();
+	elseif (empty($_POST))
+		unset($_SESSION['request_referer']);
 	// Need to type in a password for that, man.
 	adminLogin();
 }
@@ -551,7 +558,10 @@ function checkSession($type = 'post', $from_action = '', $is_fatal = true)
 	}
 
 	// Check the referring site - it should be the same server at least!
-	$referrer = isset($_SERVER['HTTP_REFERER']) ? @parse_url($_SERVER['HTTP_REFERER']) : array();
+	if (isset($_SESSION['request_referer']))
+		$referrer = $_SESSION['request_referer'];
+	else
+		$referrer = isset($_SERVER['HTTP_REFERER']) ? @parse_url($_SERVER['HTTP_REFERER']) : array();
 	if (!empty($referrer['host']))
 	{
 		if (strpos($_SERVER['HTTP_HOST'], ':') !== false)

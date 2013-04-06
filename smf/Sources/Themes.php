@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.11                                          *
+* Software Version:           SMF 1.1.18                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -1326,6 +1326,9 @@ function EditTheme()
 		LIMIT 1", __FILE__, __LINE__);
 	list ($theme_dir, $context['theme_id']) = mysql_fetch_row($request);
 	mysql_free_result($request);
+
+	if (!file_exists($theme_dir . '/index.template.php'))
+		fatal_lang_error('theme_edit_missing', false);
 
 	if (!isset($_REQUEST['filename']))
 	{
