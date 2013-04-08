@@ -240,16 +240,12 @@ function user_submitted_tasks($user_id, $solved = true, $failed = true) {
 
 // Returns array with rounds that user has submitted to tasks.
 function user_submitted_rounds($user_id) {
-    // FIXME: Find a way to remove the hard-coded "<> 'arhiva'"
     $query = "SELECT *
-        FROM ia_score_user_round_task
-        LEFT JOIN ia_round ON ia_round.id = ia_score_user_round_task.round_id
-        WHERE ia_score_user_round_task.user_id = '%s'
-              AND NOT ia_round.id IS NULL AND ia_round.id <> 'arhiva'
-        GROUP BY ia_round.id";
+        FROM ia_score_user_round
+        LEFT JOIN ia_round ON ia_round.id = ia_score_user_round.round_id
+        WHERE ia_score_user_round.user_id = '%s'
+              AND ia_round.type IN ('classic', 'penalty-round')";
     $query = sprintf($query, $user_id);
 
     return db_fetch_all($query);
 }
-
-?>
