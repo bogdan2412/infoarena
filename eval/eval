@@ -18,6 +18,7 @@ require_once(IA_ROOT_DIR.'eval/utilities.php');
 require_once(IA_ROOT_DIR.'eval/download.php');
 require_once(IA_ROOT_DIR.'eval/Exceptions.php');
 require_once(IA_ROOT_DIR.'eval/ClassicGrader.php');
+require_once(IA_ROOT_DIR.'eval/InteractiveGrader.php');
 
 error_reporting(0xFFFF);
 
@@ -51,6 +52,8 @@ function job_handle($job) {
     log_print("Job #{$job['id']} task {$task['id']} round {$job['round_id']} type {$task['type']}");
     if ($task['type'] == 'classic') {
         $grader = new ClassicGrader($task, $task_parameters, $job);
+    } else if ($task['type'] == 'interactive') {
+        $grader = new InteractiveGrader($task, $task_parameters, $job);
     } else {
         log_error("Nu stiu sa evaluez task-uri de tip ".$task['type']);
     }

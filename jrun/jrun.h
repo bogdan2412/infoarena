@@ -44,19 +44,21 @@ typedef struct {
     int memory_limit;
 
     int nice_val;
-    int ptrace;
-    int copy_libs;
+    int ptrace:1;
+    int copy_libs:1;
 
-    int verbose;
-    int chroot;
+    int verbose:1;
+    int chroot:1;
 
-    int min_proc_update_interval;
+    int redirect_out_before_in:1;
 
     // File to redirect program stdout to.
     // Empty is /dev/null
     char stdin_file[500];
     char stdout_file[500];
     char stderr_file[500];
+
+    int min_proc_update_interval;
 
     // 0 or 1 if a syscall is blocked.
     // Blocking means killing the process.

@@ -139,8 +139,16 @@ void child_main(void)
     //
 
     // Redirect standard file descriptors.
-    redirect_fd(0, jopt.stdin_file, "rb");
-    redirect_fd(1, jopt.stdout_file, "wb");
+    // redirect_out_before_in helps avoid a deadlock which occurs for
+    // interactive tasks otherwise. Both programs attempt to open their stdin
+    // pipe, but are blocked waiting for the other to open the other end.
+    if (jopt.redirect_out_before_in) {
+        redirect_fd(1, jopt.stdout_file, "wb");
+        redirect_fd(0, jopt.stdin_file, "rb");
+    } else {
+        redirect_fd(0, jopt.stdin_file, "rb");
+        redirect_fd(1, jopt.stdout_file, "wb");
+    }
     redirect_fd(2, jopt.stderr_file, "wb");
 
     // chroot to jail dir

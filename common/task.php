@@ -6,8 +6,9 @@ require_once(IA_ROOT_DIR . "common/textblock.php");
 // Get valid task types.
 function task_get_types() {
     return array(
-            'classic' => 'Clasic',
-            'output-only' => 'Doar de output',
+        'classic' => 'Clasică',
+        'interactive' => 'Interactivă',
+        // 'output-only' => 'Doar de output',
     );
 }
 
@@ -17,9 +18,10 @@ function task_get_types() {
  */
 function task_get_security_types() {
     return array(
-            'private' => 'Private',
-            'protected' => 'Protected',
-            'public' => 'Public');
+        'private' => 'Private',
+        'protected' => 'Protected',
+        'public' => 'Public',
+    );
 }
 
 // Get parameter infos.
@@ -27,20 +29,40 @@ function task_get_parameter_infos() {
     return array(
         'classic' => array(
             'timelimit' => array(
-                    'description' => "Limita de timp (in secunde)",
-                    'default' => 1,
-                    'type' => 'float',
-                    'name' => 'Limita de timp',
+                'description' => 'Limita de timp (in secunde)',
+                'default' => 1,
+                'type' => 'float',
+                'name' => 'Limita de timp',
             ),
             'memlimit' => array(
-                    'description' => "Limita de memorie (in kilobytes)",
-                    'default' => 16384,
-                    'type' => 'integer',
-                    'name' => 'Limita de memorie',
+                'description' => 'Limita de memorie (in kilobytes)',
+                'default' => 16384,
+                'type' => 'integer',
+                'name' => 'Limita de memorie',
             ),
         ),
-        'output-only' => array(
+        'interactive' => array(
+            'timelimit' => array(
+                'description' => 'Limita de timp (in secunde)',
+                'default' => 1,
+                'type' => 'float',
+                'name' => 'Limita de timp',
+            ),
+            'memlimit' => array(
+                'description' => 'Limita de memorie (in kilobytes)',
+                'default' => 16384,
+                'type' => 'integer',
+                'name' => 'Limita de memorie',
+            ),
+            'interact' => array(
+                'description' => 'Sursa programului interactiv.',
+                'default' => 'interact.c',
+                'type' => 'string',
+                'name' => 'Programul interactiv',
+            ),
         ),
+        // 'output-only' => array(
+        // ),
     );
 }
 
@@ -58,7 +80,7 @@ function task_init($task_id, $task_type, $user = null) {
             'test_count' => 10,
             'test_groups' => NULL,
             'public_tests' => NULL,
-            'evaluator' => NULL,
+            'evaluator' => '',
             'use_ok_files' => 1,
             'rating' => NULL,
     );
@@ -76,12 +98,11 @@ function task_init($task_id, $task_type, $user = null) {
 
 // Validates a task.
 // NOTE: this might be incomplete, so don't rely on it exclusively.
-// Use this to check for a valid model. It's also usefull in controllers.
+// Use this to check for a valid model. It's also useful in controllers.
 function task_validate($task) {
-    $errors = array();
-
-    // FIXME How to handle this?
     log_assert(is_array($task), "You didn't even pass an array");
+
+    $errors = array();
 
     if (strlen(getattr($task, 'title', '')) < 1) {
         $errors['title'] = 'Titlu prea scurt.';
@@ -130,39 +151,43 @@ function task_validate($task) {
         $errors['use_ok_files'] = "0/1 only";
     }
 
-    if ($task['evaluator'] == "") {
+    if ($task['evaluator'] === '') {
         if (!$task['use_ok_files']) {
-            $errors['evaluator'] = "Pentru evaluare cu diff e nevoie e fisiere .ok";
+            $errors['evaluator'] =
+                'Pentru evaluare cu diff e nevoie de fisiere .ok';
         }
     } else {
         if (!is_attachment_name($task['evaluator'])) {
-            $errors['evaluator'] = "Nume de fisier invalid.";
+            $errors['evaluator'] = 'Nume de fisier invalid.';
         }
     }
 
     if (strlen(getattr($task, 'test_groups', '')) > 256) {
         $errors['test_groups'] = 'Expresia este prea lunga.';
     } else if (task_get_testgroups($task) === false) {
-        $errors['test_groups'] = "Eroare de sintaxa in expresie.";
+        $errors['test_groups'] = 'Eroare de sintaxa in expresie.';
     }
 
-    if (task_parse_test_group($task["public_tests"], $task["test_count"]) === false) {
-        $errors['public_tests'] = "Eroare de sintaxa in expresie.";
+    if (task_parse_test_group($task["public_tests"],
+                              $task["test_count"]) === false) {
+        $errors['public_tests'] = 'Eroare de sintaxa in expresie.';
     }
 
     return $errors;
 }
 
-// Parse test grouping expression from task and returns groups as an array
-// If there is no grouping parameter defined it returns a group for each test by default
-// If the expression string contains errors the function returns false
+// Parse test grouping expression from task and returns groups as an array.
+// If there is no grouping parameter defined it returns a group for each test
+// by default.
+// If the expression string contains errors the function returns false.
 // Expression syntax:
 // item: number | number-number
 // group: item | item,group
 // groups: group | group;groups
 function task_parse_test_group($string, $test_count) {
-    if (strlen($string) == 0)
+    if (strlen($string) == 0) {
         return array();
+    }
 
     $current_group = array();
     $items = explode(',', $string);
@@ -176,9 +201,9 @@ function task_parse_test_group($string, $test_count) {
         if (count($tests) < 1 || count($tests) > 2) {
             return false;
         }
-        foreach ($tests as &$test) {
-            $test = trim($test);
-            if (!is_whole_number($test)) {
+        foreach ($tests as &$test_ref) {
+            $test_ref = trim($test_ref);
+            if (!is_whole_number($test_ref)) {
                 return false;
             }
         }
@@ -191,10 +216,12 @@ function task_parse_test_group($string, $test_count) {
         } else {
             $left = (int) $tests[0];
             $right = (int) $tests[1];
-            if ($left < 1 || $right < 1 || $left > $test_count || $right > $test_count) {
+            if ($left < 1 || $right < 1 ||
+                $left > $test_count || $right > $test_count) {
                 return false;
             }
-            for ($test = min($left, $right); $test <= max($left, $right); $test++) {
+            for ($test = min($left, $right); $test <= max($left, $right);
+                 $test++) {
                 $current_group[] = $test;
                 $used_count[$test]++;
             }
@@ -235,8 +262,8 @@ function task_get_testgroups($task) {
         if (!$current_group) {
             return false;
         }
-        foreach ($current_group as $test) {
-            $used_count[$test]++;
+        foreach ($current_group as $test_in_group) {
+            $used_count[$test_in_group]++;
         }
         $testgroups[] = $current_group;
     }
@@ -253,9 +280,9 @@ function task_get_testgroups($task) {
 // Validate parameters. Return errors as $form_errors
 function task_validate_parameters($task_type, $parameters) {
     $errors = array();
-    if ($task_type == 'classic') {
+    if ($task_type === 'classic' || $task_type === 'interactive') {
         if (!is_numeric($parameters['timelimit'])) {
-                $errors['timelimit'] = "Limita de timp trebuie sa fie un numar.";
+            $errors['timelimit'] = "Limita de timp trebuie sa fie un numar.";
         } else if ($parameters['timelimit'] < 0.01) {
             $errors['timelimit'] = "Minim 10 milisecunde.";
         } else if ($parameters['timelimit'] > 60) {
@@ -269,10 +296,15 @@ function task_validate_parameters($task_type, $parameters) {
         } else if ($parameters['memlimit'] > 131072) {
             $errors['memlimit'] = "Maxim 128 megabytes.";
         }
-    } else if ($task_type == 'output-only') {
-        // Nothing to validate
-    } else {
-        log_error("Bad task_type");
+    }
+    if ($task_type === 'interactive') {
+        if ($parameters['interact'] === '') {
+            $errors['interact'] = 'Trebuie specificat un program interactiv.';
+        } else {
+            if (!is_attachment_name($parameters['interact'])) {
+                $errors['interact'] = 'Nume de fisier invalid.';
+            }
+        }
     }
     return $errors;
 }
@@ -288,7 +320,7 @@ function task_get_topic($task_id) {
     return $task_page["forum_topic"];
 }
 
-// Receives a list of method and algorithm tag ids and adds links them to task_id
+// Receives a list of method and algorithm tag ids and links them to task_id
 function task_update_tags($task_id, $method_tags_id, $algorithm_tags_id) {
     log_assert(is_array($method_tags_id), 'method_tags must be an array');
     log_assert(is_array($algorithm_tags_id), 'algorithm_tags must be an array');

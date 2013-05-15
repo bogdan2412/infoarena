@@ -13,39 +13,41 @@ jrun_options jopt;
 #define OPT_DIR                         2
 #define OPT_PROG                        3
 #define OPT_TIME_LIMIT                  4
-#define OPT_WALL_TIME_LIMIT             15
-#define OPT_MEMORY_LIMIT                5
-#define OPT_NICE                        6
-#define OPT_NO_PTRACE                   7
-#define OPT_COPY_LIBS                   8
-#define OPT_VERBOSE                     9
-#define OPT_BLOCK_SYSCALLS              10
-#define OPT_BLOCK_SYSCALLS_FILE         11
-#define OPT_REDIRECT_STDIN               17
-#define OPT_REDIRECT_STDOUT              12
-#define OPT_REDIRECT_STDERR              13
-#define OPT_CHROOT                      14
+#define OPT_WALL_TIME_LIMIT             5
+#define OPT_MEMORY_LIMIT                6
+#define OPT_NICE                        7
+#define OPT_NO_PTRACE                   8
+#define OPT_COPY_LIBS                   9
+#define OPT_VERBOSE                     10
+#define OPT_BLOCK_SYSCALLS              11
+#define OPT_BLOCK_SYSCALLS_FILE         12
+#define OPT_REDIRECT_STDIN              13
+#define OPT_REDIRECT_STDOUT             14
+#define OPT_REDIRECT_STDERR             15
+#define OPT_CHROOT                      16
+#define OPT_REDIRECT_OUT_BEFORE_IN      17
 
 void jrun_parse_options(int argc, char *argv[])
 {
     struct option long_options[] = {
-        {"uid",                 1, 0, OPT_UID},
-        {"gid",                 1, 0, OPT_GID},
-        {"dir",                 1, 0, OPT_DIR},
-        {"prog",                1, 0, OPT_PROG},
-        {"time-limit",          1, 0, OPT_TIME_LIMIT},
-        {"wall-time-limit",     1, 0, OPT_WALL_TIME_LIMIT},
-        {"memory-limit",        1, 0, OPT_MEMORY_LIMIT},
-        {"nice",                1, 0, OPT_NICE},
-        {"no-ptrace",           0, 0, OPT_NO_PTRACE},
-        {"copy-libs",           0, 0, OPT_COPY_LIBS},
-        {"verbose",             0, 0, OPT_VERBOSE},
-        {"block-syscalls",      1, 0, OPT_BLOCK_SYSCALLS},
-        {"block-syscalls-file", 1, 0, OPT_BLOCK_SYSCALLS_FILE},
-        {"redirect-stdin",      1, 0, OPT_REDIRECT_STDIN},
-        {"redirect-stdout",     1, 0, OPT_REDIRECT_STDOUT},
-        {"redirect-stderr",     1, 0, OPT_REDIRECT_STDERR},
-        {"chroot",              0, 0, OPT_CHROOT},
+        {"uid",                         1, 0, OPT_UID},
+        {"gid",                         1, 0, OPT_GID},
+        {"dir",                         1, 0, OPT_DIR},
+        {"prog",                        1, 0, OPT_PROG},
+        {"time-limit",                  1, 0, OPT_TIME_LIMIT},
+        {"wall-time-limit",             1, 0, OPT_WALL_TIME_LIMIT},
+        {"memory-limit",                1, 0, OPT_MEMORY_LIMIT},
+        {"nice",                        1, 0, OPT_NICE},
+        {"no-ptrace",                   0, 0, OPT_NO_PTRACE},
+        {"copy-libs",                   0, 0, OPT_COPY_LIBS},
+        {"verbose",                     0, 0, OPT_VERBOSE},
+        {"block-syscalls",              1, 0, OPT_BLOCK_SYSCALLS},
+        {"block-syscalls-file",         1, 0, OPT_BLOCK_SYSCALLS_FILE},
+        {"redirect-stdin",              1, 0, OPT_REDIRECT_STDIN},
+        {"redirect-stdout",             1, 0, OPT_REDIRECT_STDOUT},
+        {"redirect-stderr",             1, 0, OPT_REDIRECT_STDERR},
+        {"chroot",                      0, 0, OPT_CHROOT},
+        {"redirect-out-before-in",      0, 0, OPT_REDIRECT_OUT_BEFORE_IN},
         {0, 0, 0, 0},
     };
     int option_index = 0;
@@ -57,7 +59,7 @@ void jrun_parse_options(int argc, char *argv[])
 
     jopt.prog[0] = 0;
     getcwd(jopt.dir, sizeof(jopt.dir));
-   
+
     jopt.time_limit = 0;
     jopt.wall_time_limit = -1;
     jopt.memory_limit = 0;
@@ -70,6 +72,7 @@ void jrun_parse_options(int argc, char *argv[])
     jopt.verbose = 0;
     jopt.chroot = 0;
     jopt.stdout_file[0] = jopt.stderr_file[0] = jopt.stdin_file[0] = 0;
+    jopt.redirect_out_before_in = 0;
 
     while (1) {
         int opt = getopt_long(argc, argv, "u:g:d:p:n:t:w:m:v", long_options, &option_index);
@@ -150,7 +153,7 @@ void jrun_parse_options(int argc, char *argv[])
                 char* str = strdup(optarg);
                 char* s;
                 int id;
-               
+
                 s = strtok(str, ",");
                 while (s) {
                     id = syscall_getid(s);
@@ -188,6 +191,10 @@ void jrun_parse_options(int argc, char *argv[])
                 jopt.chroot = 1;
                 break;
             }
+            case OPT_REDIRECT_OUT_BEFORE_IN: {
+                jopt.redirect_out_before_in = 1;
+                break;
+            }
             default: {
                 printf("ERROR: Bad command line arguments");
                 exit(-1);
@@ -196,7 +203,7 @@ void jrun_parse_options(int argc, char *argv[])
     }
 
     // After options:
-    
+
     // You need to pass the program name.
     if (jopt.prog[0] == 0) {
         printf("ERROR: You must give the file to execute\n");

@@ -136,15 +136,19 @@ function jrun_make_error($message) {
 // All timings are in miliseconds and memory is in kilobytes
 //
 // If result is ERROR time, memory, stdin and stdout are never set.
-function jail_run($program, $jaildir, $time, $memory, $capture_std = false) {
+function jail_run($program, $jaildir, $time, $memory, $capture_std = false,
+                  $redirect_std = array(), $async = false,
+                  $extra_args = '') {
     eval_assert(is_whole_number($time));
     eval_assert(is_whole_number($memory));
+    eval_assert(is_array($redirect_std));
+    eval_assert(!$capture_std || !$redirect_std,
+                'Can not have $capture_std and $redirect_std at the same time');
 
     $cmdline = IA_ROOT_DIR . 'jrun/jrun';
     $cmdline .= " --prog=./" . $program;
     $cmdline .= " --dir=" . $jaildir;
     $cmdline .= " --chroot";
-    //$cmdline .= " --verbose";
     $cmdline .= " --block-syscalls-file=" . IA_ROOT_DIR . 'jrun/bad_syscalls';
     if (defined('IA_JUDGE_JRUN_NICE') && IA_JUDGE_JRUN_NICE != 0) {
         $cmdline .= " --nice=" . IA_JUDGE_JRUN_NICE;
@@ -159,38 +163,187 @@ function jail_run($program, $jaildir, $time, $memory, $capture_std = false) {
         $cmdline .= " --redirect-stdout=jailed_stdout";
         $cmdline .= " --redirect-stderr=jailed_stderr";
     }
+    if ($redirect_std) {
+        foreach (array('in', 'out', 'err') as $file) {
+            if (array_key_exists($file, $redirect_std)) {
+                $cmdline .= ' --redirect-std' . $file . '=' .
+                    escapeshellarg($redirect_std[$file]);
+            }
+        }
+        if (getattr($redirect_std, 'out-before-in')) {
+            $cmdline .= ' --redirect-out-before-in';
+        }
+    }
     if (isset($time)) {
         $cmdline .= " --time-limit=" . $time;
     }
     if (isset($memory)) {
         $cmdline .= " --memory-limit=" . $memory;
     }
-    //$cmdline .= " --verbose";
+    $cmdline .= ' ' . $extra_args;
+    // $cmdline .= " --verbose";
 
     log_print("Running $cmdline");
-    $message = shell_exec($cmdline);
+    $pipes = array();
+    $process = proc_open($cmdline,
+                         array(1 => array('pipe', 'w'),
+                               2 => array('pipe', 'w')),
+                         $pipes);
 
-    $result = jrun_parse_message($message);
-    if ($result == false) {
-        return jrun_make_error('Failed executing jail');
+    $jrun_process = array(
+        'process' => $process,
+        'pipes' => $pipes,
+        'jaildir' => $jaildir,
+        'time' => $time,
+        'memory' => $memory,
+        'capture_std' => $capture_std,
+    );
+
+    if ($async) {
+        return $jrun_process;
     }
 
-    if ($capture_std) {
-        $result['stdout'] = @file_get_contents($jaildir.'jailed_stdout');
-        if ($result['stdout'] === false) {
-            return jrun_make_error('Failed reading captured stdout');
+    return jrun_get_result($jrun_process);
+}
+
+/**
+ * Receives an array returned by an async jail_run call containing information
+ * about a running process, its pipe file descriptors and other jail_run
+ * parameters, waits for the process to terminate and returns jrun's result.
+ *
+ * @param   array   $jrun_process
+ * @returns string
+ */
+function jrun_get_result($jrun_process) {
+    $results = jrun_get_result_many(array($jrun_process));
+    return array_pop($results);
+}
+
+/**
+ * This method is called by jrun_get_result to check whether or not a
+ * process is ready to terminate.
+ *
+ * @param   array    $jrun_process
+ * @returns boolean                 Whether or not the process is still alive
+ */
+function jrun_check_process_alive(&$jrun_process) {
+    if (!$jrun_process['alive']) {
+        return false;
+    }
+
+    $proc_status = proc_get_status($jrun_process['process']);
+    eval_assert($proc_status !== false, 'proc_get_status() call failed');
+    if (!$proc_status['running']) {
+        // Fetch final data left in pipes.
+        $jrun_process['stdout'] .=
+            stream_get_contents($jrun_process['pipes'][1]);
+        $jrun_process['stderr'] .=
+            stream_get_contents($jrun_process['pipes'][2]);
+        proc_close($jrun_process['process']);
+        $jrun_process['alive'] = false;
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Receives an array of one or more jrun processes returned by async jail_run
+ * calls, waits for all of them to terminate and returns their corresponding
+ * jrun results.
+ *
+ * @param   array   $jrun_processes
+ * @returns array
+ */
+function jrun_get_result_many($jrun_processes) {
+    $jrun_processes = array_values($jrun_processes);
+    $still_alive = count($jrun_processes);
+    foreach ($jrun_processes as $id => &$jrun_process) {
+        $jrun_process['alive'] = true;
+        $jrun_process['stdout'] = '';
+        $jrun_process['stderr'] = '';
+    }
+
+    // Need to fetch data in parallel from each process' pipes, since they may
+    // fill up and block process execution otherwise.
+    while ($still_alive > 0) {
+        // Build arrays for stream_select() call
+        $read = array();
+        $write = null;
+        $except = null;
+        foreach ($jrun_processes as $id => &$jrun_process) {
+            if (!$jrun_process['alive']) {
+                continue;
+            }
+            $read[$id * 2 + 0] = $jrun_process['pipes'][1];
+            $read[$id * 2 + 1] = $jrun_process['pipes'][2];
         }
-        $result['stderr'] = @file_get_contents($jaildir.'jailed_stderr');
-        if ($result['stderr'] === false) {
-            return jrun_make_error('Failed reading captured stderr');
+
+        // Wait for data to become ready on any pipe
+        $nready = stream_select($read, $write, $except, 2);
+        eval_assert($nready !== false, 'stream_select() call failed');
+
+        if ($nready === 0) {
+            // No data is available after timeout, check if processes still
+            // alive.
+            foreach ($jrun_processes as &$jrun_process) {
+                if ($jrun_process['alive'] &&
+                    !jrun_check_process_alive($jrun_process)) {
+                    $still_alive -= 1;
+                }
+            }
+        } else {
+            // Fetch data from available pipes.
+            foreach ($read as $stream_id => $stream) {
+                $jrun_process = &$jrun_processes[$stream_id / 2];
+                if (!$jrun_process['alive']) {
+                    // If process has terminated in the mean time, then it
+                    // would have been processed earlier in the loop
+                    continue;
+                }
+
+                if ($stream_id % 2 == 0) {
+                    $jrun_process['stdout'] .= fread($stream, 65536);
+                } else {
+                    $jrun_process['stderr'] .= fread($stream, 65536);
+                }
+
+                if (!jrun_check_process_alive($jrun_process)) {
+                    $still_alive -= 1;
+                }
+            }
         }
     }
 
-    if ($result['result'] == 'OK') {
-        eval_assert($result['time'] <= $time &&
-                    $result['memory'] <= $memory,
-                    'JRun returns OK, but time or memory limit is broken');
-    }
+    $results = array();
+    foreach ($jrun_processes as &$jrun_process) {
+        $message = $jrun_process['stderr'] . $jrun_process['stdout'];
+        // Get the last line from the message
+        $message = strrev(strtok(strrev($message), "\n"));
 
-    return $result;
+        $result = jrun_parse_message($message);
+        if ($result == false) {
+            return jrun_make_error('Failed executing jail');
+        }
+
+        if ($jrun_process['capture_std']) {
+            $jaildir = $jrun_process['jaildir'];
+            $result['stdout'] = @file_get_contents($jaildir.'jailed_stdout');
+            if ($result['stdout'] === false) {
+                return jrun_make_error('Failed reading captured stdout');
+            }
+            $result['stderr'] = @file_get_contents($jaildir.'jailed_stderr');
+            if ($result['stderr'] === false) {
+                return jrun_make_error('Failed reading captured stderr');
+            }
+        }
+
+        if ($result['result'] == 'OK') {
+            eval_assert($result['time'] <= $jrun_process['time'] &&
+                        $result['memory'] <= $jrun_process['memory'],
+                        'JRun returns OK, but time or memory limit is broken');
+        }
+
+        $results[] = $result;
+    }
+    return $results;
 }
