@@ -106,6 +106,9 @@ $config_vars['IA_URL_PREFIX'] = read_line('Prefix part of url?',
                                           $config_vars['IA_URL_PREFIX']);
 $config_vars['IA_URL_PREFIX'] = slash_string($config_vars['IA_URL_PREFIX'],
                                              true, true);
+if ($config_vars['IA_URL_PREFIX'] == '//') {
+    $config_vars['IA_URL_PREFIX'] = '/'; // you'll get surprised without this
+}
 
 // Compile needed files
 compile_lcs($config_vars['IA_ROOT_DIR']);
@@ -184,7 +187,13 @@ if ($dblink && read_bool('Should I try to import the sample database?', true)) {
 // Configure apache
 if (read_bool('Should I try to configure apache for you?', true)) {
     $sitename = slash_string($config_vars['IA_URL_PREFIX'], false, false);
-    $sitename = read_line('Site name?', $sitename);
+    if (!$sitename) {
+        $sitename = 'infoarena';
+    }
+
+    do {
+        $sitename = read_line('Site name? (Only digits, letters and the characters _ and - )', $sitename);
+    } while (preg_match('/^[a-z0-9\-_]+$/xi', $sitename) == 0 || strlen($sitename) == 0);
 
     $dirs = array($ia_root . 'attach',
                   $ia_root . 'cache',
@@ -199,6 +208,7 @@ if (read_bool('Should I try to configure apache for you?', true)) {
         system('chmod 2750 ' . escapeshellarg($dir));
     }
 
+    $sitename_not_escaped = $sitename;
     $sitename = escapeshellarg($sitename);
     if (php_uname('s') === 'Darwin') {
         // OS X installation
@@ -235,14 +245,61 @@ if (read_bool('Should I try to configure apache for you?', true)) {
         }
     } else if (is_dir('/etc/httpd/conf.d/')) {
         // Fedora/Redhat/others?
-        print('You seem to have a redhat-ish apache2 setup.\n');
+        print("You seem to have a redhat-ish apache2 setup.\n");
         system("rm -rf /etc/httpd/infoarena2-dev");
         system("ln -sf {$ia_root}apache.conf /etc/httpd/conf.d/$sitename");
         system("service httpd restart");
         foreach ($dirs as $dir) {
             system('chown apache:' . getmygid() . ' ' . escapeshellarg($dir));
         }
-    } else {
+    } else if (is_dir('/etc/httpd/conf/')) {
+        // Arch linux
+        print("You seem to have an arch-linux apache setup.\n");
+        system("rm -rf /etc/httpd/conf/extra/$sitename.conf");
+        system("ln -sf {$ia_root}apache.conf /etc/httpd/conf/extra/$sitename.conf");
+
+        $httpd_contents = file_get_contents('/etc/httpd/conf/httpd.conf');
+        $site_enable = "\n\nInclude \"conf/extra/$sitename_not_escaped.conf\"";
+
+        // enable site
+        if (strpos($httpd_contents, $site_enable) === false) {
+            $httpd_contents .= $site_enable;
+        }
+
+        if (strpos($httpd_contents, "LoadModule php5_module modules/libphp5.so") === false) {
+            if (read_bool("It seems you do not have the php module enabled. "
+                . "That is normal for an arch linux distribution. "
+                . "Do you want me to enable it (ugly stuff) ?", true)) {
+                    $httpd_contents .= "\nLoadModule php5_module modules/libphp5.so";
+                    $httpd_contents .= "\nInclude conf/extra/php5_module.conf";
+                    system("echo 'application/x-httpd-php       php    php5' >> /etc/httpd/conf/mime.types");
+                }
+        }
+
+        file_put_contents('/etc/httpd/conf/httpd.conf', $httpd_contents);
+
+        // enable php extensions
+        $extensions = array("posix", "mysql", "mysqli", "curl", "zip");
+        $php_ini_contents = file_get_contents('/etc/php/php.ini');
+        foreach ($extensions as $extension) {
+            $php_ini_contents = str_replace(
+                ";extension=$extension.so",
+                "extension=$extension.so",
+                $php_ini_contents);
+        }
+        file_put_contents('/etc/php/php.ini', $php_ini_contents);
+
+        system("systemctl restart httpd.service");
+
+        foreach ($dirs as $dir) {
+            system('chown http:' . getmygid() . ' ' . escapeshellarg($dir));
+        }
+
+        print("You might wanna comment the line with open_basedir in "
+            . "/etc/php/php.ini if you get warning with \"ini_set....\""
+            . " because the script might not have worked. That's less security"
+            . ", but hey we're good guys :-).\n");
+   } else {
         print("I can not figure out how to setup the webserver on your " .
               "operating system. You will have to do it yourself\n");
         if (!read_bool("Would you like to continue with the rest of " .
@@ -250,6 +307,11 @@ if (read_bool('Should I try to configure apache for you?', true)) {
             die();
         }
     }
+
+    print("You should also run a chmod +x on all directories on the "
+        . "way to root (/) starting from the root folder of this ins"
+        . "tall.\n");
+ 
     print("Done configuring apache\n\n");
 }
 
