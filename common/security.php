@@ -168,6 +168,7 @@ function security_simplify_action($action) {
         case 'round-submit':
         case 'round-view-tasks':
         case 'round-view-scores':
+        case 'round-acm-view-partial-scores':
         case 'round-register':
         case 'user-editprofile':
         case 'user-change-security':
@@ -510,6 +511,9 @@ function security_round($user, $action, $round) {
 
         case 'sensitive-info':
             return in_array($usersec, array('admin', 'intern', 'helper'));
+
+        case 'round-acm-view-partial-scores':
+            return $round['state'] != 'waiting' || $is_admin || $is_intern;
 
         default:
             log_error('Invalid round action: '.$action);

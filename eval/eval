@@ -91,6 +91,32 @@ function job_handle($job) {
         }
     }
 
+    /**
+     * Special case for acm-round tasks
+     */
+    $round = round_get($job['round_id']);
+    if ($round['type'] == 'acm-round') {
+        $time = (int)(db_date_parse($job['submit_time']) -
+                      db_date_parse($round['start_time']));
+        $penalty = $job['submissions'] * 20 + $time / 60;
+
+        $round_parameters = round_get_parameters($job['round_id']);
+        $affects_frozen_scoreboard = false;
+        if (db_date_parse($round['start_time']) +
+            3600 * $round_parameters['scoreboard-duration'] >
+            db_date_parse($job['submit_time'])) {
+            $affects_frozen_scoreboard = true;
+        }
+        log_print_r($round);
+        log_print_r($round_parameters);
+        score_update_acm_round($job['user_id'], $job['round_id'],
+                               $job['task_id'],
+                               $job_result['score'] > 0 ? 1 : 0,
+                               $job['submissions'] + 1,
+                               (int)$penalty,
+                               $affects_frozen_scoreboard);
+    }
+
     // Send job result and update score magic.
     job_send_result($job['id'], $job_result);
     score_update_for_job(

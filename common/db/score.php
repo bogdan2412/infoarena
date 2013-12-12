@@ -496,5 +496,158 @@ function score_get_rankings($rounds, $tasks, $start = 0, $count = 999999,
     return $rankings;
 }
 
+/**
+ * Inserts information about a task in an acm-round for a specific user
+ *
+ * @param int $round_id
+ * @param string $round_id
+ * @param string $task_id
+ * @param int $score
+ * @param int $submission
+ * @param int $penalty
+ * @param bool $affects_frozen_scoreboard
+ * @return void
+ */
+function score_update_acm_round($user_id, $round_id, $task_id, $score,
+                                $submission, $penalty,
+                                $affects_frozen_scoreboard = false) {
+    $query = sprintf("SELECT * FROM ia_acm_round
+                             WHERE user_id = %s AND
+                                   round_id = %s AND
+                                   task_id = %s",
+                     db_quote($user_id),
+                     db_quote($round_id),
+                     db_quote($task_id));
+    $old_info = db_fetch($query);
+    /*
+     * If it's the first submission we probably made a reevaluation
+     * Otherwise if we had 0 points we should push the new information
+     */
+    if ($submission == 1 || getattr($old_info, 'score') == 0) {
+        $partial_score = getattr($old_info, 'partial_score', 0);
+        $partial_penalty = getattr($old_info, 'partial_penalty', 0);
+        $partial_submission = getattr($old_info, 'partial_submission', 0);
 
+        if ($affects_frozen_scoreboard) {
+            $partial_score = $score;
+            $partial_penalty = $penalty;
+            $partial_submission = $submission;
+        }
 
+        $query = sprintf("REPLACE INTO ia_acm_round
+                                  VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                          db_quote($user_id),
+                          db_quote($round_id),
+                          db_quote($task_id),
+                          db_quote($score),
+                          db_quote($penalty),
+                          db_quote($submission),
+                          db_quote($partial_score),
+                          db_quote($partial_penalty),
+                          db_quote($partial_submission));
+        db_query($query);
+    }
+}
+
+/**
+ * Returns the rankings for an acm-style contest
+ *
+ * It's by default very detailed, with score per task (penalty)
+ *
+ * It assumes the round is of type 'acm-round'
+ *
+ * @param string $round_id
+ * @param bool $full_results Whether to show full results or
+ *                           the scoreboard before freezing
+ * @return array
+ */
+function score_get_rankings_acm($round_id, $full_results = false) {
+    $round = round_get($round_id);
+    if ($round['type'] != 'acm-round')
+        return array();
+
+    $score_column = 'partial_score';
+    $penalty_column = 'partial_penalty';
+    $submission_column = 'partial_submission';
+    if ($full_results) {
+        $score_column = 'score';
+        $penalty_column = 'penalty';
+        $submission_column = 'submission';
+    }
+
+    $query = "SELECT SUM(" . $score_column . ") AS score,
+                     SUM(CASE WHEN ". $score_column . " > 0 THEN " .
+                            $penalty_column . " ELSE 0 END) as penalty,
+                     user_id, ia_user.username,
+                     ia_user.full_name AS fullname,
+                     ia_user.rating_cache AS rating
+              FROM ia_acm_round
+              LEFT JOIN ia_user ON ia_user.id = ia_acm_round.user_id
+              WHERE ia_acm_round.round_id = " . db_quote($round_id) . "
+              GROUP BY `user_id`
+              ORDER BY score DESC, penalty ASC";
+    $rankings = db_fetch_all($query);
+
+    $users = array();
+    foreach ($rankings as $ranking) {
+        $users[$ranking['user_id']] = true;
+    }
+
+    $registered_users = round_get_registered_users_range($round_id, 0,
+                            round_get_registered_users_count($round_id));
+
+    foreach ($registered_users as $user) {
+        if (!isset($users[$user['user_id']])) { // user registered
+                                                // but no submission
+            $users[$user['user_id']] = true;
+
+            $user['score'] = 0;
+            $user['penalty'] = 0;
+
+            $rankings[] = $user;
+        }
+    }
+
+    $tasks = round_get_tasks($round_id);
+    $query = "SELECT task_id, user_id, " . $score_column . " as score, " .
+                     $penalty_column . " as penalty, " .
+                     $submission_column . " as submission
+              FROM ia_acm_round WHERE round_id = " . db_quote($round_id);
+
+    $scores = db_fetch_all($query);
+    $task_info = array();
+    foreach ($scores as $score) {
+        $user_id = $score['user_id'];
+        $task_id = $score['task_id'];
+        if (!isset($task_info[$user_id])) {
+            $task_info[$user_id] = array();
+        }
+        $task_info[$user_id][$task_id] = $score;
+    }
+
+    foreach ($rankings as &$user) {
+        $user_id = $user['user_id'];
+        foreach ($tasks as $task) {
+            $task_id = $task['id'];
+            $current_info = getattr(getattr($task_info, $user_id, array()),
+                                    $task_id, array());
+            $user[$task_id] = array(
+                'score' => getattr($current_info, 'score', 0),
+                'penalty' => getattr($current_info, 'penalty', 0),
+                'submission' => getattr($current_info, 'submission', 0)
+            );
+        }
+    }
+
+    for ($i = 0; $i < count($rankings); ++$i) {
+        if ($i == 0 ||
+            ($rankings[$i - 1]['score'] != $rankings[$i]['score'] &&
+             $rankings[$i - 1]['penalty'] != $rankings[$i]['penalty'])) {
+            $rankings[$i]['ranking'] = $i + 1;
+        } else {
+            $rankings[$i]['ranking'] = $rankings[$i - 1]['ranking'];
+        }
+    }
+
+    return $rankings;
+}
