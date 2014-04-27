@@ -35,7 +35,7 @@ function validate_user_data($data, $register, $user = null) {
         elseif (4 > strlen(trim($data['username']))) {
             $errors['username'] = 'Nume de utilizator este prea scurt.';
         }
-        elseif (60 < strlen(trim($data['username']))) {
+        elseif (40 < strlen(trim($data['username']))) {
             $errors['username'] = 'Nume de utilizator este prea lung.';
         }
         elseif (!is_user_name($data['username'])) {

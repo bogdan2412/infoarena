@@ -72,9 +72,9 @@ function macro_rankingsacm($args) {
     ));
 
     $rankings = array();
-    if (identity_can('round-view-scores')) {
+    if (identity_can('round-view-scores', $round)) {
         $rankings = score_get_rankings_acm($round_id, true);
-    } else if (identity_can('round-acm-view-partial-scores')) {
+    } else if (identity_can('round-acm-view-partial-scores', $round)) {
         $rankings = score_get_rankings_acm($round_id, false);
     }
 

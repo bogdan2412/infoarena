@@ -1,0 +1,43 @@
+#! /usr/bin/env php
+<?php
+
+require_once(dirname($argv[0])."/utilities.php");
+require_once(dirname($argv[0])."/../common/db/task.php");
+
+db_connect();
+
+$tasks = task_get_all();
+
+$total = 0;
+$changed = 0;
+$public = 0;
+$private = 0;
+foreach ($tasks as $task) {
+    $new_security = null;
+    if (task_in_archive_rounds($task['id'])) {
+        $new_security = 'public';
+    } else {
+        $new_security = 'private';
+    }
+
+    ++$total;
+    if ($task['security'] != $new_security) {
+        echo '+';
+        ++$changed;
+        $task['security'] = $new_security;
+        task_update($task);
+    } else {
+        echo '.';
+    }
+
+    if ($task['security'] == 'public') {
+        ++$public;
+    } else {
+        ++$private;
+    }
+}
+
+echo "\n";
+echo "From a total of $total tasks, $changed have changed their security.\n";
+echo "We now have $public public tasks and $private private tasks.\n";
+

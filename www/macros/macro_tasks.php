@@ -149,7 +149,16 @@ function macro_tasks($args) {
     }
 
     $scores = getattr($args, 'score') && identity_can("round-view-scores", $round);
-    if (identity_is_anonymous() || $scores == false) {
+    if (identity_is_anonymous() && $scores && request('user', '')) {
+        $filter_user = user_get_by_username(request('user', ''));
+        if($filter_user != null) {
+            $filter_user_id = $filter_user['id'];
+            $user_id = $filter_user_id;
+        } else {
+            $filter_user_id = null;
+            $user_id = null;
+        }
+    } else if (identity_is_anonymous() || $scores == false) {
         $user_id = null;
         $filter_user_id = null;
     } else {

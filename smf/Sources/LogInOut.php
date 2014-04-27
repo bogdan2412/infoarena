@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.6                                           *
+* Software Version:           SMF 1.1.19                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2007 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -459,6 +459,9 @@ function Logout($internal = false)
 
 	// Empty the cookie! (set it in the past, and for ID_MEMBER = 0)
 	setLoginCookie(-3600, 0);
+	session_destroy();
+	if (!empty($ID_MEMBER))
+		updateMemberData($ID_MEMBER, array('passwordSalt' => '\'' . substr(md5(mt_rand()), 0, 4) . '\''));
 
 	// Off to the merry board index we go!
 	if (empty($_SESSION['logout_url']))

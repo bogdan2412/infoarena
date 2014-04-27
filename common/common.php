@@ -226,7 +226,7 @@ function is_job_id($job_id) {
 // Check user name
 function is_user_name($user_name) {
     return preg_match('/^'.IA_RE_USER_NAME.'$/xi', $user_name) &&
-           strlen($user_name) < 64;
+           strlen($user_name) < 40;
 }
 
 // Check user full name (John Smith sr.)

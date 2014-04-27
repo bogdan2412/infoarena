@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.18                                          *
+* Software Version:           SMF 1.1.19                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -188,7 +188,7 @@ function Register2()
 		'buddy_list',
 		'pm_ignore_list',
 		'smileySet',
-		'signature', 'personalText', 'avatar',
+		'personalText', 'avatar',
 		'lngfile',
 		'secretQuestion', 'secretAnswer',
 	);
@@ -216,7 +216,7 @@ function Register2()
 	// Validation... even if we're not a mall.
 	if (isset($_POST['realName']) && (!empty($modSettings['allow_editDisplayName']) || allowedTo('moderate_forum')))
 	{
-		$_POST['realName'] = trim(preg_replace('~[\s]~' . ($context['utf8'] ? 'u' : ''), ' ', $_POST['realName']));
+		$_POST['realName'] = trim(preg_replace('~[\t\n\r \x0B\0' . ($context['utf8'] ? ($context['server']['complex_preg_chars'] ? '\x{A0}\x{AD}\x{2000}-\x{200F}\x{201F}\x{202F}\x{3000}\x{FEFF}' : "\xC2\xA0\xC2\xAD\xE2\x80\x80-\xE2\x80\x8F\xE2\x80\x9F\xE2\x80\xAF\xE2\x80\x9F\xE3\x80\x80\xEF\xBB\xBF") : '\x00-\x08\x0B\x0C\x0E-\x19\xA0') . ']+~' . ($context['utf8'] ? 'u' : ''), ' ', $_POST['realName']));
 		if (trim($_POST['realName']) != '' && !isReservedName($_POST['realName']) && $func['strlen']($_POST['realName']) <= 60)
 			$possible_strings[] = 'realName';
 	}

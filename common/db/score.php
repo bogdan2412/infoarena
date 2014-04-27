@@ -583,6 +583,9 @@ function score_get_rankings_acm($round_id, $full_results = false) {
                      ia_user.rating_cache AS rating
               FROM ia_acm_round
               LEFT JOIN ia_user ON ia_user.id = ia_acm_round.user_id
+              INNER JOIN ia_round_task ON
+                ia_round_task.round_id = ia_acm_round.round_id AND
+                ia_round_task.task_id = ia_acm_round.task_id
               WHERE ia_acm_round.round_id = " . db_quote($round_id) . "
               GROUP BY `user_id`
               ORDER BY score DESC, penalty ASC";
@@ -641,7 +644,7 @@ function score_get_rankings_acm($round_id, $full_results = false) {
 
     for ($i = 0; $i < count($rankings); ++$i) {
         if ($i == 0 ||
-            ($rankings[$i - 1]['score'] != $rankings[$i]['score'] &&
+            ($rankings[$i - 1]['score'] != $rankings[$i]['score'] ||
              $rankings[$i - 1]['penalty'] != $rankings[$i]['penalty'])) {
             $rankings[$i]['ranking'] = $i + 1;
         } else {

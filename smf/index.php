@@ -5,7 +5,7 @@
 * SMF: Simple Machines Forum                                                      *
 * Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
 * =============================================================================== *
-* Software Version:           SMF 1.1.18                                          *
+* Software Version:           SMF 1.1.19                                          *
 * Software by:                Simple Machines (http://www.simplemachines.org)     *
 * Copyright 2006-2009 by:     Simple Machines LLC (http://www.simplemachines.org) *
 *           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
@@ -34,7 +34,7 @@
 	with the URL index.php?action=action-in-url.  Relatively simple, no?
 */
 
-$forum_version = 'SMF 1.1.18';
+$forum_version = 'SMF 1.1.19';
 
 // Get everything started up...
 define('SMF', 1);
@@ -134,6 +134,15 @@ if (!empty($modSettings['enableCompressedOutput']) && !headers_sent() && ob_get_
 // This makes it so headers can be sent!
 if (empty($modSettings['enableCompressedOutput']))
 	ob_start();
+
+// Emit some headers for some modicum of protection against nasties.
+if (!headers_sent())
+{
+	// Future versions will make some of this configurable. This is primarily a 'safe' configuration for most cases for now.
+	header('X-Frame-Options: SAMEORIGIN');
+	header('X-XSS-Protection: 1; mode=block');
+	header('X-Content-Type-Options: nosniff');
+}
 
 // Register an error handler.
 set_error_handler('error_handler');
