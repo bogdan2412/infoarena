@@ -561,7 +561,7 @@ function score_update_acm_round($user_id, $round_id, $task_id, $score,
  *                           the scoreboard before freezing
  * @return array
  */
-function score_get_rankings_acm($round_id, $full_results = false) {
+function score_get_rankings_acm($round_id, $full_results = false, $detail_task = true) {
     $round = round_get($round_id);
     if ($round['type'] != 'acm-round')
         return array();
@@ -611,34 +611,36 @@ function score_get_rankings_acm($round_id, $full_results = false) {
         }
     }
 
-    $tasks = round_get_tasks($round_id);
-    $query = "SELECT task_id, user_id, " . $score_column . " as score, " .
-                     $penalty_column . " as penalty, " .
-                     $submission_column . " as submission
-              FROM ia_acm_round WHERE round_id = " . db_quote($round_id);
+    if ($detail_task) {
+        $tasks = round_get_tasks($round_id);
+        $query = "SELECT task_id, user_id, " . $score_column . " as score, " .
+                         $penalty_column . " as penalty, " .
+                         $submission_column . " as submission
+                  FROM ia_acm_round WHERE round_id = " . db_quote($round_id);
 
-    $scores = db_fetch_all($query);
-    $task_info = array();
-    foreach ($scores as $score) {
-        $user_id = $score['user_id'];
-        $task_id = $score['task_id'];
-        if (!isset($task_info[$user_id])) {
-            $task_info[$user_id] = array();
+        $scores = db_fetch_all($query);
+        $task_info = array();
+        foreach ($scores as $score) {
+            $user_id = $score['user_id'];
+            $task_id = $score['task_id'];
+            if (!isset($task_info[$user_id])) {
+                 $task_info[$user_id] = array();
+            }
+            $task_info[$user_id][$task_id] = $score;
         }
-        $task_info[$user_id][$task_id] = $score;
-    }
 
-    foreach ($rankings as &$user) {
-        $user_id = $user['user_id'];
-        foreach ($tasks as $task) {
-            $task_id = $task['id'];
-            $current_info = getattr(getattr($task_info, $user_id, array()),
-                                    $task_id, array());
-            $user[$task_id] = array(
-                'score' => getattr($current_info, 'score', 0),
-                'penalty' => getattr($current_info, 'penalty', 0),
-                'submission' => getattr($current_info, 'submission', 0)
-            );
+        foreach ($rankings as &$user) {
+            $user_id = $user['user_id'];
+            foreach ($tasks as $task) {
+                $task_id = $task['id'];
+                $current_info = getattr(getattr($task_info, $user_id, array()),
+                                        $task_id, array());
+                $user[$task_id] = array(
+                    'score' => getattr($current_info, 'score', 0),
+                    'penalty' => getattr($current_info, 'penalty', 0),
+                    'submission' => getattr($current_info, 'submission', 0)
+                );
+            }
         }
     }
 
