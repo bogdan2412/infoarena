@@ -42,9 +42,10 @@ function compile_file($input_file_name, $output_file_name, &$compiler_message) {
             'pas' => 'fpc -O2 -Xs %file_name% -dINFOARENA',
             'fpc' => 'fpc -O2 -Xs %file_name% -dINFOARENA',
             'py' => IA_JUDGE_PY_COMPILER.' %file_name% %exe_name%',
+            'java' => 'javac %file_name%'
     );
     $matches = array();
-    if (!preg_match("/^(.*)\.(c|cpp|pas|fpc|py)$/i",
+    if (!preg_match("/^(.*)\.(c|cpp|pas|fpc|py|java)$/i",
                     $input_file_name, $matches)) {
         $compiler_message = "Nu am putut sa determin compilatorul ".
                 "pentru '$input_file_name'.";
@@ -62,7 +63,15 @@ function compile_file($input_file_name, $output_file_name, &$compiler_message) {
     $cmdline = preg_replace('/%exe_name%/', $exe_name, $cmdline);
 
     // Running compiler
-    $compiler_message = shell_exec("$cmdline 2>&1 | head -n 50");
+    $compiler_message = array();
+    $return_status = 1;
+    exec("$cmdline 2>&1", $compiler_message, $return_status);
+
+    $compiler_message = array_slice($compiler_message, 0, 50);
+    $compiler_message = implode("\n", $compiler_message);
+
+    if ($extension == "java")
+        return $return_status == 0;
 
     // This is the BEST way to fail on compilation errors.
     if (!is_executable($exe_name)) {
@@ -202,6 +211,41 @@ function jail_run($program, $jaildir, $time, $memory, $capture_std = false,
     if ($async) {
         return $jrun_process;
     }
+
+    return jrun_get_result($jrun_process);
+}
+
+function jail_run_java($jaildir, $time, $memory, $permitted_files = array()) {
+    eval_assert(is_whole_number($time));
+    eval_assert(is_whole_number($memory));
+    eval_assert(is_array($permitted_files));
+    $cmdline = "java -Xmx512m -Xss128m -DONLINE_JUDGE=true -Duser.language=en";
+    $cmdline .= " -Duser.region=US -Duser.variant=US -jar";
+    $cmdline .= " ". IA_ROOT_DIR . "jrun/java-sandbox/InfoarenaJudge.jar";
+    $cmdline .= " ". IA_ROOT_DIR . "jrun/java-sandbox/InfoarenaJudge.so";
+    $cmdline .= " ".$time;
+    $cmdline .= " ".$memory;
+    $cmdline .= " ".IA_JUDGE_JRUN_UID;
+    $cmdline .= " ".IA_JUDGE_JRUN_GID;
+    foreach ($permitted_files as $file) {
+        $cmdline .= " ".escapeshellarg($file);
+    }
+
+    log_print("Running $cmdline");
+    $pipes = array();
+    $process = proc_open($cmdline,
+                         array(1 => array('pipe', 'w'),
+                               2 => array('pipe', 'w')),
+                         $pipes);
+
+    $jrun_process = array(
+        'process' => $process,
+        'pipes' => $pipes,
+        'jaildir' => $jaildir,
+        'time' => $time,
+        'memory' => $memory,
+        'capture_std' => false
+    );
 
     return jrun_get_result($jrun_process);
 }

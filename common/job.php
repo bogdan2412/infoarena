@@ -43,15 +43,16 @@ function safe_job_submit($args, $user) {
     }
 
     // Validate compiler id
-    $valid_compilers = array('c', 'cpp', 'fpc', 'py');
+    $valid_compilers = array('c', 'cpp', 'fpc', 'py', 'java');
     if (!array_key_exists('compiler_id', $args)) {
         $errors['compiler_id'] = "Lipseste compilatorul.";
     } else if (array_search($args['compiler_id'], $valid_compilers) === false) {
         $errors['compiler_id'] = "Compilator invalid.";
     }
-    // HACK: For the moment, only admin`s are allowed to submit Python jobs.
+    // HACK: For the moment, only admin`s are allowed to submit Python or Java jobs.
     // TODO: Remove this once Python support is stable.
-    if ('py' == $args['compiler_id'] && !user_is_admin($user)) {
+    // TODO: Remove this after testing Java.
+    if (('py' == $args['compiler_id'] || 'java' == $args['compiler_id']) && !user_is_admin($user)) {
         $errors['compiler_id'] = 'Deocamdata, numai administratorii pot '
                 .'trimite surse Python.';
     }

@@ -24,7 +24,7 @@ function Submit_AutoCompiler() {
     }
     var ext = f.val().substring(k + 1).toLowerCase();
 
-    if ('c' == ext || 'cc' == ext || 'cpp' == ext || 'pas' == ext || 'py' == ext) {
+    if ('c' == ext || 'cc' == ext || 'cpp' == ext || 'pas' == ext || 'py' == ext || 'java' == ext) {
         if ('pas' == ext) {
             // choose FreePascal compiler
             compiler.val('fpc');
