@@ -78,7 +78,6 @@ public class InfoarenaJudge {
                         memoryUsed = memoryLimit + 1;
                         printResult("FAIL", "Memory Limit exceeded");
                     } else {
-                        printException(e);
                         printResult("FAIL", "Runtime Error");
                     }
                 } catch (Exception e) {
@@ -105,7 +104,6 @@ public class InfoarenaJudge {
                 }
             }
         } catch (ClassNotFoundException e) {
-            printException(e);
             printResult("FAIL", "Runtime Error");
         } catch (NoClassDefFoundError e) {
             printResult("FAIL", "Runtime Error");
@@ -166,11 +164,6 @@ public class InfoarenaJudge {
 
         loadChildThread();
         childThread.start();
-        try {
-            childThread.join();
-        } catch (InterruptedException e) {
-            printException(e);
-        }
 
         for (;;) {
             Thread.State state;

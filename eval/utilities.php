@@ -219,7 +219,8 @@ function jail_run_java($jaildir, $time, $memory, $permitted_files = array()) {
     eval_assert(is_whole_number($time));
     eval_assert(is_whole_number($memory));
     eval_assert(is_array($permitted_files));
-    $cmdline = "java -Xmx512m -Xss128m -DONLINE_JUDGE=true -Duser.language=en";
+    $cmdline = "nice -n " . IA_JUDGE_JRUN_NICE;
+    $cmdline .= " java -Xmx512m -Xss128m -DONLINE_JUDGE=true -Duser.language=en";
     $cmdline .= " -Duser.region=US -Duser.variant=US -jar";
     $cmdline .= " ". IA_ROOT_DIR . "jrun/java-sandbox/InfoarenaJudge.jar";
     $cmdline .= " ". IA_ROOT_DIR . "jrun/java-sandbox/InfoarenaJudge.so";

@@ -15,6 +15,10 @@ function _round_cache_delete($round) {
 
 // Get round
 function round_get($round_id) {
+    if (!$round_id) {
+        return null;
+    }
+
     // this assert brakes templates pages with round_id = %round_id%
     log_assert(is_round_id($round_id));
 

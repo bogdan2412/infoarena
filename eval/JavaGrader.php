@@ -32,8 +32,9 @@ class JavaGrader extends BaseGrader {
         }
 
         // Run user program on a test case.
-        $timelimit = $this->task['timelimit'] * 2000;
-        $memlimit = $this->task['memlimit'] * 2;
+        // 30 extra milliseconds for the vm to start
+        $timelimit = $this->task['timelimit'] * 1000 + 30;
+        $memlimit = $this->task['memlimit'] * 1;
 
         $jrunres = jail_run_java($jaildir,
                                 (int)$timelimit,
