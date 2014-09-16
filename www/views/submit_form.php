@@ -56,9 +56,7 @@ function compiler_field() {
             <option value="c"<?= 'c' == fval('compiler_id') ? ' selected="selected"' : '' ?>>GNU C</option>
             <option value="cpp"<?= 'cpp' == fval('compiler_id') ? ' selected="selected"' : '' ?>>GNU C++</option>
             <option value="fpc"<?= 'fpc' == fval('compiler_id') ? ' selected="selected"' : '' ?>>FreePascal</option>
-            <?php if (user_is_admin(identity_get_user())) { ?>
-                <option value="java"<?= 'java' == fval('compiler_id') ? 'selected="selected"' : '' ?>>Java</option>
-            <?php } ?>
+            <option value="java"<?= 'java' == fval('compiler_id') ? 'selected="selected"' : '' ?>>Java</option>
             <?php if (user_is_admin(identity_get_user())) { ?>
                 <option value="py"<?= 'py' == fval('compiler_id') ? ' selected="selected"' : '' ?>>Python (FOARTE EXPERIMENTAL!)</option>
             <?php } ?>

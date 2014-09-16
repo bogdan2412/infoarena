@@ -52,7 +52,7 @@ function safe_job_submit($args, $user) {
     // HACK: For the moment, only admin`s are allowed to submit Python or Java jobs.
     // TODO: Remove this once Python support is stable.
     // TODO: Remove this after testing Java.
-    if (('py' == $args['compiler_id'] || 'java' == $args['compiler_id']) && !user_is_admin($user)) {
+    if ('py' == $args['compiler_id']  && !user_is_admin($user)) {
         $errors['compiler_id'] = 'Deocamdata, numai administratorii pot '
                 .'trimite surse Python.';
     }
