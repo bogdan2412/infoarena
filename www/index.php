@@ -66,7 +66,7 @@ if (IA_HTTPS_ENABLED) {
 $directmaps = array_flip(array('register', 'changes',
                                'login', 'logout', 'json', 'job_detail',
                                'monitor', 'projector', 'submit', 'userinfo',
-                               'plot', 'search', 'job_skip',
+                               'plot', 'search', 'job_skip', 'liveeval',
                                'unsubscribe', 'resetpass', 'reeval', 'userwidget'
 ));
 

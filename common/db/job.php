@@ -164,7 +164,17 @@ function job_get_range_wheres_job($filters) {
         $wheres[] = sprintf("`job`.`user_id` = %s", db_escape($user_id));
     }
     if (!is_null($round)) {
-        $wheres[] = sprintf("`job`.`round_id` = '%s'", db_escape($round));
+        if (is_array($round)) {
+            $db_escaped_rounds = array();
+            foreach ($round as $r) {
+                $db_escaped_rounds[] = "'" . db_escape($r) . "'";
+            }
+
+            $wheres[] = sprintf("`job`.`round_id` IN (%s)",
+                               implode(",", $db_escaped_rounds));
+        } else {
+            $wheres[] = sprintf("`job`.`round_id` = '%s'", db_escape($round));
+        }
     }
     if (!is_null($job_begin) && is_whole_number($job_begin)) {
         $wheres[] = sprintf("`job`.`id` >= '%s'", db_escape($job_begin));
