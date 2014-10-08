@@ -73,6 +73,7 @@ function get_mime_type($filename) {
 // Returns 2-element array: (width, height) or null if invalid format
 function resize_coordinates($width, $height, $resize) {
     // 100x100 or @100x100 or L100x100
+    $matches = null;
     if (preg_match('/^([\@L]?)([0-9]+)x([0-9]+)$/i', $resize, $matches)) {
         $flag = strtolower($matches[1]);
         $boxw = (float)$matches[2];
@@ -239,5 +240,10 @@ function image_resize($image_info, $filepath, $new_image_info,
             // unsupported image type
             return false;
     }
+        }
+
+function attachment_should_be_in_aws($page_name, $attachment_name) {
+    return is_problem_page($page_name) &&
+        is_grader_testfile($attachment_name) &&
+        IA_AWS_FOR_GRADER_FILES;
 }
-?>

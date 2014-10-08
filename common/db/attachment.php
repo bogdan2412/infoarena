@@ -3,6 +3,10 @@
 require_once(IA_ROOT_DIR."common/db/db.php");
 require_once(IA_ROOT_DIR."common/attachment.php");
 require_once(IA_ROOT_DIR."common/cache.php");
+require_once IA_ROOT_DIR.'common/external_libs/aws/aws-autoloader.php';
+
+use Aws\S3\S3Client;
+use Aws\S3\Exception\S3Exception;
 
 // Add $attachment to cache if not null and return $attachment.
 function _attachment_cache_add($attachment) {
@@ -66,7 +70,7 @@ function attachment_get_by_id($id) {
 
 // Update an attachment. FIXME: hash args.
 function attachment_update($id, $name, $size, $mime_type, $page, $user_id,
-        $remote_ip_info) {
+        $remote_ip_info, $aws) {
     $attachment = array(
             'id' => $id,
             'name' => $name,
@@ -76,6 +80,7 @@ function attachment_update($id, $name, $size, $mime_type, $page, $user_id,
             'user_id' => $user_id,
             'timestamp' => db_date_format(),
             'remote_ip_info' => $remote_ip_info,
+            'aws' => $aws
     );
 
     db_update('ia_file', $attachment, '`id` = '.db_quote($id));
@@ -85,7 +90,7 @@ function attachment_update($id, $name, $size, $mime_type, $page, $user_id,
 
 // Inserts an attachment in the db
 function attachment_insert($name, $size, $mime_type, $page, $user_id,
-        $remote_ip_info) {
+        $remote_ip_info, $aws) {
     $attachment = array(
             'name' => $name,
             'size' => $size,
@@ -94,6 +99,7 @@ function attachment_insert($name, $size, $mime_type, $page, $user_id,
             'user_id' => $user_id,
             'timestamp' => db_date_format(),
             'remote_ip_info' => $remote_ip_info,
+            'aws' => $aws
     );
 
     db_insert('ia_file', $attachment);
@@ -114,14 +120,26 @@ function attachment_delete($attach) {
         return false;
     }
     _attachment_cache_delete($attach);
-    if (!@unlink(attachment_get_filepath($attach))) {
-        return false;
+    if (!$attach['aws']) {
+        if (!@unlink(attachment_get_filepath($attach))) {
+            return false;
+        }
+    } else {
+        if (!attachment_delete_from_aws(
+            'ia-grader-files', attachment_get_aws_name($attach)))
+            return false;
     }
+
     return true;
 }
 
 function attachment_rename($attach, $new_name) {
     log_assert_valid(attachment_validate($attach));
+    if ($attach['aws']) {
+        flash_error('Nu redenumiti atasamentele de tip test');
+        redirect(url_home());
+        return false;
+    }
 
     db_query(sprintf("UPDATE ia_file SET `name` = \"%s\" WHERE `id` = %s",
             db_escape($new_name), db_escape($attach['id'])));
@@ -137,6 +155,7 @@ function attachment_rename($attach, $new_name) {
     if (!@rename(attachment_get_filepath($attach), attachment_get_filepath($new_attach))) {
         return false;
     }
+
     return true;
 }
 
@@ -190,4 +209,97 @@ function attachment_get_filepath($attach) {
             $attach['id'];
 }
 
-?>
+function attachment_get_aws_name($attach) {
+    log_assert(is_array($attach));
+    return strtolower(
+        preg_replace('/[^a-z0-9\.\-_]/i', '_', $attach['page'])).'_'.
+           preg_replace('/[^a-z0-9\.\-_]/i', '_', $attach['name']).'_'.
+           $attach['id'];
+}
+
+function attachment_get_from_aws($bucket_name, $file_name) {
+    $s3 = S3Client::factory(array(
+        'key' => AWS_RO_ACCESS_KEY,
+        'secret' => AWS_RO_SECRET_KEY
+    ));
+
+    $tmpfile = tempnam(sys_get_temp_dir(), 'ia_');
+    try {
+        $s3->getObject(array(
+            'Bucket' => $bucket_name,
+            'Key' => $file_name,
+            'SaveAs' => $tmpfile
+        ));
+    } catch (S3Exception $e) {
+        log_error('Error getting file from s3 '.$e);
+    }
+
+    register_shutdown_function(
+        function() use ($tmpfile) {
+            @unlink($tmpfile);
+        });
+    return $tmpfile;
+}
+
+function attachment_put_in_aws_command(
+    $s3,
+    $bucket_name,
+    $file_name,
+    $disk_name) {
+    return $s3->getCommand('PutObject', array(
+        'Bucket' => $bucket_name,
+        'Key' => $file_name,
+        'SourceFile' => $disk_name
+    ));
+}
+
+function attachment_put_in_aws($bucket_name, $file_name, $disk_name) {
+    $s3 = S3Client::factory(array(
+        'key' => AWS_RW_ACCESS_KEY,
+        'secret' => AWS_RW_SECRET_KEY
+    ));
+    try {
+        $s3->putObject(array(
+            'Bucket' => $bucket_name,
+            'Key'    => $file_name,
+            'SourceFile' => $disk_name
+        ));
+        return true;
+    } catch (S3Exception $e) {
+        log_error('Error uploading file to amazon'.
+            $e->getMessage());
+        return false;
+    }
+}
+
+function attachment_is_in_aws($bucket_name, $file_name) {
+    $s3 = S3Client::factory(array(
+        'key' => AWS_RO_ACCESS_KEY,
+        'secret' => AWS_RO_SECRET_KEY
+    ));
+
+    try {
+        return $s3->doesObjectExist($bucket_name, $file_name);
+    } catch (S3Exception $e) {
+        log_error('Error checking for the existance of an object on s3'.
+            $e->getMessage());
+        return false;
+    }
+}
+
+function attachment_delete_from_aws($bucket_name, $file_name) {
+    $s3 = S3Client::factory(array(
+        'key' => AWS_RW_ACCESS_KEY,
+        'secret' => AWS_RW_SECRET_KEY
+    ));
+    try {
+        $s3->deleteObject(array(
+            'Bucket' => $bucket_name,
+            'Key'    => $file_name
+        ));
+        return true;
+    } catch (S3Exception $e) {
+        log_error('Error deleting file from amazon'.$e->getMessage());
+        return false;
+    }
+}

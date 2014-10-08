@@ -218,14 +218,18 @@ function controller_attachment_submit($page_name) {
                 identity_require('attach-overwrite', $attach);
                 attachment_update($attach['id'], $file_att['name'],
                         $file_att['size'], $file_att['type'], $page_name,
-                        $identity_user['id'], remote_ip_info());
+                        $identity_user['id'], remote_ip_info(),
+                        attachment_should_be_in_aws(
+                            $page_name, $file_att['name']));
                 $rewrite_count++;
             }
             else {
                 // New attachment. Insert.
                 attachment_insert($file_att['name'], $file_att['size'],
                         $file_att['type'], $page_name, $identity_user['id'],
-                        remote_ip_info());
+                        remote_ip_info(),
+                        attachment_should_be_in_aws(
+                            $page_name, $file_att['name']));
             }
 
             // check if update/insert went ok
@@ -244,20 +248,27 @@ function controller_attachment_submit($page_name) {
             if (!isset($file_att['attach_id'])) {
                 continue;
             }
-            $disk_name = attachment_get_filepath($file_att['attach_obj']);
-            if (is_uploaded_file($file_att['disk_name'])) {
-                $move_ok = move_uploaded_file($file_att['disk_name'],
-                        $disk_name);
-            } else {
-                $move_ok = @rename($file_att['disk_name'], $disk_name);
-            }
-            if (!$move_ok) {
-                log_error("Failed moving attachment to final storage ".
-                    "(from {$file_att['disk_name']} to $disk_name)");
-            }
-            if (!chmod($disk_name, 0640)) {
-                log_error("Failed setting attachment permissions ".
-                    "(target $disk_name)");
+            if (attachment_should_be_in_aws($page_name, $file_att['name'])) {
+                attachment_put_in_aws(
+                    'ia-grader-files',
+                    attachment_get_aws_name($file_att['attach_obj']),
+                    $file_att['disk_name']);
+           } else {
+                $disk_name = attachment_get_filepath($file_att['attach_obj']);
+                if (is_uploaded_file($file_att['disk_name'])) {
+                    $move_ok = move_uploaded_file($file_att['disk_name'],
+                            $disk_name);
+                } else {
+                    $move_ok = @rename($file_att['disk_name'], $disk_name);
+                }
+                if (!$move_ok) {
+                    log_error("Failed moving attachment to final storage ".
+                        "(from {$file_att['disk_name']} to $disk_name)");
+                }
+                if (!chmod($disk_name, 0640)) {
+                    log_error("Failed setting attachment permissions ".
+                        "(target $disk_name)");
+                }
             }
         }
     }
@@ -441,9 +452,18 @@ function try_attachment_get($page_name, $file_name) {
         redirect(url_textblock($page_name));
     }
 
-    $real_name = attachment_get_filepath($attach);
-    if (!file_exists($real_name)) {
-        die_http_error();
+    // this is just a check to see if the file exists, we used to have
+    // attachments with no actual file on disk
+    if (!attachment_should_be_in_aws($page_name, $file_name)) {
+        $real_name = attachment_get_filepath($attach);
+        if (!file_exists($real_name)) {
+            die_http_error();
+        }
+    } else {
+        if (!attachment_is_in_aws('ia-grader-files',
+            attachment_get_aws_name($attach))) {
+            die_http_error();
+        }
     }
 
     return $attach;
@@ -455,7 +475,6 @@ function controller_attachment_download($page_name, $file_name,
     // referer check
     if (http_referer_check()) {
         $attach = try_attachment_get($page_name, $file_name);
-
         // serve attachment with proper mime types
         global $IA_SAFE_MIME_TYPES;
         if (in_array($attach['mime_type'], $IA_SAFE_MIME_TYPES)) {
@@ -466,7 +485,19 @@ function controller_attachment_download($page_name, $file_name,
             }
             $mime_type = "application/octet-stream";
         }
-        http_serve(attachment_get_filepath($attach), $file_name, $mime_type);
+
+        if (attachment_should_be_in_aws($page_name, $file_name)) {
+            http_serve(
+                attachment_get_from_aws(
+                    'ia-grader-files',
+                    attachment_get_aws_name($attach)),
+                $file_name,
+                $mime_type);
+        } else {
+            http_serve(attachment_get_filepath($attach),
+                       $file_name,
+                       $mime_type);
+        }
     } else {
         // redirect to main page
         redirect(url_absolute(url_home()));
@@ -484,7 +515,14 @@ function controller_attachment_download_zip($page_name, $arguments) {
         $zipfile = new zipfile();
         foreach ($files as $filename) {
             $attach = try_attachment_get($page_name, $filename);
-            $local_file_path = attachment_get_filepath($attach);
+            $local_file_path = null;
+            if (attachment_should_be_in_aws($page_name, $filename)) {
+                $local_file_path = attachment_get_from_aws(
+                    'ia-grader-files',
+                    attachment_get_aws_name($attach));
+            } else {
+                $local_file_path = attachment_get_filepath($attach);
+            }
             $fh = fopen($local_file_path, "r");
             $contents = fread($fh, filesize($local_file_path));
             $zipfile->add_file($contents, $filename);

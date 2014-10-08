@@ -382,10 +382,17 @@ function textblock_copy($old_textblock, $new_name, $user_id, $remote_ip_info) {
     $files = attachment_get_all($old_textblock["name"]);
 
     // Copy attachments in db and hard drive
+    $aws_error = false;
     foreach ($files as $file) {
+        if ($file['aws']) {
+            $aws_error = true;
+            continue;
+       }
+
         // Copy in db and get new id
         $new_id = attachment_insert($file['name'], $file['size'],
-                $file['mime_type'], $new_name, $user_id, $remote_ip_info);
+            $file['mime_type'], $new_name, $user_id, $remote_ip_info,
+            $file['aws']);
 
         // Copy on hard drive
         $old_filename = attachment_get_filepath($file);
@@ -394,7 +401,14 @@ function textblock_copy($old_textblock, $new_name, $user_id, $remote_ip_info) {
         $new_filename = attachment_get_filepath($file);
 
         if (!@copy($old_filename, $new_filename)) {
-            log_error("Failed copying attachment from $old_filename to $new_filename");
+            log_error("Failed copying attachment from $old_filename ".
+                "to $new_filename");
         }
+    }
+
+    if ($aws_error) {
+        flash_error('Nu se pot copia si atasamentele teste ale unei '.
+            'probleme');
+        redirect(url_textblock($new_textblock['name']));
     }
 }

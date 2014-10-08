@@ -111,12 +111,12 @@ function controller_account($username = null) {
                     // Attachment already exists, overwrite.
                     attachment_update($attach['id'], $file_name, $avatar_size,
                                       $mime_type, $user_page, $user['id'],
-                                      remote_ip_info());
+                                      remote_ip_info(), false);
                 } else {
                     // New attachment. Insert.
                     attachment_insert($file_name, $avatar_size,
                                       $mime_type, $user_page, $user['id'],
-                                      remote_ip_info());
+                                      remote_ip_info(), false);
                 }
 
                 // check if update/insert went ok
@@ -209,4 +209,3 @@ function controller_account($username = null) {
     execute_view_die('views/account.php', $view);
 }
 
-?>
