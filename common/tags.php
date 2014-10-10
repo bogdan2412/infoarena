@@ -5,7 +5,6 @@ require_once(IA_ROOT_DIR."common/db/tags.php");
 
 function tag_split($tag_data) {
     $tags = explode(",", $tag_data);
-    array_walk($tags, 'trim');
     $result = array();
     foreach ($tags as &$tag) {
         $tag = trim($tag);
@@ -107,5 +106,3 @@ function tag_update($obj, $obj_id, $type, $tag_data, $parent = 0) {
     }
     return $tag_ids;
 }
-
-?>

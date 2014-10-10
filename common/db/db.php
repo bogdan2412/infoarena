@@ -39,6 +39,7 @@ function is_db_date($string) {
 // NOTE: We cannot use strptime() since it doesn't work on windows
 function db_date_parse($string) {
     // maybe it's a date&time
+    $matches = null;
     $ret = preg_match('/^(\\d{4})-(\\d{2})-(\\d{2}) (\\d{2}):(\\d{2}):(\\d{2})$/',
                       $string, $matches);
     if ($ret) {
@@ -94,6 +95,19 @@ function db_query_value($query, $default_value = null) {
     log_assert(1 == count($row), 'db_query_value() expects 1 column at most');
 
     return $row[0];
+}
+
+// Retries the query for $retries times or until it succeeded.
+// Wrapper for db_query.
+// Returns native PHP mysql resource handle.
+function db_query_retry($query, $retries) {
+    $result = false;
+
+    for ($try = 0; $try <= $retries && !$result; ++$try) {
+        $result = db_query($query);
+    }
+
+    return $result;
 }
 
 // Executes SQL INSERT statement (wrapper for db_query)
@@ -282,4 +296,3 @@ function db_get_task_filter_clause($filter, $table_alias) {
     }
 }
 
-?>

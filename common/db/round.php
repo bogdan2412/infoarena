@@ -218,6 +218,7 @@ function round_update_parameters($round_id, $param_values) {
 }
 
 // Replaces attached task list for given round
+// Returns true if success, false otherwise
 // :WARNING: This function does not check for parameter validity!
 // It only stores them to database.
 //
@@ -232,6 +233,9 @@ function round_update_task_list($round_id, $old_tasks, $tasks,
     $common_tasks = array_intersect($old_tasks, $tasks);
     $old_tasks = array_diff($old_tasks, $common_tasks);
     $tasks = array_diff($tasks, $common_tasks);
+
+    // Either succeed or do nothing at all
+    db_query('START TRANSACTION');
 
     // delete round-task relations
     if (count($old_tasks) > 0) {
@@ -258,6 +262,7 @@ function round_update_task_list($round_id, $old_tasks, $tasks,
         }
     }
 
+    $result = true;
     if (count($tasks) > 0) {
         // insert new relations
         $values = array();
@@ -267,9 +272,15 @@ function round_update_task_list($round_id, $old_tasks, $tasks,
             $values[] = "('".db_escape($round_id)."', '".
                         db_escape($task_id)."', '".db_escape($order_id)."')";
         }
+
         $query = "INSERT INTO ia_round_task (round_id, task_id, order_id)
                   VALUES ". implode(', ', $values);
-        db_query($query);
+        // This query fails pretty often for some reason
+        $result = db_query_retry($query, 1);
+    }
+
+    // Commit transaction
+    if ($result) {
         foreach ($tasks as $task) {
             // Update parent round cache for new tasks
             task_get_parent_rounds($task, true);
@@ -277,9 +288,15 @@ function round_update_task_list($round_id, $old_tasks, $tasks,
                 task_update_security($task, 'check');
             }
         }
+
+        round_task_recompute_order($round_id);
+
+        db_query('COMMIT');
+    } else {
+        db_query('ROLLBACK');
     }
 
-    round_task_recompute_order($round_id);
+    return $result;
 }
 
 // Returns boolean whether given user is registered to round $round_id

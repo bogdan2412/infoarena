@@ -1,0 +1,33 @@
+server {
+        listen 80;
+        listen [::]:80 ipv6only=on;
+        client_max_body_size 65M;
+
+        sendfile off;
+        underscores_in_headers on;
+        server_name localhost infoarena2.localhost;
+
+        root /var/infoarena/repo/;
+
+        include hhvm.conf;
+
+        location ~ ^/(static/.*|favicon.ico|robots.txt)$ {
+                root    /var/infoarena/repo/www/;
+        }
+
+        location ~ ^/avatar/(tiny|small|normal|forum|big|full)/(.+)$ {
+                root        /var/infoarena/repo/www/static/images/avatar/;
+                try_files   /$1/a$2 /$1/noimage =500;
+        }
+
+        rewrite ^/forum$    /forum/     redirect;
+        location ~ ^/forum/(.*)$ {
+            root /var/infoarena/repo/smf/;
+            try_files /$1?$args /$1/index.php?$args /index.php;
+        }
+
+        location / {
+                client_max_body_size 64m;
+                rewrite ^/(.*)$ /www/index.php?page=$1;
+        }
+}

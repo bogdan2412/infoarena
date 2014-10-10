@@ -182,10 +182,17 @@ function controller_round_details($round_id) {
          * Update task security if the new or old round are of type archive
          * Also update all the tasks if changing round type
          */
-        round_update_task_list($round_id, $round_tasks, $new_round_tasks,
+        $result = round_update_task_list($round_id,
+            $round_tasks,
+            $new_round_tasks,
             $round['type'] == 'archive' ||
                 $new_round['type'] == 'archive',
             $round['type'] != $new_round['type']);
+
+        if (!$result) {
+            flash_error('Eroare la actualizarea listei. Incercati din nou');
+            redirect(url_round_edit_params($round_id));
+        }
 
         if (identity_can('round-tag', $new_round)) {
             tag_update("round", $new_round['id'], "tag", $values['tags']);
