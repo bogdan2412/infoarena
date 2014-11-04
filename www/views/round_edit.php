@@ -15,11 +15,6 @@ include('header.php');
 
 echo round_edit_tabs($view['round_id'], 'round-edit-params');
 
-$can_tag = identity_can('round-tag', $round);
-if ($can_tag) {
-    include('tags_header.php');
-}
-
 // Validate $view values.
 log_assert(is_array($all_tasks));
 foreach ($all_tasks as $task) {
@@ -92,16 +87,13 @@ $form_fields = array(
     </div>
 <?php } ?>
 
-<form action="<?= html_escape(getattr($view, 'action')) ?>" method="post" class="task" <?= $can_tag ? tag_form_event() : "" ?>>
+<form action="<?= html_escape(getattr($view, 'action')) ?>" method="post" class="task">
  <fieldset>
   <legend>Informatii generale</legend>
   <ul class="form">
    <?= view_form_field_li($form_fields['title'], 'title') ?>
    <?= view_form_field_li($form_fields['page_name'], 'page_name') ?>
    <?= view_form_field_li($form_fields['start_time'], 'start_time') ?>
-   <?php if ($can_tag) { ?>
-      <?= tag_format_input_box(array("label" => "Tag-uri", "name" => "tags"), fval('tags')) ?>
-   <?php } ?>
    <?= view_form_field_li($form_fields['tasks'], 'tasks') ?>
   </ul>
  </fieldset>
