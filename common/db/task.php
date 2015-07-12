@@ -1,9 +1,9 @@
 <?php
 
-require_once(IA_ROOT_DIR . "common/db/db.php");
-require_once(IA_ROOT_DIR . "common/task.php");
-require_once(IA_ROOT_DIR . "common/db/parameter.php");
-require_once(IA_ROOT_DIR . "common/db/round_task.php");
+require_once IA_ROOT_DIR.'common/db/db.php';
+require_once IA_ROOT_DIR.'common/task.php';
+require_once IA_ROOT_DIR.'common/db/parameter.php';
+require_once IA_ROOT_DIR.'common/db/round_task.php';
 
 // Add $task to cache if not null, return $task.
 function _task_cache_add($task) {
@@ -47,10 +47,11 @@ function task_create($task, $task_params, $remote_ip_info = null) {
         task_update_parameters($task['id'], $task_params);
 
         // Copy templates.
-        require_once(IA_ROOT_DIR . "common/textblock.php");
-        $replace = array("task_id" => $task['id'],
-                         "task_title" => ucfirst($task['id']));
-        textblock_copy_replace("template/newtask", $task['page_name'],
+        require_once IA_ROOT_DIR.'common/textblock.php';
+        $replace = array('task_id' => $task['id'],
+                         'task_title' => ucfirst($task['id']),
+        );
+        textblock_copy_replace('template/newtask', $task['page_name'],
                                $replace, "task: {$task['id']}",
                                $task['user_id'], $remote_ip_info);
 
@@ -62,12 +63,12 @@ function task_create($task, $task_params, $remote_ip_info = null) {
 // Deletes a task from ia_round_task
 function task_delete_from_rounds($task_id) {
     // Get all rounds for the task
-    $query = "SELECT DISTINCT round_id FROM ia_round_task
-              WHERE task_id = " . db_quote($task_id);
+    $query = 'SELECT DISTINCT round_id FROM ia_round_task
+              WHERE task_id = '.db_quote($task_id);
     $res = db_fetch_all($query);
 
     // Delete task
-    db_query("DELETE FROM ia_round_task WHERE task_id = ".db_quote($task_id));
+    db_query('DELETE FROM ia_round_task WHERE task_id = '.db_quote($task_id));
 
     // Repair rounds order
     foreach ($res as $row) {
@@ -84,15 +85,15 @@ function task_delete($task) {
     _task_cache_delete($task);
 
     // Delete problem page
-    textblock_delete($task["page_name"]);
+    textblock_delete($task['page_name']);
 
     // Delete all scores received on task
-    db_query("DELETE FROM `ia_score_user_round_task`
-              WHERE `task_id` = " . db_quote($task["id"]));
+    db_query('DELETE FROM `ia_score_user_round_task`
+              WHERE `task_id` = '.db_quote($task['id']));
 
     // Recompute round scores
-    $query = "SELECT `round_id` FROM `ia_round_task`
-                WHERE `task_id` = ".db_quote($task['id']);
+    $query = 'SELECT `round_id` FROM `ia_round_task`
+                WHERE `task_id` = '.db_quote($task['id']);
     $rounds = db_fetch_all($query);
 
     foreach ($rounds as $round) {
@@ -103,18 +104,18 @@ function task_delete($task) {
     task_delete_from_rounds($task['id']);
 
     // Delete task jobs
-    $job_ids_fetched = db_fetch_all("
+    $job_ids_fetched = db_fetch_all('
         SELECT `id`
         FROM `ia_job`
-        WHERE `task_id` = " . db_quote($task["id"]));
+        WHERE `task_id` = '.db_quote($task['id']));
 
     $job_ids = array();
     foreach ($job_ids_fetched as $job) {
-        $job_ids[] = (int)$job["id"];
+        $job_ids[] = (int)$job['id'];
     }
 
     if (count($job_ids)) {
-        $formated_job_ids = implode(", ", array_map("db_quote", $job_ids));
+        $formated_job_ids = implode(', ', array_map('db_quote', $job_ids));
         db_query("DELETE FROM `ia_job_test`
                   WHERE `job_id` IN ({$formated_job_ids})");
         db_query("DELETE FROM `ia_job`
@@ -122,11 +123,11 @@ function task_delete($task) {
     }
 
     // Delete task
-    db_query("DELETE FROM `ia_task` WHERE `id` = '" .
-             db_escape($task["id"]) . "'");
+    db_query("DELETE FROM `ia_task` WHERE `id` = '".
+             db_escape($task['id'])."'");
 
     // Delete all task parameters
-    task_update_parameters($task["id"], array());
+    task_update_parameters($task['id'], array());
 }
 
 function task_update($task) {
@@ -153,7 +154,7 @@ function task_update_parameters($task_id, $param_values) {
 
 // Get all tasks.
 function task_get_all() {
-    $res = db_fetch_all("SELECT * FROM ia_task");
+    $res = db_fetch_all('SELECT * FROM ia_task');
     foreach ($res as $task) {
         _task_cache_add($task);
     }
@@ -170,12 +171,12 @@ function task_get_parent_rounds($task_id, $force_no_cache = false) {
         }
     }
 
-    $query = sprintf("
+    $query = sprintf('
         SELECT DISTINCT round_id
         FROM ia_round_task
         WHERE task_id=%s
         ORDER BY round_id
-    ", db_quote($task_id));
+    ', db_quote($task_id));
 
     $rows = db_fetch_all($query);
 
@@ -195,7 +196,7 @@ function task_get_submit_rounds($task_id, $user_id) {
     $rounds = task_get_parent_rounds($task_id);
     foreach ($rounds as $id => $round) {
         $round = round_get($rounds[$id]);
-        if (!security_query($user_id, "round-submit", $round)) {
+        if (!security_query($user_id, 'round-submit', $round)) {
             unset($rounds[$id]);
         }
     }
@@ -207,12 +208,12 @@ function task_get_authors($task_id, $no_cache = false) {
 
     $authors = false;
     if (!$no_cache) {
-        $authors = mem_cache_get("task-authors-by-id:".$task_id);
+        $authors = mem_cache_get('task-authors-by-id:'.$task_id);
     }
 
     if ($authors === false) {
-        $authors = tag_get("task", $task_id, "author");
-        mem_cache_set("task-authors-by-id:".$task_id, $authors);
+        $authors = tag_get('task', $task_id, 'author');
+        mem_cache_set('task-authors-by-id:'.$task_id, $authors);
     }
 
     return $authors;
@@ -222,26 +223,26 @@ function task_get_authors($task_id, $no_cache = false) {
 // Returns only tasks that contain all the tags
 // and are public
 function task_filter_by_tags($tag_ids, $scores = true, $user_id = null) {
-    log_assert(is_array($tag_ids), "tag_ids must be an array");
+    log_assert(is_array($tag_ids), 'tag_ids must be an array');
     foreach ($tag_ids as $tag_id) {
-        log_assert(is_tag_id($tag_id), "invalid tag id");
+        log_assert(is_tag_id($tag_id), 'invalid tag id');
     }
 
     if (count($tag_ids) > 0) {
-        $tag_filter = "AND ".tag_build_where('task', $tag_ids);
+        $tag_filter = 'AND '.tag_build_where('task', $tag_ids);
     } else {
-        $tag_filter = "";
+        $tag_filter = '';
     }
 
     if ($user_id == null || $scores == false) {
-        $join_score = "";
-        $score_fields = "";
+        $join_score = '';
+        $score_fields = '';
     } else {
         // we get only the biggest score, round doesn't matter
-        $join_score = "LEFT JOIN ia_score_user_round_task AS score ON
-                            score.`user_id` = ".db_quote($user_id)." AND
-                            score.`task_id` = ia_task.`id`";
-        $score_fields = ",MAX(score.`score`) AS `score`";
+        $join_score = 'LEFT JOIN ia_score_user_round_task AS score ON
+                            score.`user_id` = '.db_quote($user_id).' AND
+                            score.`task_id` = ia_task.`id`';
+        $score_fields = ',MAX(score.`score`) AS `score`';
     }
 
     $query = "SELECT ia_task.id AS task_id,
@@ -265,20 +266,20 @@ function task_filter_by_tags($tag_ids, $scores = true, $user_id = null) {
 }
 
 // Updates the forum topic associated with a task.
-function task_update_forum_topic($task_id, $round_id = "arhiva") {
+function task_update_forum_topic($task_id, $round_id = 'arhiva') {
     if (!is_task_id($task_id)) {
-        log_error("Invalid task id");
+        log_error('Invalid task id');
     }
 
     // Get task info
-    $query = "SELECT title, page_name FROM ia_task
-              WHERE id = " . db_quote($task_id);
+    $query = 'SELECT title, page_name FROM ia_task
+              WHERE id = '.db_quote($task_id);
     $task = db_fetch($query);
 
     // Get the forum topic
-    $query = "SELECT forum_topic
+    $query = 'SELECT forum_topic
               FROM ia_textblock
-              WHERE name = " . db_quote($task['page_name']);
+              WHERE name = '.db_quote($task['page_name']);
     $res = db_fetch($query);
     $topic_id = $res['forum_topic'];
 
@@ -288,9 +289,9 @@ function task_update_forum_topic($task_id, $round_id = "arhiva") {
     }
 
     // Get the first message from the topic
-    $query = "SELECT ID_FIRST_MSG AS `msg_id`
+    $query = 'SELECT ID_FIRST_MSG AS `msg_id`
               FROM ia_smf_topics
-              WHERE ID_TOPIC = " . db_quote($topic_id);
+              WHERE ID_TOPIC = '.db_quote($topic_id);
     $res = db_fetch($query);
     // Topic id doesn't exist
     if (is_null($res)) {
@@ -299,36 +300,36 @@ function task_update_forum_topic($task_id, $round_id = "arhiva") {
     $message_id = $res['msg_id'];
 
     // Get the subject and the body of the message
-    $query = "SELECT subject, body FROM ia_smf_messages
-              WHERE ID_MSG = " . db_quote($message_id);
+    $query = 'SELECT subject, body FROM ia_smf_messages
+              WHERE ID_MSG = '.db_quote($message_id);
     $message = db_fetch($query);
 
     // Find the number associated with the (task, round) pair.
     $query = sprintf(
-        "SELECT order_id FROM ia_round_task
-         WHERE round_id = %s AND task_id = %s",
+        'SELECT order_id FROM ia_round_task
+         WHERE round_id = %s AND task_id = %s',
          db_quote($round_id), db_quote($task_id));
     $res = db_fetch($query);
-    $task_number = sprintf("%03d", $res['order_id'] - 1);
+    $task_number = sprintf('%03d', $res['order_id'] - 1);
 
     // New info
-    $new_subject = $task_number . " " . $task['title'];
+    $new_subject = $task_number.' '.$task['title'];
     $body_start = mb_substr($message['body'], 0, 35);
-    if ($body_start != "Aici puteti discuta despre problema" &&
-        $body_start != "Aici puteÈ›i discuta despre prob" &&
-        $body_start != "Aici puteÅ£i discuta despre probl") {
-        $new_body = 'Aici puteÅ£i discuta despre problema ' .
-                    '[url=http://infoarena.ro/problema/' . $task_id . ']' .
-                    $task['title'] . '[/url].';
+    if ($body_start != 'Aici puteti discuta despre problema' &&
+        $body_start != 'Aici puteÈ›i discuta despre prob' &&
+        $body_start != 'Aici puteÅ£i discuta despre probl') {
+        $new_body = 'Aici puteÅ£i discuta despre problema '.
+                    '[url=http://infoarena.ro/problema/'.$task_id.']'.
+                    $task['title'].'[/url].';
     } else {
         $new_body = $message['body'];
     }
 
     // Finally, update the message
     $query = sprintf(
-        "UPDATE ia_smf_messages
+        'UPDATE ia_smf_messages
          SET subject = %s, body = %s
-         WHERE ID_MSG = %s",
+         WHERE ID_MSG = %s',
          db_quote($new_subject), db_quote($new_body), db_quote($message_id));
     db_query($query);
 
@@ -336,12 +337,12 @@ function task_update_forum_topic($task_id, $round_id = "arhiva") {
     // This is extremely time consuming.
     if ($new_subject != $message['subject']) {
         $query = sprintf(
-            "UPDATE ia_smf_messages
+            'UPDATE ia_smf_messages
              SET subject = %s
              WHERE subject LIKE %s
-               AND ID_MSG <> %s",
-             db_quote("RÄƒspuns: " . $new_subject),
-             db_quote("%" . $message['subject']),
+               AND ID_MSG <> %s',
+             db_quote('RÄƒspuns: '.$new_subject),
+             db_quote('%'.$message['subject']),
              db_quote($message_id));
         db_query($query);
     }
@@ -352,13 +353,13 @@ function task_update_forum_topic($task_id, $round_id = "arhiva") {
 function task_get_user_score($task_id, $user_id, $round_id = 'arhiva') {
     // Validate
     if (!is_round_id($round_id)) {
-        log_error("Invalid round id");
+        log_error('Invalid round id');
     }
     if (!is_task_id($task_id)) {
-        log_error("Invalid task id");
+        log_error('Invalid task id');
     }
     if (!is_user_id($user_id)) {
-        log_error("Invalid user id");
+        log_error('Invalid user id');
     }
 
     // Check the cache
@@ -369,11 +370,11 @@ function task_get_user_score($task_id, $user_id, $round_id = 'arhiva') {
 
     // Query database
     $query = sprintf(
-        "SELECT `score` FROM ia_score_user_round_task
-         WHERE round_id = %s AND task_id = %s AND user_id = %s",
+        'SELECT `score` FROM ia_score_user_round_task
+         WHERE round_id = %s AND task_id = %s AND user_id = %s',
          db_quote($round_id), db_quote($task_id), db_quote($user_id));
     $res = db_fetch($query);
-    $score = getattr($res, "score", null);
+    $score = getattr($res, 'score', null);
 
     // Keep in cache
     mem_cache_set($cache_key, (int)$score);
@@ -405,9 +406,9 @@ function task_get_user_last_score($task_id, $user_id) {
          LEFT JOIN ia_round ON ia_round.id = round_id AND
          ia_round.type = 'archive' WHERE task_id = %s AND
          ia_score_user_round_task.user_id = %s ",
-         db_quote($task_id), db_quote($user_id)) ;
+         db_quote($task_id), db_quote($user_id));
     $res = db_fetch($query);
-    $score = getattr($res, "maxscore", null);
+    $score = getattr($res, 'maxscore', null);
 
     // Keep in cache
     mem_cache_set($cache_key, (int)$score);
@@ -432,12 +433,12 @@ function task_user_get_submit_count($user_id, $round_id, $task_id) {
     log_assert(is_round_id($round_id));
     log_assert(is_task_id($task_id));
 
-    $query = sprintf("SELECT `submits` FROM ia_score_user_round_task
-            WHERE `user_id` = %s AND `round_id` = %s AND `task_id` = %s",
+    $query = sprintf('SELECT `submits` FROM ia_score_user_round_task
+            WHERE `user_id` = %s AND `round_id` = %s AND `task_id` = %s',
             db_quote($user_id), db_quote($round_id), db_quote($task_id));
     $res = db_fetch($query);
 
-    return getattr($res, "submits", 0);
+    return getattr($res, 'submits', 0);
 }
 
 /**
@@ -458,7 +459,7 @@ function task_user_update_submit_count($user_id, $round_id, $task_id) {
     log_assert(is_task_id($task_id));
 
     $query = sprintf('INSERT INTO `ia_score_user_round_task` VALUES (%s,%s,%s'
-            . ', 0, 1) ON DUPLICATE KEY UPDATE `submits` = `submits` + 1',
+            .', 0, 1, 0) ON DUPLICATE KEY UPDATE `submits` = `submits` + 1',
            db_quote($user_id), db_quote($round_id), db_quote($task_id));
     db_query($query);
 }
@@ -473,7 +474,7 @@ function task_update_security($task_id, $security = 'check') {
     log_assert(is_task_id($task_id));
     log_assert(array_key_exists($security,
                                 array_merge(task_get_security_types(),
-                                            array('check' => NULL))));
+                                            array('check' => null))));
 
     if ($security == 'check') {
         $security = task_in_archive_rounds($task_id) ? 'public' : 'protected';

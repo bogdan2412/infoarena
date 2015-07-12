@@ -24,3 +24,5 @@ www/static/images/tmp/
 arc
 arcanist/
 libphutil/
+
+lint/.phutil_module_cache

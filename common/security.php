@@ -1,9 +1,9 @@
 <?php
 
-require_once(IA_ROOT_DIR . 'common/db/user.php');
-require_once(IA_ROOT_DIR . 'common/db/round.php');
-require_once(IA_ROOT_DIR . 'common/db/task.php');
-require_once(IA_ROOT_DIR . 'common/textblock.php');
+require_once IA_ROOT_DIR.'common/db/user.php';
+require_once IA_ROOT_DIR.'common/db/round.php';
+require_once IA_ROOT_DIR.'common/db/task.php';
+require_once IA_ROOT_DIR.'common/textblock.php';
 
 
 // This module implements everything related to security.
@@ -77,15 +77,16 @@ function security_query($user, $action, $object) {
             break;
 
         default:
-            log_error('Invalid action group: "' . $group . '"');
+            log_error('Invalid action group: "'.$group.'"');
+            break;
     }
 
     log_assert(is_bool($result), "SECURITY: FAILED, didn't return a bool");
     if (IA_LOG_SECURITY) {
         if ($result) {
-            log_print("SECURITY: GRANTED");
+            log_print('SECURITY: GRANTED');
         } else {
-            log_print("SECURITY: DENIED");
+            log_print('SECURITY: DENIED');
         }
     }
     return $result;
@@ -164,6 +165,7 @@ function security_simplify_action($action) {
         case 'task-use-in-user-round':
         case 'task-submit':
         case 'task-view-last-score':
+        case 'task-view-statistics':
         case 'round-edit':
         case 'round-create':
         case 'round-submit':
@@ -186,6 +188,7 @@ function security_simplify_action($action) {
 
         default:
             log_error('Invalid action: '.$action);
+            break;
     }
 }
 
@@ -201,7 +204,7 @@ function security_textblock($user, $action, $textblock) {
         if (count($matches = get_page_user_name($textblock['name'])) > 0) {
             $ouser = user_get_by_username($matches[1]);
             if ($ouser === null) {
-                log_warn("User page for missing user");
+                log_warn('User page for missing user');
                 return false;
             }
             // This is a horrible hack to prevent deleting or moving an
@@ -216,7 +219,7 @@ function security_textblock($user, $action, $textblock) {
         if (($task_id = textblock_security_is_task($textsec))) {
             $task = task_get($task_id);
             if ($task === null) {
-                log_warn("Bad security descriptor, ask an admin.");
+                log_warn('Bad security descriptor, ask an admin.');
                 return $usersec == 'admin';
             }
             return security_task($user, $action, $task);
@@ -226,7 +229,7 @@ function security_textblock($user, $action, $textblock) {
         if (($round_id = textblock_security_is_round($textsec))) {
             $round = round_get($round_id);
             if ($round === null) {
-                log_warn("Bad security descriptor, ask an admin.");
+                log_warn('Bad security descriptor, ask an admin.');
                 return $usersec == 'admin';
             }
             return security_round($user, $action, $round);
@@ -236,7 +239,7 @@ function security_textblock($user, $action, $textblock) {
                        $matches)) {
             $textsec = $matches[1];
         } else {
-            log_warn("Bad security descriptor, ask an admin.");
+            log_warn('Bad security descriptor, ask an admin.');
             return $usersec == 'admin';
         }
     }
@@ -276,6 +279,7 @@ function security_textblock($user, $action, $textblock) {
 
         default:
             log_error('Invalid textblock action: '.$action);
+            break;
     }
 }
 
@@ -308,7 +312,7 @@ function security_attach($user, $action, $attach) {
     if (!$tb) {
         log_print_r($attach);
     }
-    log_assert($tb, "Orphan attachment");
+    log_assert($tb, 'Orphan attachment');
 
     // Convert action into a grader action if the textblock is a task
     // textblock and the attachment has the grader_ prefix.
@@ -403,6 +407,10 @@ function security_task($user, $action, $task) {
         case 'task-view-tags':
             return ($task['security'] == 'public') || $is_boss;
 
+        // View statistics
+        case 'task-view-statistics':
+            return ($task['security'] == 'public') || $is_boss;
+
         // Admin stuff:
         case 'simple-critical':
             return $is_admin;
@@ -413,10 +421,11 @@ function security_task($user, $action, $task) {
             }
             return ($task['security'] == 'public') || $is_admin;
 
-        // Special: submit. Check for at least one registered contest for the task.
+        // Special: submit. Check for at least one
+        // registered contest for the task.
         // FIXME: contest logic?
         case 'task-submit':
-            //FIXME: this is ugly
+            // FIXME: this is ugly
             if ($usersec == 'anonymous') {
                 return false;
             }
@@ -447,6 +456,7 @@ function security_task($user, $action, $task) {
 
         default:
             log_error('Invalid task action: '.$action);
+            break;
     }
 }
 
@@ -483,7 +493,9 @@ function security_round($user, $action, $round) {
               return false;
           }
           if ($round['type'] == 'user-defined') {
-              return $user['id'] == $round['user_id'] || $is_admin || $is_intern;
+              return $user['id'] == $round['user_id'] ||
+                                    $is_admin ||
+                                    $is_intern;
           } else {
               return $is_admin || $is_intern;
           }
@@ -508,7 +520,7 @@ function security_round($user, $action, $round) {
             return $is_waiting || $is_admin;
 
         case 'round-submit':
-            return $round["state"] == "running";
+            return $round['state'] == 'running';
 
         case 'sensitive-info':
             return in_array($usersec, array('admin', 'intern', 'helper'));
@@ -518,6 +530,7 @@ function security_round($user, $action, $round) {
 
         default:
             log_error('Invalid round action: '.$action);
+            break;
     }
 }
 
@@ -536,6 +549,7 @@ function security_macro($user, $action, $args) {
 
         default:
             log_error('Invalid macro action: '.$action);
+            break;
     }
 }
 
@@ -556,7 +570,8 @@ function security_blog($user, $action, $round) {
     return $is_admin;
 }
 
-// There is no job-eval, jobs are evaluated on the spot, we check job-view instead.
+// There is no job-eval, jobs are evaluated on the spot,
+// we check job-view instead.
 function security_job($user, $action, $job) {
     $usersec = getattr($user, 'security_level', 'anonymous');
     $is_admin = $usersec == 'admin';
@@ -567,7 +582,8 @@ function security_job($user, $action, $job) {
 
      // Log query response.
     $action = security_simplify_action($action);
-    $level = ($is_admin ? 'admin' : ($is_owner ? 'owner' : ($is_task_owner ? 'task-owner' : 'other')));
+    $level = ($is_admin ? 'admin' : ($is_owner ? 'owner' :
+        ($is_task_owner ? 'task-owner' : 'other')));
     if (IA_LOG_SECURITY) {
         $objid = $job['id'];
         log_print("SECURITY QUERY JOB: ".
@@ -589,18 +605,25 @@ function security_job($user, $action, $job) {
                             $job['task_open_source'] == true) ||
                        $is_task_owner || $is_owner || $is_admin || $is_intern;
     // make ALL solved tasks visible
-    if (!$can_view_source && is_user_id($user['id']) && $job['round_type'] == "archive") {
-        $score = task_get_user_score($job['task_id'], $user['id'], $job['round_id']);
+    if (!$can_view_source &&
+        is_user_id($user['id']) &&
+        $job['round_type'] == 'archive') {
+        $score = task_get_user_score($job['task_id'],
+                                     $user['id'],
+                                     $job['round_id']);
         if ($score == 100) {
             $can_view_source = true;
         }
     }
-    $can_view_source_size = ($job['round_type'] == "archive") ||
-                            ($job['round_type'] != "archive" && $job['round_state'] == "complete") ||
+    $can_view_source_size = ($job['round_type'] == 'archive') ||
+                            ($job['round_type'] != 'archive' &&
+                             $job['round_state'] == 'complete') ||
                             $can_view_source;
-    $can_view_score = ($job['round_public_eval'] == true) || $is_task_owner || $is_admin || $is_intern;
+    $can_view_score = ($job['round_public_eval'] == true) ||
+                       $is_task_owner || $is_admin || $is_intern;
     $can_view_partial_feedback = $is_owner || $is_admin || $is_intern;
-    $can_view_sensitive_info = in_array($usersec, array('admin', 'intern', 'helper'));
+    $can_view_sensitive_info = in_array($usersec,
+                                        array('admin', 'intern', 'helper'));
 
     switch ($action) {
         case 'job-view':
@@ -623,5 +646,6 @@ function security_job($user, $action, $job) {
 
         default:
             log_error('Invalid job action: '.$action);
+            break;
     }
 }

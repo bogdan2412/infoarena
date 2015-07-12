@@ -1,0 +1,133 @@
+#! /usr/bin/env php
+<?php
+
+require_once dirname($argv[0]) . "/utilities.php";
+require_once IA_ROOT_DIR."common/db/db_mysql.php";
+require_once IA_ROOT_DIR."common/db/db.php";
+require_once IA_ROOT_DIR.'common/statistics-config.php';
+
+db_connect();
+
+log_print("Computing top users table");
+
+db_query("DROP TABLE IF EXISTS `ia_score_task_top_users`");
+db_query("
+    CREATE TABLE `ia_score_task_top_users` (
+        `task_id` varchar(64) NOT NULL,
+        `user_id` int(10) unsigned NOT NULL,
+        `criteria` varchar(64) NOT NULL,
+        `special_score` int(11) NOT NULL,
+        `submit_time` datetime NOT NULL,
+        PRIMARY KEY (`task_id`, `user_id`, `criteria`)
+    )
+");
+log_print("Created table");
+
+$criteria_column = array(
+    'time' => 'exec_time',
+    'memory' => 'mem_used',
+    'size' => 'file_contents'
+);
+
+foreach ($criteria_column as $current => $column) {
+    if ($current === 'size') {
+        // no need to check tests
+        $query = "
+            SELECT `user_id`, `task_id`, MIN(OCTET_LENGTH(`$column`)) AS best_special_score, `submit_time`
+            FROM `ia_job`
+            WHERE `score` = 100 AND `round_id` = 'arhiva' AND `status` = 'done'
+            GROUP BY `user_id`, `task_id`
+            ORDER BY best_special_score ASC, `submit_time` ASC
+        ";
+    }
+    else {
+        $query = "
+            SELECT user_id, task_id, MIN(special_score) AS best_special_score, submit_time
+                FROM (
+                     SELECT `ia_job`.`user_id`, `ia_job`.`task_id`, `submit_time`, MAX(`$column`) AS special_score
+                     FROM `ia_job`
+                     INNER JOIN `ia_job_test`
+                     ON `ia_job`.`id` = `ia_job_test`.`job_id`
+                     WHERE `ia_job`.`score` = 100 AND `ia_job`.`round_id` = 'arhiva' AND `ia_job`.`status` = 'done'
+                     GROUP BY `ia_job`.`id`
+                     ) AS job_scores
+            GROUP BY `user_id`, `task_id`
+            ORDER BY best_special_score ASC, submit_time ASC
+        ";
+    }
+    $results = db_fetch_all($query);
+    
+    $total = 0;
+    $task_entries_count = array();
+    $values = '';
+    foreach ($results as $row) {
+        $task_id = $row['task_id'];
+        $user_id = $row['user_id'];
+        $special_score = $row['best_special_score'];
+        $submit_time = $row['submit_time'];
+        if (!array_key_exists($task_id, $task_entries_count)) {
+            $task_entries_count[$task_id] = 0;
+        }
+        
+        if ($task_entries_count[$task_id] < IA_STATISTICS_MAX_TOP_SIZE) {
+            if ($values !== "") {
+                $values .= ",";
+            }
+            $values .= "('$task_id', $user_id, '$current', $special_score, '$submit_time')";
+            $task_entries_count[$task_id]++;
+            $total++;
+        }
+    }
+    
+    $query = "
+        INSERT INTO `ia_score_task_top_users`
+        VALUES $values
+    ";
+    db_query($query);
+    
+    log_print("Computed $total entries for $current");
+}
+
+$result = db_fetch('DESCRIBE `ia_score_user_round_task` `incorrect_submits`');
+if ($result === null) {
+    db_query("
+        ALTER TABLE `ia_score_user_round_task`
+        ADD COLUMN `incorrect_submits` int(11) DEFAULT 0 NOT NULL
+    ");
+    log_print('Successfully added the column `incorrect_submits` to `ia_score_user_round_task`');
+}
+
+db_query("
+    ALTER TABLE `ia_score_user_round_task`
+    MODIFY COLUMN `submits` int(11) DEFAULT 0 NOT NULL
+");
+log_print('Successfully altered the column `submits` from `ia_score_user_round_task`');
+
+
+db_query("
+    UPDATE `ia_score_user_round_task` AS score_table
+    LEFT JOIN
+        (
+         SELECT `user_id`, `round_id`, `task_id`, COUNT(*) AS computed_incorrect_submits
+         FROM `ia_job`
+         WHERE `score` < 100
+         GROUP BY `user_id`, `round_id`, `task_id`
+        ) AS incorrect_counts
+    ON  incorrect_counts.user_id = score_table.user_id AND
+        incorrect_counts.round_id = score_table.round_id AND
+        incorrect_counts.task_id = score_table.task_id
+    LEFT JOIN
+        (
+         SELECT `user_id`, `round_id`, `task_id`, COUNT(*) AS computed_submits
+         FROM `ia_job`
+         GROUP BY `user_id`, `round_id`, `task_id`
+        ) AS total_counts
+    ON  total_counts.user_id = score_table.user_id AND
+        total_counts.round_id = score_table.round_id AND
+        total_counts.task_id = score_table.task_id
+    SET score_table.incorrect_submits = incorrect_counts.computed_incorrect_submits,
+        score_table.submits = total_counts.computed_submits
+");
+log_print('Successfully updated the count columns in table `ia_score_user_round_task`');
+
+?>

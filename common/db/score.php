@@ -1,23 +1,23 @@
 <?php
 
-require_once(IA_ROOT_DIR."common/db/db.php");
-require_once(IA_ROOT_DIR."common/db/round.php");
-require_once(IA_ROOT_DIR."common/parameter.php");
-require_once(IA_ROOT_DIR."common/rating.php");
-require_once(IA_ROOT_DIR."common/cache.php");
+require_once IA_ROOT_DIR.'common/db/db.php';
+require_once IA_ROOT_DIR.'common/db/round.php';
+require_once IA_ROOT_DIR.'common/parameter.php';
+require_once IA_ROOT_DIR.'common/rating.php';
+require_once IA_ROOT_DIR.'common/cache.php';
 
 // Updates a user's rating and deviation
-function score_update_rating($user_id, $round_id, $deviation, $rating)
-{
-    $query = "INSERT INTO `ia_rating` (`user_id`, `round_id`, `deviation`, `rating`)
-             VALUES (".implode(',',
+function score_update_rating($user_id, $round_id, $deviation, $rating) {
+    $query = 'INSERT INTO `ia_rating`
+             (`user_id`, `round_id`, `deviation`, `rating`)
+             VALUES ('.implode(',',
              array(db_quote($user_id),
                  db_quote($round_id),
                  db_quote($deviation),
-                 db_quote($rating)
-             )).") ON DUPLICATE KEY UPDATE ".
-                 "`rating` = ". $rating .",
-                 `deviation` = ".$deviation;
+                 db_quote($rating),
+             )).') ON DUPLICATE KEY UPDATE '.
+                 '`rating` = '.$rating.',
+                 `deviation` = '.$deviation;
     db_query($query);
     return db_affected_rows();
 }
@@ -29,7 +29,8 @@ function score_update($user_id, $task_id, $round_id, $value) {
     log_assert(is_round_id($round_id), "Bad round id '$round_id'");
 
     // Add user_id score for task_id at round_id to cache
-    mem_cache_set("user-task-round:".$user_id."-".$task_id."-".$round_id, (int)$value);
+    mem_cache_set('user-task-round:'.$user_id.'-'.$task_id.'-'.$round_id,
+                  (int)$value);
 
     // Also update user-task-max-score if it's in the cache
     $cache_key = 'user-task-last-score:'.$user_id.'-'.$task_id;
@@ -40,50 +41,54 @@ function score_update($user_id, $task_id, $round_id, $value) {
     }
 
     // Update user_id score for task_id at round_id
-    $query = "INSERT INTO `ia_score_user_round_task` (`user_id`, `round_id`, `task_id`, `score`)
+    $add_incorrect = ($value == 100) ? 0 : 1;
+    $query = "INSERT INTO `ia_score_user_round_task`
+            (`user_id`, `round_id`, `task_id`, `score`)
             VALUES (".implode(',',
             array(db_quote($user_id),
                 db_quote($round_id),
                 db_quote($task_id),
-                db_quote($value)
+                db_quote($value),
             )).") ON DUPLICATE KEY UPDATE
-                `score` = ".db_quote($value);
+                `score` = ".db_quote($value).",
+                `incorrect_submits` = `incorrect_submits` + $add_incorrect
+    ";
     db_query($query);
 
     // update score for round_id
-    $subquery = "( SELECT SUM(`score`) AS 'score' FROM `ia_score_user_round_task`
+    $subquery = "
+            ( SELECT SUM(`score`) AS 'score' FROM `ia_score_user_round_task`
             WHERE
                 `round_id` = ".db_quote($round_id)." &&
                 `user_id` = ".db_quote($user_id)."
             GROUP BY `user_id` )";
 
-    $query = "INSERT INTO `ia_score_user_round` (`user_id`, `round_id`, `score`)
-            VALUES (".implode(',',
+    $query = 'INSERT INTO `ia_score_user_round` (`user_id`, `round_id`, `score`)
+            VALUES ('.implode(',',
             array(db_quote($user_id),
                 db_quote($round_id),
-                $subquery
-            )).") ON DUPLICATE KEY UPDATE
-                `score` = ".$subquery;
+                $subquery,
+            )).') ON DUPLICATE KEY UPDATE
+                `score` = '.$subquery;
     db_query($query);
 }
 
 // Builds a where clause for a score query.
 // Returns an array of conditions; you should do something like
 // join($where, ' AND ');
-function score_build_where_clauses($user, $task, $round)
-{
+function score_build_where_clauses($user, $task, $round) {
     $where = array();
 
     if ($user != null) {
         if (is_array($user) && count($user) > 0) {
-            $where[] = "(`user_id` IN (" . db_escape_array($user) . "))";
+            $where[] = '(`user_id` IN ('.db_escape_array($user).'))';
         } else if (is_string($user)) {
             $where[] = sprintf("(`user_id` == '%s')", $user);
         }
     }
     if ($task != null) {
         if (is_array($task) && count($task) > 0) {
-            $where[] = "(`task_id` IN (" . db_escape_array($task) . "))";
+            $where[] = '(`task_id` IN ('.db_escape_array($task).'))';
         } else if (is_string($task)) {
             $where[] = sprintf("(`task_id` = '%s')", $task);
         }
@@ -95,9 +100,9 @@ function score_build_where_clauses($user, $task, $round)
 
         if (is_array($round)) {
             if (count($round) > 0) {
-                $where[] = "(`round_id` IN (" . db_escape_array($round) . "))";
+                $where[] = '(`round_id` IN ('.db_escape_array($round).'))';
             } else {
-                $where[] = "(TRUE = FALSE)";
+                $where[] = '(TRUE = FALSE)';
             }
         }
     }
@@ -111,10 +116,10 @@ function score_get_count($user, $task, $round) {
     if (count($where) == 0) {
         return 0;
     }
-    $query = sprintf("SELECT COUNT(DISTINCT user_id) AS `cnt`
+    $query = sprintf('SELECT COUNT(DISTINCT user_id) AS `cnt`
             FROM ia_score_user_round
-            WHERE %s",
-            join($where, " AND "));
+            WHERE %s',
+            join($where, ' AND '));
     $res = db_fetch($query);
     return $res['cnt'];
 }
@@ -194,7 +199,7 @@ function rating_rounds() {
         $rounds[$row['round_id']] = array(
             'timestamp' => $row['timestamp'],
             'round_page_name' => $row['round_page_name'],
-            'round_title' => $row['round_title']
+            'round_title' => $row['round_title'],
         );
     }
 
@@ -273,7 +278,8 @@ function rating_last_scores() {
         $users[$username] = array(
                 'rating' => $row['rating'],
                 'deviation' => $row['deviation'],
-                'timestamp' => $row['timestamp']);
+                'timestamp' => $row['timestamp'],
+        );
     }
 
     return $users;
@@ -313,8 +319,7 @@ function rating_distribution($bucket_size) {
 }
 
 // Get top rated users list.
-function get_users_by_rating_range($start, $count, $with_rankings = false)
-{
+function get_users_by_rating_range($start, $count, $with_rankings = false) {
     $query = "SELECT *
         FROM ia_user
         WHERE rating_cache > 0
@@ -339,12 +344,12 @@ function get_users_by_rating_range($start, $count, $with_rankings = false)
         $equal_scores = $start - $users_before + 1;
         for ($i = 1; $i < count($rows); ++$i) {
             $last_row = $rows[$i - 1];
-            $row =& $rows[$i];
-            if (rating_scale($row['rating_cache']) == rating_scale($last_row['rating_cache'])) {
+            $row = & $rows[$i];
+            if (rating_scale($row['rating_cache']) ==
+                rating_scale($last_row['rating_cache'])) {
                 $row['position'] = $last_row['position'];
                 $equal_scores = $equal_scores + 1;
-            }
-            else {
+            } else {
                 $row['position'] = $last_row['position'] + $equal_scores;
                 $equal_scores = 1;
             }
@@ -366,8 +371,8 @@ function get_users_by_rating_count() {
 
 // Clears ALL user ratings & rating history
 function rating_clear() {
-    db_query("DELETE FROM ia_rating");
-    db_query("UPDATE ia_user SET rating_cache = NULL");
+    db_query('DELETE FROM ia_rating');
+    db_query('UPDATE ia_user SET rating_cache = NULL');
 }
 
 // Computes rankings for $rounds
@@ -382,17 +387,17 @@ function score_get_rankings($rounds, $tasks, $start = 0, $count = 999999,
     }
 
     // Get the total score for all rounds
-    $query = "
-        SELECT ".(count($rounds) > 1 ? "SUM(score) AS score" : "score").",
+    $query = '
+        SELECT '.(count($rounds) > 1 ? 'SUM(score) AS score' : 'score').',
                 user_id, ia_user.username AS user_name,
                 ia_user.full_name AS user_full,
                 ia_user.rating_cache AS user_rating
         FROM ia_score_user_round
         LEFT JOIN ia_user ON ia_user.id = ia_score_user_round.user_id
-        WHERE".implode('AND', $where)."
-        ".(count($rounds) > 1 ? "GROUP BY `user_id`" : "")."
+        WHERE'.implode('AND', $where).'
+        '.(count($rounds) > 1 ? 'GROUP BY `user_id`' : '').'
         ORDER BY score DESC
-        LIMIT ".db_escape($start).", ".db_escape($count);
+        LIMIT '.db_escape($start).', '.db_escape($count);
 
     $rankings = db_fetch_all($query);
     if (count($rankings) == 0) {
@@ -414,9 +419,9 @@ function score_get_rankings($rounds, $tasks, $start = 0, $count = 999999,
 
     if ($detail_round == true) {
         // Get scores for each round
-        $query = "SELECT round_id, user_id, score
+        $query = 'SELECT round_id, user_id, score
                 FROM ia_score_user_round
-                WHERE ".implode('AND', $where);
+                WHERE '.implode('AND', $where);
         $scores = db_fetch_all($query);
         $round_scores = array(array());
         foreach ($scores as $score) {
@@ -429,9 +434,9 @@ function score_get_rankings($rounds, $tasks, $start = 0, $count = 999999,
 
     if ($detail_task == true) {
         // Get scores for each task
-        $query = "SELECT task_id, user_id, score
+        $query = 'SELECT task_id, user_id, score
                 FROM ia_score_user_round_task
-                WHERE ".implode('AND', $where);
+                WHERE '.implode('AND', $where);
         $scores = db_fetch_all($query);
         $task_scores = array(array());
         foreach ($scores as $score) {
@@ -445,18 +450,18 @@ function score_get_rankings($rounds, $tasks, $start = 0, $count = 999999,
     // Compute rank for the first entry
     $top_score = $rankings[0]['score'];
     $where = score_build_where_clauses(null, null, $rounds);
-    $query = "SELECT SUM(score) AS score
+    $query = 'SELECT SUM(score) AS score
                 FROM ia_score_user_round
-                WHERE ".implode(' AND ', $where)."
+                WHERE '.implode(' AND ', $where).'
                 GROUP BY user_id
-                HAVING score > ".db_quote($top_score);
+                HAVING score > '.db_quote($top_score);
     $first_rank = db_num_rows(db_query($query)) + 1;
 
-    //create all entries
+    // create all entries
     for ($i = 0; $i < count($rankings); $i++) {
         $user_id = $rankings[$i]['user_id'];
 
-        //task columns
+        // task columns
         if ($detail_task == true) {
             foreach ($tasks as $task_id) {
                 if (isset($task_scores[$user_id][$task_id])) {
@@ -468,7 +473,7 @@ function score_get_rankings($rounds, $tasks, $start = 0, $count = 999999,
             }
         }
 
-        //round columns
+        // round columns
         if ($detail_round == true) {
             foreach ($rounds as $round_id) {
                 if (isset($round_scores[$user_id][$round_id])) {
@@ -511,10 +516,10 @@ function score_get_rankings($rounds, $tasks, $start = 0, $count = 999999,
 function score_update_acm_round($user_id, $round_id, $task_id, $score,
                                 $submission, $penalty,
                                 $affects_frozen_scoreboard = false) {
-    $query = sprintf("SELECT * FROM ia_acm_round
+    $query = sprintf('SELECT * FROM ia_acm_round
                              WHERE user_id = %s AND
                                    round_id = %s AND
-                                   task_id = %s",
+                                   task_id = %s',
                      db_quote($user_id),
                      db_quote($round_id),
                      db_quote($task_id));
@@ -534,8 +539,8 @@ function score_update_acm_round($user_id, $round_id, $task_id, $score,
             $partial_submission = $submission;
         }
 
-        $query = sprintf("REPLACE INTO ia_acm_round
-                                  VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+        $query = sprintf('REPLACE INTO ia_acm_round
+                                  VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)',
                           db_quote($user_id),
                           db_quote($round_id),
                           db_quote($task_id),
@@ -561,10 +566,13 @@ function score_update_acm_round($user_id, $round_id, $task_id, $score,
  *                           the scoreboard before freezing
  * @return array
  */
-function score_get_rankings_acm($round_id, $full_results = false, $detail_task = true) {
+function score_get_rankings_acm($round_id,
+                                $full_results = false,
+                                $detail_task = true) {
     $round = round_get($round_id);
-    if ($round['type'] != 'acm-round')
+    if ($round['type'] != 'acm-round') {
         return array();
+    }
 
     $score_column = 'partial_score';
     $penalty_column = 'partial_penalty';
@@ -575,9 +583,9 @@ function score_get_rankings_acm($round_id, $full_results = false, $detail_task =
         $submission_column = 'submission';
     }
 
-    $query = "SELECT SUM(" . $score_column . ") AS score,
-                     SUM(CASE WHEN ". $score_column . " > 0 THEN " .
-                            $penalty_column . " ELSE 0 END) as penalty,
+    $query = 'SELECT SUM('.$score_column.') AS score,
+                     SUM(CASE WHEN '.$score_column.' > 0 THEN '.
+                            $penalty_column.' ELSE 0 END) as penalty,
                      user_id, ia_user.username,
                      ia_user.full_name AS fullname,
                      ia_user.rating_cache AS rating
@@ -586,9 +594,9 @@ function score_get_rankings_acm($round_id, $full_results = false, $detail_task =
               INNER JOIN ia_round_task ON
                 ia_round_task.round_id = ia_acm_round.round_id AND
                 ia_round_task.task_id = ia_acm_round.task_id
-              WHERE ia_acm_round.round_id = " . db_quote($round_id) . "
+              WHERE ia_acm_round.round_id = '.db_quote($round_id).'
               GROUP BY `user_id`
-              ORDER BY score DESC, penalty ASC";
+              ORDER BY score DESC, penalty ASC';
     $rankings = db_fetch_all($query);
 
     $users = array();
@@ -613,10 +621,10 @@ function score_get_rankings_acm($round_id, $full_results = false, $detail_task =
 
     if ($detail_task) {
         $tasks = round_get_tasks($round_id);
-        $query = "SELECT task_id, user_id, " . $score_column . " as score, " .
-                         $penalty_column . " as penalty, " .
-                         $submission_column . " as submission
-                  FROM ia_acm_round WHERE round_id = " . db_quote($round_id);
+        $query = 'SELECT task_id, user_id, '.$score_column.' as score, '.
+                         $penalty_column.' as penalty, '.
+                         $submission_column.' as submission
+                  FROM ia_acm_round WHERE round_id = '.db_quote($round_id);
 
         $scores = db_fetch_all($query);
         $task_info = array();
@@ -638,7 +646,7 @@ function score_get_rankings_acm($round_id, $full_results = false, $detail_task =
                 $user[$task_id] = array(
                     'score' => getattr($current_info, 'score', 0),
                     'penalty' => getattr($current_info, 'penalty', 0),
-                    'submission' => getattr($current_info, 'submission', 0)
+                    'submission' => getattr($current_info, 'submission', 0),
                 );
             }
         }
