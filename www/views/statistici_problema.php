@@ -16,8 +16,9 @@ echo '<h1>Statisticile problemei '.format_link($view['task_url'], $view['task_id
 
 $data = $view['data'];
 
+echo '<h2>Clasamente</h2>';
 if (count($data['time']) === 0) {
-    echo 'Nicio sursa trimisa la aceasta problema :(';
+    echo 'Nicio sursa corecta trimisa la aceasta problema :(';
 } else {
     $column_infos = array(
         array(
@@ -54,26 +55,25 @@ if (count($data['time']) === 0) {
         'size' => 'Marime',
     );
 
-    echo '<h2>Clasamente</h2>';
     foreach ($data as $criteria => $ranking) {
         echo 'Clasament dupa '.$long_wording[$criteria];
         $column_infos[count($column_infos) - 1]['title'] = $header_wording[$criteria];
         echo format_table($data[$criteria], $column_infos, $options);
         echo '<br/>';
     }
-
-    echo '<h2>Alte statistici</h2>';
-    echo 'Numarul mediu de submisii gresite: '.$view['average_wrong_submissions'].'<br/>';
-    if (!identity_is_anonymous()) {
-        echo 'Numarul tau de submisii gresite: '.$view['user_wrong_submissions'].'<br/>';
-    }
-    echo 'Procentajul de reusita: '.$view['solved_percentage'].'%<br/>';
-
-    $html = '<br /><div id="distribution-chart"></div><br />'
-        .'<script src=\'static\\js\\swfobject.js\'></script>  <script type="text/javascript"> swfobject.embedSWF("'.html_escape(url_static('swf/open-flash-chart.swf'))
-        .'", "distribution-chart", "560", "280", "9.0.0", null, {"data-file":"'.html_escape(url_home()."plot/points_distribution?args=$username,$task_id").'"}); </script>';
-        
-    echo $html;
 }
+
+echo '<h2>Alte statistici</h2>';
+echo 'Numarul mediu de submisii gresite: '.$view['average_wrong_submissions'].'<br/>';
+if (!identity_is_anonymous()) {
+    echo 'Numarul tau de submisii gresite: '.$view['user_wrong_submissions'].'<br/>';
+}
+echo 'Procentajul de reusita: '.$view['solved_percentage'].'%<br/>';
+
+$html = '<br /><div id="distribution-chart"></div><br />'
+    .'<script src=\'static\\js\\swfobject.js\'></script>  <script type="text/javascript"> swfobject.embedSWF("'.html_escape(url_static('swf/open-flash-chart.swf'))
+    .'", "distribution-chart", "560", "280", "9.0.0", null, {"data-file":"'.html_escape(url_home()."plot/points_distribution?args=$username,$task_id").'"}); </script>';
+
+echo $html;
 
 include 'footer.php';

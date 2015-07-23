@@ -103,31 +103,71 @@ db_query("
 ");
 log_print('Successfully altered the column `submits` from `ia_score_user_round_task`');
 
+$start_time = time();
 
-db_query("
-    UPDATE `ia_score_user_round_task` AS score_table
-    LEFT JOIN
-        (
-         SELECT `user_id`, `round_id`, `task_id`, COUNT(*) AS computed_incorrect_submits
-         FROM `ia_job`
-         WHERE `score` < 100
-         GROUP BY `user_id`, `round_id`, `task_id`
-        ) AS incorrect_counts
-    ON  incorrect_counts.user_id = score_table.user_id AND
-        incorrect_counts.round_id = score_table.round_id AND
-        incorrect_counts.task_id = score_table.task_id
-    LEFT JOIN
-        (
-         SELECT `user_id`, `round_id`, `task_id`, COUNT(*) AS computed_submits
-         FROM `ia_job`
-         GROUP BY `user_id`, `round_id`, `task_id`
-        ) AS total_counts
-    ON  total_counts.user_id = score_table.user_id AND
-        total_counts.round_id = score_table.round_id AND
-        total_counts.task_id = score_table.task_id
-    SET score_table.incorrect_submits = incorrect_counts.computed_incorrect_submits,
-        score_table.submits = total_counts.computed_submits
-");
+$query = "SELECT user_id, round_id, task_id, score
+          FROM ia_job
+          ORDER BY user_id, round_id, task_id";
+
+$result = mysql_query($query);
+$num_rows = mysql_num_rows($result);
+
+log_print("Total rows to process: $num_rows");
+
+$row_count = 0;
+$prev_user_id = -1;
+$prev_round_id = -1;
+$prev_task_id = -1;
+$submit_count = 0;
+$incorrect_submit_count = 0;
+while ($row = mysql_fetch_assoc($result)) {
+    $user_id = $row['user_id'];
+    $round_id = $row['round_id'];
+    $task_id = $row['task_id'];
+    $score = $row['score'];
+    
+    if ($user_id !== $prev_user_id ||
+        $round_id !== $prev_round_id ||
+        $task_id !== $prev_task_id) {
+        if ($prev_user_id !== -1) {
+            db_update("ia_score_user_round_task",
+                      array(
+                          'submits' => $submit_count,
+                          'incorrect_submits' => $incorrect_submit_count,
+                      ),
+                      "user_id=$prev_user_id AND round_id='$prev_round_id' AND task_id='$prev_task_id'");
+        }
+        $submit_count = 0;
+        $incorrect_submit_count = 0;
+    }
+    
+    $submit_count++;
+    if ($score < 100) {
+        $incorrect_submit_count++;
+    }
+    
+    $prev_user_id = $user_id;
+    $prev_round_id = $round_id;
+    $prev_task_id = $task_id;
+    
+    $row_count++;
+    if ($row_count % 100000 === 0) {
+        log_print("Currently at row $row_count");
+    }
+}
+
+db_update("ia_score_user_round_task",
+          array(
+              'submits' => $submit_count,
+              'incorrect_submits' => $incorrect_submit_count,
+          ),
+          "user_id=$prev_user_id AND round_id='$prev_round_id' AND task_id='$prev_task_id'");
+
+mysql_free_result($result);
+
+$end_time = time();
+log_print('Time: '.($end_time - $start_time).'s');
+
 log_print('Successfully updated the count columns in table `ia_score_user_round_task`');
 
 ?>

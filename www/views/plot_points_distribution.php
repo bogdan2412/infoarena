@@ -33,8 +33,8 @@ $chart->set_x_axis($x);
 $y = new y_axis();
 $y->set_colour('#aaaaaa');
 $y->set_grid_colour('#aaaaaa');
-$y->set_range(0, $max_count + 1);
-$y->set_steps(1);
+$y->set_range(0, $max_count);
+$y->set_steps($max_count);
 $chart->set_y_axis($y);
 
 // generate the points chart

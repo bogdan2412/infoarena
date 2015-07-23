@@ -98,7 +98,7 @@ function task_statistics_insert_or_update_user_in_top($user_id,
 
 function task_statistics_get_average_wrong_submissions($task_id, $round_id) {
     $query = sprintf("
-        SELECT AVG(`incorrect_submits`)
+        SELECT IFNULL(AVG(`incorrect_submits`),0.0)
         FROM `ia_score_user_round_task`
         WHERE `task_id` = '%s'
         AND `round_id` = '%s'
