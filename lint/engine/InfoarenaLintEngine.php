@@ -115,13 +115,13 @@ final class InfoarenaLintEngine extends ArcanistLintEngine {
         $view_xhpast_linter->setCustomSeverityMap(
             array(
                 // FIXME: Remove once code is fully ported to XHP
-                ArcanistXHPASTLinter::LINT_PHP_OPEN_TAG
+                ArcanistPHPOpenTagXHPASTLinterRule::ID
                 => ArcanistLintSeverity::SEVERITY_DISABLED,
-                ArcanistXHPASTLinter::LINT_PHP_CLOSE_TAG
+                ArcanistPHPCloseTagXHPASTLinterRule::ID
                 => ArcanistLintSeverity::SEVERITY_DISABLED,
-                ArcanistXHPASTLinter::LINT_PHP_SHORT_TAG
+                ArcanistPHPShortTagXHPASTLinterRule::ID
                 => ArcanistLintSeverity::SEVERITY_DISABLED,
-                ArcanistXHPASTLinter::LINT_PHP_ECHO_TAG
+                ArcanistPHPEchoTagXHPASTLinterRule::ID
                 => ArcanistLintSeverity::SEVERITY_DISABLED,
             ));
         $linters[] = $xhpast_linter;
