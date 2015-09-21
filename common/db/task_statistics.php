@@ -5,32 +5,39 @@ require_once IA_ROOT_DIR.'common/statistics-config.php';
 
 /*
    Returns an array of maps containing the best $max_top_size user
-   for the task $task_id and the criteria $criteria.
+   for the task $task_id, the criteria $criteria and round $round_id.
    The elements are sorted by their special_score and submit_time.
    $criteria = { 'memory', 'time', 'size' }
 */
-function task_statistics_get_top_users($task_id, $criteria, $max_top_size) {
+function task_statistics_get_top_users($task_id,
+                                       $criteria,
+                                       $round_id,
+                                       $max_top_size) {
     $query = sprintf("
         SELECT top.`user_id`,
                users.`username`,
                users.`full_name`,
                users.`rating_cache` AS rating,
-               top.`special_score`
+               top.`special_score`,
+               top.`job_id`
         FROM `ia_score_task_top_users` AS top
         INNER JOIN `ia_user` AS users
         ON top.`user_id` = users.`id`
-        WHERE top.`criteria` = '%s' AND top.`task_id` = '%s'
+        WHERE top.`criteria` = '%s'
+        AND top.`task_id` = '%s'
+        AND top.`round_id` = '%s'
         ORDER BY top.`special_score` ASC, top.`submit_time` ASC
         LIMIT %d",
         db_escape($criteria),
         db_escape($task_id),
+        db_escape($round_id),
         $max_top_size);
     return db_fetch_all($query);
 }
 
 /*
   Returns a map containing the best $max_top_size users
-  for the task $task_id grouped by the criteria.
+  for the task $task_id and round $round_id grouped by the criteria.
 
   The structure of the map is as follows:
   (
@@ -48,12 +55,15 @@ function task_statistics_get_top_users($task_id, $criteria, $max_top_size) {
 
   The elements within a criteria are sorted by their 'special_score'.
 */
-function task_statistics_get_all_top_users($task_id, $max_top_size) {
+function task_statistics_get_all_top_users($task_id,
+                                           $round_id,
+                                           $max_top_size) {
     $criterias = array('memory', 'time', 'size');
     $result = array();
     foreach ($criterias as $criteria) {
         $current_result = task_statistics_get_top_users($task_id,
                                                         $criteria,
+                                                        $round_id,
                                                         $max_top_size);
         unset($current_result['username']);
         unset($current_result['full_name']);
@@ -63,36 +73,50 @@ function task_statistics_get_all_top_users($task_id, $max_top_size) {
     return $result;
 }
 
-function task_statistics_delete_user_from_top($user_id, $task_id, $criteria) {
+function task_statistics_delete_user_from_top($user_id,
+                                              $task_id,
+                                              $criteria,
+                                              $round_id) {
     $query = sprintf("
         DELETE FROM `ia_score_task_top_users`
         WHERE `user_id` = %d
         AND `task_id` = '%s'
-        AND `criteria` = '%s'",
+        AND `criteria` = '%s'
+        AND `round_id` = '%s'",
         $user_id,
         db_escape($task_id),
-        db_escape($criteria));
+        db_escape($criteria),
+        db_escape($round_id));
     db_query($query);
 }
 
 function task_statistics_insert_or_update_user_in_top($user_id,
                                                       $task_id,
                                                       $criteria,
+                                                      $round_id,
                                                       $special_score,
-                                                      $submit_time) {
+                                                      $submit_time,
+                                                      $job_id) {
     $query = sprintf("
-        INSERT INTO `ia_score_task_top_users`(`task_id`, `user_id`,
-                                              `criteria`, `special_score`,
-                                              `submit_time`)
-        VALUES('%s', %d, '%s', %d, '%s')
+        INSERT INTO `ia_score_task_top_users`(`task_id`,
+                                              `round_id`,
+                                              `user_id`,
+                                              `criteria`,
+                                              `special_score`,
+                                              `submit_time`,
+                                              `job_id`)
+        VALUES('%s', '%s', %d, '%s', %d, '%s', %d)
         ON DUPLICATE KEY UPDATE
             `special_score` = VALUES(`special_score`),
-            `submit_time` = VALUES(`submit_time`)",
+            `submit_time` = VALUES(`submit_time`),
+            `job_id` = VALUES(`job_id`)",
         db_escape($task_id),
+        db_escape($round_id),
         $user_id,
         db_escape($criteria),
         $special_score,
-        db_escape($submit_time));
+        db_escape($submit_time),
+        $job_id);
     db_query($query);
 }
 
@@ -216,14 +240,16 @@ function task_statistics_update_top_users($user_id,
                                           $round_id,
                                           $score,
                                           $submit_time,
+                                          $job_id,
                                           $file_size,
                                           $test_results) {
-    if ($round_id !== 'arhiva' || $score < 100) {
+    if ($score < 100) {
         // The job doesn't qualify to enter the top. Ignore.
         return;
     }
 
     $top_users = task_statistics_get_all_top_users($task_id,
+                                                   $round_id,
                                                    IA_STATISTICS_MAX_TOP_SIZE);
     // All of the tops are the same size
     $top_size = count($top_users['time']);
@@ -262,7 +288,8 @@ function task_statistics_update_top_users($user_id,
                     // Delete the user from the last place in the top
                     task_statistics_delete_user_from_top($worst['user_id'],
                                                          $task_id,
-                                                         $criteria);
+                                                         $criteria,
+                                                         $round_id);
                 }
             }
         }
@@ -271,8 +298,10 @@ function task_statistics_update_top_users($user_id,
             task_statistics_insert_or_update_user_in_top($user_id,
                                                          $task_id,
                                                          $criteria,
+                                                         $round_id,
                                                          $special_score,
-                                                         $submit_time);
+                                                         $submit_time,
+                                                         $job_id);
         }
     }
 }

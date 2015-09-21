@@ -72,6 +72,7 @@ function controller_plot($suburl) {
             $username = $args[0];
             $user = user_get_by_username($username);
             $task_id = $args[1];
+            $round_id = $args[2];
 
             // validate user
             if ((!$user && $username) || !$task_id) {
@@ -80,7 +81,7 @@ function controller_plot($suburl) {
 
             $points_distribution = task_statistics_get_points_distribution(
                                                                     $task_id,
-                                                                    'arhiva');
+                                                                    $round_id);
 
             // view
             $view = array(

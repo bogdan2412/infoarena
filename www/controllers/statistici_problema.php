@@ -22,19 +22,35 @@ function controller_statistici_problema() {
     // Security check
     identity_require('task-view-statistics', $task);
 
+    $round_id = request('round');
+    if ($round_id === null) {
+        $round_id = task_get_archive_round($task_id);
+    }
+
+    $round = round_get($round_id);
+    if (!$round) {
+        flash_error('Runda nu exista');
+        redirect(url_home());
+    }
+
     $view = array();
     $view['title'] = 'Statisticile problemei '.$task['title'];
     $view['task_id'] = $task_id;
     $view['task_url'] = $task['page_name'];
+    $view['round_id'] = $round['id'];
+    $view['round_name'] = $round['title'];
 
     $best_by_time = task_statistics_get_top_users($task_id,
                                                   'time',
+                                                  $round_id,
                                                   IA_STATISTICS_MAX_TOP_SIZE);
     $best_by_memory = task_statistics_get_top_users($task_id,
                                                     'memory',
+                                                    $round_id,
                                                     IA_STATISTICS_MAX_TOP_SIZE);
     $best_by_size = task_statistics_get_top_users($task_id,
                                                   'size',
+                                                  $round_id,
                                                   IA_STATISTICS_MAX_TOP_SIZE);
     $data = array(
         'time' => $best_by_time,
@@ -64,14 +80,14 @@ function controller_statistici_problema() {
         $view['user_wrong_submissions'] =
             task_statistics_get_user_wrong_submissions($task_id,
                                                        $user_id,
-                                                       'arhiva');
+                                                       $round_id);
         $view['username'] = getattr($identity_user, 'username');
     }
 
     $view['average_wrong_submissions'] =
-        task_statistics_get_average_wrong_submissions($task_id, 'arhiva');
+        task_statistics_get_average_wrong_submissions($task_id, $round_id);
     $view['solved_percentage'] =
-        task_statistics_get_solved_percentage($task_id, 'arhiva');
+        task_statistics_get_solved_percentage($task_id, $round_id);
 
     execute_view_die('views/statistici_problema.php', $view);
 }

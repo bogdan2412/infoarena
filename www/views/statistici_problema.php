@@ -11,8 +11,11 @@ if (array_key_exists('username', $view)) {
     $username = $view['username'];
 }
 $task_id = $view['task_id'];
+$round_id = $view['round_id'];
+$round_name = $view['round_name'];
 
-echo '<h1>Statisticile problemei '.format_link($view['task_url'], $view['task_id']).'</h1>';
+echo '<h1>Statisticile problemei '.format_link($view['task_url'], $view['task_id']).
+     ' ('.htmlentities($round_name).')</h1>';
 
 $data = $view['data'];
 
@@ -37,6 +40,9 @@ if (count($data['time']) === 0) {
             'title' => '',
             'key' => 'special_score',
             'css_class' => 'number',
+            'rowform' => function($row) {
+                return format_link('job_detail/'.$row['job_id'], $row['special_score']);
+            },
         ),
     );
 
@@ -72,7 +78,7 @@ echo 'Procentajul de reusita: '.$view['solved_percentage'].'%<br/>';
 
 $html = '<br /><div id="distribution-chart"></div><br />'
     .'<script src=\'static\\js\\swfobject.js\'></script>  <script type="text/javascript"> swfobject.embedSWF("'.html_escape(url_static('swf/open-flash-chart.swf'))
-    .'", "distribution-chart", "560", "280", "9.0.0", null, {"data-file":"'.html_escape(url_home()."plot/points_distribution?args=$username,$task_id").'"}); </script>';
+    .'", "distribution-chart", "560", "280", "9.0.0", null, {"data-file":"'.html_escape(url_home()."plot/points_distribution?args=$username,$task_id,$round_id").'"}); </script>';
 
 echo $html;
 

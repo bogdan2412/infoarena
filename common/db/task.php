@@ -502,3 +502,23 @@ function task_in_archive_rounds ($task_id) {
     }
     return false;
 }
+
+/**
+ * Returns the round_id of the archive which includes this task
+ * (should be unique)
+ * If the task isn't in any archive, return an empty string.
+ *
+ * @param string $task_id
+ * @return string
+ */
+function task_get_archive_round($task_id) {
+    log_assert(is_task_id($task_id));
+    $parent_rounds = task_get_parent_rounds($task_id);
+    foreach ($parent_rounds as $round_id) {
+        $round = round_get($round_id);
+        if ($round['type'] == 'archive') {
+            return $round['id'];
+        }
+    }
+    return '';
+}

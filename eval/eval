@@ -70,6 +70,7 @@ function job_handle($job) {
             'score' => 0,
             'message' => $e->getShortMessage(),
             'log' => $e->getMessage(),
+            'test_results' => array(),
         );
     }
 
@@ -126,23 +127,24 @@ function job_handle($job) {
     // Send job result and update score magic.
     job_send_result($job['id'], $job_result);
     score_update_for_job(
-		$job_result['score'],
-		$job['submit_time'],
-		$job['user_id'],
-		$job['task_id'],
-		$job['round_id']
-	);
-	
-	$file_size = strlen($job['file_contents']);
-	task_statistics_update_top_users(
-		$job['user_id'],
-		$job['task_id'],
-		$job['round_id'],
-		$job_result['score'],
-		$job['submit_time'],
-		$file_size,
-		$job_result['test_results']
-	);
+        $job_result['score'],
+        $job['submit_time'],
+        $job['user_id'],
+        $job['task_id'],
+        $job['round_id']
+    );
+    
+    $file_size = strlen($job['file_contents']);
+    task_statistics_update_top_users(
+        $job['user_id'],
+        $job['task_id'],
+        $job['round_id'],
+        $job_result['score'],
+        $job['submit_time'],
+        $job['id'],
+        $file_size,
+        $job_result['test_results']
+    );
 }
 
 // Main loop. It works by polling the sql server

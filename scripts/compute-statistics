@@ -14,11 +14,13 @@ db_query("DROP TABLE IF EXISTS `ia_score_task_top_users`");
 db_query("
     CREATE TABLE `ia_score_task_top_users` (
         `task_id` varchar(64) NOT NULL,
+        `round_id` varchar(64) NOT NULL,
         `user_id` int(10) unsigned NOT NULL,
         `criteria` varchar(64) NOT NULL,
         `special_score` int(11) NOT NULL,
         `submit_time` datetime NOT NULL,
-        PRIMARY KEY (`task_id`, `user_id`, `criteria`)
+        `job_id` int(10) unsigned NOT NULL,
+        PRIMARY KEY (`task_id`, `round_id`, `user_id`, `criteria`)
     )
 ");
 log_print("Created table");
@@ -33,51 +35,60 @@ foreach ($criteria_column as $current => $column) {
     if ($current === 'size') {
         // no need to check tests
         $query = "
-            SELECT `user_id`, `task_id`, MIN(OCTET_LENGTH(`$column`)) AS best_special_score, `submit_time`
+            SELECT `id` AS job_id, `user_id`, `round_id`, `task_id`, OCTET_LENGTH(`$column`) AS special_score, `submit_time`
             FROM `ia_job`
-            WHERE `score` = 100 AND `round_id` = 'arhiva' AND `status` = 'done'
-            GROUP BY `user_id`, `task_id`
-            ORDER BY best_special_score ASC, `submit_time` ASC
+            WHERE `score` = 100 AND `status` = 'done'
+            ORDER BY special_score ASC, `submit_time` ASC
         ";
     }
     else {
         $query = "
-            SELECT user_id, task_id, MIN(special_score) AS best_special_score, submit_time
-                FROM (
-                     SELECT `ia_job`.`user_id`, `ia_job`.`task_id`, `submit_time`, MAX(`$column`) AS special_score
-                     FROM `ia_job`
-                     INNER JOIN `ia_job_test`
-                     ON `ia_job`.`id` = `ia_job_test`.`job_id`
-                     WHERE `ia_job`.`score` = 100 AND `ia_job`.`round_id` = 'arhiva' AND `ia_job`.`status` = 'done'
-                     GROUP BY `ia_job`.`id`
-                     ) AS job_scores
-            GROUP BY `user_id`, `task_id`
-            ORDER BY best_special_score ASC, submit_time ASC
+            SELECT `ia_job`.`id` AS job_id, `ia_job`.`user_id`, `ia_job`.`round_id`, `ia_job`.`task_id`, MAX(`ia_job_test`.`$column`) AS special_score, `ia_job`.`submit_time`
+            FROM `ia_job`
+            INNER JOIN `ia_job_test`
+            ON `ia_job`.`id` = `ia_job_test`.`job_id`
+            WHERE `ia_job`.`score` = 100 AND `ia_job`.`status` = 'done'
+            GROUP BY `ia_job`.`id`, `ia_job`.`user_id`, `ia_job`.`round_id`, `ia_job`.`task_id`, `ia_job`.`submit_time`
+            ORDER BY special_score ASC, `ia_job`.`submit_time` ASC
         ";
     }
-    $results = db_fetch_all($query);
+    
+    $result = db_query($query);
+    $num_rows = db_num_rows($result);
+    
+    log_print("Total rows to process for $current: $num_rows");
     
     $total = 0;
     $task_entries_count = array();
+    $task_users_entries = array();
     $values = '';
-    foreach ($results as $row) {
+    while ($row = db_next_row($result)) {
+        $job_id = $row['job_id'];
         $task_id = $row['task_id'];
+        $round_id = $row['round_id'];
         $user_id = $row['user_id'];
-        $special_score = $row['best_special_score'];
+        $special_score = $row['special_score'];
         $submit_time = $row['submit_time'];
-        if (!array_key_exists($task_id, $task_entries_count)) {
-            $task_entries_count[$task_id] = 0;
+        $pair = $task_id.",".$round_id;
+        
+        if (!array_key_exists($pair, $task_entries_count)) {
+            $task_entries_count[$pair] = 0;
+            $task_users_entries[$pair] = array();
         }
         
-        if ($task_entries_count[$task_id] < IA_STATISTICS_MAX_TOP_SIZE) {
+        if (!array_key_exists($user_id, $task_users_entries[$pair]) &&
+            $task_entries_count[$pair] < IA_STATISTICS_MAX_TOP_SIZE) {
+            $task_users_entries[$pair][$user_id] = true;
             if ($values !== "") {
                 $values .= ",";
             }
-            $values .= "('$task_id', $user_id, '$current', $special_score, '$submit_time')";
-            $task_entries_count[$task_id]++;
+            $values .= "('$task_id', '$round_id', $user_id, '$current', $special_score, '$submit_time', $job_id)";
+            $task_entries_count[$pair]++;
             $total++;
         }
     }
+    
+    db_free($result);
     
     $query = "
         INSERT INTO `ia_score_task_top_users`
@@ -87,87 +98,5 @@ foreach ($criteria_column as $current => $column) {
     
     log_print("Computed $total entries for $current");
 }
-
-$result = db_fetch('DESCRIBE `ia_score_user_round_task` `incorrect_submits`');
-if ($result === null) {
-    db_query("
-        ALTER TABLE `ia_score_user_round_task`
-        ADD COLUMN `incorrect_submits` int(11) DEFAULT 0 NOT NULL
-    ");
-    log_print('Successfully added the column `incorrect_submits` to `ia_score_user_round_task`');
-}
-
-db_query("
-    ALTER TABLE `ia_score_user_round_task`
-    MODIFY COLUMN `submits` int(11) DEFAULT 0 NOT NULL
-");
-log_print('Successfully altered the column `submits` from `ia_score_user_round_task`');
-
-$start_time = time();
-
-$query = "SELECT user_id, round_id, task_id, score
-          FROM ia_job
-          ORDER BY user_id, round_id, task_id";
-
-$result = mysql_query($query);
-$num_rows = mysql_num_rows($result);
-
-log_print("Total rows to process: $num_rows");
-
-$row_count = 0;
-$prev_user_id = -1;
-$prev_round_id = -1;
-$prev_task_id = -1;
-$submit_count = 0;
-$incorrect_submit_count = 0;
-while ($row = mysql_fetch_assoc($result)) {
-    $user_id = $row['user_id'];
-    $round_id = $row['round_id'];
-    $task_id = $row['task_id'];
-    $score = $row['score'];
-    
-    if ($user_id !== $prev_user_id ||
-        $round_id !== $prev_round_id ||
-        $task_id !== $prev_task_id) {
-        if ($prev_user_id !== -1) {
-            db_update("ia_score_user_round_task",
-                      array(
-                          'submits' => $submit_count,
-                          'incorrect_submits' => $incorrect_submit_count,
-                      ),
-                      "user_id=$prev_user_id AND round_id='$prev_round_id' AND task_id='$prev_task_id'");
-        }
-        $submit_count = 0;
-        $incorrect_submit_count = 0;
-    }
-    
-    $submit_count++;
-    if ($score < 100) {
-        $incorrect_submit_count++;
-    }
-    
-    $prev_user_id = $user_id;
-    $prev_round_id = $round_id;
-    $prev_task_id = $task_id;
-    
-    $row_count++;
-    if ($row_count % 100000 === 0) {
-        log_print("Currently at row $row_count");
-    }
-}
-
-db_update("ia_score_user_round_task",
-          array(
-              'submits' => $submit_count,
-              'incorrect_submits' => $incorrect_submit_count,
-          ),
-          "user_id=$prev_user_id AND round_id='$prev_round_id' AND task_id='$prev_task_id'");
-
-mysql_free_result($result);
-
-$end_time = time();
-log_print('Time: '.($end_time - $start_time).'s');
-
-log_print('Successfully updated the count columns in table `ia_score_user_round_task`');
 
 ?>
