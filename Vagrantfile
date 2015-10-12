@@ -2,7 +2,7 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "chef/ubuntu-13.10"
+  config.vm.box = "ubuntu/trusty64"
 
   config.vm.hostname = "infoarena2.localhost"
 
@@ -12,7 +12,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   end
 
-  config.vm.network "private_network", ip: "10.0.0.201"
+  config.vm.network "private_network", ip: "20.0.0.201"
 
   config.ssh.forward_agent = true
 

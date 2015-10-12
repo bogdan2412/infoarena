@@ -7,16 +7,13 @@ class InfoarenaClassLoader extends ClassLoader {
     @Override
     public Class<?> loadClass(String name) throws ClassNotFoundException {
         if (!this.isAllowedClassName(name)) {
-            throw new ClassNotFoundException(name + "1");
+            throw new ClassNotFoundException(name);
         }
 
-        Class<?> cls = super.loadClass(name);
-        if (Error.class.isAssignableFrom(cls)) {
-            throw new ClassNotFoundException(name + "2");
-        }
-        return cls;
+        return super.loadClass(name);
     }
 
+    // This doesn't let you import your own packages
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
         if (name.indexOf('.') >= 0) {
