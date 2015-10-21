@@ -70,7 +70,7 @@ function job_handle($job) {
             'score' => 0,
             'message' => $e->getShortMessage(),
             'log' => $e->getMessage(),
-            'test_results' => array(),
+            'test_results' => array()
         );
     }
 

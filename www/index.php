@@ -49,13 +49,13 @@ if (IA_HTTPS_ENABLED) {
     if (is_connection_secure()) {
         if (!array_key_exists($urlstart, $IA_HTTPS_ENDPOINTS)) {
             redirect(IA_URL_HOST.$_SERVER['REQUEST_URI']);
-        } else if (IA_URL_HTTPS_HOST !== 'https://'.$_SERVER['HTTP_HOST']) {
+        } elseif (IA_URL_HTTPS_HOST !== 'https://'.$_SERVER['HTTP_HOST']) {
             redirect(IA_URL_HTTPS_HOST.$_SERVER['REQUEST_URI']);
         }
     } else {
         if (array_key_exists($urlstart, $IA_HTTPS_ENDPOINTS)) {
             redirect(IA_URL_HTTPS_HOST.$_SERVER['REQUEST_URI']);
-        } else if (IA_URL_HOST !== 'http://'.$_SERVER['HTTP_HOST']) {
+        } elseif (IA_URL_HOST !== 'http://'.$_SERVER['HTTP_HOST']) {
             redirect(IA_URL_HOST.$_SERVER['REQUEST_URI']);
         }
     }

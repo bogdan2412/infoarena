@@ -7,5 +7,5 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 /etc/init.d/apache2 start
-/etc/init.d/infoarena start
+#/etc/init.d/infoarena start
 /etc/init.d/nginx start

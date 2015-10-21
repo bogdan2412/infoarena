@@ -306,7 +306,7 @@ function logging_error_handler($errno, $errstr, $errfile, $errline) {
             }
         }
         if (IA_HTTP_ENV && !IA_DEVELOPMENT_MODE) {
-            header('HTTP/1.0 500 Internal Error');
+            header('HTTP/1.1 500 Internal Error');
         }
         die();
     }

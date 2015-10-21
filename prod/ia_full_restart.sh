@@ -7,7 +7,7 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 $(dirname $0)/ia_stop.sh
-/etc/init.d/mysql stop
+service mysql stop
 /etc/init.d/memcached stop
 /bin/sync
 echo 3 > /proc/sys/vm/drop_caches
@@ -15,5 +15,5 @@ echo 3 > /proc/sys/vm/drop_caches
 sleep 2
 /sbin/swapon -a
 /etc/init.d/memcached start
-/etc/init.d/mysql start
+service mysql start
 $(dirname $0)/ia_start.sh

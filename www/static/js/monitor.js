@@ -21,7 +21,8 @@ function SkipJobs() {
     return false;
 }
 
-function Monitor_Refresh(){
+function Monitor_Refresh() {
+    Monitor_RefreshTimeout = null;
     $("#monitor-table").load(Monitor_Url, {},
         function(responseText, statusText, req) {
             if (Monitor_AutoRefresh && Monitor_RefreshTimeout === null) {

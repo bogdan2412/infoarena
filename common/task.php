@@ -158,7 +158,8 @@ function task_validate($task) {
         }
     } else {
         if (!is_attachment_name($task['evaluator'])) {
-            $errors['evaluator'] = 'Nume de fisier invalid.';
+             $errors['evaluator'] = 'Nume de fisier invalid pentru problema '
+                                  . $task['id'];
         }
     }
 
@@ -293,8 +294,8 @@ function task_validate_parameters($task_type, $parameters) {
             $errors['memlimit'] = "Limita de memorie trebuie sa fie un numar.";
         } else if ($parameters['memlimit'] < 10) {
             $errors['memlimit'] = "Minim 10 kilobytes.";
-        } else if ($parameters['memlimit'] > 131072) {
-            $errors['memlimit'] = "Maxim 128 megabytes.";
+        } else if ($parameters['memlimit'] > 262144) {
+            $errors['memlimit'] = "Maxim 256 megabytes.";
         }
     }
     if ($task_type === 'interactive') {

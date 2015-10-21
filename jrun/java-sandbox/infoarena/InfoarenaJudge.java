@@ -116,7 +116,7 @@ public class InfoarenaJudge {
         }
 
         if (targetClass == null) {
-            printResult("ERROR", "Eroare de Evaluator lipseste sursa");
+            printResult("FAIL", "Eroare de rulare, clasa principala trebuie sa se numeasca Main");
         }
 
         Method mainMethod = null;
