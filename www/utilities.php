@@ -74,7 +74,7 @@ function request_is_post() {
 // Either way, it is a bug and it must be solved rather than handled gracefully
 //
 // FIXME: bool to se ia_redirect to REQUEST_URI? might be usefull.
-function redirect($absolute_url, $code) {
+function redirect($absolute_url, $code = 302) {
     log_assert($code === 301 || $code === 302);
     if ($code === 301) {
         header('HTTP/1.1 301 Moved Permanently');
