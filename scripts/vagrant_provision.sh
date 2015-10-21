@@ -13,7 +13,7 @@ export DEBIAN_FRONTEND=noninteractive
 debconf-set-selections <<< 'mariadb-server-10.1 mysql-server/root_password password PASS'
 debconf-set-selections <<< 'mariadb-server-10.1 mysql-server/root_password_again password PASS'
 
-apt-get install -y nginx-full vim git mariadb-server mariadb-client
+apt-get install -y nginx-full vim git mariadb-server mariadb-client \
     language-pack-ro openjdk-7-jdk openjdk-7-jre g++
 
 echo "Configuring MariaDB"
