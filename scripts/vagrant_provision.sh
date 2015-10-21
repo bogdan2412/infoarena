@@ -1,21 +1,27 @@
 #!/usr/bin/env bash
+apt-get install software-properties-common
+apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db
+add-apt-repository 'deb http://ftp.osuosl.org/pub/mariadb/repo/10.1/ubuntu trusty main'
+
+apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0x5a16e7281be7a449
+add-apt-repository "deb http://dl.hhvm.com/ubuntu $(lsb_release -sc) main"
 
 apt-get update
+
 echo "Installing HHVM dependencies..."
+export DEBIAN_FRONTEND=noninteractive
+debconf-set-selections <<< 'mariadb-server-10.1 mysql-server/root_password password PASS'
+debconf-set-selections <<< 'mariadb-server-10.1 mysql-server/root_password_again password PASS'
 
-sudo debconf-set-selections <<< 'mysql-server-5.5
-    mysql-server/root_password password'
-sudo debconf-set-selections <<< 'mysql-server-5.5
-    mysql-server/root_password_again password'
+apt-get install -y nginx-full vim git mariadb-server mariadb-client
+    language-pack-ro openjdk-7-jdk openjdk-7-jre g++
 
-apt-get install -y nginx-full vim git mysql-client-core-5.5 mysql-server\
-    language-pack-ro openjdk-7-jdk openjdk-7-jre
+echo "Configuring MariaDB"
+echo "[client]" >> /home/vagrant/.my.cnf
+echo "user = root" >> /home/vagrant/.my.cnf
+echo "password = PASS" >> /home/vagrant/.my.cnf
 
 echo "Installing HHVM"
-wget -O - http://dl.hhvm.com/conf/hhvm.gpg.key | sudo apt-key add -
-echo deb http://dl.hhvm.com/ubuntu saucy main | sudo tee \
-    /etc/apt/sources.list.d/hhvm.list
-apt-get update
 apt-get install -y hhvm
 
 /usr/share/hhvm/install_fastcgi.sh
