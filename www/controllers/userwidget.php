@@ -13,8 +13,10 @@ require_once(IA_ROOT_DIR . "www/format/format.php");
 function controller_userwidget($user_name) {
     // get data
     $db_user = user_get_by_username($user_name);
-    $task_data_succes = user_submitted_tasks($db_user['id'], true, false);
-    $task_data_failed = user_submitted_tasks($db_user['id'], false, true);
+    $task_data_succes = user_submitted_tasks($db_user['id'], array('arhiva'),
+                                              true, false);
+    $task_data_failed = user_submitted_tasks($db_user['id'], array('arhiva'),
+                                              false, true);
     // get name
     $name = $db_user['full_name'];
     // get rating
@@ -53,4 +55,3 @@ function controller_userwidget($user_name) {
     );
     execute_view_die('views/userwidget.php', $data);
 }
-

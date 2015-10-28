@@ -1,6 +1,7 @@
 <?php
 
 require_once(IA_ROOT_DIR."common/db/user.php");
+require_once IA_ROOT_DIR.'common/db/round.php';
 
 // Display solved tasks for given user.
 // When failed_tasks_hack is true, it displays failed tasks instead.
@@ -18,26 +19,50 @@ function macro_solvedtasks($args, $failed_tasks_hack = false) {
 
     // get task list
     $sel_solved = !$failed_tasks_hack;
-    $tasks = user_submitted_tasks($user['id'], $sel_solved, !$sel_solved);
+
+    $rounds = explode('|', getattr($args, 'rounds'));
+    $tasks = user_submitted_tasks($user['id'], $rounds,
+                                  $sel_solved, !$sel_solved);
 
     // view
     if (1 <= count($tasks)) {
-        $urls = array();
-        foreach ($tasks as $task) {
-            $urls[] = format_link(url_textblock($task['page_name']), $task['id']);
-        }
-        if (1 == count($urls)) {
-            $number = 'o problema';
+        if (1 == count($tasks)) {
+            $number = '<span class="task_enum">Total: o problema</span><br>';
         }
         else {
-            $number = count($urls).' probleme';
+            $number = '<span class="task_enum">Total: '.
+                      count($tasks).' probleme</span><br>';
         }
-        return '<span class="task_enum">'.$number.': '.join(', ', $urls)
-               .'</span>';
+        $all_problems = $number;
+        foreach ($rounds as $round_id) {
+            $current_line = round_get($round_id)['title'].': ';
+            $urls = array();
+            foreach ($tasks as $task) {
+                if ($task['round_id'] == $round_id) {
+                    $urls[] = format_link(url_textblock($task['page_name']),
+                                          $task['id']);
+                }
+            }
+            if (count($urls) == 0) {
+                $current_line .= 'nicio problema';
+            } else if (count($urls) == 1) {
+                $current_line .= 'o problema<br>';
+            } else {
+                $current_line .= count($urls).' probleme <br>';
+            }
+
+            $current_line = '<span class="task_enum">'.$current_line.
+                            implode(', ', $urls).'</span> <br>';
+            if (count($urls) > 0) {
+                $all_problems .= $current_line;
+            }
+        }
+
+        return $all_problems;
     }
     else {
         // no tasks
-        return "<em>nici o problema</em>";
+        return '<em>Nicio problema</em>';
     }
 }
 

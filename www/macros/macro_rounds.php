@@ -52,7 +52,7 @@ function macro_rounds($args) {
     }
     else {
         // no rated rounds
-        return "<em>nici un concurs</em>";
+        return '<em>niciun concurs</em>';
     }
 }
 

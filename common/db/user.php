@@ -148,8 +148,10 @@ function user_create($user, $remote_ip_info=null)
     // Create user page.
     require_once(IA_ROOT_DIR . "common/textblock.php");
     $replace = array("user_id" => $user['username']);
-    textblock_copy_replace("template/newuser", IA_USER_TEXTBLOCK_PREFIX.$user['username'],
-                           $replace, "public", $new_user['id'], $remote_ip_info);
+    textblock_copy_replace('template/newuser',
+                           IA_USER_TEXTBLOCK_PREFIX.$user['username'],
+                           $replace, 'public',
+                           $new_user['id'], $remote_ip_info);
 
     // Create SMF user
     require_once(IA_ROOT_DIR."common/db/smf.php");
@@ -210,7 +212,8 @@ function user_count() {
 
 // Returns array with user submitted tasks. Filter tasks by choosing whether
 // to select failed and solved tasks.
-function user_submitted_tasks($user_id, $solved = true, $failed = true) {
+function user_submitted_tasks($user_id, $rounds,
+                              $solved = true, $failed = true) {
     // construct where
     if ($solved && $failed) {
         // no condition
@@ -221,19 +224,25 @@ function user_submitted_tasks($user_id, $solved = true, $failed = true) {
     }
     elseif ($failed) {
         $where = 'AND ia_score_user_round_task.score < 100';
-    }
-    else {
+    } else {
         // This shouldn't happen
         log_error('You can\'t select nothing.');
     }
 
+    if ($rounds == null) {
+        $rounds = array('');
+    }
+
+    $archives = db_escape_array($rounds);
     $query = sprintf("SELECT *
         FROM ia_score_user_round_task
         LEFT JOIN ia_task ON ia_task.id = ia_score_user_round_task.task_id
         WHERE ia_score_user_round_task.user_id = '%s'
-              AND ia_score_user_round_task.round_id = 'arhiva' AND NOT ia_task.id IS NULL %s
+        AND ia_score_user_round_task.round_id
+            IN (%s)
+        AND NOT ia_task.id IS NULL %s
         GROUP BY ia_task.id
-        ORDER BY ia_task.`order`", $user_id, $where);
+        ORDER BY ia_task.`order`", $user_id, $archives, $where);
 
     return db_fetch_all($query);
 }
