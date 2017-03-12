@@ -212,8 +212,8 @@ function rating_rounds() {
     foreach ($rows as $row) {
         $round_id = $row['round_id'];
         if (!isset($rounds[$round_id])) {
-            log_warn("Round {$round_id} has rating_update but no "
-                      ."rating_timestamp parameter!");
+            //log_warn("Round {$round_id} has rating_update but no "
+            //          ."rating_timestamp parameter!");
             unset($rounds[$round_id]);
             continue;
         }
