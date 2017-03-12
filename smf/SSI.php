@@ -48,7 +48,7 @@ foreach (array('db_character_set') as $variable)
 // Get the forum's settings for database and file paths.
 require_once(dirname(__FILE__) . '/Settings.php');
 
-$ssi_error_reporting = error_reporting(E_ALL);
+$ssi_error_reporting = error_reporting(E_ALL & ~E_DEPRECATED);
 ini_set('display_errors', false);
 
 // Don't do john didley if the forum's been shut down competely.
