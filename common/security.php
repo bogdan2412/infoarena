@@ -607,7 +607,8 @@ function security_job($user, $action, $job) {
     // make ALL solved tasks visible
     if (!$can_view_source &&
         is_user_id($user['id']) &&
-        $job['round_type'] == 'archive') {
+        $job['round_type'] == 'archive' &&
+        $job['status'] != 'skipped') {
         $score = task_get_user_score($job['task_id'],
                                      $user['id'],
                                      $job['round_id']);

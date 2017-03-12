@@ -498,6 +498,7 @@ function format_acm_score($score, $penalty, $submission) {
         return "0";
     }
 
+    $penalty -= ($submission - 1) * 20;
     $result = '<center><span style="font-size: 18px;text-weight: bold;color: ';
     if ($score > 0) {
         $result .= 'green">+';

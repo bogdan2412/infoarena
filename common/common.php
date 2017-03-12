@@ -83,7 +83,7 @@ define("IA_TLF_SOLVED", '3');
 
 // Constants for IA user-defined rounds
 // Users can't create rounds lasting 123141231223 hours
-define("IA_USER_DEFINED_ROUND_DURATION_LIMIT", '48');
+define("IA_USER_DEFINED_ROUND_DURATION_LIMIT", '168');
 // Users can't create rounds 5412312421 days before the round starts
 define("IA_USER_DEFINED_ROUND_DAYSBEFORE_LIMIT", '30');
 // Users can't create user defined rounds with too many problems
@@ -361,7 +361,7 @@ function check_requirements() {
 // FIXME: I have no idea on where to move these things.
 
 // Force max error reporting.
-error_reporting(0xFFFF);
+error_reporting(0xFFFF & ~(E_DEPRECATED) & ~E_USER_WARNING & ~E_USER_NOTICE);
 
 // Initialize execution stats.
 if (IA_DEVELOPMENT_MODE) {

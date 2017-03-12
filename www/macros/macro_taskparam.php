@@ -84,6 +84,10 @@ function macro_taskparam($args) {
             if (is_null($task['rating'])) {
                 return 'N/A';
             }
+
+            if ($task['security'] != 'public') {
+                return 'N/A';
+            }
             $star_args = array('rating' => $task['rating'],
                                'scale' => 5,
                                'type' => 'normal');
