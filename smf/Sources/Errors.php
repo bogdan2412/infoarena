@@ -345,7 +345,7 @@ function error_handler($error_level, $error_string, $file, $line)
 	global $settings, $modSettings, $db_show_debug;
 
 	// Ignore errors if we're ignoring them or they are strict notices from PHP 5 (which cannot be solved without breaking PHP 4.)
-	if (error_reporting() == 0 || (defined('E_STRICT') && $error_level == E_STRICT && (empty($modSettings['enableErrorLogging']) || $modSettings['enableErrorLogging'] != 2)))
+	if (error_reporting() == 0 || $error_level == E_DEPRECATED || (defined('E_STRICT') && $error_level == E_STRICT && (empty($modSettings['enableErrorLogging']) || $modSettings['enableErrorLogging'] != 2)))
 		return;
 
 	if (strpos($file, 'eval()') !== false && !empty($settings['current_include_filename']))
@@ -388,7 +388,7 @@ function error_handler($error_level, $error_string, $file, $line)
 <b>', $error_level % 255 == E_ERROR ? 'Error' : ($error_level % 255 == E_WARNING ? 'Warning' : 'Notice'), '</b>: ', $error_string, ' in <b>', $file, '</b> on line <b>', $line, '</b><br />';
 	}
 
-	$message = log_error($error_level . ': ' . $error_string, $file, $line);
+    $message = log_error($error_level . ': ' . $error_string, $file, $line);
 
 	// Dying on these errors only causes MORE problems (blank pages!)
 	if ($file == 'Unknown')
