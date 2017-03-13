@@ -3,7 +3,6 @@
 setup: arcanist libphutil
 	rm -f arc
 	ln -s arcanist/bin/arc .
-	sudo scripts/setup
 
 hphp-build:
 	mkdir -p hphp/build/
@@ -36,12 +35,12 @@ distclean: clean-tools clean
 
 arcanist:
 	git clone git://github.com/facebook/arcanist.git
+	rm -f arc
 	ln -s arcanist/bin/arc .
 
 libphutil:
 	git clone git://github.com/facebook/libphutil.git
-	libphutil/scripts/build_xhpast.sh || true
-	libphutil/scripts/build_xhpast.sh
+	libphutil/scripts/build_xhpast.php || true
 
 lint-repo: arcanist libphutil
 	find . -name \*.php | xargs arcanist/bin/arc lint --lintall --never-apply-patches
