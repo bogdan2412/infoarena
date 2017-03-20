@@ -1,0 +1,11 @@
+version: "3"
+services:
+  nginx:
+    volumes:
+      - infoarena-sync:/infoarena
+  infoarena:
+    volumes:
+      - infoarena-sync:/infoarena
+volumes:
+  infoarena-sync:
+    external: true

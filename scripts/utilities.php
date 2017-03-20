@@ -7,7 +7,8 @@ if (!defined('IA_SETUP_SCRIPT')) {
     require_once(IA_ROOT_DIR . "common/common.php");
     require_once(IA_ROOT_DIR . "common/db/db.php");
 
-    if (realpath(IA_ROOT_DIR . 'scripts') != realpath($script_dir)) {
+    if (realpath(IA_ROOT_DIR.'scripts') != realpath($script_dir)
+        && realpath(IA_ROOT_DIR.'docker-setup') != realpath($script_dir)) {
         log_error("You should only include this file from scripts");
     }
 
@@ -22,6 +23,7 @@ function read_line($question, $default = null) {
     } else {
         echo "$question"." (default:$default) ";
     }
+    flush();
     $r = trim(fgets(STDIN));
     if ($r == "") {
         $r = $default;
@@ -106,4 +108,38 @@ function remove_old_files($dir, $keep_newest = 10) {
 function is_backup_filename($filename, &$matches) {
     $pattern = "/^db-(\d{4})(\d{2})(\d{2})\.sql\.gz\.gpg$/";
     return preg_match($pattern, $filename, $matches);
+}
+
+// Replace config values in $srcfile and copy to $dstfile
+function generate_config_file($vars, $srcfile, $dstfile) {
+    $contents = file_get_contents($srcfile);
+    foreach ($vars as $k => $v) {
+        $contents = str_replace("--write-me-$k--", $v, $contents);
+    }
+    file_put_contents($dstfile, $contents);
+
+    chown($dstfile, getmyuid());
+    chgrp($dstfile, getmygid());
+    chmod($dstfile, 0644);
+}
+
+// Compiles longest common substrig written in c++
+function compile_lcs($ia_root_dir) {
+    $ia_root_dir = escapeshellarg($ia_root_dir);
+    $command = 'g++ '.$ia_root_dir.'common/lcs.cpp -O2 -static -o '.
+        $ia_root_dir.'common/lcs';
+
+    $ret_val = null;
+    $last_line = system($command, $ret_val);
+
+    if ($ret_val) {
+        // Check for errors
+        print("\nWARNING!!! There has been a problem when trying to compile ".
+              "a cpp source! Check your gcc/g++ installation then rerun ".
+              "the script.\nThis will not affect the setup except for ".
+              "comparing revisons, but you should take a look at this!\n\n");
+        return 0;
+    }
+
+    return 1;
 }

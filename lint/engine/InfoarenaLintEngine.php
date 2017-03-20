@@ -32,12 +32,6 @@ final class InfoarenaLintEngine extends ArcanistLintEngine {
 
         $paths = $this->getPaths();
 
-        $library_linter = new ArcanistPhutilLibraryLinter();
-        $linters[] = $library_linter;
-        foreach ($paths as $path) {
-            $library_linter->addPath($path);
-        }
-
         // Remaining lint engines operate on file contents and ignore removed
         // files.
         foreach ($paths as $key => $path) {

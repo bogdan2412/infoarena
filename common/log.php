@@ -237,6 +237,8 @@ function logging_error_handler($errno, $errstr, $errfile, $errline) {
         'E_USER_WARNING'       => 'Warning: ',
         'E_USER_NOTICE'        => '',
         'E_RECOVERABLE_ERRROR' => 'Catchable Fatal Error: ',
+        'E_DEPRECATED'         => 'Deprecated Warning: ',
+        'E_USER_DEPRECATED'    => 'User-generated deprecated Warning: ',
     );
 
     // Maps error type constant to messages.

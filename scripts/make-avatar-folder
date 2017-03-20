@@ -13,11 +13,12 @@ require_once(IA_ROOT_DIR . 'common/db/textblock.php');
 
 // Database connect
 db_connect();
-$verbose = getattr($argv, 1, false) === '-v';
+$verbose = in_array('-v', $argv);
+$is_setup = in_array('setup', $argv);
 
 // Managing the userinfo template from the textblock table
 if (read_bool('Do you want to change the template/userinfo textblock?',
-        false)) {
+        $is_setup)) {
     $textfortextblock = "table(compact). |=/5. ==UserImage".
     "(user=\"%user%\" size=\"big\")==\r\n{'Vezi solutiile trimise':monitor?use".
     "r=%user%}\r\n|_. Nume | == userinfo(user=\"%user%\" info=\"fullname\")== ".

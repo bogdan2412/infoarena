@@ -26,38 +26,6 @@ function running_as_root() {
     return posix_getuid() == 0;
 }
 
-// Replace config values in $srcfile and copy to $dstfile
-function generate_config_file($vars, $srcfile, $dstfile) {
-    $contents = file_get_contents($srcfile);
-    foreach ($vars as $k => $v) {
-        $contents = str_replace("--write-me-$k--", $v, $contents);
-    }
-    file_put_contents($dstfile, $contents);
-
-    chown($dstfile, getmyuid());
-    chgrp($dstfile, getmygid());
-    chmod($dstfile, 0644);
-}
-
-// Compiles longest common substrig written in c++
-function compile_lcs($IA_ROOT_DIR) {
-    $IA_ROOT_DIR = escapeshellarg($IA_ROOT_DIR);
-    $command = 'g++ ' . $IA_ROOT_DIR . 'common/lcs.cpp -O2 -static -o ' .
-        $IA_ROOT_DIR . 'common/lcs';
-
-    $last_line = system($command, $ret_val);
-
-    if ($ret_val) {
-        // Check for errors
-        print("\nWARNING!!! There has been a problem when trying to compile " .
-              "a cpp source! Check your gcc/g++ installation then rerun " .
-              "the script.\nThis will not affect the setup except for " .
-              "comparing revisons, but you should take a look at this!\n\n");
-        return 0;
-    }
-
-    return 1;
-}
 
 // ---
 // Real code starts here
@@ -325,7 +293,7 @@ if (php_uname('s') === 'Darwin') {
 // Run any other scripts
 if (read_bool("Should I try to build the avatar cache folder?", true)) {
     print("Building the avatar cache folder\n");
-    system("{$ia_root}scripts/make-avatar-folder");
+    passthru("{$ia_root}scripts/make-avatar-folder");
     print("Done building the avatar cache folder\n\n");
 }
 
