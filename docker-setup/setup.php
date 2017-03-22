@@ -49,7 +49,7 @@ if ($dblink && read_bool('Should I try to import the sample database?', true)) {
 
 if (read_bool('Should I try to build the avatar cache folder?', true)) {
     print("Building the avatar cache folder\n");
-    passthru(IA_ROOT_DIR.'scripts/make-avatar-folder setup');
+    passthru(IA_ROOT_DIR.'scripts/make-avatar-folder');
     print("Done building the avatar cache folder\n\n");
 }
 
