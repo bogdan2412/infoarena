@@ -1,4 +1,5 @@
 <?php
+define('IA_URL', 'http://nginx/');
 
 // link main configuration
 require_once dirname($argv[0]).'/../config.php';
