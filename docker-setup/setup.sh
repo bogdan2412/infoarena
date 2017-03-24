@@ -1,6 +1,8 @@
 #!/bin/sh
 set -e
 
+chmod a+w,g+s attach
+
 if [ ! -f config.php ]; then
     cp docker-setup/config.php config.php;
 fi
