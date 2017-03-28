@@ -97,7 +97,7 @@ function task_row_style_absolute($row) {
     }
 }
 
-function task_list_tabs($round_page, $active) {
+function task_list_tabs($round_page, $active, $as_user) {
     $tabs = array();
 
     $tab_names = array(IA_TLF_ALL => 'Toate problemele',
@@ -106,7 +106,13 @@ function task_list_tabs($round_page, $active) {
                        IA_TLF_SOLVED => 'Rezolvate');
 
     foreach ($tab_names as $id => $text) {
-        $tabs[$id] = format_link(url_task_list($round_page, $id), $text);
+        $args = array();
+        $args['filtru'] = $id;
+        if ($as_user) {
+            $args['user'] = $as_user;
+        }
+
+        $tabs[$id] = format_link(url_complex($round_page, $args), $text);
     }
     $tabs[$active] = array($tabs[$active], array('class' => 'active'));
     return format_ul($tabs, 'htabs');
@@ -149,14 +155,14 @@ function macro_tasks($args) {
     }
 
     $scores = getattr($args, 'score') && identity_can("round-view-scores", $round);
+    $filter_user = null;
     if (identity_is_anonymous() && $scores && request('user', '')) {
         $filter_user = user_get_by_username(request('user', ''));
+        $user_id = null;
         if($filter_user != null) {
             $filter_user_id = $filter_user['id'];
-            $user_id = $filter_user_id;
         } else {
             $filter_user_id = null;
-            $user_id = null;
         }
     } else if (identity_is_anonymous() || $scores == false) {
         $user_id = null;
@@ -179,8 +185,13 @@ function macro_tasks($args) {
 
     $filter = request('filtru', '');
     $tabs = '';
-    if ($user_id && $display_tabs == "true" && identity_can("round-view-scores", $round)) {
-        $tabs = task_list_tabs($round["page_name"], $filter);
+    if ($filter_user_id
+        && $display_tabs == 'true'
+        && identity_can('round-view-scores', $round)) {
+        $tabs = task_list_tabs(
+            $round['page_name'],
+            $filter,
+            $filter_user['username']);
     } else {
         $filter = '';
     }
@@ -271,7 +282,53 @@ function macro_tasks($args) {
         );
     }
 
-    return $tabs.format_table($tasks, $column_infos, $options);
+    $as_user = '';
+    if ($round['type'] == 'archive') {
+        $pager_hidden_fields = '';
+        foreach (pager_init_options($args) as $option => $value) {
+            $pager_hidden_fields .=
+                '<input type="hidden" name="'.$option.'" value="'.$value.'"/>';
+        }
+        if ($filter) {
+            $pager_hidden_fields .=
+                '<input type="hidden" name="filtru" value="'.$filter.'"/>';
+        }
+
+        $as_user .=
+            '<span>Vezi această listă din perspectiva altui utilizator: '
+            .'<form method="GET" style="display:inline">'
+            .'  <input type="text" placeholder="GavrilaVlad" name="user"'
+            .'      value="'.request('user', '').'"/>'
+            .$pager_hidden_fields
+            .'  <input style="display:inline-block"'
+            .'         type="submit" value="Vezi" class="button" />'
+            .'</form>'
+            .'</span><BR>';
+    }
+
+    if ($filter_user_id !== $user_id) {
+        $as_user .=
+            '<span>Momentan vezi această listă de probleme din '
+            .'perspectiva utilizatorului '
+            .format_user_tiny(
+                $filter_user['username'],
+                $filter_user['full_name'],
+                $filter_user['rating_cache'])
+            .'</span><BR>';
+    } else if (request('user') && request('user') != identity_get_username()) {
+        $as_user .=
+            '<span style="color: red;">Nu există un utilizator cu acest'
+            .' username sau nu ai destule permisiuni.</span>';
+    }
+
+    if ($as_user) {
+        $as_user =
+            '<div style="display:block; margin-bottom:30px;">'
+            .'  <div style="float:right; text-align: right;">'.$as_user.'</div>'
+            .'</div>';
+    }
+
+    return $as_user.$tabs.format_table($tasks, $column_infos, $options);
 }
 
 ?>

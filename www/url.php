@@ -286,11 +286,6 @@ function url_task_search($tag_ids) {
     return url_complex("cauta-probleme", array("tag_id" => $tag_ids));
 }
 
-function url_task_list($page_name, $filter = null) {
-    $args = $filter ? array('filtru' => $filter) : array();
-    return url_complex($page_name, $args);
-}
-
 function url_task_tags() {
     return url_complex("admin/task-tags");
 }
