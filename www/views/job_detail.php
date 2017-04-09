@@ -59,17 +59,33 @@ $show_groups = $view['group_tests'] &&
     </div>
 <?php } ?>
 
-<?php if ('done' == $job['status'] && count($tests) > 0) { ?>
-    <table class="job-eval-tests"> 
+<?php
+
+    if ('done' == $job['status'] && count($tests) > 0) {
+        $show_feedback_column = false;
+        foreach ($view['tests'] as $test) {
+            if (getattr($test, 'is_public_test')) {
+                $show_feedback_column = true;
+            }
+        }
+?>
+    <table class="job-eval-tests">
 <thead>
     <tr>
+        <?php
+
+ if ($show_feedback_column) {
+            echo '<th><img src="/static/images/visible.png" '.
+                'title="Feedback" alt="Feedback" '.
+                'style="height: 18px; width: auto;" /></th>';
+        } ?>
         <th>Test</th>
         <th>Timp executie</th>
         <th>Memorie folosita</th>
-        <th>Mesaj</th> 
-        <th>Punctaj/test</th> 
+        <th>Mesaj</th>
+        <th>Punctaj/test</th>
         <?php if ($show_groups) { ?>
-            <th>Punctaj/grupa</th> 
+            <th>Punctaj/grupa</th>
         <?php } ?>
     </tr>
 </thead>
@@ -86,6 +102,14 @@ $show_groups = $view['group_tests'] &&
             echo '<tr class="'.($test_row % 2 == 1 ? "odd" : "even").'">';
             $test_row++;
         }
+        if ($show_feedback_column) {
+            if (!getattr($test, 'is_public_test')) {
+                echo '<td class="number">✗</td>';
+            } else {
+                echo '<td class="number">✓</td>';
+            }
+        }
+
         echo '<td class="number">'.$test['test_number'].'</td>';
         if ($test["grader_message"] == "Time limit exceeded.") {
             echo '<td class="number">Depăşit</td>';
@@ -107,14 +131,15 @@ $show_groups = $view['group_tests'] &&
         }
         echo '</tr>';
     }
+    $line_spanning = 4 + ($show_groups ? 1: 0) + ($show_feedback_column ? 1: 0);
     if (getattr($job, 'penalty') !== null) {
-        echo '<tr><td colspan="'.($show_groups ? 5 : 4).'"> Penalizare '
+        echo '<tr><td colspan="'.$line_spanning.'"> Penalizare '
                 . $job['penalty']['description'] . '</td><td class="number">-'
                 . $job['penalty']['amount'] . '</td></tr>';
     }
 
     if (!is_null($job['score'])) {
-        echo '<tr><td colspan="'.($show_groups ? 5 : 4).'">'.
+        echo '<tr><td colspan="'.$line_spanning.'">'.
              'Punctaj total</td><td class="total_score number">'.$job['score'].'</td></tr>';
     }
 ?>

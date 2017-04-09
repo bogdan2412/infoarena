@@ -33,6 +33,7 @@ function controller_job_view($job_id) {
     // Check security.
     identity_require('job-view', $job);
 
+    $view = array();
     $view['title'] = 'Borderou de evaluare (job #'.$job_id.')';
     $view['job'] = $job;
     $view['tests'] = array();
@@ -61,6 +62,19 @@ function controller_job_view($job_id) {
             }
             if (!$solved_group) {
                 $view['group_score'][$group] = 0;
+            }
+        }
+
+        if ($job['round_type'] == 'classic') {
+            $public_test_ids =
+                task_parse_test_group(
+                    $job['task_public_tests'],
+                    $job['task_test_count']);
+            $public_test_ids = array_flip($public_test_ids);
+
+            foreach ($view['tests'] as &$test) {
+                $test['is_public_test'] =
+                    array_key_exists($test['test_number'], $public_test_ids);
             }
         }
 
@@ -108,7 +122,11 @@ function controller_job_view($job_id) {
         $view['group_tests'] = false;
         $view['job']['score'] = NULL;
         if (identity_can("job-view-partial-feedback", $job)) {
-            $view['tests'] = job_test_get_public($job_id);
+            $view['tests'] =
+                job_test_get_public(
+                    $job_id,
+                    $job['task_public_tests'],
+                    $job['task_test_count']);
         }
     }
 

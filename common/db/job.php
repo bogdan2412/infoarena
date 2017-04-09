@@ -97,9 +97,10 @@ function job_update($job_id, $status = null,  $eval_message = null,
 
 function job_get_by_id($job_id, $contents = false) {
     log_assert(is_whole_number($job_id));
-    $field_list = "`job`.`id`, job.`user_id`, `job`.`compiler_id`, `job`.`status`,
-                   `job`.`submit_time`, `job`.`eval_message`, `job`.`score`,
-                   `job`.`eval_log`, `job`.`remote_ip_info`, `job`.`submissions`,
+    $field_list = '`job`.`id`, job.`user_id`, `job`.`compiler_id`,
+                   `job`.`status`, `job`.`submit_time`, `job`.`eval_message`,
+                   `job`.`score`, `job`.`eval_log`, `job`.`remote_ip_info`,
+                   `job`.`submissions`,
                    OCTET_LENGTH(`job`.`file_contents`) AS `job_size`,
                    `user`.`username` AS `user_name`, `user`.`full_name` AS `user_fullname`,
                    `task`.`id` AS `task_id`,
@@ -108,13 +109,15 @@ function job_get_by_id($job_id, $contents = false) {
                    `task`.`user_id` AS `task_owner_id`,
                    `task`.`open_source` AS `task_open_source`,
                    `task`.`open_tests` AS `task_open_tests`,
+                   `task`.`public_tests` AS `task_public_tests`,
+                   `task`.`test_count` AS `task_test_count`,
                    `round`.`id` AS `round_id`,
                    `round`.`page_name` AS `round_page_name`,
                    `round`.`title` AS `round_title`,
                    `round`.`type` AS `round_type`,
                    `round`.`state` AS `round_state`,
                    `round`.`public_eval` AS `round_public_eval`,
-                   `round`.`start_time` AS `round_start_time`";
+                   `round`.`start_time` AS `round_start_time`';
     if ($contents) {
         $field_list .= ", job.file_contents";
     }
@@ -395,19 +398,10 @@ function job_test_get_all($job_id) {
     return db_fetch_all($query);
 }
 
-// Returns an array of public test informations for a job
-function job_test_get_public($job_id) {
-    $query = sprintf("
-        SELECT `test_count`, `public_tests` FROM `ia_task`
-        WHERE `id` = (
-            SELECT `task_id` FROM `ia_job`
-            WHERE `id` = %s
-        )", db_quote($job_id));
 
-    $task = db_fetch($query);
-    log_assert(!is_null($task));
-
-    $test_ids = task_parse_test_group($task["public_tests"], $task["test_count"]);
+// Returns an array of public test information for a job
+function job_test_get_public($job_id, $public_tests, $test_count) {
+    $test_ids = task_parse_test_group($public_tests, $test_count);
     if (!count($test_ids)) {
         return array();
     }
