@@ -15,9 +15,6 @@ $BACKUP_PATHS_WEEKLY = array(
                           IA_LIVE_DIR.'/apache.conf',
                           IA_ROOT_DIR.'/hphp/config.hdf',
                           IA_ROOT_DIR.'/config.php'),
-    'hackers/svn/svn-' => array(IA_LIVE_DIR.'/svn'),
-    'hackers/trac/trac-' => array(IA_LIVE_DIR.'/trac'),
-    'hackers/reviewboard/reviewboard-' => array(IA_LIVE_DIR.'/reviewboard'),
 );
 
 function backup_init_dirs() {
@@ -80,16 +77,42 @@ function backup_weekly() {
     }
 }
 
+function backup_clean() {
+    log_print("Deleting old backups");
+    $highest_mtime = 0;
+    $file = null;
+    foreach (scandir(IA_BACKUP_DIR.'/db/') as $db) {
+        if ($db[0] == '.') {
+            continue;
+        }
+        $mtime = filemtime(IA_BACKUP_DIR.'/db/'.$db);
+        if ($mtime > $highest_mtime) {
+            $highest_mtime = $mtime;
+            $file = $db;
+        }
+    }
+
+    foreach (scandir(IA_BACKUP_DIR.'/db/') as $db) {
+        if ($db[0] == '.')
+            continue;
+        if ($db != $file)
+            unlink(IA_BACKUP_DIR.'/db/'.$db);
+    }
+}
+
 function main() {
     global $argv;
     backup_init_dirs();
-    if (count($argv) != 2 || !in_array($argv[1], array('daily', 'weekly'))) {
-        log_error("Expecting 1 argument: 'daily' or 'weekly'.");
+    if (count($argv) != 2 ||
+        !in_array($argv[1], array('daily', 'weekly', 'clean'))) {
+        log_error("Expecting 1 argument: 'daily', 'weekly', or 'clean'.");
     }
     if ('daily' == $argv[1]) {
         backup_daily();
     } elseif ('weekly' == $argv[1]) {
         backup_weekly();
+    } elseif ('clean' == $argv[1]) {
+        backup_clean();
     } else {
         log_error("Invalid args");
     }
