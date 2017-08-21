@@ -20,3 +20,5 @@ www/static/images/latex/
 www/static/images/tmp/
 
 lint/.phutil_module_cache
+
+.docker-sync

@@ -2,10 +2,10 @@ version: "3"
 services:
   nginx:
     volumes:
-      - infoarena-sync:/infoarena
+      - infoarena-sync:/infoarena:nocopy
   infoarena:
     volumes:
-      - infoarena-sync:/infoarena
+      - infoarena-sync:/infoarena:nocopy
 volumes:
   infoarena-sync:
     external: true
