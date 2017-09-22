@@ -604,6 +604,10 @@ input.button:active {
     border-left-color: #999999;
 }
 
+input.button.disabled {
+    color: #aaaaaa;
+}
+
 .fieldError, .fieldHelp {
     display: block;
     color: red;

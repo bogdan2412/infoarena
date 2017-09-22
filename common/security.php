@@ -601,25 +601,11 @@ function security_job($user, $action, $job) {
 
     $can_view_job = ($job['task_security'] != 'private') || $is_task_owner
                  || $is_admin || $is_intern;
-    $can_view_source = ($job['task_security'] != 'private' &&
-                            $job['task_open_source'] == true) ||
-                       $is_task_owner || $is_owner || $is_admin || $is_intern;
-    // make ALL solved tasks visible
-    if (!$can_view_source &&
-        is_user_id($user['id']) &&
-        $job['round_type'] == 'archive' &&
-        $job['status'] != 'skipped') {
-        $score = task_get_user_score($job['task_id'],
-                                     $user['id'],
-                                     $job['round_id']);
-        if ($score == 100) {
-            $can_view_source = true;
-        }
-    }
-    $can_view_source_size = ($job['round_type'] == 'archive') ||
-                            ($job['round_type'] != 'archive' &&
-                             $job['round_state'] == 'complete') ||
-                            $can_view_source;
+    $can_view_source =
+        ($job['task_security'] == 'public' && $job['round_id'] &&
+        $job['status'] != 'skipped') ||
+        $is_task_owner || $is_owner || $is_admin || $is_intern;
+    $can_view_source_size = $can_view_source;
     $can_view_score = ($job['round_public_eval'] == true) ||
                        $is_task_owner || $is_admin || $is_intern;
     $can_view_partial_feedback = $is_owner || $is_admin || $is_intern;

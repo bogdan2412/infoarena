@@ -522,3 +522,87 @@ function task_get_archive_round($task_id) {
     }
     return '';
 }
+
+/**
+ * Returns whether or not a user has solved a task.
+ * If the user_id is null (like for example, an anonymous user)
+ * this function always returns false.
+ *
+ * @param string task_id
+ * @param int user_id
+ * @return bool
+ */
+function task_user_has_solved($task_id, $user_id) {
+    log_assert(is_task_id($task_id));
+    if ($user_id === null) {
+        return false;
+    }
+    log_assert(is_user_id($user_id));
+
+    $query = sprintf(
+        'SELECT score as maxscore FROM ia_score_user_round_task
+         WHERE task_id = %s AND user_id = %s AND score =
+            (SELECT MAX(`score`) FROM ia_score_user_round_task
+             WHERE task_id = %s)
+         LIMIT 1',
+        db_quote($task_id),
+        db_quote($user_id),
+        db_quote($task_id));
+    $res = db_fetch($query);
+    if ($res === null) {
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Returns whether or not the user has force viewed a source for this task
+ * If the user_id is null (like for example, an anonymous user)
+ * this function always returns false.
+ *
+ * @param string task_id
+ * @param int user_id
+ * @return bool
+ */
+function task_has_force_viewed_source($task_id, $user_id) {
+    log_assert(is_task_id($task_id));
+    if ($user_id === null) {
+        return false;
+    }
+
+    log_assert(is_user_id($user_id));
+
+    $query = sprintf(
+        'SELECT * FROM ia_task_view_sources
+         WHERE task_id = %s AND user_id = %s',
+        db_quote($task_id),
+        db_quote($user_id));
+    $res = db_fetch($query);
+    if ($res === null) {
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Updates the ia_task_view_sources table with information that
+ * a certain user has viewed a source of a task he has not solved yet
+ *
+ * @param string task_id
+ * @param int user_id
+ * @return void
+ */
+function task_force_view_source($task_id, $user_id) {
+    log_assert(is_task_id($task_id));
+    if ($user_id === null) {
+        return;
+    }
+    log_assert(is_user_id($user_id));
+    $query = sprintf(
+        'INSERT IGNORE INTO ia_task_view_sources
+        VALUES (%s, %s, %s)',
+        db_quote($user_id),
+        db_quote($task_id),
+        db_quote(db_date_format()));
+    db_query($query);
+}

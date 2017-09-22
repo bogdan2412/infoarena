@@ -43,10 +43,26 @@ include('header.php');
 <?php } ?>
 </div>
 <?php
-    echo '<div class="code">';
-    echo "<textarea class=\"brush: {$lang}\" cols=\"60\" rows=\"10\">";
-    echo html_escape($job['file_contents']);
-    echo '</textarea></div>';
+
+if ($first_view_source) {
+        $force_view_textblock = textblock_get_revision(IA_FORCE_VIEW_SOURCE_PAGE);
+        echo '<div class="wiki_text_block">';
+        echo wiki_process_textblock($force_view_textblock);
+        echo '</div>';
+?>
+<form action="" method="POST">
+    <center>
+    <input type="submit" name="force_view_source" id="force_view_source" class="button important" value="Vezi sursa"/>
+    </center>
+</form>
+<?php
+
+    } else {
+        echo '<div class="code">';
+        echo "<textarea class=\"brush: {$lang}\" cols=\"60\" rows=\"10\">";
+        echo html_escape($job['file_contents']);
+        echo '</textarea></div>';
+    }
     include('footer.php');
 ?>
 

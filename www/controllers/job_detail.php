@@ -32,7 +32,6 @@ function controller_job_view($job_id) {
 
     // Check security.
     identity_require('job-view', $job);
-
     $view = array();
     $view['title'] = 'Borderou de evaluare (job #'.$job_id.')';
     $view['job'] = $job;
@@ -165,7 +164,21 @@ function controller_job_view_source($job_id) {
     if ($view['lang'] == 'fpc') {
         $view['lang'] = 'delphi';
     }
+
+    if ($job['task_open_source']
+        || $job['user_id'] == identity_get_user_id()
+        || getattr(identity_get_user(), 'security_level') == 'admin'
+        || (request_is_post() && request('force_view_source'))
+        || task_has_force_viewed_source($job['task_id'], identity_get_user_id())
+        || task_user_has_solved($job['task_id'], identity_get_user_id())) {
+        if (request('force_view_source')) {
+            task_force_view_source($job['task_id'], identity_get_user_id());
+        }
+        $view['first_view_source'] = false;
+    } else {
+        $view['first_view_source'] = true;
+        unset($job['file_contents']);
+    }
+
     execute_view_die('views/job_view_source.php', $view);
 }
-
-?>

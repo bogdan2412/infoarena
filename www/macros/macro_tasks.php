@@ -40,7 +40,7 @@ function format_rating_column($val) {
 
 function format_title($row) {
     $title = "<span style=\"float:left;\">".format_link(url_textblock($row["page_name"]), $row["title"])."</span>";
-    if ($row['open_source'] || $row['open_tests']) {
+    if ($row['open_tests']) {
         $title .= "<span style=\"float:right;\">";
         $title .= format_link(url_task($row['id']), format_img(url_static("images/open_small.png"), ""), false);
         $title .= "</span>";

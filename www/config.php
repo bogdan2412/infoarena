@@ -66,6 +66,9 @@ define("IA_SIDEBAR_PAGE", "sidebar-ad");
 // Textblock name for blog sidebar
 define("IA_BLOG_SIDEBAR", "blog-sidebar");
 
+// Textblock for force view source page
+define('IA_FORCE_VIEW_SOURCE_PAGE', 'force-view-source-page');
+
 // LaTeX support
 define("IA_LATEX_ENABLE", !IA_DEVELOPMENT_MODE);
 
