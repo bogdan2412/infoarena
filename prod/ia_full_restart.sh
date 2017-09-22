@@ -12,7 +12,7 @@ service mysql stop
 /bin/sync
 echo 3 > /proc/sys/vm/drop_caches
 /sbin/swapoff -a
-sleep 2
+sleep 10
 /sbin/swapon -a
 /etc/init.d/memcached start
 service mysql start

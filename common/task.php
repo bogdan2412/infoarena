@@ -50,7 +50,7 @@ function task_get_parameter_infos() {
             ),
             'memlimit' => array(
                 'description' => 'Limita de memorie (in kilobytes)',
-                'default' => 16384,
+                'default' => 131072,
                 'type' => 'integer',
                 'name' => 'Limita de memorie',
             ),
@@ -294,8 +294,8 @@ function task_validate_parameters($task_type, $parameters) {
             $errors['memlimit'] = "Limita de memorie trebuie sa fie un numar.";
         } else if ($parameters['memlimit'] < 10) {
             $errors['memlimit'] = "Minim 10 kilobytes.";
-        } else if ($parameters['memlimit'] > 262144) {
-            $errors['memlimit'] = "Maxim 256 megabytes.";
+        } else if ($parameters['memlimit'] > 524288) {
+            $errors['memlimit'] = "Maxim 512 megabytes.";
         }
     }
     if ($task_type === 'interactive') {
