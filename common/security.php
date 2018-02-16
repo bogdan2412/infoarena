@@ -253,14 +253,6 @@ function security_textblock($user, $action, $textblock) {
                 "(level, action, object");
     }
 
-    // For vlad doing tutorials
-    $special_case = substr($textblock['name'], 0, strlen('tutoriale')) == 'tutoriale'
-        && $user['username'] == 'GavrilaVlad';
-
-    if ($special_case) {
-        return true;
-    }
-
     switch ($action) {
         case 'simple-view':
             if ($textsec == 'private') {
