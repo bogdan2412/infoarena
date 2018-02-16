@@ -10,7 +10,7 @@ function HookLiveEval() {
             data.eq(index).find(".hidden-score").show();
             if (index >= 0)
               process(index - 1);
-        }, Math.random() * 3000 + 750);
+        }, Math.random() * 900 + 350);
     }
 
     $("#liveeval").on("click", function() {

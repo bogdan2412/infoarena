@@ -604,6 +604,9 @@ function security_job($user, $action, $job) {
     $can_view_source =
         ($job['task_security'] == 'public' && $job['round_id'] &&
         $job['status'] != 'skipped') ||
+        ($job['task_security'] == 'public' &&
+        $job['task_open_source'] == true &&
+        $job['status'] != 'skipped') || 
         $is_task_owner || $is_owner || $is_admin || $is_intern;
     $can_view_source_size = $can_view_source;
     $can_view_score = ($job['round_public_eval'] == true) ||

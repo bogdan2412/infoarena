@@ -2,6 +2,7 @@
 
 require_once(IA_ROOT_DIR."common/db/user.php");
 require_once(IA_ROOT_DIR."common/security.php");
+require_once(IA_ROOT_DIR."www/url.php");
 
 // This module helps access and manage information about the current remote
 // user, whether it is a visitor (anonymous) or an authenticated user.
@@ -87,7 +88,7 @@ function identity_require($action, $object = null) {
 
             flash_error("Mai intai trebuie sa te autentifici.");
             // save current URL. We redirect to here right after logging in
-            $_SESSION['_ia_redirect'] = IA_URL_HOST.$_SERVER['REQUEST_URI'];
+            $_SESSION['_ia_redirect'] = url_absolute($_SERVER['REQUEST_URI']);
             redirect(url_login());
         } else {
             // User doesn't have enough priviledges, tell him to fuck off.

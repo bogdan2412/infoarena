@@ -35,12 +35,20 @@ function url_complex($document = '', $args = array(), $absolute = false,
 }
 
 // Makes an url absolute. It just prepends IA_URL_HOST
-function url_absolute($url, $secure_connection = false) {
+function url_absolute($url, $secure_connection = null) {
     log_assert(strpos($url, 'http') !== 0, "Url begins with http");
-    if ($secure_connection) {
-        $url = IA_URL_HTTPS_HOST . $url;
+    if (is_null($secure_connection)) {
+        if (is_connection_secure()) {
+            $url = IA_URL_HTTPS_HOST . $url;
+        } else {
+            $url = IA_URL_HOST . $url;
+        }
     } else {
-        $url = IA_URL_HOST . $url;
+        if ($secure_connection) {
+            $url = IA_URL_HTTPS_HOST . $url;
+        } else {
+            $url = IA_URL_HOST . $url;
+        }
     }
 
     return $url;
