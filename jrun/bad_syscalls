@@ -7,7 +7,6 @@ wait4
 kill
 setuid
 setreuid
-setfsuid
 getuid
 geteuid
 setregid

@@ -158,8 +158,9 @@ void jrun_parse_options(int argc, char *argv[])
                 while (s) {
                     id = syscall_getid(s);
                     if (id < 0) {
-                        printf("ERROR: Unknown system call %s\n", s);
-                        exit(-1);
+                        //printf("WARNING: Unknown system call %s\n", s);
+                        //exit(-1);
+                        continue;
                     }
                     jopt.syscall_block[id] = 1;
                     s = strtok(0, ",");
@@ -178,8 +179,9 @@ void jrun_parse_options(int argc, char *argv[])
                     int id;
                     id = syscall_getid(buf);
                     if (id < 0) {
-                        printf("ERROR: Unknown system call %s\n", buf);
-                        exit(-1);
+                        //printf("WARNING: Unknown system call %s\n", buf);
+                        //exit(-1);
+                        continue;
                     } else {
                         jopt.syscall_block[id] = 1;
                     }
