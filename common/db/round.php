@@ -113,7 +113,8 @@ function round_update($round) {
 // if user_id is non-null a join is done on $score
 function round_get_tasks($round_id, $first = 0, $count = null,
                          $user_id = null, $fetch_scores = false,
-                         $filter = null, $progress = false) {
+                         $filter = null, $progress = false,
+                         $order_by_solved = null) {
     if ($count === null) {
         $count = 666013;
     }
@@ -123,16 +124,26 @@ function round_get_tasks($round_id, $first = 0, $count = null,
               "task.`page_name` AS `page_name`, ".
               "task.`source` AS `source`, ".
               "task.`security` AS `security`, ".
-              "task.`type` AS `type`,
+              'task.`type` AS `type`,
                task.`open_source` AS `open_source`,
                task.`open_tests` AS `open_tests`,
-               task.`rating` AS `rating`";
+               task.`rating` AS `rating`,
+               task.`solved_by` AS `solved_by`';
+    if (is_null($order_by_solved) || $order_by_solved === 'no') {
+        $order = 'ORDER BY round_task.`order_id`';
+    } else if ($order_by_solved === 'asc') {
+        $order = 'ORDER BY `solved_by` ASC';
+    } else if ($order_by_solved == 'desc') {
+        $order = 'ORDER BY `solved_by` DESC';
+    } else {
+        $order = 'ORDER BY round_task.`order_id`';
+    }
     if ($user_id == null || $fetch_scores == false) {
         $query = sprintf("SELECT $fields
                           FROM ia_round_task as round_task
                           LEFT JOIN ia_task as task ON task.id = round_task.task_id
                           WHERE `round_task`.`round_id` = '%s'
-                          ORDER BY round_task.`order_id` LIMIT %d, %d",
+                          $order LIMIT %d, %d",
                           db_escape($round_id), db_escape($first), db_escape($count));
     } else {
         $filter_clause = db_get_task_filter_clause($filter, 'score');
@@ -145,8 +156,8 @@ function round_get_tasks($round_id, $first = 0, $count = null,
                                 score.task_id = round_task.task_id AND
                                 score.user_id = '%s'
                           WHERE `round_task`.`round_id` = '%s'
-                            AND %s
-                          ORDER BY round_task.`order_id` LIMIT %d, %d",
+                          AND %s
+                          $order LIMIT %d, %d",
                          db_escape($user_id),
                          db_escape($round_id), db_escape($filter_clause),
                          db_escape($first), db_escape($count));

@@ -2,6 +2,8 @@
 
 require_once IA_ROOT_DIR.'common/db/db.php';
 require_once IA_ROOT_DIR.'common/statistics-config.php';
+require_once IA_ROOT_DIR.'common/db/task.php';
+require_once IA_ROOT_DIR.'www/identity.php';
 
 /*
    Returns an array of maps containing the best $max_top_size user
@@ -302,6 +304,90 @@ function task_statistics_update_top_users($user_id,
                                                          $special_score,
                                                          $submit_time,
                                                          $job_id);
+        }
+    }
+}
+
+function task_get_solved_by($task_id) {
+    $query = sprintf("SELECT `solved_by` FROM ia_task
+                WHERE `id`='%s'", db_escape($task_id));
+    $result = db_query($query);
+    if ($row = db_next_row($result)) {
+        return $row['solved_by'];
+    } else {
+        return 0;
+    }
+}
+
+function task_was_solved_by($task_id, $used_id) {
+    $query = sprintf("SELECT COUNT(1) FROM ia_task_users_solved
+                    WHERE `task_id`='%s'
+                    AND `user_id`=%s",
+                    db_escape($task_id),
+                    db_escape($used_id));
+    $result = db_query_value($query);
+    if ($result == 1) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function task_mark_solved($task_id, $used_id) {
+    $query = sprintf("INSERT INTO ia_task_users_solved
+                    VALUES ('%s', %s)",
+                    db_escape($task_id),
+                    db_escape($used_id));
+    db_query($query);
+}
+
+function task_mark_not_solved($task_id, $used_id) {
+    $query = sprintf("DELETE FROM ia_task_users_solved
+                    WHERE `task_id`='%s'
+                    AND `user_id`=%s",
+                    db_escape($task_id),
+                    db_escape($used_id));
+    db_query($query);
+}
+
+function task_update_solved_count($task_id, $count) {
+    $query = sprintf("UPDATE ia_task
+                    SET `solved_by`=$count
+                    WHERE `id`='%s'",
+                    db_escape($task_id));
+    db_query($query);
+}
+
+function task_max_submission($task_id, $user_id) {
+    $query = sprintf("SELECT `round_id`, `score`, `status` FROM ia_job
+                    WHERE `task_id`='%s' AND `user_id`=%s",
+                    db_escape($task_id),
+                    db_escape($user_id));
+    $result = db_query($query);
+    $score = 0;
+    while ($row = db_next_row($result)) {
+        if (!is_null($row['round_id']) && $row['status'] === 'done') {
+            $score = max($score, $row['score']);
+        }
+    }
+    db_free($result);
+    return $score;
+}
+
+function task_update_solved_by($task_id, $user_id) {
+    $have_now = task_get_solved_by($task_id);
+    $overall_solved = task_max_submission($task_id, $user_id) == 100;
+    if ($overall_solved === true) {
+        if (!task_was_solved_by($task_id, $user_id)) {
+            task_mark_solved($task_id, $user_id);
+            $have_now++;
+            task_update_solved_count($task_id, $have_now);
+        }
+    } else {
+        if (task_was_solved_by($task_id, $user_id)) {
+            task_mark_not_solved($task_id, $user_id);
+            $have_now--;
+            task_update_solved_count($task_id, $have_now);
         }
     }
 }

@@ -245,13 +245,15 @@ function task_filter_by_tags($tag_ids, $scores = true, $user_id = null) {
         $score_fields = ',MAX(score.`score`) AS `score`';
     }
 
+
     $query = "SELECT ia_task.id AS task_id,
                 ia_task.title AS task_title,
                 ia_task.page_name AS page_name,
                 ia_task.open_source AS open_source,
                 ia_task.open_tests AS open_tests,
                 ia_task.rating AS rating,
-                ia_task.source AS source
+                ia_task.source AS source,
+                ia_task.solved_by AS solved_by
                 $score_fields
     FROM ia_task
     $join_score

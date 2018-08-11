@@ -6,6 +6,7 @@ require_once(IA_ROOT_DIR . "www/format/pager.php");
 require_once(IA_ROOT_DIR . "common/db/round.php");
 require_once(IA_ROOT_DIR . "common/db/task.php");
 require_once(IA_ROOT_DIR . "common/db/user.php");
+require_once IA_ROOT_DIR.'common/db/task_statistics.php';
 require_once(IA_ROOT_DIR . "common/round.php");
 require_once(IA_ROOT_DIR . "www/macros/macro_stars.php");
 
@@ -37,6 +38,20 @@ function format_rating_column($val) {
         return macro_stars($stars_args);
     }
 }
+
+function format_solved_by_column($row) {
+    if (is_null($row)) {
+        return 'N/A';
+    } else {
+        $task = task_get($row['id']);
+        if (identity_can('task-view-statistics', $task)) {
+            return (string)task_get_solved_by($row['id']);
+        } else {
+            return 'N/A';
+        }
+    }
+}
+
 
 function format_title($row) {
     $title = "<span style=\"float:left;\">".format_link(url_textblock($row["page_name"]), $row["title"])."</span>";
@@ -200,8 +215,16 @@ function macro_tasks($args) {
     $show_authors = getattr($args, 'show_authors', true);
     $show_sources = getattr($args, 'show_sources', true);
     $show_ratings = getattr($args, 'show_ratings', false);
+    $show_solved_by = getattr($args, 'show_solved_by', false);
     $show_progress = getattr($args, 'show_progress', false) &&
                      identity_can("round-view-progress", $round);
+    if ($round['type'] == 'archive' &&
+        getattr($args, 'order_by_solved', false)) {
+        $order_by_solved = htmlspecialchars(
+            getattr($args, 'order_by_solved', false));
+    } else {
+        $order_by_solved = null;
+    }
 
     // get round tasks
     $tasks = round_get_tasks(
@@ -211,7 +234,8 @@ function macro_tasks($args) {
              $filter_user_id,
              $scores,
              $filter,
-             $show_progress);
+             $show_progress,
+             $order_by_solved);
 
     $options['total_entries'] = round_get_task_count(
              $round_id, $user_id, $filter);
@@ -263,6 +287,14 @@ function macro_tasks($args) {
                 'css_class' => 'rating',
                 'key' => 'rating',
                 'valform' => 'format_rating_column',
+        );
+    }
+    if ($show_solved_by) {
+        $column_infos[] = array(
+                'title' => 'Rezolvata de',
+                'title_css_class' => 'new_feature',
+                'css_class' => '',
+                'rowform' => 'format_solved_by_column',
         );
     }
     if (!is_null($user_id)) {
