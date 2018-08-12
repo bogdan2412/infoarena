@@ -179,6 +179,7 @@ function template_main_above()
 				current_header_ic = mode;
 			}
 		// ]]></script>
+        <script src="https://www.google.com/recaptcha/api.js"></script>
 </head>
 <body id="infoarena">';
 /*

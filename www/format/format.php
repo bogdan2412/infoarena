@@ -493,12 +493,12 @@ function format_task_tag_menu($tags, $selected_tags) {
  * @param int $submission
  * @return string
  */
-function format_acm_score($score, $penalty, $submission) {
+function format_acm_score($score, $penalty, $submission, $submission_penalty = 20) {
     if ($submission == 0) {
         return "0";
     }
 
-    $penalty -= ($submission - 1) * 20;
+    $penalty -= ($submission - 1) * $submission_penalty;
     $result = '<center><span style="font-size: 18px;text-weight: bold;color: ';
     if ($score > 0) {
         $result .= 'green">+';
@@ -511,3 +511,13 @@ function format_acm_score($score, $penalty, $submission) {
     return $result;
 }
 
+/**
+ * Format a recaptcha (v2) div
+ *
+ * @param string $public_key
+ * @return string
+ */
+function format_recaptcha_div($public_key) {
+    return
+        '<div class="g-recaptcha" data-sitekey="' . $public_key . '"></div>';
+}

@@ -4,6 +4,8 @@ require_once(IA_ROOT_DIR . 'common/db/user.php');
 require_once(IA_ROOT_DIR . 'common/db/smf.php');
 require_once(IA_ROOT_DIR . 'www/controllers/account_validator.php');
 require_once(IA_ROOT_DIR . 'common/db/tokens.php');
+require_once(IA_ROOT_DIR . 'www/format/format.php');
+require_once(IA_ROOT_DIR . 'www/utilities.php');
 
 function controller_register() {
     $submit = request_is_post();
@@ -57,8 +59,9 @@ function controller_register() {
     }
 
     if(get_tokens() < IA_TOKENS_REGISTER) {
-        $view['captcha'] = recaptcha_get_html(IA_CAPTCHA_PUBLIC_KEY, null,
-                true);
+        $view['head'] = "<script src='https://www.google.com/recaptcha/api.js'>
+                         </script>";
+        $view['captcha'] = format_recaptcha_div(IA_CAPTCHA_PUBLIC_KEY);
     }
 
     // attach form is displayed for the first time or a validation error occured

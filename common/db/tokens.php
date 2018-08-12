@@ -131,19 +131,22 @@ function check_captcha_for_tokens($amount = IA_TOKENS_CAPTCHA,
         return '';
     }
 
-    $challenge = request('recaptcha_challenge_field');
-    $response = request('recaptcha_response_field');
+    $response = request('g-recaptcha-response');
 
-    if (($challenge && $response) || $required == true) {
-        $captcha =  recaptcha_check_answer(IA_CAPTCHA_PRIVATE_KEY,
-                        $_SERVER["REMOTE_ADDR"],
-                        $challenge,
-                        $response);
-        if (!$captcha -> is_valid) {
-            if ($challenge === null && $response === null) {
-                return 'Confirmati ca sunteti om';
+    if ($response || $required == true) {
+        $result = file_get_contents(
+            "https://www.google.com/recaptcha/api/siteverify"
+            . "?secret=" . IA_CAPTCHA_PRIVATE_KEY
+            . "&response=" . $response
+            . "&remoteip=" . $_SERVER["REMOTE_ADDR"]
+        );
+
+        $is_valid = (strpos($result, 'true') !== FALSE);
+        if (!$is_valid) {
+            if ($response === null) {
+                return 'Confirmati ca sunteti om.';
             } else {
-                return 'Cuvintele introduse de tine sunt incorecte';
+                return 'Nu ai reusit sa demonstrezi ca esti om.' . print_r($result, TRUE);
             }
         }
         pay_tokens(-$amount, $identifier);

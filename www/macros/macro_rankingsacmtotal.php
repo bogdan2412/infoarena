@@ -114,7 +114,7 @@ function macro_rankingsacmtotal($args) {
                     $score += 1;
                 }
 
-                return format_acm_score(1, $penalty, $score);
+                return format_acm_score(1, $penalty, $score, 0);
             });
     }
 
@@ -128,7 +128,7 @@ function macro_rankingsacmtotal($args) {
                 $score += 1;
             }
             $penalty = getattr($row, 'penalty', 0);
-            return format_acm_score(1, $penalty, $score);
+            return format_acm_score(1, $penalty, $score, 0);
         }
     );
 

@@ -81,16 +81,9 @@
     <legend>Verificare</legend>
     <ul class="form">
         <li>
-            <script type="text/javascript">
-                var RecaptchaOptions = {
-                theme : 'clean',
-                };
-            </script>
-
-            <label>Scrieti cuvintele de mai jos:</label>
+            <label>Urmariti instructiunile de mai jos:</label>
             <?= ferr_span('captcha') ?>
             <?= $view['captcha'] ?>
-            <span class="fieldHelp">Va rugam sa transcrieti cuvintele de mai sus in aceasta casuta pentru verificare</span>
         </li>
     </ul>
 </fieldset>
