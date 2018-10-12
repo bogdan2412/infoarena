@@ -59,7 +59,7 @@ public class InfoarenaJudge {
                     }
                 });
 
-                if (setLimits(timeLimit, 20, uid, gid) < 0) {
+                if (setLimits(timeLimit, 100, uid, gid) < 0) {
                     printResult("ERROR", "Eroare de evaluator");
                 }
 

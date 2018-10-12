@@ -14,3 +14,5 @@ fi
 docker-compose up -d
 
 docker-compose exec --user "$(id -u):$(id -g)" infoarena docker-setup/setup.php
+docker-compose exec --user "$(id -u):$(id -g)" infoarena scripts/recompute-task-users-solved
+

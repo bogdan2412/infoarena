@@ -35,9 +35,9 @@ function compile_file($input_file_name, $output_file_name, &$compiler_message) {
     $compiler_message = false;
     $compiler_lines = array(
             // Make sure -lm stays after source file & target output
-            'c' => 'gcc -DINFOARENA -Wall -O2 -static -std=c11 ' .
+            'c' => 'gcc -m32 -DINFOARENA -Wall -O2 -static -std=c11 ' .
                    '%file_name% -o %exe_name% -lm',
-            'cpp' => 'g++ -DINFOARENA -Wall -O2 -static -std=c++0x ' .
+            'cpp' => 'g++ -m32 -DINFOARENA -Wall -O2 -static -std=c++0x ' .
                      '%file_name% -o %exe_name% -lm',
             'pas' => 'fpc -O2 -Xs %file_name% -dINFOARENA',
             'fpc' => 'fpc -O2 -Xs %file_name% -dINFOARENA',

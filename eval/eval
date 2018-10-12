@@ -133,7 +133,7 @@ function job_handle($job) {
         $job['task_id'],
         $job['round_id']
     );
-    
+
     $file_size = strlen($job['file_contents']);
     task_statistics_update_top_users(
         $job['user_id'],
@@ -144,6 +144,10 @@ function job_handle($job) {
         $job['id'],
         $file_size,
         $job_result['test_results']
+    );
+    task_update_solved_by(
+        $job['task_id'],
+        $job['user_id']
     );
 }
 

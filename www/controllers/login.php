@@ -1,6 +1,7 @@
 <?php
 
 require_once(IA_ROOT_DIR . "common/db/user.php");
+require_once(IA_ROOT_DIR . "www/format/format.php");
 
 function controller_login() {
     // `data` dictionary is a dictionary with data to be displayed by form view
@@ -105,8 +106,10 @@ function controller_login() {
     $view['no_sidebar_login'] = true;
 
     if (get_tokens() < IA_TOKENS_LOGIN) {
-        $view['captcha'] = recaptcha_get_html(IA_CAPTCHA_PUBLIC_KEY, null,
-                true);
+        $view['head'] = "<script src='https://www.google.com/recaptcha/api.js'>
+                         </script>";
+
+        $view['captcha'] = format_recaptcha_div(IA_CAPTCHA_PUBLIC_KEY);
     }
 
     execute_view_die('views/login.php', $view);

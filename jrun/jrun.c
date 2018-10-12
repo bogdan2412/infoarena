@@ -133,6 +133,9 @@ void child_main(void)
     rl.rlim_cur = rl.rlim_max = 50;
     setrlimit(RLIMIT_NPROC, &rl);
 
+    rl.rlim_cur = rl.rlim_max = 512 * 1024 * 1024;
+    setrlimit(RLIMIT_STACK, &rl);
+
     //
     // FIXME: since we redirect stdin/stdout we probably lose these messages.
     // What to do.

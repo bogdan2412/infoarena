@@ -1,0 +1,119 @@
+#! /usr/bin/env php
+<?php
+
+require_once dirname($argv[0]) . "/utilities.php";
+require_once IA_ROOT_DIR."common/db/db_mysql.php";
+require_once IA_ROOT_DIR."common/db/db.php";
+require_once IA_ROOT_DIR.'common/statistics-config.php';
+
+db_connect();
+
+log_print('Computing users who solved each task');
+
+// Create table with users who solved a specific task
+db_query("DROP TABLE IF EXISTS `ia_task_users_solved`");
+db_query("
+    CREATE TABLE `ia_task_users_solved` (
+        `task_id` varchar(64) NOT NULL,
+        `user_id` int(10) unsigned NOT NULL,
+        PRIMARY KEY (`task_id`, `user_id`)
+    )
+");
+
+// Add counter for each task
+db_query("
+    ALTER TABLE `ia_task`
+    DROP COLUMN IF EXISTS `solved_by`
+");
+db_query("
+    ALTER TABLE `ia_task`
+    ADD COLUMN `solved_by` int unsigned DEFAULT 0
+");
+
+// Create index for solved_by so users can order the problems by this criteria
+db_query("
+    DROP INDEX IF EXISTS by_solved
+    ON ia_task
+");
+db_query("
+    CREATE INDEX by_solved
+    ON ia_task(`solved_by`, `id`)
+");
+
+// Create index for submissions so that that for an job update you can
+// find all submissions of a user on a specific task fast and iterate
+// through them
+db_query("
+    DROP INDEX IF EXISTS by_task_user
+    ON ia_job
+");
+db_query("
+    CREATE INDEX by_task_user
+    ON ia_job(`task_id`, `user_id`)
+");
+
+log_print("Created tables");
+$query = "
+    SELECT `id` AS job_id, `user_id`, `round_id`, `task_id`, `score`, `submit_time`, `status`
+    FROM `ia_job`
+    WHERE `status` = 'done'
+    ORDER BY `submit_time` ASC
+";
+$result = db_query($query);
+
+$task_users_solved = array();
+$task_users_solved_count = array();
+while ($row = db_next_row($result)) {
+    $job_id = $row['job_id'];
+    $user_id = $row['user_id'];
+    $round_id = $row['round_id'];
+    $task_id = $row['task_id'];
+    $score = $row['score'];
+    $status = $row['status'];
+    if (is_null($round_id) || $status !== 'done') {
+        continue;
+    }
+    $task_and_user = $task_id.','.$user_id;
+    if (!array_key_exists($task_and_user, $task_users_solved)) {
+        $task_users_solved[$task_and_user] = 0;
+    }
+    $task_users_solved[$task_and_user] = max(
+        $task_users_solved[$task_and_user],
+        $score
+    );
+}
+db_free($result);
+$values = '';
+foreach ($task_users_solved as $task_and_user => $value) {
+    if ($value == 100) {
+        if ($values !== '') {
+            $values .= ',';
+        }
+        $v = explode(',', $task_and_user);
+        $task_id = $v[0];
+        $user_id = $v[1];
+        $values .= "('$task_id', $user_id)";
+        if (!array_key_exists($task_id, $task_users_solved_count)) {
+            $task_users_solved_count[$task_id] = 0;
+        }
+        $task_users_solved_count[$task_id]++;
+    }
+}
+
+if ($values !== '') {
+    $query = "
+        INSERT INTO `ia_task_users_solved`
+        VALUES $values
+    ";
+    db_query($query);
+}
+
+foreach ($task_users_solved_count as $task => $count) {
+    db_query("
+        UPDATE `ia_task`
+        SET `solved_by`=$count
+        WHERE `id`='$task'
+    ");
+}
+log_print('Done processing database');
+?>

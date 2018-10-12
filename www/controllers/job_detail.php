@@ -64,7 +64,7 @@ function controller_job_view($job_id) {
             }
         }
 
-        if ($job['round_type'] == 'classic') {
+        if ($job['round_type'] == 'classic' || $job['round_id'] == '') {
             $public_test_ids =
                 task_parse_test_group(
                     $job['task_public_tests'],

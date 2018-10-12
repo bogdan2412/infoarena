@@ -336,21 +336,16 @@ function template_main()
 								</td>
 							</tr>';
 
-		if (!IA_DEVELOPMENT_MODE) {
+        if (!IA_DEVELOPMENT_MODE) {
+            require_once(IA_ROOT_DIR . "www/format/format.php");
 			// FIXME: IA HACK: recaptcha for visitors posting
 			echo '
 							<tr>
 								<td align="right" style="font-weight: bold;', isset($context['post_error']['wrong_captcha']) ? 'color:red' : '', '" id="caption_captcha">
 									Verificati-va identitatea:
 								</td>
-								<td>
-									<script type="text/javascript">
-										var RecaptchaOptions = {
-											theme : "clean",
-											tabindex : ', $context['tabindex']++, '
-										};
-									</script>
-									', recaptcha_get_html(IA_CAPTCHA_PUBLIC_KEY),
+								<td>	
+									', format_recaptcha_div(IA_CAPTCHA_PUBLIC_KEY),
 								'</td>
 							</tr>';
 		}
@@ -1043,8 +1038,7 @@ function template_spellcheck()
 		<script language="JavaScript" type="text/javascript" src="', $settings['default_theme_url'], '/script.js"></script>
 		<script language="JavaScript" type="text/javascript"><!-- // --><![CDATA[
 			', $context['spell_js'], '
-		// ]]></script>
-	</head>
+		// ]]></script>    </head>
 	<body onload="nextWord(false);">
 		<form action="#" method="post" accept-charset="', $context['character_set'], '" name="spellingForm" id="spellingForm" onsubmit="return false;" style="margin: 0;">
 			<div id="spellview">&nbsp;</div>

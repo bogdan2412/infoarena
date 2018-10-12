@@ -3,6 +3,7 @@
 require_once(IA_ROOT_DIR . "common/db/task.php");
 require_once(IA_ROOT_DIR . "common/db/user.php");
 require_once(IA_ROOT_DIR . "common/db/tags.php");
+require_once IA_ROOT_DIR.'common/db/task_statistics.php';
 require_once(IA_ROOT_DIR . "common/cache.php");
 require_once(IA_ROOT_DIR . "www/format/format.php");
 require_once(IA_ROOT_DIR . "www/macros/macro_stars.php");
@@ -106,6 +107,12 @@ function macro_taskparam($args) {
                     return intval($score) . " puncte";
                 }
             }
+        case 'solved_by':
+            if (identity_can('task-view-statistics', $task)) {
+                return (string)task_get_solved_by($task_id);
+            } else {
+                return 'N/A';
+            }
 
         default:
             $params = task_get_parameters($task_id);
@@ -120,4 +127,3 @@ function macro_taskparam($args) {
             }
     }
 }
-
