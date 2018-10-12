@@ -8,17 +8,6 @@ class ClassicGrader extends BaseGrader {
         $test_result = &$this->testResults[$testno];
 
         $infile = $this->getInFile($jaildir);
-        $userfile = 'user_' . $this->job['id'] . '_' . $testno;
-
-        // HACK: Capture run-time stderr for Python jobs.
-        //
-        // WARNING! This is a security hole! Users may dump input tests
-        // on stderr and see them in the monitor page. Currently, only
-        // admins are allowed to submit Python.
-        //
-        // TODO: Come up with a safe way of reporting run-time errors
-        // for Python scripts.
-        $capture_std = ('py' == $this->job['compiler_id']);
 
         // Download input file.
         if (!copy_grader_file($this->task, 'test' . $testno . '.in',
@@ -30,40 +19,20 @@ class ClassicGrader extends BaseGrader {
                 "'grader_test{$testno}.in'");
         }
 
-        // Copy user executable
-        eval_assert(@copy(IA_ROOT_DIR.'eval/temp/user', $userfile),
-                    'Failed to copy user program');
-        eval_assert(@chmod($userfile, 0555),
-                    'Failed to chmod a+x user program');
-
         // Run user program on a test case.
         $timelimit = $this->task['timelimit'] * 1000;
         $memlimit = $this->task['memlimit'];
-        // Adjust time and memory limit for Python jobs.
-        if ('py' == $this->job['compiler_id']) {
-            $timelimit *= 4.0;
-            $memlimit *= 2.0;
-        }
 
-        $jrunres = jail_run($userfile, $jaildir,
-                            (int)$timelimit,
-                            (int)$memlimit,
-                            $capture_std);
+        $jrunres = run_file($this->job['compiler_id'],
+                            IA_ROOT_DIR.'eval/temp/user',
+                            $jaildir, (int)$timelimit, (int)$memlimit);
         eval_assert($jrunres['result'] != 'ERROR',
                     'Error in jrun: ' . $jrunres['message']);
         if ($jrunres['result'] == 'FAIL') {
             log_print("Test $testno: User program failed: " .
                       $jrunres['message'] . ' ' . $jrunres['time'] .
                       'ms ' . $jrunres['memory'] . 'kb');
-            if ($capture_std) {
-                // TODO: Come up with a safe way of reporting run-time
-                // errors for Python scripts.
-                $message = ($jrunres['message'].": "
-                            .substr($jrunres['stderr'],
-                                    -min(100, strlen($jrunres['stderr']))));
-            } else {
-                $message = $jrunres['message'];
-            }
+            $message = $jrunres['message'];
             $test_result = array(
                 'test_time' => $jrunres['time'],
                 'test_mem' => $jrunres['memory'],

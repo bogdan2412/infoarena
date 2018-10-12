@@ -51,8 +51,7 @@ header("Content-type: text/html; charset=utf-8");
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/iconize.css')) ?>"/>
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/screen.css')) ?>"/>
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/tabber.css')) ?>"/>
-    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/sh/shCore.css')) ?>"/>
-    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/sh/shThemeDefault.css')) ?>"/>
+    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/highlight-theme.css')) ?>"/>
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/print.css')) ?>" media="print" />
     <link rel="icon" href="<?= IA_URL."favicon.ico" ?>" type="image/vnd.microsoft.icon" />
     <script type="text/javascript" src="<?= html_escape(url_static('js/config.js.php')) ?>"></script>
@@ -62,12 +61,8 @@ header("Content-type: text/html; charset=utf-8");
     <script type="text/javascript" src="<?= html_escape(url_static('js/submit.js')) ?>"></script>
     <script type="text/javascript" src="<?= html_escape(url_static('js/remotebox.js')) ?>"></script>
     <script type="text/javascript" src="<?= html_escape(url_static('js/postdata.js')) ?>"></script>
-    <script type="text/javascript" src="<?= html_escape(url_static('js/sh/shCore.js')) ?>"></script>
-    <script type="text/javascript" src="<?= html_escape(url_static('js/sh/shBrushCpp.js')) ?>"></script>
-    <script type="text/javascript" src="<?= html_escape(url_static('js/sh/shBrushDelphi.js')) ?>"></script>
-    <script type="text/javascript" src="<?= html_escape(url_static('js/sh/shBrushJava.js')) ?>"></script>
-    <script type="text/javascript" src="<?= html_escape(url_static('js/sh/shBrushPython.js')) ?>"></script>
-    <script type="text/javascript" src="<?= html_escape(url_static('js/sh/shInit.js')) ?>"></script>
+    <script type="text/javascript" src="<?= html_escape(url_static('js/highlight.pack.js')) ?>"></script>
+    <script type="text/javascript" src="<?= html_escape(url_static('js/highlight-line-numbers.min.js')) ?>"></script>
     <script type="text/javascript" src="<?= html_escape(url_static('js/tags.js')) ?>"></script>
     <script type="text/javascript" src="<?= html_escape(url_static('js/roundtimer.js')) ?>"></script>
     <script type="text/javascript" src="<?= html_escape(url_static('js/restoreparity.js')) ?>"></script>
@@ -75,8 +70,10 @@ header("Content-type: text/html; charset=utf-8");
     <script type="text/javascript" src="<?= html_escape(url_static('js/sorttable.js')) ?>"></script>
     <script type="text/javascript" src="<?= html_escape(url_static('js/tablednd.js')) ?>"></script>
 
-    <script type="text/javascript">Sh_Init("<?= html_escape(url_static('swf/clipboard.swf')) ?>")</script>
-
+    <script type="text/javascript">
+        hljs.initHighlightingOnLoad();
+        hljs.initLineNumbersOnLoad();
+    </script>
 <?php
     if (request("action") == 'rating') {
 ?>

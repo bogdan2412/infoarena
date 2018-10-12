@@ -59,9 +59,9 @@ if ($first_view_source) {
 
     } else {
         echo '<div class="code">';
-        echo "<textarea class=\"brush: {$lang}\" cols=\"60\" rows=\"10\">";
+        echo '<pre><code>';
         echo html_escape($job['file_contents']);
-        echo '</textarea></div>';
+        echo '</code></pre></div>';
     }
     include('footer.php');
 ?>

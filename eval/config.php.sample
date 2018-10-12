@@ -22,17 +22,21 @@ define("IA_JUDGE_JRUN_GID", 65534);
 // Niceness to run the unsafe code. 0 disables.
 define("IA_JUDGE_JRUN_NICE", 0);
 
+// Limit for compile
+define('IA_JUDGE_COMPILE_TIMELIMIT', 15000);
+define('IA_JUDGE_COMPILE_MEMLIMIT', 1024 * 1024);
+
 // Time limit for graders.
 define("IA_JUDGE_TASK_EVAL_TIMELIMIT", 5000);
 
 // Memory limit for graders.
-define("IA_JUDGE_TASK_EVAL_MEMLIMIT", 65536);
+define("IA_JUDGE_TASK_EVAL_MEMLIMIT", 512 * 1024);
 
 // Time limit for interactive programs.
 define('IA_JUDGE_TASK_INTERACT_TIMELIMIT', 10000);
 
 // Memory limit for interactive programs.
-define('IA_JUDGE_TASK_INTERACT_MEMLIMIT', 131072);
+define('IA_JUDGE_TASK_INTERACT_MEMLIMIT', 512 * 1024);
 
 // Maximum score per task.
 define("IA_JUDGE_MAX_SCORE", 100);
@@ -51,10 +55,11 @@ define("IA_JUDGE_MAX_GRADER_DOWNLOAD_RETRIES", 5);
 // FIXME: horrible hack.
 define("IA_LOG_TIMESTAMP_FORMAT", "Y-m-d H:i:s");
 
-// Python support.
-define("IA_JUDGE_PY_DISTRO", "~/external/Python-2.6.1");
-define("IA_JUDGE_PY_COMPILER",
-       IA_ROOT_DIR."scripts/pybin.sh ".IA_JUDGE_PY_DISTRO." ".
-       IA_ROOT_DIR."eval/temp");
+// Rust support
+define("IA_JUDGE_CARGO_PATH",
+       rtrim(getenv("HOME"), '/') . '/.cargo');
+
+define("IA_JUDGE_RUSTUP_PATH",
+       rtrim(getenv("HOME"), '/') . '/.rustup');
 
 ?>
