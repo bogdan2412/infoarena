@@ -146,7 +146,7 @@ function check_captcha_for_tokens($amount = IA_TOKENS_CAPTCHA,
             if ($response === null) {
                 return 'Confirmati ca sunteti om.';
             } else {
-                return 'Nu ai reusit sa demonstrezi ca esti om.' . print_r($result, TRUE);
+                return 'Nu ai reusit sa demonstrezi ca esti om.';
             }
         }
         pay_tokens(-$amount, $identifier);
