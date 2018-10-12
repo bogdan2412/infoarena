@@ -383,10 +383,12 @@ function job_test_update($job_id, $test_number, $test_group, $exec_time, $mem_li
     $query = sprintf("INSERT INTO ia_job_test
                      (job_id, test_number, test_group, exec_time, mem_used,
                       grader_exec_time, grader_mem_used, points, grader_message)
-                     VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
+                     VALUES ('%s', %s, %s, %s, %s, %s, %s, '%s', '%s')",
                      db_escape($job_id), db_escape($test_number), db_escape($test_group),
-                     db_escape($exec_time), db_escape($mem_limit), db_escape($grader_exec_time),
-                     db_escape($grader_mem_limit), db_escape($points), db_escape($grader_msg));
+                     db_escape($exec_time), db_escape($mem_limit),
+                     db_escape($grader_exec_time, true),
+                     db_escape($grader_mem_limit, true),
+                     db_escape($points), db_escape($grader_msg));
     return db_query($query);
 }
 

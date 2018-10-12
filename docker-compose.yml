@@ -16,8 +16,7 @@ services:
     links:
       - memcached
       - db
-    security_opt:
-      - seccomp:unconfined
+    privileged: true
   memcached:
     image: memcached
   db:

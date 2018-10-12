@@ -24,14 +24,18 @@ function Submit_AutoCompiler() {
     }
     var ext = f.val().substring(k + 1).toLowerCase();
 
-    if ('c' == ext || 'cc' == ext || 'cpp' == ext || 'pas' == ext || 'py' == ext || 'java' == ext) {
+    if ('c' == ext || 'cc' == ext || 'cpp' == ext || 'pas' == ext
+        || 'py' == ext || 'java' == ext || 'rs' == ext || 'c++' == ext) {
         if ('pas' == ext) {
             // choose FreePascal compiler
             compiler.val('fpc');
         }
-        else if ('cc' == ext) {
+        else if ('cc' == ext || 'c++' == ext) {
             // choose GNU C++ compiler
-            compiler.val('cpp');
+            compiler.val('cpp-64');
+        }
+        else if (ext[0] == 'c') {
+            compiler.val(ext + '-64');
         }
         else {
             compiler.val(ext);

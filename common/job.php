@@ -9,7 +9,7 @@ require_once(IA_ROOT_DIR.'common/db/round.php');
 //      task_id: Task to submit for.
 //      round_id: Round to submit for. Optional, if missing the job is sent
 //              to all parent rounds.
-//      compiler_id: c, cpp, fpc, or py.
+//      compiler_id: c-32, cpp-32, c-64, cpp-64, fpc, java, py or rs
 //      solution: A string with the file to submit.
 //
 // Returns an array of errors, or array() on success.
@@ -43,18 +43,21 @@ function safe_job_submit($args, $user) {
     }
 
     // Validate compiler id
-    $valid_compilers = array('c', 'cpp', 'fpc', 'py', 'java');
+    $valid_compilers = array(
+        'c-32',
+        'cpp-32',
+        'c-64',
+        'cpp-64',
+        'fpc',
+        'py',
+        'java',
+        'rs',
+    );
+
     if (!array_key_exists('compiler_id', $args)) {
         $errors['compiler_id'] = "Lipseste compilatorul.";
     } else if (array_search($args['compiler_id'], $valid_compilers) === false) {
         $errors['compiler_id'] = "Compilator invalid.";
-    }
-    // HACK: For the moment, only admin`s are allowed to submit Python or Java jobs.
-    // TODO: Remove this once Python support is stable.
-    // TODO: Remove this after testing Java.
-    if ('py' == $args['compiler_id']  && !user_is_admin($user)) {
-        $errors['compiler_id'] = 'Deocamdata, numai administratorii pot '
-                .'trimite surse Python.';
     }
 
     // Validate solution

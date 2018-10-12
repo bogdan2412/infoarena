@@ -20,7 +20,6 @@ require_once(IA_ROOT_DIR.'eval/download.php');
 require_once(IA_ROOT_DIR.'eval/Exceptions.php');
 require_once(IA_ROOT_DIR.'eval/ClassicGrader.php');
 require_once(IA_ROOT_DIR.'eval/InteractiveGrader.php');
-require_once(IA_ROOT_DIR.'eval/JavaGrader.php');
 
 error_reporting(0xFFFF);
 
@@ -53,11 +52,7 @@ function job_handle($job) {
     // Make the grader and execute it.
     log_print("Job #{$job['id']} task {$task['id']} round {$job['round_id']} type {$task['type']}");
     if ($task['type'] == 'classic') {
-        if ($job['compiler_id'] == 'java') {
-            $grader = new JavaGrader($task, $task_parameters, $job);
-        } else {
-            $grader = new ClassicGrader($task, $task_parameters, $job);
-        }
+        $grader = new ClassicGrader($task, $task_parameters, $job);
     } else if ($task['type'] == 'interactive') {
         $grader = new InteractiveGrader($task, $task_parameters, $job);
     } else {

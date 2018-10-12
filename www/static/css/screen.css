@@ -848,17 +848,6 @@ form.round li#field_tasks select {
     padding: .2em;
 }
 
-/* syntax highlighted code block */
-.code textarea {
-    font-family: "Courier New" , Courier, mono;
-    font-size: 8pt;
-    border: 1px solid #2B91AF;
-    background-color: #fff;
-    width: 99%;
-    overflow: auto;
-    margin: 18px 0px 18px 0px;
-}
-
 /* table of contents */
 .wiki_text_block ul.toc {
     width: 15em;
@@ -1075,6 +1064,23 @@ table td, table th {
     border: 1px solid #aaa;
     padding-left: 0.5ex;
     padding-right: 0.5ex;
+}
+
+/* For highlighting fixes */
+pre code table td, pre code table th {
+    border: 0px;
+}
+
+td.hljs-ln-numbers {
+    text-align: right;
+}
+
+td.hljs-ln-code {
+    padding-left: 5px !important;
+}
+
+.hljs {
+    background: #fff !important;
 }
 
 tr.odd td {

@@ -63,7 +63,11 @@ function db_keepalive() {
 }
 
 // Escapes a string to be safely included in a query.
-function db_escape($str) {
+function db_escape($str, $check_null = false) {
+    if ($check_null && is_null($str)) {
+        return 'NULL';
+    }
+
     return mysql_real_escape_string($str);
 }
 

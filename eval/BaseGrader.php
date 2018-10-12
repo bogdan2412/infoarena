@@ -5,6 +5,7 @@ require_once IA_ROOT_DIR.'common/task.php';
 abstract class BaseGrader {
     protected $task, $job;
     protected $result, $testResults;
+    protected $evaluatorCompilerId;
 
     public function __construct($task, $tparams, $job) {
         $this->task = array_merge($task, $tparams);
@@ -24,12 +25,20 @@ abstract class BaseGrader {
             'evaluator' => 'evaluatorul problemei',
             'interact' => 'programul interactiv',
         );
+        eval_assert(clean_dir(IA_ROOT_DIR.'eval/temp/evaluators'),
+                    "Can't create temp evaluators dir.");
+
+        $this->evaluatorCompilerId = array();
         foreach ($evals as $eval_type => $eval_desc) {
             if (!getattr($this->task, $eval_type)) {
                 continue;
             }
 
-            $source_file = IA_ROOT_DIR.'eval/temp/'.$this->task[$eval_type];
+            eval_assert(
+                clean_dir(IA_ROOT_DIR.'eval/temp/evaluators/'.$eval_type),
+                "Can't create temp evaluators dir for $eval_type");
+            $source_file = IA_ROOT_DIR.'eval/temp/evaluators/'.$eval_type.
+                           '/'.$this->task[$eval_type];
             if (!copy_grader_file($this->task, $this->task[$eval_type],
                                   $source_file)) {
                 log_print("Task $eval_type not found");
@@ -40,12 +49,18 @@ abstract class BaseGrader {
             }
 
             $compiler_messages = '';
-            if (!compile_file($source_file, $eval_type, $compiler_messages)) {
+            eval_assert(@chdir(IA_ROOT_DIR.'eval/temp/evaluators/'.$eval_type),
+                "Can't chdir to temp evaluators dir for $eval_type");
+            $compiler_type = null;
+            if (!compile_file($this->task[$eval_type],
+                              $compiler_type, $compiler_messages)) {
                 log_print("Task $eval_type compile error");
                 throw new EvalTaskOwnerError('Eroare de compilare în '.
                                              $eval_desc.":\n".
                                              $compiler_messages);
             }
+
+            $this->evaluatorCompilerId[$eval_type] = $compiler_type;
         }
     }
 
@@ -54,14 +69,20 @@ abstract class BaseGrader {
      * means compiling the user's source file.
      */
     protected function processUserSubmission() {
-        $source_file = 'user.'.$this->job['compiler_id'];
+        eval_assert(clean_dir(IA_ROOT_DIR.'eval/temp/user/'),
+                    "Can't clean temp user dir.");
+        eval_assert(@chdir(IA_ROOT_DIR.'eval/temp/user/'),
+                    "Can't chdir to temp user dir.");
+
+        $source_file = 'user_file.'.$this->job['compiler_id'];
         $res = @file_put_contents($source_file,
                                   $this->job['file_contents']);
         eval_assert($res !== false,
                     'User program could not be written to disk');
 
         $compiler_messages = '';
-        if (!compile_file($source_file, 'user', $compiler_messages)) {
+        if (!compile_file($source_file, $this->job['compiler_id'],
+                          $compiler_messages)) {
             log_print('User program compile error');
             log_print($compiler_messages);
             throw new EvalUserCompileError($compiler_messages);
@@ -162,15 +183,10 @@ abstract class BaseGrader {
             return;
         }
 
-        // Custom grader.
-        $ret = @copy(IA_ROOT_DIR.'eval/temp/evaluator',
-                     $jaildir.'evaluator');
-        eval_assert($ret, 'Failed to copy custom grader');
-        eval_assert(chmod('evaluator', 0555),
-                    'Failed to chmod a+x user program');
-
         // Run task eval, and check result
-        $jrunres = jail_run('evaluator', $jaildir,
+        $jrunres = run_file($this->evaluatorCompilerId['evaluator'],
+                            IA_ROOT_DIR.'eval/temp/evaluators/evaluator',
+                            $jaildir,
                             IA_JUDGE_TASK_EVAL_TIMELIMIT,
                             IA_JUDGE_TASK_EVAL_MEMLIMIT,
                             true);
