@@ -319,12 +319,12 @@ function task_get_solved_by($task_id) {
     }
 }
 
-function task_was_solved_by($task_id, $used_id) {
+function task_was_solved_by($task_id, $user_id) {
     $query = sprintf("SELECT COUNT(1) FROM ia_task_users_solved
                     WHERE `task_id`='%s'
                     AND `user_id`=%s",
                     db_escape($task_id),
-                    db_escape($used_id));
+                    db_escape($user_id));
     $result = db_query_value($query);
     if ($result == 1) {
         return true;
@@ -333,20 +333,20 @@ function task_was_solved_by($task_id, $used_id) {
     }
 }
 
-function task_mark_solved($task_id, $used_id) {
+function task_mark_solved($task_id, $user_id) {
     $query = sprintf("INSERT INTO ia_task_users_solved
                     VALUES ('%s', %s)",
                     db_escape($task_id),
-                    db_escape($used_id));
+                    db_escape($user_id));
     db_query($query);
 }
 
-function task_mark_not_solved($task_id, $used_id) {
+function task_mark_not_solved($task_id, $user_id) {
     $query = sprintf("DELETE FROM ia_task_users_solved
                     WHERE `task_id`='%s'
                     AND `user_id`=%s",
                     db_escape($task_id),
-                    db_escape($used_id));
+                    db_escape($user_id));
     db_query($query);
 }
 
