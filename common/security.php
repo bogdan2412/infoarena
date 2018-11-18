@@ -256,7 +256,7 @@ function security_textblock($user, $action, $textblock) {
     switch ($action) {
         case 'simple-view':
             if ($textsec == 'private') {
-                return $usersec == 'admin';
+                return in_array($usersec, SEC_TEXTBLOCK_SIMPLE_VIEW_PRIVATE);
             } else {
                 return true;
             }
@@ -267,9 +267,9 @@ function security_textblock($user, $action, $textblock) {
         // Reversible modifications.
         case 'simple-rev-edit':
             if ($textsec == 'public') {
-                return $usersec != 'anonymous';
+                return in_array($usersec, SEC_TEXTBLOCK_SIMPLE_REV_EDIT_PUBLIC);
             } else {
-                return $usersec == 'admin';
+                return in_array($usersec, SEC_TEXTBLOCK_SIMPLE_REV_EDIT_OTHER);
             }
 
         // Permanent changes. Admin only

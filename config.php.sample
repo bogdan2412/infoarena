@@ -193,3 +193,8 @@ define('AWS_RO_SECRET_KEY', '');
 
 define('AWS_RW_ACCESS_KEY', '');
 define('AWS_RW_SECRET_KEY', '');
+
+// Security setup for certain kinds of textblock actions
+define('SEC_TEXTBLOCK_SIMPLE_VIEW_PRIVATE', ['admin']);
+define('SEC_TEXTBLOCK_SIMPLE_REV_EDIT_PUBLIC', ['admin', 'helper', 'normal']);
+define('SEC_TEXTBLOCK_SIMPLE_REV_EDIT_OTHER', ['admin']);
