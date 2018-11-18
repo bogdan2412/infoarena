@@ -49,7 +49,7 @@ function macro_roundlist($args) {
     }
 
     if (getattr($args, "type")) {
-        $filters["type"] = $args["type"];
+        $filters["type_regexp"] = $args["type"];
     }
 
     if (getattr($args, "name")) {
