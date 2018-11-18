@@ -200,3 +200,4 @@ define('SEC_TEXTBLOCK_SIMPLE_REV_EDIT_PUBLIC', ['admin', 'helper', 'normal']);
 define('SEC_TEXTBLOCK_SIMPLE_REV_EDIT_OTHER', ['admin']);
 
 define('GOOGLE_ANALYTICS_TRACKING_ID', 'UA-113289-8');
+define('GOOGLE_SEARCH', true);

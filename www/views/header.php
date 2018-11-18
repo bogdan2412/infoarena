@@ -124,7 +124,7 @@ ia_template_topnav($topnav_select, $is_admin);
         <?php } ?>
         </ul>
 
-    <?php if (!IA_DEVELOPMENT_MODE) { ?>
+    <?php if (GOOGLE_SEARCH && !IA_DEVELOPMENT_MODE) { ?>
     <div id="google-search">
         <?php include(IA_ROOT_DIR.'www/views/google_search.php'); ?>
     </div>
