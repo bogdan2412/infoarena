@@ -55,11 +55,11 @@ define('IA_HTTP_ENV', isset($_SERVER['REQUEST_URI']));
 define('IA_SMF_DB_PREFIX', 'ia_smf_');
 
 // "The" url to infoarena home page.
-define('IA_URL', IA_URL_HOST.IA_URL_PREFIX);
+define('IA_URL', IA_URL_HOST . IA_URL_PREFIX);
 
 // URL to SMF. No trailing slash
 // Example: http://localhost/infoarena_smf
-define('IA_SMF_URL', IA_URL.'forum');
+define('IA_SMF_URL', IA_URL . 'forum');
 
 // Enable support for https connections. If enabled, secure connections are
 // enforced for login and register pages.
