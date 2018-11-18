@@ -47,7 +47,7 @@ function ia_template_topnav($selected = 'infoarena', $is_admin = false) {
 <ul>
     <li>
         <?= getattr($pre, 'infoarena') ?>
-        <?= format_link(url_home(), 'info<em>arena</em>', false) ?>
+        <?= format_link(url_home(), NAV_HOMEPAGE_TEXT, false) ?>
         <?= getattr($post, 'infoarena') ?>
     </li>
     <li>

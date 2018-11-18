@@ -205,3 +205,6 @@ define('GOOGLE_SEARCH', true);
 // Monitor autorefresh options
 define('MONITOR_AUTOREFRESH', true);
 define('MONITOR_AUTOREFRESH_INTERVAL', 5000); // milliseconds
+
+// Text of the homepage link in the top navigation menu
+define('NAV_HOMEPAGE_TEXT', 'info<em>arena</em>');
