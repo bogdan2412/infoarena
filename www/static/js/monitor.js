@@ -1,6 +1,6 @@
 var Monitor_Url;
-var Monitor_Timeout = 5000; // 5 seconds
-var Monitor_AutoRefresh = true; // enabled by default
+var Monitor_Timeout; // dictated by checkbox data-interval
+var Monitor_AutoRefresh; // dictated by checkbox checked state
 var Monitor_RefreshTimeout = null;
 
 function SkipJobs() {
@@ -23,17 +23,20 @@ function SkipJobs() {
 
 function Monitor_Refresh() {
     Monitor_RefreshTimeout = null;
-    $("#monitor-table").load(Monitor_Url, {},
-        function(responseText, statusText, req) {
-            if (Monitor_AutoRefresh && Monitor_RefreshTimeout === null) {
-                Monitor_RefreshTimeout =
-                    setTimeout(Monitor_Refresh, Monitor_Timeout);
-            }
-        });
+    if (Monitor_AutoRefresh) { // could have been turned off after it was enqueued
+        $("#monitor-table").load(Monitor_Url, {},
+            function(responseText, statusText, req) {
+                if (Monitor_AutoRefresh && Monitor_RefreshTimeout === null) {
+                    Monitor_RefreshTimeout =
+                        setTimeout(Monitor_Refresh, Monitor_Timeout);
+                }
+            });
+    }
 }
 
 function Monitor_Init() {
-    $('#autorefresh').prop('checked', Monitor_AutoRefresh);
+    Monitor_AutoRefresh = $('#autorefresh')[0].checked;
+    Monitor_Timeout = $('#autorefresh').data('interval');
     $(".skip_job").live('click', function() {
         Monitor_AutoRefresh = false;
         clearTimeout(Monitor_RefreshTimeout);

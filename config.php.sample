@@ -201,3 +201,7 @@ define('SEC_TEXTBLOCK_SIMPLE_REV_EDIT_OTHER', ['admin']);
 
 define('GOOGLE_ANALYTICS_TRACKING_ID', 'UA-113289-8');
 define('GOOGLE_SEARCH', true);
+
+// Monitor autorefresh options
+define('MONITOR_AUTOREFRESH', true);
+define('MONITOR_AUTOREFRESH_INTERVAL', 5000); // milliseconds

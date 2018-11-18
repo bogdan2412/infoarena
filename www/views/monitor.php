@@ -263,7 +263,16 @@ if (!$display_only_table) {
     </div>
 
     <p>
-        <input type="checkbox" checked="checked" id="autorefresh" onclick="Monitor_ToggleRefresh(this.checked)" />
+        <input
+            type="checkbox"
+            <?php
+              if (MONITOR_AUTOREFRESH) {
+                echo 'checked="checked"';
+              }
+            ?>
+            data-interval="<?php echo MONITOR_AUTOREFRESH_INTERVAL; ?>"
+            id="autorefresh"
+            onclick="Monitor_ToggleRefresh(this.checked)" />
         <label for="autorefresh">
             auto refresh monitor
         </label>
