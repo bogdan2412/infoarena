@@ -160,7 +160,7 @@ function ia_template_footer() {
     <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
     </script>
     <script type="text/javascript">
-    _uacct = "UA-113289-8";
+    _uacct = "<?php echo GOOGLE_ANALYTICS_TRACKING_ID; ?>";
     _udn = "infoarena.ro";
     urchinTracker();
     </script>
