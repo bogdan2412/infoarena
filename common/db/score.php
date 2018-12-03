@@ -664,3 +664,21 @@ function score_get_rankings_acm($round_id,
 
     return $rankings;
 }
+
+function scores_get_by_user_id_and_round_id($user_id, $round_id) {
+    $query = sprintf("SELECT *
+                      FROM ia_score_user_round_task
+                      WHERE user_id = %s AND round_id = %s",
+                     db_quote($user_id), db_quote($round_id));
+    $scores = db_fetch_all($query);
+    return $scores;
+}
+
+function total_score_get_by_user_id_and_round_id($user_id, $round_id) {
+    $query = sprintf("SELECT *
+                      FROM ia_score_user_round
+                      WHERE user_id = %s AND round_id = %s",
+                     db_quote($user_id), db_quote($round_id));
+    $total_score = db_fetch($query);
+    return $total_score;
+}

@@ -60,6 +60,7 @@ $directmaps = array_flip(array('register', 'changes',
                                'plot', 'search', 'job_skip', 'liveeval',
                                'unsubscribe', 'resetpass', 'reeval',
                                'userwidget', 'statistici_problema',
+                               'penalty', 'penalty_edit',
 ));
 
 //
