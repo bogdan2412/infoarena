@@ -100,10 +100,6 @@ define('IA_ROUND_TEXTBLOCK_PREFIX', 'runda/');
 // website.
 define('IA_SECRET', 'developersetup');
 
-// Site personalization
-
-// URL path to logo
-
 // Mail setup
 
 // Enable this only if you have a SMTP server around
