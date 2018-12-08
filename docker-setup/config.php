@@ -208,3 +208,6 @@ define('MONITOR_AUTOREFRESH_INTERVAL', 5000); // milliseconds
 
 // Text of the homepage link in the top navigation menu
 define('NAV_HOMEPAGE_TEXT', 'info<em>arena</em>');
+
+// Path to the ia-sandbox binary
+define('IA_SANDBOX_PATH', 'ia-sandbox');

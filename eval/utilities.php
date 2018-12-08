@@ -273,7 +273,7 @@ function jail_run($program, $jaildir, $time, $memory, $capture_std = true,
     // gets fixed remove these.
     @system("rmdir /sys/fs/cgroup/memory/ia-sandbox/$instance_name/isolated");
     @system("rmdir /sys/fs/cgroup/memory/ia-sandbox/$instance_name");
-    $cmdline = 'ia-sandbox';
+    $cmdline = IA_SANDBOX_PATH;
     $cmdline .= ' --new-root '.$jaildir;
 
     if ($capture_std) {
