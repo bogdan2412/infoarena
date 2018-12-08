@@ -183,6 +183,16 @@ abstract class BaseGrader {
             return;
         }
 
+        if (IA_EVAL_NEEDS_SOURCE) {
+            // Make the source file available to the eval.
+
+            // Convert c-64 to c, cpp-32 to cpp etc. to appease existing evals.
+            // TODO factor out all the compiler-specific constants
+            $ext = explode('-', $this->job['compiler_id'])[0];
+            $source_file = $this->job['task_id'] . '.' . $ext;
+            $res = @file_put_contents($source_file, $this->job['file_contents']);
+        }
+
         // Run task eval, and check result
         $jrunres = run_file($this->evaluatorCompilerId['evaluator'],
                             IA_ROOT_DIR.'eval/temp/evaluators/evaluator',

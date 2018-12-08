@@ -68,3 +68,8 @@ define('IA_SANDBOX_PATH', 'ia-sandbox');
 
 // Should old eval.{c,cpp} files be compiled on 32 or 64 bits?
 define('IA_DEFAULT_EVAL_ARCH', '32');
+
+// Should the eval have access to the contestant's source file? This is
+// necessary when some tasks have syntax requirements (e.g. the solution may
+// not use arrays).
+define('IA_EVAL_NEEDS_SOURCE', false);
