@@ -211,3 +211,6 @@ define('NAV_HOMEPAGE_TEXT', 'info<em>arena</em>');
 
 // Path to the ia-sandbox binary
 define('IA_SANDBOX_PATH', 'ia-sandbox');
+
+// Should old eval.{c,cpp} files be compiled on 32 or 64 bits?
+define('IA_DEFAULT_EVAL_ARCH', '32');

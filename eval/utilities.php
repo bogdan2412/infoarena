@@ -149,7 +149,7 @@ function compile_file($input_file_name, &$compiler_type, &$compiler_message) {
 
     // Old submissions were 32 bit, try to be consistent and not change that.
     if ($compiler_type == 'c' || $compiler_type == 'cpp') {
-        $compiler_type .= '-32';
+        $compiler_type .= '-' . IA_DEFAULT_EVAL_ARCH;
     }
 
     if (!isset($compiler_lines[$compiler_type])) {
