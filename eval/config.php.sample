@@ -62,4 +62,8 @@ define('IA_JUDGE_CARGO_PATH',
 define('IA_JUDGE_RUSTUP_PATH',
        rtrim(getenv('HOME'), '/') . '/.rustup');
 
-?>
+// Path to the ia-sandbox binary
+define('IA_SANDBOX_PATH', 'ia-sandbox');
+
+// Should old eval.{c,cpp} files be compiled on 32 or 64 bits?
+define('IA_DEFAULT_EVAL_ARCH', '32');
