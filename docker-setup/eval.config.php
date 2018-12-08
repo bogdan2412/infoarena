@@ -2,7 +2,7 @@
 define('IA_URL', 'http://nginx/');
 
 // link main configuration
-require_once dirname($argv[0]).'/../config.php';
+require_once dirname($argv[0]) . '/../config.php';
 
 // Judge username/password, used via HTTP AUTH basic to download tests and
 // graders. Judge has to have admin access.
@@ -58,9 +58,9 @@ define('IA_LOG_TIMESTAMP_FORMAT', 'Y-m-d H:i:s');
 
 // Rust support
 define('IA_JUDGE_CARGO_PATH',
-       rtrim(getenv('HOME'), '/').'/.cargo');
+       rtrim(getenv('HOME'), '/') . '/.cargo');
 
 define('IA_JUDGE_RUSTUP_PATH',
-    rtrim(getenv('HOME'), '/').'/.rustup');
+       rtrim(getenv('HOME'), '/') . '/.rustup');
 
 ?>
