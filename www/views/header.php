@@ -107,7 +107,7 @@ ia_template_topnav($topnav_select, $is_admin);
         <li><a href="<?= html_escape(url_home()) ?>">Home</a></li>
         <?php if (SIDEBAR_ELEMENTS['archives']) { ?>
             <li><?= format_link_access(url_textblock('arhiva'), "Arhiva de probleme", 'a') ?></li>
-            <li><a href="<?= html_escape(url_textblock('arhiva-educationala')) ?>">Arhiva educatională</a></li>
+            <li><a href="<?= html_escape(url_textblock('arhiva-educationala')) ?>">Arhiva educațională</a></li>
             <li><a href="<?= html_escape(url_textblock('arhiva-monthly')) ?>">Arhiva monthly</a></li>
         <?php } ?>
         <li><a href="<?= html_escape(url_textblock('concursuri')) ?>">Concursuri</a></li>
