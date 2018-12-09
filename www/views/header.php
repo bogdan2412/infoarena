@@ -162,7 +162,9 @@ ia_template_topnav($topnav_select, $is_admin);
     <script type="text/javascript" src="<?= html_escape(url_static('js/time.js')) ?>"></script>
     <script type="text/javascript">loadTime(<?= format_date(null, "%H, %M, %S");?>);</script>
 
-    <?php include(IA_ROOT_DIR.'www/views/sidebar_ad.php'); ?>
+    <?php if (SIDEBAR_ELEMENTS['ad']) {
+        include(IA_ROOT_DIR.'www/views/sidebar_ad.php');
+    } ?>
 </div>
 
 <div id="main">

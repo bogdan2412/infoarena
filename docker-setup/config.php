@@ -211,9 +211,10 @@ define('NAV_HOMEPAGE_TEXT', 'info<em>arena</em>');
 
 define('SIDEBAR_ELEMENTS', [
     'about' => true,
+    'ad' => true,
     'archives' => true,
     'articles' => true,
-    'calendar' => false,
+    'calendar' => true,
     'docs' => true,
     'downloads' => true,
     'links' => true,
