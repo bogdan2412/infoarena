@@ -208,3 +208,13 @@ define('MONITOR_AUTOREFRESH_INTERVAL', 5000); // milliseconds
 
 // Text of the homepage link in the top navigation menu
 define('NAV_HOMEPAGE_TEXT', 'info<em>arena</em>');
+
+define('SIDEBAR_ELEMENTS', [
+    'about' => true,
+    'archives' => true,
+    'articles' => true,
+    'calendar' => false,
+    'docs' => true,
+    'downloads' => true,
+    'links' => true,
+]);

@@ -105,34 +105,48 @@ ia_template_topnav($topnav_select, $is_admin);
 <div id="sidebar">
     <ul id="nav" class="clear">
         <li><a href="<?= html_escape(url_home()) ?>">Home</a></li>
-        <li><?= format_link_access(url_textblock('arhiva'), "Arhiva de probleme", 'a') ?></li>
-        <li><a href="<?= html_escape(url_textblock('arhiva-educationala')) ?>">Arhiva educatională</a></li>
-        <li><a href="<?= html_escape(url_textblock('arhiva-monthly')) ?>">Arhiva monthly</a></li>
+        <?php if (SIDEBAR_ELEMENTS['archives']) { ?>
+            <li><?= format_link_access(url_textblock('arhiva'), "Arhiva de probleme", 'a') ?></li>
+            <li><a href="<?= html_escape(url_textblock('arhiva-educationala')) ?>">Arhiva educatională</a></li>
+            <li><a href="<?= html_escape(url_textblock('arhiva-monthly')) ?>">Arhiva monthly</a></li>
+        <?php } ?>
         <li><a href="<?= html_escape(url_textblock('concursuri')) ?>">Concursuri</a></li>
         <li><a href="<?= html_escape(url_textblock('concursuri-virtuale')) ?>">Concursuri virtuale</a></li>
         <li><a href="<?= html_escape(url_textblock('clasament-rating')) ?>">Clasament</a></li>
-        <li><a href="<?= html_escape(url_textblock('articole')) ?>">Articole</a></li>
-        <li><a href="<?= html_escape(url_textblock('downloads')) ?>">Downloads</a></li>
-        <li><a href="<?= html_escape(url_textblock('links')) ?>">Links</a></li>
-        <li><a href="<?= html_escape(url_textblock('documentatie')) ?>">Documentaţie</a></li>
-        <li><a href="<?= html_escape(url_textblock('despre-infoarena')) ?>">Despre infoarena</a></li>
+        <?php if (SIDEBAR_ELEMENTS['articles']) { ?>
+            <li><a href="<?= html_escape(url_textblock('articole')) ?>">Articole</a></li>
+        <?php } ?>
+        <?php if (SIDEBAR_ELEMENTS['downloads']) { ?>
+            <li><a href="<?= html_escape(url_textblock('downloads')) ?>">Downloads</a></li>
+        <?php } ?>
+        <?php if (SIDEBAR_ELEMENTS['links']) { ?>
+            <li><a href="<?= html_escape(url_textblock('links')) ?>">Links</a></li>
+        <?php } ?>
+        <?php if (SIDEBAR_ELEMENTS['docs']) { ?>
+            <li><a href="<?= html_escape(url_textblock('documentatie')) ?>">Documentaţie</a></li>
+        <?php } ?>
+        <?php if (SIDEBAR_ELEMENTS['about']) { ?>
+            <li><a href="<?= html_escape(url_textblock('despre-infoarena')) ?>">Despre infoarena</a></li>
+        <?php } ?>
         <li class="separator"><hr/></li>
         <li><?= format_link_access(url_monitor(array('user' => identity_get_username())), "Monitorul de evaluare", 'm') ?></li>
         <?php if (!identity_is_anonymous()) { ?>
-        <li><a href="<?= html_escape(url_submit()) ?>"><strong>Trimite soluţii</strong></a></li>
-        <li><?= format_link_access(url_account(), "Contul meu", 'c') ?></li>
+            <li><a href="<?= html_escape(url_submit()) ?>"><strong>Trimite soluţii</strong></a></li>
+            <li><?= format_link_access(url_account(), "Contul meu", 'c') ?></li>
         <?php } ?>
-        </ul>
+    </ul>
 
     <?php if (GOOGLE_SEARCH && !IA_DEVELOPMENT_MODE) { ?>
-    <div id="google-search">
-        <?php include(IA_ROOT_DIR.'www/views/google_search.php'); ?>
-    </div>
+        <div id="google-search">
+            <?php include(IA_ROOT_DIR.'www/views/google_search.php'); ?>
+        </div>
     <?php } ?>
 
-    <div id="calendar">
-        <?= macro_calendar(array()) ?>
-    </div>
+    <?php if (SIDEBAR_ELEMENTS['calendar']) { ?>
+        <div id="calendar">
+            <?= macro_calendar(array()) ?>
+        </div>
+    <?php } ?>
 
     <?php if (identity_is_anonymous()) { ?>
     <div id="login">
