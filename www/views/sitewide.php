@@ -50,21 +50,27 @@ function ia_template_topnav($selected = 'infoarena', $is_admin = false) {
         <?= format_link(url_home(), NAV_HOMEPAGE_TEXT, false) ?>
         <?= getattr($post, 'infoarena') ?>
     </li>
-    <li>
-        <?= getattr($pre, 'blog') ?>
-        <?= format_link_access(url_blog(), "blog", 'b') ?>
-        <?= getattr($post, 'blog') ?>
-    </li>
-    <li>
-        <?= getattr($pre, 'forum') ?>
-        <?= format_link_access(url_forum(), "forum", 'f') ?>
-        <?= getattr($post, 'forum') ?>
-    </li>
-    <li>
-        <?= getattr($pre, 'calendar') ?>
-        <?= format_link(url_forum() . "?action=calendar", "calendar") ?>
-        <?= getattr($post, 'calendar') ?>
-    </li>
+    <?php if (TOPNAV_ELEMENTS['blog']) { ?>
+        <li>
+            <?= getattr($pre, 'blog') ?>
+            <?= format_link_access(url_blog(), "blog", 'b') ?>
+            <?= getattr($post, 'blog') ?>
+        </li>
+    <?php } ?>
+    <?php if (TOPNAV_ELEMENTS['forum']) { ?>
+        <li>
+            <?= getattr($pre, 'forum') ?>
+            <?= format_link_access(url_forum(), "forum", 'f') ?>
+            <?= getattr($post, 'forum') ?>
+        </li>
+    <?php } ?>
+    <?php if (TOPNAV_ELEMENTS['calendar']) { ?>
+        <li>
+            <?= getattr($pre, 'calendar') ?>
+            <?= format_link(url_forum() . "?action=calendar", "calendar") ?>
+            <?= getattr($post, 'calendar') ?>
+        </li>
+    <?php } ?>
 <?php if (identity_is_anonymous()) { ?>
     <li>
         <?= getattr($pre, 'login')?>
@@ -81,29 +87,35 @@ function ia_template_topnav($selected = 'infoarena', $is_admin = false) {
         <?= getattr($pre, 'profile') ?>
         <?= format_link_access(url_user_profile($identity_user['username']), 'profilul meu', 'p') ?>
         <?= getattr($post, 'profile') ?></li>
-    <li>
-        <?= getattr($pre, 'pm') ?>
-	<?php
-        $new_pm_count = smf_get_pm_count($identity_user['username']);
-        if ($new_pm_count) { ?>
-            <?= format_link(url_forum() . "?action=pm", "<b>mesaje (".$new_pm_count.")</b>", false) ?>
-	<?php } else { ?>
-            <?= format_link(url_forum() . "?action=pm", "mesaje") ?>
-	<?php } ?>
-        <?= getattr($post, 'pm') ?>
-    </li>
-<?php if ($is_admin) { ?>
-    <li>
-        <?= getattr($pre, 'admin') ?>
-        <?= format_link(url_admin(), 'admin') ?>
-        <?= getattr($post, 'admin') ?>
-    </li>
-    <li>
-        <?= getattr($pre, 'smf_admin') ?>
-        <?= format_link(url_forum() . "?action=admin", "forum admin") ?>
-        <?= getattr($post, 'smf_admin') ?>
-    </li>
-<?php } ?>
+
+    <?php if (TOPNAV_ELEMENTS['messages']) { ?>
+        <li>
+            <?= getattr($pre, 'pm') ?>
+	        <?php
+                $new_pm_count = smf_get_pm_count($identity_user['username']);
+                if ($new_pm_count) { ?>
+                <?= format_link(url_forum() . "?action=pm", "<b>mesaje (".$new_pm_count.")</b>", false) ?>
+	        <?php } else { ?>
+                <?= format_link(url_forum() . "?action=pm", "mesaje") ?>
+	        <?php } ?>
+            <?= getattr($post, 'pm') ?>
+        </li>
+    <?php } ?>
+
+    <?php if ($is_admin) { ?>
+        <li>
+            <?= getattr($pre, 'admin') ?>
+            <?= format_link(url_admin(), 'admin') ?>
+            <?= getattr($post, 'admin') ?>
+        </li>
+        <?php if (TOPNAV_ELEMENTS['forum']) { ?>
+            <li>
+                <?= getattr($pre, 'smf_admin') ?>
+                <?= format_link(url_forum() . "?action=admin", "forum admin") ?>
+                <?= getattr($post, 'smf_admin') ?>
+            </li>
+        <?php } ?>
+    <?php } ?>
 <?php } ?>
 </ul>
 </div>
