@@ -6,6 +6,8 @@ require_once IA_ROOT_DIR."common/db/db_mysql.php";
 require_once IA_ROOT_DIR."common/db/db.php";
 require_once IA_ROOT_DIR.'common/statistics-config.php';
 
+ini_set('memory_limit', '1G');
+
 db_connect();
 
 log_print('Computing users who solved each task');
