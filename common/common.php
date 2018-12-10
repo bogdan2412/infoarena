@@ -361,7 +361,7 @@ function check_requirements() {
 // FIXME: I have no idea on where to move these things.
 
 // Force max error reporting.
-error_reporting(0xFFFF & ~(E_DEPRECATED) & ~E_USER_WARNING & ~E_USER_NOTICE);
+error_reporting(IA_ERROR_REPORTING);
 
 // Initialize execution stats.
 if (IA_DEVELOPMENT_MODE) {

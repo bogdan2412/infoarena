@@ -159,6 +159,7 @@ if (IA_MEM_CACHE_METHOD === 'memcached') {
 
 // Logging options. Anything else in normal operation is a bug.
 // Filling error_log on a production machine sucks.
+define('IA_ERROR_REPORTING', E_ALL & ~E_DEPRECATED & ~E_USER_WARNING & ~E_USER_NOTICE);
 
 // If true then log all security checks.
 // Warning: tons of output.
