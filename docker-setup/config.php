@@ -227,3 +227,7 @@ define('SIDEBAR_ELEMENTS', [
     'downloads' => true,
     'links' => true,
 ]);
+
+// True: use the built-in mysql_* functions.
+// False: use the wrapper library.
+define('MYSQL_NATIVE', true);

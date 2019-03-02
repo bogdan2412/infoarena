@@ -42,7 +42,7 @@ function db_isalive() {
     global $dbLink;
 
     // Are we already connected?
-    if (is_resource($dbLink) && mysql_ping($dbLink)) {
+    if (is_sql_resource($dbLink) && mysql_ping($dbLink)) {
         return true;
     }
     return false;
@@ -55,7 +55,7 @@ function db_keepalive() {
     if (db_isalive()) {
         return false;
     }
-    if (is_resource($dbLink)) {
+    if (is_sql_resource($dbLink)) {
         mysql_close($dbLink);
     }
 
@@ -155,7 +155,7 @@ function db_query($query, $unbuffered = false) {
 
 // Frees mysql result
 function db_free($result) {
-    log_assert(is_resource($result));
+    log_assert(is_sql_resource($result));
     mysql_free_result($result);
 }
 

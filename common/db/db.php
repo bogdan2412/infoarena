@@ -10,6 +10,10 @@ else {
     require_once(IA_ROOT_DIR."common/db/db_mysql.php");
 }
 
+if (!MYSQL_NATIVE) {
+    require_once IA_ROOT_DIR . 'common/external_libs/php-mysql-mysqli-wrapper/mysql.php';
+}
+
 // Executes query, fetches the all result rows
 function db_fetch_all($query) {
     $result = db_query($query, true);
@@ -251,7 +255,7 @@ function db_quote($arg) {
         } else {
             return 'FALSE';
         }
-    } else if (is_array($arg) || is_object($arg) || is_resource($arg) || is_callable($arg)) {
+    } else if (is_array($arg) || is_object($arg) || is_sql_resource($arg) || is_callable($arg)) {
         log_error("Can't db_quote complex objects");
         return (string)$arg;
     } else {
@@ -282,6 +286,13 @@ function db_fetch($query) {
     }
 }
 
+// Wrapper for is_resource(), which only works with mysql_*, not mysqli_*.
+function is_sql_resource($var) {
+    return MYSQL_NATIVE
+        ? is_resource($var)
+        : ($var instanceof mysqli_result);
+}
+
 // FIXME: This shouldn't be here. Move it in common/db/task.php or
 // common/db/round.php
 function db_get_task_filter_clause($filter, $table_alias) {
@@ -295,4 +306,3 @@ function db_get_task_filter_clause($filter, $table_alias) {
         return '1';
     }
 }
-

@@ -18,7 +18,7 @@ function db_num_rows($res) {
 
 // Frees mysql result
 function db_free($result) {
-    log_assert(is_resource($result));
+    log_assert(is_sql_resource($result));
     mysql_free_result($result);
 }
 
