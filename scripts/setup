@@ -2,6 +2,8 @@
 <?php
 
 define('IA_SETUP_SCRIPT', true);
+// set to false if using the wrapper mysql library
+define('MYSQL_NATIVE', true);
 require_once(dirname($argv[0]) . '/utilities.php');
 
 // Add slashes to a string.
@@ -92,9 +94,12 @@ while (true) {
     $config_vars['IA_DB_NAME'] = read_line('Database name?',
                                            $config_vars['IA_DB_NAME']);
 
-    $dblink = mysql_connect($config_vars['IA_DB_HOST'],
-                            $config_vars['IA_DB_USER'],
-                            $config_vars['IA_DB_PASS']);
+    $dblink = MYSQL_NATIVE
+        ? mysql_connect($config_vars['IA_DB_HOST'],
+                        $config_vars['IA_DB_USER'],
+                        $config_vars['IA_DB_PASS'])
+        : false;
+
 
     if (!$dblink) {
         print("Can't connect to database, something must be wrong.\n");
@@ -279,7 +284,7 @@ if (read_bool('Should I try to configure apache for you?', true)) {
     print("You should also run a chmod +x on all directories on the "
         . "way to root (/) starting from the root folder of this ins"
         . "tall.\n");
- 
+
     print("Done configuring apache\n\n");
 }
 
