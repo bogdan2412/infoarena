@@ -290,7 +290,7 @@ function security_attach($user, $action, $attach) {
     $att_page = normalize_page_name($attach['page']);
     $usersec = getattr($user, 'security_level', 'anonymous');
     $is_admin = $usersec == 'admin';
-    $is_owner = $attach['user_id'] == $user['id'];
+    $is_owner = $attach['user_id'] == getattr($user, 'id');
 
     // Log query response.
     $level = ($is_admin ? 'admin' : ($is_owner ? 'owner' : 'other'));
@@ -332,7 +332,7 @@ function security_attach($user, $action, $attach) {
 function security_user($user, $action, $target_user) {
     $usersec = getattr($user, 'security_level', 'anonymous');
     $is_admin = $usersec == 'admin';
-    $is_self = $target_user['id'] == $user['id'];
+    $is_self = $target_user['id'] == getattr($user, 'id');
 
     // Log query response.
     $action = security_simplify_action($action);
@@ -378,7 +378,7 @@ function security_task($user, $action, $task) {
     $usersec = getattr($user, 'security_level', 'anonymous');
     $is_admin = $usersec == 'admin';
     $is_intern = $usersec == 'intern';
-    $is_owner = ($task['user_id'] == $user['id'] && $usersec == 'helper');
+    $is_owner = ($task['user_id'] == getattr($user, 'id') && $usersec == 'helper');
     $is_boss = $is_admin || $is_intern || $is_owner;
 
     // Log query response.
@@ -493,9 +493,9 @@ function security_round($user, $action, $round) {
               return false;
           }
           if ($round['type'] == 'user-defined') {
-              return $user['id'] == $round['user_id'] ||
-                                    $is_admin ||
-                                    $is_intern;
+              return getattr($user, 'id') == $round['user_id'] ||
+                  $is_admin ||
+                  $is_intern;
           } else {
               return $is_admin || $is_intern;
           }
@@ -576,16 +576,18 @@ function security_job($user, $action, $job) {
     $usersec = getattr($user, 'security_level', 'anonymous');
     $is_admin = $usersec == 'admin';
     $is_intern = $usersec == 'intern';
-    $is_owner = ($job['user_id'] == $user['id']);
-    $is_task_owner = ($job['task_owner_id'] == $user['id'] &&
-                      in_array($usersec, array('helper', 'intern')));
+    $is_owner = $job && ($job['user_id'] == getattr($user, 'id'));
+    $is_task_owner =
+        $job &&
+        ($job['task_owner_id'] == getattr($user, 'id')) &&
+        in_array($usersec, array('helper', 'intern'));
 
      // Log query response.
     $action = security_simplify_action($action);
     $level = ($is_admin ? 'admin' : ($is_owner ? 'owner' :
         ($is_task_owner ? 'task-owner' : 'other')));
     if (IA_LOG_SECURITY) {
-        $objid = $job['id'];
+        $objid = getattr($job, 'id');
         log_print("SECURITY QUERY JOB: ".
                 "($level, $action, $objid): ".
                 "(level, action, object)");
@@ -606,7 +608,7 @@ function security_job($user, $action, $job) {
         $job['status'] != 'skipped') ||
         ($job['task_security'] == 'public' &&
         $job['task_open_source'] == true &&
-        $job['status'] != 'skipped') || 
+        $job['status'] != 'skipped') ||
         $is_task_owner || $is_owner || $is_admin || $is_intern;
     $can_view_source_size = $can_view_source;
     $can_view_score = ($job['round_public_eval'] == true) ||

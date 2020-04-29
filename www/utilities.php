@@ -22,7 +22,7 @@ function xml_escape($string, $quote_style = ENT_COMPAT, $charset = "UTF-8")
         '&#226;','&#227;','&#228;','&#229;','&#230;','&#231;','&#232;','&#233;',
         '&#234;','&#235;','&#236;','&#237;','&#238;','&#239;','&#240;','&#241;',
         '&#242;','&#243;','&#244;','&#245;','&#246;','&#247;','&#248;','&#249;',
-        '&#250;','&#251;','&#252;','&#253;','&#254;','&#255;', '&#8221;', 
+        '&#250;','&#251;','&#252;','&#253;','&#254;','&#255;', '&#8221;',
         '&#8222;',
     );
     $html = array('&quot;','&amp;','&amp;','&lt;','&gt;','&nbsp;','&iexcl;',
@@ -159,7 +159,7 @@ function http_serve($disk_file_name, $http_file_name, $mime_type = null, $cache_
         }
     }
 
-    // HTTP headers.  
+    // HTTP headers.
     header("Content-Type: {$mime_type}");
     header("Content-Disposition: {$disposition}; filename="
            .urlencode($http_file_name).";");
@@ -215,7 +215,7 @@ function execute_view($view_file_name, $view) {
     $query = url_from_args($_GET);
     if (!preg_match('/\/(json|plot|changes)\//', $query) && !request_is_post()) {
         $hashkey = strtolower($query);
-        $recent_pages[$hashkey] = array($query, getattr($view, 'title', $query)); 
+        $recent_pages[$hashkey] = array($query, getattr($view, 'title', $query));
         if (5 < count($recent_pages)) {
             array_shift($recent_pages);
         }

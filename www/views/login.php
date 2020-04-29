@@ -11,4 +11,3 @@ daca ti-ai uitat parola, o poti <a href="<?= html_escape(url_resetpass()) ?>">re
 <?php wiki_include('template/login'); ?>
 
 <?php include(IA_ROOT_DIR.'www/views/footer.php'); ?>
-
