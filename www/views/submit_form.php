@@ -48,19 +48,19 @@ function solution_field() {
 }
 
 function compiler_field() {
+    $cid = fval('compiler_id');
 ?>
     <li id="field_compiler">
         <label for="form_compiler">Compilator</label>
         <select name="compiler_id" id="form_compiler">
             <option value="-">[ Alegeti compilator ]</option>
-            <option value="c-32"<?= 'c-32' == fval('compiler_id') ? ' selected="selected"' : '' ?>>GNU C - 32bit</option>
-            <option value="cpp-32"<?= 'cpp-32' == fval('compiler_id') ? ' selected="selected"' : '' ?>>GNU C++ - 32bit</option>
-            <option value="c-64"<?= 'c-64' == fval('compiler_id') ? ' selected="selected"' : '' ?>>GNU C - 64bit</option>
-            <option value="cpp-64"<?= 'cpp-64' == fval('compiler_id') ? ' selected="selected"' : '' ?>>GNU C++ - 64bit</option>
-            <option value="fpc"<?= 'fpc' == fval('compiler_id') ? ' selected="selected"' : '' ?>>FreePascal</option>
-            <option value="java"<?= 'java' == fval('compiler_id') ? 'selected="selected"' : '' ?>>Java</option>
-            <option value="rs"<?= 'rs' == fval('compiler_id') ? ' selected="selected"' : '' ?>>Rust</option>
-            <option value="py"<?= 'py' == fval('compiler_id') ? ' selected="selected"' : '' ?>>Python3 (FOARTE EXPERIMENTAL!)</option>
+            <?php foreach (ENABLED_COMPILERS as $comp => $text) { ?>
+                <option
+                    value="<?= $comp ?>"
+                    <?= ($comp == $cid) ? ' selected="selected"' : '' ?>>
+                    <?= $text ?>
+                </option>
+            <?php } ?>
         </select>
         <?= ferr_span('compiler_id') ?>
     </li>

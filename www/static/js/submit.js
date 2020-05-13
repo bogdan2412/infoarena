@@ -23,19 +23,26 @@ function Submit_AutoCompiler() {
         }
     }
     var ext = f.val().substring(k + 1).toLowerCase();
+    if (ext == 'cc' || ext == 'c++') {
+        ext = 'cpp';
+    }
 
-    if ('c' == ext || 'cc' == ext || 'cpp' == ext || 'pas' == ext
-        || 'py' == ext || 'java' == ext || 'rs' == ext || 'c++' == ext) {
+    if ('c' == ext || 'cpp' == ext || 'pas' == ext ||
+        'py' == ext || 'java' == ext || 'rs' == ext) {
         if ('pas' == ext) {
             // choose FreePascal compiler
             compiler.val('fpc');
         }
-        else if ('cc' == ext || 'c++' == ext) {
-            // choose GNU C++ compiler
-            compiler.val('cpp-64');
-        }
         else if (ext[0] == 'c') {
-            compiler.val(ext + '-64');
+            // Choose the GNU C/C++ compiler. Prefer 64-bit if available,
+            // otherwise fall back to 32-bit.
+            var ext64 = ext + '-64';
+            var ext32 = ext + '-32';
+            if (compiler.find('option[value="' + ext64 + '"]').length) {
+                compiler.val(ext64);
+            } else {
+                compiler.val(ext32);
+            }
         }
         else {
             compiler.val(ext);
