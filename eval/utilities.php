@@ -278,8 +278,8 @@ function jail_run($program, $jaildir, $time, $memory, $capture_std = true,
 
     if ($capture_std) {
         $cmdline .= ' --stdin /dev/null';
-        $cmdline .= ' --stdout jailed_stdout';
-        $cmdline .= ' --stderr jailed_stderr';
+        $cmdline .= " --stdout {$jaildir}jailed_stdout";
+        $cmdline .= " --stderr {$jaildir}jailed_stderr";
     }
     if (!$capture_std) {
         foreach (array('in', 'out', 'err') as $file) {
