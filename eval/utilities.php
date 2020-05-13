@@ -61,76 +61,6 @@ function compile_file($input_file_name, &$compiler_type, &$compiler_message) {
             'py' => '/usr/bin/python3 -m py_compile %file_name%',
             'java' => '/usr/bin/javac %file_name%',
         );
-    $compiler_mounts = array(
-        'c-32' => array(
-            '/lib:/lib:exec',
-            '/lib32:/lib32:exec',
-            '/lib64:/lib64:exec',
-            '/usr/lib32:/usr/lib32:exec',
-            '/usr/bin:/usr/bin:exec',
-            '/usr/lib:/usr/lib:exec',
-            '/usr/include:/usr/include',
-        ),
-        'cpp-32' => array(
-            '/lib:/lib:exec',
-            '/lib32:/lib32:exec',
-            '/lib64:/lib64:exec',
-            '/usr/lib32:/usr/lib32:exec',
-            '/usr/bin:/usr/bin:exec',
-            '/usr/lib:/usr/lib:exec',
-            '/usr/include:/usr/include',
-        ),
-        'c-64' => array(
-            '/lib:/lib:exec',
-            '/lib64:/lib64:exec',
-            '/usr/bin:/usr/bin:exec',
-            '/usr/lib:/usr/lib:exec',
-            '/usr/include:/usr/include',
-        ),
-        'cpp-64' => array(
-            '/lib:/lib:exec',
-            '/lib64:/lib64:exec',
-            '/usr/bin:/usr/bin:exec',
-            '/usr/lib:/usr/lib:exec',
-            '/usr/include:/usr/include',
-        ),
-        'pas' => array(
-            '/lib:/lib:exec',
-            '/lib64:/lib64:exec',
-            '/usr/bin/:/usr/bin:exec',
-            '/usr/lib:/usr/lib:exec',
-            '/etc/alternatives:/etc/alternatives:exec',
-        ),
-        'fpc' => array(
-            '/lib:/lib:exec',
-            '/lib64:/lib64:exec',
-            '/usr/bin/:/usr/bin:exec',
-            '/usr/lib:/usr/lib:exec',
-            '/etc/alternatives:/etc/alternatives:exec',
-        ),
-        'rs' => array(
-            '/lib:/lib:exec',
-            '/lib64:/lib64:exec',
-            '/usr/bin:/usr/bin:exec',
-            '/usr/lib:/usr/lib:exec',
-            '/etc/alternatives:/etc/alternatives:exec',
-            IA_JUDGE_CARGO_PATH.':/cargo:exec',
-            IA_JUDGE_RUSTUP_PATH.':/rustup:exec',
-        ),
-        'py' => array(
-            '/lib:/lib:exec',
-            '/lib64:/lib64:exec',
-            '/usr/bin:/usr/bin:exec',
-            '/usr/lib:/usr/lib:exec',
-        ),
-        'java' => array(
-            '/lib:/lib:exec',
-            '/lib64:/lib64:exec',
-            '/usr/bin:/usr/bin:exec',
-            '/usr/lib:/usr/lib:exec',
-            '/etc/alternatives:/etc/alternatives:exec',
-        ),
-    );
 
     $matches = array();
     if (!preg_match(
@@ -164,7 +94,7 @@ function compile_file($input_file_name, &$compiler_type, &$compiler_message) {
     $cmdline = preg_replace('/%file_name%/', $source_name, $cmdline);
     $cmdline = preg_replace('/%exe_name%/', $exe_name, $cmdline);
 
-    $mounts = $compiler_mounts[$compiler_type];
+    $mounts = IA_COMPILER_MOUNTS[$compiler_type];
     $envs = array();
 
     if ($compiler_type == 'rs') {
