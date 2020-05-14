@@ -1,9 +1,5 @@
 ## infoarena apache config
 
-# Allow both <?php ?> and <? ?>
-# Also allow <?= ?>
-php_value short_open_tag 1
-
 # Forum config
 Alias --write-me-IA_URL_PREFIX--forum "--write-me-IA_ROOT_DIR--smf/"
 <Directory "--write-me-IA_ROOT_DIR--smf/">
@@ -25,5 +21,3 @@ Alias --write-me-IA_URL_PREFIX-- "--write-me-IA_ROOT_DIR--www/"
     AllowOverride All
     DirectoryIndex index.php
 </Directory>
-
-

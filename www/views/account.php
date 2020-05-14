@@ -46,7 +46,7 @@ include('tags_header.php');
             <input type="password" name='password2' id="form_password2" />
         </li>
 
-<?
+<?php
 if (array_key_exists('security_level', $form_values)) {
     echo view_form_field_li(array(
             'name' => 'Nivel de securitate',

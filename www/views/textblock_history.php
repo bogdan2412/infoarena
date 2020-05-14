@@ -139,7 +139,7 @@ $options = array(
 />
 </div>
 
-<?
+<?php
 $options["css_class"] = "fill-screen";
 echo format_table($revisions, $column_infos, $options);
 ?>
