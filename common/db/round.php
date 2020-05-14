@@ -5,8 +5,12 @@ require_once(IA_ROOT_DIR."common/db/parameter.php");
 require_once(IA_ROOT_DIR."common/db/round_task.php");
 
 function _round_cache_add($round) {
-    mem_cache_set("round-by-id:{$round['id']}", $round, IA_MEM_CACHE_ROUND_EXPIRATION);
-    return $round;
+    if ($round) {
+        mem_cache_set("round-by-id:{$round['id']}", $round, IA_MEM_CACHE_ROUND_EXPIRATION);
+        return $round;
+    } else {
+        return null;
+    }
 }
 
 function _round_cache_delete($round) {
@@ -19,7 +23,7 @@ function round_get($round_id) {
         return null;
     }
 
-    // this assert brakes templates pages with round_id = %round_id%
+    // this assert breaks templates pages with round_id = %round_id%
     log_assert(is_round_id($round_id));
 
     if (($res = mem_cache_get("round-by-id:$round_id")) !== false) {
