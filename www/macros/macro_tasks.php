@@ -166,7 +166,10 @@ function macro_tasks($args) {
 
     // Check if user can see round tasks
     if (!identity_can('round-view-tasks', $round)) {
-        return macro_permission_error();
+        // This used to return the error message in macro_permission_error().
+        // However, this seems too drastic. A contestat can simply visit the
+        // round page before the round starts.
+        return '';
     }
 
     $scores = getattr($args, 'score') && identity_can("round-view-scores", $round);
