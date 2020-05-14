@@ -39,7 +39,6 @@ function controller_register() {
             $user['full_name'] = $data['full_name'];
             $user['email'] = $data['email'];
             $user['newsletter'] = $data['newsletter'];
-            $user['rating_cache'] = 0;
             // There are no acceptable errors in user_create.
             user_create($user, remote_ip_info());
 

@@ -35,7 +35,7 @@ function user_init()
 {
     $user = array();
     $user['security_level'] = 'normal';
-    $user['rating_cache'] = null;
+    $user['rating_cache'] = 0;
     $user['id'] = -1;
     $user['newsletter'] = 1;
 
@@ -103,7 +103,7 @@ function user_validate($user) {
     } else if ($user['newsletter'] != '0' && $user['newsletter'] != '1') {
         $errors['newsletter'] = "Se accepta doar 0/1";
     }
-    
+
     return $errors;
 }
 

@@ -372,7 +372,7 @@ function get_users_by_rating_count() {
 // Clears ALL user ratings & rating history
 function rating_clear() {
     db_query('DELETE FROM ia_rating');
-    db_query('UPDATE ia_user SET rating_cache = NULL');
+    db_query('UPDATE ia_user SET rating_cache = 0');
 }
 
 // Computes rankings for $rounds
