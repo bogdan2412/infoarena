@@ -55,6 +55,6 @@ function macro_userinfo($args) {
                 return 'n/a';
             }
         default:
-            return macro_error("Invalid info paramater");
+            return macro_error("Invalid info parameter");
     }
 }
