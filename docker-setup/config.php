@@ -231,3 +231,14 @@ define('SIDEBAR_ELEMENTS', [
 // True: use the built-in mysql_* functions.
 // False: use the wrapper library.
 define('MYSQL_NATIVE', true);
+
+define('ENABLED_COMPILERS', array(
+    'c-32' => 'GNU C - 32bit',
+    'cpp-32' => 'GNU C++ - 32bit',
+    'c-64' => 'GNU C - 64bit',
+    'cpp-64' => 'GNU C++ - 64bit',
+    'fpc' => 'FreePascal',
+    'java' => 'Java',
+    'rs' => 'Rust',
+    'py' => 'Python3 (FOARTE EXPERIMENTAL!)',
+));
