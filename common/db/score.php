@@ -379,8 +379,12 @@ function rating_clear() {
 // returns entries from start to count
 // if detail_task == true, extra columns for each task will be created
 // if detail_round == true, extra columns for each round will be created
+// @param $rounds A round ID (string) or an array of round IDs
 function score_get_rankings($rounds, $tasks, $start = 0, $count = 999999,
                             $detail_task = false, $detail_round = false) {
+    if (is_string($rounds)) {
+        $rounds = [ $rounds ];
+    }
     $where = score_build_where_clauses(null, null, $rounds);
     if (count($where) == 0) {
         return array();
