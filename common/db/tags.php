@@ -85,7 +85,7 @@ function tag_get_id($tag) {
         db_quote($tag["name"]), db_quote($tag["type"]), db_quote($tag["parent"])
     );
     $result = db_fetch($query);
-    return $result['id'];
+    return $result['id'] ?? null;
 }
 
 // Get list of tag ids for a list of tags
