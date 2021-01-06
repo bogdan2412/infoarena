@@ -22,7 +22,7 @@ $i = 1;
 $cnt = count($rounds);
 foreach ($rounds as $round_id => $round) {
     echo "\n\n\nRound {$i}/{$cnt} - {$round_id}...\n";
-    system("./update-ratings {$round_id}");
+    system(__DIR__ . "/update-ratings {$round_id}");
     $i++;
 }
 

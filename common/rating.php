@@ -209,7 +209,7 @@ function rating_update(&$users, $user_scores, $timestamp) {
                 $username2 = $keys[$i];
                 $score2 = $user_scores[$username2];
                 log_assert(isset($users[$username2]));
-                $user2 = $users[$username2]; 
+                $user2 = $users[$username2];
                 if ($username2 == $username) {
                     continue;
                 }
@@ -237,7 +237,7 @@ function rating_update(&$users, $user_scores, $timestamp) {
 // NOTE: This is used only when displaying ratings to users.
 // NOTE: Currently used by www/format/* and scripts/send-newsletter.
 function rating_scale($absolute_rating) {
-    return min(max(IA_MIN_SCALED_RATING, round($absolute_rating / 3.0)), 
+    return min(max(IA_MIN_SCALED_RATING, round($absolute_rating / 3.0)),
                    IA_MAX_SCALED_RATING);
 }
 

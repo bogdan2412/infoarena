@@ -374,7 +374,7 @@ function round_get_registered_users_range($round_id, $start, $range) {
                       FROM ia_user_round AS user_round
                       LEFT JOIN ia_user AS user ON user_id = user.id
                       WHERE round_id = '%s'
-                      ORDER BY rating DESC
+                      ORDER BY rating DESC, user.id ASC
                       LIMIT %s, %s", db_escape($round_id), $start, $range);
 
     $tab = db_fetch_all($query);
