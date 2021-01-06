@@ -36,7 +36,7 @@ function get_tokens($identifier = null) {
     $result = db_fetch($query);
 
     // Receive the tokens and add the regenerated ones
-    if (count($result) > 0) {
+    if ($result && count($result) > 0) {
         $amount = min(IA_TOKENS_MAX, $result['tokens'] +
             (time() - db_date_parse($result['timestamp'])) / IA_TOKENS_REGEN);
     } else {
