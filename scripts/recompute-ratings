@@ -1,14 +1,26 @@
 #! /usr/bin/env php
 <?php
 
-// recomputes ratings *FROM SCRATCH*
-// (deletes existing ratings)
+// Updates ratings for rated rounds since the last update.  If the command
+// line argument -f|--full is passed, then deletes existing ratings and
+// recomputes everything from scratch. If the ratings have been tampered with,
+// this script refuses to run unless -f|--full is passed. "Tampering" means
+// that (1) a completed round was edited or (2) a job was reevaluated.
 //
-// FIXME: It now relies on the `update-ratings` tool. This isn't
-// very efficient since `update-ratings` always starts from scratch.
+// FIXME: This isn't very efficient since update_single_round() always starts
+// from scratch.
 
 require_once(dirname($argv[0]) . "/utilities.php");
+require_once(IA_ROOT_DIR."www/config.php");
+require_once(IA_ROOT_DIR."www/identity.php");
+require_once(IA_ROOT_DIR."common/db/round.php");
 require_once(IA_ROOT_DIR."common/db/score.php");
+require_once(IA_ROOT_DIR."common/db/parameter.php");
+require_once(IA_ROOT_DIR."common/db/user.php");
+require_once(IA_ROOT_DIR."common/round.php");
+require_once(IA_ROOT_DIR."common/score.php");
+require_once(IA_ROOT_DIR."common/rating.php");
+require_once(IA_ROOT_DIR."common/parameter.php");
 db_connect();
 
 // parse the -f, --full command-line argument
@@ -35,10 +47,97 @@ $rounds = applicable_rating_rounds();
 log_print("Recomputing ratings for ".count($rounds)." rounds...");
 $i = 1;
 $cnt = count($rounds);
-foreach ($rounds as $round_id => $round) {
+foreach ($rounds as $round_id => $ignored) {
     echo "\n\n\nRound {$i}/{$cnt} - {$round_id}...\n";
-    system(__DIR__ . "/update-ratings {$round_id}");
+    update_single_round($round_id);
     $i++;
 }
 
-?>
+// Update ratings for a single round.
+// WARNING: Ratings should be updated in chronological order!
+function update_single_round($round_id) {
+    // validate round id
+    $round = round_get($round_id);
+    log_assert($round, "Invalid round identifier!");
+    $params = round_get_parameters($round_id);
+    log_assert(isset($params['rating_timestamp']),
+               "Round does not have parameter rating_timestamp!");
+    $timestamp = parameter_decode('rating_timestamp', $params['rating_timestamp']);
+    log_assert(isset($params['rating_update']),
+               "Round does not have parameter rating_update!");
+    log_assert(parameter_decode('rating_update', $params['rating_update']),
+               "Round is not marked as rating_update!");
+    log_print("Updating ratings for round ".$round_id."...\n");
+
+    // read all registered user names
+    log_print("Reading whole user list...");
+    $user_list = user_get_list();
+    $usercount = count($user_list);
+    log_print(count($user_list) . " infoarena users");
+
+    // read last user ratings, deviations & timestamps
+    log_print("Reading last user ratings, deviations and timestamps...");
+    $current_scores = rating_last_scores();
+
+    // do some quick testing: check if current rating cache corresponds
+    // with what rating_last_scores() says
+    $ucheck = user_get_list(true);
+    foreach ($ucheck as $row) {
+        if (!(float)$row['rating_cache']) {
+            continue;
+        }
+        log_assert(isset($current_scores[$row['username']]));
+        if ($current_scores[$row['username']]['rating'] != $row['rating_cache']) {
+            echo $row['username']." -> ".$current_scores[$row['username']]['rating']." != ".$row['rating_cache']."\n";
+            log_print('rating_last_scores() fails to match rating_cache!!!');
+            // read_bool('This is serious. Have you seen the warning?');
+            // log_error('rating_last_scores() fails to match rating_cache!!!');
+        }
+    }
+
+    // merge data
+    log_print("Merging data...");
+    $users = rating_init($user_list, $current_scores);
+
+    // read registered users
+    $scores = array();
+    log_print("Reading round registered users...");
+    $round_users = round_get_registered_users_range($round['id'], 0, $usercount);
+    log_print(count($round_users) . " users registered for this round.");
+    foreach ($round_users as $row) {
+        log_assert(isset($row['username']));
+        $scores[$row['username']] = 0;
+    }
+
+    // read round scores
+    log_print("Reading round scores...");
+    $round_rows = score_get_rankings($round_id, null, 0, $usercount);
+    log_print(count($round_rows) . " users were scored in this round.");
+    foreach ($round_rows as $row) {
+        log_assert(isset($row['user_name']) && isset($row['score']));
+        if (isset($scores[$row['user_name']])) {
+            $scores[$row['user_name']] = $row['score'];
+        }
+    }
+
+    // Computing new ratings
+    rating_update($users, $scores, $timestamp);
+
+    // update database
+    log_print("Updating database...");
+    foreach ($round_users as $row) {
+        $username = $row['username'];
+        $user_id = $row['user_id'];
+        // for this round (history)
+        score_update_rating($user_id, $round_id, $users[$username]['deviation'], $users[$username]['rating']);
+
+        // cache rating
+        $user = $ucheck[$username];
+        $user['rating_cache'] = $users[$username]['rating'];
+        user_update($user);
+
+    }
+
+    $params['rating_applied'] = 1;
+    parameter_update_values('round', $round_id, $params);
+}
