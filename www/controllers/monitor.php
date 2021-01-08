@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 require_once(IA_ROOT_DIR."www/format/pager.php");
 require_once(IA_ROOT_DIR."common/db/job.php");
@@ -14,7 +14,7 @@ function controller_monitor() {
     $view['user_name'] = getattr($identity_user, 'username');
 
     // First row.
-    // FIXME: shouldn't this constant be in config.php? 
+    // FIXME: shouldn't this constant be in config.php?
     $options = pager_init_options(array('display_entries' => 25));
 
     $job_data = job_get_range($view['filters'], $options['first_entry'], $options['display_entries']);

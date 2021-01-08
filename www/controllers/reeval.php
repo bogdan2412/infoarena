@@ -21,6 +21,12 @@ function controller_reeval() {
         redirect(url_monitor());
     }
     job_reeval($filters);
+
+    // In theory we only need to trigger a full rating update when any of the
+    // jobs belong to a completed, rated round. But this errs on the side of
+    // caution.
+    parameter_update_global('full_rating_update', 1);
+
     flash('Se reevalueaza urmatoarele job-uri... ');
     redirect(url_monitor($filters));
 }

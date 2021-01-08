@@ -52,10 +52,26 @@ function parameter_get_values($object_type, $object_id) {
     foreach (db_fetch_all($query) as $row) {
         $dict[$row['parameter_id']] = $row['value'];
     }
-    
+
     // Store in cache
     mem_cache_set("$object_type-params-by-id:$object_id", $dict);
     return $dict;
+}
+
+// Creates or updates the value for a global parameter.
+function parameter_update_global($id, $value) {
+    // delete existing value if any
+    $query = sprintf("DELETE FROM ia_parameter_value
+                      WHERE object_type = 'global' AND parameter_id = %s",
+                     db_quote($id));
+    db_query($query);
+
+    // insert given value
+    $query = sprintf("INSERT INTO ia_parameter_value
+                            (`object_type`, `parameter_id`, `value`)
+                          VALUES ('global', %s, %s)",
+                     db_quote($id), db_quote($value));
+    db_query($query);
 }
 
 ?>

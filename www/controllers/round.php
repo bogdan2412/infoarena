@@ -178,6 +178,15 @@ function controller_round_details($round_id) {
         identity_require("round-edit", $new_round);
         round_update($new_round);
         round_update_parameters($round_id, $new_round_params);
+
+        // Any changes to a round that was or has become complete will require
+        // a full rating recomputation. Note that out of caution we don't take
+        // other criteria into account, such as whether the round affects ratings.
+        if (($round['state'] == 'complete') ||
+            ($new_round['state'] == 'complete')) {
+            parameter_update_global('full_rating_update', 1);
+        }
+
         /**
          * Update task security if the new or old round are of type archive
          * Also update all the tasks if changing round type

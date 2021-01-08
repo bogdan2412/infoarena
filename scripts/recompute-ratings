@@ -26,4 +26,8 @@ foreach ($rounds as $round_id => $round) {
     $i++;
 }
 
+// Until the need arises again for a full update, we can perform incremental
+// updates.
+parameter_update_global('full_rating_update', 0);
+
 ?>
