@@ -74,4 +74,18 @@ function parameter_update_global($id, $value) {
     db_query($query);
 }
 
+/**
+ * Retrieves the value for a global parameter.
+ * @param string $id Parameter name.
+ * @param mixed $default Default value to return if the parameter is not set.
+ **/
+function parameter_get_global($id, $default = null) {
+    $query = sprintf("SELECT *
+                      FROM ia_parameter_value
+                      WHERE object_type = 'global' AND parameter_id = %s",
+                     db_quote($id));
+    $rows = db_fetch_all($query);
+    return $rows[0]['value'] ?? $default;
+}
+
 ?>

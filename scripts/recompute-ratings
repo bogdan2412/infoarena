@@ -11,9 +11,24 @@ require_once(dirname($argv[0]) . "/utilities.php");
 require_once(IA_ROOT_DIR."common/db/score.php");
 db_connect();
 
-// first, delete all ratings
-log_print("Deleting all current ratings");
-rating_clear();
+// parse the -f, --full command-line argument
+$opts = getopt('f', ['full']);
+$full = isset($opts['f']) || isset($opts['full']);
+
+if ($full) {
+    log_print("Deleting all current ratings");
+    rating_clear();
+    // Until the need arises again for a full update, we can perform incremental
+    // updates.
+    parameter_update_global('full_rating_update', 0);
+}
+
+// complain if a full update is required, but -f was not given
+$fullRequired = parameter_get_global('full_rating_update', 0);
+log_assert($full || !$fullRequired,
+           "A full rating update is required. This becomes necessary when jobs " .
+           "are reevaluated or when completed rounds are edited. This script " .
+           "will not continue without the -f (--full) flag.");
 
 $rounds = applicable_rating_rounds();
 
@@ -25,9 +40,5 @@ foreach ($rounds as $round_id => $round) {
     system(__DIR__ . "/update-ratings {$round_id}");
     $i++;
 }
-
-// Until the need arises again for a full update, we can perform incremental
-// updates.
-parameter_update_global('full_rating_update', 0);
 
 ?>
