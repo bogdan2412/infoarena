@@ -207,6 +207,9 @@ define('GOOGLE_SEARCH', true);
 define('MONITOR_AUTOREFRESH', true);
 define('MONITOR_AUTOREFRESH_INTERVAL', 5000); // milliseconds
 
+// Show or hide newsletter-related checkboxes
+define('NEWSLETTER', true);
+
 // Text of the homepage link in the top navigation menu
 define('NAV_HOMEPAGE_TEXT', 'info<em>arena</em>');
 
