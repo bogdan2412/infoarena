@@ -6,9 +6,6 @@
 // recomputes everything from scratch. If the ratings have been tampered with,
 // this script refuses to run unless -f|--full is passed. "Tampering" means
 // that (1) a completed round was edited or (2) a job was reevaluated.
-//
-// FIXME: This isn't very efficient since update_single_round() always starts
-// from scratch.
 
 require_once(dirname($argv[0]) . "/utilities.php");
 require_once(IA_ROOT_DIR."www/config.php");
@@ -44,35 +41,30 @@ log_assert($full || !$fullRequired,
 
 $rounds = applicable_rating_rounds();
 
-log_print("Recomputing ratings for ".count($rounds)." rounds...");
-$i = 1;
-$cnt = count($rounds);
-foreach ($rounds as $round_id => $ignored) {
-    echo "\n\n\nRound {$i}/{$cnt} - {$round_id}...\n";
-    update_single_round($round_id);
-    $i++;
+// don't even bother reading the user list if no rounds need updating
+if (count($rounds)) {
+    list($users, $fullUsers) = read_current_ratings();
+
+    log_print("Recomputing ratings for ".count($rounds)." rounds...");
+    $i = 1;
+    $cnt = count($rounds);
+    foreach ($rounds as $round_id => $ignored) {
+        echo "\n\n\nRound {$i}/{$cnt} - {$round_id}...\n";
+        update_single_round($round_id, $users, $fullUsers);
+        $i++;
+    }
 }
 
-// Update ratings for a single round.
-// WARNING: Ratings should be updated in chronological order!
-function update_single_round($round_id) {
-    // validate round id
-    $round = round_get($round_id);
-    log_assert($round, "Invalid round identifier!");
-    $params = round_get_parameters($round_id);
-    log_assert(isset($params['rating_timestamp']),
-               "Round does not have parameter rating_timestamp!");
-    $timestamp = parameter_decode('rating_timestamp', $params['rating_timestamp']);
-    log_assert(isset($params['rating_update']),
-               "Round does not have parameter rating_update!");
-    log_assert(parameter_decode('rating_update', $params['rating_update']),
-               "Round is not marked as rating_update!");
-    log_print("Updating ratings for round ".$round_id."...\n");
+/*************************************************************************/
 
-    // read all registered user names
+// Reads existing ratings. Gives default rating and deviation to unrated users
+// (in-memory).
+// Returns a pair of arrays:
+//   $users is a map of username => (rating, deviation, timestamp)
+//   $fullUsers is the full contents of the ia_user table.
+function read_current_ratings() {
     log_print("Reading whole user list...");
     $user_list = user_get_list();
-    $usercount = count($user_list);
     log_print(count($user_list) . " infoarena users");
 
     // read last user ratings, deviations & timestamps
@@ -81,8 +73,8 @@ function update_single_round($round_id) {
 
     // do some quick testing: check if current rating cache corresponds
     // with what rating_last_scores() says
-    $ucheck = user_get_list(true);
-    foreach ($ucheck as $row) {
+    $fullUsers = user_get_list(true);
+    foreach ($fullUsers as $row) {
         if (!(float)$row['rating_cache']) {
             continue;
         }
@@ -99,10 +91,30 @@ function update_single_round($round_id) {
     log_print("Merging data...");
     $users = rating_init($user_list, $current_scores);
 
+    return [ $users, $fullUsers ];
+}
+
+// Update ratings for a single round.
+// WARNING: Ratings should be updated in chronological order!
+function update_single_round($round_id, &$users, &$fullUsers) {
+
+    // validate round id
+    $round = round_get($round_id);
+    log_assert($round, "Invalid round identifier!");
+    $params = round_get_parameters($round_id);
+    log_assert(isset($params['rating_timestamp']),
+               "Round does not have parameter rating_timestamp!");
+    $timestamp = parameter_decode('rating_timestamp', $params['rating_timestamp']);
+    log_assert(isset($params['rating_update']),
+               "Round does not have parameter rating_update!");
+    log_assert(parameter_decode('rating_update', $params['rating_update']),
+               "Round is not marked as rating_update!");
+    log_print("Updating ratings for round ".$round_id."...\n");
+
     // read registered users
     $scores = array();
     log_print("Reading round registered users...");
-    $round_users = round_get_registered_users_range($round['id'], 0, $usercount);
+    $round_users = round_get_registered_users_range($round['id'], 0, count($users));
     log_print(count($round_users) . " users registered for this round.");
     foreach ($round_users as $row) {
         log_assert(isset($row['username']));
@@ -111,7 +123,7 @@ function update_single_round($round_id) {
 
     // read round scores
     log_print("Reading round scores...");
-    $round_rows = score_get_rankings($round_id, null, 0, $usercount);
+    $round_rows = score_get_rankings($round_id, null, 0, count($users));
     log_print(count($round_rows) . " users were scored in this round.");
     foreach ($round_rows as $row) {
         log_assert(isset($row['user_name']) && isset($row['score']));
@@ -132,9 +144,8 @@ function update_single_round($round_id) {
         score_update_rating($user_id, $round_id, $users[$username]['deviation'], $users[$username]['rating']);
 
         // cache rating
-        $user = $ucheck[$username];
-        $user['rating_cache'] = $users[$username]['rating'];
-        user_update($user);
+        $fullUsers[$username]['rating_cache'] = $users[$username]['rating'];
+        user_update($fullUsers[$username]);
 
     }
 
