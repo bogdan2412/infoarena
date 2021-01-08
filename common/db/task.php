@@ -246,6 +246,8 @@ function task_filter_by_tags($tag_ids, $scores = true, $user_id = null) {
     }
 
 
+    // MariaDB is happy with just "GROUP BY ia_task.id", but MySQL wants all
+    // the fields from SELECT listed in GROUP BY.
     $query = "SELECT ia_task.id AS task_id,
                 ia_task.title AS task_title,
                 ia_task.page_name AS page_name,
@@ -259,7 +261,8 @@ function task_filter_by_tags($tag_ids, $scores = true, $user_id = null) {
     $join_score
     WHERE ia_task.security = 'public'
     $tag_filter
-    GROUP BY ia_task.id
+    GROUP BY ia_task.id, ia_task.title, ia_task.page_name, ia_task.open_source,
+    ia_task.open_tests, ia_task.rating, ia_task.source, ia_task.solved_by
     ORDER BY task_title";
 
     $tasks = db_fetch_all($query);
