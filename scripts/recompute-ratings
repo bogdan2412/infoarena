@@ -15,7 +15,7 @@ db_connect();
 log_print("Deleting all current ratings");
 rating_clear();
 
-$rounds = rating_rounds();
+$rounds = applicable_rating_rounds();
 
 log_print("Recomputing ratings for ".count($rounds)." rounds...");
 $i = 1;

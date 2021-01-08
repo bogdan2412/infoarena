@@ -56,10 +56,10 @@ foreach ($ucheck as $row) {
     }
     log_assert(isset($current_scores[$row['username']]));
     if ($current_scores[$row['username']]['rating'] != $row['rating_cache']) {
-            echo $row['username']." -> ".$current_scores[$row['username']]['rating']." != ".$row['rating_cache']."\n";
-            log_print('rating_last_scores() fails to match rating_cache!!!');
-//            read_bool('This is serious. Have you seen the warning?');
-//            log_error('rating_last_scores() fails to match rating_cache!!!');
+        echo $row['username']." -> ".$current_scores[$row['username']]['rating']." != ".$row['rating_cache']."\n";
+        log_print('rating_last_scores() fails to match rating_cache!!!');
+        // read_bool('This is serious. Have you seen the warning?');
+        // log_error('rating_last_scores() fails to match rating_cache!!!');
     }
 }
 
@@ -104,5 +104,8 @@ foreach ($round_users as $row) {
     $user['rating_cache'] = $users[$username]['rating'];
     user_update($user);
 
-    }
+}
+
+$params['rating_applied'] = 1;
+parameter_update_values('round', $round_id, $params);
 ?>

@@ -169,6 +169,28 @@ function rating_history($user_id) {
     return $history;
 }
 
+// Returns all completed, rated rounds whose ratings have not yet been
+// applied.
+function applicable_rating_rounds() {
+    $rounds = rating_rounds();
+
+    // filter out rounds having rating_applied on
+    $query = "SELECT object_id AS round_id
+        FROM `ia_parameter_value`
+        WHERE parameter_id = 'rating_applied'
+          AND object_type = 'round'
+          AND value = '1'
+    ";
+    $rows = db_fetch_all($query);
+
+    foreach ($rows as $row) {
+        // printf("Ignoring already applied round [%s]\n", $row['round_id']);
+        unset($rounds[$row['round_id']]);
+    }
+
+    return $rounds;
+}
+
 // Returns all COMPLETED rounds in chronological order that have ratings
 // enabled.
 //
@@ -373,6 +395,9 @@ function get_users_by_rating_count() {
 function rating_clear() {
     db_query('DELETE FROM ia_rating');
     db_query('UPDATE ia_user SET rating_cache = 0');
+    db_query("DELETE FROM ia_parameter_value
+                WHERE object_type = 'round'
+                  AND parameter_id = 'rating_applied'");
 }
 
 // Computes rankings for $rounds
