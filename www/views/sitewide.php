@@ -31,13 +31,13 @@ function ia_template_header() {
         </div>
     <?php } ?>
 
-    <h1><?= format_link(url_home(), "infoarena informatica de performanta") ?></h1>
+    <h1><?= format_link(url_home(), SITE_NAME . ' informatica de performanta') ?></h1>
 </div>
 <?php
 }
 
 // display main navigation bar
-function ia_template_topnav($selected = 'infoarena', $is_admin = false) {
+function ia_template_topnav($selected = SITE_NAME, $is_admin = false) {
     global $identity_user;
 
     $pre = array($selected => '<strong>');
@@ -46,9 +46,9 @@ function ia_template_topnav($selected = 'infoarena', $is_admin = false) {
 <div id="topnav">
 <ul>
     <li>
-        <?= getattr($pre, 'infoarena') ?>
+        <?= getattr($pre, SITE_NAME) ?>
         <?= format_link(url_home(), NAV_HOMEPAGE_TEXT, false) ?>
-        <?= getattr($post, 'infoarena') ?>
+        <?= getattr($post, SITE_NAME) ?>
     </li>
     <?php if (TOPNAV_ELEMENTS['blog']) { ?>
         <li>
@@ -127,9 +127,17 @@ function ia_template_footer() {
 ?>
 <div id="footer">
     <ul class="clear">
-        <li class="copyright">&copy;&nbsp;2004-<?= date("Y") ?>&nbsp;<?= format_link(url_textblock('Asociatia-infoarena'), "Asociatia infoarena") ?></li>
+        <li class="copyright">
+            &copy;
+            <?= COPYRIGHT_FIRST_YEAR . '-' . date("Y") ?>
+            <?php if (COPYRIGHT_OWNER_PAGE): ?>
+                <?= format_link(url_textblock(COPYRIGHT_OWNER_PAGE), COPYRIGHT_OWNER) ?>
+            <?php else: ?>
+                <?= COPYRIGHT_OWNER ?>
+            <?php endif; ?>
+        </li>
         <li class="separate"><?= format_link(url_home(), "Prima pagina") ?></li>
-        <li><?= format_link(url_textblock("despre-infoarena"), "Despre infoarena") ?></li>
+        <li><?= format_link(url_textblock(ABOUT_PAGE), 'Despre ' . SITE_NAME) ?></li>
         <li><?= format_link(url_textblock("termeni-si-conditii"), "Termeni si conditii") ?></li>
         <li><?= format_link(url_textblock("contact"), "Contact") ?></li>
         <li class="top"><a href="#header">Sari la inceputul paginii &uarr;</a></li>
@@ -137,22 +145,30 @@ function ia_template_footer() {
 <?php if (!IA_DEVELOPMENT_MODE) { ?>
     <p class="cc">
     <!--Creative Commons License-->
-    <a class="badge" rel="license" href="http://creativecommons.org/licenses/by-nc/2.5/"><img alt="Creative Commons License" src="<?= url_static('images/CreativeCommonsBadge.png') ?>"/></a>
-    Cu exceptia cazurilor in care se specifica altfel, continutul site-ului infoarena<br/>este publicat sub licenta <a rel="license" href="http://creativecommons.org/licenses/by-nc/2.5/">Creative Commons Attribution-NonCommercial 2.5</a>.
-    <!--/Creative Commons License-->
-    <rdf:RDF xmlns="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
-        <Work rdf:about="">
-            <license rdf:resource="http://creativecommons.org/licenses/by-nc/2.5/" />
-        </Work>
-        <License rdf:about="http://creativecommons.org/licenses/by-nc/2.5/">
-            <permits rdf:resource="http://web.resource.org/cc/Reproduction"/>
-            <permits rdf:resource="http://web.resource.org/cc/Distribution"/>
-            <requires rdf:resource="http://web.resource.org/cc/Notice"/>
-            <requires rdf:resource="http://web.resource.org/cc/Attribution"/>
-            <prohibits rdf:resource="http://web.resource.org/cc/CommercialUse"/>
-            <permits rdf:resource="http://web.resource.org/cc/DerivativeWorks"/>
-        </License>
-    </rdf:RDF>
+        <a class="badge" rel="license" href="http://creativecommons.org/licenses/by-nc/2.5/">
+            <img
+                alt="Creative Commons License"
+                src="<?= url_static('images/CreativeCommonsBadge.png') ?>"/>
+        </a>
+        Cu exceptia cazurilor in care se specifica altfel, continutul
+        site-ului <?= SITE_NAME ?><br/>este publicat sub licenta
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc/2.5/">Creative
+        Commons Attribution-NonCommercial 2.5</a>.
+
+        <!--/Creative Commons License-->
+        <rdf:RDF xmlns="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+            <Work rdf:about="">
+                <license rdf:resource="http://creativecommons.org/licenses/by-nc/2.5/" />
+            </Work>
+            <License rdf:about="http://creativecommons.org/licenses/by-nc/2.5/">
+                <permits rdf:resource="http://web.resource.org/cc/Reproduction"/>
+                <permits rdf:resource="http://web.resource.org/cc/Distribution"/>
+                <requires rdf:resource="http://web.resource.org/cc/Notice"/>
+                <requires rdf:resource="http://web.resource.org/cc/Attribution"/>
+                <prohibits rdf:resource="http://web.resource.org/cc/CommercialUse"/>
+                <permits rdf:resource="http://web.resource.org/cc/DerivativeWorks"/>
+            </License>
+        </rdf:RDF>
     </p>
 <?php
     }

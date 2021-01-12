@@ -94,7 +94,7 @@ header("Content-type: text/html; charset=utf-8");
 
 <?php
 if (!isset($topnav_select)) {
-    $topnav_select = 'infoarena';
+    $topnav_select = SITE_NAME;
 }
 ia_template_header();
 $is_admin = ('admin' == getattr($identity_user, 'security_level'));
@@ -126,7 +126,7 @@ ia_template_topnav($topnav_select, $is_admin);
             <li><a href="<?= html_escape(url_textblock('documentatie')) ?>">Documentaţie</a></li>
         <?php } ?>
         <?php if (SIDEBAR_ELEMENTS['about']) { ?>
-            <li><a href="<?= html_escape(url_textblock('despre-infoarena')) ?>">Despre infoarena</a></li>
+            <li><a href="<?= html_escape(url_textblock(ABOUT_PAGE)) ?>">Despre <?= SITE_NAME ?></a></li>
         <?php } ?>
         <li class="separator"><hr/></li>
         <li><?= format_link_access(url_monitor(array('user' => identity_get_username())), "Monitorul de evaluare", 'm') ?></li>

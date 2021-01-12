@@ -245,3 +245,11 @@ define('ENABLED_COMPILERS', array(
     'rs' => 'Rust',
     'py' => 'Python3 (FOARTE EXPERIMENTAL!)',
 ));
+
+// Credits
+define('COPYRIGHT_FIRST_YEAR', 2012);
+define('SITE_NAME', 'infoarena');
+define('COPYRIGHT_OWNER', 'Asociatia infoarena');
+// If empty, the copyright owner won't have a hyperlink in the footer.
+define('COPYRIGHT_OWNER_PAGE', 'Asociatia-infoarena');
+define('ABOUT_PAGE', 'despre-infoarena');
