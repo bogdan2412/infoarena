@@ -50,23 +50,33 @@ function controller_resetpass() {
             // email user
             $to = $user['email'];
             $subject = 'Recupereaza utilizator si parola';
-            $message = "
-Ai solicitat ca parola contului tau de pe infoarena fie resetata.
+            $message = sprintf("
+Ai solicitat ca parola contului tau de pe %s sa fie resetata.
 
-Nume de cont: {$user['username']}
-Adresa ta de e-mail: {$user['email']}
-Numele tau: {$user['full_name']}
+Nume de cont: %s
+Adresa ta de e-mail: %s
+Numele tau: %s
 
 Pentru a confirma aceasta actiune trebuie sa vizitezi acest link:
 
 ----
-$clink
+%s
 ----
 
 Daca nu ai facut o astfel de solicitare, ignora acest mesaj iar parola nu va fi resetata.
 
-Echipa infoarena
-".IA_URL."\n";
+Echipa %s
+%s
+",
+                               SITE_NAME,
+                               $user['username'],
+                               $user['email'],
+                               $user['full_name'],
+                               $clink,
+                               SITE_NAME,
+                               IA_URL
+
+            );
 
             // send email
             send_email($to, $subject, $message);
@@ -120,24 +130,30 @@ function controller_resetpass_confirm($username) {
     // send email with new password
     $to = $user['email'];
     $subject = 'Parola noua';
-    $message = "
+    $message = sprintf("
 Ai solicitat si ai confirmat ca parola ta sa fie resetata.
 
-Parola noua: {$new_password}
-Numele contului: {$user['username']}
+Parola noua: %s
+Numele contului: %s
 
 Te poti autentifica aici:
-".url_login()."
+%s
 
-Echipa infoarena
-".IA_URL."\n";
+Echipa %s
+%s
+",
+                       $new_password,
+                       $user['username'],
+                       url_login(),
+                       SITE_NAME,
+                       IA_URL);
 
     // send e-mail
     send_email($to, $subject, $message);
 
-    // notify yser
-    flash('Parola a fost resetata si trimisa pe e-mail. Verifica-ti '
-          .'e-mail-ul ca sa afli noua parola.');
+    // notify user
+    flash('Parola a fost resetata si trimisa pe e-mail. Verifica-ti ' .
+          'e-mail-ul ca sa afli noua parola.');
     redirect(url_login());
 }
 

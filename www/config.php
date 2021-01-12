@@ -42,9 +42,6 @@ $IA_PAGER_DISPLAY_ENTRIES_OPTIONS = array(25, 50, 100, 250);
 define('IA_DATE_DEFAULT_TIMEZONE', 'Europe/Bucharest');
 define('IA_DATE_DEFAULT_FORMAT', '%e %B %Y %H:%M:%S');
 
-// mail sender
-define("IA_MAIL_SENDER_NO_REPLY", 'infoarena <no-reply@infoarena.ro>');
-
 // Maximum number of recursive includes in the wiki.
 define('IA_MAX_RECURSIVE_INCLUDES', 5);
 

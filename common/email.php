@@ -25,8 +25,7 @@ function send_email($to, $subject, $plain_text_message, $from = null,
         $reply_to = $from;
     }
 
-    // put infoarena tag in mail subject
-    $subject = 'infoarena: '.$subject;
+    $subject = SITE_NAME . ': ' . $subject;
 
     // word-wrap message, some mail-clients are stupid
     $message = wordwrap($plain_text_message, IA_EMAIL_WORDRAP);
@@ -35,7 +34,7 @@ function send_email($to, $subject, $plain_text_message, $from = null,
     $headers = 'From: ' . $from . "\n" .
                'Reply-To: ' . $reply_to . "\n" .
                "Content-type: text/plain\n" .
-               'X-Mailer: infoarena/newsletter';
+               'X-Mailer: ' . SITE_NAME . '/newsletter';
 
     // log
     if ($do_log) {

@@ -101,6 +101,7 @@ define('IA_ROUND_TEXTBLOCK_PREFIX', 'runda/');
 define('IA_SECRET', 'developersetup');
 
 // Mail setup
+define('IA_MAIL_SENDER_NO_REPLY', 'infoarena <no-reply@infoarena.ro>');
 
 // Enable this only if you have a SMTP server around
 define('IA_SMTP_ENABLED', false);

@@ -5,7 +5,7 @@ include('header.php');
 
 ?>
 
-<h1>Ultimele modificari de pe infoarena</h1>
+<h1>Ultimele modificari de pe <?= SITE_NAME ?></h1>
 
 <a class="feed" href="<?= html_escape(url_absolute(url_changes_rss())) ?>" title="RSS Modificari" >RSS</a>
 
