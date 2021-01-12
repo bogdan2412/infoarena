@@ -26,7 +26,10 @@
 
 <form enctype="multipart" action="<?= html_escape($action) ?>" method="post" class="profile clear">
     <fieldset>
-        <legend><img src="<?= html_escape(url_static('images/icons/key.gif')) ?>" alt="!" /> Utilizator infoarena</legend>
+        <legend>
+            <img src="<?= html_escape(url_static('images/icons/key.gif')) ?>" alt="!" />
+            Utilizator <?= SITE_NAME ?>
+        </legend>
         <ul class="form">
             <li>
                 <label for='form_username'>Nume cont utilizator</label>
@@ -69,7 +72,10 @@
                 <label for="form_email">Adresa e-mail</label>
                 <?= ferr_span('email') ?>
                 <input type="text" name="email" value="<?= fval('email') ?>" id="form_email" />
-                <span class="fieldHelp">Aici vei primi (in caz ca doresti) mesaje de la alti utilizatori, noutati infoarena</span>
+                <span class="fieldHelp">
+                    Aici vei primi (in caz ca doresti) mesaje de la alti
+                    utilizatori, noutati <?= SITE_NAME ?>
+                </span>
             </li>
         </ul>
     </fieldset>
@@ -108,7 +114,7 @@
                     id="form_newsletter"/>
                 <label for="form_newsletter" class="checkbox">
                     Ma abonez la newsletter. Sunt de acord sa primesc pe
-                    e-mail noutati despre infoarena. Ma pot dezabona oricand.
+                    e-mail noutati despre <?= SITE_NAME ?>. Ma pot dezabona oricand.
                 </label>
             <?php else : ?>
                 <input type="hidden" name="newsletter" value="0">
