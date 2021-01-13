@@ -248,7 +248,7 @@ define('ENABLED_COMPILERS', array(
 ));
 
 // Credits
-define('COPYRIGHT_FIRST_YEAR', 2012);
+define('COPYRIGHT_FIRST_YEAR', 2004);
 define('SITE_NAME', 'infoarena');
 define('COPYRIGHT_OWNER', 'Asociatia infoarena');
 // If empty, the copyright owner won't have a hyperlink in the footer.
