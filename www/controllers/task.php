@@ -179,6 +179,14 @@ function controller_task_details($task_id) {
     $view['form_errors'] = $errors;
     $view['param_infos'] = $param_infos;
 
+    // Secure deletion requires the user to delete all the attachments first
+    // in order to prevent accidental deletion of valuable data. Secure
+    // deletion kicks in when (1) the task has attachments and (2) secure
+    // deletion is enabled in the config file.
+    $view['secure_delete'] =
+        SECURE_DELETION &&
+        count(attachment_get_all($task['page_name']));
+
     execute_view_die("views/task_edit.php", $view);
 }
 

@@ -92,14 +92,31 @@ $form_fields = array(
 
 ?>
 
-<h1>Editare parametri <a href="<?= html_escape(url_task($view['task_id'])) ?>">
-<?= html_escape($view['task_id']) ?></a></h1>
+<h1>
+    Editare parametri
+    <a href="<?= html_escape(url_task($view['task_id'])) ?>">
+        <?= html_escape($view['task_id']) ?>
+    </a>
+</h1>
 
 <?php if (identity_can("task-delete", $task)) { ?>
-<form action="<?= html_escape(url_task_delete()) ?>" method="post" style="float: right">
-    <input type="hidden" name="task_id" value="<?= html_escape($task_id) ?>" />
-    <input onclick="return confirm('Aceasta actiune este ireversibila! Doresti sa continui?')" type="submit" value="Sterge problema" id="form_delete" class="button important" />
-</form>
+    <form action="<?= html_escape(url_task_delete()) ?>" method="post" style="float: right">
+        <input type="hidden" name="task_id" value="<?= html_escape($task_id) ?>" />
+        <input
+            onclick="return confirm('Aceasta actiune este ireversibila! Doresti sa continui?')"
+            type="submit"
+            value="Sterge problema"
+            id="form_delete"
+
+            <?php if ($view['secure_delete']): ?>
+            class="button important disabled"
+            disabled
+            title="Pentru a preveni greșelile, problemele cu fișiere atașate nu pot fi șterse. Te rugăm să ștergi întîi atașamentele problemei."
+            <?php else: ?>
+            class="button important"
+            <?php endif; ?>
+        />
+    </form>
 <?php } ?>
 
 <form action="<?= html_escape(url_task_edit($task_id, 'task-edit-params')) ?>"

@@ -208,6 +208,10 @@ define('GOOGLE_SEARCH', true);
 define('MONITOR_AUTOREFRESH', true);
 define('MONITOR_AUTOREFRESH_INTERVAL', 5000); // milliseconds
 
+// Secure deletion: if true, prevent deleting tasks with attachments. Instead,
+// require the user to explicitly delete all attachments first.
+define('SECURE_DELETION', false);
+
 // Show or hide newsletter-related checkboxes
 define('NEWSLETTER', true);
 
