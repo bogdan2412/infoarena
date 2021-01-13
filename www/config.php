@@ -69,12 +69,6 @@ define('IA_FORCE_VIEW_SOURCE_PAGE', 'force-view-source-page');
 // LaTeX support
 define("IA_LATEX_ENABLE", !IA_DEVELOPMENT_MODE);
 
-// Token constants
-define('IA_TOKENS_MAX', 60);
-define('IA_TOKENS_REGISTER', 61);
-define('IA_TOKENS_CAPTCHA', 5);
-define('IA_TOKENS_LOGIN', 20);
-define('IA_TOKENS_REGEN', 300);
 // List of safe MIME types
 // FIXME: add more?
 $IA_SAFE_MIME_TYPES = array('image/jpeg', 'image/png', 'image/gif', 'image/bmp', 'image/x-ms-bmp');

@@ -178,6 +178,25 @@ define('IA_LOG_SQL_QUERY', false);
 // Try to EXPLAIN every select query, useful when optimizing.
 define('IA_LOG_SQL_QUERY_EXPLAIN', false);
 
+// ------------------------------------------------------------------------
+// Token constants. Certain operations cost tokens to perform. If there are
+// not enough tokens, the identifier (IP-based) will need to solve a captcha.
+
+// Maximum number of tokens an identifier can have.
+define('IA_TOKENS_MAX', 60);
+
+// Tokens regenerate over time, one token every this many seconds.
+define('IA_TOKENS_REGEN', 300);
+
+// Tokens earned by solving a captcha.
+define('IA_TOKENS_CAPTCHA', 5);
+
+// Token cost of operations. Set to 0 to effectively disable captchas.
+define('IA_TOKENS_REGISTER', 61);
+define('IA_TOKENS_LOGIN', 20);
+
+// ------------------------------------------------------------------------
+
 // CAPTCHA Keys
 define('IA_CAPTCHA_PUBLIC_KEY', '6LesuwQAAAAAAPHgdh9Hem1KJfvd5Ng1yRoIweio');
 define('IA_CAPTCHA_PRIVATE_KEY', '6LesuwQAAAAAAF3FUPWFGQD1xPITFagjqWUO9Urs');
