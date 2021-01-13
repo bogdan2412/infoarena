@@ -32,8 +32,11 @@ function user_test_ia1_password($username, $password)
 {
     // old ia1 users are expected to have the ia1 hashed password
     // as their actual password
-    $password = db_query_value(sprintf("SELECT PASSWORD('%s')",
-                                       db_escape($password)));
+
+    // The password() function was removed in MySQL 8.0. Use the workaround
+    // described at https://stackoverflow.com/a/60243956/6022817
+    $query = "select concat('*', upper(sha1(unhex(sha1('%s')))))";
+    $password = db_query_value(sprintf($query, db_escape($password)));
     // hash password ia2 style
     $password = user_hash_password($password, $username);
     // test
