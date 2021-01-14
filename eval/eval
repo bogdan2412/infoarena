@@ -97,7 +97,7 @@ function job_handle($job) {
      * Special case for acm-round tasks
      */
     $round = round_get($job['round_id']);
-    if ($round['type'] == 'acm-round') {
+    if ($round && $round['type'] == 'acm-round') {
         $time = (int)(db_date_parse($job['submit_time']) -
                       db_date_parse($round['start_time']));
         $penalty = $job['submissions'] * 20 + $time / 60;
