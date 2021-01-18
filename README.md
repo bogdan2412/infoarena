@@ -2,7 +2,7 @@
 
 ## About
 
-infoarena is a platform for competitive programming training and organization of contests.
+[Infoarena](https://infoarena.ro) is a romanian platform for competitive programming training and organization of contests.
 
 ## Documentation
 
