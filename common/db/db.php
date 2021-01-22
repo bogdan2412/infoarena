@@ -290,7 +290,7 @@ function db_fetch($query) {
 function is_sql_resource($var) {
     return MYSQL_NATIVE
         ? is_resource($var)
-        : ($var instanceof mysqli_result);
+        : ($var instanceof mysqli || $var instanceof mysqli_result);
 }
 
 // FIXME: This shouldn't be here. Move it in common/db/task.php or

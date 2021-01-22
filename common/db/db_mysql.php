@@ -2,6 +2,8 @@
 
 // Connects to the database. Call this function if you need the database.
 // It's better than connecting when the file is included. Side-effects are bad.
+// Note: the wrapper around mysqli causes mysql_error() to barf when there is
+// no connection.
 function db_connect() {
     global $dbLink;
     // Repetitive include guard. Is this really needed?
@@ -15,8 +17,7 @@ function db_connect() {
         if (IA_DB_KEEP_ALIVE) {
             $timeout = 0;
             do {
-                log_warn('Cannot connect to database: '.mysql_error().
-                    "\nRetrying...");
+                log_warn("Cannot connect to database, retrying in {$timeout} seconds.");
 
                 // Wait for an increasing amount of seconds to avoid
                 // strain on the mysql server if it is under heavy load
@@ -28,7 +29,7 @@ function db_connect() {
             } while (!db_isalive());
             log_print('Connected to database.');
         } else {
-            log_error('Cannot connect to database: '.mysql_error());
+            log_error('Cannot connect to database.');
         }
     }
     if (!mysql_select_db(IA_DB_NAME, $dbLink)) {
@@ -42,7 +43,7 @@ function db_isalive() {
     global $dbLink;
 
     // Are we already connected?
-    if (is_sql_resource($dbLink) && mysql_ping($dbLink)) {
+    if (is_sql_resource($dbLink) && @mysql_ping($dbLink)) {
         return true;
     }
     return false;
@@ -109,13 +110,13 @@ function db_query($query, $unbuffered = false) {
 
     // Do the query.
     if ($unbuffered) {
-        $result = mysql_unbuffered_query($query, $dbLink);
+        $result = @mysql_unbuffered_query($query, $dbLink);
     } else {
-        $result = mysql_query($query, $dbLink);
+        $result = @mysql_query($query, $dbLink);
     }
 
     if (!$result) {
-        // Query falied. Have we lost connection?
+        // Query failed. Have we lost connection?
         if (IA_DB_KEEP_ALIVE && db_keepalive()) {
             // Try query again
             return db_query($query, $unbuffered);
