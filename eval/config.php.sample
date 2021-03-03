@@ -48,6 +48,13 @@ define('IA_JUDGE_MAX_EVAL_MESSAGE', 100);
 // This is useful in finding judge bugs.
 define('IA_JUDGE_KEEP_JAILS', true);
 
+// How much page cache memory to give the classic grader, in kilobytes.
+// Cache is necessary when cgroups counts page cache towards used memory.
+// This value should be larger than any conceivable output file. This is safe,
+// because it can only be used by the kernel as file cache. Contestants cannot
+// use it as RSS memory (ia-sandbox ensures this at the end).
+define('IA_CACHE_MEMORY', 65536); // 64 megabytes
+
 // Retry downloading grader data.
 define('IA_JUDGE_MAX_GRADER_DOWNLOAD_RETRIES', 5);
 

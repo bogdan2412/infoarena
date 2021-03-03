@@ -199,6 +199,7 @@ abstract class BaseGrader {
                             $jaildir,
                             IA_JUDGE_TASK_EVAL_TIMELIMIT,
                             IA_JUDGE_TASK_EVAL_MEMLIMIT,
+                            0, // no cache
                             true);
         eval_assert($jrunres['result'] != 'ERROR', 'Error in jrun');
 

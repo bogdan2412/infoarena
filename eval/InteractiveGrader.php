@@ -44,7 +44,7 @@ class InteractiveGrader extends BaseGrader {
             array(
                 'user' => IA_JUDGE_TASK_INTERACT_TIMELIMIT,
                 'wall' => $wall_time_limit,
-            ), IA_JUDGE_TASK_INTERACT_MEMLIMIT, false,
+            ), IA_JUDGE_TASK_INTERACT_MEMLIMIT, 0, false,
             array(
             'in' => $user_out_pipe,
                   'out' => $user_in_pipe,
@@ -59,7 +59,7 @@ class InteractiveGrader extends BaseGrader {
             array(
                 'user' => $time_limit,
                 'wall' => $wall_time_limit,
-            ), $mem_limit, false,
+            ), $mem_limit, 0, false,
             array('in' => $user_in_pipe,
             'out' => $user_out_pipe,
             ),

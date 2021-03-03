@@ -110,7 +110,7 @@ function compile_file($input_file_name, &$compiler_type, &$compiler_message) {
 
     $parts = explode(' ', $cmdline, 2);
     $result = jail_run($parts[0], getcwd().'/', IA_JUDGE_COMPILE_TIMELIMIT,
-                       IA_JUDGE_COMPILE_MEMLIMIT, true, array(), $mounts,
+                       IA_JUDGE_COMPILE_MEMLIMIT, 0, true, array(), $mounts,
                        'compile', false, $envs, $parts[1]);
 
     $compiler_message = $result['stdout'].$result['stderr'];
@@ -188,7 +188,7 @@ function jrun_parse_message($message) {
 // All timings are in miliseconds and memory is in kilobytes
 //
 // If result is ERROR time, memory, stdin and stdout are never set.
-function jail_run($program, $jaildir, $time, $memory, $capture_std = true,
+function jail_run($program, $jaildir, $time, $memory, $cache, $capture_std = true,
                   $redirect_std = array(), $mounts = array(),
                   $instance_name = 'default', $async = false,
                   $extra_env = array(), $extra_args = '') {
@@ -243,6 +243,10 @@ function jail_run($program, $jaildir, $time, $memory, $capture_std = true,
         $cmdline .= ' --stack '.$memory.'kb';
     }
 
+    if ($cache) {
+        $cmdline .= " --cache {$cache}kb";
+    }
+
     $cmdline .= ' --env PATH=/usr/bin';
     if ($extra_env) {
         foreach ($extra_env as $key => $value) {
@@ -279,7 +283,7 @@ function jail_run($program, $jaildir, $time, $memory, $capture_std = true,
 }
 
 function run_file($compiler_id, $bin_path, $jail_dir, $time,
-                  $memory, $capture_std = false, $redirect_std = array(),
+                  $memory, $cache = 0, $capture_std = false, $redirect_std = array(),
                   $instance_name = 'default', $async = false) {
     $command = array(
         'c' => '/user_bin/main',
@@ -343,7 +347,7 @@ function run_file($compiler_id, $bin_path, $jail_dir, $time,
     }
 
     $program = $command[$compiler_id];
-    return jail_run($program, $jail_dir, $time, $memory, $capture_std,
+    return jail_run($program, $jail_dir, $time, $memory, $cache, $capture_std,
                     $redirect_std, $mounts, $instance_name, $async,
                     $envs, $extra_args);
 }
