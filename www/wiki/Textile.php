@@ -846,7 +846,7 @@ class Textile {
 
     foreach ($para as $para) {
       if (preg_match('/^\n+$/s', $para)) {
-        if ($sticky && $stickybuff) {
+        if (!empty($sticky) && $stickybuff) {
           $stickybuff .= $para;
         } else {
           $out .= $para;
@@ -854,7 +854,7 @@ class Textile {
         continue;
       }
 
-      if ($sticky) {
+      if (!empty($sticky)) {
         $sticky++;
       } else {
         unset($block);
@@ -869,7 +869,7 @@ class Textile {
                         ((?:' . $paramre . '*|' . $this->halignre . ')*)
                         (\.\.?)
                         (?::(\d+|' . $this->urlre . '))?\ (.*)$}sx', $para, $matches)) {
-        if ($sticky) {
+        if (!empty($sticky)) {
           if ($block == 'bc') {
             // close our blockcode section
             $out = preg_replace('/\n\n$/', '', $out, 1);
@@ -966,7 +966,7 @@ class Textile {
           $clear = 'both';
         }
         continue;
-      } elseif ($sticky && $stickybuff &&
+      } elseif (!empty($sticky) && $stickybuff &&
                 ($block == 'table' || $block == 'dl')) {
         $stickybuff .= $para;
         continue;
@@ -999,7 +999,7 @@ class Textile {
           $buffer = $this->format_deflist(array('text' => $para));
         }
       }
-      if ($buffer) {
+      if (!empty($buffer)) {
         $out .= $buffer;
         continue;
       }
@@ -1008,7 +1008,7 @@ class Textile {
         continue;
       }
 
-      $block = ($block ? $block : 'p');
+      $block = (!empty($block) ? $block : 'p');
 
       $buffer = '';
       $pre = '';
@@ -1125,8 +1125,8 @@ class Textile {
         $block = 'p';
         unset($clear);
       } else {
-        $pre .= '<' . ($macros[$block] ? $macros[$block] : $block);
-        if ($align) {
+        $pre .= '<' . (!empty($macros[$block]) ? $macros[$block] : $block);
+        if (!empty($align)) {
           $alignment = $this->_halign($align);
           if ($this->options['css_mode']) {
             if (($padleft || $padright) &&
@@ -1140,16 +1140,16 @@ class Textile {
             $pre .= " align=\"$alignment\"";
           }
         }
-        if ($padleft) { $style .= ";padding-left:${padleft}em"; }
-        if ($padright) { $style .= ";padding-right:${padright}em"; }
-        if ($clear) { $style .= ";clear:${clear}"; }
-        if ($class) { $class = preg_replace('/^ /', '', $class, 1); }
-        if ($class) { $pre .= " class=\"$class\""; }
-        if ($id) { $pre .= " id=\"$id\""; }
-        if ($style) { $style = preg_replace('/^;/', '', $style, 1); }
-        if ($style) { $pre .= " style=\"$style\""; }
-        if ($lang) { $pre .= " lang=\"$lang\""; }
-        if ($cite && ($block == 'bq')) { $pre .= ' cite="' . $this->format_url(array('url' => $cite)) . '"'; }
+        if (!empty($padleft)) { $style .= ";padding-left:${padleft}em"; }
+        if (!empty($padright)) { $style .= ";padding-right:${padright}em"; }
+        if (!empty($clear)) { $style .= ";clear:${clear}"; }
+        if (!empty($class)) { $class = preg_replace('/^ /', '', $class, 1); }
+        if (!empty($class)) { $pre .= " class=\"$class\""; }
+        if (!empty($id)) { $pre .= " id=\"$id\""; }
+        if (!empty($style)) { $style = preg_replace('/^;/', '', $style, 1); }
+        if (!empty($style)) { $pre .= " style=\"$style\""; }
+        if (!empty($lang)) { $pre .= " lang=\"$lang\""; }
+        if (!empty($cite) && ($block == 'bq')) { $pre .= ' cite="' . $this->format_url(array('url' => $cite)) . '"'; }
         $pre .= '>';
         unset($clear);
       }
@@ -1169,14 +1169,14 @@ class Textile {
         $buffer = preg_replace('/^\n\n/s', '', $buffer, 1);
         $out .= $buffer;
       } else {
-        if ($filter && (!$this->options['disable_filters'])) {
+        if (!empty($filter) && (!$this->options['disable_filters'])) {
           $buffer = $this->format_block(array('text' => "|$filter|" . $buffer, 'inline' => 1));
         }
         $out .= $pre . $buffer . $post;
       }
     }
 
-    if ($sticky) {
+    if (!empty($sticky)) {
       if ($block == 'bc') {
         // close our blockcode section
         $out .= $this->options['_blockcode_close']; // . "\n\n";
@@ -1235,7 +1235,7 @@ class Textile {
                                       ==(.+?)==
                                       (?:$|([\]}])|(?=' . $this->punct . '{1,2}|\s))}sx',
                                     function($m) use ($me) {
-                                      return $me->_repl($me->repl[0], $me->format_block(array("text" => $m[2], "inline" => 1, "pre" => $m[1], "post" => $m[3])));
+                                      return $me->_repl($me->repl[0], $me->format_block(array("text" => $m[2], "inline" => 1, "pre" => $m[1], "post" => $m[3] ?? '')));
                                     }, $buffer);
 
     unset($tokens);
@@ -1379,7 +1379,7 @@ class Textile {
                                     (?:$|([]}])|(?=' . $this->punct . '{1,2}|\s)) # $7: closing brace/bracket
                                    }mx',
                                   function($m) use ($me) {
-                                    return $me->_repl($me->repl[0], $me->format_span(array("pre" => $m[1], "text" => $m[5], "align" => ($m[2] ? $m[2] : $m[4]), "cite" => $m[6], "clsty" => $m[3], "post" => $m[7])));
+                                    return $me->_repl($me->repl[0], $me->format_span(array("pre" => $m[1], "text" => $m[5], "align" => ($m[2] ? $m[2] : $m[4]), "cite" => $m[6] ?? '', "clsty" => $m[3], "post" => $m[7] ?? '')));
                                   }, $text);
 
     $text = $this->encode_html($text);
@@ -1497,7 +1497,7 @@ class Textile {
                                                       (?:$|([\]}])|(?=' . $this->punct . '{1,2}|\s)) # $4 - post
                                                      }mx',
                                                     function($m) use ($me) {
-                                                      return $me->format_tag(array("tag" => end($me->tmp["r"]), "marker" => end($me->tmp["f"]), "pre" => $m[1], "text" => $m[3], "clsty" => $m[2], "post" => $m[4]));
+                                                      return $me->format_tag(array("tag" => end($me->tmp["r"]), "marker" => end($me->tmp["f"]), "pre" => $m[1], "text" => $m[3], "clsty" => $m[2], "post" => $m[4] ?? ''));
                                                     }, $text))) {
           $redo = ($redo || ($last != $text));
           $last = $text;
@@ -1738,7 +1738,7 @@ class Textile {
         } else {
           $class = $matches[1];
         }
-        $id = $matches[2];
+        $id = $matches[2] ?? '';
         if ($class) {
           $clsty = preg_replace('/\([A-Za-z0-9_\- ]+?(#.*?)?\)/', '', $clsty);
         }
@@ -1760,15 +1760,15 @@ class Textile {
       $clsty = preg_replace('/\[.+?\]/', '', $clsty);
     }
     $attrs = '';
-    if ($padleft) { $style .= ";padding-left:${padleft}em"; }
-    if ($padright) { $style .= ";padding-right:${padright}em"; }
+    if (!empty($padleft)) { $style .= ";padding-left:${padleft}em"; }
+    if (!empty($padright)) { $style .= ";padding-right:${padright}em"; }
     $style = preg_replace('/^;/', '', $style, 1);
     $class = preg_replace('/^ /', '', $class, 1);
     $class = preg_replace('/ $/', '', $class, 1);
     if ($class) { $attrs .= " class=\"$class\""; }
-    if ($id) { $attrs .= " id=\"$id\""; }
+    if (!empty($id)) { $attrs .= " id=\"$id\""; }
     if ($style) { $attrs .= " style=\"$style\""; }
-    if ($lang) { $attrs .= " lang=\"$lang\""; }
+    if (!empty($lang)) { $attrs .= " lang=\"$lang\""; }
     $attrs = preg_replace('/^ /', '', $attrs, 1);
     return $attrs;
   } // function format_classstyle
@@ -1988,17 +1988,17 @@ class Textile {
         if (preg_match('{(' . $this->halignre . '+)}', $itemparam, $matches)) {
           $itemalign = $matches[1];
         }
-        if ($itemclsty) { $itemattr = $this->format_classstyle($itemclsty); }
+        if (!empty($itemclsty)) { $itemattr = $this->format_classstyle($itemclsty); }
         if ($depth > $last_depth) {
           for ($j = $last_depth; $j < $depth; $j++) {
             $out .= "\n<$list_tags[$type]";
             $stack[] = $type;
-            if ($blockclsty) {
+            if (!empty($blockclsty)) {
               $blockattr = $this->format_classstyle($blockclsty);
               if ($blockattr) { $out .= ' ' . $blockattr; }
             }
             $out .= ">\n<li";
-            if ($itemattr) { $out .= " $itemattr"; }
+            if (!empty($itemattr)) { $out .= " $itemattr"; }
             $out .= ">";
           }
         } elseif ($depth < $last_depth) {
@@ -2014,7 +2014,7 @@ class Textile {
           }
         } else {
           $out .= "</li>\n<li";
-          if ($itemattr) { $out .= " $itemattr"; }
+          if (!empty($itemattr)) { $out .= " $itemattr"; }
           $out .= '>';
         }
         $last_depth = $depth;
@@ -2191,7 +2191,7 @@ class Textile {
         if ($alignment) { $tag .= " align=\"$alignment\""; }
       }
     }
-    $attr = $this->format_classstyle($clsty, $class, $style);
+    $attr = $this->format_classstyle($clsty, $class ?? '', $style);
     if ($attr) { $tag .= " $attr"; }
     if ($cite) {
       $cite = preg_replace('/^:/', '', $cite, 1);
@@ -2431,7 +2431,7 @@ class Textile {
               preg_match('/\(([A-Za-z0-9_\- ]+?)?(?:#(.+?))\)/', $clsty, $matches)) {
             if ($matches[1] || $matches[2]) {
               $tclass = $matches[1];
-              $tid = $matches[2];
+              $tid = $matches[2] ?? '';
               continue;
             }
           }
@@ -2471,13 +2471,13 @@ class Textile {
       }
       if (preg_match('{(' . $this->alignre . ')}', $cols[0], $matches)) { $rowalign = $matches[1]; }
       for ($c = $colcount - 1; $c > 0; $c--) {
-        if ($rowspans[$c]) {
+        if (!empty($rowspans[$c])) {
           $rowspans[$c]--;
           if ($rowspans[$c] > 1) { continue; }
         }
         unset($colclass, $colid, $header, $colparams, $colpadl, $colpadr, $collang);
         $colstyle = '';
-        $colalign = $colaligns[$c];
+        $colalign = $colaligns[$c] ?? '';
         $col = array_pop($cols);
         $col = ($col ? $col : '');
         $attrs = '';
@@ -2562,13 +2562,13 @@ class Textile {
             $colalign .= '-';
           }
         }
-        if ($rowheader) { $header = 1; }
-        if ($header) { $colaligns[$c] = $colalign; }
+        if (!empty($rowheader)) { $header = 1; }
+        if (!empty($header)) { $colaligns[$c] = $colalign; }
         $col = preg_replace('/^ +/', '', $col, 1); $col = preg_replace('/ +$/', '', $col, 1);
         if (strlen($col)) {
           // create one cell tag
-          $rowspan = ($rowspans[$c] ? $rowspans[$c] : 0);
-          $col_out = '<' . ($header ? 'th' : 'td');
+          $rowspan = ($rowspans[$c] ?? 0);
+          $col_out = '<' . (!empty($header) ? 'th' : 'td');
           if ($colalign) {
             // horizontal, vertical alignment
             $halign = $this->_halign($colalign);
@@ -2577,13 +2577,13 @@ class Textile {
             if ($valign) { $col_out .= " valign=\"$valign\""; }
           }
           // apply css attributes, row, column spans
-          if ($colpadl) { $colstyle .= ";padding-left:${colpadl}em"; }
-          if ($colpadr) { $colstyle .= ";padding-right:${colpadr}em"; }
-          if ($colclass) { $col_out .= " class=\"$colclass\""; }
-          if ($colid) { $col_out .= " id=\"$colid\""; }
+          if (!empty($colpadl)) { $colstyle .= ";padding-left:${colpadl}em"; }
+          if (!empty($colpadr)) { $colstyle .= ";padding-right:${colpadr}em"; }
+          if (!empty($colclass)) { $col_out .= " class=\"$colclass\""; }
+          if (!empty($colid)) { $col_out .= " id=\"$colid\""; }
           if ($colstyle) { $colstyle = preg_replace('/^;/', '', $colstyle, 1); }
           if ($colstyle) { $col_out .= " style=\"$colstyle\""; }
-          if ($collang) { $col_out .= " lang=\"$collang\""; }
+          if (!empty($collang)) { $col_out .= " lang=\"$collang\""; }
           if ($colspan > 1) { $col_out .= " colspan=\"$colspan\""; }
           if ($rowspan > 1) { $col_out .= " rowspan=\"$rowspan\""; }
           $col_out .= '>';
@@ -2598,7 +2598,7 @@ class Textile {
           } else {
             $col_out .= $this->format_paragraph(array('text' => $col));
           }
-          $col_out .= '</' . ($header ? 'th' : 'td') . '>';
+          $col_out .= '</' . (!empty($header) ? 'th' : 'td') . '>';
           $row_out = $col_out . $row_out;
           if ($colspan) { $colspan = 0; }
         } else {
@@ -2620,9 +2620,9 @@ class Textile {
         $valign = $this->_valign($rowalign);
         if ($valign) { $out .= " valign=\"$valign\""; }
       }
-      if ($rowclass) { $out .= " class=\"$rowclass\""; }
-      if ($rowid) { $out .= " id=\"$rowid\""; }
-      if ($rowstyle) { $out .= " style=\"$rowstyle\""; }
+      if (!empty($rowclass)) { $out .= " class=\"$rowclass\""; }
+      if (!empty($rowid)) { $out .= " id=\"$rowid\""; }
+      if (!empty($rowstyle)) { $out .= " style=\"$rowstyle\""; }
       $out .= ">$row_out</tr>";
     }
 
@@ -2644,15 +2644,15 @@ class Textile {
         if ($alignment) { $table .= " align=\"$alignment\""; }
       }
     }
-    if ($tpadl) { $tstyle .= ";padding-left:${tpadl}em"; }
-    if ($tpadr) { $tstyle .= ";padding-right:${tpadr}em"; }
+    if (!empty($tpadl)) { $tstyle .= ";padding-left:${tpadl}em"; }
+    if (!empty($tpadr)) { $tstyle .= ";padding-right:${tpadr}em"; }
     if ($tclass) { $tclass = preg_replace('/^ /', '', $tclass, 1); }
     if ($tclass) { $table .= " class=\"$tclass\""; }
-    if ($tid) { $table .= " id=\"$tid\""; }
+    if (!empty($tid)) { $table .= " id=\"$tid\""; }
     if ($tstyle) { $tstyle = preg_replace('/^;/', '', $tstyle, 1); }
     if ($tstyle) { $table .= " style=\"$tstyle\""; }
-    if ($tlang) { $table .= " lang=\"$tlang\""; }
-    if ($tclass || $tid || $tstyle) { $table .= " cellspacing=\"0\""; }
+    if (!empty($tlang)) { $table .= " lang=\"$tlang\""; }
+    if ($tclass || !empty($tid) || $tstyle) { $table .= " cellspacing=\"0\""; }
     $table .= ">$out</table>";
 
     if (preg_match('|<tr></tr>|', $table)) {
