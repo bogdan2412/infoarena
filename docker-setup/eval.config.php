@@ -73,3 +73,76 @@ define('IA_DEFAULT_EVAL_ARCH', '32');
 // necessary when some tasks have syntax requirements (e.g. the solution may
 // not use arrays).
 define('IA_EVAL_NEEDS_SOURCE', false);
+
+// What should be mounted for the compiler jails. This can vary drastically
+// between architectures and distros.
+define('IA_COMPILER_MOUNTS', array(
+    'c-32' => array(
+        '/lib:/lib:exec',
+        '/lib32:/lib32:exec',
+        '/lib64:/lib64:exec',
+        '/usr/lib32:/usr/lib32:exec',
+        '/usr/bin:/usr/bin:exec',
+        '/usr/lib:/usr/lib:exec',
+        '/usr/include:/usr/include',
+    ),
+    'cpp-32' => array(
+        '/lib:/lib:exec',
+        '/lib32:/lib32:exec',
+        '/lib64:/lib64:exec',
+        '/usr/lib32:/usr/lib32:exec',
+        '/usr/bin:/usr/bin:exec',
+        '/usr/lib:/usr/lib:exec',
+        '/usr/include:/usr/include',
+    ),
+    'c-64' => array(
+        '/lib:/lib:exec',
+        '/lib64:/lib64:exec',
+        '/usr/bin:/usr/bin:exec',
+        '/usr/lib:/usr/lib:exec',
+        '/usr/include:/usr/include',
+    ),
+    'cpp-64' => array(
+        '/lib:/lib:exec',
+        '/lib64:/lib64:exec',
+        '/usr/bin:/usr/bin:exec',
+        '/usr/lib:/usr/lib:exec',
+        '/usr/include:/usr/include',
+    ),
+    'pas' => array(
+        '/lib:/lib:exec',
+        '/lib64:/lib64:exec',
+        '/usr/bin/:/usr/bin:exec',
+        '/usr/lib:/usr/lib:exec',
+        '/etc/alternatives:/etc/alternatives:exec',
+    ),
+    'fpc' => array(
+        '/lib:/lib:exec',
+        '/lib64:/lib64:exec',
+        '/usr/bin/:/usr/bin:exec',
+        '/usr/lib:/usr/lib:exec',
+        '/etc/alternatives:/etc/alternatives:exec',
+    ),
+    'rs' => array(
+        '/lib:/lib:exec',
+        '/lib64:/lib64:exec',
+        '/usr/bin:/usr/bin:exec',
+        '/usr/lib:/usr/lib:exec',
+        '/etc/alternatives:/etc/alternatives:exec',
+        IA_JUDGE_CARGO_PATH.':/cargo:exec',
+        IA_JUDGE_RUSTUP_PATH.':/rustup:exec',
+    ),
+    'py' => array(
+        '/lib:/lib:exec',
+        '/lib64:/lib64:exec',
+        '/usr/bin:/usr/bin:exec',
+        '/usr/lib:/usr/lib:exec',
+    ),
+    'java' => array(
+        '/lib:/lib:exec',
+        '/lib64:/lib64:exec',
+        '/usr/bin:/usr/bin:exec',
+        '/usr/lib:/usr/lib:exec',
+        '/etc/alternatives:/etc/alternatives:exec',
+    ),
+));
