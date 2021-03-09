@@ -57,11 +57,12 @@ foreach ($tasks as $t) {
 
     if (!empty($errors) || !empty($validation_errors)) {
         $user = user_get_by_id($t['user_id']);
-        printf("* Problema [%s](%s%s%s) (%d erori)\n",
+        printf("* Problema [%s](%s%s%s) (autor:%s) (%d erori)\n",
                $t['id'],
                IA_URL_HTTPS_HOST,
                IA_URL_PREFIX,
                $t['page_name'],
+               $user['username'],
                count($errors) + count($validation_errors));
         foreach ($validation_errors as $field => $msg) {
             printf("    * task_validate() %s: %s\n", $field, $msg);
