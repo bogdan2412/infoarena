@@ -253,6 +253,7 @@ define('SIDEBAR_ELEMENTS', [
     'docs' => true,
     'downloads' => true,
     'links' => true,
+    'task-search' => false,
 ]);
 
 // True: use the built-in mysql_* functions.

@@ -113,6 +113,9 @@ ia_template_topnav($topnav_select, $is_admin);
         <li><a href="<?= html_escape(url_textblock('concursuri')) ?>">Concursuri</a></li>
         <li><a href="<?= html_escape(url_textblock('concursuri-virtuale')) ?>">Concursuri virtuale</a></li>
         <li><a href="<?= html_escape(url_textblock('clasament-rating')) ?>">Clasament</a></li>
+        <?php if (SIDEBAR_ELEMENTS['task-search']) { ?>
+            <li><a href="<?= url_task_search([]) ?>">Caută probleme</a></li>
+        <?php } ?>
         <?php if (SIDEBAR_ELEMENTS['articles']) { ?>
             <li><a href="<?= html_escape(url_textblock('articole')) ?>">Articole</a></li>
         <?php } ?>
