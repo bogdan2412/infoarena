@@ -28,6 +28,11 @@ function identity_is_anonymous() {
     return is_null($identity_user);
 }
 
+function identity_is_admin() {
+    global $identity_user;
+    return $identity_user && ($identity_user['security_level'] == 'admin');
+}
+
 // Get current user, or null if anonymous.
 function identity_get_user() {
     global $identity_user;
@@ -54,12 +59,27 @@ function identity_get_username() {
     }
 }
 
+// Returns true iff a banned user is logged in.
+// Note: We allow the user to log in, but prevent her from doing anything
+// meaningful. This way we can inform the user that she is banned.
+function identity_is_banned() {
+    global $identity_user;
+    return ($identity_user && $identity_user['banned']);
+}
+
 // Check whether current user (or any other arbitrary user) can perform
 // a given action (onto an object)
 // This is a wrapper for the more-generic, session-independent permission
 // module.
 function identity_can($action, $object = null) {
     global $identity_user;
+
+    // Allow banned users to view textblocks. They need to be able to view the
+    // home page (with the flash message 'you are banned').
+    if (identity_is_banned() && ($action != 'textblock-view')) {
+        return false;
+    }
+
     return security_query($identity_user, $action, $object);
 }
 
@@ -90,8 +110,11 @@ function identity_require($action, $object = null) {
             // save current URL. We redirect to here right after logging in
             $_SESSION['_ia_redirect'] = url_absolute($_SERVER['REQUEST_URI']);
             redirect(url_login());
+        } else if (identity_is_banned()) {
+            flash_error('Contul tău este blocat.');
+            redirect(url_home());
         } else {
-            // User doesn't have enough priviledges, tell him to fuck off.
+            // User doesn't have enough privileges, tell him to fuck off.
             flash_error('Nu ai permisiuni suficiente pentru a executa aceasta '
                         .'actiune! Te redirectez ...');
             redirect(url_home());

@@ -1128,6 +1128,24 @@ th {
     float: right;
 }
 
+/* ban/unban buttons */
+a.user-control {
+    border-radius: .25rem;
+    color: white;
+    float: right;
+    padding: .375rem .75rem;
+}
+
+a.user-control.ban {
+    background-color: #dc3545;
+    margin-top: 8px;
+}
+
+a.user-control.unban {
+    background-color: #28a745;
+    margin-top: 4px; /* different because of the flash message */
+}
+
 /* gallery macro */
 .gallery {
 }

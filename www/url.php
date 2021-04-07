@@ -440,3 +440,12 @@ function url_penalty_edit($user_id, $round_id) {
     return url_complex('penalty_edit', array('user_id' => $user_id,
                                              'round_id' => $round_id));
 }
+
+/**
+ * User control.
+ * @param int $user_id ID of user to ban or unban.
+ * @return The URL of a page that, when accessed, will toggle the ban status.
+ */
+function url_user_control($user_id) {
+    return url_complex('user_control', [ 'user_id' => $user_id ]);
+}

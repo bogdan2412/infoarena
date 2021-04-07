@@ -10,6 +10,19 @@ $username = $user['username'];
 // site header
 include('header.php');
 
+// banned user notice and ban/unban buttons
+if (identity_is_admin()) {
+    $url = url_user_control($user['id']);
+    if ($user['banned']) {
+        echo '<div class="flash">';
+        echo '  Acest utilizator este blocat.';
+        echo '</div>';
+        echo '<a href="' . $url . '" class="user-control unban">deblochează</a>';
+    } else {
+        echo '<a href="' . $url . '" class="user-control ban">blochează</a>';
+    }
+}
+
 // display user info across all user profile pages
 echo wiki_include($template_userheader, array('user' => $username));
 
