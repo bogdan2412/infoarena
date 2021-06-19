@@ -58,4 +58,5 @@ foreach ($result_protected as $row) {
 if ($message_for_log) {
 	$message_for_log .= 'Tasks became public.';
 	log_print($message_for_log, false);
+    print "{$message_for_log}\n";
 }
