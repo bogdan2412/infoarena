@@ -1,19 +1,16 @@
 <?php include('header.php'); ?>
 
 <h1><?= html_escape($view['title']) ?></h1>
+<div>
+    <p>
+        Introduceți numele problemei în câmpul de mai jos. Apoi apăsați butonul
+        de căutare. Va fi afișată o listă cu toate problemele care conțin în
+        titlu sau în textul problemei cuvântul cheie căutat.
+    </p>
+</div>
 
-<!-- Google Search Result Snippet Begins -->
-  <div id="results_010130381492294265836:kw-fmmvpxco"></div>
-  <script type="text/javascript">
-    var googleSearchIframeName = "results_010130381492294265836:kw-fmmvpxco";
-    var googleSearchFormName = "searchbox_010130381492294265836:kw-fmmvpxco";
-    var googleSearchFrameWidth = 600;
-    var googleSearchFrameborder = 0;
-    var googleSearchDomain = "www.google.com";
-    var googleSearchPath = "/cse";
-  </script>
-  <script type="text/javascript" src="http://www.google.com/afsonline/show_afs_search.js"></script>
-<!-- Google Search Result Snippet Ends -->
-         
- <?php include('footer.php'); ?>
-          
+<script async src="https://cse.google.com/cse.js?cx=<?= GOOGLE_CSE_TOKEN ?>"></script>
+<div class="gcse-searchbox-only"></div>
+<div class="gcse-searchresults-only"></div>
+
+<?php include('footer.php'); ?>

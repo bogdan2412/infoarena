@@ -134,7 +134,7 @@ if (array_key_exists('security_level', $form_values)) {
         <?php endif; ?>
     </li>
     <li>
-        <input type="submit" value="Salveaza" id="form_submit" class="button important" />
+        <input type="submit" value="Salvează" id="form_submit" class="button important" />
     </li>
 </ul>
 </form>
