@@ -1,6 +1,6 @@
 <?php
 
-include('header.php');
+include(CUSTOM_THEME.'header.php');
 
 $min_rev_id = min($revfrom_id, $revto_id);
 $max_rev_id = max($revfrom_id, $revto_id);
@@ -11,8 +11,8 @@ $max_rev_id = max($revfrom_id, $revto_id);
 <?= format_link(url_textblock_diff($page_name, $revto_id, $revfrom_id), "Inverseaza reviziile") ?>
 </div>
 
-<h1>Diferente pentru
-<?= format_link(url_textblock($page_name), $page_name) ?> intre reviziile
+<h1>Diferențe pentru
+<?= format_link(url_textblock($page_name), $page_name) ?> între reviziile
     <?= format_link(url_textblock_revision($page_name, $revfrom_id), "#$revfrom_id") ?> si
     <?= format_link(url_textblock_revision($page_name, $revto_id), "#$revto_id") ?>
 </h1>
@@ -20,12 +20,12 @@ $max_rev_id = max($revfrom_id, $revto_id);
 <div class="diff_navbar">
 <?php if ($max_rev_id < $rev_count) { ?>
     <div class="next_diff">
-    <?= format_link(url_textblock_diff($page_name, $max_rev_id, $max_rev_id + 1), "Diferente intre #" . $max_rev_id . " si #" . ($max_rev_id + 1)); ?>
+    <?= format_link(url_textblock_diff($page_name, $max_rev_id, $max_rev_id + 1), "Diferențe între #" . $max_rev_id . " si #" . ($max_rev_id + 1)); ?>
     </div>
 <?php } ?>
 <?php if ($min_rev_id > 1) { ?>
     <div class="prev_diff">
-    <?= format_link(url_textblock_diff($page_name, $min_rev_id - 1, $min_rev_id), "Diferente intre #" . ($min_rev_id - 1) . " si #" . $min_rev_id); ?>
+    <?= format_link(url_textblock_diff($page_name, $min_rev_id - 1, $min_rev_id), "Diferențe între #" . ($min_rev_id - 1) . " si #" . $min_rev_id); ?>
     </div>
 <?php } ?>
 </div>
@@ -68,30 +68,30 @@ function print_diff($diff) {
 }
 
 if (empty($view['diff_title'])) {
-    echo "<h3>Nu exista diferente intre titluri.</h3>";
+    echo "<h3>Nu există diferențe între titluri.</h3>";
 }
 else {
-    echo "<h3>Diferente intre titluri:</h3>";
+    echo "<h3>Diferențe între titluri:</h3>";
     print_diff($view['diff_title']);
 }
 ?>
 
 <?php
 if (empty($view['diff_content'])) {
-    echo "<h3>Nu exista diferente intre continut.</h3>";
+    echo "<h3>Nu există diferențe între conținut.</h3>";
 }
 else {
-    echo "<h3>Diferente intre continut:</h3>";
+    echo "<h3>Diferențe între conținut:</h3>";
     print_diff($view['diff_content']);
 }
 ?>
 
 <?php
 if (empty($view['diff_security'])) {
-    echo "<h3>Nu exista diferente intre securitate.</h3>";
+    echo "<h3>Nu există diferențe între securitate.</h3>";
 }
 else {
-    echo "<h3>Diferente intre securitate:</h3>";
+    echo "<h3>Diferențe între securitate:</h3>";
     print_diff($view['diff_security']);
 }
 ?>
@@ -101,7 +101,7 @@ if (empty($view['diff_forum'])) {
     echo "<h3>Topicul de forum nu a fost schimbat.</h3>";
 }
 else {
-    echo "<h3>Diferente intre topic forum:</h3>";
+    echo "<h3>Diferențe intre topic forum:</h3>";
     print_diff($view['diff_forum']);
 }
 ?>

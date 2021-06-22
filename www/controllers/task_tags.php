@@ -38,7 +38,7 @@ function controller_task_tags_add() {
     }
     $tag_id = tag_get_id($tag);
     if (!is_null($tag_id)) {
-        flash_error("Tagul exista deja.");
+        flash_error("Tagul există deja.");
         redirect(url_task_tags());
     }
 
@@ -71,7 +71,7 @@ function controller_task_tags_delete() {
     // Do not delete tags if they have been added to tasks.
     $task_count = tag_count_objects("task", array($tag_id), true);
     if ($task_count != 0) {
-        flash_error("Nu poti sterge un tag care a fost asociat deja unei probleme.");
+        flash_error("Nu poți șterge un tag care a fost asociat deja unei probleme.");
         redirect(url_task_tags());
     }
 

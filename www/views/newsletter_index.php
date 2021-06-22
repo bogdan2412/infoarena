@@ -38,7 +38,7 @@ function format_newsletter_user($row) {
 }
 
 // site header
-include('header.php');
+include(CUSTOM_THEME.'header.php');
 echo format_tag('h1', html_escape($view['title']));
 
 ?>

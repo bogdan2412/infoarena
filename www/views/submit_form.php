@@ -23,7 +23,7 @@ function task_get_submit_options($task_id) {
             if (count($round_ids) == 1) {
                 $default = $round_ids[0];
             } else {
-                $rounds[] = array("id" => "", "title" => "[ Alegeti runda ]");
+                $rounds[] = array("id" => "", "title" => "[ Alegeți runda ]");
                 $default = "";
             }
         }
@@ -40,7 +40,7 @@ function task_get_submit_options($task_id) {
 function solution_field() {
 ?>
     <li id="field_solution">
-        <label for="form_solution">Fisier</label>
+        <label for="form_solution">Fișier</label>
         <input type="file" name="solution" id="form_solution" />
         <?= ferr_span('solution', false) ?>
     </li>
@@ -53,7 +53,7 @@ function compiler_field() {
     <li id="field_compiler">
         <label for="form_compiler">Compilator</label>
         <select name="compiler_id" id="form_compiler">
-            <option value="-">[ Alegeti compilator ]</option>
+            <option value="-">[ Alegeți compilator ]</option>
             <?php foreach (ENABLED_COMPILERS as $comp => $text) { ?>
                 <option
                     value="<?= $comp ?>"
@@ -97,7 +97,7 @@ function task_field($tasks) {
     <li id="field_task">
         <label for="form_task">Problema</label>
         <select name="task_id" id="form_task">
-            <option value="">[ Alegeti problema ]</option>
+            <option value="">[ Alegeți problema ]</option>
 <?php foreach ($tasks as $task) {  ?>
             <option value="<?= html_escape($task['id']) ?>"<?= fval('task_id') == $task['id'] ? ' selected="selected"' : '' ?>><?= html_escape($task['title']) ?></option>
 <?php } ?>

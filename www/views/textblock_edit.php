@@ -3,7 +3,7 @@
 // link JS
 $view['head'] = getattr($view, 'head')."<script type=\"text/javascript\" src=\"" . html_escape(url_static("js/wikiedit.js")) . "\"></script>";
 
-include('header.php');
+include(CUSTOM_THEME.'header.php');
 include('tags_header.php');
 
 // insert task edit tabs
@@ -124,8 +124,8 @@ if (($round_id = textblock_security_is_round($page['security'])) &&
     <?php } ?>
 
     <li id="field_submit">
-        <input type="submit" value="Salveaza" id="form_submit" class="button important" />
-        <input type="submit" value="Salveaza si Editeaza" name="form_save_and_edit" class="button" />
+        <input type="submit" value="Salvează" id="form_submit" class="button important" />
+        <input type="submit" value="Salvează și editează" name="form_save_and_edit" class="button" />
         <input type="button" value="Preview" id="form_preview" class="button" />
     </li>
 </ul>

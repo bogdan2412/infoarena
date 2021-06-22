@@ -1,4 +1,4 @@
-<?php include('header.php'); ?>
+<?php include(CUSTOM_THEME.'header.php'); ?>
 
 <h1>Ataseaza la pagina <?= format_link(url_textblock($view['page_name']), $view['page_name']) ?></h1>
 

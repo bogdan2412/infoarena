@@ -18,7 +18,7 @@
 ), 'password') ?>
         <li>
             <input type="checkbox" value="on" id="form_remember" name="remember" class="checkbox"<?= fval('remember') ? ' checked="checked"' : '' ?>/>
-            <label class="checkbox" for="form_remember">Pastreaza-ma autentificat 5 zile</label>
+            <label class="checkbox" for="form_remember">Păstrează-mă autentificat 5 zile</label>
         </li>
     </ul>
 </fieldset>
@@ -37,10 +37,10 @@ if (isset($view['captcha'])) {
                 };
             </script>
 
-            <label>Scrieti cuvintele de mai jos:</label>
+            <label>Scrieți cuvintele de mai jos:</label>
             <?= ferr_span('captcha') ?>
             <?= $view['captcha'] ?>
-            <span class="fieldHelp">Va rugam sa transcrieti cuvintele de mai sus in aceasta casuta pentru verificare</span>
+            <span class="fieldHelp">Vă rugăm să transcrieți cuvintele de mai sus în această căsuță pentru verificare</span>
         </li>
     </ul>
 </fieldset>

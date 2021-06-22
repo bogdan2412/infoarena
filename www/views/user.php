@@ -8,7 +8,7 @@ require_once(IA_ROOT_DIR.'common/tags.php');
 $username = $user['username'];
 
 // site header
-include('header.php');
+include(CUSTOM_THEME.'header.php');
 
 // banned user notice and ban/unban buttons
 if (identity_is_admin()) {
@@ -28,7 +28,7 @@ echo wiki_include($template_userheader, array('user' => $username));
 
 // show profile tabs
 $options = array(
-    'view' => format_link(url_user_profile($username), 'Pagina personala'),
+    'view' => format_link(url_user_profile($username), 'Pagina personală'),
     'rating' => format_link(url_user_rating($username), 'Rating'),
     'stats' => format_link(url_user_stats($username), 'Statistici'),
 );

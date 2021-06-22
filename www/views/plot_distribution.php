@@ -8,7 +8,7 @@ $chart = new open_flash_chart();
 
 $chart->set_bg_colour("#ffffff");
 
-$title = new title("Distributia ratingului");
+$title = new title("Distribuția ratingului");
 $chart->set_title($title);
 
 // adjust axises and labels
@@ -61,7 +61,7 @@ foreach ($distribution as $bucket => $count) {
         $current_rating = rating_scale($p * $bucket_size);
         $bar_value->set_tooltip("Rating: " . $current_rating . " - " .
             ($current_rating + rating_scale($bucket_size) - 1)
-            . "<br>0 concurenti");
+            . "<br>0 concurenți");
         $bar->append_value($bar_value);
     }
 
@@ -69,7 +69,7 @@ foreach ($distribution as $bucket => $count) {
     $current_rating = rating_scale($bucket * $bucket_size);
     $bar_value->set_tooltip("Rating: " . $current_rating . " - " .
         ($current_rating + rating_scale($bucket_size) - 1)
-        . "<br>" . $count . ($count == 1 ? " concurent" : " concurenti"));
+        . "<br>" . $count . ($count == 1 ? " concurent" : " concurenți"));
 
     $rating_group = rating_group(rating_scale($bucket * $bucket_size));
     $bar_value->set_colour($rating_group["colour"]);

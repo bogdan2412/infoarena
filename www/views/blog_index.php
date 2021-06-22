@@ -4,7 +4,7 @@ require_once(IA_ROOT_DIR.'www/format/format.php');
 require_once(IA_ROOT_DIR.'www/wiki/wiki.php');
 
 // site header
-include('header.php');
+include(CUSTOM_THEME.'header.php');
 
 echo '<link rel="alternate" type="application/rss+xml" title="Blog infoarena" href="'.url_blog_feed().'" />';
 

@@ -7,7 +7,7 @@ require_once(IA_ROOT_DIR."www/views/task_edit_header.php");
 $view['head'] = getattr($view, 'head').
     "<script type=\"text/javascript\" src=\"" . html_escape(url_static("js/parameditor.js")) . "\"></script>";
 
-include('header.php');
+include(CUSTOM_THEME.'header.php');
 include('tags_header.php');
 
 echo task_edit_tabs($view['task_id'], request("action"));
@@ -24,13 +24,13 @@ $form_fields = array(
         'page_name' => array(
                 'name' => "Pagina cu enuntul",
                 'description' => "Aceasta este pagina la care este trimis ".
-                                 "utilizatorul cand da click pe o problema",
+                                 "utilizatorul când dă click pe o problemă",
                 'type' => 'string',
         ),
         'user' => array(
-                'name' => "Utilizatorul care adauga problema",
+                'name' => "Utilizatorul care adaugă problema",
                 'description' => "Utilizatorul care are drepturi de editare ".
-                                 "asupra problemei. Poate fi lasat gol.",
+                                 "asupra problemei. Poate fi lăsat gol.",
                 'type' => 'string',
         ),
         'source' => array(
@@ -59,28 +59,28 @@ $form_fields = array(
                 'type' => 'bool'
         ),
         'test_count' => array(
-                'description' => "Numar de teste",
+                'description' => "Număr de teste",
                 'default' => 10,
                 'type' => 'integer',
-                'name' => "Numar de teste",
+                'name' => "Număr de teste",
         ),
         'test_groups' => array(
-                'description' => "Descrierea gruparii testelor.",
+                'description' => "Descrierea grupării testelor.",
                 'default' => '1;2;3;4;5;6;7;8;9;10',
                 'type' => 'string',
                 'name' => "Grupare teste",
         ),
         'public_tests' => array(
-                'description' => "Lista de teste pe care utilizatorii pot vedea rezultatele in concursuri.",
+                'description' => "Lista de teste pe care utilizatorii pot vedea rezultatele în concursuri.",
                 'default' => '',
                 'type' => 'string',
                 'name' => "Detailed feedback",
         ),
         'use_ok_files' => array(
-                'description' => "Daca evaluator-ul foloseste fisiere .ok",
+                'description' => "Dacă evaluator-ul folosește fișiere .ok",
                 'default' => '0',
                 'type' => 'bool',
-                'name' => "Foloseste .ok",
+                'name' => "Folosește .ok",
         ),
         'evaluator' => array(
                 'description' => "Sursa evaluatorului. Poate fi omis pentru evaluare cu diff",
@@ -103,9 +103,9 @@ $form_fields = array(
     <form action="<?= html_escape(url_task_delete()) ?>" method="post" style="float: right">
         <input type="hidden" name="task_id" value="<?= html_escape($task_id) ?>" />
         <input
-            onclick="return confirm('Aceasta actiune este ireversibila! Doresti sa continui?')"
+            onclick="return confirm('Această acțiune este ireversibilă! Dorești să continui?')"
             type="submit"
-            value="Sterge problema"
+            value="Șterge problema"
             id="form_delete"
 
             <?php if ($view['secure_delete']): ?>
@@ -124,7 +124,7 @@ $form_fields = array(
       class="task"
       <?= tag_form_event() ?>>
     <fieldset>
-    <legend>Despre problema</legend>
+    <legend>Despre problemă</legend>
     <ul class="form">
         <?= view_form_field_li($form_fields['title'], 'title') ?>
         <?= view_form_field_li($form_fields['page_name'], 'page_name') ?>
@@ -169,7 +169,7 @@ $form_fields = array(
 ?>
     <?php if (identity_can('task-change-open', $task)) { ?>
     <fieldset>
-    <legend>Acces la surse si teste</legend>
+    <legend>Acces la surse și teste</legend>
     <ul class="form">
         <?= view_form_field_li($form_fields['open_source'], 'open_source') ?>
         <?= view_form_field_li($form_fields['open_tests'], 'open_tests') ?>
@@ -198,7 +198,7 @@ $form_fields = array(
     <div class="submit">
         <ul class="form">
             <li id="field_submit">
-                <input type="submit" value="Salveaza" id="form_submit" class="button important" />
+                <input type="submit" value="Salvează" id="form_submit" class="button important" />
             </li>
         </ul>
     </div>

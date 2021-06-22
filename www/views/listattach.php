@@ -1,5 +1,5 @@
 <?php
-include('header.php');
+include(CUSTOM_THEME.'header.php');
 require_once(IA_ROOT_DIR . "www/format/table.php");
 require_once(IA_ROOT_DIR . "www/format/format.php");
 
@@ -124,7 +124,7 @@ $column_infos = array(
 ?>
     <form method = 'post' action = ''>
     <input type = 'hidden' name = 'action' value = 'attach-bulk-action'>
-    <h1>Atasamente pentru pagina <?= format_link(url_textblock($view['page_name']), $view['page_name']) ?></h1>
+    <h1>Atașamente pentru pagina <?= format_link(url_textblock($view['page_name']), $view['page_name']) ?></h1>
     <?php
         $options = array(
             'display_entries' => $view['display_entries'],
@@ -139,12 +139,12 @@ $column_infos = array(
         echo format_table($view['attach_list'], $column_infos, $options);
     ?>
 
-    <p><?= format_link(url_attachment_new($page_name), 'Ataseaza un alt fisier') ?></p>
+    <p><?= format_link(url_attachment_new($page_name), 'Atașează un alt fisier') ?></p>
     <?php
         if($view['total_entries']) {
     ?>
-    <p><input type="submit" value="Descarca ZIP" class="button" name="download"/></p>
-    <p><input type="submit" value="Sterge Atasamente" class="button" name="delete" onclick = "return confirm('Aceasta actiune este ireversibila! Doresti sa continui?');"/></p>
+    <p><input type="submit" value="Descarcă ZIP" class="button" name="download"/></p>
+    <p><input type="submit" value="Șterge atașamente" class="button" name="delete" onclick = "return confirm('Această acțiune este ireversibilă! Dorești să continui?');"/></p>
     <?php } ?>
     </form>
 <?php include('footer.php'); ?>

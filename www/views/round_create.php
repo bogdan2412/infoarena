@@ -1,10 +1,10 @@
-<?php include('header.php');
+<?php include(CUSTOM_THEME.'header.php');
 
 // FIXME: copy/paste is stupid. Centralize field infos
 $form_fields = array(
        'id' => array(
                 'name' => 'Id-ul rundei',
-                'description' => 'Identificator unic si permanent. Identificatorul poate fi alcatuit doar din litere mici ale alfabetului, cifre si caracterele punct (.), underscore (_), minus (-).',
+                'description' => 'Identificator unic și permanent. Identificatorul poate fi alcătuit doar din litere mici ale alfabetului, cifre și caracterele punct (.), underscore (_), minus (-).',
                 'type' => 'string',
                 'default' => '',
         ),
@@ -23,7 +23,7 @@ $form_fields = array(
       method="post"
       class="task create clear">
  <fieldset>
-  <legend>Informatii initiale</legend>
+  <legend>Informații inițiale</legend>
   <ul class="form">
    <?= view_form_field_li($form_fields['id'], 'id') ?>
    <?= view_form_field_li($form_fields['type'], 'type') ?>

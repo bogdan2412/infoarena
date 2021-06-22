@@ -74,7 +74,7 @@ function ferr_span($param_name, $escape_html = true) {
 // inside static templates / views.
 function wiki_include($page_name, $template_args = null, $div = true) {
     $textblock = textblock_get_revision($page_name);
-    log_assert($textblock, "Nu am gasit $page_name");
+    log_assert($textblock, "Nu am găsit $page_name");
 
     if ($div) {
         echo '<div class="wiki_text_block">';
