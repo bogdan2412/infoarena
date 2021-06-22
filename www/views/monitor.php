@@ -7,7 +7,7 @@ require_once(IA_ROOT_DIR."www/format/form.php");
 
 if (!$display_only_table) {
     $view['head'] = '<script type="text/javascript" src="'.html_escape(url_static('js/monitor.js')).'"></script>';
-    include('header.php');
+    include(CUSTOM_THEME.'header.php');
     $monitor_params = array('only_table' => 1, 'first_entry' => $first_entry, 'display_entries' => $view['display_entries']);
     $url_monitor = url_absolute(url_complex('monitor', $view['filters'] + $monitor_params));
 ?>
@@ -22,9 +22,9 @@ if (!$display_only_table && (identity_can('job-reeval')
         && $view['total_entries'] <= IA_REEVAL_MAXJOBS) {
     echo '<form enctype="multipart/form-data" action="'.html_escape(url_reeval($view['filters'])).'"
                method="post" class="reeval" id="job_reeval" onsubmit="return confirm(\'Se vor reevalua '.
-               html_escape($view['total_entries']).' job-uri! Continuam?\')">';
+               html_escape($view['total_entries']).' job-uri! Continuăm?\')">';
     echo '<ul class="form hollyfix"><li id="field_submit">';
-    echo '<input type="submit" class="button important" value="Re-evalueaza!" id="form_reeval" />';
+    echo '<input type="submit" class="button important" value="Re-evaluează!" id="form_reeval" />';
     echo '</li></ul></form>';
 }
 
@@ -38,14 +38,14 @@ $selected = null;
 // my-jobs tab
 $user_filters = getattr($view['filters'], 'user');
 if (!identity_is_anonymous()) {
-    $tabs['mine'] = format_link(url_monitor(array('user' => $user_name)), 'Solutiile mele');
+    $tabs['mine'] = format_link(url_monitor(array('user' => $user_name)), 'Soluțiile mele');
     if ($user_name == $user_filters) {
         $selected = 'mine';
     }
 }
 
 // all-jobs tab
-$tabs['all'] = format_link(url_monitor(), 'Toate solutiile');
+$tabs['all'] = format_link(url_monitor(), 'Toate soluțiile');
 if (is_null($selected)) {
     $selected = 'all';
 }
@@ -70,7 +70,7 @@ if (!$display_only_table) {
 }
 
 if (!$jobs) {
-    echo "<div class=\"notice\">Nici o solutie in coada de evaluare</div>";
+    echo "<div class=\"notice\">Nici o soluție în coada de evaluare</div>";
 } else {
     // For the score column.
     function format_state($row) {
@@ -82,7 +82,7 @@ if (!$jobs) {
             } else {
                 $msg = html_escape($row['eval_message']);
                 if (isset($row["feedback_available"])) {
-                    $msg .= ": rezultate partiale disponibile";
+                    $msg .= ": rezultate parțiale disponibile";
                 }
             }
             $msg = "<span class=\"job-status-done\">$msg</span>";
@@ -90,7 +90,7 @@ if (!$jobs) {
         }
         if ($row['status'] == 'processing') {
             $msg = '<img src="'.url_static('images/indicator.gif').'" />';
-            $msg .= '<span class="job-status-processing">se evalueaza';
+            $msg .= '<span class="job-status-processing">se evaluează';
 //            if (array_key_exists('done_tests', $row)) {
 //                $done = $row['done_tests'];
 //                $total = $row['total_tests'];
@@ -103,12 +103,12 @@ if (!$jobs) {
             return format_link($url, $msg, false);
         }
         if ($row['status'] == 'waiting') {
-            $msg = '<span class="job-stats-waiting">in asteptare</span>';
+            $msg = '<span class="job-stats-waiting">în așteptare</span>';
             return format_link($url, $msg, false);
         }
 
         if ($row['status'] == 'skipped') {
-            $msg = '<span class="job-status-skipped">Submisie ignorata</span>';
+            $msg = '<span class="job-status-skipped">Submisie ignorată</span>';
             return format_link($url, $msg, false);
         }
         log_error("Invalid job status");
@@ -156,7 +156,7 @@ if (!$jobs) {
 
     function format_skip($row) {
         if ($row['status'] == 'skipped') {
-            return 'Ignorata';
+            return 'Ignorată';
         }
 
         if ($row['can_skip']) {
@@ -201,7 +201,7 @@ if (!$jobs) {
             'rowform' => 'format_round_link',
         ),
         array(
-            'title' => 'Marime',
+            'title' => 'Mărime',
             'rowform' => 'format_size',
         ),
         array(
@@ -224,7 +224,7 @@ if (!$jobs) {
     }
 
     if ($can_skip_something) {
-        $column_infos[] = array('title' => 'Ignora submisii', 'rowform' => 'format_skip');
+        $column_infos[] = array('title' => 'Ignoră submisii', 'rowform' => 'format_skip');
     }
 
     $options = array(
@@ -280,7 +280,7 @@ if (!$display_only_table) {
 
     <p>
         <br/>
-        <?= format_link("documentatie/monitorul-de-evaluare", "Ce este si cum se foloseste") ?>
+        <?= format_link("documentatie/monitorul-de-evaluare", "Ce este și cum se foloseste") ?>
         monitorul de evaluare.
     </p>
 

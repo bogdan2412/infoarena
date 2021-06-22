@@ -312,9 +312,32 @@ The basic layout of the homepage is as follows:
 }
 
 /* Sidebar :: search box */
+td.gsib_b, td.gsc-result-info-container, td.gsc-orderby-container {
+	border: none !important;
+}
+
+button.gsc-search-button.gsc-search-button-v2, .gsc-search-button-v2, td.gsc-search-button {
+	border: none !important;
+	display: block;
+}
+
+td.gsc-input{ 
+	border: none !important;
+	display: block;
+    padding-bottom: 5px;
+}
+
+.gsc-webResult:after {
+	display: initial !important;
+}
+
+iframe#master-1 {
+	display: none !important;
+}
+
 #google-search {
     padding: 0;
-    margin: .5em .5em .5em 0;
+    margin-left: .2em;
 }
 
 #google-search fieldset {
@@ -330,6 +353,7 @@ The basic layout of the homepage is as follows:
     padding-left: .7em;
     margin: 0;
 }
+
 
 /* Headers */
 #main h1, #main h2, #main h3 {

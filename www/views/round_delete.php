@@ -1,5 +1,5 @@
 <?php
-include('header.php');
+include(CUSTOM_THEME.'header.php');
 require_once(IA_ROOT_DIR . "www/format/table.php");
 require_once(IA_ROOT_DIR . "www/format/format.php");
 
@@ -37,7 +37,7 @@ $column_infos = array(
         'rowform' => 'format_check'
     ),
     array(
-        'title' => 'Numar',
+        'title' => 'Număr',
         'key' => 'id',
         'rowform' => 'format_textblock_id'
     ),
@@ -69,12 +69,12 @@ $column_infos = array(
 
         if ($view['total_entries']) {
     ?>
-        <br /><input type="submit" value="Sterge Paginile" class="button" name="delete-pages" onclick="return confirm('Aceasta actiune este ireversibila! Doresti sa continui?');" />
+        <br /><input type="submit" value="Șterge paginile" class="button" name="delete-pages" onclick="return confirm('Această acțiune este ireversibilă! Dorești să continui?');" />
     <?php } ?>
     </form>
 
     <form method = 'post' action = ''>
-    <input type="submit" value="Sterge Runda, Forever..." class="button" name="delete-round" onclick="return confirm('Aceasta actiune este ireversibila! Doresti sa continui?');" />
+    <input type="submit" value="Șterge runda, Forever..." class="button" name="delete-round" onclick="return confirm('Această acțiune este ireversibilă! Dorești să continui?');" />
     </form>
 
 <?php include('footer.php'); ?>

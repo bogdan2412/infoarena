@@ -1,4 +1,4 @@
-<?php include('header.php'); ?>
+<?php include(CUSTOM_THEME.'header.php'); ?>
 
 <h1><?= html_escape($title) ?></h1>
 
@@ -14,7 +14,7 @@
 </fieldset>
 <ul class="form clear">
     <li>
-        <input type="submit" class="button important" value="Muta pagina" id="form_submit" />
+        <input type="submit" class="button important" value="Mută pagina" id="form_submit" />
     </li>
 </ul>
 </form>

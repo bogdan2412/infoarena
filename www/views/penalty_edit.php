@@ -1,11 +1,11 @@
 <?php
-    include('header.php');
+    include(CUSTOM_THEME.'header.php');
 ?>
 
 <h1><?= html_escape($title) ?></h1>
 
 <?php
-    echo "Modifica punctajele per problema pentru utilizatorul <b>".$view['user']['username']."</b> la concursul <b>".$view['round']['title']."</b>.";
+    echo "Modifică punctajele per problemă pentru utilizatorul <b>".$view['user']['username']."</b> la concursul <b>".$view['round']['title']."</b>.";
     echo '<form action="?user_id='.$view['user']['id'].'&round_id='.$view['round']['id'].'" method="post" class="login clear">';
     echo '<fieldset>';
     echo '<legend>Scor total: '.$view['total_score'].'</legend>';

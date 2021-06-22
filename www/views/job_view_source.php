@@ -1,7 +1,7 @@
 <?php
 require_once(IA_ROOT_DIR . 'www/format/format.php');
 require_once(IA_ROOT_DIR . 'www/url.php');
-include('header.php');
+include(CUSTOM_THEME.'header.php');
 ?>
 
 <h1>Cod sursa(job <?= format_link(url_job_detail($job['id']), '#'.$job['id']) ?>)</h1>

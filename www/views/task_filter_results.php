@@ -3,7 +3,7 @@ require_once(IA_ROOT_DIR . 'www/macros/macro_stars.php');
 require_once(IA_ROOT_DIR . 'www/format/table.php');
 require_once(IA_ROOT_DIR . 'www/format/format.php');
 
-include('header.php');
+include(CUSTOM_THEME.'header.php');
 
 function format_title($row) {
     $title = '<span style=\"float:left;\">' .
@@ -72,9 +72,9 @@ function tag_print($tags) {
     $tag_types = array(
         "author" => "Autor",
         "contest" => "Concurs",
-        "year" => "Editie",
+        "year" => "Ediție",
         "round" => "Runda",
-        "age_group" => "Grupa de varsta",
+        "age_group" => "Grupa de vârstă",
         "method" => "Categorie",
         "algorithm" => "Algoritm",
         "tag" => "Tag"
@@ -148,7 +148,7 @@ echo
     <div> </div> Tag neselectat
     <div class="selected-filter"> </div> Tag selectat
     <div class="sub-selected-filters"> </div>
-        Categorie din care e selectat cel putin un tag
+        Categorie din care e selectat cel puțin un tag
 </div>';
 
 echo '<br><div id="task-filter-menu">';

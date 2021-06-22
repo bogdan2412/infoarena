@@ -236,6 +236,11 @@ define('SECURE_DELETION', false);
 // Show or hide newsletter-related checkboxes
 define('NEWSLETTER', true);
 
+// Theme selection.
+// You can change it to 'custom/' to access the custom folder for css and images.
+// Leave '' for default theme
+define('CUSTOM_THEME', 'custom/');
+
 // Text of the homepage link in the top navigation menu
 define('NAV_HOMEPAGE_TEXT', 'info<em>arena</em>');
 

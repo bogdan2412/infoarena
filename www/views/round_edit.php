@@ -11,7 +11,7 @@ $view['head'] .= "<script type=\"text/javascript\" src=\"" . html_escape(url_sta
 require_once(IA_ROOT_DIR."common/round.php");
 require_once(IA_ROOT_DIR."www/format/form.php");
 require_once(IA_ROOT_DIR."www/views/round_edit_header.php");
-include('header.php');
+include(CUSTOM_THEME.'header.php');
 
 echo round_edit_tabs($view['round_id'], 'round-edit-params');
 
@@ -40,12 +40,12 @@ $form_fields = array(
         'page_name' => array(
                 'name' => "Pagina de prezentare",
                 'description' => "Aceasta este pagina la care este trimis utilizatorul ".
-                                 "cand da click pe o runda",
+                                 "când dă click pe o rundă",
                 'type' => 'string',
         ),
         'start_time' => array(
                 'name' => "Timpul de start",
-                'description' => "Timpul trebuie sa fie UTC in format YYYY-MM-DD HH:MM:SS",
+                'description' => "Timpul trebuie să fie UTC în format YYYY-MM-DD HH:MM:SS",
                 'type' => 'datetime',
         ),
         'tasks' => array(
@@ -60,8 +60,8 @@ $form_fields = array(
                 'default' => 'user-defined',
         ),
         'public_eval' => array(
-                'name' => 'Evaluare publica',
-                'description' => "Concurentii pot vedea scorul obtinut la sursele trimise",
+                'name' => 'Evaluare publică',
+                'description' => "Concurenții pot vedea scorul obținut la sursele trimise",
                 'default' => '0',
                 'type' => 'bool',
         ),
@@ -77,19 +77,19 @@ $form_fields = array(
 
 <?php if ($round['state'] == 'running') { ?>
     <div class="warning">
-     Atentie! Runda este activa chiar acum. Orice modificare poate avea urmari neplacute!
+     Atenție! Runda este activă chiar acum. Orice modificare poate avea urmări neplăcute!
     </div>
 <?php } elseif ($round['state'] == 'waiting') { ?>
-    Aceasta runda nu a rulat inca.
+    Această rundă nu a rulat încă.
 <?php } elseif ($round['state'] == 'complete') { ?>
     <div class="warning">
-     Atentie! Aceasta runda s-a terminat, orice modificare este descurajata.
+     Atenție! Această rundă s-a terminat, orice modificare este descurajată.
     </div>
 <?php } ?>
 
 <form action="<?= html_escape(getattr($view, 'action')) ?>" method="post" class="task">
  <fieldset>
-  <legend>Informatii generale</legend>
+  <legend>Informații generale</legend>
   <ul class="form">
    <?= view_form_field_li($form_fields['title'], 'title') ?>
    <?= view_form_field_li($form_fields['page_name'], 'page_name') ?>
@@ -113,7 +113,7 @@ $form_fields = array(
   <ul class="form">
    <li id="field_submit">
     <input type="submit"
-           value="Salveaza"
+           value="Salvează"
            id="form_submit"
            class="button important" />
    </li>

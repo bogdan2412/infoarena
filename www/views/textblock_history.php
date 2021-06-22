@@ -1,5 +1,5 @@
 <?php
-include('header.php');
+include(CUSTOM_THEME.'header.php');
 require_once(IA_ROOT_DIR . "www/format/table.php");
 require_once(IA_ROOT_DIR . "www/format/format.php");
 require_once(IA_ROOT_DIR . "www/format/form.php");
@@ -39,10 +39,10 @@ function format_operations($row) {
         $ret = '<strong>Ultima versiune</strong> ['. format_post_link($delurl, "Sterge") .']';
         return $ret;
     } else {
-        return '['. format_link($diffurl, "Compara cu ultima revizie") .'] '.
-                '['. format_post_link($resturl, "Inlocuieste") .'] '.
+        return '['. format_link($diffurl, "Compară cu ultima revizie") .'] '.
+                '['. format_post_link($resturl, "Înlocuiește") .'] '.
                 '['. format_link($viewurl, "Vezi") .'] '.
-                '['. format_post_link($delurl, "Sterge") .']';
+                '['. format_post_link($delurl, "Șterge") .']';
     }
 }
 
@@ -97,12 +97,12 @@ $column_infos = array(
         'rowform' => 'format_ip',
     ),
     array(
-        'title' => 'Operatii',
+        'title' => 'Operații',
         'rowform' => 'format_operations',
     ),
 
     array(
-        'title' => 'Compara',
+        'title' => 'Compară',
         'rowform' => 'format_compare',
         'css_class' => 'compare-radio',
     ),
@@ -134,7 +134,7 @@ $options = array(
 <div class="compare-button-container">
 <input
     type = "submit"
-    value = "Compara versiunile selectate"
+    value = "Compară versiunile selectate"
     class = "button compare-button"
 />
 </div>
@@ -147,7 +147,7 @@ echo format_table($revisions, $column_infos, $options);
 <div class="compare-button-container">
 <input
     type = "submit"
-    value = "Compara versiunile selectate"
+    value = "Compară versiunile selectate"
     class = "button compare-button"
 />
 </div>

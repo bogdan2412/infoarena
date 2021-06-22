@@ -1,11 +1,11 @@
 <?php
-    include('header.php');
+    include(CUSTOM_THEME.'header.php');
 ?>
 
 <h1><?= html_escape($title) ?></h1>
 
 <p>
-  Introduceti numele celui căruia vreți să îi modificați punctajul și ID-ul
+  Introduceți numele celui căruia vreți să îi modificați punctajul și ID-ul
   concursului.
 </p>
 

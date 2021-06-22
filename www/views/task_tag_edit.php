@@ -1,7 +1,7 @@
 <?php
     require_once(IA_ROOT_DIR."www/views/task_edit_header.php");
 
-    include('header.php');
+    include(CUSTOM_THEME.'header.php');
     $task_id = $view['task']['id'];
     $task_link = url_task($view['task']['id']);
     $task_title = $view['task']['title'];
@@ -33,7 +33,7 @@
         echo "</ul>";
     }
 ?>
-<input type="submit" class="button important" value="Salveaza" />
+<input type="submit" class="button important" value="Salvează" />
 </form>
 
 <?php include('footer.php'); ?>

@@ -23,7 +23,7 @@ setTimeout(RefreshPage, 2000);
 </style>
 ';
 
-include(IA_ROOT_DIR.'www/views/header.php');
+include(IA_ROOT_DIR.'www/views/'.CUSTOM_THEME.'header.php');
 
 if (!$display_only_table) {
     echo '<h1>'.html_escape($view['title']).'</h1>';
@@ -32,7 +32,7 @@ if (!$display_only_table) {
 echo "<div id=\"monitor-table\">";
 
 if (!$jobs) {
-    echo "<div class=\"notice\">Nici o solutie in coada de evaluare</div>";
+    echo "<div class=\"notice\">Nici o soluție în coada de evaluare</div>";
 } else {
     // For the score column.
     function format_state($row) {
@@ -45,11 +45,11 @@ if (!$jobs) {
         }
         if ($row['status'] == 'processing') {
             $img = '<img src="'.url_static('images/indicator.gif').'" />';
-            $msg = $img.' <span class="job-status-processing">se evalueaza</span>';
+            $msg = $img.' <span class="job-status-processing">se evaluează</span>';
             return format_link($url, $msg, false);
         }
         if ($row['status'] == 'waiting') {
-            $msg = '<span style="job-stats-waiting">in asteptare</span>';
+            $msg = '<span style="job-stats-waiting">în așteptare</span>';
             return format_link($url, $msg, false);
         }
         log_error("Invalid job status");

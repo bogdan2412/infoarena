@@ -27,7 +27,7 @@ $view['head'] = $view['head'] . '
 </style>
 ';
 
-include('header.php');
+include(CUSTOM_THEME.'header.php');
 $url_monitor = "http://www.infoarena.ro/liveeval";
 ?>
     <script type="text/javascript">
@@ -57,14 +57,14 @@ if (!$jobs) {
                     '</div>';
 
         $processing = '<img src="'.url_static('images/indicator.gif').'" />';
-        $processing .= '<span class="job-status-processing">se evalueaza';
+        $processing .= '<span class="job-status-processing">se evaluează';
         $processing .= '</span>';
         $processing = '<div class="processing">'.
                         format_link($url, $processing, false).
                       '</div>';
 
 
-        $msg = '<span class="job-stats-waiting">in asteptare</span>';
+        $msg = '<span class="job-stats-waiting">în așteptare</span>';
         $msg = '<div class="lie-score">'.
                     format_link($url, $msg, false).
                '</div>';
@@ -133,7 +133,7 @@ if (!$jobs) {
             'rowform' => 'format_round_link',
         ),
         array(
-            'title' => 'Marime',
+            'title' => 'Mărime',
             'rowform' => 'format_size',
         ),
         array(
@@ -161,7 +161,7 @@ if (!$jobs) {
     print '<input type="submit"
                   id="liveeval"
                   class="button important"
-                  value="Evalueaza"
+                  value="Evaluează"
                   style="float: right"><Br><BR>';
 }
 

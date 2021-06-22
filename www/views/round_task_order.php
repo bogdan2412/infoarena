@@ -3,7 +3,7 @@ require_once(IA_ROOT_DIR."common/round.php");
 require_once(IA_ROOT_DIR."www/format/form.php");
 require_once(IA_ROOT_DIR."www/views/round_edit_header.php");
 require_once(IA_ROOT_DIR."www/macros/macro_tasks.php");
-include('header.php');
+include(CUSTOM_THEME.'header.php');
 
 echo round_edit_tabs($view['round_id'], 'round-edit-task-order');
 ?>
@@ -59,7 +59,7 @@ echo macro_tasks($args);
 <div class="submit">
     <ul class="form">
         <li id="field_submit">
-            <input type="button" value="Salveaza modificari"
+            <input type="button" value="Salvează modificări"
              onclick="do_post()" class="button important" />
         </li>
     </ul>

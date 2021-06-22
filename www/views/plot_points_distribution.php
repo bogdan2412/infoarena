@@ -11,7 +11,7 @@ $chart = new open_flash_chart();
 
 $chart->set_bg_colour('#ffffff');
 
-$title = new title('Distributia punctajelor');
+$title = new title('Distribuția punctajelor');
 $chart->set_title($title);
 
 // adjust axises and labels

@@ -1,0 +1,60 @@
+/* site header */
+
+#header {
+    border-bottom: 1px solid #fff;
+    background: url('../images/logo_bg.jpg') repeat-x top left;
+}
+
+#header h1 a {
+    background:url('../images/logo.jpg') no-repeat left top;
+}
+
+/* search box in site header */
+#search {
+    background:#5C880B url(../../images/search.jpg) no-repeat bottom left;
+}
+
+/* userbox in site header */
+#userbox {
+    background-color:#ffb500;
+	background-image:none;
+    line-height: inherit;
+}
+
+#userbox, #userbox a {
+    color: #222;
+}
+
+/* site footer */
+#footer {
+    border-top:1px solid #FFF;
+    background:url(../images/footer.jpg) repeat-x top;
+    color:#222;
+}
+
+/* top navigation bar */
+#topnav {
+    background: url('../images/tab/end.gif') right bottom no-repeat;
+}
+
+#topnav ul {
+    background: url('../images/tab/begin.gif') left bottom no-repeat;
+}
+
+#topnav a {
+    font-size: 9pt;
+}
+
+#topnav strong {
+    background: url('../images/tab/a_end.gif') right bottom no-repeat;
+
+}
+
+#topnav strong a {
+    background: url('../images/tab/a_begin.gif') left bottom no-repeat;
+}
+
+/* datagrids */
+td.number, th.number, td.date, th.date, th.state {
+    text-align: center;
+}

@@ -24,7 +24,7 @@ log_assert_valid(textblock_validate($textblock));
 <li><?= format_post_link(
     url_textblock_delete($textblock['name']),
     'Şterge', array(), true, array('onclick' =>
-    "return confirm('Aceasta actiune este ireversibila! Doresti sa continui?')"),
+    "return confirm('Această acțiune este ireversibilă! Dorești să continui?')"),
     'r') ?>
 </li>
 <?php } ?>

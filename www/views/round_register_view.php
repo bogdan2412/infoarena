@@ -3,17 +3,17 @@
 require_once(IA_ROOT_DIR . 'www/format/table.php');
 require_once(IA_ROOT_DIR . 'www/format/format.php');
 
-include('header.php');
+include(CUSTOM_THEME.'header.php');
 
-echo '<h1>Utilizatori inregistrati la '.format_link(url_textblock($round['page_name']), $round['title']).'</h1>';
+echo '<h1>Utilizatori înregistrați la '.format_link(url_textblock($round['page_name']), $round['title']).'</h1>';
 
 if (count($view['users']) < 1) {
-    echo "<p><strong>Nici un utilizator inscris la aceasta runda&hellip;</strong></p>";
+    echo "<p><strong>Nici un utilizator înscris la această rundă&hellip;</strong></p>";
 }
 else {
     $column_infos = array(
         array(
-            'title' => 'Pozitie',
+            'title' => 'Poziție',
             'key' => 'position',
             'css_class' => 'number rank',
         ),
