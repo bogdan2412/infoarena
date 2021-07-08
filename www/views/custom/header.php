@@ -51,7 +51,7 @@ header("Content-type: text/html; charset=utf-8");
 ?>
 
     <title><?= html_escape(getattr($view, 'title')) ?></title>
-	
+
 	<!-- load Google font faster, for better rendering-->
 	<link rel="preconnect"
 		  href="https://fonts.gstatic.com"
@@ -63,10 +63,10 @@ header("Content-type: text/html; charset=utf-8");
 		  href="$CSS&display=swap"
 		  media="print" onload="this.media='all'" />
 	<noscript>
-	  <link rel="stylesheet"
+	    <link rel="stylesheet"
 			href="$CSS&display=swap" />
 	</noscript>
-	
+
 	<link href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,500;1,400;1,500&family=Ubuntu:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
 	<!-- end load Google Font -->
 
@@ -76,15 +76,11 @@ header("Content-type: text/html; charset=utf-8");
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/tabber.css')) ?>"/>
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/highlight-theme.css')) ?>"/>
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/print.css')) ?>" media="print" />
-	
-	<!-- custom CSS load; overwritting just some css rules -->
-	<?php 
-	if(CUSTOM_THEME){
-		echo '<link type="text/css" rel="stylesheet" href="'. html_escape(url_static("custom/css/sitewide.css")) .'"/>';
-		echo '<link type="text/css" rel="stylesheet" href="'. html_escape(url_static("custom/css/screen.css")) .'"/>';
-	}
-	?>
-			
+
+    <!-- custom CSS load; overwritting just some css rules -->
+    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('custom/css/sitewide.css')) ?>"/>
+    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('custom/css/screen.css')) ?>"/>
+
     <link rel="icon" href="<?= IA_URL."/static/custom/images/favicon.png" ?>" type="image" />
     <script type="text/javascript" src="<?= html_escape(url_static('js/config.js.php')) ?>"></script>
     <script type="text/javascript" src="<?= html_escape(IA_DEVELOPMENT_MODE?url_static('js/jquery-1.7.2.js'):'//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js') ?>"></script>
@@ -113,7 +109,7 @@ header("Content-type: text/html; charset=utf-8");
 <?php
     }
 ?>
-	
+
     <?= getattr($view, 'head') ?>
 </head>
 <body id="infoarena">
@@ -146,14 +142,14 @@ $is_admin = ('admin' == getattr($identity_user, 'security_level'));
 		<?php if (SIDEBAR_ELEMENTS['task-search']) { ?>
             <li><a href="<?= url_task_search([]) ?>">Categorii probleme</a></li>
         <?php } ?>
-		
-		<?php if (GOOGLE_SEARCH && !IA_DEVELOPMENT_MODE) { ?>
-			<li><a href="https://robopedia.ro/work-varena/www/search/">Căutare probleme</a></li>
-			<div id="google-search">
-				<?php include(IA_ROOT_DIR.'www/views/google_search.php'); ?>
-			</div>
-		<?php } ?>
-		
+
+        <?php if (GOOGLE_SEARCH && !IA_DEVELOPMENT_MODE) { ?>
+		    <li><a href="<?= html_escape(url_google_search()) ?>">Căutare probleme</a></li>
+		    <div id="google-search">
+			    <?php include(IA_ROOT_DIR.'www/views/google_search.php'); ?>
+		    </div>
+        <?php } ?>
+
         <?php if (SIDEBAR_ELEMENTS['articles']) { ?>
             <li><a href="<?= html_escape(url_textblock('articole')) ?>">Articole</a></li>
         <?php } ?>
@@ -181,10 +177,10 @@ $is_admin = ('admin' == getattr($identity_user, 'security_level'));
 			<?php } ?>
 			<!-- end adaugare elemente sidebar-->
         <?php } ?>
-		
+
     </ul>
 
-    
+
 
     <?php if (SIDEBAR_ELEMENTS['calendar']) { ?>
         <div id="calendar">

@@ -222,7 +222,7 @@ define('SEC_TEXTBLOCK_SIMPLE_REV_EDIT_OTHER', ['admin']);
 
 define('GOOGLE_ANALYTICS_TRACKING_ID', 'UA-113289-8');
 define('GOOGLE_SEARCH', true);
-// token obtained from Google CSE (ignoreed if GOOGLE_SEARCH is false)
+// token obtained from Google CSE (ignored if GOOGLE_SEARCH is false)
 define('GOOGLE_CSE_TOKEN', '');
 
 // Monitor autorefresh options

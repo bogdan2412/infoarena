@@ -449,3 +449,7 @@ function url_penalty_edit($user_id, $round_id) {
 function url_user_control($user_id) {
     return url_complex('user_control', [ 'user_id' => $user_id ]);
 }
+
+function url_google_search() {
+    return url_complex('search');
+}
