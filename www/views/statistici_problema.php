@@ -4,7 +4,7 @@ require_once IA_ROOT_DIR.'www/format/format.php';
 require_once IA_ROOT_DIR.'www/format/table.php';
 require_once IA_ROOT_DIR.'www/php-ofc-library/open-flash-chart-object.php';
 
-include CUSTOM_THEME.'header.php';
+include CUSTOM_THEME . 'header.php';
 
 $username = '';
 if (array_key_exists('username', $view)) {

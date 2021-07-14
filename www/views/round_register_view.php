@@ -3,7 +3,7 @@
 require_once(IA_ROOT_DIR . 'www/format/table.php');
 require_once(IA_ROOT_DIR . 'www/format/format.php');
 
-include(CUSTOM_THEME.'header.php');
+include(CUSTOM_THEME . 'header.php');
 
 echo '<h1>Utilizatori înregistrați la '.format_link(url_textblock($round['page_name']), $round['title']).'</h1>';
 

@@ -8,7 +8,7 @@ require_once(IA_ROOT_DIR.'common/tags.php');
 $username = $user['username'];
 
 // site header
-include(CUSTOM_THEME.'header.php');
+include(CUSTOM_THEME . 'header.php');
 
 // banned user notice and ban/unban buttons
 if (identity_is_admin()) {

@@ -1,6 +1,6 @@
 <?php
 
-include(CUSTOM_THEME.'header.php');
+include(CUSTOM_THEME . 'header.php');
 
 $min_rev_id = min($revfrom_id, $revto_id);
 $max_rev_id = max($revfrom_id, $revto_id);

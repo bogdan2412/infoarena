@@ -3,7 +3,7 @@ require_once(IA_ROOT_DIR . 'www/macros/macro_stars.php');
 require_once(IA_ROOT_DIR . 'www/format/table.php');
 require_once(IA_ROOT_DIR . 'www/format/format.php');
 
-include(CUSTOM_THEME.'header.php');
+include(CUSTOM_THEME . 'header.php');
 
 function format_title($row) {
     $title = '<span style=\"float:left;\">' .

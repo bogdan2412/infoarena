@@ -11,7 +11,7 @@ $view['head'] .= "<script type=\"text/javascript\" src=\"" . html_escape(url_sta
 require_once(IA_ROOT_DIR."common/round.php");
 require_once(IA_ROOT_DIR."www/format/form.php");
 require_once(IA_ROOT_DIR."www/views/round_edit_header.php");
-include(CUSTOM_THEME.'header.php');
+include(CUSTOM_THEME . 'header.php');
 
 echo round_edit_tabs($view['round_id'], 'round-edit-params');
 

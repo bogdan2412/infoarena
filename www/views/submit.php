@@ -1,6 +1,6 @@
 <?php
 
-include(CUSTOM_THEME.'header.php');
+include(CUSTOM_THEME . 'header.php');
 
 // list of task ids that require output-only submissions
 $output_only_ids = array();

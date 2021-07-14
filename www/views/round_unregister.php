@@ -1,5 +1,5 @@
 <?php
-include(CUSTOM_THEME.'header.php');
+include(CUSTOM_THEME . 'header.php');
 ?>
 
 <h1>Deînregistrare de la <?= format_link(url_textblock($round['page_name']), $round['title']) ?></h1>

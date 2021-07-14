@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT_DIR . 'www/views/'.CUSTOM_THEME.'header.php');
+require_once(IA_ROOT_DIR . 'www/views/' . CUSTOM_THEME . 'header.php');
 require_once(IA_ROOT_DIR . 'www/format/format.php');
 require_once(IA_ROOT_DIR . 'www/url.php');
 

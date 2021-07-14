@@ -3,7 +3,7 @@
 require_once(IA_ROOT_DIR.'www/wiki/wiki.php');
 
 // site header
-include(CUSTOM_THEME.'header.php');
+include(CUSTOM_THEME . 'header.php');
 
 // wiki page header (actions)
 include('textblock_header.php');

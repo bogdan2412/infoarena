@@ -23,7 +23,7 @@ setTimeout(RefreshPage, 2000);
 </style>
 ';
 
-include(IA_ROOT_DIR.'www/views/'.CUSTOM_THEME.'header.php');
+include(IA_ROOT_DIR.'www/views/' . CUSTOM_THEME . 'header.php');
 
 if (!$display_only_table) {
     echo '<h1>'.html_escape($view['title']).'</h1>';

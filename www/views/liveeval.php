@@ -27,7 +27,7 @@ $view['head'] = $view['head'] . '
 </style>
 ';
 
-include(CUSTOM_THEME.'header.php');
+include(CUSTOM_THEME . 'header.php');
 $url_monitor = "http://www.infoarena.ro/liveeval";
 ?>
     <script type="text/javascript">

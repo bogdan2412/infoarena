@@ -1,4 +1,4 @@
-<?php include(CUSTOM_THEME.'header.php');
+<?php include(CUSTOM_THEME . 'header.php');
 
 // FIXME: copy/paste is stupid. Centralize field infos
 $form_fields = array (
