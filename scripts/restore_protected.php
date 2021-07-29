@@ -41,13 +41,13 @@ $result_running = db_query($select_sql_running);
 /* Transforming the object from db_query into associative array for search */
 $array_protected = array();
 foreach ($result_running as $row) {
-	$array[] = $row['id_problema_protejat'];
+	$array_protected[] = $row['id_problema_protejat'];
 }
 
 /* Searching the array to make sure we do not make public any of the tasks which should stay protected, as part of a running round. */
 $message_for_log = '';
 foreach ($result_protected as $row) {
-	$found = in_array ( $row["id_problema"] , $array , true );
+	$found = in_array ( $row["id_problema"] , $array_protected , true );
 	if (!$found) {
 		task_update_security($row["id_problema"], 'public');
 		$message_for_log .=  $row["id_problema"] . ' | ';
