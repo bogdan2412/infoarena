@@ -141,7 +141,7 @@ The basic layout of the homepage is as follows:
 #content_small {
     clear: both;
     margin-left: 10px;
-    background: url(../images/main_small.jpg) repeat-y ;
+    /*background: url(../images/main_small.jpg) repeat-y ;*/
 }
 
 #sidebar {
@@ -157,7 +157,7 @@ The basic layout of the homepage is as follows:
 
 #main {
     /*float:right;*/
-    background: #fff url(../images/main_tile.jpg) repeat-x top;
+    /*background: #fff url(../images/main_tile.jpg) repeat-x top;*/
     padding: 15px;
     margin-left: 191px;
     border-left: 1px solid #d0d0d0;
