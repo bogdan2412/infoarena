@@ -9,12 +9,12 @@ function milisleep($ms) {
 // Return success value.
 function clean_dir($dir) {
     system("rm -rf " . $dir);
-    if (@mkdir($dir, 0777, true) === false) {
+    if (@mkdir($dir, 0755, true) === false) {
         log_warn("Failed re-creating directory $dir");
         return false;
     }
-    if (@chmod($dir, 0777) == false) {
-        log_warn("Failed chmod 0777 directory $dir");
+    if (@chmod($dir, 0755) == false) {
+        log_warn("Failed chmod 0755 directory $dir");
         return false;
     }
     return true;
@@ -57,7 +57,8 @@ function compile_file($input_file_name, &$compiler_type, &$compiler_message) {
                         '-std=c++14 %file_name% -o %exe_name% -lm',
             'pas' => '/usr/bin/fpc -O2 -Xs %file_name% -dINFOARENA',
             'fpc' => '/usr/bin/fpc -O2 -Xs %file_name% -dINFOARENA',
-            'rs' => '/cargo/bin/rustc -O %file_name% -o %exe_name%',
+            'rs' => '/cargo/bin/rustc --edition 2018 -O %file_name% -o '.
+                    '%exe_name%',
             'py' => '/usr/bin/python3 -m py_compile %file_name%',
             'java' => '/usr/bin/javac %file_name%',
         );
@@ -94,7 +95,8 @@ function compile_file($input_file_name, &$compiler_type, &$compiler_message) {
                           '/usr/lib:/usr/lib:exec',
                           '/usr/include:/usr/include',
         ),
-        'pas' => array(
+	'pas' => array(
+	'/etc:/etc',
         '/lib:/lib:exec',
         '/lib64:/lib64:exec',
                        '/usr/bin/:/usr/bin:exec',
@@ -102,6 +104,7 @@ function compile_file($input_file_name, &$compiler_type, &$compiler_message) {
                        '/etc/alternatives:/etc/alternatives:exec',
         ),
         'fpc' => array(
+	'/etc:/etc',
         '/lib:/lib:exec',
         '/lib64:/lib64:exec',
                        '/usr/bin/:/usr/bin:exec',
@@ -200,6 +203,8 @@ function compile_file($input_file_name, &$compiler_type, &$compiler_message) {
 
 
     if ($result['result'] == 'FAIL') {
+        $compiler_message .= "\n";
+        $compiler_message .= $result['message'];
         return false;
     }
 
@@ -350,7 +355,8 @@ function jail_run($program, $jaildir, $time, $memory, $capture_std = true,
 
 function run_file($compiler_id, $bin_path, $jail_dir, $time,
                   $memory, $capture_std = false, $redirect_std = array(),
-                  $instance_name = 'default', $async = false) {
+                  $instance_name = 'default', $async = false,
+                  $arguments = '') {
     $command = array(
         'c' => '/user_bin/main',
         'cpp' => '/user_bin/main',
@@ -361,7 +367,7 @@ function run_file($compiler_id, $bin_path, $jail_dir, $time,
         'pas' => '/user_bin/main',
         'fpc' => '/user_bin/main',
         'rs' => '/user_bin/main',
-        'py' => '/usr/bin/python3',
+        'py' => '/usr/bin/pypy3',
         'java' => '/usr/bin/java',
     );
 
@@ -403,14 +409,24 @@ function run_file($compiler_id, $bin_path, $jail_dir, $time,
         $extra_args = ' -m user_bin.main';
     }
 
+    if ($compiler_id == 'py') {
+        if (is_array($time)) {
+            $time['user'] *= 3.3;
+        } else {
+            $time *= 3.3;
+        }
+    }
+
     if ($compiler_id == 'py' || $compiler_id == 'java') {
         // a bit of help for startup
         if (is_array($time)) {
-            $time['user'] += 30;
+            $time['user'] += 300;
         } else {
-            $time += 30;
+            $time += 300;
         }
     }
+
+    $extra_args .= ' ' . $arguments;
 
     $program = $command[$compiler_id];
     return jail_run($program, $jail_dir, $time, $memory, $capture_std,

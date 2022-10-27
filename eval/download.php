@@ -59,7 +59,7 @@ function copy_attachment_file($pagename, $filename, $target) {
         // Can't use url_attachment here because it's in www.
         curl_setopt($curl, CURLOPT_URL, IA_URL . "$pagename?action=download&file=$filename");
         curl_setopt($curl, CURLOPT_USERPWD, IA_JUDGE_USERNAME . ":" . IA_JUDGE_PASSWORD);
-
+        curl_setopt($curl, CURLOPT_INTERFACE, "193.105.239.206"); 
         $cachefd = fopen($cachefname, "wb");
         if (!$cachefd) {
             log_warn("Failed to open $pagename/$filename for writing.");

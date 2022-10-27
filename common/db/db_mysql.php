@@ -11,7 +11,7 @@ function db_connect() {
     }
 
     // log_print("Connecting to database...");
-    if (!$dbLink = @mysql_connect(IA_DB_HOST, IA_DB_USER, IA_DB_PASS)) {
+    if (!$dbLink = mysql_connect(IA_DB_HOST, IA_DB_USER, IA_DB_PASS)) {
         if (IA_DB_KEEP_ALIVE) {
             $timeout = 0;
             do {

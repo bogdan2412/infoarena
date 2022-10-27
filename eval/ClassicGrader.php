@@ -24,7 +24,7 @@ class ClassicGrader extends BaseGrader {
         $memlimit = $this->task['memlimit'];
 
         $jrunres = run_file($this->job['compiler_id'],
-                            IA_ROOT_DIR.'eval/temp/user',
+                            IA_ROOT_DIR.'eval/tmpfs/temp/user',
                             $jaildir, (int)$timelimit, (int)$memlimit);
         eval_assert($jrunres['result'] != 'ERROR',
                     'Error in jrun: ' . $jrunres['message']);

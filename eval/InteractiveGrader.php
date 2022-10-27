@@ -32,18 +32,18 @@ class InteractiveGrader extends BaseGrader {
                     'Unable to create named pipes');
 
         // Run user program on a test case.
-        $time_limit = ((int)$this->task['timelimit']) * 1000;
+        $time_limit = $this->task['timelimit'] * 1000;
         $mem_limit = (int)$this->task['memlimit'];
         $wall_time_limit =
             $time_limit + IA_JUDGE_TASK_INTERACT_TIMELIMIT + 1000;
 
         $interact_process = run_file(
             $this->evaluatorCompilerId['interact'],
-            IA_ROOT_DIR.'eval/temp/evaluators/interact',
+            IA_ROOT_DIR.'eval/tmpfs/temp/evaluators/interact',
             $jaildir,
             array(
                 'user' => IA_JUDGE_TASK_INTERACT_TIMELIMIT,
-                'wall' => $wall_time_limit,
+                'wall' => $wall_time_limit + 1000,
             ), IA_JUDGE_TASK_INTERACT_MEMLIMIT, false,
             array(
             'in' => $user_out_pipe,
@@ -54,7 +54,7 @@ class InteractiveGrader extends BaseGrader {
 
         $user_process = run_file(
             $this->job['compiler_id'],
-            IA_ROOT_DIR.'eval/temp/user',
+            IA_ROOT_DIR.'eval/tmpfs/temp/user',
             $user_jaildir,
             array(
                 'user' => $time_limit,
