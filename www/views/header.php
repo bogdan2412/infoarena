@@ -34,7 +34,7 @@ header("Content-type: text/html; charset=utf-8");
     if (getattr($view, 'page_name') == "home") {
 ?>
     <meta name="Description" content="Concursuri de programare, Stiri si articole de informatica, Comunitate online. Arhiva de probleme, Evaluare 24/24, Forum, Resurse educationale, Pregatire pentru olimpiada." />
-    <meta name="keywords" content="Cocursuri, Informatica, Programare, Comunitate, Algoritmi, Articole, Evaluare, Pregatire" />
+    <meta name="keywords" content="Concursuri, Informatica, Programare, Comunitate, Algoritmi, Articole, Evaluare, Pregatire" />
     <meta name="verify-v1" content="j9UCDYvsDL2pLtkJDDkE4HnHVmXakgvz30vOyIJ+6cI=" />
     <meta name="verify-v1" content="ac36ilLp6y4xp71sJgZEjFMgow6YCLkyQLrG/b2iT/Q=" />
     <meta name="verify-v1" content="PQDTb5Advw297iADXVUYuxh0z+iQKfq1wtYWnfHCb1Y=" />

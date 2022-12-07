@@ -124,7 +124,7 @@
             <?= ferr_span('tnc') ?>
             <input type="checkbox" <?php if (fval('tnc'))
                                        echo 'checked="checked"'; ?> name="tnc" id="form_tnc"/>
-            <label for="form_tnc" class="checkbox">Sunt de acord cu <a href="<?= html_escape(url_textblock('termeni-si-conditii')) ?>">termenii și condițiile de utilizare</a> ale site-ului varena</label>
+            <label for="form_tnc" class="checkbox">Sunt de acord cu <a href="<?= html_escape(url_textblock('termeni-si-conditii')) ?>">termenii și condițiile de utilizare</a> ale site-ului <?= SITE_NAME ?>.</label>
         </li>
         <li>
             <input type="submit" value="Înregistrează-mă" id="form_submit" class="button important" />
