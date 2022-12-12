@@ -6,7 +6,8 @@
 }
 
 #header h1 a {
-    background:url('../images/logo.jpg') no-repeat left top;
+    background:url('../images/logo.svg') no-repeat left top;
+    width: 200px;
 }
 
 /* search box in site header */

@@ -81,7 +81,7 @@ header("Content-type: text/html; charset=utf-8");
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('custom/css/sitewide.css')) ?>"/>
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('custom/css/screen.css')) ?>"/>
 
-    <link rel="icon" href="<?= IA_URL."/static/custom/images/favicon.png" ?>" type="image" />
+    <link rel="icon" href="<?= IA_URL."/static/custom/images/favicon.svg" ?>" type="image" />
     <script type="text/javascript" src="<?= html_escape(url_static('js/config.js.php')) ?>"></script>
     <script type="text/javascript" src="<?= html_escape(IA_DEVELOPMENT_MODE?url_static('js/jquery-1.7.2.js'):'//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js') ?>"></script>
     <script type="text/javascript" src="<?= html_escape(url_static('js/default.js')) ?>"></script>
