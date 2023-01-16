@@ -1129,13 +1129,13 @@ class Textile {
         if (!empty($align)) {
           $alignment = $this->_halign($align);
           if ($this->options['css_mode']) {
-            if (($padleft || $padright) &&
+            if ((($padleft ?? null) || ($padright ?? null)) &&
                 (($alignment == 'left') || ($alignment == 'right'))) {
               $style .= ';float:' . $alignment;
             } else {
               $style .= ';text-align:' . $alignment;
             }
-            $class .= ' ' . ($this->options['css']["class_align_$alignment"] ? $this->options['css']["class_align_$alignment"] : $alignment);
+            $class = ($class ?? '') . ' ' . ($this->options['css']["class_align_$alignment"] ? $this->options['css']["class_align_$alignment"] : $alignment);
           } else {
             $pre .= " align=\"$alignment\"";
           }
