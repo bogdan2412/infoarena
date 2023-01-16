@@ -71,9 +71,9 @@ function db_date_parse($string) {
 // All times in the database are UTC!!!
 function db_date_format($timestamp = null) {
     if ($timestamp === null) {
-        $res = strftime('%Y-%m-%d %T');
+        $res = date('Y-m-d H:i:s');
     } else {
-        $res = strftime('%Y-%m-%d %T', $timestamp);
+        $res = date('Y-m-d H:i:s', $timestamp);
     }
 
     return $res;
