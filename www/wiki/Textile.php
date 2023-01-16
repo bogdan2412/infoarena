@@ -1364,7 +1364,7 @@ class Textile {
                                     (?:$|([\]}])|(?=' . $this->punct . '{1,2}|\s)) # $8: closing brace/bracket
                                    }mx',
                                   function($m) use ($me) {
-                                    return $me->_repl($me->repl[0], $me->format_image(array("pre" => $m[1], "src" => $m[5], "align" => ($m[2] ? $m[2] : $m[4]), "extra" => $m[6], "url" => $m[7], "clsty" => $m[3], "post" => $m[8])));
+                                    return $me->_repl($me->repl[0], $me->format_image(array("pre" => $m[1], "src" => $m[5], "align" => ($m[2] ? $m[2] : $m[4]), "extra" => $m[6] ?? null, "url" => $m[7] ?? null, "clsty" => $m[3] ?? null, "post" => $m[8] ?? null)));
                                   }, $text);
 
     $text = preg_replace_callback('{(?:^|(?<=[\s>])|([{[]))     # $1: open brace/bracket
@@ -1379,7 +1379,7 @@ class Textile {
                                     (?:$|([]}])|(?=' . $this->punct . '{1,2}|\s)) # $7: closing brace/bracket
                                    }mx',
                                   function($m) use ($me) {
-                                    return $me->_repl($me->repl[0], $me->format_span(array("pre" => $m[1], "text" => $m[5], "align" => ($m[2] ? $m[2] : $m[4]), "cite" => $m[6] ?? '', "clsty" => $m[3], "post" => $m[7] ?? '')));
+                                    return $me->_repl($me->repl[0], $me->format_span(array("pre" => $m[1], "text" => $m[5], "align" => ($m[2] ? $m[2] : $m[4]), "cite" => $m[6] ?? '', "clsty" => $m[3] ?? null, "post" => $m[7] ?? '')));
                                   }, $text);
 
     $text = $this->encode_html($text);
@@ -1590,7 +1590,7 @@ class Textile {
    */
   function format_macro($attrs) {
     $macro = $attrs['macro'];
-    if ($this->options['macros'][$macro]) {
+    if (isset($this->options['macros'][$macro])) {
       return $this->options['macros'][$macro];
     }
 
@@ -2178,11 +2178,10 @@ class Textile {
     $cite = (isset($args['cite']) ? $args['cite'] : '');
     $clsty = $args['clsty'];
     $this->_strip_borders($pre, $post);
-    unset($class, $style);
     $tag  = "<span";
-    $style = '';
+    $class = $style = '';
     if ($align) {
-      if ($self->options['css_mode']) {
+      if ($this->options['css_mode']) {
         $alignment = $this->_halign($align);
         if ($alignment) { $style .= ";float:$alignment"; }
         if ($alignment) { $class .= ' ' . $this->options['css']["class_align_$alignment"]; }
