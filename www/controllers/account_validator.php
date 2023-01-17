@@ -29,7 +29,7 @@ function validate_profile_data($data, $user) {
 function validate_user_data($data, $register, $user = null) {
     $errors = array();
 
-    log_assert($register ^ $user);
+    log_assert($register ^ !empty($user));
 
     // username
     if ($register) {
