@@ -186,7 +186,7 @@ function task_validate($task) {
 // group: item | item,group
 // groups: group | group;groups
 function task_parse_test_group($string, $test_count) {
-    if (strlen($string) == 0) {
+    if (!$string || strlen($string) == 0) {
         return array();
     }
 
