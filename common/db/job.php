@@ -433,3 +433,15 @@ function job_archive_waiting_number($user) {
             db_quote($user['id']));
     return db_query_value($query);
 }
+
+function job_get_by_task_id_user_ids_status_score(
+    string $task_id, array $user_ids, string $status, int $score) {
+    $query = sprintf(
+        "select * from ia_job ".
+        "where task_id = '%s' " .
+        "and user_id in (%s) " .
+        "and status = '%s' " .
+        "and score = %d",
+        $task_id, implode(',', $user_ids), $status, $score);
+    return db_fetch_all($query);
+}
