@@ -45,7 +45,7 @@ function job_handle($job) {
     // Get task parameters.
     $task_parameters = task_get_parameters($job['task_id']);
     log_assert(!is_null($task_parameters),
-            "Nu am putut paramtetrii task-ul " . $job['task_id']);
+            "Nu am găsit parametrii task-ului " . $job['task_id']);
     log_assert_valid(task_validate_parameters($task['type'],
                                               $task_parameters));
 

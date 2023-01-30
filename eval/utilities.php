@@ -440,7 +440,7 @@ function jrun_get_result_many($jrun_processes) {
         } else {
             // Fetch data from available pipes.
             foreach ($read as $stream_id => $stream) {
-                $jrun_process = &$jrun_processes[$stream_id / 2];
+                $jrun_process = &$jrun_processes[intdiv($stream_id, 2)];
                 if (!$jrun_process['alive']) {
                     // If process has terminated in the mean time, then it
                     // would have been processed earlier in the loop
