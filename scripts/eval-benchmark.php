@@ -51,8 +51,9 @@ function msg(int $class, int $indent, string $fmt, ...$args) {
     printf("%s%s%s%s\n", $spaces, COLORS[$class], $str, COLORS[MSG_DEFAULT]);
 }
 
-function color_msg($msg, $class) {
-    msg($class, 5, $msg);
+function fatal($fmt, ...$args) {
+    msg(MSG_ERROR, 0, $fmt, ...$args);
+    exit(1);
 }
 
 function choice($prompt, $choices) {
@@ -108,7 +109,63 @@ class BenchmarkGrader extends ClassicGrader {
 }
 
 class EvalBenchmark {
+    // Checkpoint file names.
+    const CP_TASKS = 'checkpoint_tasks.txt';
+    const CP_SQL = 'checkpoint.sql';
+
     private array $admins;
+    private string $checkpoint_dir;
+    private array $seen_tasks = [];
+
+    function __construct($checkpoint_dir) {
+        if (!is_dir($checkpoint_dir)) {
+            fatal('Checkpoint directory does not exist or is not a directory.');
+        }
+        $this->checkpoint_dir = $checkpoint_dir;
+        $this->restore_checkpoint();
+    }
+
+    function get_tasks_checkpoint_file() {
+        return $this->checkpoint_dir . '/' . self::CP_TASKS;
+    }
+
+    function get_sql_checkpoint_file() {
+        return $this->checkpoint_dir . '/' . self::CP_SQL;
+    }
+
+    function restore_checkpoint() {
+        $task_file = $this->get_tasks_checkpoint_file();
+        $lines = file($task_file, FILE_IGNORE_NEW_LINES);
+        if (empty($lines)) {
+            msg(MSG_WARNING, 0, 'Checkpoint file %s not found. Running new instance.',
+                $task_file);
+        } else {
+            $this->seen_tasks = $lines;
+        }
+    }
+
+    function save_checkpoint(array $task) {
+        $task_file = $this->get_tasks_checkpoint_file();
+        file_put_contents(
+            $task_file,
+            $task['id'] . "\n",
+            FILE_APPEND);
+    }
+
+    function save_sql(array $task, float $time_limit) {
+        $sql_file = $this->get_sql_checkpoint_file();
+        $query = sprintf(
+            'update ia_parameter_value ' .
+            'set value = "%g" ' .
+            'where object_type = "task" ' .
+            'and object_id = "%s" ' .
+            'and parameter_id = "timelimit"',
+            $time_limit, $task['id']);
+        file_put_contents(
+            $sql_file,
+            $query . "\n",
+            FILE_APPEND);
+    }
 
     /**
      * Returns a map of user_id => user for the users defined in ADMIN_USERNAMES.
@@ -118,9 +175,26 @@ class EvalBenchmark {
 
         foreach (ADMIN_USERNAMES as $username) {
             $user = user_get_by_username($username);
-            $user or die("Fatal: Admin \"{$username}\" not found.\n");
+            $user or fatal('Admin "%s" not found.', $username);
             $this->admins[$user['id']] = $user;
         }
+    }
+
+    function load_tasks() {
+        $tasks = task_get_all();
+        $skipped = 0;
+        foreach ($tasks as $i => $t) {
+            if (in_array($t['id'], $this->seen_tasks)) {
+                unset($tasks[$i]);
+                $skipped++;
+            }
+        }
+
+        if ($skipped) {
+            printf("Skipping %d checkpointed tasks.\n", $skipped);
+        }
+
+        return $tasks;
     }
 
     /**
@@ -140,7 +214,7 @@ class EvalBenchmark {
      * Given an aray of (old time, new time) pairs for every test run,
      * recommends a new time limit suitable for the current hardware.
      **/
-    function recommend_time_limit(float $time_limit, array $times) {
+    function recommend_time_limit(array $task, float $time_limit, array $times) {
         // Compare the old maximum to the new maximum.
         $max_old_time = $max_new_time = 0.0;
         foreach ($times as $pair) {
@@ -161,11 +235,14 @@ class EvalBenchmark {
         } else {
             $new_limit = $time_limit * $max_new_time / $max_old_time;
             $round_new_limit = $this->adjust_time_limit($new_limit);
-            msg(MSG_SUCCESS, 1, 'old worst time = %0.03f, new worst time = %0.03f',
+            msg(MSG_SUCCESS, 1, 'old worst time = %g, new worst time = %g',
                 $max_old_time, $max_new_time);
-            msg(MSG_SUCCESS, 1, 'RECOMMENDATION: reduce time limit from %0.02f to %0.02f (rounded from %.03f)',
+            msg(MSG_SUCCESS, 1, 'RECOMMENDATION: reduce time limit from %g to %g (rounded from %g)',
                 $time_limit, $round_new_limit, $new_limit);
-            choice('Accept recommendation? [y/n]', ['y', 'n']);
+            $choice = choice('Accept recommendation? [y/n]', ['y', 'n']);
+            if ($choice == 'y') {
+                $this->save_sql($task, $round_new_limit);
+            }
         }
     }
 
@@ -195,7 +272,7 @@ class EvalBenchmark {
             $warning = ($old_test_time > $time_limit)
                 ? 'WARNING: old time exceeds limit'
                 : '';
-            msg(MSG_DEFAULT, 2, 'Test #%02d, old time %0.03f, new time %0.03f %s',
+            msg(MSG_DEFAULT, 2, 'Test #%02d, old time %g, new time %g %s',
                 $test['test_number'], $old_test_time, $new_test_time, $warning);
 
             $times[] = [ $old_test_time, $new_test_time ];
@@ -238,7 +315,8 @@ class EvalBenchmark {
         $admin_ids = array_keys($this->admins);
 
         // Load all tasks.
-        $tasks = task_get_all();
+        $tasks = $this->load_tasks();
+
         foreach ($tasks as $i => $task) {
             // Load task parameters (we only need the time limit).
             $task_params = task_get_parameters($task['id']);
@@ -248,7 +326,7 @@ class EvalBenchmark {
             $jobs = job_get_by_task_id_user_ids_status_score(
                 $task['id'], array_keys($this->admins), 'done', 100);
 
-            $header = sprintf("== Task %d/%d (%s, %d tests, %0.2f s): ",
+            $header = sprintf("== Task %d/%d (%s, %d tests, %g s): ",
                               $i + 1,
                               count($tasks),
                               $task['id'],
@@ -266,13 +344,22 @@ class EvalBenchmark {
             } else {
                 msg(MSG_INFO, 0, "%s Benchmarking %d jobs", $header, count($jobs));
                 $times = $this->benchmark_task_jobs($task, $task_params, $jobs);
-                $this->recommend_time_limit($time_limit, $times);
+                $this->recommend_time_limit($task, $time_limit, $times);
             }
+            $this->save_checkpoint($task);
             readline('Press Enter to continue to the next task... ');
         }
     }
 }
 
 usage();
-$eb = new EvalBenchmark();
+$opts = getopt('c:');
+$checkpoint_dir = $opts['c'] ?? null;
+
+if (!$checkpoint_dir) {
+    fatal("Please specify a checkpoint directory with -c <dir>.\n" .
+          'This allows you to save/restore progress.');
+}
+
+$eb = new EvalBenchmark($checkpoint_dir);
 $eb->run();
