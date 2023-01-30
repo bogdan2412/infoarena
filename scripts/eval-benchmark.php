@@ -3,15 +3,7 @@
 require_once __DIR__ . '/../eval/config.php';
 
 require_once(IA_ROOT_DIR.'common/log.php');
-require_once(IA_ROOT_DIR.'common/common.php');
-
-require_once(IA_ROOT_DIR.'common/score.php');
-require_once(IA_ROOT_DIR.'common/task.php');
-require_once(IA_ROOT_DIR.'common/round.php');
-require_once(IA_ROOT_DIR.'common/security.php');
-require_once(IA_ROOT_DIR.'common/db/task.php');
 require_once(IA_ROOT_DIR.'common/db/job.php');
-require_once(IA_ROOT_DIR.'common/db/user.php');
 require_once(IA_ROOT_DIR.'common/db/task_statistics.php');
 
 require_once(IA_ROOT_DIR.'eval/utilities.php');
@@ -63,11 +55,30 @@ function choice($prompt, $choices) {
   return $choice;
 }
 
-function usage() {
-    if (IA_ERROR_REPORTING) {
-        msg(MSG_WARNING, 0, 'We advise setting IA_ERROR_REPORTING to false in config.php.');
-        msg(MSG_WARNING, 0, 'A non-zero value will clutter this script\'s log with jail info.');
-        choice('Continue? [y/n]', ['y', 'n']);
+function usage(bool $confirmed) {
+
+    print <<<END_USAGE
+This script will help calibrate the time limits of all tasks when you change the eval
+hardware.
+
+More details will follow.
+
+
+END_USAGE;
+
+    if (exec('whoami') != 'root') {
+        fatal('This script MUST be run as root.');
+    }
+
+    // Warn about a noisy log level.
+    if (IA_ERROR_REPORTING & E_USER_NOTICE) {
+        msg(MSG_WARNING, 0, 'We advise changing this value in config.php:');
+        msg(MSG_WARNING, 0, "\n    define('IA_ERROR_REPORTING', E_ALL & ~E_USER_NOTICE);\n");
+        msg(MSG_WARNING, 0, 'Allowing E_USER_NOTICE will clutter this script\'s log with jail info.');
+    }
+
+    if (!$confirmed) {
+        readline('Press Enter to continue... ');
     }
 }
 
@@ -135,12 +146,11 @@ class EvalBenchmark {
 
     function restore_checkpoint() {
         $task_file = $this->get_tasks_checkpoint_file();
-        $lines = file($task_file, FILE_IGNORE_NEW_LINES);
-        if (empty($lines)) {
+        if (file_exists($task_file)) {
+            $this->seen_tasks = file($task_file, FILE_IGNORE_NEW_LINES);
+        } else {
             msg(MSG_WARNING, 0, 'Checkpoint file %s not found. Running new instance.',
                 $task_file);
-        } else {
-            $this->seen_tasks = $lines;
         }
     }
 
@@ -352,9 +362,11 @@ class EvalBenchmark {
     }
 }
 
-usage();
-$opts = getopt('c:');
+$opts = getopt('c:y');
 $checkpoint_dir = $opts['c'] ?? null;
+$usage_confirmed = isset($opts['y']);
+
+usage($usage_confirmed);
 
 if (!$checkpoint_dir) {
     fatal("Please specify a checkpoint directory with -c <dir>.\n" .
