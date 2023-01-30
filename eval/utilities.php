@@ -201,8 +201,15 @@ function jail_run($program, $jaildir, $time, $memory, $cache, $capture_std = tru
     // FIXME: for some reasons on certain linux kernels the memory is not
     // cleaned up properly, so just remove them for a clean run. If this ever
     // gets fixed remove these.
-    @system("rmdir /sys/fs/cgroup/memory/ia-sandbox/$instance_name/isolated");
-    @system("rmdir /sys/fs/cgroup/memory/ia-sandbox/$instance_name");
+    $dirs_to_remove = [
+        "/sys/fs/cgroup/memory/ia-sandbox/$instance_name/isolated",
+        "/sys/fs/cgroup/memory/ia-sandbox/$instance_name",
+    ];
+    foreach ($dirs_to_remove as $dir) {
+        if (file_exists($dir)) {
+            rmdir($dir);
+        }
+    }
     $cmdline = IA_SANDBOX_PATH;
     $cmdline .= ' --new-root '.$jaildir;
 

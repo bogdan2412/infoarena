@@ -3,12 +3,12 @@
 require_once(IA_ROOT_DIR . 'eval/BaseGrader.php');
 
 class ClassicGrader extends BaseGrader {
-    protected function testCaseJudge($testno, $jaildir) {
-        $this->testResults[$testno] = array();
-        $test_result = &$this->testResults[$testno];
 
-        $infile = $this->getInFile($jaildir);
-
+    /**
+     * Downloads the test file and runs the user binary.
+     * @return array The information from the sandbox.
+     **/
+    protected function runTestCase($testno, $jaildir, $infile): array {
         // Download input file.
         if (!copy_grader_file($this->task, 'test' . $testno . '.in',
                               $infile)) {
@@ -31,6 +31,16 @@ class ClassicGrader extends BaseGrader {
                             IA_CACHE_MEMORY);
         eval_assert($jrunres['result'] != 'ERROR',
                     'Error in jrun: ' . $jrunres['message']);
+        return $jrunres;
+    }
+
+    protected function testCaseJudge($testno, $jaildir) {
+        $this->testResults[$testno] = array();
+        $test_result = &$this->testResults[$testno];
+
+        $infile = $this->getInFile($jaildir);
+        $jrunres = $this->runTestCase($testno, $jaildir, $infile);
+
         if ($jrunres['result'] == 'FAIL') {
             log_print("Test $testno: User program failed: " .
                       $jrunres['message'] . ' ' . $jrunres['time'] .
