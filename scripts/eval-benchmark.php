@@ -193,7 +193,9 @@ class TimeInfo {
      * warning if it has nothing to recommend.
      **/
     static function recommend_time_limit(float $time_limit, array &$times): ?float {
-        if (empty($times)) {
+        $n = count($times); // syntactic sugar
+
+        if (!$n) {
             msg(MSG_WARNING, 1, 'No recommendation: no tests were run.');
             return null;
         } else if ($time_limit <= MIN_TIME_LIMIT) {
@@ -201,11 +203,21 @@ class TimeInfo {
             return null;
         }
 
-        // Count the number of TLE's on the old hardware.
+        // Count the number of passing tests on the old hardware.
+        // Record the highest times (old and new) that were not TLE.
         $num_passed = 0;
+        $max_old_time = $max_new_time = 0;
         foreach ($times as $ti) {
-            $num_passed += !$ti->old_tle;
+            if (!$ti->old_tle) {
+                $num_passed++;
+                $max_old_time = max($max_old_time, $ti->old_time);
+                $max_new_time = max($max_new_time, $ti->new_time);
+            }
         }
+        msg(MSG_INFO, 1, 'Ran %d tests (%d passing, %d failing with TLE).',
+            $n, $num_passed, $n - $num_passed);
+        msg(MSG_INFO, 1, 'Maximum passing times: %g old, %g new.',
+            $max_old_time, $max_new_time);
 
         // Sort the records by new times.
         usort($times, function(TimeInfo $a, TimeInfo $b) {
@@ -214,9 +226,20 @@ class TimeInfo {
 
         // We want the first $num_passed tests to still pass and the rest to
         // exceed the time limit.
-        $new_limit = $num_passed
-            ? ($times[$num_passed - 1]->new_time + $times[$num_passed]->new_time) / 2
-            : $times[0]->new_time;
+        if (!$num_passed) {
+            $new_limit = $times[0]->new_time * 0.9;
+        } else if ($num_passed == $n) {
+            // If all the tests used to pass, chances are the time limit is
+            // too generous (example: task pdm). How do we tighten it?
+            // Choosing the largest new time is risky. It might hold everyone
+            // to an unreasonable standard. It is safer to reduce the time
+            // limit by the ratio of the largest times.
+            $new_limit = $max_old_time
+                ? $time_limit * $max_new_time / $max_old_time
+                : $time_limit;
+        } else {
+            $new_limit = ($times[$num_passed - 1]->new_time + $times[$num_passed]->new_time) / 2;
+        }
         $round_new_limit = self::adjust_time_limit($new_limit);
 
         if ($round_new_limit >= $time_limit) {
@@ -224,11 +247,8 @@ class TimeInfo {
             return null;
         } else {
             $tally = self::tally_changes($round_new_limit, $times);
-            $n = count($times); // syntactic sugar
             msg(MSG_SUCCESS, 1, 'RECOMMENDATION: reduce time limit from %g to %g (rounded from %g).',
                 $time_limit, $round_new_limit, $new_limit);
-            msg(MSG_SUCCESS, 1, 'Based on %d tests (%d passing, %d failing with TLE).',
-                $n, $num_passed, $n - $num_passed);
             msg(MSG_SUCCESS, 1, 'Effect: %d (%0.1f%%) unchanged, %d (%0.1f%%) fail->pass, %d (%0.1f%%) pass->fail.',
                 $tally[0], 100 * $tally[0] / $n,
                 $tally[1], 100 * $tally[1] / $n,
@@ -397,7 +417,13 @@ class EvalBenchmark {
         // Create the grader and compile the job's source.
         // Do not mark the job as pending, do not compile any graders etc.
         $grader = new BenchmarkGrader($task, $task_params, $job);
-        $grader->compileJobSource();
+
+        try {
+            $grader->compileJobSource();
+        } catch (EvalUserCompileError $e) {
+            msg(MSG_WARNING, 2, 'Compilation error.');
+            return [];
+        }
 
         $time_limit = (float)$task_params['timelimit'];
         $times = [];
