@@ -48,11 +48,16 @@ function fatal($fmt, ...$args) {
     exit(1);
 }
 
-function choice($prompt, $choices) {
-  do {
-    $choice = readline($prompt . ' ');
-  } while (!in_array($choice, $choices));
-  return $choice;
+/**
+ * Repeteadly requests user input until it matches one of the choices.
+ * If $choices is empty, then any user input will suffice.
+ */
+function choice(int $indent, string $prompt, array $choices = []) {
+    $prompt = str_repeat(' ', 4 * $indent) . $prompt;
+    do {
+        $choice = readline($prompt . ' ');
+    } while (!empty($choices) && !in_array($choice, $choices));
+    return $choice;
 }
 
 function usage(bool $confirmed) {
@@ -78,7 +83,7 @@ END_USAGE;
     }
 
     if (!$confirmed) {
-        readline('Press Enter to continue... ');
+        choice(0, 'Press Enter to continue...');
     }
 }
 
@@ -110,7 +115,7 @@ class BenchmarkGrader extends ClassicGrader {
      *   - time:    relayed from the sandbox, converted to seconds;
      *   - message: relayed from the sandbox.
      **/
-    function runTest(array $test): array {
+    function runTest(array &$test): array {
         eval_assert(clean_dir(self::JAIL_DIR), "Can't clean jail dir.");
         eval_assert(chdir(self::JAIL_DIR), "Can't chdir to jail dir.");
         $infile = $this->getInFile(self::JAIL_DIR);
@@ -133,6 +138,103 @@ class BenchmarkGrader extends ClassicGrader {
             'time' => (float)$info['time'] / 1000,
             'message' => $info['message'],
         ];
+    }
+}
+
+class TimeInfo {
+    public float $old_time;
+    public bool $old_tle;
+    public float $new_time;
+    public bool $new_tle;
+
+    function __construct($old_time, $old_tle, $new_time, $new_tle) {
+        $this->old_time = $old_time;
+        $this->old_tle = $old_tle;
+        $this->new_time = $new_time;
+        $this->new_tle = $new_tle;
+    }
+
+    /**
+     * Given a time limit, maks sure it is above MIN_TIME_LIMIT. Then round it
+     * to a multiple of 0.05 for small values or 0.1 for larger values.
+     **/
+    static function adjust_time_limit(float $t):float {
+        $t = max($t, MIN_TIME_LIMIT);
+
+        // Example: 0.33 should be rounded to 0.35. Compute 0.33 * 20 = 6.6,
+        // round it to 7.0, then divide it back by 20 to get 3.5.
+        $factor = ($t < ROUND_THRESHOLD) ? 20 : 10;
+        return round($t * $factor) / $factor;
+    }
+
+    /**
+     * Tallies what would happen under a new time limit. Returns three values:
+     *   - Number of tests that would produce the same outcome.
+     *   - Number of tests that used to fail and would now pass.
+     *   - Number of tests that used to pass and would now fail.
+     **/
+    static function tally_changes(float $new_time_limit, array &$times): array {
+        $result = [ 0, 0, 0 ];
+        foreach ($times as $ti) {
+            if ($ti->old_tle == ($ti->new_time >= $new_time_limit)) {
+                $result[0]++;
+            } else if ($ti->old_tle) {
+                $result[1]++;
+            } else {
+                $result[2]++;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Given an aray of TimeInfo's for every test run, recommends a new time
+     * limit suitable for the current hardware. Returns null and prints a
+     * warning if it has nothing to recommend.
+     **/
+    static function recommend_time_limit(float $time_limit, array &$times): ?float {
+        if (empty($times)) {
+            msg(MSG_WARNING, 1, 'No recommendation: no tests were run.');
+            return null;
+        } else if ($time_limit <= MIN_TIME_LIMIT) {
+            msg(MSG_WARNING, 1, 'No recommendation: time limit is already small.');
+            return null;
+        }
+
+        // Count the number of TLE's on the old hardware.
+        $num_passed = 0;
+        foreach ($times as $ti) {
+            $num_passed += !$ti->old_tle;
+        }
+
+        // Sort the records by new times.
+        usort($times, function(TimeInfo $a, TimeInfo $b) {
+            return $a->new_time <=> $b->new_time;
+        });
+
+        // We want the first $num_passed tests to still pass and the rest to
+        // exceed the time limit.
+        $new_limit = $num_passed
+            ? ($times[$num_passed - 1]->new_time + $times[$num_passed]->new_time) / 2
+            : $times[0]->new_time;
+        $round_new_limit = self::adjust_time_limit($new_limit);
+
+        if ($round_new_limit >= $time_limit) {
+            msg(MSG_WARNING, 1, 'No recommendation: running time did not decrease.');
+            return null;
+        } else {
+            $tally = self::tally_changes($round_new_limit, $times);
+            $n = count($times); // syntactic sugar
+            msg(MSG_SUCCESS, 1, 'RECOMMENDATION: reduce time limit from %g to %g (rounded from %g).',
+                $time_limit, $round_new_limit, $new_limit);
+            msg(MSG_SUCCESS, 1, 'Based on %d tests (%d passing, %d failing with TLE).',
+                $n, $num_passed, $n - $num_passed);
+            msg(MSG_SUCCESS, 1, 'Effect: %d (%0.1f%%) unchanged, %d (%0.1f%%) fail->pass, %d (%0.1f%%) pass->fail.',
+                $tally[0], 100 * $tally[0] / $n,
+                $tally[1], 100 * $tally[1] / $n,
+                $tally[2], 100 * $tally[2] / $n);
+            return $round_new_limit;
+        }
     }
 }
 
@@ -188,15 +290,16 @@ class EvalBenchmark {
         }
     }
 
-    function save_checkpoint(array $task) {
+    function save_checkpoint(array &$task) {
         $task_file = $this->get_tasks_checkpoint_file();
         file_put_contents(
             $task_file,
             $task['id'] . "\n",
             FILE_APPEND);
+        msg(MSG_SUCCESS, 1, '✔ Checkpoint saved.');
     }
 
-    function save_sql(array $task, float $time_limit) {
+    function save_sql(array &$task, float $time_limit) {
         $sql_file = $this->get_sql_checkpoint_file();
         $query = sprintf(
             'update ia_parameter_value ' .
@@ -209,6 +312,7 @@ class EvalBenchmark {
             $sql_file,
             $query . "\n",
             FILE_APPEND);
+        msg(MSG_SUCCESS, 1, '✔ SQL statement saved.');
     }
 
     /**
@@ -241,53 +345,20 @@ class EvalBenchmark {
         return $tasks;
     }
 
-    /**
-     * Given a time limit, maks sure it is above MIN_TIME_LIMIT. Then round it
-     * to a multiple of 0.05 for small values or 0.1 for larger values.
-     **/
-    function adjust_time_limit(float $t):float {
-        $t = max($t, MIN_TIME_LIMIT);
+    function print_task_header(array &$task, int $ord, int $total, float $time_limit) {
+        $header = sprintf('| Task %d/%d (%s, %d tests, %g s) |',
+                          $ord,
+                          $total,
+                          $task['id'],
+                          $task['test_count'],
+                          $time_limit);
+        $line = '+' . str_repeat('-', mb_strlen($header) - 2) . '+';
 
-        // Example: 0.33 should be rounded to 0.35. Compute 0.33 * 20 = 6.6,
-        // round it to 7.0, then divide it back by 20 to get 3.5.
-        $factor = ($t < ROUND_THRESHOLD) ? 20 : 10;
-        return ceil($t * $factor) / $factor;
-    }
-
-    /**
-     * Given an aray of (old time, new time) pairs for every test run,
-     * recommends a new time limit suitable for the current hardware.
-     **/
-    function recommend_time_limit(array $task, float $time_limit, array $times) {
-        // Compare the old maximum to the new maximum.
-        $max_old_time = $max_new_time = 0.0;
-        foreach ($times as $pair) {
-            $max_old_time = max($max_old_time, $pair[0]);
-            $max_new_time = max($max_new_time, $pair[1]);
-        }
-
-        // No recommendations if
-        //   (1) no tests were run or
-        //   (2) the time limit is already low enough or
-        //   (3) the new worst time is worse than the old one
-        if (empty($times)) {
-            msg(MSG_WARNING, 1, "No recommendation: no tests were run.");
-        } else if ($time_limit <= MIN_TIME_LIMIT) {
-            msg(MSG_WARNING, 1, "No recommendation: time limit is already small.");
-        } else if ($max_new_time >= $max_old_time) {
-            msg(MSG_WARNING, 1, "No recommendation: old worst time was better.");
-        } else {
-            $new_limit = $time_limit * $max_new_time / $max_old_time;
-            $round_new_limit = $this->adjust_time_limit($new_limit);
-            msg(MSG_SUCCESS, 1, 'old worst time = %g, new worst time = %g',
-                $max_old_time, $max_new_time);
-            msg(MSG_SUCCESS, 1, 'RECOMMENDATION: reduce time limit from %g to %g (rounded from %g)',
-                $time_limit, $round_new_limit, $new_limit);
-            $choice = choice('Accept recommendation? [y/n]', ['y', 'n']);
-            if ($choice == 'y') {
-                $this->save_sql($task, $round_new_limit);
-            }
-        }
+        print "\n";
+        msg(MSG_INFO, 0, $line);
+        msg(MSG_INFO, 0, $header);
+        msg(MSG_INFO, 0, $line);
+        print "\n";
     }
 
     /**
@@ -318,11 +389,10 @@ class EvalBenchmark {
     }
 
     /**
-     * Runs all the tests for the job. Returns an array of (old time, new
-     * time) pairs.
+     * Runs all the tests for the job. Returns an array of TimeInfo's.
      **/
     function benchmark_job_tests(
-        array $task, array $task_params, array $job, array $tests):array {
+        array &$task, array &$task_params, array &$job, array &$tests): array {
 
         // Create the grader and compile the job's source.
         // Do not mark the job as pending, do not compile any graders etc.
@@ -353,13 +423,18 @@ class EvalBenchmark {
                         $info['message']
                     );
                 } else {
+                    $old_tle = ($test_time >= $time_limit);
+                    $new_tle = ($info['status'] == BenchmarkGrader::ST_TLE);
                     $new_test_time = $info['time'];
-                    $tle_notice = ($test_time >= $time_limit) ? ' (TLE)' : '';
 
-                    msg(MSG_DEFAULT, 2, 'Test #%02d, old time %g%s, new time %g',
-                        $test['test_number'], $test_time, $tle_notice, $new_test_time);
+                    msg(MSG_DEFAULT, 2, 'Test #%02d: old time %g%s, new time %g%s',
+                        $test['test_number'],
+                        $test_time,
+                        $old_tle ? ' (TLE)' : '',
+                        $new_test_time,
+                        $new_tle ? ' (TLE)' : '');
 
-                    $times[] = [ $test_time, $new_test_time ];
+                    $times[] = new TimeInfo($test_time, $old_tle, $new_test_time, $new_tle);
                 }
             } else {
                 $msgClass = ($action == self::ACTION_REPORT) ? MSG_WARNING : MSG_INFO;
@@ -379,10 +454,10 @@ class EvalBenchmark {
     }
 
     /**
-     * Runs all tests for all jobs for this task. Returns a combined array of
-     * (old time, new time) over all tests.
+     * Runs all tests for all jobs for this task. Returns an aggregate array
+     * of TimeInfo's over all tests.
      */
-    function benchmark_task_jobs(array $task, array $task_params, array $jobs):array {
+    function benchmark_task_jobs(array &$task, array &$task_params, array &$jobs): array {
         $times = [];
         foreach ($jobs as $job) {
             $owner = $this->admins[$job['user_id']]['username'];
@@ -415,9 +490,6 @@ class EvalBenchmark {
         $tasks = $this->load_tasks();
 
         foreach ($tasks as $i => $task) {
-            if ($task['id'] != 'clasa0') {
-                continue;
-            }
             // Load task parameters (we only need the time limit).
             $task_params = task_get_parameters($task['id']);
             $time_limit = (float)$task_params['timelimit'];
@@ -426,28 +498,29 @@ class EvalBenchmark {
             $jobs = job_get_by_task_id_user_ids_status(
                 $task['id'], array_keys($this->admins), 'done');
 
-            $header = sprintf("== Task %d/%d (%s, %d tests, %g s): ",
-                              $i + 1,
-                              count($tasks),
-                              $task['id'],
-                              $task['test_count'],
-                              $time_limit);
+            $this->print_task_header($task, $i, count($tasks), $time_limit);
 
             // Decide whether we have everything we need for this task.
             if (!$time_limit) {
-                msg(MSG_WARNING, 0, "{$header} SKIPPING (time limit not set)");
+                msg(MSG_WARNING, 1, "SKIPPING (time limit not set)");
             } else if (empty($jobs)) {
-                msg(MSG_WARNING, 0, "{$header} SKIPPING (no admin jobs)");
+                msg(MSG_WARNING, 1, "SKIPPING (no admin jobs)");
             } else if ($task['type'] != 'classic') {
-                msg(MSG_WARNING, 0, "%s SKIPPING (not handling [%s] tasks",
-                    $header, $task['type']);
+                msg(MSG_WARNING, 1, "SKIPPING (not handling [%s] tasks",
+                    $task['type']);
             } else {
-                msg(MSG_INFO, 0, "%s Benchmarking %d jobs", $header, count($jobs));
+                msg(MSG_INFO, 1, "Benchmarking %d jobs", count($jobs));
                 $times = $this->benchmark_task_jobs($task, $task_params, $jobs);
-                $this->recommend_time_limit($task, $time_limit, $times);
+                $rec = TimeInfo::recommend_time_limit($time_limit, $times);
+                if ($rec) {
+                    $choice = choice(1, 'Accept recommendation? [y/n]', ['y', 'n']);
+                    if ($choice == 'y') {
+                        $this->save_sql($task, $rec);
+                    }
+                }
             }
             $this->save_checkpoint($task);
-            readline('Press Enter to continue to the next task... ');
+            choice(1, 'Press Enter to continue to the next task or Ctrl-C to quit...');
         }
     }
 }
