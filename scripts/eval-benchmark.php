@@ -1,5 +1,55 @@
 <?php
 
+/**
+ * This script will help calibrate the time limits of all tasks when you
+ * change the eval hardware.
+ *
+ * Usage: sudo php eval-benchmark.php -c <checkpoint_dir>
+ *
+ * -c <checkpoint_dir>
+ *    Specifies a directory for checkpoint files.
+ *
+ * The basic rule is: this script DOES NOT MODIFY ANYTHING. If you accept the
+ * changes it proposes, it writes them to the checkpoint.sql file. You can
+ * review this file and run it later.
+ *
+ * The script writes the tasks it has processed checkpoint_tasks.txt. You can
+ * hit Ctrl-C at any time and continue later.
+ *
+ * For a given task, the script does the following:
+ *
+ * 1. Checks basic requirements: the task has to be classic, has to have a
+ *    time limit and must have jobs from one of the admins defined below.
+ *
+ * 2. Loads test cases for all admin jobs. Only keeps those that ran
+ *    successfully and scored points (even partial points) and those that have
+ *    a TLE status.
+ *
+ * 3. Runs those tests locally (using the same time limit) and makes note of
+ *    the new times.
+ *
+ * 4. If possible, tries to recommend a smaller time limit that preserves as
+ *    many of the pass/TLE results as possible.
+ *
+ * The recommendation algorithm does the following:
+ *
+ * 1. Counts the passes and the TLEs in the database.
+ *
+ * 2. Sorts the new times in increasing order.
+ *
+ * 3. Picks a new time limit such that the same number of tests pass.
+ *
+ * 4. Rounds it to the nearest multiple of 0.05 (for small values) or 0.1 (for
+ *    larger values.
+ *
+ * 5. Special case: If every test passes, then compares the highest running
+ *    times among all tests, locally and in the database. Then scales the time
+ *    limit by the ratio of those running times.
+ *
+ * 6. Special case: We never recommend a time limit below 0.1 s.
+ *
+ **/
+
 require_once __DIR__ . '/../eval/config.php';
 
 require_once(IA_ROOT_DIR.'common/log.php');
@@ -60,19 +110,16 @@ function choice(int $indent, string $prompt, array $choices = []) {
     return $choice;
 }
 
-function usage(bool $confirmed) {
-
-    print <<<END_USAGE
-This script will help calibrate the time limits of all tasks when you change the eval
-hardware.
-
-More details will follow.
-
-
-END_USAGE;
+function check_usage() {
+    global $checkpoint_dir;
 
     if (exec('whoami') != 'root') {
         fatal('This script MUST be run as root.');
+    }
+
+    if (!$checkpoint_dir) {
+        fatal("Please specify a checkpoint directory with -c <dir>, e.g. -c /tmp.\n" .
+              'This allows you to save/restore progress.');
     }
 
     // Warn about a noisy log level.
@@ -80,10 +127,7 @@ END_USAGE;
         msg(MSG_WARNING, 0, 'We advise changing this value in config.php:');
         msg(MSG_WARNING, 0, "\n    define('IA_ERROR_REPORTING', E_ALL & ~E_USER_NOTICE);\n");
         msg(MSG_WARNING, 0, 'Allowing E_USER_NOTICE will clutter this script\'s log with jail info.');
-    }
-
-    if (!$confirmed) {
-        choice(0, 'Press Enter to continue...');
+        choice(0, 'Press Enter to continue or Ctrl-C to quit...');
     }
 }
 
@@ -551,15 +595,10 @@ class EvalBenchmark {
     }
 }
 
-$opts = getopt('c:y');
+$opts = getopt('c:');
 $checkpoint_dir = $opts['c'] ?? null;
-$usage_confirmed = isset($opts['y']);
 
-if (!$checkpoint_dir) {
-    fatal("Please specify a checkpoint directory with -c <dir>.\n" .
-          'This allows you to save/restore progress.');
-}
-usage($usage_confirmed);
+check_usage();
 
 $eb = new EvalBenchmark($checkpoint_dir);
 $eb->run();
