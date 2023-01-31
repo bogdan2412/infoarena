@@ -85,6 +85,10 @@ END_USAGE;
 class BenchmarkGrader extends ClassicGrader {
     const JAIL_DIR = IA_ROOT_DIR . 'eval/jail/';
 
+    const ST_OK = 0;    // Test ran in time. The output may or may not be correct.
+    const ST_TLE = 1;   // Test exceeded the time limit.
+    const ST_OTHER = 2; // Other failures -- killed, memory limit exceeded, etc.
+
     function __construct($task, $task_params, $job) {
         // Don't get hung up on memory constraints. They may have to do with
         // 64- versus 32- bit architectures. Just give the program another MB.
@@ -97,25 +101,38 @@ class BenchmarkGrader extends ClassicGrader {
     }
 
     /**
-     * Runs the job on a single test. Returns the running time. Adapted from
-     * BaseGrader::grade() and ClassicGrader::testCaseJudge().
-     */
-    function runTest(array $test): float {
+     * Runs the job on a single test. Adapted from BaseGrader::grade() and
+     * ClassicGrader::testCaseJudge(). Note that, even if a test passed on the
+     * old hardware, it may still fail on the new one (e.g. job #552652).
+     *
+     * Returns an array of:
+     *   - status:  one of the ST_* constants;
+     *   - time:    relayed from the sandbox, converted to seconds;
+     *   - message: relayed from the sandbox.
+     **/
+    function runTest(array $test): array {
         eval_assert(clean_dir(self::JAIL_DIR), "Can't clean jail dir.");
         eval_assert(chdir(self::JAIL_DIR), "Can't chdir to jail dir.");
         $infile = $this->getInFile(self::JAIL_DIR);
-        $result = $this->runTestCase(
+        $info = $this->runTestCase(
             $test['test_number'],
             self::JAIL_DIR,
             $infile
         );
 
-        if ($result['message'] != 'Success') {
-            msg(MSG_ERROR, 0, "ERROR: Test case failed!");
-            print_r($result);
-            exit;
+        if ($info['result'] == 'OK') {
+            $status = self::ST_OK;
+        } else if (preg_match('/time limit/i', $info['message']))  {
+            $status = self::ST_TLE;
+        } else {
+            $status = self::ST_OTHER;
         }
-        return $result['time'] / 1000.0;
+
+        return [
+            'status' => $status,
+            'time' => (float)$info['time'] / 1000,
+            'message' => $info['message'],
+        ];
     }
 }
 
@@ -123,6 +140,23 @@ class EvalBenchmark {
     // Checkpoint file names.
     const CP_TASKS = 'checkpoint_tasks.txt';
     const CP_SQL = 'checkpoint.sql';
+
+    // Things we can do with a test case
+    const ACTION_IGNORE = 0;    // ignore it
+    const ACTION_REPORT = 1;  // report it as inconsistent
+    const ACTION_USE = 2;     // use it for benchmarking
+
+    // Due to graders, success messages can be quite baroque.
+    // Any tests that scored >= 1 points are assumed to be successful.
+    // Partial scores are fine -- we only care about the time limit.
+    //
+    // The messages below indicate a TLE status.
+    const TLE_MESSAGES = [
+        'Time limit exceeded',
+        'Time limit exceeded.',
+        'Wall time limit exceeded',
+        'Wall time limit exceeded.',
+    ];
 
     private array $admins;
     private string $checkpoint_dir;
@@ -257,6 +291,33 @@ class EvalBenchmark {
     }
 
     /**
+     * Figure out what to do with a test based on its outcome.
+     * @return int One of the ACTION_* constants, indicating whether we can
+     * use the test, ignore it or report it as inconsistent.
+     **/
+    function test_action(int $points, float $test_time, float $time_limit,
+                         string $grader_message): int {
+        $in_time = $test_time < $time_limit;
+        $tle_msg = in_array($grader_message, self::TLE_MESSAGES);
+
+        // 8 cases arise from ($points, $in_time, $tle_msg).
+        if (($in_time == $tle_msg) ||
+            ($points && !$in_time)) {
+            // Cases 1-4: The TLE message (or its absence) is inconsistent
+            // with the test running in time (or not).
+            // Case 5: The test did not run in time yet still got some points.
+            return self::ACTION_REPORT;
+        } else if (!$points && $in_time) {
+            // Case 6: Do nothing. Test got 0 points due to other errors:
+            // wrong answer, memory limit exceeded etc.
+            return self::ACTION_IGNORE;
+        } else {
+            // Cases 7-8: TLE or the test got some points.
+            return self::ACTION_USE;
+        }
+    }
+
+    /**
      * Runs all the tests for the job. Returns an array of (old time, new
      * time) pairs.
      **/
@@ -268,24 +329,50 @@ class EvalBenchmark {
         $grader = new BenchmarkGrader($task, $task_params, $job);
         $grader->compileJobSource();
 
-        $time_limit = $task_params['timelimit'];
+        $time_limit = (float)$task_params['timelimit'];
         $times = [];
         foreach ($tests as $test) {
-            // Normally, this is smaller than $time_limit. It may, however, be
-            // larger if someone changed the time limit after the job was
-            // evaluated (e.g.: antitir). We print a warning, but we
-            // continue. We are interested in comparing the new hardware to
-            // the old one.
-            $old_test_time = (float)$test['exec_time'] / 1000;
-            $new_test_time = $grader->runTest($test);
+            $test_time = (float)$test['exec_time'] / 1000; // in seconds
+            $points = (int)$test['points'];
+            $action = $this->test_action(
+                $points, $test_time, $time_limit, $test['grader_message']);
 
-            $warning = ($old_test_time > $time_limit)
-                ? 'WARNING: old time exceeds limit'
-                : '';
-            msg(MSG_DEFAULT, 2, 'Test #%02d, old time %g, new time %g %s',
-                $test['test_number'], $old_test_time, $new_test_time, $warning);
+            if ($action == self::ACTION_USE) {
+                $info = $grader->runTest($test);
 
-            $times[] = [ $old_test_time, $new_test_time ];
+                if ($info['status'] == BenchmarkGrader::ST_OTHER) {
+                    // Ignore this test case and report why
+                    msg(MSG_WARNING,
+                        2,
+                        'Test #%02d: ignored after grading (old points: %d, old time: %g, old message: %s) (new time: %d, new message: %s)',
+                        $test['test_number'],
+                        $points,
+                        $test_time,
+                        $test['grader_message'],
+                        $info['time'],
+                        $info['message']
+                    );
+                } else {
+                    $new_test_time = $info['time'];
+                    $tle_notice = ($test_time >= $time_limit) ? ' (TLE)' : '';
+
+                    msg(MSG_DEFAULT, 2, 'Test #%02d, old time %g%s, new time %g',
+                        $test['test_number'], $test_time, $tle_notice, $new_test_time);
+
+                    $times[] = [ $test_time, $new_test_time ];
+                }
+            } else {
+                $msgClass = ($action == self::ACTION_REPORT) ? MSG_WARNING : MSG_INFO;
+                $verdict = ($action == self::ACTION_REPORT) ? 'inconsistent' : 'ignored';
+                msg($msgClass,
+                    2,
+                    'Test #%02d: %s (points: %d, time: %g, grader message: %s)',
+                    $test['test_number'],
+                    $verdict,
+                    $points,
+                    $test_time,
+                    $test['grader_message']);
+            }
         }
 
         return $times;
@@ -299,14 +386,14 @@ class EvalBenchmark {
         $times = [];
         foreach ($jobs as $job) {
             $owner = $this->admins[$job['user_id']]['username'];
-            $header = sprintf('Job #%d (%s): ', $job['id'], $owner);
+            $header = sprintf('Job #%d (%s):', $job['id'], $owner);
 
             $tests = job_test_get_all($job['id']);
             if (count($tests) != $task['test_count']) {
                 msg(MSG_WARNING, 1, '%s SKIPPING (task specifies %d tests, job has %d)',
                     $header, $task['test_count'], count($tests));
             } else {
-                msg(MSG_DEFAULT, 1, '%s Benchmarking %d tests',
+                msg(MSG_DEFAULT, 1, '%s Running %d tests',
                     $header, count($tests));
                 $job_times = $this->benchmark_job_tests(
                     $task, $task_params, $job, $tests);
@@ -328,13 +415,16 @@ class EvalBenchmark {
         $tasks = $this->load_tasks();
 
         foreach ($tasks as $i => $task) {
+            if ($task['id'] != 'clasa0') {
+                continue;
+            }
             // Load task parameters (we only need the time limit).
             $task_params = task_get_parameters($task['id']);
             $time_limit = (float)$task_params['timelimit'];
 
-            // Load jobs submitted by admins and having a score of 100.
-            $jobs = job_get_by_task_id_user_ids_status_score(
-                $task['id'], array_keys($this->admins), 'done', 100);
+            // Load jobs submitted by admins.
+            $jobs = job_get_by_task_id_user_ids_status(
+                $task['id'], array_keys($this->admins), 'done');
 
             $header = sprintf("== Task %d/%d (%s, %d tests, %g s): ",
                               $i + 1,
@@ -366,12 +456,11 @@ $opts = getopt('c:y');
 $checkpoint_dir = $opts['c'] ?? null;
 $usage_confirmed = isset($opts['y']);
 
-usage($usage_confirmed);
-
 if (!$checkpoint_dir) {
     fatal("Please specify a checkpoint directory with -c <dir>.\n" .
           'This allows you to save/restore progress.');
 }
+usage($usage_confirmed);
 
 $eb = new EvalBenchmark($checkpoint_dir);
 $eb->run();
