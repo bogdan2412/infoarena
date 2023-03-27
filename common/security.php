@@ -378,7 +378,7 @@ function security_task($user, $action, $task) {
     $usersec = getattr($user, 'security_level', 'anonymous');
     $is_admin = $usersec == 'admin';
     $is_intern = $usersec == 'intern';
-    $is_owner = ($task['user_id'] == getattr($user, 'id') && $usersec == 'helper');
+    $is_owner = $task && ($task['user_id'] == getattr($user, 'id') && $usersec == 'helper');
     $is_boss = $is_admin || $is_intern || $is_owner;
 
     // Log query response.
