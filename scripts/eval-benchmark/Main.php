@@ -2,19 +2,16 @@
 
 class Main {
   private Args $args;
+  private Checkpointer $checkpointer;
+  private Database $db;
+  private array $tasks;
 
   public function run() {
-    try {
-      $this->parseCommandLineArgs();
-      $this->checkUsage();
-      $cp = new Checkpointer($this->args->getCheckpointDir());
-      $db = new Database();
-      $taskId = $this->args->getTaskId();
-      $tb = new TaskBenchmark($cp, $db, $taskId);
-      $tb->run();
-    } catch (BException $e) {
-      Log::fatal($e->getMessage(), $e->getArgs());
-    }
+    $this->parseCommandLineArgs();
+    $this->checkUsage();
+    $this->setupComponents();
+    $this->loadTasks();
+    $this->benchmarkAllTasks();
   }
 
   function parseCommandLineArgs() {
@@ -40,4 +37,27 @@ class Main {
       Log::warn('Allowing E_USER_NOTICE will clutter this script\'s log with jail info.');
     }
   }
+
+  function setupComponents() {
+    $this->checkpointer = new Checkpointer($this->args->getCheckpointDir());
+    $this->db = new Database();
+    $this->db->loadAdmins();
+  }
+
+  function loadTasks() {
+    $taskId = $this->args->getTaskId();
+    $this->tasks = ($taskId)
+      ? [ $this->db->loadTaskById($taskId) ]
+      : $this->db->loadTasks();
+  }
+
+  function benchmarkAllTasks() {
+    $numTasks = count($this->tasks);
+    foreach ($this->tasks as $ord => $task) {
+      $tb = new TaskBenchmark($this->checkpointer, $this->db, $task,
+                              1 + $ord, $numTasks);
+      $tb->run();
+    }
+  }
+
 }

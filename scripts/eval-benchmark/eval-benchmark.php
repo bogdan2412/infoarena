@@ -13,4 +13,8 @@ require_once 'Main.php';
 require_once 'TaskBenchmark.php';
 
 $main = new Main();
-$main->run();
+try {
+  $main->run();
+} catch (BException $e) {
+  Log::fatal($e->getMessage(), $e->getArgs());
+}

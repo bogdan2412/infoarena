@@ -3,55 +3,39 @@
 class TaskBenchmark {
   private Checkpointer $checkpointer;
   private Database $db;
-  private string $taskId;
-  private array $tasks;
+  private array $task;
+  private float $timeLimit;
+  private int $ord;
+  private int $numTasks;
 
-  function __construct(Checkpointer $checkpointer, Database $db, string $taskId) {
+  private array $jobs;
+  private array $adminJobs;
+
+  function __construct(Checkpointer $checkpointer, Database $db, array $task,
+                       int $ord, int $numTasks) {
     $this->checkpointer = $checkpointer;
     $this->db = $db;
-    $this->taskId = $taskId;
+    $this->task = $task;
+    $this->ord = $ord;
+    $this->numTasks = $numTasks;
   }
 
   function run() {
-    $this->db->loadAdmins();
-    $this->loadTasks();
-    foreach ($this->tasks as $ord => $task) {
-      $this->benchmarkTask($task, 1 + $ord);
-    }
+    $this->timeLimit = $this->db->getTaskTimeLimit($this->task['id']);
+    $this->printHeader();
+    $this->loadJobs();
+
+    $choice = $this->getChoice();
+    $this->actOnChoice($choice);
   }
 
-  function loadTasks() {
-    $this->tasks = ($this->taskId)
-      ? [ $this->db->loadTaskById($this->taskId) ]
-      : $this->db->loadTasks();
-  }
-
-  function benchmarkTask(array $task, int $ord) {
-    $timeLimit = $this->db->getTaskTimeLimit($task['id']);
-    $this->printTaskHeader($task, $ord, $timeLimit);
-
-    $jobs = $this->db->loadJobs($task['id']);
-    $adminJobs = $this->db->filterAdminJobs($jobs);
-
-    $choice = Choice::selectFrom([
-      'a' => sprintf('benchmark admin jobs only (%d)', count($adminJobs)),
-      'e' => sprintf('benchmark every job (%d)', count($jobs)),
-    ]);
-
-    $jobsToBenchmark = ($choice == 'a') ? $adminJobs : $jobs;
-    $jb = new JobBenchmark($task, $timeLimit, $jobsToBenchmark, $this->db);
-    $jb->run();
-  }
-
-  function printTaskHeader(array& $task, int $ord, float $timeLimit) {
-    $total = count($this->tasks);
-
+  function printHeader() {
     $header = sprintf('| %s (task %d/%d, %d tests, %g s) |',
-                      $task['id'],
-                      $ord,
-                      $total,
-                      $task['test_count'],
-                      $timeLimit);
+                      $this->task['id'],
+                      $this->ord,
+                      $this->numTasks,
+                      $this->task['test_count'],
+                      $this->timeLimit);
     $len = mb_strlen($header);
     $line = '+' . str_repeat('-', $len - 2) . '+';
 
@@ -62,4 +46,36 @@ class TaskBenchmark {
     Log::emptyLine();
   }
 
+  function loadJobs() {
+    $this->jobs = $this->db->loadJobs($this->task['id']);
+    $this->adminJobs = $this->db->filterAdminJobs($this->jobs);
+  }
+
+  function getChoice(): string {
+    $countAdmin = count($this->adminJobs);
+    $countAll = count($this->jobs);
+    return Choice::selectFrom([
+      'a' => sprintf('benchmark admin jobs only (%d)', $countAdmin),
+      'e' => sprintf('benchmark every job (%d)', $countAll),
+    ]);
+  }
+
+  function actOnChoice(string $choice) {
+    switch ($choice) {
+      case 'a':
+        $this->benchmarkJobs($this->adminJobs);
+        break;
+
+      case 'e':
+        $this->benchmarkJobs($this->jobs);
+        break;
+    }
+  }
+
+  function benchmarkJobs(array& $jobs) {
+    foreach ($jobs as $job) {
+      $jb = new JobBenchmark($job, $this->task, $this->timeLimit, $this->db);
+      $jb->run();
+    }
+  }
 }
