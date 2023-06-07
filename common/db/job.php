@@ -444,3 +444,13 @@ function job_get_by_task_id_user_ids_status(
         $task_id, implode(',', $user_ids), $status);
     return db_fetch_all($query);
 }
+
+function job_get_by_task_id_status(string $task_id, string $status): array {
+    $query = sprintf(
+        'select * from ia_job '.
+        'where task_id = "%s" ' .
+        'and status = "%s" ' .
+        'order by id',
+        $task_id, $status);
+    return db_fetch_all($query);
+}
