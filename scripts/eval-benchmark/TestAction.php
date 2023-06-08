@@ -19,20 +19,21 @@ class TestAction {
   ];
 
   /**
-   * Figure out what to do with a test based on its outcome.
+   * Figure out what to do with the current test based on its outcome.
    **/
-  static function recommend(array& $test, float $timeLimit): int {
-    $testTime = (float)$test['exec_time'] / 1000; // in seconds
-    $points = (int)$test['points'];
-    $graderMsg = $test['grader_message'];
+  static function recommend(): int {
+    $timeLimit = WorkStack::getTaskTimeLimit();
+    $time = WorkStack::getTestOldTime();
+    $points = WorkStack::getTestOldPoints();
+    $message = WorkStack::getTestOldMessage();
 
-    $isInTime = $testTime < $timeLimit;
-    $hasTleMsg = in_array($graderMsg, self::TLE_MESSAGES);
+    $isInTime = $time < $timeLimit;
+    $hasTleMsg = in_array($message, self::TLE_MESSAGES);
 
     return self::discern($isInTime, $hasTleMsg, $points);
   }
 
-  static function discern(bool $isInTime, bool $hasTleMsg, int $points): int {
+  private static function discern(bool $isInTime, bool $hasTleMsg, int $points): int {
     // 8 cases arise.
     if (($isInTime == $hasTleMsg) ||
         ($points && !$isInTime)) {
@@ -48,6 +49,12 @@ class TestAction {
       // Cases 7-8: TLE or the test got some points.
       return self::ACTION_USE;
     }
+  }
+
+  static function getVerdict($action): string {
+    return ($action == self::ACTION_REPORT)
+      ? 'inconsistent'
+      : 'ignored';
   }
 
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Keeps track of the current task, job and test. Also wraps getters around
+ * some array fields.
+ **/
+
 class WorkStack {
   private static int $taskCount;
   private static array $task;
@@ -93,6 +98,22 @@ class WorkStack {
 
   static function getTest(): array {
     return self::$test;
+  }
+
+  static function getTestOldMessage(): string {
+    return self::$test['grader_message'];
+  }
+
+  static function getTestOldPoints(): int {
+    return self::$test['points'];
+  }
+
+  static function getTestOldTime(): float {
+    return (float)self::$test['exec_time'] / 1000;
+  }
+
+  static function getTestOldTle(): bool {
+    return self::getTestOldTime() >= self::getTaskTimeLimit();
   }
 
   static function getTestNo(): int {

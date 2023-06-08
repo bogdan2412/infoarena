@@ -22,18 +22,13 @@ class BenchmarkGrader extends ClassicGrader {
    * Runs the job on a single test. Adapted from BaseGrader::grade() and
    * ClassicGrader::testCaseJudge(). Note that, even if a test passed on the
    * old hardware, it may still fail on the new one (e.g. job #552652).
-   *
-   * Returns an array of:
-   *   - status:  one of the ST_* constants;
-   *   - time:    relayed from the sandbox, converted to seconds;
-   *   - message: relayed from the sandbox.
    **/
-  function runTest(array &$test): TestResult {
+  function runTest(): TestResult {
     eval_assert(clean_dir(self::JAIL_DIR), "Can't clean jail dir.");
     eval_assert(chdir(self::JAIL_DIR), "Can't chdir to jail dir.");
     $infile = $this->getInFile(self::JAIL_DIR);
     $info = $this->runTestCase(
-      $test['test_number'],
+      WorkStack::getTestNo(),
       self::JAIL_DIR,
       $infile
     );

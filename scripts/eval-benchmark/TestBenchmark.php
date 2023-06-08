@@ -14,19 +14,18 @@ class TestBenchmark {
   }
 
   function run(): ?TimeInfo {
-    $timeLimit = WorkStack::getTaskTimeLimit();
-    $action = TestAction::recommend($this->test, $timeLimit);
+    $action = TestAction::recommend();
 
     if ($action == TestAction::ACTION_USE) {
       return $this->executeTest();
     } else {
-      $this->reportUnusableTest();
+      $this->reportUnusableTest($action);
       return null;
     }
   }
 
   private function executeTest(): ?TimeInfo {
-    $this->result = $this->grader->runTest($this->test);
+    $this->result = $this->grader->runTest();
     if ($this->result->status == TestResult::ST_OTHER) {
       $this->reportIgnoredAfterRun();
       return null;
@@ -36,16 +35,16 @@ class TestBenchmark {
     }
   }
 
-  private function reportIgnoredAfterRun() {
+  private function reportIgnoredAfterRun(): void {
     $fmt = 'Test #%02d: ignored after grading ' .
       '(old points: %d, old time: %g, old message: %s) ' .
       '(new time: %d, new message: %s)';
 
     $args = [
-      $this->test['test_number'],
-      $this->test['points'],
-      $this->test['exec_time'],
-      $this->test['grader_message'],
+      WorkStack::getTestNo(),
+      WorkStack::getTestOldPoints(),
+      WorkStack::getTestOldTime(),
+      WorkStack::getTestOldMessage(),
       $this->result->time,
       $this->result->message,
     ];
@@ -54,24 +53,41 @@ class TestBenchmark {
   }
 
   private function assembleTimeInfo(): TimeInfo {
-    $timeLimit = WorkStack::getTaskTimeLimit();
-    $oldTime = $this->test['exec_time'] / 1000;
-    $oldTle = ($oldTime >= $timeLimit);
+    $oldTime = WorkStack::getTestOldTime();
+    $oldTle = WorkStack::getTestOldTle();
     $newTime = $this->result->time;
     $newTle = ($this->result->status == TestResult::ST_TLE);
 
     $fmt = 'Test #%02d: old time %g%s, new time %g%s';
     $args = [
-        $this->test['test_number'],
-        $oldTime,
-        $oldTle ? ' (TLE)' : '',
-        $newTime,
-        $newTle ? ' (TLE)' : '',
+      WorkStack::getTestNo(),
+      $oldTime,
+      $oldTle ? ' (TLE)' : '',
+      $newTime,
+      $newTle ? ' (TLE)' : '',
     ];
 
     Log::default($fmt, $args, 2);
 
     return new TimeInfo($oldTime, $oldTle, $newTime, $newTle);
+  }
+
+  private function reportUnusableTest(int $action): void {
+    $verdict = TestAction::getVerdict($action);
+    $fmt = 'Test #%02d: %s (points: %d, time: %g, grader message: %s)';
+    $args = [
+      WorkStack::getTestNo(),
+      $verdict,
+      WorkStack::getTestOldPoints(),
+      WorkStack::getTestOldTime(),
+      WorkStack::getTestOldMessage(),
+    ];
+
+    if ($action == TestAction::ACTION_REPORT) {
+      Log::warn($fmt, $args, 2);
+    } else {
+      Log::info($fmt, $args, 2);
+    }
   }
 
 }
