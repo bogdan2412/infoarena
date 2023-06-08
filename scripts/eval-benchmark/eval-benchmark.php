@@ -11,6 +11,8 @@ require_once 'JobBenchmark.php';
 require_once 'Log.php';
 require_once 'Main.php';
 require_once 'TaskBenchmark.php';
+require_once 'TestBenchmark.php';
+require_once 'WorkStack.php';
 
 $main = new Main();
 try {

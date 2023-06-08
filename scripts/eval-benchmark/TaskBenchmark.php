@@ -4,24 +4,21 @@ class TaskBenchmark {
   private Checkpointer $checkpointer;
   private Database $db;
   private array $task;
-  private float $timeLimit;
-  private int $ord;
-  private int $numTasks;
+  private array $params;
 
   private array $jobs;
   private array $adminJobs;
 
-  function __construct(Checkpointer $checkpointer, Database $db, array $task,
-                       int $ord, int $numTasks) {
-    $this->checkpointer = $checkpointer;
-    $this->db = $db;
+  function __construct(array $task, Database $db, Checkpointer $checkpointer) {
     $this->task = $task;
-    $this->ord = $ord;
-    $this->numTasks = $numTasks;
+    $this->db = $db;
+    $this->checkpointer = $checkpointer;
+
+    $this->params = $db->getTaskParams($task['id']);
+    WorkStack::setTask($this->task, $this->params);
   }
 
   function run() {
-    $this->timeLimit = $this->db->getTaskTimeLimit($this->task['id']);
     $this->printHeader();
     $this->loadJobs();
 
@@ -29,13 +26,13 @@ class TaskBenchmark {
     $this->actOnChoice($choice);
   }
 
-  function printHeader() {
-    $header = sprintf('| %s (task %d/%d, %d tests, %g s) |',
+  private function printHeader() {
+    $header = sprintf('| %s (task %d/%d, %d tests, time limit %g s) |',
                       $this->task['id'],
-                      $this->ord,
-                      $this->numTasks,
+                      WorkStack::getTaskNo(),
+                      WorkStack::getTaskCount(),
                       $this->task['test_count'],
-                      $this->timeLimit);
+                      WorkStack::getTaskTimeLimit());
     $len = mb_strlen($header);
     $line = '+' . str_repeat('-', $len - 2) . '+';
 
@@ -46,12 +43,12 @@ class TaskBenchmark {
     Log::emptyLine();
   }
 
-  function loadJobs() {
+  private function loadJobs() {
     $this->jobs = $this->db->loadJobs($this->task['id']);
     $this->adminJobs = $this->db->filterAdminJobs($this->jobs);
   }
 
-  function getChoice(): string {
+  private function getChoice(): string {
     $countAdmin = count($this->adminJobs);
     $countAll = count($this->jobs);
     return Choice::selectFrom([
@@ -60,7 +57,7 @@ class TaskBenchmark {
     ]);
   }
 
-  function actOnChoice(string $choice) {
+  private function actOnChoice(string $choice) {
     switch ($choice) {
       case 'a':
         $this->benchmarkJobs($this->adminJobs);
@@ -72,9 +69,10 @@ class TaskBenchmark {
     }
   }
 
-  function benchmarkJobs(array& $jobs) {
+  private function benchmarkJobs(array& $jobs) {
+    WorkStack::setJobCount(count($jobs));
     foreach ($jobs as $job) {
-      $jb = new JobBenchmark($job, $this->task, $this->timeLimit, $this->db);
+      $jb = new JobBenchmark($job, $this->db);
       $jb->run();
     }
   }

@@ -9,7 +9,7 @@ class Checkpointer {
     $this->createDirIfNeeded();
   }
 
-  function checkNonemptyDirName() {
+  private function checkNonemptyDirName() {
     if (!$this->dir) {
       throw new BException(
         "Please specify a checkpoint directory with -c <dir>, e.g. -c /tmp/benchmark.\n" .
@@ -17,7 +17,7 @@ class Checkpointer {
     }
   }
 
-  function createDirIfNeeded() {
+  private function createDirIfNeeded() {
     if (!file_exists($this->dir)) {
       Log::info('Checkpoint directory [%s] does not exist, creating...', [$this->dir]);
       if (!@mkdir($this->dir, 0755)) {

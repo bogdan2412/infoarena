@@ -14,23 +14,23 @@ class Main {
     $this->benchmarkAllTasks();
   }
 
-  function parseCommandLineArgs() {
+  private function parseCommandLineArgs() {
     $this->args = new Args();
     $this->args->parse();
   }
 
-  function checkUsage() {
+  private function checkUsage() {
     $this->checkRootAccess();
     $this->warnIfNoisyLogLevel();
   }
 
-  function checkRootAccess() {
+  private function checkRootAccess() {
     if (exec('whoami') != 'root') {
       throw new BException('This script MUST be run as root.');
     }
   }
 
-  function warnIfNoisyLogLevel() {
+  private function warnIfNoisyLogLevel() {
     if (IA_ERROR_REPORTING & E_USER_NOTICE) {
       Log::warn('We advise changing this value in config.php:');
       Log::warn("\n    define('IA_ERROR_REPORTING', E_ALL & ~E_USER_NOTICE);\n");
@@ -38,24 +38,24 @@ class Main {
     }
   }
 
-  function setupComponents() {
+  private function setupComponents() {
     $this->checkpointer = new Checkpointer($this->args->getCheckpointDir());
     $this->db = new Database();
-    $this->db->loadAdmins();
+    $this->db->loadUsers();
   }
 
-  function loadTasks() {
+  private function loadTasks() {
     $taskId = $this->args->getTaskId();
     $this->tasks = ($taskId)
       ? [ $this->db->loadTaskById($taskId) ]
       : $this->db->loadTasks();
   }
 
-  function benchmarkAllTasks() {
-    $numTasks = count($this->tasks);
-    foreach ($this->tasks as $ord => $task) {
-      $tb = new TaskBenchmark($this->checkpointer, $this->db, $task,
-                              1 + $ord, $numTasks);
+  private function benchmarkAllTasks() {
+    WorkStack::setTaskCount(count($this->tasks));
+
+    foreach ($this->tasks as $task) {
+      $tb = new TaskBenchmark($task, $this->db, $this->checkpointer);
       $tb->run();
     }
   }

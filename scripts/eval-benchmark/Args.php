@@ -14,7 +14,7 @@ class Args {
     $this->taskId = $opts['t'] ?? '';
   }
 
-  function usage() {
+  private function usage() {
     $scriptName = $_SERVER['SCRIPT_FILENAME'];
     print "Usage: $scriptName -c <dir> [-t <task>]\n";
     print "\n";
