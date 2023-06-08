@@ -7,15 +7,19 @@ class JobBenchmark {
   private array $tests;
   private int $numTaskTests;
   private int $numJobTests;
+  private ClassicGrader $grader;
+  private array $results = [];
 
   function __construct(array& $job, Database $db) {
     $this->job = $job;
     $this->db = $db;
     $this->owner = $this->db->getUser($this->job['user_id']);
     WorkStack::setJob($this->job, $this->owner);
+    $this->grader = new BenchmarkGrader(
+      WorkStack::getTask(), WorkStack::getTaskParams(), $this->job);
   }
 
-  function run() {
+  function run(): void {
     Log::default('Benchmarking job %d/%d (ID #%d, user %s).',
                  [ WorkStack::getJobNo(), WorkStack::getJobCount(),
                    $this->job['id'], $this->owner ]);
@@ -31,18 +35,36 @@ class JobBenchmark {
     }
   }
 
-  private function reportBadTestCount() {
+  private function reportBadTestCount(): void {
     Log::warn('SKIPPING (task specifies %d tests, job has %d)',
               [ $this->numTaskTests, $this->numJobTests],
               1);
   }
 
-  private function benchmarkAllTests() {
+  private function benchmarkAllTests(): void {
     WorkStack::setTestCount($this->numJobTests);
-    Log::default('Running %d tests', [ $this->numJobTests ], 1);
-    foreach ($this->tests as $test) {
-      $tb = new TestBenchmark($test, $this->db);
+
+    if ($this->compileJobSource()) {
+      Log::default('Running %d tests', [ $this->numJobTests ], 1);
+      foreach ($this->tests as $test) {
+        $tb = new TestBenchmark($test, $this->grader, $this->db);
+        $tb->run();
+      }
     }
+  }
+
+  private function compileJobSource(): bool {
+    try {
+      $this->grader->compileJobSource();
+      return true;
+    } catch (EvalUserCompileError $e) {
+      Log::warn('Compilation error.', [], 2);
+      return false;
+    }
+  }
+
+  function getResults(): array {
+    return $this->results;
   }
 
 }
