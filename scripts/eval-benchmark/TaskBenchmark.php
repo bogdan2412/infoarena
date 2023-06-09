@@ -14,6 +14,8 @@ class TaskBenchmark {
   private array $adminJobs;
   private TimeAnalyzer $timeAnalyzer;
   private array $newLimits;
+  private float $prevCustomLimit = 0.0;
+  private bool $choiceMade = false;
 
   function __construct(array $task, Database $db, Checkpointer $checkpointer) {
     $this->task = $task;
@@ -99,8 +101,8 @@ class TaskBenchmark {
 
     do {
       $choice = $this->getTimeChoice();
-      $this->actOnTimeChoice();
-    } while (true);
+      $this->actOnTimeChoice($choice);
+    } while (!$this->choiceMade);
   }
 
   private function makeNewLimits(): void {
@@ -142,7 +144,40 @@ class TaskBenchmark {
       $desc = $this->getMethodDescription($method);
       $choices['1' + $method] = sprintf($fmt, $desc, $time);
     }
-    $choices['5'] = 'propose your own time limit';
+    if ($this->prevCustomLimit) {
+      $msg = sprintf('accept the proposed custom time limit (%g s)', $this->prevCustomLimit);
+      $choices['5'] = $msg;
+    }
+    $choices['c'] = 'propose a custom time limit';
     return Choice::selectFrom($choices);
+  }
+
+  private function actOnTimeChoice(string $choice): void {
+    switch ($choice) {
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+        $this->choiceMade = true;
+        break;
+
+      case '5':
+        $this->choiceMade = true;
+        break;
+
+      case 'c':
+        $this->readAndReportCustomLimit();
+        break;
+    }
+  }
+
+  private function readAndReportCustomLimit() {
+    do {
+      $limit = (float)readline('Please enter a custom time limit: ');
+    } while (($limit <= 0) || ($limit > WorkStack::getTaskTimeLimit()));
+
+    $this->prevCustomLimit = $limit;
+    $mistakes = $this->timeAnalyzer->countMistakes($limit);
+    Log::info('A limit of %g s leads to %d mistakes.', [ $limit, $mistakes ]);
   }
 }
