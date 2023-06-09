@@ -2,7 +2,7 @@
 
 class TestBenchmark {
   private array $test;
-  private TestResult $result;
+  private NewResult $result;
   private ClassicGrader $grader;
   private Database $db;
 
@@ -13,7 +13,7 @@ class TestBenchmark {
     WorkStack::setTest($test);
   }
 
-  function run(): ?TimeInfo {
+  function run(): ?TimePair {
     $action = TestAction::recommend();
 
     if ($action == TestAction::ACTION_USE) {
@@ -24,13 +24,13 @@ class TestBenchmark {
     }
   }
 
-  private function executeTest(): ?TimeInfo {
+  private function executeTest(): ?TimePair {
     $this->result = $this->grader->runTest();
-    if ($this->result->status == TestResult::ST_OTHER) {
+    if ($this->result->status == NewResult::ST_OTHER) {
       $this->reportIgnoredAfterRun();
       return null;
     } else {
-      $timeInfo = $this->assembleTimeInfo();
+      $timeInfo = $this->assembleTimePair();
       return $timeInfo;
     }
   }
@@ -52,11 +52,11 @@ class TestBenchmark {
     Log::warn($fmt, $args, 2);
   }
 
-  private function assembleTimeInfo(): TimeInfo {
+  private function assembleTimePair(): TimePair {
     $oldTime = WorkStack::getTestOldTime();
     $oldTle = WorkStack::getTestOldTle();
     $newTime = $this->result->time;
-    $newTle = ($this->result->status == TestResult::ST_TLE);
+    $newTle = ($this->result->status == NewResult::ST_TLE);
 
     $fmt = 'Test #%02d: old time %g%s, new time %g%s';
     $args = [
@@ -69,7 +69,7 @@ class TestBenchmark {
 
     Log::default($fmt, $args, 2);
 
-    return new TimeInfo($oldTime, $oldTle, $newTime, $newTle);
+    return new TimePair($oldTime, $oldTle, $newTime, $newTle);
   }
 
   private function reportUnusableTest(int $action): void {

@@ -1,6 +1,6 @@
 <?php
 
-class TimeInfo {
+class TimePair {
   public float $oldTime;
   public bool $oldTle;
   public float $newTime;

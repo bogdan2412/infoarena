@@ -1,6 +1,7 @@
 <?php
 
 require_once(IA_ROOT_DIR . 'eval/ClassicGrader.php');
+require_once(IA_ROOT_DIR . 'eval/Exceptions.php');
 require_once(IA_ROOT_DIR . 'eval/download.php');
 require_once(IA_ROOT_DIR . 'eval/utilities.php');
 
@@ -23,7 +24,7 @@ class BenchmarkGrader extends ClassicGrader {
    * ClassicGrader::testCaseJudge(). Note that, even if a test passed on the
    * old hardware, it may still fail on the new one (e.g. job #552652).
    **/
-  function runTest(): TestResult {
+  function runTest(): NewResult {
     eval_assert(clean_dir(self::JAIL_DIR), "Can't clean jail dir.");
     eval_assert(chdir(self::JAIL_DIR), "Can't chdir to jail dir.");
     $infile = $this->getInFile(self::JAIL_DIR);
@@ -34,14 +35,14 @@ class BenchmarkGrader extends ClassicGrader {
     );
 
     if ($info['result'] == 'OK') {
-      $status = TestResult::ST_OK;
+      $status = NewResult::ST_OK;
     } else if (preg_match('/time limit/i', $info['message']))  {
-      $status = TestResult::ST_TLE;
+      $status = NewResult::ST_TLE;
     } else {
-      $status = TestResult::ST_OTHER;
+      $status = NewResult::ST_OTHER;
     }
 
-    return new TestResult(
+    return new NewResult(
       $status,
       (float)$info['time'] / 1000,
       $info['message']

@@ -1,6 +1,6 @@
 <?php
 
-class TestResult {
+class NewResult {
   const ST_OK = 0;    // Test ran in time. The output may or may not be correct.
   const ST_TLE = 1;   // Test exceeded the time limit.
   const ST_OTHER = 2; // Other failures -- killed, memory limit exceeded, etc.

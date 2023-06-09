@@ -19,7 +19,8 @@ class JobBenchmark {
       WorkStack::getTask(), WorkStack::getTaskParams(), $this->job);
   }
 
-  function run(): void {
+  // Returns an array of TimePair's
+  function run(): array {
     Log::default('Benchmarking job %d/%d (ID #%d, user %s).',
                  [ WorkStack::getJobNo(), WorkStack::getJobCount(),
                    $this->job['id'], $this->owner ]);
@@ -30,8 +31,9 @@ class JobBenchmark {
 
     if ($this->numJobTests != $this->numTaskTests) {
       $this->reportBadTestCount();
+      return [];
     } else {
-      $this->benchmarkAllTests();
+      return $this->benchmarkAllTests();
     }
   }
 
@@ -41,16 +43,22 @@ class JobBenchmark {
               1);
   }
 
-  private function benchmarkAllTests(): void {
+  private function benchmarkAllTests(): array {
     WorkStack::setTestCount($this->numJobTests);
+    $result = [];
 
     if ($this->compileJobSource()) {
       Log::default('Running %d tests', [ $this->numJobTests ], 1);
       foreach ($this->tests as $test) {
         $tb = new TestBenchmark($test, $this->grader, $this->db);
-        $tb->run();
+        $timePair = $tb->run(); // possibly null
+        if ($timePair) {
+          $result[] = $timePair;
+        }
       }
     }
+
+    return $result;
   }
 
   private function compileJobSource(): bool {

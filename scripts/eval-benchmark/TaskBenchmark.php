@@ -1,13 +1,19 @@
 <?php
 
 class TaskBenchmark {
+  const METHOD_FEWEST_MISTAKES = 0;
+  const METHOD_FEWEST_MISTAKES_ROUNDED = 1;
+  const METHOD_LARGEST_TIMES = 2;
+  const METHOD_LARGEST_TIMES_ROUNDED = 3;
+
   private Checkpointer $checkpointer;
   private Database $db;
   private array $task;
   private array $params;
-
   private array $jobs;
   private array $adminJobs;
+  private TimeAnalyzer $timeAnalyzer;
+  private array $newLimits;
 
   function __construct(array $task, Database $db, Checkpointer $checkpointer) {
     $this->task = $task;
@@ -22,8 +28,8 @@ class TaskBenchmark {
     $this->printHeader();
     $this->loadJobs();
 
-    $choice = $this->getChoice();
-    $this->actOnChoice($choice);
+    $choice = $this->getJobChoice();
+    $this->actOnJobChoice($choice);
   }
 
   private function printHeader() {
@@ -48,7 +54,7 @@ class TaskBenchmark {
     $this->adminJobs = $this->db->filterAdminJobs($this->jobs);
   }
 
-  private function getChoice(): string {
+  private function getJobChoice(): string {
     $countAdmin = count($this->adminJobs);
     $countAll = count($this->jobs);
     return Choice::selectFrom([
@@ -57,7 +63,7 @@ class TaskBenchmark {
     ]);
   }
 
-  private function actOnChoice(string $choice) {
+  private function actOnJobChoice(string $choice): void {
     switch ($choice) {
       case 'a':
         $this->benchmarkJobs($this->adminJobs);
@@ -69,11 +75,74 @@ class TaskBenchmark {
     }
   }
 
-  private function benchmarkJobs(array& $jobs) {
+  private function benchmarkJobs(array& $jobs): void {
     WorkStack::setJobCount(count($jobs));
+    $timePairs = [];
+
     foreach ($jobs as $job) {
       $jb = new JobBenchmark($job, $this->db);
-      $jb->run();
+      $jobTimePairs = $jb->run();
+      array_push($timePairs, ...$jobTimePairs);
     }
+
+    $this->recommendNewTimeLimit($timePairs);
+  }
+
+  private function recommendNewTimeLimit(array& $timePairs): void {
+    $this->timeAnalyzer = new TimeAnalyzer($timePairs);
+    if ($this->timeAnalyzer->isCornerCase()) {
+      return;
+    }
+
+    $this->makeNewLimits();
+    $this->logRecommendations();
+
+    do {
+      $choice = $this->getTimeChoice();
+      $this->actOnTimeChoice();
+    } while (true);
+  }
+
+  private function makeNewLimits(): void {
+    $ta = $this->timeAnalyzer; // syntactic sugar
+    $limitMistakes = $ta->recommendByFewestMistakes();
+    $limitLargestTimes = $ta->recommendByLargestPassingTimes();
+
+    $this->newLimits = [
+      self::METHOD_FEWEST_MISTAKES => $limitMistakes,
+      self::METHOD_FEWEST_MISTAKES_ROUNDED => $ta->round($limitMistakes),
+      self::METHOD_LARGEST_TIMES => $limitLargestTimes,
+      self::METHOD_LARGEST_TIMES_ROUNDED => $ta->round($limitLargestTimes),
+    ];
+  }
+
+  private function logRecommendations() {
+    Log::success('New time limit recommendations:');
+    $fmt = '* Based on %s: %g s (%d mistakes).';
+    foreach ($this->newLimits as $method => $time) {
+      $desc = $this->getMethodDescription($method);
+      $mistakes = $this->timeAnalyzer->countMistakes($time);
+      Log::success($fmt, [ $desc, $time, $mistakes ]);
+    }
+  }
+
+  private function getMethodDescription(int $method): string {
+    switch ($method) {
+      case self::METHOD_FEWEST_MISTAKES: return 'fewest mistakes';
+      case self::METHOD_FEWEST_MISTAKES_ROUNDED: return 'fewest mistakes, rounded';
+      case self::METHOD_LARGEST_TIMES: return 'largest passing times';
+      case self::METHOD_LARGEST_TIMES_ROUNDED: return 'largest passing times, rounded';
+    }
+  }
+
+  private function getTimeChoice(): string {
+    $choices = [];
+    $fmt = 'accept recommendation based on %s (%g s)';
+    foreach ($this->newLimits as $method => $time) {
+      $desc = $this->getMethodDescription($method);
+      $choices['1' + $method] = sprintf($fmt, $desc, $time);
+    }
+    $choices['5'] = 'propose your own time limit';
+    return Choice::selectFrom($choices);
   }
 }
