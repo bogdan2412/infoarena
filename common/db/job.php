@@ -435,7 +435,7 @@ function job_archive_waiting_number($user) {
 }
 
 function job_get_by_task_id_user_ids_status(
-    string $task_id, array $user_ids, string $status) {
+  string $task_id, array $user_ids, string $status): array {
     $query = sprintf(
         'select * from ia_job '.
         'where task_id = "%s" ' .
@@ -443,6 +443,17 @@ function job_get_by_task_id_user_ids_status(
         'and status = "%s"',
         $task_id, implode(',', $user_ids), $status);
     return db_fetch_all($query);
+}
+
+function job_count_by_task_id_user_ids_status(
+  string $task_id, array $user_ids, string $status): int {
+    $query = sprintf(
+        'select count(*) from ia_job '.
+        'where task_id = "%s" ' .
+        'and user_id in (%s) ' .
+        'and status = "%s"',
+        $task_id, implode(',', $user_ids), $status);
+    return db_query_value($query);
 }
 
 function job_get_by_task_id_status(string $task_id, string $status): array {
@@ -453,4 +464,14 @@ function job_get_by_task_id_status(string $task_id, string $status): array {
         'order by id',
         $task_id, $status);
     return db_fetch_all($query);
+}
+
+function job_count_by_task_id_status(string $task_id, string $status): int {
+    $query = sprintf(
+        'select count(*) from ia_job '.
+        'where task_id = "%s" ' .
+        'and status = "%s" ' .
+        'order by id',
+        $task_id, $status);
+    return db_query_value($query);
 }

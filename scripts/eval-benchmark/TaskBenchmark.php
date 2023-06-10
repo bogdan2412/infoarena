@@ -9,29 +9,71 @@ class TaskBenchmark {
   private Checkpointer $checkpointer;
   private Database $db;
   private array $task;
-  private array $params;
+  private int $numJobs, $numAdminJobs;
   private array $jobs;
-  private array $adminJobs;
   private TimeAnalyzer $timeAnalyzer;
   private array $newLimits;
   private float $prevCustomLimit = 0.0;
-  private bool $choiceMade = false;
+
+  private TaskCheckpoint $cp;
 
   function __construct(array $task, Database $db, Checkpointer $checkpointer) {
     $this->task = $task;
     $this->db = $db;
     $this->checkpointer = $checkpointer;
 
-    $this->params = $db->getTaskParams($task['id']);
-    WorkStack::setTask($this->task, $this->params);
+    $this->cp = new TaskCheckpoint();
+
+    $params = $db->getTaskParams($task['id']);
+    WorkStack::setTask($this->task, $params);
+  }
+
+  function getTask(): array {
+    return $this->task;
+  }
+
+  function getTimePairs(): array {
+    return $this->timePairs;
+  }
+
+  function getCheckpoint(): TaskCheckpoint {
+    return $this->cp;
   }
 
   function run() {
     $this->printHeader();
-    $this->loadJobs();
+    $this->loadCheckpoint();
+    $this->countJobs();
 
-    $choice = $this->getJobChoice();
-    $this->actOnJobChoice($choice);
+    while (!$this->cp->skipped && !$this->cp->acceptedTimeLimit) {
+      $choice = $this->getJobChoice();
+      $this->actOnJobChoice($choice);
+    }
+  }
+
+  private function loadCheckpoint(): void {
+    $cp = $this->checkpointer->readTask($this->task['id']);
+    if ($cp != null) {
+      $this->cp = $cp;
+      $this->logCheckpointInfo();
+    }
+  }
+
+  private function logCheckpointInfo(): void {
+    $ops = [];
+    if ($this->cp->benchmarked) {
+      $ops[] = sprintf('benchmarked %d testcases', count($this->cp->timePairs));
+    }
+    if ($this->cp->acceptedTimeLimit) {
+      $ops[] = sprintf('accepted a new time limit of %g s', $this->cp->acceptedTimeLimit);
+    }
+    if ($this->cp->skipped) {
+      $ops[] = 'skipped permanently';
+    }
+
+    $msg = sprintf('Found a checkpoint with the following operations: %s.',
+                   join(', ', $ops));
+    Log::warn($msg);
   }
 
   private function printHeader() {
@@ -51,47 +93,65 @@ class TaskBenchmark {
     Log::emptyLine();
   }
 
-  private function loadJobs() {
+  private function countJobs(): void {
+    $this->numJobs = $this->db->countJobs($this->task['id']);
+    $this->numAdminJobs = $this->db->countAdminJobs($this->task['id']);
+  }
+
+  private function loadJobs(): void {
     $this->jobs = $this->db->loadJobs($this->task['id']);
-    $this->adminJobs = $this->db->filterAdminJobs($this->jobs);
+  }
+
+  private function loadAdminJobs(): void {
+    $this->jobs = $this->db->loadAdminJobs($this->task['id']);
   }
 
   private function getJobChoice(): string {
-    $countAdmin = count($this->adminJobs);
-    $countAll = count($this->jobs);
     return Choice::selectFrom([
-      'a' => sprintf('benchmark admin jobs only (%d)', $countAdmin),
-      'e' => sprintf('benchmark every job (%d)', $countAll),
+      'a' => sprintf('benchmark admin jobs only (%d)', $this->numAdminJobs),
+      'e' => sprintf('benchmark every job (%d)', $this->numJobs),
+      's' => 'skip this task temporarily (you will see it again next time)',
+      'S' => 'skip this task permanently (you will not see it again)',
     ]);
   }
 
   private function actOnJobChoice(string $choice): void {
     switch ($choice) {
       case 'a':
-        $this->benchmarkJobs($this->adminJobs);
+        $this->loadAdminJobs();
+        $this->benchmarkJobs();
         break;
 
       case 'e':
-        $this->benchmarkJobs($this->jobs);
+        $this->loadJobs();
+        $this->benchmarkJobs();
+        break;
+
+      case 's':
+        break;
+
+      case 'S':
+        $this->skipPermanently();
         break;
     }
   }
 
-  private function benchmarkJobs(array& $jobs): void {
-    WorkStack::setJobCount(count($jobs));
-    $timePairs = [];
+  private function benchmarkJobs(): void {
+    WorkStack::setJobCount(count($this->jobs));
+    $this->timePairs = [];
 
-    foreach ($jobs as $job) {
+    foreach ($this->jobs as $job) {
       $jb = new JobBenchmark($job, $this->db);
       $jobTimePairs = $jb->run();
-      array_push($timePairs, ...$jobTimePairs);
+      array_push($this->timePairs, ...$jobTimePairs);
     }
 
-    $this->recommendNewTimeLimit($timePairs);
+    $this->benchmarked = true;
+    $this->recommendNewTimeLimit();
   }
 
-  private function recommendNewTimeLimit(array& $timePairs): void {
-    $this->timeAnalyzer = new TimeAnalyzer($timePairs);
+  private function recommendNewTimeLimit(): void {
+    $this->timeAnalyzer = new TimeAnalyzer($this->timePairs);
     if ($this->timeAnalyzer->isCornerCase()) {
       return;
     }
@@ -179,5 +239,10 @@ class TaskBenchmark {
     $this->prevCustomLimit = $limit;
     $mistakes = $this->timeAnalyzer->countMistakes($limit);
     Log::info('A limit of %g s leads to %d mistakes.', [ $limit, $mistakes ]);
+  }
+
+  private function skipPermanently() {
+    $this->cp->skipped = true;
+    $this->checkpointer->writeTask($this);
   }
 }

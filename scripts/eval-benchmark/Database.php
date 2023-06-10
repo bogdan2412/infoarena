@@ -34,7 +34,7 @@ class Database {
               [ $numUsers, $numAdmins, $adminUsernames ]);
   }
 
-  function getUser($userId): string {
+  function getUser(int $userId): string {
     return $this->userMap[$userId];
   }
 
@@ -48,7 +48,7 @@ class Database {
     return $tasks;
   }
 
-  function loadTaskById($id): array {
+  function loadTaskById(string $id): array {
     $task = task_get($id);
     if (!$task) {
       throw new BException('Task %s not found.', [ $id ]);
@@ -56,22 +56,26 @@ class Database {
     return $task;
   }
 
-  function getTaskParams($taskId): array {
+  function getTaskParams(string $taskId): array {
     return task_get_parameters($taskId);
   }
 
-  function loadJobs($taskId): array {
+  function loadAdminJobs(string $taskId): array {
+    return job_get_by_task_id_user_ids_status(
+      $taskId, array_keys($this->adminMap), 'done');
+  }
+
+  function countAdminJobs(string $taskId): int {
+    return job_count_by_task_id_user_ids_status(
+      $taskId, array_keys($this->adminMap), 'done');
+  }
+
+  function loadJobs(string $taskId): array {
     return job_get_by_task_id_status($taskId, 'done');
   }
 
-  function filterAdminJobs(array $jobs): array {
-    $adminJobs = [];
-    foreach ($jobs as $j) {
-      if (isset($this->adminMap[$j['user_id']])) {
-        $adminJobs[] = $j;
-      }
-    }
-    return $adminJobs;
+  function countJobs(string $taskId): int {
+    return job_count_by_task_id_status($taskId, 'done');
   }
 
   function loadTests(int $jobId): array {

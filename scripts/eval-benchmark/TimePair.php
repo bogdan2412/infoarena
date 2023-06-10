@@ -12,4 +12,20 @@ class TimePair {
     $this->newTime = $newTime;
     $this->newTle = $newTle;
   }
+
+  function __construct(array $data) {
+    $this->oldTime = $data['oldTime'];
+    $this->oldTle = $data['oldTle'];
+    $this->newTime = $data['newTime'];
+    $this->newTle = $data['newTle'];
+  }
+
+  function asArray(): array {
+    return [
+      'oldTime' => $this->oldTime,
+      'oldTle' => $this->oldTle,
+      'newTime' => $this->newTime,
+      'newTle' => $this->newTle,
+    ];
+  }
 }
