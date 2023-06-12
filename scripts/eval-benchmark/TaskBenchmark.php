@@ -32,10 +32,6 @@ class TaskBenchmark {
     return $this->task;
   }
 
-  function getTimePairs(): array {
-    return $this->timePairs;
-  }
-
   function getCheckpoint(): TaskCheckpoint {
     return $this->cp;
   }
@@ -46,9 +42,27 @@ class TaskBenchmark {
     $this->countJobs();
 
     while (!$this->cp->skipped && !$this->cp->acceptedTimeLimit) {
-      $choice = $this->getJobChoice();
-      $this->actOnJobChoice($choice);
+      $this->maybeComputeRecommendations();
+      $action = $this->chooseAction();
+      $this->$action();
     }
+  }
+
+  private function printHeader() {
+    $header = sprintf('| %s (task %d/%d, %d tests, time limit %g s) |',
+                      $this->task['id'],
+                      WorkStack::getTaskNo(),
+                      WorkStack::getTaskCount(),
+                      $this->task['test_count'],
+                      WorkStack::getTaskTimeLimit());
+    $len = mb_strlen($header);
+    $line = '+' . str_repeat('-', $len - 2) . '+';
+
+    Log::emptyLine();
+    Log::info($line);
+    Log::info($header);
+    Log::info($line);
+    Log::emptyLine();
   }
 
   private function loadCheckpoint(): void {
@@ -76,93 +90,23 @@ class TaskBenchmark {
     Log::warn($msg);
   }
 
-  private function printHeader() {
-    $header = sprintf('| %s (task %d/%d, %d tests, time limit %g s) |',
-                      $this->task['id'],
-                      WorkStack::getTaskNo(),
-                      WorkStack::getTaskCount(),
-                      $this->task['test_count'],
-                      WorkStack::getTaskTimeLimit());
-    $len = mb_strlen($header);
-    $line = '+' . str_repeat('-', $len - 2) . '+';
-
-    Log::emptyLine();
-    Log::info($line);
-    Log::info($header);
-    Log::info($line);
-    Log::emptyLine();
-  }
-
   private function countJobs(): void {
     $this->numJobs = $this->db->countJobs($this->task['id']);
     $this->numAdminJobs = $this->db->countAdminJobs($this->task['id']);
   }
 
-  private function loadJobs(): void {
-    $this->jobs = $this->db->loadJobs($this->task['id']);
-  }
+  private function maybeComputeRecommendations() {
+    if (!empty($this->cp->timePairs) &&
+        empty($this->newLimits)) {
+      $this->timeAnalyzer = new TimeAnalyzer($this->cp->timePairs);
 
-  private function loadAdminJobs(): void {
-    $this->jobs = $this->db->loadAdminJobs($this->task['id']);
-  }
+      if ($this->timeAnalyzer->isCornerCase()) {
+        return;
+      }
 
-  private function getJobChoice(): string {
-    return Choice::selectFrom([
-      'a' => sprintf('benchmark admin jobs only (%d)', $this->numAdminJobs),
-      'e' => sprintf('benchmark every job (%d)', $this->numJobs),
-      's' => 'skip this task temporarily (you will see it again next time)',
-      'S' => 'skip this task permanently (you will not see it again)',
-    ]);
-  }
-
-  private function actOnJobChoice(string $choice): void {
-    switch ($choice) {
-      case 'a':
-        $this->loadAdminJobs();
-        $this->benchmarkJobs();
-        break;
-
-      case 'e':
-        $this->loadJobs();
-        $this->benchmarkJobs();
-        break;
-
-      case 's':
-        break;
-
-      case 'S':
-        $this->skipPermanently();
-        break;
+      $this->makeNewLimits();
+      $this->logRecommendations();
     }
-  }
-
-  private function benchmarkJobs(): void {
-    WorkStack::setJobCount(count($this->jobs));
-    $this->timePairs = [];
-
-    foreach ($this->jobs as $job) {
-      $jb = new JobBenchmark($job, $this->db);
-      $jobTimePairs = $jb->run();
-      array_push($this->timePairs, ...$jobTimePairs);
-    }
-
-    $this->benchmarked = true;
-    $this->recommendNewTimeLimit();
-  }
-
-  private function recommendNewTimeLimit(): void {
-    $this->timeAnalyzer = new TimeAnalyzer($this->timePairs);
-    if ($this->timeAnalyzer->isCornerCase()) {
-      return;
-    }
-
-    $this->makeNewLimits();
-    $this->logRecommendations();
-
-    do {
-      $choice = $this->getTimeChoice();
-      $this->actOnTimeChoice($choice);
-    } while (!$this->choiceMade);
   }
 
   private function makeNewLimits(): void {
@@ -197,41 +141,106 @@ class TaskBenchmark {
     }
   }
 
-  private function getTimeChoice(): string {
+  private function chooseAction(): string {
+    $choices = $this->collectChoices();
+    $tcs = new TaskChoiceSelector();
+    $tcs->addChoices($choices);
+    $action = $tcs->chooseAction();
+    return $action;
+  }
+
+  private function collectChoices(): array {
+    $choices = ($this->cp->benchmarked)
+      ? $this->makeTimeChoices()
+      : $this->makeBenchmarkChoices();
+
+    $common = $this->makeCommonChoices();
+    $choices = array_merge($choices, $common);
+    return $choices;
+  }
+
+  private function makeTimeChoices(): array {
     $choices = [];
     $fmt = 'accept recommendation based on %s (%g s)';
     foreach ($this->newLimits as $method => $time) {
       $desc = $this->getMethodDescription($method);
-      $choices['1' + $method] = sprintf($fmt, $desc, $time);
+      $choices[] = new TaskChoice('1' + $method,
+                                  sprintf($fmt, $desc, $time),
+                                  'actionAcceptTimeLimit' . $method);
     }
     if ($this->prevCustomLimit) {
       $msg = sprintf('accept the proposed custom time limit (%g s)', $this->prevCustomLimit);
-      $choices['5'] = $msg;
+      $choices[] = new TaskChoice('5', $msg, 'actionAcceptCustomTimeLimit');
     }
-    $choices['c'] = 'propose a custom time limit';
-    return Choice::selectFrom($choices);
+    $choices[] = new TaskChoice('c', 'propose a custom time limit',
+                                'actionProposeCustomTimeLimit');
+    $choices[] = new TaskChoice('f', 'forget the current benchmarks',
+                                'actionForgetBenchmarks');
+    return $choices;
   }
 
-  private function actOnTimeChoice(string $choice): void {
-    switch ($choice) {
-      case '1':
-      case '2':
-      case '3':
-      case '4':
-        $this->choiceMade = true;
-        break;
-
-      case '5':
-        $this->choiceMade = true;
-        break;
-
-      case 'c':
-        $this->readAndReportCustomLimit();
-        break;
-    }
+  private function makeBenchmarkChoices(): array {
+    return [
+      new TaskChoice('b',
+                     sprintf('benchmark %d admin jobs', $this->numAdminJobs),
+                     'actionBenchmarkAdminJobs'),
+      new TaskChoice('B',
+                     sprintf('benchmark all %d jobs', $this->numJobs),
+                     'actionBenchmarkAllJobs'),
+    ];
   }
 
-  private function readAndReportCustomLimit() {
+  private function makeCommonChoices(): array {
+    return [
+      new TaskChoice('s',
+                     'skip this task temporarily (you will see it again next time)',
+                     'actionSkipTemporarily'),
+      new TaskChoice('S',
+                     'skip this task permanently (you will not see it again)',
+                     'actionSkipPermanently'),
+    ];
+  }
+
+  private function actionBenchmarkAdminJobs() {
+    $this->loadAdminJobs();
+    $this->benchmarkJobs();
+  }
+
+  private function actionBenchmarkAllJobs() {
+    $this->loadAllJobs();
+    $this->benchmarkJobs();
+  }
+
+  private function loadAllJobs(): void {
+    $this->jobs = $this->db->loadAllJobs($this->task['id']);
+  }
+
+  private function loadAdminJobs(): void {
+    $this->jobs = $this->db->loadAdminJobs($this->task['id']);
+  }
+
+  private function benchmarkJobs(): void {
+    WorkStack::setJobCount(count($this->jobs));
+    $this->cp->timePairs = [];
+
+    foreach ($this->jobs as $job) {
+      $jb = new JobBenchmark($job, $this->db);
+      $jobTimePairs = $jb->run();
+      array_push($this->cp->timePairs, ...$jobTimePairs);
+    }
+
+    $this->cp->benchmarked = true;
+    $this->save();
+  }
+
+  private function actionForgetBenchmarks() {
+    $this->cp = new TaskCheckpoint();
+    $this->jobs = [];
+    $this->newLimits = [];
+    $this->prevCustomLimit = 0.0;
+  }
+
+  private function actionProposeCustomTimeLimit() {
     do {
       $limit = (float)readline('Please enter a custom time limit: ');
     } while (($limit <= 0) || ($limit > WorkStack::getTaskTimeLimit()));
@@ -241,8 +250,41 @@ class TaskBenchmark {
     Log::info('A limit of %g s leads to %d mistakes.', [ $limit, $mistakes ]);
   }
 
-  private function skipPermanently() {
+  private function actionAcceptTimeLimit0() {
+    $this->acceptTimeLimit($this->newLimits[self::METHOD_FEWEST_MISTAKES]);
+  }
+
+  private function actionAcceptTimeLimit1() {
+    $this->acceptTimeLimit($this->newLimits[self::METHOD_FEWEST_MISTAKES_ROUNDED]);
+  }
+
+  private function actionAcceptTimeLimit2() {
+    $this->acceptTimeLimit($this->newLimits[self::METHOD_LARGEST_TIMES]);
+  }
+
+  private function actionAcceptTimeLimit3() {
+    $this->acceptTimeLimit($this->newLimits[self::METHOD_LARGEST_TIMES_ROUNDED]);
+  }
+
+  private function actionAcceptCustomTimeLimit() {
+    $this->acceptTimeLimit($this->prevCustomLimit);
+  }
+
+  private function acceptTimeLimit(float $limit) {
+    $this->cp->acceptedTimeLimit = $limit;
+    $this->save();
+  }
+
+  private function actionSkipTemporarily() {
+    $this->cp->skipped = true; // don't save
+  }
+
+  private function actionSkipPermanently() {
     $this->cp->skipped = true;
+    $this->save();
+  }
+
+  private function save() {
     $this->checkpointer->writeTask($this);
   }
 }

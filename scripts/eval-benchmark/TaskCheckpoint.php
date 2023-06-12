@@ -25,7 +25,7 @@ class TaskCheckpoint {
   private function timePairsFromArray($data) {
     $result = [];
     foreach ($data as $row) {
-      $result[] = new TimePair($row);
+      $result[] = TimePair::fromArray($row);
     }
     return $result;
   }

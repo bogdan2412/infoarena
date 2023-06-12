@@ -70,7 +70,7 @@ class Database {
       $taskId, array_keys($this->adminMap), 'done');
   }
 
-  function loadJobs(string $taskId): array {
+  function loadAllJobs(string $taskId): array {
     return job_get_by_task_id_status($taskId, 'done');
   }
 

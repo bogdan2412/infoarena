@@ -13,11 +13,8 @@ class TimePair {
     $this->newTle = $newTle;
   }
 
-  function __construct(array $data) {
-    $this->oldTime = $data['oldTime'];
-    $this->oldTle = $data['oldTle'];
-    $this->newTime = $data['newTime'];
-    $this->newTle = $data['newTle'];
+  static function fromArray(array $data) {
+    return new self($data['oldTime'], $data['oldTle'], $data['newTime'], $data['newTle']);
   }
 
   function asArray(): array {
