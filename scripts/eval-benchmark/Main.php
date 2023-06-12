@@ -53,9 +53,10 @@ class Main {
 
   private function benchmarkAllTasks() {
     WorkStack::setTaskCount(count($this->tasks));
+    $batchMode = $this->args->getBatchMode();
 
     foreach ($this->tasks as $task) {
-      $tb = new TaskBenchmark($task, $this->db, $this->checkpointer);
+      $tb = new TaskBenchmark($task, $this->db, $this->checkpointer, $batchMode);
       $tb->run();
     }
   }

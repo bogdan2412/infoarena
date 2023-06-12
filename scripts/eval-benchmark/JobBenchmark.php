@@ -1,6 +1,8 @@
 <?php
 
 class JobBenchmark {
+  const GOOD_LANGUAGES = [ 'c', 'c-32', 'cpp', 'cpp-32' ];
+
   private Database $db;
   private array $job;
   private string $owner;
@@ -29,17 +31,30 @@ class JobBenchmark {
     $this->numJobTests = count($this->tests);
     $this->numTaskTests = WorkStack::getTaskTestCount();
 
+    if ($this->sanityCheck()) {
+      return $this->benchmarkAllTests();
+    } else {
+      return [];
+    }
+  }
+
+  private function sanityCheck(): bool {
     if ($this->numJobTests != $this->numTaskTests) {
       $this->reportBadTestCount();
-      return [];
-    } else {
-      return $this->benchmarkAllTests();
+      return false;
     }
+    $lang = $this->job['compiler_id'];
+    if (!in_array($lang, self::GOOD_LANGUAGES)) {
+      Log::warn('SKIPPING: not handling %s code', [ $lang ], 1);
+      return false;
+    }
+
+    return true;
   }
 
   private function reportBadTestCount(): void {
     Log::warn('SKIPPING (task specifies %d tests, job has %d)',
-              [ $this->numTaskTests, $this->numJobTests],
+              [ $this->numTaskTests, $this->numJobTests ],
               1);
   }
 

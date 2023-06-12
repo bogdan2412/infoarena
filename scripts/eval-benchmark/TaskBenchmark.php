@@ -9,6 +9,7 @@ class TaskBenchmark {
   private Checkpointer $checkpointer;
   private Database $db;
   private array $task;
+  private bool $batchMode;
   private int $numJobs, $numAdminJobs;
   private array $jobs;
   private TimeAnalyzer $timeAnalyzer;
@@ -17,10 +18,11 @@ class TaskBenchmark {
 
   private TaskCheckpoint $cp;
 
-  function __construct(array $task, Database $db, Checkpointer $checkpointer) {
+  function __construct(array $task, Database $db, Checkpointer $checkpointer, bool $batchMode) {
     $this->task = $task;
     $this->db = $db;
     $this->checkpointer = $checkpointer;
+    $this->batchMode = $batchMode;
 
     $this->cp = new TaskCheckpoint();
 
@@ -41,10 +43,12 @@ class TaskBenchmark {
     $this->loadCheckpoint();
     $this->countJobs();
 
-    while (!$this->cp->skipped && !$this->cp->acceptedTimeLimit) {
-      $this->maybeComputeRecommendations();
-      $action = $this->chooseAction();
-      $this->$action();
+    if ($this->batchMode) {
+      if ($this->needsFullBenchmark()) {
+        $this->actionBenchmarkAllJobs();
+      }
+    } else {
+      $this->interactiveLoop();
     }
   }
 
@@ -95,7 +99,21 @@ class TaskBenchmark {
     $this->numAdminJobs = $this->db->countAdminJobs($this->task['id']);
   }
 
-  private function maybeComputeRecommendations() {
+  private function needsFullBenchmark(): bool {
+    return
+      !$this->cp->skipped &&
+      !$this->cp->benchmarked;
+  }
+
+  private function interactiveLoop(): void {
+    while (!$this->cp->skipped && !$this->cp->acceptedTimeLimit) {
+      $this->maybeComputeRecommendations();
+      $action = $this->chooseAction();
+      $this->$action();
+    }
+  }
+
+  private function maybeComputeRecommendations(): void {
     if (!empty($this->cp->timePairs) &&
         empty($this->newLimits)) {
       $this->timeAnalyzer = new TimeAnalyzer($this->cp->timePairs);
