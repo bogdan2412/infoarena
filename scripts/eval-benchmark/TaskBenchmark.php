@@ -114,8 +114,9 @@ class TaskBenchmark {
   }
 
   private function maybeComputeRecommendations(): void {
-    if (!empty($this->cp->timePairs) &&
-        empty($this->newLimits)) {
+    if (empty($this->cp->timePairs)) {
+      $this->newLimits = []; // no available testcases
+    } else if (empty($this->newLimits)) {
       $this->timeAnalyzer = new TimeAnalyzer($this->cp->timePairs);
 
       if ($this->timeAnalyzer->isCornerCase()) {
