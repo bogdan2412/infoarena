@@ -5,6 +5,7 @@ require_once(IA_ROOT_DIR . 'common/db/tokens.php');
 // Wrapper around htmlentities which defaults charset to UTF-8
 function html_escape($string, $quote_style = ENT_COMPAT, $charset = "UTF-8")
 {
+    $string = $string ?? '';
     return htmlentities($string, $quote_style, $charset);
 }
 

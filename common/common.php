@@ -57,8 +57,10 @@ define("IA_RE_USER_NAME", '[_@a-z0-9][a-z0-9_\-\.\@]*');
 define("IA_RE_IPV4", '(?:\d{1,3}\.){3}\d{1,3}');
 // Full IPv6 address, doesn't match compressed IPv6 formats.
 define("IA_RE_IPV6_NO_COMPRESS", '(?:[0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}');
+define('IA_RE_IPV6_LOCAL', '(::1)');
 // IP address, matches IPv4 and non-compressed IPv6.
-define("IA_RE_IP_ADDRESS", IA_RE_IPV4."|".IA_RE_IPV6_NO_COMPRESS);
+define("IA_RE_IP_ADDRESS",
+       IA_RE_IPV4 . '|' . IA_RE_IPV6_NO_COMPRESS . '|' . IA_RE_IPV6_LOCAL);
 
 // Valid email. A complete check is not possible, see
 // http://www.regular-expressions.info/email.html
@@ -196,8 +198,10 @@ function is_attachment_id($id) {
 // tells whether $round_id is a valid round identifier
 // Does not check existence.
 function is_round_id($round_id) {
-    return preg_match('/^'.IA_RE_ROUND_ID.'$/xi', $round_id) &&
-        strlen($round_id) < 64;
+    return
+        $round_id &&
+        preg_match('/^'.IA_RE_ROUND_ID.'$/xi', $round_id) &&
+        (strlen($round_id) < 64);
 }
 
 // Check valid score names.

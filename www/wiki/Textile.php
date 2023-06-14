@@ -1721,6 +1721,9 @@ class Textile {
    * @private
    */
   function format_classstyle($clsty = NULL, $class = NULL, $style = NULL) {
+    $class = $class ?? '';
+    $style = $style ?? '';
+
     $class = preg_replace('/^ /', '', $class, 1);
 
     unset($lang, $padleft, $padright, $id);

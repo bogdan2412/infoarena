@@ -19,6 +19,7 @@ require_once(IA_ROOT_DIR . 'common/common.php');
 // the url.
 function url_complex($document = '', $args = array(), $absolute = false,
                      $secure_connection = false) {
+    $document = $document ?? '';
     log_assert(false === strpos($document, '?'), 'Page name contains ?');
     log_assert(is_array($args), "Argument list must be an array");
     log_assert(!array_key_exists("page", $args), "Argument list contains page");
