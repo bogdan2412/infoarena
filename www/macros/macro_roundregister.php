@@ -5,7 +5,7 @@ require_once(IA_ROOT_DIR."www/macros/macro_include.php");
 
 // Display registration invitation for a round when user is not registered.
 // If user is already registered, display a confirmation message instead.
-// 
+//
 // Arguments:
 //      round_id (required)
 //          - valid round id
@@ -37,7 +37,7 @@ function macro_roundregister($args) {
                ." <a href=\"".html_escape(url_round_register_view($round['id']))."\">"
                ."Vezi cine s-a mai inscris"
                ."</a>.</p>";
-        
+
         if ($round['state'] == 'waiting') {
             $msg .= "<p>In caz ca nu mai poti participa te poti deinscrie"
                     ." <a href=\"".html_escape(url_round_register($round['id']))
@@ -52,7 +52,7 @@ function macro_roundregister($args) {
                    ."<em>".html_escape($round['title'])."</em>!   "
                    ."Daca vrei sa ti se modifice modifice rating-ul dupa "
                    ."acest concurs trebuie sa te inscrii pana la ora "
-                   .format_date($round['start_time'], "%H:%M, %d&nbsp;%b&nbsp;%Y.")."</p>"
+                   .format_date($round['start_time'], 'HH:mm, d MMMM yyyy').".</p>"
                    ."<p><a href=\"".html_escape(url_round_register($round['id']))."\">"
                    ."<strong>Inscrie-te acum!</strong></a> &nbsp; "
                    ." <a href=\"".html_escape(url_round_register_view($round['id']))."\">"
@@ -67,7 +67,7 @@ function macro_roundregister($args) {
                    ."<em>".html_escape($round['title'])."</em> "
                    ."<strong><em>insa mai poti participa</em></strong>.</p>"
                    ."<p>Trebuia sa te inscrii inainte de ora "
-                   .format_date($round['start_time'], "%H:%M, %d&nbsp;%b&nbsp;%Y")
+                   .format_date($round['start_time'], 'HH:mm, d MMMM yyyy')
                    ." daca vroiai sa ti se modifice rating-ul la finalul "
                    ."rundei. Acum poti sa participi dar nu ti se va modifica "
                    ."rating-ul.</p>"

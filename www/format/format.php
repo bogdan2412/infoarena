@@ -269,27 +269,14 @@ function format_date($date, $format = null) {
         log_error("Invalid date argument");
     }
 
-    // Romanian locale. This is very usefull for dates, etc.
-    // FIXME: only set this in format_date, etc?
-    if (!setlocale(LC_TIME, "ro_RO.utf8")) {
-        log_warn("Romanian locale missing, this tends to suck for formatting");
-    }
-
-    // FIXME: user prefs.
-    $timezone = IA_DATE_DEFAULT_TIMEZONE;
     if (is_null($format)) {
         $format = IA_DATE_DEFAULT_FORMAT;
     }
 
-    // PHP 5.1+
-    if (function_exists('date_default_timezone_set')) {
-        date_default_timezone_set($timezone);
-        $res = strftime($format, $timestamp);
-        date_default_timezone_set('UTC');
-    } else {
-        // Probably won't work, whatever.
-        $res = strftime($format, $timestamp);
-    }
+    $timeZone = new DateTimeZone(IA_DATE_DEFAULT_TIMEZONE);
+    $dt = new DateTime('@' . $timestamp);
+    $dt->setTimeZone($timeZone);
+    $res = IntlDateFormatter::formatObject($dt, $format, 'ro_RO.utf8');
     return $res;
 }
 
@@ -353,7 +340,7 @@ function format_blogpost_author($blogpost, $show_social = true) {
           . format_user_link($blogpost['user_name'],
                              $blogpost['user_fullname'])
           . '<br />'
-          . format_date($blogpost['creation_timestamp'], "%d %B %G")
+          . format_date($blogpost['creation_timestamp'], 'd MMMM yyyy')
           . '</div>';
     return $text;
 }
@@ -510,4 +497,3 @@ function format_acm_score($score, $penalty, $submission) {
     $result .= '</span><br/>' . $penalty . '</center>';
     return $result;
 }
-

@@ -163,11 +163,11 @@ ia_template_topnav($topnav_select, $is_admin);
     <p class="user-count"><?php echo user_count(); ?> membri inregistrati</p>
     <div id="srv_time" class="user-count" align="center"></div>
     <script type="text/javascript" src="<?= html_escape(url_static('js/time.js')) ?>"></script>
-    <script type="text/javascript">loadTime(<?= format_date(null, "%H, %M, %S");?>);</script>
+    <script type="text/javascript">loadTime(<?= format_date(null, 'HH, mm, ss');?>);</script>
 
     <?php if (SIDEBAR_ELEMENTS['ad']) {
         include(IA_ROOT_DIR.'www/views/sidebar_ad.php');
-    } ?>
+        } ?>
 </div>
 
 <div id="main">

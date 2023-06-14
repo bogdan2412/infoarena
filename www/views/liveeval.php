@@ -96,7 +96,7 @@ if (!$jobs) {
 
     // For the date column.
     function format_short_date($val) {
-        return format_date($val, '%e %b %y %H:%M:%S');
+        return format_date($val, 'd MMM yyyy HH:mm:ss');
     }
 
     // For the size column.

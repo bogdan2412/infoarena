@@ -67,16 +67,15 @@ function macro_roundtimer($args) {
     }
 
     $timer_id = "round-timer-" . $round_id;
-
+    $format = 'yyyy/MM/dd HH:mm:ss Z';
 
     // timer script
     $html = '<span id = "' . html_escape($timer_id) . '">';
     $html .= '<script type="text/javascript">';
     $html .= 'newRoundTimer(' .
         '"' . html_escape($timer_id) . '"' .
-        ',"' . html_escape(format_date(time(), "%Y/%m/%d %H:%M:%S %z")) . '"' .
-        ',"' . html_escape(format_date($round['start_time'],
-                                        "%Y/%m/%d %H:%M:%S %z")) . '"' .
+        ',"' . html_escape(format_date(time(), $format)) . '"' .
+        ',"' . html_escape(format_date($round['start_time'], $format)) . '"' .
         ',' . html_escape($params['duration']) .
         ',' . html_escape($units) .
         ',' . html_escape($show_message) . ');' .

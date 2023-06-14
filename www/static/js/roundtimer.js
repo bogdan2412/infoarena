@@ -97,7 +97,7 @@ function updateTime(timerId) {
 }
 
 function newRoundTimer(timerId, serverTime, startTime,
-                        duration, units, showMessage) {
+                       duration, units, showMessage) {
     timers[timerId] = {};
     timers[timerId].timeDifference = (new Date()).getTime() -
                                      (new Date(serverTime)).getTime();

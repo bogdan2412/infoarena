@@ -57,11 +57,11 @@ function macro_roundparam($args) {
             break;
 
         case 'start_time':
-            if (is_null($round['start_time'])) { 
+            if (is_null($round['start_time'])) {
                 $html .= "data necunoscuta";
             } else {
                 $html .= format_date($round['start_time'],
-                    '%A %e %B %Y, la ora %H:%M:%S');
+                                     "EEEE d MMMM yyyy, 'la ora' HH:mm:ss");
             }
             break;
 
