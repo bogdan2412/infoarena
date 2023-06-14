@@ -162,12 +162,10 @@ if (!$jobs) {
                   id="liveeval"
                   class="button important"
                   value="Evaluează"
-                  style="float: right"><Br><BR>';
+                  style="float: right"><br/><br/>';
 }
 
 // Please don't use wiki_include() here because this is traffic
 // intensive page.
 
 include('footer.php');
-
-

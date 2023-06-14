@@ -52,6 +52,8 @@ header("Content-type: text/html; charset=utf-8");
 
     <title><?= html_escape(getattr($view, 'title')) ?></title>
 
+<?php if (isset($CSS)) { ?>
+    <!-- FIXME: Even if $CSS is set, it needs to be printed below from PHP, not HTML. -->
 	<!-- load Google font faster, for better rendering-->
 	<link rel="preconnect"
 		  href="https://fonts.gstatic.com"
@@ -66,8 +68,9 @@ header("Content-type: text/html; charset=utf-8");
 	    <link rel="stylesheet"
 			href="$CSS&display=swap" />
 	</noscript>
+<?php } ?>
 
-	<link href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,500;1,400;1,500&family=Ubuntu:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,500;1,400;1,500&amp;family=Ubuntu:ital,wght@0,300;0,400;1,300;1,400&amp;display=swap" rel="stylesheet"/>
 	<!-- end load Google Font -->
 
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/sitewide.css')) ?>"/>
