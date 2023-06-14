@@ -71,7 +71,14 @@ define("IA_LATEX_ENABLE", !IA_DEVELOPMENT_MODE);
 
 // List of safe MIME types
 // FIXME: add more?
-$IA_SAFE_MIME_TYPES = array('image/jpeg', 'image/png', 'image/gif', 'image/bmp', 'image/x-ms-bmp');
+$IA_SAFE_MIME_TYPES = [
+    'image/bmp',
+    'image/gif',
+    'image/jpeg',
+    'image/png',
+    'image/svg+xml',
+    'image/x-ms-bmp',
+];
 
 define('IA_USER_MAX_ARCHIVE_WAITING_JOBS', 1);
 
