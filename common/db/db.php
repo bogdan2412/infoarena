@@ -42,6 +42,10 @@ function is_db_date($string) {
 // returns unix timestamp or FALSE upon error
 // NOTE: We cannot use strptime() since it doesn't work on windows
 function db_date_parse($string) {
+    if ($string === null) {
+        return false;
+    }
+
     // maybe it's a date&time
     $matches = null;
     $ret = preg_match('/^(\\d{4})-(\\d{2})-(\\d{2}) (\\d{2}):(\\d{2}):(\\d{2})$/',
