@@ -42,6 +42,7 @@ foreach ($tasks as $t) {
     if (!$textblock) {
         $errors[] = '    * Nu are textblock (pagină wiki).';
     }
+    $dateString = getDateString($t);
 
     // error: no attachments
     if (!isset($has_attachments[$t['page_name']])) {
@@ -57,12 +58,13 @@ foreach ($tasks as $t) {
 
     if (!empty($errors) || !empty($validation_errors)) {
         $user = user_get_by_id($t['user_id']);
-        printf("* Problema [%s](%s%s%s) (autor:%s) (%d erori)\n",
+        printf("* Problema [%s](%s%s%s) (autor:%s) %s(%d erori)\n",
                $t['id'],
                IA_URL_HTTPS_HOST,
                IA_URL_PREFIX,
                $t['page_name'],
                $user['username'],
+               $dateString,
                count($errors) + count($validation_errors));
         foreach ($validation_errors as $field => $msg) {
             printf("    * task_validate() %s: %s\n", $field, $msg);
@@ -75,7 +77,7 @@ foreach ($tasks as $t) {
 
 /*************************************************************************/
 
-function maybeDeleteTask($task_id) {
+function maybeDeleteTask($task_id): void {
     $t = task_get($task_id);
     if (!$t) {
         die("Problema nu există.\n");
@@ -85,4 +87,24 @@ function maybeDeleteTask($task_id) {
     }
     printf("ȘTERG PROBLEMA\n");
     task_delete($t);
+}
+
+function getDateString(array $task): string {
+    $revs = textblock_get_revision_list($task['page_name']);
+    if (empty($revs)) {
+        return '';
+    }
+
+    $first = $revs[0];
+    $firstDate = getDateOnly($first['timestamp']);
+    $last = $revs[count($revs) - 1];
+    $lastDate = getDateOnly($last['timestamp']);
+
+    $msg = sprintf('(creată: %s, modificată: %s) ', $firstDate, $lastDate);
+    return $msg;
+}
+
+function getDateOnly(string $dateTime): string {
+    $parts = explode(' ', $dateTime);
+    return $parts[0];
 }
