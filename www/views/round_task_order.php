@@ -44,7 +44,7 @@ echo round_edit_tabs($view['round_id'], 'round-edit-task-order');
 
 <form name="task_order_form" action="<?= html_escape(url_round_edit_task_order($view['round_id']))?>" method="post">
 
-<input type="hidden" name="task_order">
+<input type="hidden" name="task_order"/>
 
 <?php
 $args = array(
@@ -52,6 +52,7 @@ $args = array(
     'drag_and_drop' => true,
     'show_numbers' => true,
     'show_ratings' => true,
+    'show_perspective_form' => false,
 );
 echo macro_tasks($args);
 ?>

@@ -44,7 +44,7 @@ function macro_stars($args) {
     }
 
     // add hidden text to allow js sorting
-    $html .= "<div class='hidden'>" . $rating . "/" . $scale . "</div>";
+    $html .= "<span class='hidden'>" . $rating . "/" . $scale . "</span>";
 
     $html .= "</span>";
 

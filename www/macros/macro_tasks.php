@@ -318,7 +318,10 @@ function macro_tasks($args) {
     }
 
     $as_user = '';
-    if ($round['type'] == 'archive') {
+    $showPerspectiveForm =
+        ($round['type'] == 'archive') &&
+        getAttr($args, 'show_perspective_form', true);
+    if ($showPerspectiveForm) {
         $pager_hidden_fields = '';
         foreach (pager_init_options($args) as $option => $value) {
             $pager_hidden_fields .=
@@ -331,7 +334,7 @@ function macro_tasks($args) {
 
         $as_user .=
             '<span>Vezi această listă din perspectiva altui utilizator: '
-            .'<form method="get" style="display:inline">'
+            .'<form method="get" action="" style="display:inline">'
             .'  <input type="text" placeholder="GavrilaVlad" name="user"'
             .'      value="'.request('user', '').'"/>'
             .$pager_hidden_fields
