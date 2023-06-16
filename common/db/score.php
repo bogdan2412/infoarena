@@ -116,10 +116,10 @@ function score_get_count($user, $task, $round) {
     if (count($where) == 0) {
         return 0;
     }
-    $query = sprintf('SELECT COUNT(DISTINCT user_id) AS `cnt`
-            FROM ia_score_user_round
-            WHERE %s',
-            join($where, ' AND '));
+    $query = sprintf('SELECT COUNT(DISTINCT user_id) AS `cnt` ' .
+                     'FROM ia_score_user_round ' .
+                     'WHERE %s',
+                     implode(' AND ', $where));
     $res = db_fetch($query);
     return $res['cnt'];
 }
