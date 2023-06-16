@@ -15,7 +15,7 @@ $form_fields = array(
     ),
     'theory' => array(
             'name' => 'Rating teorie',
-            'description' => 'Notă pentru noţiunile teoretice necesare.',
+            'description' => 'Notă pentru noțiunile teoretice necesare.',
             'type' => 'string',
     ),
     'coding' => array(

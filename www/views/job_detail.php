@@ -112,12 +112,12 @@ $show_groups = $view['group_tests'] &&
 
         echo '<td class="number">'.$test['test_number'].'</td>';
         if ($test["grader_message"] == "Time limit exceeded.") {
-            echo '<td class="number">Depăşit</td>';
+            echo '<td class="number">Depășit</td>';
         } else {
             echo '<td class="number">'.$test['exec_time'].'ms</td>';
         }
         if ($test["grader_message"] == "Memory limit exceeded.") {
-            echo '<td class="number">Depăşit</td>';
+            echo '<td class="number">Depășit</td>';
         } else {
             echo '<td class="number">'.$test['mem_used'].'kb</td>';
         }

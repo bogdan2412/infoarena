@@ -42,7 +42,7 @@ log_assert(isset($user_is_anonymous));
         <tr><td style="background-color:#d9ffbe; text-align:left; border:0; padding:3px" align="left"
             border="0" cellpadding="3" bgcolor="#dnffbe">
           <span style="font-size:8pt; line-height:200%; color:#006000; font-family:sans-serif; text-decoration:none;">
-              Dacă acest email nu se afişează corect, te rugăm să îl
+              Dacă acest email nu se afișează corect, te rugăm să îl
               <a href="<?= html_escape(url_absolute(url_textblock($textblock['name']))) ?>"
                     style="color:#006000; text-decoration:underline;">vizualizezi în browser</a>.</span>
         </td></tr>
@@ -72,38 +72,38 @@ log_assert(isset($user_is_anonymous));
 
         <?php if (!$in_browser) { ?>
 
-        <p>Ai primit acest mesaj deoarece eşti înscris pe
+        <p>Ai primit acest mesaj deoarece ești înscris pe
           <a href="<?= html_escape(url_absolute(url_home())) ?>" style="color:#006000; text-decoration:underline">
               infoarena</a> cu numele <em><?= html_escape($user['full_name']) ?></em>,
           utilizator <em><?= html_escape($user['username']) ?></em>,
           adresă de email <em><?= html_escape($user['email']) ?></em>.</p>
 
-        <p>Dacă nu mai doreşti să primeşti astfel de mesaje
+        <p>Dacă nu mai dorești să primești astfel de mesaje
           <a style="color:#006000; text-decoration:underline"
               href="<?= html_escape(url_absolute(url_unsubscribe($user['username'], user_unsubscribe_key($user)))) ?>">
           dezabonează-te acum</a>.</p>
 
         <?php } else if (!$user_is_anonymous) { ?>
 
-        <p>Eşti înscris pe
+        <p>Ești înscris pe
           <a href="<?= html_escape(url_absolute(url_home())) ?>"
                 style="color:#006000; text-decoration:underline">
             infoarena</a> cu numele <em><?= html_escape($user['full_name']) ?></em>,
           utilizator <em><?= html_escape($user['username']) ?></em>,
           adresă de email <em><?= html_escape($user['email']) ?></em>.</p>
 
-        <p>Dacă nu mai doreşti să primeşti astfel de mesaje în viitor,
+        <p>Dacă nu mai dorești să primești astfel de mesaje în viitor,
           <a style="color:#006000; text-decoration:underline"
-              href="<?= url_absolute(url_account()) ?>">modifică opţiunile contului tău</a>.</p>
+              href="<?= url_absolute(url_account()) ?>">modifică opțiunile contului tău</a>.</p>
 
         <?php } else { ?>
 
         <p>infoarena nu trimite mesaje nesolicitate. Acest mesaj a fost trimis
-            pe email membrilor infoarena abonaţi la newsletter.</p>
+            pe email membrilor infoarena abonați la newsletter.</p>
 
-        <p>Dacă nu mai doreşti să primeşti astfel de mesaje în viitor,
+        <p>Dacă nu mai dorești să primești astfel de mesaje în viitor,
           <a style="color:#006000; text-decoration:underline"
-              href="<?= url_absolute(url_account()) ?>">modifică opţiunile contului tău</a>.</p>
+              href="<?= url_absolute(url_account()) ?>">modifică opțiunile contului tău</a>.</p>
 
         <?php } ?>
 

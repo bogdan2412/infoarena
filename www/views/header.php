@@ -126,7 +126,7 @@ ia_template_topnav($topnav_select, $is_admin);
             <li><a href="<?= html_escape(url_textblock('links')) ?>">Links</a></li>
         <?php } ?>
         <?php if (SIDEBAR_ELEMENTS['docs']) { ?>
-            <li><a href="<?= html_escape(url_textblock('documentatie')) ?>">Documentaţie</a></li>
+            <li><a href="<?= html_escape(url_textblock('documentatie')) ?>">Documentație</a></li>
         <?php } ?>
         <?php if (SIDEBAR_ELEMENTS['about']) { ?>
             <li><a href="<?= html_escape(url_textblock(ABOUT_PAGE)) ?>">Despre <?= SITE_NAME ?></a></li>
@@ -134,7 +134,7 @@ ia_template_topnav($topnav_select, $is_admin);
         <li class="separator"><hr/></li>
         <li><?= format_link_access(url_monitor(array('user' => identity_get_username())), "Monitorul de evaluare", 'm') ?></li>
         <?php if (!identity_is_anonymous()) { ?>
-            <li><a href="<?= html_escape(url_submit()) ?>"><strong>Trimite soluţii</strong></a></li>
+            <li><a href="<?= html_escape(url_submit()) ?>"><strong>Trimite soluții</strong></a></li>
             <li><?= format_link_access(url_account(), "Contul meu", 'c') ?></li>
         <?php } ?>
     </ul>

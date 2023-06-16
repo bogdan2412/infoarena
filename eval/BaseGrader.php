@@ -43,8 +43,8 @@ abstract class BaseGrader {
                                   $source_file)) {
                 log_print("Task $eval_type not found");
                 throw new EvalTaskOwnerError(
-                    "Lipşeşte {$eval_desc}.\nPagina cu enunţul problemei ".
-                    "trebuie să conţină un ataşament 'grader_".
+                    "Lipsește {$eval_desc}.\nPagina cu enunțul problemei ".
+                    "trebuie să conțină un atașament 'grader_".
                     $this->task[$eval_type]."'");
             }
 
@@ -154,8 +154,8 @@ abstract class BaseGrader {
                                   $okfile)) {
                 log_print("Test $testno: .ok file not found");
                 throw new EvalTaskOwnerError(
-                    "Lipşeşte fişierul .ok al testului $testno.\nPagina cu ".
-                    "enunţul problemei trebuie să conţină un ataşament ".
+                    "Lipsește fișierul .ok al testului $testno.\nPagina cu ".
+                    "enunțul problemei trebuie să conțină un atașament ".
                     "'grader_test{$testno}.ok'");
             }
         }
@@ -219,7 +219,7 @@ abstract class BaseGrader {
             log_print("Test $testno: Task eval score broken or empty");
             throw new EvalTaskOwnerError(
                 "Evaluatorul nu a returnat un număr la stdout ".
-                "pe testul $testno (se ignoră spaţii, newline, etc)");
+                "pe testul $testno (se ignoră spații, newline, etc)");
         }
 
         $test_result['grader_time'] = $jrunres['time'];

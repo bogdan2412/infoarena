@@ -14,8 +14,8 @@ class ClassicGrader extends BaseGrader {
                               $infile)) {
             log_print("Test $testno: input not found");
             throw new EvalTaskOwnerError(
-                "Lipşeşte intrarea testului {$testno}.\nPagina cu " .
-                "enunţul problemei trebuie să conţină un ataşament " .
+                "Lipsește intrarea testului {$testno}.\nPagina cu " .
+                "enunțul problemei trebuie să conțină un atașament " .
                 "'grader_test{$testno}.in'");
         }
 

@@ -163,14 +163,14 @@ $is_admin = ('admin' == getattr($identity_user, 'security_level'));
             <li><a href="<?= html_escape(url_textblock('links')) ?>">Links</a></li>
         <?php } ?>
         <?php if (SIDEBAR_ELEMENTS['docs']) { ?>
-            <li><a href="<?= html_escape(url_textblock('documentatie')) ?>">Documentaţie</a></li>
+            <li><a href="<?= html_escape(url_textblock('documentatie')) ?>">Documentație</a></li>
         <?php } ?>
         <?php if (SIDEBAR_ELEMENTS['about']) { ?>
             <li><a href="<?= html_escape(url_textblock(ABOUT_PAGE)) ?>">Despre <?= SITE_NAME ?></a></li>
         <?php } ?>
         <li class="separator"><hr/></li>
         <?php if (!identity_is_anonymous()) { ?>
-            <li><a href="<?= html_escape(url_submit()) ?>"><strong>Trimite soluţii</strong></a></li>
+            <li><a href="<?= html_escape(url_submit()) ?>"><strong>Trimite soluții</strong></a></li>
             <li><?= format_link_access(url_account(), "Contul meu", 'c') ?></li>
 			<!-- mihai adaugare elemente top-menu la sidebar -->
 			<li><?= format_link_access(url_user_profile($identity_user['username']), 'Profilul meu', 'p') ?></li>

@@ -23,16 +23,16 @@ log_assert_valid(textblock_validate($textblock));
 <?php if (identity_can('textblock-delete', $textblock)) { ?>
 <li><?= format_post_link(
     url_textblock_delete($textblock['name']),
-    'Şterge', array(), true, array('onclick' =>
+    'Șterge', array(), true, array('onclick' =>
     "return confirm('Această acțiune este ireversibilă! Dorești să continui?')"),
     'r') ?>
 </li>
 <?php } ?>
 <?php if (identity_can('textblock-attach', $textblock)) { ?>
-<li><?= format_link_access(url_attachment_new($textblock['name']), 'Ataşează', 'a') ?></li>
+<li><?= format_link_access(url_attachment_new($textblock['name']), 'Atașează', 'a') ?></li>
 <?php } ?>
 <?php if (identity_can('textblock-list-attach', $textblock)) { ?>
-<li><?= format_link_access(url_attachment_list($textblock['name']), 'Listează ataşamente', 'l') ?></li>
+<li><?= format_link_access(url_attachment_list($textblock['name']), 'Listează atașamente', 'l') ?></li>
 <?php } ?>
      </ul>
 </div>

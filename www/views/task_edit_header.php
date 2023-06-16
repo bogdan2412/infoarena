@@ -7,7 +7,7 @@ require_once(IA_ROOT_DIR . "www/url.php");
 function task_edit_tabs($task_id, $active) {
     $tabs = array();
 
-    $tab_names = array('edit' => 'Enunţ',
+    $tab_names = array('edit' => 'Enunț',
                        'task-edit-params' => 'Parametri',
                        'task-edit-tags' => 'Taguri',
                        'task-edit-ratings' => 'Ratinguri');
