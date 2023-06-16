@@ -1,16 +1,14 @@
 <?php
 
-// Changes all special characters ș, ț, Ș, Ț to ş, ţ, Ş, Ţ
-// commabelow to cedille and returns the modified text
-// FIXME: reverse characters in to_change when windows XP dies
-function text_change_special_chars($text) {
+// Changes cedilla diacritics to comma-below.
+function text_cedilla_to_comma_below_st($text) {
     if (!extension_loaded('mbstring')) {
         return $text;
     }
 
-    $to_change = array("ș"=>"ş", "ț"=>"ţ", "Ș"=>"Ş", "Ț"=>"Ţ");
+    $to_change = [ 'ş' => 'ș', 'ţ' => 'ț', 'Ş' => 'Ș', 'Ţ' => 'Ț' ];
 
-    foreach ($to_change as $bad=>$good) {
+    foreach ($to_change as $bad => $good) {
         $text = mb_ereg_replace($bad, $good, $text);
     }
     return $text;

@@ -1,7 +1,8 @@
 #! /usr/bin/env php
 <?php
-// this script changes all special characters ș, ț, Ș, Ț to ş, ţ, Ş, Ţ
-// (commabelow to cedille) in all texblocks
+
+// This script migrates cedilla diacritics to comma-below in all textblocks
+// and their revisions.
 
 require_once(dirname($argv[0]) . "/utilities.php");
 require_once(IA_ROOT_DIR . "common/common.php");
@@ -12,7 +13,7 @@ function change_special_chars($table) {
     $res = db_query("SELECT * FROM $table");
 
     while ($row = db_next_row($res)) {
-        $new_text = text_change_special_chars($row["text"]);
+        $new_text = text_cedilla_to_comma_below_st($row["text"]);
 
         if ($row["text"] != $new_text) {
             db_query(sprintf("UPDATE `%s` SET text = %s WHERE name = %s AND

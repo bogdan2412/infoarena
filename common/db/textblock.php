@@ -19,19 +19,18 @@ function textblock_add_revision(
         $remote_ip_info = null) {
     $name = normalize_page_name($name);
 
-    // Change special characters in content
-    $content = text_change_special_chars($content);
+    $content = text_cedilla_to_comma_below_st($content);
 
     $tb = array(
-            'name' => $name,
-            'title' => $title,
-            'text' => $content,
-            'user_id' => $user_id,
-            'security' => $security,
-            'forum_topic' => $forum_topic,
-            'timestamp' => $timestamp,
-            'creation_timestamp' => $creation_timestamp,
-            'remote_ip_info' => $remote_ip_info,
+        'name' => $name,
+        'title' => $title,
+        'text' => $content,
+        'user_id' => $user_id,
+        'security' => $security,
+        'forum_topic' => $forum_topic,
+        'timestamp' => $timestamp,
+        'creation_timestamp' => $creation_timestamp,
+        'remote_ip_info' => $remote_ip_info,
     );
     log_assert_valid(textblock_validate($tb));
 
