@@ -35,12 +35,12 @@ header("Content-type: text/html; charset=utf-8");
 ?>
     <meta name="Description" content="Concursuri de programare, Știri și articole de informatică, Comunitate online. Arhivă de probleme, Evaluare 24/24, Forum, Resurse educaționale, Pregătire pentru olimpiadă." />
     <meta name="keywords" content="Concursuri, Informatică, Programare, Comunitate, Algoritmi, Articole, Evaluare, Pregătire" />
-    <meta name="verify-v1" content="j9UCDYvsDL2pLtkJDDkE4HnHVmXakgvz30vOyIJ+6cI=" />
-    <meta name="verify-v1" content="ac36ilLp6y4xp71sJgZEjFMgow6YCLkyQLrG/b2iT/Q=" />
-    <meta name="verify-v1" content="PQDTb5Advw297iADXVUYuxh0z+iQKfq1wtYWnfHCb1Y=" />
-    <meta name="verify-v1" content="GUKPcDm0TzwAR7r5xbagq576p/YWH9su/Ca4o8YlYBg=" /> <!--bogdan2412-->
-    <meta name="google-site-verification" content="T_HFYNIO3S70696yFC5rkbPn339gjnfVwMqYPmU866I" /> <!--devilkind-->
 <?php
+    if (GOOGLE_SITE_VERIFICATION) {
+        print("<meta name=\"google-site-verification\" content=\"" .
+              GOOGLE_SITE_VERIFICATION .
+              "\"/>");
+    }
     }
 
     // Add aditional meta data for other pages such as blog posts

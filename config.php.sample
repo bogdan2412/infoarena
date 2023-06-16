@@ -224,6 +224,7 @@ define('GOOGLE_ANALYTICS_TRACKING_ID', 'UA-113289-8');
 define('GOOGLE_SEARCH', true);
 // token obtained from Google CSE (ignored if GOOGLE_SEARCH is false)
 define('GOOGLE_CSE_TOKEN', '');
+define('GOOGLE_SITE_VERIFICATION', '');
 
 // Monitor autorefresh options
 define('MONITOR_AUTOREFRESH', true);
