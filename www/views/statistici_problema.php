@@ -51,14 +51,14 @@ if (count($data['time']) === 0) {
     );
 
     $long_wording = array(
-        'time' => 'timpul de executie',
-        'memory' => 'memoria folosita',
+        'time' => 'timpul de execuție',
+        'memory' => 'memoria folosită',
         'size' => 'dimensiunea sursei',
     );
     $header_wording = array(
         'time' => 'Timp',
         'memory' => 'Memorie',
-        'size' => 'Marime',
+        'size' => 'Mărime',
     );
 
     foreach ($data as $criteria => $ranking) {

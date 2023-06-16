@@ -50,58 +50,58 @@ function user_validate($user) {
 
     // User id.
     if (!array_key_exists('id', $user)) {
-        $errors['id'] = "Lipseste identificatorul de utilizator";
+        $errors['id'] = "Lipsește identificatorul de utilizator.";
     } else if (!is_user_id($user['id'])) {
-        $errors['id'] = "Identficator de utilizator invalid";
+        $errors['id'] = "Identficator de utilizator invalid.";
     }
 
     // Username
     if (!array_key_exists('username', $user)) {
-        $errors['username'] = 'Lipseste numele de utilizator.';
+        $errors['username'] = 'Lipsește numele de utilizator.';
     } else if (2 > strlen($user['username'])) {
-        $errors['username'] = 'Nume de utilizator este prea scurt.';
+        $errors['username'] = 'Numele de utilizator este prea scurt.';
     } else if (60 < strlen($user['username'])) {
-        $errors['username'] = 'Nume de utilizator este prea lung.';
+        $errors['username'] = 'Numele de utilizator este prea lung.';
 //    } else if (!is_user_name($user['username'])) {
 //        $errors['username'] = 'Numele utilizator contine caractere invalide.';
     }
 
     // Password
     if (!array_key_exists('password', $user)) {
-        $errors['password'] = 'Lipseste parola';
+        $errors['password'] = 'Lipsește parola.';
     }
 
     // E-mail
     if (!array_key_exists('email', $user)) {
-        $errors['email'] = 'Lipseste adresa de e-mail.';
+        $errors['email'] = 'Lipsește adresa de e-mail.';
 //    } else if (!is_valid_email($user['email'])) {
 //        $errors['email'] = 'Adresa de e-mail introdusa este invalida.';
     }
 
     // Full name
     if (!array_key_exists('full_name', $user)) {
-        $errors['full_name'] = 'Lipseste numele complet.';
+        $errors['full_name'] = 'Lipsește numele complet.';
     } else if (strlen($user['full_name']) < 1) {
-        $errors['full_name'] = 'Numele este prea scurt';
+        $errors['full_name'] = 'Numele este prea scurt.';
 //    } else if (!is_user_full_name($user['full_name'])) {
 //        $errors['full_name'] = 'Numele contine caractere invalide.';
     }
 
     // Security level
     if (!array_key_exists('security_level', $user)) {
-        $errors['security_level'] = "Lipseste nivelul de securitate";
+        $errors['security_level'] = "Lipsește nivelul de securitate.";
     } else if ($user['security_level'] != 'normal' &&
                $user['security_level'] != 'helper' &&
                $user['security_level'] != 'admin' &&
                $user['security_level'] != 'intern') {
-        $errors['security_level'] = "Nivel de securitate invalid";
+        $errors['security_level'] = "Nivel de securitate invalid.";
     }
 
     // Newsletter
     if (!array_key_exists('newsletter', $user)) {
-        $errors['newsletter'] = "Lipseste bitul de newsletter";
+        $errors['newsletter'] = "Lipsește bitul de newsletter.";
     } else if ($user['newsletter'] != '0' && $user['newsletter'] != '1') {
-        $errors['newsletter'] = "Se accepta doar 0/1";
+        $errors['newsletter'] = "Se acceptă doar 0/1";
     }
 
     return $errors;

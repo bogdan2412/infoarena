@@ -20,7 +20,7 @@ $is_setup = in_array('setup', $argv);
 if (read_bool('Do you want to change the template/userinfo textblock?',
         $is_setup)) {
     $textfortextblock = "table(compact). |=/5. ==UserImage".
-    "(user=\"%user%\" size=\"big\")==\r\n{'Vezi solutiile trimise':monitor?use".
+    "(user=\"%user%\" size=\"big\")==\r\n{'Vezi soluțiile trimise':monitor?use".
     "r=%user%}\r\n|_. Nume | == userinfo(user=\"%user%\" info=\"fullname\")== ".
     "|\r\n| |_. Cont | ==userinfo(user=\"%user%\" info=\"username\")== |\r\n| ".
     "|_. Rating | ==userinfo(user=\"%user%\" info=\"rating\")== |\r\n| |_. Sta".

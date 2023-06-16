@@ -28,7 +28,7 @@ function macro_userinfo($args) {
     switch ($info) {
         case 'email':
             // FIXME: display e-mail only for admins
-            return macro_error("Adresa de email este ascunsa");
+            return macro_error("Adresa de email este ascunsă");
         case 'fullname':
             return html_escape($user['full_name']);
         case 'username':

@@ -11,7 +11,7 @@
         'access_key' => 'c',
 ), 'username') ?>
 <?= view_form_field_li(array(
-        'name' => 'Parola',
+        'name' => 'Parolă',
         'type' => 'string',
         'is_password' => true,
         'access_key' => 'p',
@@ -40,7 +40,7 @@ if (isset($view['captcha'])) {
             <label>Scrieți cuvintele de mai jos:</label>
             <?= ferr_span('captcha') ?>
             <?= $view['captcha'] ?>
-            <span class="fieldHelp">Vă rugăm să transcrieți cuvintele de mai sus în această căsuță pentru verificare</span>
+            <span class="fieldHelp">Vă rugăm să transcrieți cuvintele de mai sus în această căsuță pentru verificare.</span>
         </li>
     </ul>
 </fieldset>
@@ -56,4 +56,3 @@ if (isset($view['captcha'])) {
   </li>
 </ul>
 </form>
-

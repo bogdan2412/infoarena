@@ -8,16 +8,16 @@
     <div class="section">
         <h3>De ce să te înregistrezi?</h3>
         <ul>
-            <li>&hellip; ca să îți poți evalua solutiile la problemele din arhiva</li>
-            <li>&hellip; ca să poți participa la concursuri</li>
-            <li>&hellip; ca să cunoști și alți oameni destepți ;)</li>
+            <li>&hellip; ca să îți poți evalua soluțiile la problemele din arhivă;</li>
+            <li>&hellip; ca să poți participa la concursuri;</li>
+            <li>&hellip; ca să cunoști și alți oameni destepți. ;)</li>
         </ul>
     </div>
 
     <div class="section">
-        <h3>Ce se întamplă cu datele mele?</h3>
+        <h3>Ce se întâmplă cu datele mele?</h3>
         <ul>
-            <li>Adresa de e-mail <strong>nu</strong> se va afișa pe site și nu va fi divulgata altor părți.</li>
+            <li>Adresa de e-mail <strong>nu</strong> se va afișa pe site și nu va fi divulgată altor părți.</li>
             <li>Numele tău complet va apărea în clasamente.</li>
         </ul>
     </div>
@@ -35,16 +35,16 @@
                 <label for='form_username'>Nume cont utilizator</label>
                 <?= ferr_span('username') ?>
                 <input type="text" name="username" value="<?= fval('username') ?>" id="form_username" />
-                <span class="fieldHelp">Fără spații sau diacritice</span>
+                <span class="fieldHelp">Fără spații sau diacritice.</span>
             </li>
             <li>
-                <label for='form_password'>Parola</label>
+                <label for='form_password'>Parolă</label>
                 <?= ferr_span('password') ?>
                 <input type="password" name="password" id="form_password" />
-                <span class="fieldHelp">Cel puțin 4 caractere</span>
+                <span class="fieldHelp">Cel puțin 4 caractere.</span>
             </li>
             <li>
-                <label for='form_password2'>Confirmare parola</label>
+                <label for='form_password2'>Confirmare parolă</label>
                 <?= ferr_span('password2') ?>
                 <input type="password" name="password2" id="form_password2" />
             </li>
@@ -60,21 +60,21 @@
     </script>
 
     <fieldset>
-        <legend>Informatii personale</legend>
+        <legend>Informații personale</legend>
         <ul class="form">
             <li>
                 <label for="form_full_name">Nume complet</label>
                 <?= ferr_span('full_name') ?>
                 <input type="text" name="full_name" value="<?= fval('full_name') ?>" id="form_full_name" />
-                <span class="fieldHelp">Conturile cu nume greșite sau false vor fi dezactivate</span>
+                <span class="fieldHelp">Conturile cu nume greșite sau false vor fi dezactivate.</span>
             </li>
             <li>
-                <label for="form_email">Adresa e-mail</label>
+                <label for="form_email">Adresa de e-mail</label>
                 <?= ferr_span('email') ?>
                 <input type="text" name="email" value="<?= fval('email') ?>" id="form_email" />
                 <span class="fieldHelp">
                     Aici vei primi (în caz că dorești) mesaje de la alți
-                    utilizatori, noutăți <?= SITE_NAME ?>
+                    utilizatori, noutăți <?= SITE_NAME ?>.
                 </span>
             </li>
         </ul>

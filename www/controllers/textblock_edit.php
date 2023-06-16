@@ -81,9 +81,9 @@ function controller_textblock_edit($page_name, $security = 'public') {
 
         // Check if page was edited by another user in the meantime
         if (request('last_revision') != $current_revision) {
-            $errors['was_modified'] = 'Pagina a fost editata intre timp de catre alt utilizator. ' .
-                                      'Revizia pe care o editati avea numarul <b>' . request('last_revision') . '</b>, in timp ce revizia curenta are numarul <b>' . $current_revision . '</b>. ' .
-                                      'Puteti vedea diferentele <a target="_blank" href="' . url_textblock_diff($page_name, (int)request('last_revision'), $current_revision) . '">aici</a>.';
+            $errors['was_modified'] = 'Pagina a fost editată între timp de către alt utilizator. ' .
+                                      'Revizia pe care o editați avea numărul <b>' . request('last_revision') . '</b>, în timp ce revizia curentă are numărul <b>' . $current_revision . '</b>. ' .
+                                      'Puteti vedea diferențele <a target="_blank" href="' . url_textblock_diff($page_name, (int)request('last_revision'), $current_revision) . '">aici</a>.';
         }
 
         // It worked
@@ -98,7 +98,7 @@ function controller_textblock_edit($page_name, $security = 'public') {
             if (identity_can('textblock-tag', $new_page)) {
                 tag_update("textblock", $new_page['name'], "tag", $values['tags']);
             }
-            flash('Am actualizat continutul');
+            flash('Am actualizat conținutul.');
 
             // Redirect depends of the pressed submit button
             $save_and_edit = getattr($_POST, 'form_save_and_edit');

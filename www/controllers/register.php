@@ -44,11 +44,11 @@ function controller_register() {
 
             // give user enough tokens to pass login without captcha
             pay_tokens(-IA_TOKENS_LOGIN);
-            flash("Felicitari! Contul a fost creat. Acum te poti "
+            flash("Felicitări! Contul a fost creat. Acum te poți "
                   ."autentifica.");
             redirect(url_login());
         } else {
-            flash_error('Am intalnit probleme. Verifica datele introduse.');
+            flash_error('Am intâlnit probleme. Verifică datele introduse.');
         }
     } else {
         // form is displayed for the first time. Fill in default values.
@@ -63,7 +63,7 @@ function controller_register() {
 
     // attach form is displayed for the first time or a validation error occured
 
-    $view['title'] = 'Inregistreaza-te!';
+    $view['title'] = 'Înregistrează-te!';
     $view['page_name'] = 'register';
     $view['form_errors'] = $errors;
     $view['form_values'] = $data;

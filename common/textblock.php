@@ -76,7 +76,7 @@ function get_snippet($tb, $max_num_words, $whole_news = false,
             }
 
             $cache_res .= '<a href="' . html_escape($url) .
-                '"> &raquo; Citeste restul insemnarii</a>';
+                '"> &raquo; Citește restul însemnării</a>';
             $html_dom->__destruct();
             unset($html_dom);
         }
@@ -106,7 +106,7 @@ function textblock_validate($tb) {
     log_assert(is_array($tb), "You didn't even pass an array");
 
     if (!is_normal_page_name(getattr($tb, 'name', ''))) {
-        $errors['name'] = 'Nume de pagina invalid.';
+        $errors['name'] = 'Nume de pagină invalid.';
     }
 
     // FIXME: move this in textblock edit controller
@@ -120,11 +120,11 @@ function textblock_validate($tb) {
     }
 
     if (!is_user_id(getattr($tb, 'user_id'))) {
-        $errors['user_id'] = 'ID de utilizator invalid';
+        $errors['user_id'] = 'ID de utilizator invalid.';
     }
 
     if (!is_null(getattr($tb, 'forum_topic')) && !is_whole_number(getattr($tb, 'forum_topic'))) {
-        $errors['forum_topic'] = 'Topic forum invalid';
+        $errors['forum_topic'] = 'Topic forum invalid.';
     }
 
     // NOTE: missing timestamp is OK!!!

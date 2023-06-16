@@ -15,13 +15,13 @@ require_once(IA_ROOT_DIR . "common/db/textblock.php");
 // templates at the expense of flexibility?
 function macro_include($args) {
     if (!isset($args['page'])) {
-        return macro_error("Expecting argument `page`");
+        return macro_error("Expecting argument `page`.");
     }
 
     $incname = $args['page'];
     $textblock = textblock_get_revision($incname);
     if (is_null($textblock)) {
-        return macro_error("No such page: $incname");
+        return macro_error("No such page: $incname.");
     }
 
     // check permissions

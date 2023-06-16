@@ -28,7 +28,7 @@ function execute_macro($macro_name, $macro_args) {
     $macro_file = get_macro_include_file($macro_name);
 //    return macro_message($macro_file);
     if (!is_readable($macro_file)) {
-        return macro_error('Nu exista macro-ul "'.$macro_name.'".');
+        return macro_error('Nu există macro-ul "'.$macro_name.'".');
     }
     if ($macro_file !== '') {
         //log_print("Including $macro_file");
@@ -36,7 +36,7 @@ function execute_macro($macro_name, $macro_args) {
     }
     $macro_func = 'macro_'.$macro_name;
     if (!function_exists($macro_func)) {
-        return macro_error('Nu exista macro-ul: "'.$macro_name.'".');
+        return macro_error('Nu există macro-ul: "'.$macro_name.'".');
     }
     return $macro_func($macro_args);
 }

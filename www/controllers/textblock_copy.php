@@ -12,7 +12,7 @@ function controller_textblock_copy($page_name) {
         identity_require('textblock-copy', $page);
     } else {
         // Missing page.
-        flash_error("Pagina inexistenta.");
+        flash_error("Pagină inexistentă.");
         redirect(url_home());
     }
 
@@ -24,22 +24,22 @@ function controller_textblock_copy($page_name) {
         $new_name = normalize_page_name($new_name);
 
         if (!is_page_name($new_name)) {
-            $errors['new_name'] = "Nume de pagina invalida";
+            $errors['new_name'] = "Nume de pagină invalid.";
         } else if (textblock_get_revision($new_name) !== null) {
-            $errors['new_name'] = "Pagina deja exista";
+            $errors['new_name'] = "Pagina există deja.";
         }
 
         if (!$errors) {
             textblock_copy($page, $new_name, identity_get_user_id(),
                 remote_ip_info());
-            flash("Pagina a fost copiata.");
+            flash("Pagina a fost copiată.");
             redirect(url_textblock($new_name));
         }
     }
 
     // -- Print form
     $view = array(
-            'title' => "Copiaza " . $page_name,
+            'title' => "Copiază " . $page_name,
             'page_name' => $page_name,
             'action' => url_textblock_copy($page_name),
             'form_values' => $values,

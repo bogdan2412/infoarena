@@ -33,7 +33,7 @@ $form_fields = array(
   <ul class="form">
    <li id="field_submit">
     <input type="submit"
-           value="Creeaza runda"
+           value="Creează runda"
            id="form_submit"
            class="button important" />
    </li>

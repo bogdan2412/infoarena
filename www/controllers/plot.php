@@ -98,7 +98,7 @@ function controller_plot($suburl) {
             break;
 
         default:
-            flash('Actiunea nu este valida.');
+            flash('Acțiunea nu este validă.');
             redirect(url_home());
             break;
     }

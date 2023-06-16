@@ -15,13 +15,13 @@ function macro_rankingsacm($args) {
 
     $round = round_get($round_id);
     if (!$round || getattr($round, 'type') != 'acm-round') {
-        return macro_error("Nu exista o runda tip acm cu acest nume.");
+        return macro_error("Nu există nicio rundă tip ACM cu acest nume.");
     }
 
     $row = null;
     $column_infos = array(
         array(
-            'title' => 'Pozitie',
+            'title' => 'Poziție',
             'key' => 'ranking',
             'css_class' => 'number rank'
         ),
@@ -79,8 +79,7 @@ function macro_rankingsacm($args) {
     }
 
     if (count($rankings) <= 0) {
-        return macro_message('Nici un rezultat inregistrat pentru aceasta ' .
-                             'runda.');
+        return macro_message('Nici un rezultat înregistrat pentru această rundă.');
     }
 
     $options = array('css_class' => 'sortable');

@@ -167,7 +167,7 @@ class MyTextile extends Textile {
         }
 
         if (!$allowed) {
-            return macro_error("Imaginile trebuie neaparat sa fie atasamente ale unei pagini.");
+            return macro_error("Imaginile trebuie să fie atașate unei pagini.");
         }
         //log_print("passing to parent::format image");
         //log_print_r($args);

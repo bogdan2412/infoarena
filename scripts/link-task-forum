@@ -5,7 +5,7 @@ require_once(IA_ROOT_DIR."common/db/task.php");
 require_once(IA_ROOT_DIR."common/textblock.php");
 
 function match($a, $b) {
-    $len_a = strlen($a); 
+    $len_a = strlen($a);
     $len_b = strlen($b);
     for ($i = 0, $j = -1; $i < $len_b; ++$i) {
         for (++$j; $j < $len_a && $a[$j] != $b[$i]; ++$j);
@@ -24,7 +24,7 @@ function link_task($task, $page, $topic, $verbose = false) {
             }
             return false;
         }
-        log_warn($task['id'].': Topic-ul vechi "'.$topic_id.'" este diferit de cel gasit: "'.$topic['ID_TOPIC'].'"!');
+        log_warn($task['id'].': Topic-ul vechi "'.$topic_id.'" este diferit de cel găsit: "'.$topic['ID_TOPIC'].'"!');
     }
 
     // Build new page
@@ -62,10 +62,10 @@ $board = $argv[2];
 $verbose = getattr($argv, 3, false);
 
 // get subjects from board
-$query = sprintf("SELECT msg_in.ID_TOPIC, msg_in.subject FROM ia_smf_topics top_out 
+$query = sprintf("SELECT msg_in.ID_TOPIC, msg_in.subject FROM ia_smf_topics top_out
                   LEFT JOIN ia_smf_messages msg_in ON
-                  msg_in.ID_MSG = (SELECT MIN(ID_MSG) FROM ia_smf_messages msg_in WHERE msg_in.ID_TOPIC = top_out.ID_TOPIC) 
-                  WHERE top_out.ID_BOARD = %d AND locked = 0", 
+                  msg_in.ID_MSG = (SELECT MIN(ID_MSG) FROM ia_smf_messages msg_in WHERE msg_in.ID_TOPIC = top_out.ID_TOPIC)
+                  WHERE top_out.ID_BOARD = %d AND locked = 0",
                   db_escape($board));
 // uppercase topic subject
 $topics = db_fetch_all($query);
@@ -93,22 +93,22 @@ foreach ($tasks as $task) {
 
     // match based on task id
     $str1 = strtoupper(($task['order']-1).$task['id']);
-    
+
     // match based on textblock title
     $page = textblock_get_revision($task['page_name']);
     if (!$page) {
-        log_warn("Lipseste pagina pentru ".$task['id']."!");
+        log_warn("Lipsește pagina pentru ".$task['id']."!");
         continue;
     }
     $str2 = strtoupper(($task['order']-1).$task['title']);
-    
-    if ($task['order'] <= 10) { 
-        $str1 = "00".$str1; 
-        $str2 = "00".$str2; 
+
+    if ($task['order'] <= 10) {
+        $str1 = "00".$str1;
+        $str2 = "00".$str2;
     }
-    if ($task['order'] > 10 && $task['order'] <= 100) { 
-        $str1 = "0".$str1; 
-        $str2 = "0".$str2; 
+    if ($task['order'] > 10 && $task['order'] <= 100) {
+        $str1 = "0".$str1;
+        $str2 = "0".$str2;
     }
 
     $found = null;
@@ -121,7 +121,7 @@ foreach ($tasks as $task) {
 
     if (!$found) {
         // number in forum might be wrong
-        log_warn('Numarul pentru problema "'.$task['id'].'" este gresit! Am cautat '.$str1.' si '.$str2);
+        log_warn('Numărul pentru problema "'.$task['id'].'" este greșit! Am căutat '.$str1.' si '.$str2);
         $str1 = strtoupper($task['id']);
         $str2 = strtoupper($task['title']);
         for ($i = count($topics)-1; $i >= 0; --$i) {
@@ -133,7 +133,7 @@ foreach ($tasks as $task) {
     }
 
     if (!$found) {
-        log_warn('Nu am gasit topic pentru "'.$task['id']."\"!");
+        log_warn('Nu am găsit topic pentru "'.$task['id']."\"!");
         continue;
     }
 

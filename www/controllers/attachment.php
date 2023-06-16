@@ -12,7 +12,7 @@ require_once(IA_ROOT_DIR."common/avatar.php");
 function try_textblock_get($page_name) {
     $page = textblock_get_revision($page_name);
     if (!$page) {
-        flash_error('Cerere invalida');
+        flash_error('Cerere invalidă');
         redirect(url_home());
     }
 
@@ -35,7 +35,7 @@ function controller_attachment_list($page_name) {
     }
     $view['attach_list'] = $attach_list;
     $view['page_name'] = $page['name'];
-    $view['title'] = 'Atasamentele paginii '.$page['title'];
+    $view['title'] = 'Atașamentele paginii '.$page['title'];
     $view['total_entries'] = attachment_get_count($page_name);
     $view['first_entry'] = $options['first_entry'];
     $view['display_entries'] = $options['display_entries'];
@@ -54,7 +54,7 @@ function controller_attachment_create($page_name) {
 
     // Initial attachment page. Rather empty.
     $view = array();
-    $view['title'] = 'Ataseaza la pagina '.$page_name;
+    $view['title'] = 'Atașează la pagina '.$page_name;
     $view['page_name'] = $page_name;
     $view['form_values'] = array();
     $view['form_errors'] = array();
@@ -71,18 +71,17 @@ function controller_attachment_submit($page_name) {
     // Create view objects.
     $view = array();
     $view['page_name'] = $page_name;
-    $view['title'] = 'Ataseaza la pagina '.$page_name;
+    $view['title'] = 'Atașează la pagina '.$page_name;
     $form_values = array();
     $form_errors = array();
 
     if (!isset($_FILES['files']) && is_array($_FILES['files'])) {
-        flash_error("Eroare! Nu s-a putut atasa fisierul.");
+        flash_error("Eroare! Nu am putut atașa fișierul.");
         redirect(url_attachment_new($page_name));
     }
 
     if (count($_FILES['files']['name']) > 1 && request('autoextract', false)) {
-        flash_error("Eroare! Numai un singur fisier ZIP poate fi "
-                              . "expandat");
+        flash_error("Eroare! Numai un singur fișier ZIP poate fi expandat.");
         redirect(url_attachment_new($page_name));
     }
 
@@ -96,23 +95,23 @@ function controller_attachment_submit($page_name) {
 
         // Validate filename(s).
         if (!is_attachment_name($file_name)) {
-            $form_errors['files'][] = 'Nume de fisier invalid: '
+            $form_errors['files'][] = 'Nume de fișier invalid: '
                                 . html_escape($file_name)
-                                . '. Nu se pot folosi spatii.';
+                                . '. Nu se pot folosi spații.';
         }
 
         // Check min file size. An invalid file results in a size of 0.
         if ($file_size <= 0) {
-            $form_errors['file_size'][] = 'Fisierul: '
+            $form_errors['file_size'][] = 'Fișierul: '
                                     . html_escape($file_name)
                                     . ' este invalid';
         }
 
         // Check max file size.
         if ($file_size > IA_ATTACH_MAXSIZE) {
-            $form_errors['file_size'][] = 'Fisierul: '
+            $form_errors['file_size'][] = 'Fișierul: '
                                     . html_escape($file_name)
-                                    . ' depaseste limita de '
+                                    . ' depășește limita de '
                                     . (IA_ATTACH_MAXSIZE / 1024 / 1024).'MB';
         }
     }
@@ -127,8 +126,8 @@ function controller_attachment_submit($page_name) {
              $zip_files = get_zipped_attachments(
                     $_FILES['files']['tmp_name'][0]);
             if (false === $zip_files) {
-                $form_errors['files'][] = 'Arhiva ZIP este invalida sau nu '
-                        . 'poate fi recunoscuta';
+                $form_errors['files'][] = 'Arhiva ZIP este invalidă sau nu '
+                        . 'poate fi recunoscută';
             } else {
                 $attachments = $zip_files['attachments'];
                 $skipped_files = $zip_files['total_files'] -
@@ -206,9 +205,9 @@ function controller_attachment_submit($page_name) {
                 if (isset($skipped_files)) {
                     $skipped_files++;
                 }
-                $extra_errors .= ' A fost intalnit un fisier cu numele avatar' .
-                        '. Pentru a va modifica imaginea de profil va rugam ' .
-                        'folositi pagina "Contul meu".';
+                $extra_errors .= ' A fost intâlnit un fișier cu numele avatar' .
+                        '. Pentru a vă modifica imaginea de profil, vă rugăm ' .
+                        'folosiți pagina „Contul meu”.';
                  continue;
             }
 
@@ -276,34 +275,34 @@ function controller_attachment_submit($page_name) {
     // custom error message for simple (single) file uploads
     if (!$form_errors && !$autoextract && 0 >= $attach_okcount &&
                 !$extra_errors) {
-        $form_errors['files'][] = 'Fisierul nu a putut fi atasat! Eroare ' .
-                'necunoscuta ...';
+        $form_errors['files'][] = 'Fișierul nu a putut fi atașat! Eroare ' .
+                'necunoscută.';
     }
 
     // display error/confirmation message
     if (count($form_errors, COUNT_RECURSIVE) == 2) {
         $msg = 'Am ';
         if ($autoextract) {
-            $msg .= 'extras si ';
+            $msg .= 'extras și ';
         }
 
         if ($attach_okcount == 1) {
-            $msg .= 'incarcat un fisier.';
+            $msg .= 'încărcat un fișier.';
         } else {
-            $msg .= "incarcat {$attach_okcount} fisiere.";
+            $msg .= "încărcat {$attach_okcount} fișiere.";
         }
 
         if ($rewrite_count == 1) {
-            $msg .= ' Un fisier mai vechi a fost rescris.';
+            $msg .= ' Un fișier mai vechi a fost rescris.';
         } else if ($rewrite_count > 1) {
-            $msg .= " {$rewrite_count} fisiere mai vechi au fost rescrise.";
+            $msg .= " {$rewrite_count} fișiere mai vechi au fost rescrise.";
         }
 
         if ($skipped_files == 1) {
-            $msg .= ' Un fisier nu a fost dezarhivat deoarece era prea ' .
+            $msg .= ' Un fișier nu a fost dezarhivat deoarece era prea ' .
                     'mare sau era invalid.';
         } else if ($skipped_files > 1) {
-            $msg .= " {$skipped_files} fisiere nu au fost dezarhivate " .
+            $msg .= " {$skipped_files} fișiere nu au fost dezarhivate " .
                     'deoarece erau prea mari sau erau invalide.';
         }
 
@@ -326,7 +325,7 @@ function controller_attachment_submit($page_name) {
 // Delete an attachment.
 function controller_attachment_delete($page_name, $file_name, $more_files = 0) {
     if (!request_is_post()) {
-        flash_error("Atasamentul nu a putut fi sters!");
+        flash_error("Atașamentul nu a putut fi șters!");
         redirect(url_attachment_list($page_name));
     }
 
@@ -338,13 +337,13 @@ function controller_attachment_delete($page_name, $file_name, $more_files = 0) {
     $attach = attachment_get($file_name, $page_name);
     identity_require('attach-delete', $attach);
     if (!$attach) {
-        flash_error('Fisierul nu exista.');
+        flash_error('Fișierul nu există.');
         redirect(url_textblock($page_name));
     }
 
     // Delete from data base.
     if (!attachment_delete($attach)) {
-        flash_error('Nu am reusit sa sterg fisierul.');
+        flash_error('Nu am reușit să șterg fișierul.');
         redirect(url_textblock($page_name));
     }
 
@@ -356,7 +355,7 @@ function controller_attachment_delete($page_name, $file_name, $more_files = 0) {
     // We've got big balls.
 
     if (!$more_files) {
-        flash('Fisierul '.$file_name.' a fost sters cu succes.');
+        flash('Fișierul '.$file_name.' a fost șters cu succes.');
         redirect(url_textblock($page_name));
     } else {
         return 1;
@@ -376,13 +375,13 @@ function controller_attachment_delete_many($page_name, $arguments) {
     foreach ($files as $file_name) {
        $deleted += controller_attachment_delete($page_name, $file_name, 1);
     }
-    flash($deleted . ' fisiere au fost sterse cu succes.');
+    flash($deleted . ' fișiere au fost șterse cu succes.');
     redirect(url_textblock($page_name));
 }
 
 function controller_attachment_rename($page_name, $old_name, $new_name) {
     if (!request_is_post()) {
-        flash_error("Atasamentul nu a putut fi redenumit!");
+        flash_error("Atașamentul nu a putut fi redenumit!");
         redirect(url_attachment_list($page_name));
     }
 
@@ -397,39 +396,39 @@ function controller_attachment_rename($page_name, $old_name, $new_name) {
     }
 
     if (is_avatar_attachment($old_name, $page_name)) {
-        flash_error('Atasamentul "avatar" nu poate fi redenumit.');
+        flash_error('Atașamentul "avatar" nu poate fi redenumit.');
         redirect(url_textblock($page_name));
     }
 
     if (is_avatar_attachment($new_name, $page_name)) {
-        flash_error('Nu puteti numi un atasament "avatar". Pentru '
-                . 'a va modifica imaginea de profil va rugam folositi '
-                . 'pagina "Contul meu".');
+        flash_error('Nu puteți numi un atașament "avatar". Pentru '
+                . 'a vă modifica imaginea de profil vă rugăm folosiți '
+                . 'pagina „Contul meu”.');
         redirect(url_textblock($page_name));
     }
 
     $old_attach = attachment_get($old_name, $page_name);
     identity_require('attach-rename', $old_attach);
     if (!$old_attach) {
-        flash_error('Fisierul nu exista.');
+        flash_error('Fișierul nu există.');
         redirect(url_textblock($page_name));
     }
 
     $new_attach = attachment_get($new_name, $page_name);
     if ($new_attach) {
-        flash_error("Exista deja un fisier cu numele $new_name "
-                  . "atasat paginii $page_name.");
+        flash_error("Există deja un fișier cu numele $new_name "
+                  . "atașat paginii $page_name.");
         redirect(url_textblock($page_name));
     };
 
     // Rename in data base.
     if (!attachment_rename($old_attach, $new_name)) {
-        flash_error('Nu am reusit sa redenumesc fisierul.');
+        flash_error('Nu am reușit să redenumesc fișierul.');
         redirect(url_textblock($page_name));
     }
 
     // Everything went ok
-    flash('Fisierul '.$old_name.' a fost redenumit cu succes in '.$new_name);
+    flash('Fișierul '.$old_name.' a fost redenumit cu succes în '.$new_name);
     redirect(url_textblock($page_name));
 }
 
@@ -447,7 +446,7 @@ function try_attachment_get($page_name, $file_name) {
         die_http_error();
     }
     if (!identity_can('attach-download', $attach)) {
-        flash_error('Nu aveti permisiuni pentru a descarca fisierul '
+        flash_error('Nu aveți permisiuni pentru a descărca fișierul '
                   . $file_name);
         redirect(url_textblock($page_name));
     }

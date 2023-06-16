@@ -62,7 +62,7 @@ if (($round_id = textblock_security_is_round($page['security'])) &&
 
 
     <li id="field_content">
-        <label for="form_text">Continut</label>
+        <label for="form_text">Conținut</label>
         <textarea name="text" id="form_text" rows="10" cols="50"><?= fval('text') ?></textarea>
         <?= ferr_span('text') ?>
         <?= format_link(url_textblock('documentatie/wiki'), "Cum formatez text?") ?>

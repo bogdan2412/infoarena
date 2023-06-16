@@ -16,17 +16,17 @@ $show_groups = $view['group_tests'] &&
 <tr>
     <th class="user-id">Utilizator</th>
     <td class="user-id"><?= format_user_tiny($job['user_name'], $job['user_fullname']) ?></td>
-    <th class="submit-time">Data</th>
+    <th class="submit-time">Dată</th>
     <td class="submit-time"><?= format_date($job['submit_time']) ?></td>
 </tr>
 <tr>
-    <th class="task-id">Problema</th>
+    <th class="task-id">Problemă</th>
     <td class="task-id"><?= format_link(url_textblock($job['task_page_name']), $job['task_title']) ?></td>
     <th class="status">Status</th>
     <td class="status"><strong><?= html_escape($job['status']) ?></strong></td>
 </tr>
 <tr>
-    <th class="round-id">Runda</th>
+    <th class="round-id">Rundă</th>
     <td class="round-id">
     <?= format_link(url_textblock($job['round_page_name']), $job['round_title']) ?></td>
     <th class="compiler-id">Compilator</th>
@@ -52,7 +52,7 @@ $show_groups = $view['group_tests'] &&
 <h2>Raport evaluator</h2>
 
 <?php if ('done' != $job['status']) { ?>
-<p>Aceasta sursa nu a fost evaluata inca.</p>
+<p>Această sursă nu a fost evaluată încă.</p>
 <?php } else { ?>
     <div class="job-eval-log">
 <?= html_escape($job['eval_log']) ?>
@@ -80,12 +80,12 @@ $show_groups = $view['group_tests'] &&
                 'style="height: 18px; width: auto;" /></th>';
         } ?>
         <th>Test</th>
-        <th>Timp executie</th>
-        <th>Memorie folosita</th>
+        <th>Timp execuție</th>
+        <th>Memorie folosită</th>
         <th>Mesaj</th>
         <th>Punctaj/test</th>
         <?php if ($show_groups) { ?>
-            <th>Punctaj/grupa</th>
+            <th>Punctaj/grupă</th>
         <?php } ?>
     </tr>
 </thead>

@@ -11,9 +11,9 @@ function controller_blog_feed() {
     $view = array();
     $view['channel']['title'] = 'Blog infoarena';
     $view['channel']['link'] = url_absolute(url_blog());
-    $view['channel']['description'] = 'Ultimele insemnari de pe blog-ul infoarena';
+    $view['channel']['description'] = 'Ultimele însemnări de pe blog-ul infoarena';
     $view['channel']['language'] = 'ro-ro';
-    $view['channel']['copyright'] = '(c) 2008 - Asociatia infoarena';
+    $view['channel']['copyright'] = '(c) 2008 - Asociația infoarena';
 
     $blog = blog_get_range(null, 0, IA_MAX_FEED_ITEMS);
     for ($i = 0; $i < count($blog); $i++) {
@@ -77,7 +77,7 @@ function controller_blog_view($page_name, $rev_num = null) {
             $page = textblock_get_revision($page_name, $rev_num, true);
 
             if (!$page) {
-                flash_error("Revizia \"{$rev_num}\" nu exista.");
+                flash_error("Revizia \"{$rev_num}\" nu există.");
                 $page = $crpage;
             }
         } else {
@@ -86,7 +86,7 @@ function controller_blog_view($page_name, $rev_num = null) {
         }
     } else {
         // Missing page.
-        flash_error("Nu exista pagina, dar poti sa o creezi ...");
+        flash_error("Nu există pagina, dar poți sa o creezi.");
         redirect(url_textblock_edit($page_name));
     }
 

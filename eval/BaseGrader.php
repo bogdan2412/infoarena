@@ -98,7 +98,7 @@ abstract class BaseGrader {
     protected function preTestCases() {
         $this->result = array(
             'score' => 0,
-            'message' => 'Evaluare incompleta',
+            'message' => 'Evaluare incompletă',
             'log' => '',
         );
 
@@ -117,7 +117,7 @@ abstract class BaseGrader {
      * Perform any necessary actions after running all test cases.
      */
     protected function postTestCases() {
-        $this->result['message'] = 'Evaluare completa';
+        $this->result['message'] = 'Evaluare completă';
         if ($this->result['score'] < 0 ||
             $this->result['score'] > IA_JUDGE_MAX_SCORE) {
             throw new EvalTaskOwnerError(
@@ -177,7 +177,7 @@ abstract class BaseGrader {
                 }
             } else {
                 log_print("Test $testno: Diff eval: output missing");
-                $test_result['message'] = 'Fisier de iesire lipsa';
+                $test_result['message'] = 'Fișier de ieșire lipsă';
                 $test_result['score'] = 0;
             }
             return;
@@ -240,7 +240,7 @@ abstract class BaseGrader {
             log_print("Test $testno: Task eval message broken");
             throw new EvalTaskOwnerError(
                 'Evaluatorul a returnat un mesaj gol sau mai lung de '.
-                IA_JUDGE_MAX_EVAL_MESSAGE.'de caractere la stdout');
+                IA_JUDGE_MAX_EVAL_MESSAGE.' de caractere la stdout');
         }
         $test_result['message'] = $message;
 

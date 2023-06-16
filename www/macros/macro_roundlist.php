@@ -19,7 +19,7 @@ function format_status($status) {
 
 function format_start_date($start_date) {
     if (is_null($start_date))
-        return "Data de inceput nu a fost setata.";
+        return "Data de început nu a fost setată.";
     else
         return format_date($start_date);
 }
@@ -84,7 +84,7 @@ function macro_roundlist($args) {
         'valform' => 'format_status',
     );
     $column_infos[] = array(
-        'title' => 'Data de inceput',
+        'title' => 'Data de început',
         'css_class' => 'start_time',
         'key' => 'start_time',
         'valform' => 'format_start_date',

@@ -42,7 +42,7 @@ function controller_account($username = null) {
     } else {
         $user = user_get_by_username($username);
         if (!$user) {
-            flash_error('Cont de utilizator inexistent');
+            flash_error('Cont de utilizator inexistent.');
             redirect(url_home());
         }
     }
@@ -90,7 +90,7 @@ function controller_account($username = null) {
                 $avatar_size = $_FILES['avatar']['size'];
                 // Check file size
                 if ($avatar_size < 0 || $avatar_size > IA_AVATAR_MAXSIZE) {
-                    $errors['avatar'] = 'Fisierul depaseste limita de '
+                    $errors['avatar'] = 'Fișierul depășește limita de '
                                         .(IA_AVATAR_MAXSIZE / 1024).' KB';
                 }
             }
@@ -122,8 +122,7 @@ function controller_account($username = null) {
                 // check if update/insert went ok
                 $attach = attachment_get($file_name, $user_page);
                 if (!$attach) {
-                    $errors['avatar'] = 'Avatar-ul nu a putut fi salvat in '
-                                        .'baza de date.';
+                    $errors['avatar'] = 'Nu am putut salva avatarul în baza de date.';
                 }
 
                 // write the file on disk.
@@ -168,9 +167,9 @@ function controller_account($username = null) {
 
             // done. redirect to same page so user has a strong confirmation
             // of data being saved
-            flash("Modificarile au fost salvate!");
+            flash("Am salvat modificările.");
         } else {
-            flash_error('Am intalnit probleme. Verifica datele introduse.');
+            flash_error('Am întâlnit probleme. Verifică datele introduse.');
         }
     } else {
         // form is displayed for the first time. Fill in default values
@@ -195,7 +194,7 @@ function controller_account($username = null) {
     if ($ownprofile) {
         $view['title'] = 'Contul meu';
     } else {
-        $view['title'] = 'Modifica date pentru '.$user['username'];
+        $view['title'] = 'Modifică date pentru '.$user['username'];
     }
     $view['user'] = $user;
     $view['form_errors'] = $errors;
@@ -208,4 +207,3 @@ function controller_account($username = null) {
     }
     execute_view_die('views/account.php', $view);
 }
-

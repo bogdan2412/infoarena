@@ -99,7 +99,7 @@ function format_form_field_inner_editor(
     } else if ($type == 'bool' || $type == 'enum' || $type == 'set') {
         // All these are handled as a select.
         // Set uses a smart selctor with two lists.
-        
+
         if ($type == 'bool') {
             // Convert bools to enums.
             $values = array(
@@ -223,7 +223,7 @@ function format_param_editor_list($param_infos, $form_values, $form_errors) {
         if (count($field_infos) == 0) {
             // Horrible horrible hack to validate xhtml.
             $res .= <<<HTML
-<li><span class="fieldHelp">Nu exista nici un parametru configurabil</span></li>
+<li><span class="fieldHelp">Nu există nici un parametru configurabil.</span></li>
 HTML;
         } else {
             foreach ($field_infos as $name => $field_info) {

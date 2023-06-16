@@ -10,7 +10,7 @@ function controller_user_view($username, $action, $rev_num = null) {
     // validate username
     $user = user_get_by_username($username);
     if (!$user) {
-        flash_error("Utilizator inexistent");
+        flash_error("Utilizator inexistent.");
         redirect(url_home());
     }
 
@@ -33,7 +33,7 @@ function controller_user_view($username, $action, $rev_num = null) {
             $rev_count = textblock_get_revision_count($page_name);
             if ($rev_num && $rev_num != $rev_count) {
                 if (!is_numeric($rev_num) || (int)$rev_num < 1) {
-                    flash_error('Revizia "' . $rev_num . '" este invalida.');
+                    flash_error('Revizia "' . $rev_num . '" este invalidă.');
                     redirect(url_textblock($page_name));
                 } else {
                     $rev_num = (int)$rev_num;
@@ -42,7 +42,7 @@ function controller_user_view($username, $action, $rev_num = null) {
                 $textblock = textblock_get_revision($page_name, $rev_num);
 
                 if (!$textblock) {
-                    flash_error('Revizia "' . $rev_num . '" nu exista.');
+                    flash_error('Revizia "' . $rev_num . '" nu există.');
                     redirect(url_textblock($page_name));
                 }
             } else {

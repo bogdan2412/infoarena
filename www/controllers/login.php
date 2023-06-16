@@ -26,7 +26,7 @@ function controller_login() {
             $user = user_test_ia1_password($data['username'], $data['password']);
             if (!$user) {
                 $errors = 'Numele de utilizator inexistent sau parola ' .
-                          'incorecta. Incearca din nou.';
+                          'incorectă. Încearcă din nou.';
             }
             else {
                 // update password to the SHA1 algorithm
@@ -51,7 +51,7 @@ function controller_login() {
         // pay tokens for loging in
         if (!pay_tokens(IA_TOKENS_LOGIN)) {
             if ($form_errors['captcha']) {
-                $errors = 'Va rugam confirmati ca sunteti om';
+                $errors = 'Vă rugăm să confirmați că sunteți om.';
                 unset($form_errors['captcha']);
             }
         }

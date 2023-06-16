@@ -24,7 +24,7 @@ function format_filter_form($dataset, $options = array()) {
     $active_filters = $dataset->activeFilters();
 
     $filter_op_captions = array('eq' => '==', 'lt' => '<', 'gt' => '>',
-                                'like' => 'incepe cu', 'contains' => 'contine');
+                                'like' => 'începe cu', 'contains' => 'conține');
 
     $form_class = "filters ".getattr($options, 'class', '');
     $html_buffer = format_open_tag('form', array('action' => '',

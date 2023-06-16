@@ -40,7 +40,7 @@ $form_fields = array(
         'page_name' => array(
                 'name' => "Pagina de prezentare",
                 'description' => "Aceasta este pagina la care este trimis utilizatorul ".
-                                 "când dă click pe o rundă",
+                                 "când dă click pe o rundă.",
                 'type' => 'string',
         ),
         'start_time' => array(
@@ -61,7 +61,7 @@ $form_fields = array(
         ),
         'public_eval' => array(
                 'name' => 'Evaluare publică',
-                'description' => "Concurenții pot vedea scorul obținut la sursele trimise",
+                'description' => "Concurenții pot vedea scorul obținut la sursele trimise.",
                 'default' => '0',
                 'type' => 'bool',
         ),
@@ -72,7 +72,7 @@ $form_fields = array(
 
 <form action="<?= html_escape(url_round_delete($round['id'])) ?>" method="post" style="float: right">
     <input type="hidden" name="" value="<?= html_escape($round['id']) ?>" />
-    <input onclick="" type="submit" value="Sterge runda" id="form_delete" class="button important" />
+    <input onclick="" type="submit" value="Șterge runda" id="form_delete" class="button important" />
 </form>
 
 <?php if ($round['state'] == 'running') { ?>

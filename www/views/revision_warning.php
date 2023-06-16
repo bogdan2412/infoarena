@@ -1,9 +1,9 @@
 <div class="warning">
     <?php
     if ($view['revision'] < $view['revision_count']) {
-        echo "Atenție! Aceasta este o versiune veche a paginii";
+        echo "Atenție! Aceasta este o versiune veche a paginii.";
     } else {
-        echo "Atenție! Aceasta este ultima versiune a paginii";
+        echo "Atenție! Aceasta este ultima versiune a paginii.";
     }
     echo ", scrisă la " . html_escape($textblock['timestamp']) . ".<br />";
     if ($view['revision'] > 1) {

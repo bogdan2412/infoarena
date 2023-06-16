@@ -20,14 +20,14 @@ require_once(IA_ROOT_DIR . "common/task_rating.php");
 function controller_task_details($task_id) {
     // validate task_id
     if (!is_task_id($task_id)) {
-        flash_error('Identificatorul de task este invalid');
+        flash_error('Identificatorul de task este invalid.');
         redirect(url_home());
     }
 
     // Get task
     $task = task_get($task_id);
     if (!$task) {
-        flash_error("Problema nu exista");
+        flash_error("Problema nu există.");
         redirect(url_home());
     }
 
@@ -100,7 +100,7 @@ function controller_task_details($task_id) {
             } else {
                 $user = user_get_by_username($values["user"]);
                 if (!$user) {
-                    $errors["user"] = "Utilizator inexistent";
+                    $errors["user"] = "Utilizator inexistent.";
                 } else {
                     $new_task["user_id"] = $user["id"];
                 }
@@ -162,16 +162,16 @@ function controller_task_details($task_id) {
             }
             mem_cache_delete("task-authors-by-id:".$new_task["id"]);
 
-            flash("Parametrii au fost salvati cu succes!");
+            flash("Parametrii au fost salvați cu succes.");
             redirect(url_task_edit($task_id, 'task-edit-params'));
         } else {
-            flash_error("Sunt erori in datele introduse.");
+            flash_error("Sunt erori în datele introduse.");
         }
     }
 
     // Create view.
     $view = array();
-    $view['title'] = 'Editeaza parametrii pentru problema '. $task['title'];
+    $view['title'] = 'Editează parametrii pentru problema '. $task['title'];
     $view['page_name'] = url_task_edit($task_id);
     $view['task_id'] = $task_id;
     $view['task'] = $task;
@@ -209,12 +209,12 @@ function controller_task_create() {
 
     if (request_is_post()) {
         if (!is_task_id($values['id'])) {
-            $errors['id'] = "Id de task invalid. Nu se permit majuscule!";
+            $errors['id'] = "ID de task invalid. Nu se permit majuscule!";
         } else if (task_get($values['id'])) {
-            $errors['id'] = "Exista deja un task cu acest id";
+            $errors['id'] = "Există deja un task cu acest ID.";
         }
         if (!array_key_exists($values['type'], task_get_types())) {
-            $errors['type'] = "Tip de task invalid";
+            $errors['type'] = "Tip de task invalid.";
         }
 
         if (!$errors) {
@@ -231,7 +231,7 @@ function controller_task_create() {
 
             // This should never fail.
             log_assert(task_create($task, $task_params, remote_ip_info()));
-            flash("Un nou task a fost creeat, acum poti sa-l editezi");
+            flash("Un nou task a fost creat, acum poți să-l editezi.");
             redirect(url_task_edit($task['id'], 'task-edit-params'));
         }
     }
@@ -249,20 +249,20 @@ function controller_task_create() {
 // Deletes a task.
 function controller_task_delete($task_id) {
     if (!request_is_post()) {
-        flash_error("Problema nu a putut fi stearsa.");
+        flash_error("Problema nu a putut fi ștearsă.");
         redirect(url_home());
     }
 
     // Validate task_id
     if (!is_task_id($task_id)) {
-        flash_error("Problema inexistenta.");
+        flash_error("Problemă inexistentă.");
         redirect(url_home());
     }
 
     // Get task
     $task = task_get($task_id);
     if (!$task) {
-        flash_error("Problema inexistenta.");
+        flash_error("Problemă inexistentă.");
         redirect(url_home());
     }
 
@@ -272,7 +272,7 @@ function controller_task_delete($task_id) {
     // Delete the task
     task_delete($task);
 
-    flash("Problema a fost stearsa.");
+    flash("Problema a fost ștearsă.");
     redirect(url_home());
 }
 
@@ -280,14 +280,14 @@ function controller_task_delete($task_id) {
 function controller_task_ratings($task_id) {
     // Validate task id
     if (!is_task_id($task_id)) {
-        flash_error("Problema inexistenta");
+        flash_error("Problemă inexistentă.");
         redirect(url_home());
     }
 
     // Get task
     $task = task_get($task_id);
     if (!$task) {
-        falsh_error("Problema inexistenta");
+        falsh_error("Problemă inexistentă.");
         redirect(url_home());
     }
 
@@ -306,7 +306,7 @@ function controller_task_ratings($task_id) {
             $rating_value = request($rating_field);
 
             if (!task_is_rating_value($rating_value)) {
-                flash_error("Datele introduse nu sunt valide!");
+                flash_error("Datele introduse nu sunt valide.");
                 redirect(url_task_edit($task_id, 'task-edit-ratings'));
             }
 
@@ -315,14 +315,14 @@ function controller_task_ratings($task_id) {
 
         task_rating_add($task_id, $user_id, $ratings);
 
-        flash("Ratingurile au fost salvate cu succes!");
+        flash("Ratingurile au fost salvate cu succes.");
         redirect(url_task_edit($task_id, 'task-edit-ratings'));
     }
 
     $ratings = task_rating_get($task_id, $user_id);
 
     $view = array();
-    $view['title'] = "Editeaza ratingurile pentru problema " . $task['title'];
+    $view['title'] = "Editează ratingurile pentru problema " . $task['title'];
     $view['task_id'] = $task_id;
     $view['form_values'] = $ratings;
     $view['form_errors'] = $errors;
@@ -333,7 +333,7 @@ function controller_task_ratings($task_id) {
 // Tag a task
 function controller_task_tag($task_id) {
     if (!is_task_id($task_id)) {
-        flash_error("Problema inexistenta");
+        flash_error("Problemă inexistentă.");
         redirect(url_home());
     }
 
@@ -341,22 +341,23 @@ function controller_task_tag($task_id) {
     identity_require('task-tag', $task);
 
     if (!$task) {
-        flash_error("Problema inexistenta");
+        flash_error("Problemă inexistentă.");
         redirect(url_home());
     }
 
     if (request_is_post()) {
         $algorithm_tags_id = request("algorithm_tags", array());
         $method_tags_id = tag_get_parents($algorithm_tags_id);
+        $reportAdminMsg = 'Datele trimise sunt invalide. Raportează această problemă unui admin.';
 
         if (!is_array($algorithm_tags_id)) {
-            flash_error("Datele trimise sunt invalide. Raporteaza aceasta problema unui admin.");
+            flash_error($reportAdminMsg);
             redirect(url_task_edit($task_id, 'task-edit-tags'));
         }
 
         foreach ($algorithm_tags_id as $tag_id) {
             if (!is_tag_id($tag_id)) {
-                flash_error("Datele trimise sunt invalide. Raporteaza aceasta problema unui admin.");
+                flash_error($reportAdminMsg);
                 redirect(url_task_edit($task_id, 'task-edit-tags'));
             }
         }
@@ -369,13 +370,12 @@ function controller_task_tag($task_id) {
             }
         }
         if ($count != count($algorithm_tags_id)) {
-            flash_error('Datele trimise sunt invalide. Raporteaza aceasta '.
-                        'problema unui admin.');
+            flash_error($reportAdminMsg);
             redirect(url_task_edit($task_id, 'task-edit-tags'));
         }
 
         task_update_tags($task_id, $method_tags_id, $algorithm_tags_id);
-        flash("Tagurile au fost salvate cu succes!");
+        flash("Tagurile au fost salvate cu succes.");
         redirect(url_task_edit($task_id, 'task-edit-tags'));
     }
 
@@ -385,7 +385,7 @@ function controller_task_tag($task_id) {
     $task_tags = tag_get('task', $task_id, 'algorithm');
 
     $view = array();
-    $view['title'] = "Editeaza tagurile pentru problema " . $task['title'];
+    $view['title'] = "Editează tagurile pentru problema " . $task['title'];
     $view['task'] = $task;
     $view['tags_tree'] = $tags_tree;
     $view['task_tags'] = $task_tags;
@@ -402,12 +402,12 @@ function controller_task_search() {
     }
 
     if (!is_array($tags)) {
-        flash_error("Filtru invalid");
+        flash_error("Filtru invalid.");
         redirect(url_home());
     }
     foreach ($tags as $tag) {
         if (!is_tag_id($tag)) {
-            flash_error("Filtru invalid");
+            flash_error("Filtru invalid.");
             redirect(url_home());
         }
     }

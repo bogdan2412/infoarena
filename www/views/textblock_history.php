@@ -36,7 +36,7 @@ function format_operations($row) {
     $delurl = url_textblock_delete_revision($page_name, $row['revision_id']);
     $viewurl = url_textblock_revision($page_name, $row['revision_id']);
     if ($row['revision_id'] == $total_entries) {
-        $ret = '<strong>Ultima versiune</strong> ['. format_post_link($delurl, "Sterge") .']';
+        $ret = '<strong>Ultima versiune</strong> ['. format_post_link($delurl, "Șterge") .']';
         return $ret;
     } else {
         return '['. format_link($diffurl, "Compară cu ultima revizie") .'] '.

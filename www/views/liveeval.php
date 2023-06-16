@@ -43,7 +43,7 @@ $selected = null;
 echo "<div id=\"monitor-table\">";
 
 if (!$jobs) {
-    echo "<div class=\"notice\">Nici o solutie in coada de evaluare</div>";
+    echo "<div class=\"notice\">Nici o soluție în coada de evaluare.</div>";
 } else {
     // For the score column.
     function format_state($row) {
@@ -125,11 +125,11 @@ if (!$jobs) {
             },
         ),
         array(
-            'title' => 'Problema',
+            'title' => 'Problemă',
             'rowform' => 'format_task_link',
         ),
         array(
-            'title' => 'Runda',
+            'title' => 'Rundă',
             'rowform' => 'format_round_link',
         ),
         array(
@@ -137,7 +137,7 @@ if (!$jobs) {
             'rowform' => 'format_size',
         ),
         array(
-            'title' => 'Data',
+            'title' => 'Dată',
             'key' => 'submit_time',
             'valform' => 'format_short_date',
         ),

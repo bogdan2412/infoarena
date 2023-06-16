@@ -65,7 +65,7 @@ function macro_rankings($args) {
 
     $column_infos = array(
         array(
-            'title' => 'Pozitie',
+            'title' => 'Poziție',
             'key' => 'ranking',
             'css_class' => 'number rank'
         ),
@@ -141,7 +141,7 @@ function macro_rankings($args) {
     }
 
     if (0 >= count($rankings)) {
-        return macro_message('Nici un rezultat inregistrat pentru aceasta runda.');
+        return macro_message('Nici un rezultat înregistrat pentru această rundă.');
     } else {
         return format_table($rankings, $column_infos, $options);
     }

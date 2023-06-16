@@ -36,7 +36,7 @@ function controller_penalty() {
             $user = user_get_by_username($data['username']);
             if (!$user) {
                 $errors['username'] = 'Nu există niciun utilizator cu acest ' .
-                    'nume de cont';
+                    'nume de cont.';
             }
         }
 
@@ -45,14 +45,14 @@ function controller_penalty() {
         if ($data['round_id']) {
             $round = round_get($data['round_id']);
             if (!$round) {
-                $errors['round_id'] = 'Nu există runda cu acest ID';
+                $errors['round_id'] = 'Nu există runda cu acest ID.';
             }
         }
 
         if (isset($user) && $user && isset($round) && $round) {
             redirect(url_penalty_edit($user['id'], $round['id']));
         } else {
-            flash_error('Trebuie să completezi ambele câmpuri!');
+            flash_error('Trebuie să completezi ambele câmpuri.');
         }
 
     }

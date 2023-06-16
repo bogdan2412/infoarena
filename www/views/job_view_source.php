@@ -4,17 +4,17 @@ require_once(IA_ROOT_DIR . 'www/url.php');
 include(CUSTOM_THEME . 'header.php');
 ?>
 
-<h1>Cod sursa(job <?= format_link(url_job_detail($job['id']), '#'.$job['id']) ?>)</h1>
+<h1>Cod sursă (job <?= format_link(url_job_detail($job['id']), '#'.$job['id']) ?>)</h1>
 
 <table class="job">
 <tr>
     <th class="user-id">Utilizator</th>
     <td class="user-id"><?= format_user_tiny($job['user_name'], $job['user_fullname']) ?></td>
-    <th class="submit-time">Data</th>
+    <th class="submit-time">Dată</th>
     <td class="submit-time"><?= format_date($job['submit_time']) ?></td>
 </tr>
 <tr>
-    <th class="task-id">Problema</th>
+    <th class="task-id">Problemă</th>
     <td class="task-id"><?= format_link(url_textblock($job['task_page_name']), $job['task_title']) ?></td>
     <th class="score">Scor</th>
     <td class="score"><?= html_escape(is_null($job['score']) ? "Ascuns" : $job['score']) ?></td>
@@ -27,19 +27,19 @@ include(CUSTOM_THEME . 'header.php');
     <td class="status"><strong><?= html_escape($job['status']) ?></strong></td>
 </tr>
 <tr>
-    <th class="round-id">Runda</th>
+    <th class="round-id">Rundă</th>
     <td class="round-id" colspan="<?= identity_can('job-view-source', $job) ? 1 : 3 ?>">
     <?= format_link(url_textblock($job['round_page_name']), $job['round_title']) ?></td>
 
-    <th class="size">Marime</th>
+    <th class="size">Mărime</th>
     <td class="size"><?= round($job['job_size']/1024, 2)." kb" ?></td>
 </tr>
 </table>
 <div class="report">
 <?php if ($topic_id) { ?>
-<a href="<?= url_forum().'?action=post;topic='.$topic_id ?>">Raporteaza aceasta sursa</a>
+<a href="<?= url_forum().'?action=post;topic='.$topic_id ?>">Raportează această sursă</a>
 <?php } else { ?>
-<a href="<?= url_forum().'?action=pm;sa=send;u=3' ?>">Raporteaza aceasta sursa</a>
+<a href="<?= url_forum().'?action=pm;sa=send;u=3' ?>">Raportează această sursă</a>
 <?php } ?>
 </div>
 <?php
@@ -65,4 +65,3 @@ if ($first_view_source) {
     }
     include('footer.php');
 ?>
-

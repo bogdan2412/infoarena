@@ -19,11 +19,11 @@ function safe_job_submit($args, $user) {
     // Validate task id.
     $task = null;
     if (!array_key_exists('task_id', $args)) {
-        $errors['task_id'] = "Lipseste id-ul task-ului.";
+        $errors['task_id'] = "Lipsește id-ul task-ului.";
     } else if (!is_task_id($args['task_id'])) {
         $errors['task_id'] = "Id de task invalid.";
     } else if (is_null($task = task_get($args['task_id']))) {
-        $errors['task_id'] = "Task-ul {$args['task_id']} nu exista.";
+        $errors['task_id'] = "Task-ul {$args['task_id']} nu există.";
     }
 
     // Validate round id.
@@ -33,7 +33,7 @@ function safe_job_submit($args, $user) {
     } else if (!is_round_id($args['round_id'])) {
         $errors['round_id'] = "Nu ai specificat un concurs corect.";
     } else if (is_null($round = round_get($args['round_id']))) {
-        $errors['round_id'] = "Runda '{$args['round_id']}' nu exista.";
+        $errors['round_id'] = "Runda '{$args['round_id']}' nu există.";
     }
     // Check if task is new and hasn't been added to any rounds
     if (getattr($args, "round_id") == "" &&
@@ -55,35 +55,35 @@ function safe_job_submit($args, $user) {
     );
 
     if (!array_key_exists('compiler_id', $args)) {
-        $errors['compiler_id'] = "Lipseste compilatorul.";
+        $errors['compiler_id'] = "Lipsește compilatorul.";
     } else if (array_search($args['compiler_id'], $valid_compilers) === false) {
         $errors['compiler_id'] = "Compilator invalid.";
     }
 
     // Validate solution
     if (!array_key_exists('solution', $args)) {
-        $errors['solution'] = "Lipseste fisierul solutie.";
+        $errors['solution'] = "Lipsește fișierul soluție.";
     } else if (!is_string($args['solution'])) {
-        $errors['solution'] = "Solution trebuie sa fie string.";
+        $errors['solution'] = "Solution trebuie să fie string.";
     } else if (IA_SUBMISSION_MAXSIZE <= strlen($args['solution'])) {
-        $errors['solution'] = "Solutia depaseste dimensiunea maxima admisa:".
-                ((int)IA_SUBMISSION_MAXSIZE / 1024).'KB.';
+        $errors['solution'] = "Soluția depășește dimensiunea maximă admisă: ".
+                ((int)IA_SUBMISSION_MAXSIZE / 1024).' KB.';
     }
 
     // Check task submit security
     if ($task && !security_query($user, 'task-submit', $task)) {
-        $errors[] = "Nu ai voie sa trimiti la acest task.";
+        $errors[] = "Nu ai voie să trimiți la acest task.";
     }
     if ($round && !security_query($user, 'round-submit', $round)) {
-        $errors[] = "Nu poti sa trimiti la aceasta runda.";
+        $errors[] = "Nu poți să trimiți la această rundă.";
     }
 
     // Check if the user has submitted too many times
 
     if (job_archive_waiting_number($user) >= IA_USER_MAX_ARCHIVE_WAITING_JOBS) {
-        $errors['submit_limit'] = "Nu ai dreptul sa ai mai mult de " .
+        $errors['submit_limit'] = "Nu ai dreptul să ai mai mult de " .
                     IA_USER_MAX_ARCHIVE_WAITING_JOBS .
-                    " submisii in asteptare la un moment dat";
+                    " submisii în așteptare la un moment dat.";
     }
 
     // Only now create the job.

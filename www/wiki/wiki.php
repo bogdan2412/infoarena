@@ -132,7 +132,7 @@ function wiki_process_textblock_recursive($textblock, $cache = true) {
         if ($include_count == 0) {
             // Stop unwinding. This is the first include.
             $include_stop = false;
-            return make_error_div("Prea multe include-uri recursive");
+            return make_error_div("Prea multe include-uri recursive.");
         } else {
             return;
         }

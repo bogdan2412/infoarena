@@ -11,7 +11,7 @@ function controller_job_detail($job_id) {
     } else if ($action == 'view-source') {
         controller_job_view_source($job_id);
     } else {
-        flash_error("Actiune invalida.");
+        flash_error("Acțiune invalidă.");
         redirect(url_monitor());
     }
 }
@@ -19,14 +19,14 @@ function controller_job_detail($job_id) {
 function controller_job_view($job_id) {
     // Get job id.
     if (!is_whole_number($job_id)) {
-        flash_error("Numar de job invalid.");
+        flash_error("Număr de job invalid.");
         redirect(url_monitor());
     }
 
     // Get job.
     $job = job_get_by_id($job_id);
     if (!$job) {
-        flash_error("Nu exista job-ul #$job_id");
+        flash_error("Nu există job-ul #$job_id.");
         redirect(url_monitor());
     }
 
@@ -137,14 +137,14 @@ function controller_job_view($job_id) {
 
 function controller_job_view_source($job_id) {
     if (!is_whole_number($job_id)) {
-        flash_error("Numar de job invalid.");
+        flash_error("Număr de job invalid.");
         redirect(url_monitor());
     }
 
     // Get job.
     $job = job_get_by_id($job_id, true);
     if (!$job) {
-        flash_error("Nu exista job-ul #$job_id");
+        flash_error("Nu există job-ul #$job_id.");
         redirect(url_monitor());
     }
 
@@ -154,7 +154,7 @@ function controller_job_view_source($job_id) {
     }
 
     $view = array();
-    $view['title'] = 'Cod sursa (job #'.$job_id.')';
+    $view['title'] = 'Cod sursă (job #'.$job_id.')';
     $view['topic_id'] = task_get_topic($job['task_id']);
     $view['job'] = $job;
     $view['lang'] = $job['compiler_id'];

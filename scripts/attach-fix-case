@@ -1,7 +1,7 @@
 #! /usr/bin/env php
 <?php
 // This script is used to repair bad filenames in the IA_ROOT_DIR/attach folder.
-// Previously infoarena lowercased the filename for any attachment making "test" and "Test" 
+// Previously infoarena lowercased the filename for any attachment making "test" and "Test"
 // having the same file in the attach folder. This script tries to fix this behavior.
 
 require_once(dirname($argv[0]) . "/utilities.php");
@@ -22,7 +22,7 @@ $query = "SELECT * FROM ia_file;";
 $attachments = db_fetch_all($query);
 $fixed = $errors = 0;
 
-log_print("Exista ".count($attachments)." atasamente...");
+log_print("Există ".count($attachments)." atașamente...");
 foreach ($attachments as $attach) {
     if ($attach['name'] == strtolower($attach['name'])) {
         continue;
@@ -39,5 +39,5 @@ foreach ($attachments as $attach) {
         $fixed++;
     }
 }
-log_print("S-au reparat ".$fixed." atasamente!");
+log_print("S-au reparat ".$fixed." atașamente!");
 log_print("Au avut loc ".$errors." erori!");

@@ -14,12 +14,12 @@ function RemoteBox_Load(remotebox_function ) {
     }
 
     // visual clue to indicate that remotebox is loading
-    container.html('<div class="loading"> <img src="/static/images/indicator.gif" />Se incarca ...</div>');
+    container.html('<div class="loading"> <img src="/static/images/indicator.gif" />Se încarcă...</div>');
 
     container.load(RemoteBox_Url, {},
         function(responseText, textStatus, req) {
             if (textStatus == 'error') {
-                 container.html('<div class="macro_error">Continutul nu a putut fi descarcat. Incercati din nou.</div>');
+                 container.html('<div class="macro_error">Nu pot să descarc conținutul. Încercați din nou.</div>');
             }
             if (typeof remotebox_function === 'function') {
                 remotebox_function();

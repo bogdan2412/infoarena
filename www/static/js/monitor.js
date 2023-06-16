@@ -9,12 +9,12 @@ function SkipJobs() {
         list.push($(this).val());
     });
     if (list.length == 0) {
-        alert("Atentie! Selecteaza cel putin un job");
+        alert("Atenție! Selectează cel putin un job.");
         return false;
     }
 
     if (submit = confirm(
-        "Esti sigur ca vrei sa ignori " + list.length + " job-uri?")) {
+        "Ești sigur că vrei să ignori " + list.length + " job-uri?")) {
         $("#skipped-jobs").val(list.join());
         return;
     }
@@ -51,7 +51,7 @@ function Monitor_Init() {
             type:'POST', dataType: 'json', success:
             function(data, textStatus, req) {
                 if (textStatus == 'error') {
-                    alert('Eroare! Nu se poate ignora submisia');
+                    alert('Eroare! Nu se poate ignora submisia.');
                 } else {
                     Monitor_Refresh();
                 }

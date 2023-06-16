@@ -59,7 +59,7 @@ function relativeTime(timerId) {
         if (!firstFound)
             firstFound = true;
         if (hours == 1)
-            show += "o ora ";
+            show += "o oră ";
         else
        show += hours + " ore ";
     }

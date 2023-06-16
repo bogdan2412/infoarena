@@ -66,7 +66,7 @@ function compile_file($input_file_name, &$compiler_type, &$compiler_message) {
     if (!preg_match(
         '/^(.*)\.(c|cpp|pas|fpc|rs|py|java|cpp-64|cpp-32|c-64|c-32|c++)$/i',
         $input_file_name, $matches)) {
-        $compiler_message = "Nu am putut sa determin compilatorul ".
+        $compiler_message = "Nu am putut să determin compilatorul ".
                 "pentru '$input_file_name'.";
         return false;
     }
@@ -83,7 +83,7 @@ function compile_file($input_file_name, &$compiler_type, &$compiler_message) {
     }
 
     if (!isset($compiler_lines[$compiler_type])) {
-        $compiler_message = "Nu stiu cum sa compilez fisiere '$compiler_type'";
+        $compiler_message = "Nu știu cum să compilez fișiere '$compiler_type'";
         return false;
     }
 
@@ -120,8 +120,8 @@ function compile_file($input_file_name, &$compiler_type, &$compiler_message) {
         $result['result'] == 'OK') {
         $result['result'] = 'FAIL';
 
-        $compiler_message = "In fisierul trimis trebuie sa se gaseasca o clasa".
-                            " publica numita Main.\n".$compiler_message;
+        $compiler_message = "În fișierul trimis trebuie să se gaseasca o clasă".
+                            " publică numită Main.\n".$compiler_message;
     }
 
     $compiler_message = explode("\n", $compiler_message);
@@ -468,7 +468,7 @@ function jrun_get_result_many($jrun_processes) {
 
         $result = jrun_parse_message($message);
         if ($result == false) {
-            throw new EvalSystemError('Evaluator neconfigurat');
+            throw new EvalSystemError('Evaluator neconfigurat.');
         }
 
         if ($jrun_process['capture_std']) {

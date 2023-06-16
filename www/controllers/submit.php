@@ -7,7 +7,7 @@ function controller_submit() {
     identity_require_login();
 
     $view = array(
-        'title' => 'Trimite solutie',
+        'title' => 'Trimite soluție',
     );
 
     $values = array();
@@ -40,7 +40,7 @@ function controller_submit() {
         }
 
         if ($errors) {
-            flash_error('NU am salvat solutia trimisa! Unul sau mai multe campuri
+            flash_error('NU am salvat soluția trimisă. Unul sau mai multe câmpuri
                          nu au fost completate corect.');
         } else {
             flash('Solutia a fost salvata.');

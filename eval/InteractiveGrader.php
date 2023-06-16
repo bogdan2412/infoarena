@@ -79,7 +79,7 @@ class InteractiveGrader extends BaseGrader {
                      $interact_res['message'] . ' ' . $interact_res['time'] .
                      'ms ' . $interact_res['memory'] . 'kb');
             throw new EvalTaskOwnerError(
-                'Eroare in programul interactiv: ' .
+                'Eroare în programul interactiv: ' .
                 $interact_res['message']);
         }
         if ($user_res['result'] == 'FAIL') {

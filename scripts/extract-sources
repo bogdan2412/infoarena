@@ -22,8 +22,8 @@ foreach ($rounds as $round) {
     $tasks = round_get_tasks($round['id'], 0, null, $user);
 
     foreach ($tasks as $task) {
-        $filters = array('user' => $user, 
-                         'task' => $task['id'],   
+        $filters = array('user' => $user,
+                         'task' => $task['id'],
                          'round' => $round['id']);
         if ($all) {
             $range = 666013;
@@ -43,16 +43,16 @@ foreach ($rounds as $round) {
 
             $fp = @fopen($fname, 'w');
             if (!$fp) {
-                log_warn("Nu s-a putut deschide fisierul ".$fname);
+                log_warn("Nu am putut deschide fișierul ".$fname);
                 continue;
             }
             if (!fwrite($fp, $job['file_contents'])) {
-                log_warn("Nu s-a putut scrie in fisierul ".$fname);
+                log_warn("Nu am putut scrie în fișierul ".$fname);
                 continue;
             }
             fclose($fp);
         }
     }
 }
-log_print("S-au extras ".$total." surse pentru ".$user);
+log_print("Am extras ".$total." surse pentru ".$user);
 ?>

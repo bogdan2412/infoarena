@@ -29,13 +29,13 @@ function task_get_parameter_infos() {
     return array(
         'classic' => array(
             'timelimit' => array(
-                'description' => 'Limita de timp (in secunde)',
+                'description' => 'Limita de timp (în secunde)',
                 'default' => 1,
                 'type' => 'float',
                 'name' => 'Limita de timp',
             ),
             'memlimit' => array(
-                'description' => 'Limita de memorie (in kilobytes)',
+                'description' => 'Limita de memorie (în kilobytes)',
                 'default' => 16384,
                 'type' => 'integer',
                 'name' => 'Limita de memorie',
@@ -43,13 +43,13 @@ function task_get_parameter_infos() {
         ),
         'interactive' => array(
             'timelimit' => array(
-                'description' => 'Limita de timp (in secunde)',
+                'description' => 'Limita de timp (în secunde)',
                 'default' => 1,
                 'type' => 'float',
                 'name' => 'Limita de timp',
             ),
             'memlimit' => array(
-                'description' => 'Limita de memorie (in kilobytes)',
+                'description' => 'Limita de memorie (în kilobytes)',
                 'default' => 131072,
                 'type' => 'integer',
                 'name' => 'Limita de memorie',
@@ -109,42 +109,42 @@ function task_validate($task) {
     }
 
     if (!is_page_name(getattr($task, 'page_name'))) {
-        $errors['page_name'] = 'Homepage invalid';
+        $errors['page_name'] = 'Pagină invalidă.';
     }
 
     if (!is_user_id(getattr($task, 'user_id'))) {
-        $errors['user_id'] = 'ID de utilizator invalid';
+        $errors['user_id'] = 'ID de utilizator invalid.';
     }
 
     if (!array_key_exists(getattr($task, 'security'),
             task_get_security_types())) {
-        $errors['security'] = 'Tipul securitatii este invalid';
+        $errors['security'] = 'Tipul securității este invalid.';
     }
 
     $open_source = getattr($task, 'open_source');
     if ($open_source != '0' && $open_source != '1') {
-        $errors['open_source'] = 'Se accepta doar 0/1';
+        $errors['open_source'] = 'Se acceptă doar 0/1.';
     }
 
     $open_tests = getattr($task, 'open_tests');
     if ($open_tests != '0' && $open_tests != '1') {
-        $errors['open_tests'] = 'Se accepta doar 0/1';
+        $errors['open_tests'] = 'Se acceptă doar 0/1.';
     }
 
     if (!array_key_exists(getattr($task, 'type'), task_get_types())) {
-        $errors['type'] = "Tipul task-ului este invalid";
+        $errors['type'] = "Tipul task-ului este invalid.";
     }
 
     if (!is_task_id(getattr($task, 'id', ''))) {
-        $errors['id'] = 'ID de task invalid';
+        $errors['id'] = 'ID de task invalid.';
     }
 
     if (!is_whole_number($task['test_count'])) {
-        $errors['test_count'] = "Numarul de teste trebuie sa fie un numar.";
+        $errors['test_count'] = "Numărul de teste trebuie să fie un număr.";
     } else if ($task['test_count'] < 1) {
-        $errors['test_count'] = "Minim 1 test.";
+        $errors['test_count'] = "Minimum 1 test.";
     } else if ($task['test_count'] > 100) {
-        $errors['test_count'] = "Maxim 100 de teste.";
+        $errors['test_count'] = "Maximum 100 de teste.";
     }
 
     if ($task['use_ok_files'] != '0' && $task['use_ok_files'] != '1') {
@@ -154,24 +154,24 @@ function task_validate($task) {
     if ($task['evaluator'] === '') {
         if (!$task['use_ok_files']) {
             $errors['evaluator'] =
-                'Pentru evaluare cu diff e nevoie de fisiere .ok';
+                'Pentru evaluare cu diff e nevoie de fișiere .ok';
         }
     } else {
         if (!is_attachment_name($task['evaluator'])) {
-             $errors['evaluator'] = 'Nume de fisier invalid pentru problema '
+             $errors['evaluator'] = 'Nume de fișier invalid pentru problema '
                                   . $task['id'];
         }
     }
 
     if (strlen(getattr($task, 'test_groups', '')) > 256) {
-        $errors['test_groups'] = 'Expresia este prea lunga.';
+        $errors['test_groups'] = 'Expresia este prea lungă.';
     } else if (task_get_testgroups($task) === false) {
-        $errors['test_groups'] = 'Eroare de sintaxa in expresie.';
+        $errors['test_groups'] = 'Eroare de sintaxă în expresie.';
     }
 
     if (task_parse_test_group($task["public_tests"],
                               $task["test_count"]) === false) {
-        $errors['public_tests'] = 'Eroare de sintaxa in expresie.';
+        $errors['public_tests'] = 'Eroare de sintaxă în expresie.';
     }
 
     return $errors;
@@ -283,19 +283,19 @@ function task_validate_parameters($task_type, $parameters) {
     $errors = array();
     if ($task_type === 'classic' || $task_type === 'interactive') {
         if (!is_numeric($parameters['timelimit'])) {
-            $errors['timelimit'] = "Limita de timp trebuie sa fie un numar.";
+            $errors['timelimit'] = "Limita de timp trebuie să fie un număr.";
         } else if ($parameters['timelimit'] < 0.01) {
-            $errors['timelimit'] = "Minim 10 milisecunde.";
+            $errors['timelimit'] = "Minimum 10 milisecunde.";
         } else if ($parameters['timelimit'] > 60) {
-            $errors['timelimit'] = "Maxim un minut.";
+            $errors['timelimit'] = "Maximum un minut.";
         }
 
         if (!is_whole_number($parameters['memlimit'])) {
-            $errors['memlimit'] = "Limita de memorie trebuie sa fie un numar.";
+            $errors['memlimit'] = "Limita de memorie trebuie să fie un număr.";
         } else if ($parameters['memlimit'] < 10) {
-            $errors['memlimit'] = "Minim 10 kilobytes.";
+            $errors['memlimit'] = "Minimum 10 kilobytes.";
         } else if ($parameters['memlimit'] > 524288) {
-            $errors['memlimit'] = "Maxim 512 megabytes.";
+            $errors['memlimit'] = "Maximum 512 megabytes.";
         }
     }
     if ($task_type === 'interactive') {
@@ -303,7 +303,7 @@ function task_validate_parameters($task_type, $parameters) {
             $errors['interact'] = 'Trebuie specificat un program interactiv.';
         } else {
             if (!is_attachment_name($parameters['interact'])) {
-                $errors['interact'] = 'Nume de fisier invalid.';
+                $errors['interact'] = 'Nume de fișier invalid.';
             }
         }
     }

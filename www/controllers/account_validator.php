@@ -34,38 +34,38 @@ function validate_user_data($data, $register, $user = null) {
     // username
     if ($register) {
         if (!$data['username']) {
-            $errors['username'] = 'Nu ati specificat numele de utilizator.';
+            $errors['username'] = 'Nu ați specificat numele de utilizator.';
         }
         elseif (4 > strlen(trim($data['username']))) {
-            $errors['username'] = 'Nume de utilizator este prea scurt.';
+            $errors['username'] = 'Numele de utilizator este prea scurt.';
         }
         elseif (40 < strlen(trim($data['username']))) {
-            $errors['username'] = 'Nume de utilizator este prea lung.';
+            $errors['username'] = 'Numele de utilizator este prea lung.';
         }
         elseif (!is_user_name($data['username'])) {
-            $errors['username'] = 'Numele utilizator contine caractere '
+            $errors['username'] = 'Numele de utilizator conține caractere '
                                   .'invalide.';
         }
         elseif (user_get_by_username($data['username']) ||
                 smf_get_member_by_name($data['username'])) {
-            $errors['username'] = 'Nume utilizator rezervat de altcineva. Va '
-                                  .'rugam alegeti altul.';
+            $errors['username'] = 'Numele de utilizator este rezervat de altcineva. Vă '
+                                  .'rugăm alegeți altul.';
         }
     }
 
     // email
     if (!$data['email']) {
-        $errors['email'] = 'Nu ati introdus adresa de e-mail.';
+        $errors['email'] = 'Nu ați introdus adresa de e-mail.';
     }
     elseif (!is_valid_email($data['email'])) {
-        $errors['email'] = 'Adresa de e-mail introdusa este invalida.';
+        $errors['email'] = 'Adresa de e-mail introdusă este invalidă.';
     }
 
     // changing e-mail address or specifying new password forces user
     // to enter enter current password
     if (!$register && ($user['email'] != $data['email'])) {
         if (!$data['passwordold']) {
-            $errors['passwordold'] = 'Introdu parola curenta (veche) pentru a '
+            $errors['passwordold'] = 'Introdu parola curentă (veche) pentru a '
                                       .'schimba adresa de e-mail.';
         }
     }
@@ -73,7 +73,7 @@ function validate_user_data($data, $register, $user = null) {
     // changing password forces user to enter current password
     if (!$register && ($data['password'] || $data['password2'])) {
         if (!$data['passwordold']) {
-            $errors['passwordold'] = 'Introdu parola curenta (veche) pentru a '
+            $errors['passwordold'] = 'Introdu parola curentă (veche) pentru a '
                                      .'o schimba.';
         }
     }
@@ -81,18 +81,18 @@ function validate_user_data($data, $register, $user = null) {
     // When registering or changing e-mail address, make sure e-mail is unique
     if ($register || ($user['email'] != $data['email'])) {
         if (user_get_by_email($data['email'])) {
-            $errors['email'] = 'Adresa de e-mail este deja asociata unui cont!'
-                               .' Reseteaza-ti parola daca ai uitat-o.';
+            $errors['email'] = 'Adresa de e-mail este deja asociată unui cont.'
+                               .' Resetează-ți parola dacă ai uitat-o.';
         }
     }
 
     // password
     if ($register || $data['password'] || $data['password2']) {
         if (!$data['password']) {
-            $errors['password'] = 'Nu ati introdus parola.';
+            $errors['password'] = 'Nu ați introdus parola.';
         }
         elseif (4 > strlen(trim($data['password']))) {
-            $errors['password'] = 'Parola introdusa este prea scurta.';
+            $errors['password'] = 'Parola introdusă este prea scurtă.';
         }
         elseif ($data['password'] != $data['password2']) {
             $errors['password2'] = 'Parolele nu coincid.';
@@ -102,22 +102,22 @@ function validate_user_data($data, $register, $user = null) {
     // current password
     if (!$register && $data['passwordold']) {
         if (!user_test_password($user['username'], $data['passwordold'])) {
-            $errors['passwordold'] = 'Nu aceasta este parola curenta!';
+            $errors['passwordold'] = 'Nu aceasta este parola curentă.';
         }
     }
 
     // full name
     if (6 > strlen(trim($data['full_name']))) {
-        $errors['full_name'] = 'Nu ati completat numele.';
+        $errors['full_name'] = 'Nu ați completat numele.';
     }
     elseif (!is_user_full_name($data['full_name'])) {
-        $errors['full_name'] = 'Numele contine caractere invalide.';
+        $errors['full_name'] = 'Numele conține caractere invalide.';
     }
 
     // terms & conditions
     if ($register && !$data['tnc']) {
-        $errors['tnc'] = 'Ca sa te inregistrezi trebuie sa fii de acord cu '
-                         .'aceste conditii.';
+        $errors['tnc'] = 'Ca să te înregistrezi trebuie să fii de acord cu '
+                         .'aceste condiții.';
     }
 
     // Security
@@ -126,7 +126,7 @@ function validate_user_data($data, $register, $user = null) {
             $data['security_level'] != 'helper' &&
             $data['security_level'] != 'admin' &&
             $data['security_level'] != 'intern') {
-            $errors['security_level'] = "Nivel de securitate invalid";
+            $errors['security_level'] = "Nivel de securitate invalid.";
         }
     }
 

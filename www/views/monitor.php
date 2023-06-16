@@ -70,7 +70,7 @@ if (!$display_only_table) {
 }
 
 if (!$jobs) {
-    echo "<div class=\"notice\">Nici o soluție în coada de evaluare</div>";
+    echo "<div class=\"notice\">Nici o soluție în coada de evaluare.</div>";
 } else {
     // For the score column.
     function format_state($row) {
@@ -169,7 +169,7 @@ if (!$jobs) {
                         "value" => $row['id']));
             $msg .= format_tag(
                     'a',
-                    'Ignora!',
+                    'ignoră',
                     array(
                         "type" => "button",
                         "class" => "skip-job-link"));
@@ -193,11 +193,11 @@ if (!$jobs) {
             },
         ),
         array(
-            'title' => 'Problema',
+            'title' => 'Problemă',
             'rowform' => 'format_task_link',
         ),
         array(
-            'title' => 'Runda',
+            'title' => 'Rundă',
             'rowform' => 'format_round_link',
         ),
         array(
@@ -205,7 +205,7 @@ if (!$jobs) {
             'rowform' => 'format_size',
         ),
         array(
-            'title' => 'Data',
+            'title' => 'Dată',
             'key' => 'submit_time',
             'valform' => 'format_short_date',
         ),
@@ -247,7 +247,7 @@ if (!$jobs) {
                method="post" class="reeval" id="job_reeval">
         <input type="hidden" name="skipped-jobs" id="skipped-jobs"/>
         <input type="checkbox" id="skip-all-checkbox" />
-        <input type="submit" class="button important" value="Ignora submisiile selectate"/>
+        <input type="submit" class="button important" value="Ignoră submisiile selectate"/>
         </form>
     </div>
 
@@ -280,7 +280,7 @@ if (!$display_only_table) {
 
     <p>
         <br/>
-        <?= format_link("documentatie/monitorul-de-evaluare", "Ce este și cum se foloseste") ?>
+        <?= format_link("documentatie/monitorul-de-evaluare", "Ce este și cum se folosește") ?>
         monitorul de evaluare.
     </p>
 

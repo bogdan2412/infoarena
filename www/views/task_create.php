@@ -4,7 +4,7 @@
 $form_fields = array (
         'type' => array(
                 'name' => 'Tipul problemei',
-                'description' => 'Tipul problemei determină modul de evaluare',
+                'description' => 'Tipul problemei determină modul de evaluare.',
                 'type' => 'enum',
                 'values' => task_get_types(),
                 'default' => 'classic',

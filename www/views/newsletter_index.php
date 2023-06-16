@@ -22,7 +22,7 @@ $table_columns = array(
         'rowform' => 'format_newsletter_user',
     ),
     array(
-        'title' => 'Data',
+        'title' => 'Dată',
         'key' => 'creation_timestamp',
         'valform' => 'format_date',
     ),

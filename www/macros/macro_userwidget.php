@@ -16,7 +16,7 @@ function macro_userwidget($args) {
     }
     $dbuser = user_get_by_username($user);
     if (!$dbuser) {
-        return macro_error("User inexistent.");
+        return macro_error("Utilizator inexistent.");
     }
     $ret = '<img src="';
     $ret .= url_absolute(IA_URL_PREFIX . "userwidget/" . $user);
@@ -24,5 +24,3 @@ function macro_userwidget($args) {
     return $ret;
 }
 ?>
-
-

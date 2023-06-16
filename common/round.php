@@ -6,7 +6,7 @@ function round_get_types() {
     return array(
             'classic' => 'Concurs clasic',
             'penalty-round' => 'Concurs cu penalizare',
-            'archive' => 'Arhiva de pregatire',
+            'archive' => 'Arhiva de pregătire',
             'user-defined' => 'Concurs virtual',
             'acm-round' => 'Concurs tip ACM'
     );
@@ -27,69 +27,69 @@ function round_get_parameter_infos() {
     return array(
             'classic' => array(
                     'duration' => array(
-                            'name' => 'Durata',
-                            'description' => "Durata concursului, in ore",
+                            'name' => 'Durată',
+                            'description' => "Durata concursului, în ore.",
                             'default' => '4.5',
                             'type' => 'float',
                     ),
                     'rating_update' => array(
-                            'name' => 'Afecteaza rating-urile',
-                            'description' => "Daca rezultatele din acest concurs ".
-                                "afecteaza rating-urile concurentilor",
+                            'name' => 'Afectează rating-urile',
+                            'description' => "Dacă rezultatele din acest concurs ".
+                                "afectează rating-urile concurenților.",
                             'default' => '1',
                             'type' => 'bool',
                     ),
                 ),
             'penalty-round' => array(
                     'duration' => array(
-                            'name' => 'Durata',
-                            'description' => 'Durata concursului, in ore',
+                            'name' => 'Durată',
+                            'description' => 'Durata concursului, în ore.',
                             'default' => '2',
                             'type' => 'float',
                     ),
                     'rating_update' => array(
-                            'name' => 'Afecteaza rating-urile',
-                            'description' => 'Daca rezultatele din acest concu'
-                                . 'rs afecteaza rating-urile concurentilor',
+                            'name' => 'Afectează rating-urile',
+                            'description' => 'Dacă rezultatele din acest concu'
+                                . 'rs afectează rating-urile concurenților.',
                             'default' => '1',
                             'type' => 'bool',
                     ),
                     'decay_period' => array(
                             'name' => 'Perioada de pierdere a unui procent din'
                                 . ' punctaj',
-                            'description' => 'Intervalul de timp(in secunde) '
-                                . 'in care un concurent pierde 1 procent din '
-                                . 'punctajul sau pe problema',
+                            'description' => 'Intervalul de timp (în secunde) '
+                                . 'în care un concurent pierde 1 procent din '
+                                . 'punctajul său pe problemă.',
                             'default' => '120',
                             'type' => 'integer',
                     ),
                     'submit_cost' => array(
                             'name' => 'Procentajul pierdut pe submisie',
                             'description' => 'Procentul din punctaj pierdut pe'
-                                . ' submisii ulterioare',
+                                . ' submisii ulterioare.',
                             'default' => '3',
                             'type' => 'integer',
                     ),
                     'minimum_score' => array(
-                            'name' => 'Procentul minim pe problema',
+                            'name' => 'Procentul minim pe problemă',
                             'description' => 'Procentul minim din punctaj pe c'
-                                . 'are il poate obtine un concurent pe o probl'
-                                . 'ema rezolvata corect',
+                                . 'are îl poate obține un concurent pe o probl'
+                                . 'emă rezolvată corect.',
                             'default' => '50',
                             'type' => 'integer',
                     ),
                 ),
             'acm-round' => array(
                     'duration' => array(
-                        'name' => 'Durata',
-                        'description' => 'Durata concursului, in ore',
+                        'name' => 'Durată',
+                        'description' => 'Durata concursului, în ore.',
                         'default' => '5',
                         'type' => 'float'
                     ),
                     'scoreboard-duration' => array(
-                        'name' => 'Durata vizibilitatii clasamentului',
-                        'description' => 'Durata vizibilitatii clasamentului, '
-                            . 'in ore',
+                        'name' => 'Durata vizibilității clasamentului',
+                        'description' => 'Durata vizibilității clasamentului, '
+                            . 'în ore.',
                         'default' => '4',
                         'type' => 'float'
                     )
@@ -105,7 +105,7 @@ function round_get_parameter_infos() {
             'user-defined' => array(
                 'duration' => array(
                             'name' => 'Durata',
-                            'description' => "Durata concursului, in ore",
+                            'description' => "Durata concursului, în ore.",
                             'default' => '4.5',
                             'type' => 'float',
                     ),
@@ -123,12 +123,12 @@ function round_validate_parameters($round_type, $parameters) {
         // Check duration
         $duration = getattr($parameters, 'duration');
         if (is_null($duration)) {
-            $errors['duration'] = "Durata trebuie specificata";
+            $errors['duration'] = "Durata trebuie specificată.";
         }
 
         if ($round_type == 'user-defined') {
             if ($duration > IA_USER_DEFINED_ROUND_DURATION_LIMIT) {
-                $errors['duration'] = "Durata maxim admisa este de " .
+                $errors['duration'] = "Durata maximă admisă este de " .
                     IA_USER_DEFINED_ROUND_DURATION_LIMIT . " ore";
             }
         }
@@ -136,21 +136,21 @@ function round_validate_parameters($round_type, $parameters) {
         if ($round_type == 'acm-round') {
             $scoreboard_duration = getattr($parameters, 'scoreboard-duration');
             if (is_null($scoreboard_duration)) {
-                $errors['duration'] = "Durata vizibilitatii clasamentului "
-                    . "trebuie specificata";
+                $errors['duration'] = "Durata vizibilității clasamentului "
+                    . "trebuie specificată.";
                 return $errors;
             }
 
             if (!is_numeric($scoreboard_duration) ||
                 $scoreboard_duration < 0) {
-                $errors['duration'] = "Durata vizibilitatii clasamentului "
-                                    . "trebuie sa fie un numar pozitiv";
+                $errors['duration'] = "Durata vizibilității clasamentului "
+                                    . "trebuie să fie un numar pozitiv.";
                 return $errors;
             }
         }
 
         if (!is_numeric($duration) || $duration < 0) {
-            $errors['duration'] = "Durata trebuie sa fie un numar pozitiv";
+            $errors['duration'] = "Durata trebuie să fie un numar pozitiv.";
         }
     } else {
         log_error("Bad round_type");
@@ -186,24 +186,24 @@ function round_validate($round) {
     log_assert(is_array($round), "You didn't even pass an array");
 
     if (!is_round_id(getattr($round, 'id', ''))) {
-        $errors['id'] = 'ID de runda invalid';
+        $errors['id'] = 'ID de rundă invalid.';
     }
 
     if (!is_page_name($round['page_name'])) {
-        $errors['page_name'] = "Homepage invalid";
+        $errors['page_name'] = "Pagină invalidă.";
     }
 
     if (!array_key_exists(getattr($round, 'type'), round_get_types())) {
-        $errors['type'] = "Tipul rundei este invalid";
+        $errors['type'] = "Tipul rundei este invalid.";
     }
 
     if (!in_array(getattr($round, 'state'),
             array('running', 'waiting', 'complete'))) {
-        $errors['state'] = "Starea rundei este invalida";
+        $errors['state'] = "Starea rundei este invalidă.";
     }
 
     if (!is_whole_number(getattr($round, 'public_eval'))) {
-        $errors['public_eval'] = "public_eval este invalid";
+        $errors['public_eval'] = "public_eval este invalid.";
     }
 
     // NULL is ok here.
@@ -216,14 +216,14 @@ function round_validate($round) {
 
             if (($round_time - $current_time) >
                     IA_USER_DEFINED_ROUND_DAYSBEFORE_LIMIT * 60 * 60 * 24) {
-                $errors['start_time'] = "Nu poti creea o runda cu mai mult de "
-                    . IA_USER_DEFINED_ROUND_DAYSBEFORE_LIMIT . " zile inainte";
+                $errors['start_time'] = "Nu poți crea o rundă cu mai mult de "
+                    . IA_USER_DEFINED_ROUND_DAYSBEFORE_LIMIT . " zile înainte.";
             }
         }
     }
 
     if (!is_user_id(getattr($round, 'user_id', ''))) {
-        $errors['user_id'] = "ID-ul userului este invalid";
+        $errors['user_id'] = "ID-ul utilizatorului este invalid.";
     }
 
     return $errors;

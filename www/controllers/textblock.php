@@ -21,7 +21,7 @@ function controller_textblock_view($page_name, $rev_num = null,
         $rev_count = textblock_get_revision_count($page_name);
         if ($rev_num && $rev_num != $rev_count) {
             if (!is_numeric($rev_num) || (int)$rev_num < 1) {
-                flash_error('Revizia "' . $rev_num . '" este invalida.');
+                flash_error('Revizia "' . $rev_num . '" este invalidă.');
                 redirect(url_textblock($page_name));
             } else {
                 $rev_num = (int)$rev_num;
@@ -30,7 +30,7 @@ function controller_textblock_view($page_name, $rev_num = null,
             $page = textblock_get_revision($page_name, $rev_num);
 
             if (!$page) {
-                flash_error('Revizia "' . $rev_num . '" nu exista.');
+                flash_error('Revizia "' . $rev_num . '" nu există.');
                 redirect(url_textblock($page_name));
             }
         } else {
@@ -39,7 +39,7 @@ function controller_textblock_view($page_name, $rev_num = null,
         }
     } else {
         // Missing page.
-        flash_error("Nu exista pagina, dar poti sa o creezi ...");
+        flash_error("Nu există pagina, dar poți să o creezi.");
         redirect(url_textblock_edit($page_name));
     }
 
@@ -67,7 +67,7 @@ function controller_textblock_diff($page_name) {
     if ($page) {
         identity_require('textblock-history', $page);
     } else {
-        flash_error("Aceasta pagina nu exista!");
+        flash_error("Această pagină nu există.");
         redirect(url_home());
     }
 
@@ -75,7 +75,7 @@ function controller_textblock_diff($page_name) {
     $revfrom_id = request("rev_from");
     $revto_id = request("rev_to");
     if (is_null($revfrom_id) || is_null($revto_id)) {
-        flash_error("Nu ati specificat reviziile.");
+        flash_error("Nu ați specificat reviziile.");
         redirect(url_textblock($page_name));
     }
     if (!is_whole_number($revfrom_id) || !is_whole_number($revto_id) ||
@@ -109,8 +109,8 @@ function controller_textblock_diff($page_name) {
 
     $view = array();
     $view['page_name'] = $page['name'];
-    $view['title'] = 'Diferente pentru ' . $page_name . ' intre reviziile ' .
-                     $revfrom_id . ' si ' . $revto_id;
+    $view['title'] = 'Diferențe pentru ' . $page_name . ' între reviziile ' .
+                     $revfrom_id . ' și ' . $revto_id;
     $view['rev_count'] = $rev_count;
     $view['revfrom_id'] = $revfrom_id;
     $view['revto_id'] = $revto_id;
@@ -125,7 +125,7 @@ function controller_textblock_diff($page_name) {
 // This copies the old revision on top.
 function controller_textblock_restore($page_name, $rev_num) {
     if (!request_is_post()) {
-        flash_error("Pagina nu a putut fi inlocuita!");
+        flash_error("Pagina nu a putut fi înlocuită.");
         redirect(url_textblock($page_name));
     }
 
@@ -137,16 +137,16 @@ function controller_textblock_restore($page_name, $rev_num) {
         identity_require('textblock-restore', $page);
         identity_require('textblock-restore', $rev);
     } else {
-        flash_error("Pagina nu exista");
+        flash_error("Pagina nu există.");
         redirect(url_home());
     }
 
     if (is_null($rev_num)) {
-        flash_error("Nu ati specificat revizia");
+        flash_error("Nu ați specificat revizia.");
         redirect(url_textblock($page_name));
     }
     if (!$rev) {
-        flash_error("Revizia nu exista!");
+        flash_error("Revizia nu există.");
         redirect(url_textblock($page_name));
     }
 
@@ -155,7 +155,7 @@ function controller_textblock_restore($page_name, $rev_num) {
                            $rev['forum_topic'], null,
                            $rev['creation_timestamp'],
                            remote_ip_info());
-    flash("Pagina a fost inlocuita cu revizia {$rev_num}");
+    flash("Pagina a fost înlocuită cu revizia {$rev_num}.");
     redirect(url_textblock($page_name));
 }
 
@@ -165,7 +165,7 @@ function controller_textblock_history($page_name) {
     if ($page) {
         identity_require('textblock-history', $page);
     } else {
-        flash_error("Pagina nu exista");
+        flash_error("Pagina nu există.");
         redirect(url_home());
     }
 
@@ -204,7 +204,7 @@ function controller_textblock_history($page_name) {
 // Delete a certain textblock.
 function controller_textblock_delete($page_name) {
     if (!request_is_post()) {
-        flash_error("Pagina nu a putut fi stearsa!");
+        flash_error("Pagina nu a putut fi ștearsă.");
         redirect(url_textblock($page_name));
     }
 
@@ -216,11 +216,11 @@ function controller_textblock_delete($page_name) {
         identity_require('textblock-delete', $page);
     } else {
         // Missing page.
-        flash_error("Pagina inexistenta.");
+        flash_error("Pagină inexistentă.");
         redirect(url_home);
     }
     textblock_delete($page_name);
-    flash("Pagina a fost stearsa.");
+    flash("Pagina a fost ștearsă.");
     redirect(url_home());
 }
 
@@ -231,7 +231,7 @@ function controller_textblock_delete_many($textblocks, $redirect) {
     $bad_page_names = 0;
 
     if (!is_array($textblocks)) {
-        flash_error("Nu au fost specificate pagini pentru a fi sterse");
+        flash_error("Nu ați specificat pagini pentru a fi șterse.");
         redirect($redirect);
     }
 
@@ -246,13 +246,13 @@ function controller_textblock_delete_many($textblocks, $redirect) {
         }
     }
 
-    flash($deleted." textblockuri au fost sterse.");
+    flash($deleted." textblockuri au fost șterse.");
     if ($not_deleted_because_of_permision) {
         flash($not_deleted_because_of_permision.
-              " textblockuri nu au putut fi sterse din cauza permisiunilor.");
+              " textblockuri nu au putut fi șterse din cauza permisiunilor.");
     }
     if ($bad_page_names) {
-        flash($bad_page_names." textblockuri au numele corupt");
+        flash($bad_page_names." textblockuri au numele corupt.");
     }
     redirect($redirect);
 }
@@ -260,22 +260,22 @@ function controller_textblock_delete_many($textblocks, $redirect) {
 // Delete a certain revision
 function controller_textblock_delete_revision($page = null, $rev_num = null) {
     if (!request_is_post()) {
-        flash_error("Pagina nu a putut fi stearsa");
+        flash_error("Pagina nu a putut fi ștearsă.");
         redirect(url_textblock($page));
     }
 
     if ($page == null) {
-        flash_error("Nu a fost specificata pagina");
+        flash_error("Nu a fost specificată pagina.");
         redirect(url_home());
     }
     if ($rev_num == null) {
-        flash_error("Nu a fost specificat numarul reviziei");
+        flash_error("Nu a fost specificat numărul reviziei.");
         redirect(url_home());
     }
 
     $total_revs = textblock_get_revision_count($page);
     if ($rev_num > $total_revs) {
-        flash_error("Nu exista revizia");
+        flash_error("Nu există revizia.");
         redirect(url_home());
     }
 
@@ -289,12 +289,12 @@ function controller_textblock_delete_revision($page = null, $rev_num = null) {
     if ($revision) {
         identity_require('textblock-delete-revision', $revision);
     } else {
-        flash_error("Revizie inexistenta");
+        flash_error("Revizie inexistentă.");
         redirect(url_home());
     }
 
     textblock_delete_revision($revision, $rev_num == $total_revs);
 
-    flash("Revizia a fost stearsa");
+    flash("Revizia a fost ștearsă.");
     redirect(url_textblock_history($page));
 }

@@ -8,14 +8,14 @@ function controller_statistici_problema() {
     // Validate task_id
     $task_id = request('task');
     if (!is_task_id($task_id)) {
-        flash_error('Identificatorul de task este invalid');
+        flash_error('Identificatorul de task este invalid.');
         redirect(url_home());
     }
 
     // Get task
     $task = task_get($task_id);
     if (!$task) {
-        flash_error('Problema nu exista');
+        flash_error('Problema nu există.');
         redirect(url_home());
     }
 

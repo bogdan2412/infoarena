@@ -10,12 +10,12 @@ require_once(IA_ROOT_DIR . "www/format/format.php");
         if (document.getElementById("rename_"+id).style.display == "none") {
             document.getElementById("rename_"+id).style.display = "inline";
             document.getElementById("link_"+id).style.display = "none";
-            document.getElementById("rename_link_"+id).textContent = "Anuleaza";
+            document.getElementById("rename_link_"+id).textContent = "Anulează";
         }
         else {
             document.getElementById("rename_"+id).style.display = "none";
             document.getElementById("link_"+id).style.display = "inline";
-            document.getElementById("rename_link_"+id).textContent = "Redenumeste";
+            document.getElementById("rename_link_"+id).textContent = "Redenumește";
         }
 
     }
@@ -70,10 +70,10 @@ function format_operations($row) {
     global $page_name;
 
     $delurl = format_post_link(url_attachment_delete($page_name, $row['name']),
-                               "Sterge", array(), true,
-                               array("onclick" => "return confirm('Aceasta actiune este ireversibila! Doresti sa continui?')"));
+                               "Șterge", array(), true,
+                               array("onclick" => "return confirm('Această acțiune este ireversibilă! Dorești să continui?')"));
 
-    $renurl = '<a href="#" id="rename_link_'.$row['id'].'" onclick="rename_form('.$row['id'].')">Redenumeste</a>';
+    $renurl = '<a href="#" id="rename_link_'.$row['id'].'" onclick="rename_form('.$row['id'].')">Redenumește</a>';
 
     return '['.$delurl.'] ['.$renurl.']';
 }
@@ -86,7 +86,7 @@ $column_infos = array(
         'rowform' => 'format_attach_zip'
     ),
     array(
-        'title' => 'Numar',
+        'title' => 'Număr',
         'key' => 'id',
         'rowform' => 'format_attach_id'
     ),
@@ -103,12 +103,12 @@ $column_infos = array(
         },
     ),
     array(
-        'title' => 'Marime',
+        'title' => 'Mărime',
         'key' => 'size',
         'rowform' => 'format_attach_size'
     ),
     array(
-        'title' => 'Data',
+        'title' => 'Dată',
         'key' => 'timestamp',
         'valform' => 'format_date',
     ),
@@ -117,7 +117,7 @@ $column_infos = array(
         'rowform' => 'format_ip',
     ),
     array(
-        'title' => 'Operatii',
+        'title' => 'Operații',
         'rowform' => 'format_operations',
     ),
 );
@@ -139,7 +139,7 @@ $column_infos = array(
         echo format_table($view['attach_list'], $column_infos, $options);
     ?>
 
-    <p><?= format_link(url_attachment_new($page_name), 'Atașează un alt fisier') ?></p>
+    <p><?= format_link(url_attachment_new($page_name), 'Atașează un alt fișier') ?></p>
     <?php
         if($view['total_entries']) {
     ?>

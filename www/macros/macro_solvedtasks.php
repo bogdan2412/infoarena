@@ -27,7 +27,7 @@ function macro_solvedtasks($args, $failed_tasks_hack = false) {
     // view
     if (1 <= count($tasks)) {
         if (1 == count($tasks)) {
-            $number = '<span class="task_enum">Total: o problema</span><br>';
+            $number = '<span class="task_enum">Total: o problemă</span><br>';
         }
         else {
             $number = '<span class="task_enum">Total: '.
@@ -44,9 +44,9 @@ function macro_solvedtasks($args, $failed_tasks_hack = false) {
                 }
             }
             if (count($urls) == 0) {
-                $current_line .= 'nicio problema';
+                $current_line .= 'nicio problemă';
             } else if (count($urls) == 1) {
-                $current_line .= 'o problema<br>';
+                $current_line .= 'o problemă<br>';
             } else {
                 $current_line .= count($urls).' probleme <br>';
             }
@@ -62,7 +62,7 @@ function macro_solvedtasks($args, $failed_tasks_hack = false) {
     }
     else {
         // no tasks
-        return '<em>Nicio problema</em>';
+        return '<em>Nicio problemă</em>';
     }
 }
 

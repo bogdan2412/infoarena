@@ -8,7 +8,7 @@ $max_rev_id = max($revfrom_id, $revto_id);
 ?>
 
 <div class="swap_diff">
-<?= format_link(url_textblock_diff($page_name, $revto_id, $revfrom_id), "Inverseaza reviziile") ?>
+<?= format_link(url_textblock_diff($page_name, $revto_id, $revfrom_id), "Inversează reviziile") ?>
 </div>
 
 <h1>Diferențe pentru

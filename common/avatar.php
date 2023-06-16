@@ -37,13 +37,13 @@ function avatar_update($temporary_name, $filepath, $username) {
     $avatar_mime_types = array('image/gif', 'image/jpeg', 'image/png');
     $image_info = getimagesize($temporary_name);
     if (!in_array($image_info['mime'], $avatar_mime_types)) {
-        return 'Fisierul nu este o imagine acceptata pe site. ' .
-                'Utilizati doar imagini GIF, JPEG sau PNG.';
+        return 'Fișierul nu este o imagine acceptată pe site. ' .
+                'Utilizați doar imagini GIF, JPEG sau PNG.';
     }
 
     // write the file on disk.
     if (!move_uploaded_file($temporary_name, $filepath)) {
-        return 'Fisierul nu a putut fi incarcat pe server.';
+        return 'Fișierul nu a putut fi încărcat pe server.';
     }
     // resize the avatar
     avatar_cache_resized($filepath, $image_info, "a".$username);

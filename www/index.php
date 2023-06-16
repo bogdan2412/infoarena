@@ -343,6 +343,6 @@ else if ($action == 'view') {
 
 // invalid URL
 else {
-    flash_error('URL invalid');
+    flash_error('URL invalid.');
     redirect(url_home());
 }

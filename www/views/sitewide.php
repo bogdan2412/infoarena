@@ -31,7 +31,7 @@ function ia_template_header() {
         </div>
     <?php } ?>
 
-    <h1><?= format_link(url_home(), SITE_NAME . ' informatica de performanta') ?></h1>
+    <h1><?= format_link(url_home(), SITE_NAME . ' informatică de performanță') ?></h1>
 </div>
 <?php
 }
@@ -79,7 +79,7 @@ function ia_template_topnav($selected = SITE_NAME, $is_admin = false) {
     </li>
     <li>
         <?= getattr($pre, 'register')?>
-        <?= format_link(url_register(), "inregistrare") ?>
+        <?= format_link(url_register(), "înregistrare") ?>
         <?= getattr($post, 'register') ?>
     </li>
 <?php } else { ?>
@@ -136,11 +136,11 @@ function ia_template_footer() {
                 <?= COPYRIGHT_OWNER ?>
             <?php endif; ?>
         </li>
-        <li class="separate"><?= format_link(url_home(), "Prima pagina") ?></li>
+        <li class="separate"><?= format_link(url_home(), "Prima pagină") ?></li>
         <li><?= format_link(url_textblock(ABOUT_PAGE), 'Despre ' . SITE_NAME) ?></li>
-        <li><?= format_link(url_textblock("termeni-si-conditii"), "Termeni si conditii") ?></li>
+        <li><?= format_link(url_textblock("termeni-si-conditii"), "Termeni și condiții") ?></li>
         <li><?= format_link(url_textblock("contact"), "Contact") ?></li>
-        <li class="top"><a href="#header">Sari la inceputul paginii &uarr;</a></li>
+        <li class="top"><a href="#header">Sari la începutul paginii &uarr;</a></li>
     </ul>
 <?php if (!IA_DEVELOPMENT_MODE) { ?>
     <p class="cc">
@@ -150,8 +150,8 @@ function ia_template_footer() {
                 alt="Creative Commons License"
                 src="<?= url_static('images/CreativeCommonsBadge.png') ?>"/>
         </a>
-        Cu exceptia cazurilor in care se specifica altfel, continutul
-        site-ului <?= SITE_NAME ?><br/>este publicat sub licenta
+        Cu excepția cazurilor în care se specifică altfel, conținutul
+        site-ului <?= SITE_NAME ?><br/>este publicat sub licența
         <a rel="license" href="http://creativecommons.org/licenses/by-nc/2.5/">Creative
         Commons Attribution-NonCommercial 2.5</a>.
 

@@ -42,14 +42,14 @@ function newsletter_body_alternate($textblock, $user) {
     $unsubscribe_url = url_absolute(url_unsubscribe($user['username'],
             user_unsubscribe_key($user)));
     return join("", array(
-        "Acest email este redactat in format HTML. Daca nu se afiseaza\n",
-        "corect, te rog sa il vizualizezi in browser la adresa:\n\n",
+        "Acest email este redactat în format HTML. Dacă nu se afișează\n",
+        "corect, te rog să îl vizualizezi în browser la adresa:\n\n",
         url_absolute(url_newsletter($textblock['name'])), "\n\n\n",
-        "Ai primit acest mesaj deoarece esti inscris pe ",
+        "Ai primit acest mesaj deoarece ești înscris pe ",
         url_absolute(url_home()), "\n", "cu numele \"{$user['full_name']}\", ",
         "utilizator \"{$user['username']}\",\n",
         "adresa de email \"{$user['email']}\".\n\n",
-        "Daca nu mai doresti sa primesti astfel de mesaje te poti dezabona\n",
+        "Dacă nu mai dorești să primești astfel de mesaje, te poți dezabona\n",
         "acum la adresa:\n\n", $unsubscribe_url));
 }
 

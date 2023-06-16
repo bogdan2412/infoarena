@@ -30,9 +30,9 @@ function controller_changes($page_name) {
 
     if (request('format') == 'rss') {
         $view = array();
-        $view['channel']['title'] = 'Modificari pe ' . SITE_NAME;
+        $view['channel']['title'] = 'Modificări pe ' . SITE_NAME;
         $view['channel']['link'] = url_absolute(url_changes());
-        $view['channel']['description'] = 'Ultimele modificari din wiki-ul ' . SITE_NAME;
+        $view['channel']['description'] = 'Ultimele modificări din wiki-ul ' . SITE_NAME;
         $view['channel']['language'] = 'ro-ro';
         $view['channel']['copyright'] = COPYRIGHT_FIRST_YEAR . ' - ' . COPYRIGHT_OWNER;
 
@@ -49,7 +49,7 @@ function controller_changes($page_name) {
             $diffurl = url_textblock_diff($rev['name'], $rev['revision_id'] - 1, $rev['revision_id']);
             $difflink = (!$created) ? " (".format_link($diffurl, "modificari").")" : "";
             $tstamp = format_date($rev['timestamp']);
-            $created_or_changed = $created ? "creata" : "modificata";
+            $created_or_changed = $created ? "creată" : "modificată";
             $item['description'] = "La data de $tstamp pagina $pagelink a fost $created_or_changed de $userlink$difflink.";
 
             $item['guid'] = sha1($rev['name'] . $rev['timestamp']);
@@ -60,7 +60,7 @@ function controller_changes($page_name) {
         execute_view_die('views/rss.php', $view);
     } else {
         $view = array();
-        $view['title'] = 'Modificari pe ' . SITE_NAME;
+        $view['title'] = 'Modificări pe ' . SITE_NAME;
         $view['page_name'] = 'changes';
         $view['revisions'] = $revisions;
         execute_view_die('views/changes.php', $view);

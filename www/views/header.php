@@ -33,8 +33,8 @@ header("Content-type: text/html; charset=utf-8");
     // a macro?).
     if (getattr($view, 'page_name') == "home") {
 ?>
-    <meta name="Description" content="Concursuri de programare, Stiri si articole de informatica, Comunitate online. Arhiva de probleme, Evaluare 24/24, Forum, Resurse educationale, Pregatire pentru olimpiada." />
-    <meta name="keywords" content="Concursuri, Informatica, Programare, Comunitate, Algoritmi, Articole, Evaluare, Pregatire" />
+    <meta name="Description" content="Concursuri de programare, Știri și articole de informatică, Comunitate online. Arhivă de probleme, Evaluare 24/24, Forum, Resurse educaționale, Pregătire pentru olimpiadă." />
+    <meta name="keywords" content="Concursuri, Informatică, Programare, Comunitate, Algoritmi, Articole, Evaluare, Pregătire" />
     <meta name="verify-v1" content="j9UCDYvsDL2pLtkJDDkE4HnHVmXakgvz30vOyIJ+6cI=" />
     <meta name="verify-v1" content="ac36ilLp6y4xp71sJgZEjFMgow6YCLkyQLrG/b2iT/Q=" />
     <meta name="verify-v1" content="PQDTb5Advw297iADXVUYuxh0z+iQKfq1wtYWnfHCb1Y=" />
@@ -155,12 +155,12 @@ ia_template_topnav($topnav_select, $is_admin);
     <div id="login">
         <?php if (!isset($no_sidebar_login)) include(IA_ROOT_DIR.'www/views/form_login.php') ?>
         <p>
-        <?= format_link(url_register(), "Ma inregistrez!" ) ?><br/>
+        <?= format_link(url_register(), "Mă înregistrez!" ) ?><br/>
         <?= format_link(url_resetpass(), "Mi-am uitat parola..." ) ?>
         </p>
     </div>
     <?php } ?>
-    <p class="user-count"><?php echo user_count(); ?> membri inregistrati</p>
+    <p class="user-count"><?php echo user_count(); ?> membri înregistrați</p>
     <div id="srv_time" class="user-count" align="center"></div>
     <script type="text/javascript" src="<?= html_escape(url_static('js/time.js')) ?>"></script>
     <script type="text/javascript">loadTime(<?= format_date(null, 'HH, mm, ss');?>);</script>

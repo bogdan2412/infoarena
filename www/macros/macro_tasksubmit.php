@@ -26,19 +26,19 @@ function macro_tasksubmit($args) {
 
     if (identity_is_anonymous()) {
         $url = html_escape(url_login());
-        return macro_message("Trebuie sa te autentifici pentru a trimite solutii. <a href=\"{$url}\">Click aici</a>", true);
+        return macro_message("Trebuie să te autentifici pentru a trimite soluții. <a href=\"{$url}\">Click aici</a>", true);
     }
 
     // Permission check. Should never fail right now.
     if (!identity_can('task-submit', $task)) {
-        return macro_message("Nu se (mai) pot trimite solutii la aceasta problema.", true);
+        return macro_message("Nu se (mai) pot trimite soluții la această problemă.", true);
     }
 
     // Display form
     ob_start();
 ?>
 
-<a href="<?= html_escape(url_monitor()."?task=".$task['id']."&user=".$identity_user['username']) ?>">Vezi solutiile trimise de tine</a>
+<a href="<?= html_escape(url_monitor()."?task=".$task['id']."&user=".$identity_user['username']) ?>">Vezi soluțiile trimise de tine</a>
 <?php
     require_once(IA_ROOT_DIR . "www/views/submit_form.php");
     display_submit_form(true, $task_id);

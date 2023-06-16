@@ -57,9 +57,8 @@ foreach ($task_pages as $task_page) {
         if (stristr($page["text"], 'SmfTopic')) {
             log_warn('Eroare de regexp pentru "'.$task['id'].'"!');
         }
-        log_warn($page["name"] . " nu are nici un topic asociat");
+        log_warn($page["name"] . " nu are niciun topic asociat");
     }
 }
 
 ?>
-

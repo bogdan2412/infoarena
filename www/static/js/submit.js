@@ -49,7 +49,7 @@ function Submit_AutoCompiler() {
         }
     }
     else {
-        alert('Atentie! Pentru fisierul selectat nu am putut alege automat ' +
+        alert('Atenție! Pentru fișierul selectat nu am putut alege automat ' +
             'un compilator.');
         compiler.val('-');
     }
@@ -82,7 +82,7 @@ function Submit_UpdateTask() {
             dataType: 'json', type: 'POST', success:
             function(response, postStatus, xhr) {
                 if (postStatus == 'error') {
-                    alert('Eroare! Nu pot determina rundele. Incercati din nou.');
+                    alert('Eroare! Nu pot determina rundele. Încercați din nou.');
                     return;
                 }
                 var data = response;//$.parseJSON(response);
@@ -94,9 +94,9 @@ function Submit_UpdateTask() {
                 if (warning_container.length > 0) {
                     if (rounds.length != 1) {
                         warning_container.html(
-                            '<p class="submit-warning">Această problemă face p'
-                          + 'arte din mai multe concursuri. Selectează-l pe ce'
-                          + 'l la care participi!</p>');
+                            '<p class="submit-warning">Această problemă face '
+                          + 'parte din mai multe concursuri. Selectează-l pe '
+                          + 'cel la care participi!</p>');
                     } else {
                         warning_container.html('');
                     }

@@ -18,13 +18,13 @@ log_assert_valid(task_validate($task));
 $form_fields = array(
         'title' => array(
                 'name' => "Titlul problemei",
-                'description' => "Nume sub care apare problema pentru utilizator",
+                'description' => "Numele sub care apare problema pentru utilizator.",
                 'type' => 'string',
         ),
         'page_name' => array(
-                'name' => "Pagina cu enuntul",
+                'name' => "Pagina cu enunțul",
                 'description' => "Aceasta este pagina la care este trimis ".
-                                 "utilizatorul când dă click pe o problemă",
+                                 "utilizatorul când dă click pe problemă.",
                 'type' => 'string',
         ),
         'user' => array(
@@ -39,7 +39,7 @@ $form_fields = array(
         ),
         'security' => array(
                 'name' => 'Securitate',
-                'description' => 'Nivelul de securitate al problemei',
+                'description' => 'Nivelul de securitate al problemei.',
                 'type' => 'enum',
                 'values' => task_get_security_types(),
                 'default' => 'private',
@@ -59,13 +59,11 @@ $form_fields = array(
                 'type' => 'bool'
         ),
         'test_count' => array(
-                'description' => "Număr de teste",
+                'name' => "Număr de teste",
                 'default' => 10,
                 'type' => 'integer',
-                'name' => "Număr de teste",
         ),
         'test_groups' => array(
-                'description' => "Descrierea grupării testelor.",
                 'default' => '1;2;3;4;5;6;7;8;9;10',
                 'type' => 'string',
                 'name' => "Grupare teste",
@@ -74,16 +72,15 @@ $form_fields = array(
                 'description' => "Lista de teste pe care utilizatorii pot vedea rezultatele în concursuri.",
                 'default' => '',
                 'type' => 'string',
-                'name' => "Detailed feedback",
+                'name' => "Feedback detaliat",
         ),
         'use_ok_files' => array(
-                'description' => "Dacă evaluator-ul folosește fișiere .ok",
                 'default' => '0',
                 'type' => 'bool',
                 'name' => "Folosește .ok",
         ),
         'evaluator' => array(
-                'description' => "Sursa evaluatorului. Poate fi omis pentru evaluare cu diff",
+                'description' => "Sursa evaluatorului. Poate fi omis pentru evaluare cu diff.",
                 'default' => 'eval.c',
                 'type' => 'string',
                 'name' => "Evaluator",
@@ -147,7 +144,7 @@ $form_fields = array(
                                             "name" => "tag_year"),
                             'round' => Array("label" => "Runda",
                                             "name" => "tag_round"),
-                            'age_group' => Array("label" => "Grupa de varsta",
+                            'age_group' => Array("label" => "Grupa de vârstă",
                                         "name" => "tag_age_group"),
                         );
     ?>

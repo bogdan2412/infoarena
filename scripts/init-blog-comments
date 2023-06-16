@@ -52,7 +52,7 @@ foreach ($blog_posts as $post) {
         }
     }
     else {
-        log_warn('Nu s-a gasit topic pentru "'.$post['title'].'"!');
+        log_warn('Nu s-a găsit topic pentru "'.$post['title'].'"!');
     }
 }
 

@@ -27,7 +27,7 @@ function controller_reeval() {
     // caution.
     parameter_update_global('full_rating_update', 1);
 
-    flash('Se reevalueaza urmatoarele job-uri... ');
+    flash('Se reevaluează următoarele job-uri... ');
     redirect(url_monitor($filters));
 }
 ?>

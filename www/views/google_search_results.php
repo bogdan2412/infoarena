@@ -5,7 +5,7 @@
     <p>
         Introduceți numele problemei în câmpul de mai jos. Apoi apăsați butonul
         de căutare. Va fi afișată o listă cu toate problemele care conțin în
-        titlu sau în textul problemei cuvântul cheie căutat.
+        titlu sau în textul problemei cuvântul-cheie căutat.
     </p>
 </div>
 

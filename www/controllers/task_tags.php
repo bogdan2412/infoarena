@@ -76,7 +76,7 @@ function controller_task_tags_delete() {
     }
 
     tag_delete_by_id($tag_id);
-    flash("Tag-ul a fost sters.");
+    flash("Tag-ul a fost șters.");
     redirect(url_task_tags());
 }
 
@@ -106,7 +106,7 @@ function controller_task_tags_rename() {
     $tag["name"] = $new_name;
     // Check that the new tag doesn't already exist.
     if (tag_get_id($tag)) {
-        flash_error("Tagul deja exista.");
+        flash_error("Tagul există deja.");
         redirect(url_task_tags());
     }
     tag_update_by_id($tag_id, $tag);

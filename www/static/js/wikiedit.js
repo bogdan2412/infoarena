@@ -25,14 +25,14 @@ function WikiEdit_Preview() {
 
     // visual clue to indicate that preview is loading
     container.html('<div class="loading"> <img src="'
-        + BASE_HREF + 'static/images/indicator.gif" />Se incarca ...</div>');
+        + BASE_HREF + 'static/images/indicator.gif" />Se încarcă...</div>');
     container.show();
 
     // request preview
     $.ajax({url:BASE_HREF + 'json/wiki-preview?page_name=' + escape(page_name.val()), type:'POST', dataType: 'json', data: content.val(), success:
         function(data, textStatus, req) {
             if (textStatus == 'error') {
-                alert('Eroare! Nu pot face preview. Incercati din nou');
+                alert('Eroare! Nu pot face preview. Încercați din nou.');
                 WikiEdit_ClosePreview();
                 return;
             }
@@ -57,7 +57,7 @@ function WikiEdit_Leave(event) {
         return;
     }
 
-    var message = "Ati facut modificari pe care nu le-ati salvat. Doriti sa parasiti pagina?";
+    var message = "Ați făcut modificări pe care nu le-ați salvat. Doriți să părăsiți pagina?";
     if (typeof event == 'undefined') {
         event = window.event;
     }

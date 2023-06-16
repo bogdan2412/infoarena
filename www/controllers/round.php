@@ -33,7 +33,7 @@ function controller_round_details($round_id) {
     // Get round
     $round = round_get($round_id);
     if (!$round) {
-        flash_error("Runda nu exista");
+        flash_error("Runda nu există");
         redirect(url_home());
     }
 
@@ -128,7 +128,7 @@ function controller_round_details($round_id) {
                 break;
             }
             if (!array_key_exists($tid, $all_task_ids)) {
-                $errors['tasks'] = "Nu exista task-ul $tid.";
+                $errors['tasks'] = "Nu există task-ul $tid.";
                 break;
             }
         }
@@ -138,7 +138,7 @@ function controller_round_details($round_id) {
     if (!array_key_exists('tasks', $errors)
         && $values['type'] == 'user-defined' &&
         count($values['tasks']) > IA_USER_DEFINED_ROUND_TASK_LIMIT) {
-            $errors['tasks'] = "Nu poti alege mai mult de " .
+            $errors['tasks'] = "Nu poți alege mai mult de " .
             IA_USER_DEFINED_ROUND_TASK_LIMIT . " probleme";
         }
 
@@ -199,7 +199,7 @@ function controller_round_details($round_id) {
             $round['type'] != $new_round['type']);
 
         if (!$result) {
-            flash_error('Eroare la actualizarea listei. Incercati din nou');
+            flash_error('Eroare la actualizarea listei. Încercați din nou');
             redirect(url_round_edit_params($round_id));
         }
 
@@ -207,7 +207,7 @@ function controller_round_details($round_id) {
             tag_update("round", $new_round['id'], "tag", $values['tags']);
         }
 
-        flash("Runda a fost modificata cu succes.");
+        flash("Runda a fost modificată cu succes.");
         // FIXME: don't redirect, update $view information instead
         redirect(url_round_edit_params($round_id));
     }
@@ -237,7 +237,7 @@ function controller_round_task_order($round_id) {
     // Get round
     $round = round_get($round_id);
     if (!$round) {
-        flash_error("Runda nu exista");
+        flash_error("Runda nu există");
         redirect(url_home());
     }
 
@@ -326,10 +326,10 @@ function controller_round_create() {
         if (!is_round_id($values['id'])) {
             $errors['id'] = "Id-ul rundei este invalid";
         } else if (round_get($values['id'])) {
-            $errors['id'] = "Exista deja o runda cu acest id";
+            $errors['id'] = "Există deja o runda cu acest id";
         }
         if (!array_key_exists($values['type'], round_get_types())) {
-            $errors['type'] = "Tip de runda invalid";
+            $errors['type'] = "Tip de rundă invalid";
         }
 
         if (!$errors) {
@@ -348,7 +348,7 @@ function controller_round_create() {
             // This should never fail.
             log_assert(round_create($round, $round_params,
                     identity_get_user_id(), remote_ip_info()));
-            flash("O noua runda a fost creata, acum poti sa editezi detalii.");
+            flash("O nouă rundă a fost creată, acum poți să editezi detalii.");
             redirect(url_round_edit($round['id']));
         }
     }
@@ -363,7 +363,7 @@ function controller_round_create() {
 
     // Create view.
     $view = array();
-    $view['title'] = "Creare runda";
+    $view['title'] = "Creare rundă";
     $view['page_name'] = url_round_create();
     $view['form_values'] = $values;
     $view['form_errors'] = $errors;
@@ -382,7 +382,7 @@ function controller_round_delete_view($round_id) {
     // Get round
     $round = round_get($round_id);
     if (!$round) {
-        flash_error("Runda nu exista");
+        flash_error("Runda nu există");
         redirect(url_home());
     }
 
@@ -413,7 +413,7 @@ function controller_round_delete_view($round_id) {
     // Create view
     $view = array();
     $view['textblock_list'] = $textblock_list;
-    $view['title'] = "Stergere textblockuri corelate cu $round_id";
+    $view['title'] = "Ștergere textblockuri corelate cu $round_id";
     $view['page_name'] = url_round_delete($round_id);
     $view['round_id'] = $round_id;
     $view['round'] = $round;
@@ -428,7 +428,7 @@ function controller_round_delete_view($round_id) {
 
 function controller_round_delete($round_id) {
     if (!request_is_post()) {
-        flash_error('Runda nu a putut fi stearsa.');
+        flash_error('Runda nu a putut fi ștearsă.');
     }
 
     // Validate round_id
@@ -440,7 +440,7 @@ function controller_round_delete($round_id) {
     // Get round
     $round = round_get($round_id);
     if (!$round) {
-        flash_error('Runda nu exista.');
+        flash_error('Runda nu există.');
         redirect(url_home());
     }
 
@@ -450,6 +450,6 @@ function controller_round_delete($round_id) {
     // Delete all the round related information from the database
     round_delete($round_id);
 
-    flash('Runda a fost stearsa.');
+    flash('Runda a fost ștearsă.');
     redirect(url_home());
 }

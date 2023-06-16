@@ -68,8 +68,7 @@ function macro_rankingsacmtotal($args) {
     }
 
     if (count($rankings) <= 0) {
-        return macro_message('Nici un rezultat inregistrat pentru aceasta ' .
-                             'runda.');
+        return macro_message('Nici un rezultat înregistrat pentru această rundă.');
     }
 
     array_multisort($scores, SORT_DESC, $penalties, SORT_ASC, $rankings);
@@ -86,7 +85,7 @@ function macro_rankingsacmtotal($args) {
     $row = null;
     $column_infos = array(
         array(
-            'title' => 'Pozitie',
+            'title' => 'Poziție',
             'key' => 'ranking',
             'css_class' => 'number rank'
         ),

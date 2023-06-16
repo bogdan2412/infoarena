@@ -20,16 +20,16 @@ function controller_unsubscribe($username) {
 
     // validate confirmation code
     if ($cpass != user_unsubscribe_key($user)) {
-        flash_error('Codul de confirmare nu este corect!');
+        flash_error('Codul de confirmare nu este corect.');
         redirect(url_home());
     }
 
     // check if user is already unsubscribed
     if (!getattr($user, 'newsletter')) {
-        flash_error('Contul '.$user['username'].' NU este abonat la newsletter'
-                    .'! Daca ai mai multe conturi pe aceeasi '
-                    .'adresa de e-mail, va trebui sa de dezabonezi de la '
-                    .'fiecare cont in parte!');
+        flash_error('Contul '.$user['username'].' NU este abonat la newsletter. '
+                    .'Dacă ai mai multe conturi pe aceeași '
+                    .'adresă de e-mail, va trebui să te dezabonezi de la '
+                    .'fiecare cont în parte!');
         redirect(url_home());
     }
 
@@ -45,7 +45,7 @@ function controller_unsubscribe($username) {
     }
 
     // notify yser
-    flash('Ai fost dezabonat de la newsletter. O zi buna!');
+    flash('Ai fost dezabonat de la newsletter. O zi bună!');
     redirect(url_home());
 }
 

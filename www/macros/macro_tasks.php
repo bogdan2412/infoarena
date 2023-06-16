@@ -167,7 +167,7 @@ function macro_tasks($args) {
     // Check if user can see round tasks
     if (!identity_can('round-view-tasks', $round)) {
         // This used to return the error message in macro_permission_error().
-        // However, this seems too drastic. A contestat can simply visit the
+        // However, this seems too drastic. A contestant can simply visit the
         // round page before the round starts.
         return '';
     }
@@ -294,7 +294,7 @@ function macro_tasks($args) {
     }
     if ($show_solved_by) {
         $column_infos[] = array(
-                'title' => 'Rezolvata de',
+                'title' => 'Rezolvată de',
                 'title_css_class' => 'new_feature',
                 'css_class' => '',
                 'rowform' => 'format_solved_by_column',

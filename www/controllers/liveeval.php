@@ -10,7 +10,7 @@ function controller_liveeval() {
 
     $view = array();
     if (!request("rounds")) {
-        flash_error("Se aseapta un parametru rounds pentru liveeval");
+        flash_error("Parametru rounds este obligatoriu pentru liveeval.");
         redirect(url_home());
     }
 

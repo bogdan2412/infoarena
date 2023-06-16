@@ -26,14 +26,14 @@ function controller_resetpass() {
         if ($data['username']) {
             $user = user_get_by_username($data['username']);
             if (!$user) {
-                $errors['username'] = 'Nu exista vreun utilizator cu acest '
-                                      .'nume de cont';
+                $errors['username'] = 'Nu există niciun utilizator cu acest '
+                                      .'nume de cont.';
             }
         }
         elseif ($data['email']) {
             $user = user_get_by_email($data['email']);
             if (!$user) {
-                $errors['email'] = 'Nu exista utilizator cu aceasta adresa '
+                $errors['email'] = 'Nu există niciun utilizator cu această adresă '
                                    .'de e-mail.';
             }
         }
@@ -49,21 +49,21 @@ function controller_resetpass() {
 
             // email user
             $to = $user['email'];
-            $subject = 'Recupereaza utilizator si parola';
+            $subject = 'Recuperează utilizatorul și parola';
             $message = sprintf("
-Ai solicitat ca parola contului tau de pe %s sa fie resetata.
+Ai solicitat ca parola contului tău de pe %s sa fie resetată.
 
 Nume de cont: %s
 Adresa ta de e-mail: %s
-Numele tau: %s
+Numele tău: %s
 
-Pentru a confirma aceasta actiune trebuie sa vizitezi acest link:
+Pentru a confirma aceasta acțiune, trebuie să vizitezi acest link:
 
 ----
 %s
 ----
 
-Daca nu ai facut o astfel de solicitare, ignora acest mesaj iar parola nu va fi resetata.
+Dacă nu ai facut o astfel de solicitare, ignoră acest mesaj, iar parola nu va fi resetată.
 
 Echipa %s
 %s
@@ -86,7 +86,7 @@ Echipa %s
             redirect(url_login());
         }
         else {
-            flash_error('Trebuie sa completezi cel putin unul din campuri!');
+            flash_error('Trebuie să completezi cel puțin unul din câmpuri.');
         }
     }
     else {
@@ -95,7 +95,7 @@ Echipa %s
 
     // page title
     $view = array();
-    $view['title'] = 'Recuperare parola';
+    $view['title'] = 'Recuperare parolă';
     $view['form_errors'] = $errors;
     $view['form_values'] = $data;
     $view['no_sidebar_login'] = true;
@@ -117,7 +117,7 @@ function controller_resetpass_confirm($username) {
 
     // validate confirmation code
     if ($cpass != user_resetpass_key($user)) {
-        flash_error('Codul de confirmare nu este corect!');
+        flash_error('Codul de confirmare nu este corect.');
         redirect(url_home());
     }
 
@@ -129,14 +129,14 @@ function controller_resetpass_confirm($username) {
 
     // send email with new password
     $to = $user['email'];
-    $subject = 'Parola noua';
+    $subject = 'Parola nouă';
     $message = sprintf("
-Ai solicitat si ai confirmat ca parola ta sa fie resetata.
+Ai solicitat și ai confirmat ca parola ta să fie resetată.
 
-Parola noua: %s
+Parola nouă: %s
 Numele contului: %s
 
-Te poti autentifica aici:
+Te poți autentifica aici:
 %s
 
 Echipa %s
@@ -152,8 +152,8 @@ Echipa %s
     send_email($to, $subject, $message);
 
     // notify user
-    flash('Parola a fost resetata si trimisa pe e-mail. Verifica-ti ' .
-          'e-mail-ul ca sa afli noua parola.');
+    flash('Parola a fost resetată și trimisă pe e-mail. Verifică-ți ' .
+          'e-mail-ul ca să afli noua parolă.');
     redirect(url_login());
 }
 

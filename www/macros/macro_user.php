@@ -17,7 +17,7 @@ function macro_user($args) {
 
     $dbuser = user_get_by_username($user);
     if (!$dbuser) {
-        return macro_error("User inexistent.");
+        return macro_error("Utilizator inexistent.");
     }
 
     $type = getattr($args, 'type', 'link');

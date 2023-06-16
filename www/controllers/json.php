@@ -19,7 +19,7 @@ function controller_json($suburl) {
             // Parse wiki markup and return JSON with HTML output.
             // This is used for previewing markup when editing the wiki.
             $page_name = request('page_name');
-            $page_content = file_get_contents('php://input'); 
+            $page_content = file_get_contents('php://input');
 
             // get text block
             $textblock = textblock_get_revision($page_name);
@@ -63,16 +63,16 @@ function controller_json($suburl) {
         case 'job-skip':
             $job_id = request('job_id');
             if (!is_job_id($job_id)) {
-                die_http_error(400, 'Job invalid');
+                die_http_error(400, 'Job invalid.');
             }
 
             $job = job_get_by_id($job_id);
             if ($job === null) {
-                die_http_error(400, 'Job inexistent');
+                die_http_error(400, 'Job inexistent.');
             }
 
             if (!identity_can('job-skip', $job)) {
-                die_http_error(403, 'Nu ai destule permisiuni');
+                die_http_error(403, 'Nu ai destule permisiuni.');
             }
 
             job_update($job['id'], 'skipped');
@@ -83,6 +83,6 @@ function controller_json($suburl) {
             break;
 
         default:
-            die_http_error(400, 'Actiune invalida.');
+            die_http_error(400, 'Acțiune invalidă.');
     }
 }

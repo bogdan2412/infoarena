@@ -7,7 +7,7 @@ require_once(IA_ROOT_DIR."www/format/pager.php");
 // Displays form to register remote user to given round_id
 function controller_round_register($round_id) {
     if (!is_round_id($round_id)) {
-        flash_error("Identificatorul rundei este invalid");
+        flash_error("Identificatorul rundei este invalid.");
         redirect(url_home());
     }
     $round = round_get($round_id);
@@ -16,7 +16,7 @@ function controller_round_register($round_id) {
     if ($round) {
         identity_require('round-register', $round);
     } else {
-        flash_error('Runda specificata nu exista in baza de date!');
+        flash_error('Runda specificată nu există în baza de date.');
         redirect(url_home());
     }
 
@@ -26,10 +26,10 @@ function controller_round_register($round_id) {
         // Toggle user's registration status
         if (!$user_is_registered) {
             round_register_user($round['id'], identity_get_user_id());
-            flash('Ai fost inregistrat la "'.$round['title'].'"!');
+            flash('Ai fost înregistrat la "'.$round['title'].'"!');
         } else {
             round_unregister_user($round['id'], identity_get_user_id());
-            flash('Ai fost deinregistrat de la "'.$round['title'].'"!');
+            flash('Ai fost dezînregistrat de la "'.$round['title'].'"!');
         }
         redirect(url_textblock($round['page_name']));
     } else {
@@ -40,10 +40,10 @@ function controller_round_register($round_id) {
         );
 
         if (!$user_is_registered) {
-            $view["title"] = "Inregistrare la " . $round["title"];
+            $view["title"] = "Înregistrare la " . $round["title"];
             execute_view_die('views/round_register.php', $view);
         } else {
-            $view["title"] = "Deinregistrare de la " . $round["title"];
+            $view["title"] = "Dezînregistrare de la " . $round["title"];
             execute_view_die('views/round_unregister.php', $view);
         }
     }
@@ -52,7 +52,7 @@ function controller_round_register($round_id) {
 // Displays registered users to given round_id
 function controller_round_register_view($round_id) {
     if (!is_round_id($round_id)) {
-        flash_error("Identificatorul rundei este invalid");
+        flash_error("Identificatorul rundei este invalid.");
         redirect(url_home());
     }
     $round = round_get($round_id);
@@ -61,15 +61,15 @@ function controller_round_register_view($round_id) {
     if ($round) {
         identity_require('round-register-view', $round);
     } else {
-        flash_error('Runda specificata nu exista in baza de date!');
+        flash_error('Runda specificată nu există în baza de date.');
         redirect(url_home());
     }
 
     $options = pager_init_options();
     $view = array();
-    $view['title'] = 'Utilizatori inregistrati la ' . $round['title'];
+    $view['title'] = 'Utilizatori înregistrați la ' . $round['title'];
     $view['round'] = $round;
-    $view['users'] = round_get_registered_users_range($round['id'], 
+    $view['users'] = round_get_registered_users_range($round['id'],
                      $options['first_entry'], $options['display_entries']);
     $view['first_entry'] = $options['first_entry'];
     $view['total_entries'] =  round_get_registered_users_count($round['id']);

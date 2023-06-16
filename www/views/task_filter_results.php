@@ -73,8 +73,8 @@ function tag_print($tags) {
         "author" => "Autor",
         "contest" => "Concurs",
         "year" => "Ediție",
-        "round" => "Runda",
-        "age_group" => "Grupa de vârstă",
+        "round" => "Rundă",
+        "age_group" => "Grupă de vârstă",
         "method" => "Categorie",
         "algorithm" => "Algoritm",
         "tag" => "Tag"
@@ -232,7 +232,7 @@ echo format_task_tag_menu($real_groups, $tag_ids);
 
 echo '</div><div id="task-filter-table">';
 if (!count($tasks)) {
-    echo "Nicio problemă gasită.";
+    echo "Nicio problemă găsită.";
 } else {
     $chunk = array();
     $first_entry = getattr($options, 'first_entry', 0);

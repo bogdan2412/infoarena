@@ -28,7 +28,7 @@ function tag_validate($data, &$errors, $key = null, $parent_key = null) {
     $tags = tag_split($tags);
     foreach ($tags as $tag) {
         if (!is_tag_name($tag)) {
-            $errors[$tag_key] = "Cel putin un tag este gresit";
+            $errors[$tag_key] = "Cel puțin un tag este greșit.";
             return;
         }
     }

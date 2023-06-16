@@ -34,7 +34,7 @@ $chart = new open_flash_chart();
 
 $chart->set_bg_colour("#ffffff");
 
-$title = new title("Evolutia ratingului pentru " . $user['username']);
+$title = new title("Evoluția ratingului pentru " . $user['username']);
 $chart->set_title($title);
 
 // adjust axises and labels

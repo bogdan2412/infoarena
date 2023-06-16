@@ -14,7 +14,7 @@
 </fieldset>
 <ul class="form clear">
     <li>
-        <input type="submit" class="button important" value="Copiaza pagina" id="form_submit" />
+        <input type="submit" class="button important" value="Copiază pagina" id="form_submit" />
     </li>
 </ul>
 </form>
