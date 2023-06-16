@@ -83,8 +83,6 @@ function user_validate($user) {
         $errors['full_name'] = 'Lipsește numele complet.';
     } else if (strlen($user['full_name']) < 1) {
         $errors['full_name'] = 'Numele este prea scurt.';
-//    } else if (!is_user_full_name($user['full_name'])) {
-//        $errors['full_name'] = 'Numele contine caractere invalide.';
     }
 
     // Security level

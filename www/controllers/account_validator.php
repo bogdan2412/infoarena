@@ -107,11 +107,10 @@ function validate_user_data($data, $register, $user = null) {
     }
 
     // full name
-    if (6 > strlen(trim($data['full_name']))) {
-        $errors['full_name'] = 'Nu ați completat numele.';
-    }
-    elseif (!is_user_full_name($data['full_name'])) {
-        $errors['full_name'] = 'Numele conține caractere invalide.';
+    if (!is_user_full_name($data['full_name'])) {
+        $errors['full_name'] =
+            'Numele trebuie să înceapă cu o literă sau cifră și să conțină ' .
+            '5-40 de litere, cifre, spații și semne de punctuație dintre -_.';
     }
 
     // terms & conditions

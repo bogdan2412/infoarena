@@ -65,7 +65,7 @@ define("IA_RE_IP_ADDRESS",
 define("IA_RE_EMAIL", '[^@]+@.+\..+');
 
 // User full name. Your name can't be %$!
-define("IA_RE_USER_FULL_NAME", '[a-z0-9\-\.\ \@]+');
+define("IA_RE_USER_FULL_NAME", '/^(\p{L}|\d)(\p{L}|\d|[ -_.]){4,39}$/u');
 
 // Attachment names.
 // Starts with letter or number, can also contain .-_
@@ -233,7 +233,7 @@ function is_user_name($user_name) {
 
 // Check user full name (John Smith sr.)
 function is_user_full_name($user_full_name) {
-    return preg_match('/^'.IA_RE_USER_FULL_NAME.'$/xi', $user_full_name);
+    return preg_match(IA_RE_USER_FULL_NAME, $user_full_name);
 }
 
 // Check tag id
