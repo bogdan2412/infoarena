@@ -846,7 +846,7 @@ class Textile {
 
     foreach ($para as $para) {
       if (preg_match('/^\n+$/s', $para)) {
-        if (!empty($sticky) && $stickybuff) {
+        if (!empty($sticky) && ($stickybuff ?? null)) {
           $stickybuff .= $para;
         } else {
           $out .= $para;
@@ -966,7 +966,7 @@ class Textile {
           $clear = 'both';
         }
         continue;
-      } elseif (!empty($sticky) && $stickybuff &&
+      } elseif (!empty($sticky) && ($stickybuff ?? null) &&
                 ($block == 'table' || $block == 'dl')) {
         $stickybuff .= $para;
         continue;
@@ -1018,8 +1018,8 @@ class Textile {
         if ($sticky <= 1) {
           $pre .= $this->options['_blockcode_open'];
           $pre = preg_replace('/>$/s', '', $pre, 1);
-          if ($bqlang) { $pre .= " language=\"$bqlang\""; }
-          if ($align) {
+          if ($bqlang ?? null) { $pre .= " language=\"$bqlang\""; }
+          if ($align ?? null) {
             $alignment = $this->_halign($align);
             if ($this->options['css_mode']) {
               if (($padleft || $padright) &&
@@ -1033,15 +1033,15 @@ class Textile {
               if ($alignment) { $pre .= " align=\"$alignment\""; }
             }
           }
-          if ($padleft) { $style .= ";padding-left:${padleft}em"; }
-          if ($padright) { $style .= ";padding-right:${padright}em"; }
-          if ($clear) { $style .= ";clear:${clear}"; }
-          if ($class) { $class = preg_replace('/^ /', '', $class, 1); }
-          if ($class) { $pre .= " class=\"$class\""; }
-          if ($id) { $pre .= " id=\"$id\""; }
+          if ($padleft ?? null) { $style .= ";padding-left:${padleft}em"; }
+          if ($padright ?? null) { $style .= ";padding-right:${padright}em"; }
+          if ($clear ?? null) { $style .= ";clear:${clear}"; }
+          if ($class ?? null) { $class = preg_replace('/^ /', '', $class, 1); }
+          if ($class ?? null) { $pre .= " class=\"$class\""; }
+          if ($id ?? null) { $pre .= " id=\"$id\""; }
           if ($style) { $style = preg_replace('/^;/', '', $style, 1); }
           if ($style) { $pre .= " style=\"$style\""; }
-          if ($lang) { $pre .= " lang=\"$lang\""; }
+          if ($lang ?? null) { $pre .= " lang=\"$lang\""; }
           $pre .= '>';
           unset($lang);
           unset($bqlang);
