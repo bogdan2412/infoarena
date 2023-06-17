@@ -165,4 +165,15 @@ function db_next_row($result) {
     return mysql_fetch_assoc($result);
 }
 
-?>
+function db_execute_sql_file(string $fileName): void {
+    $command = sprintf('mysql -h %s -u %s %s %s < %s',
+                       IA_DB_HOST,
+                       IA_DB_USER,
+                       IA_DB_NAME,
+                       IA_DB_PASS ? ('-p' . IA_DB_PASS) : '',
+                       $fileName);
+
+    // TODO: better include system.
+    require_once __DIR__ . '/../os.php';
+    OS::executeAndAssert($command);
+}

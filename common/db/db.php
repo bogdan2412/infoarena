@@ -310,3 +310,8 @@ function db_get_task_filter_clause($filter, $table_alias) {
         return '1';
     }
 }
+
+function db_table_exists(string $table_name): bool {
+    $val = db_query_value("show tables like '$table_name'");
+    return ($val !== null);
+}
