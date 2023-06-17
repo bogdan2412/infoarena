@@ -47,7 +47,7 @@ define("IA_RE_NORMAL_PAGE_NAME", '
 // Short identifiers. FIXME: limit length here too?
 define("IA_RE_ROUND_ID", '[a-z0-9][a-z0-9_\-\.]*');
 define("IA_RE_TASK_ID", '(?-i:[a-z0-9][a-z0-9_\-\.]*)');
-define("IA_RE_TAG_NAME", '[a-z0-9\-\.\ \@\(\)]+');
+define("IA_RE_TAG_NAME", '/^.{1,64}$/u');
 define("IA_RE_SCORE_NAME", '[a-z0-9][a-z0-9_\-\.]*');
 define("IA_RE_USER_NAME", '[_@a-z0-9][a-z0-9_\-\.\@]*');
 
@@ -243,8 +243,7 @@ function is_tag_id($tag_id) {
 
 // Check tag name
 function is_tag_name($tag_name) {
-    return preg_match('/^'.IA_RE_TAG_NAME.'$/xi', $tag_name) &&
-           strlen($tag_name) < 64;
+    return preg_match(IA_RE_TAG_NAME, $tag_name);
 }
 
 // Check tag type
