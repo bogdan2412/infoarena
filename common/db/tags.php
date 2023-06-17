@@ -317,8 +317,8 @@ function tag_add($obj, $obj_id, $tag_id) {
  * @param bool $show_all
  * @return array
  */
-function tag_get_with_counts($types = array(), $tags = array(),
-                           $show_all = false, $cache = true) {
+function tag_get_with_counts($types = [], $tags = [],
+                             $show_all = false, $cache = true) {
     log_assert(is_array($types), 'types should be an array');
     log_assert(is_array($tags), 'tags should be an array');
     log_assert(is_bool($show_all));
@@ -364,7 +364,7 @@ function tag_get_with_counts($types = array(), $tags = array(),
                                   'sk.security = "public" AND ia_task.id =' .
                                   ' tasks.task_id' : '') . $types_where;
 
-    $query .= " GROUP BY id";
+    $query .= " GROUP BY id ORDER BY name";
     $result = db_fetch_all($query);
     if ($cache && count($tags) <= IA_MAX_TAGS_TO_CACHE) {
         mem_cache_set($cache_key, $result, IA_MEM_CACHE_TAGS_EXPIRATION);
