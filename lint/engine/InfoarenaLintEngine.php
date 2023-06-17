@@ -139,7 +139,7 @@ final class InfoarenaLintEngine extends ArcanistLintEngine {
 
     private function isExternalLibrary($path) {
         $to_skip = array('@^arcanist/@', '@^libphutil/@',
-                         '@^common/external_libs/@', '@^www/php-ofc-library/@',
+                         '@^common/external_libs/@',
                          '@^smf/@',
                          '@^junk/@',
                          '@^www/static/js/highlight@',

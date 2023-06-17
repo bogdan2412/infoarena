@@ -2,7 +2,6 @@
 
 require_once IA_ROOT_DIR.'www/format/format.php';
 require_once IA_ROOT_DIR.'www/format/table.php';
-require_once IA_ROOT_DIR.'www/php-ofc-library/open-flash-chart-object.php';
 
 include CUSTOM_THEME . 'header.php';
 
@@ -75,11 +74,5 @@ if (!identity_is_anonymous()) {
     echo 'Numărul tău de submisii greșite: '.$view['user_wrong_submissions'].'<br/>';
 }
 echo 'Procentajul de reușită: '.$view['solved_percentage'].'%<br/>';
-
-$html = '<br /><div id="distribution-chart"></div><br />'
-    .'<script src=\'static\\js\\swfobject.js\'></script>  <script type="text/javascript"> swfobject.embedSWF("'.html_escape(url_static('swf/open-flash-chart.swf'))
-    .'", "distribution-chart", "560", "280", "9.0.0", null, {"data-file":"'.html_escape(url_home()."plot/points_distribution?args=$username,$task_id,$round_id").'"}); </script>';
-
-echo $html;
 
 include 'footer.php';

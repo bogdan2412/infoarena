@@ -1,12 +1,12 @@
 /* Iconize 0.5 */
 
 /* websites (pictures and movies) */
-a[href *="youtube.com/watch?"], a[href *="sevenload.com/videos/"], a[href *="metacafe.com/watch/"] { 
+a[href *="youtube.com/watch?"], a[href *="sevenload.com/videos/"], a[href *="metacafe.com/watch/"] {
 	padding: 5px 20px 5px 0;
 	background: transparent url(../images/icons/icon_film.gif) no-repeat center right;
 }
 
-a[href *="flickr.com/photos/"], a[href *="zooomr.com"], a[href *="imageshack.us"], a[href *="bubbleshare.com"], a[href *="sevenload.com/bilder/"] { 
+a[href *="flickr.com/photos/"], a[href *="zooomr.com"], a[href *="imageshack.us"], a[href *="bubbleshare.com"], a[href *="sevenload.com/bilder/"] {
 	padding: 5px 20px 5px 0;
 	background: transparent url(../images/icons/icon_pic.gif) no-repeat center right;
 }
@@ -28,97 +28,92 @@ a[href$='.xls'] {
 	background: transparent url(../images/icons/icon_xls.gif) no-repeat center right;
 }
 
-a[href$='.rss'], a[href$='.atom'] { 
+a[href$='.rss'], a[href$='.atom'] {
 	padding: 5px 20px 5px 0;
 	background: transparent url(../images/icons/icon_feed.gif) no-repeat center right;
 }
 
-a[href$='.opml'] { 
+a[href$='.opml'] {
 	padding: 5px 20px 5px 0;
 	background: transparent url(../images/icons/icon_opml.gif) no-repeat center right;
 }
 
-a[href$='.phps'] { 
+a[href$='.phps'] {
 	padding: 5px 20px 5px 0;
 	background: transparent url(../images/icons/icon_phps.gif) no-repeat center right;
 }
 
-a[href$='.phps'] { 
+a[href$='.phps'] {
 	padding: 5px 20px 5px 0;
 	background: transparent url(../images/icons/icon_phps.gif) no-repeat center right;
 }
 
-a[href$='.torrent'] { 
+a[href$='.torrent'] {
 	padding: 5px 20px 5px 0;
 	background: transparent url(../images/icons/icon_torrent.gif) no-repeat center right;
 }
 
-a[href$='.vcard'] { 
+a[href$='.vcard'] {
 	padding: 5px 20px 5px 0;
 	background: transparent url(../images/icons/icon_vcard.gif) no-repeat center right;
 }
 
-a[href$='.exe'] { 
+a[href$='.exe'] {
 	padding: 5px 20px 5px 0;
 	background: transparent url(../images/icons/icon_exe.gif) no-repeat center right;
 }
 
-a[href$='.dmg'], a[href$='.app'] { 
+a[href$='.dmg'], a[href$='.app'] {
 	padding: 5px 20px 5px 0;
 	background: transparent url(../images/icons/icon_dmg.gif) no-repeat center right;
 }
 
-a[href$='.pps'] { 
+a[href$='.pps'] {
 	padding: 5px 20px 5px 0;
 	background: transparent url(../images/icons/icon_pps.gif) no-repeat center right;
 }
 
-a[href$='.pdf'] { 
+a[href$='.pdf'] {
 	padding: 5px 20px 5px 0;
 	background: transparent url(../images/icons/icon_pdf.gif) no-repeat center right;
 }
 
-a[href$='.xpi'] { 
+a[href$='.xpi'] {
 	padding: 5px 20px 5px 0;
 	background: transparent url(../images/icons/icon_plugin.gif) no-repeat center right;
 }
 
-a[href$='.fla'], a[href$='.swf'] { 
-	padding: 5px 20px 5px 0;
-	background: transparent url(../images/icons/icon_flash.gif) no-repeat center right;
-}
-
-a[href$='.zip'], a[href$='.rar'], a[href$='.gzip'], a[href$='.bzip'], a[href$='.ace'] { 
+a[href$='.zip'], a[href$='.rar'], a[href$='.gzip'], a[href$='.bzip'], a[href$='.ace'] {
 	padding: 5px 20px 5px 0;
 	background: transparent url(../images/icons/icon_archive.gif) no-repeat center right;
 }
 
-a[href$='.ical'] { 
+a[href$='.ical'] {
 	padding: 5px 20px 5px 0;
 	background: transparent url(../images/icons/icon_ical.gif) no-repeat center right;
 }
 
-a[href$='.css'] { 
+a[href$='.css'] {
 	padding: 5px 20px 5px 0;
 	background: transparent url(../images/icons/icon_css.gif) no-repeat center right;
 }
 
-a[href$='.ttf'] { 
+a[href$='.ttf'] {
 	padding: 5px 20px 5px 0;
 	background: transparent url(../images/icons/icon_ttf.gif) no-repeat center right;
 }
 
-a[href$='.jpg'], a[href$='.gif'], a[href$='.png'], a[href$='.bmp'], a[href$='.jpeg'], a[href$='.svg'], a[href$='.eps'] { 
+a[href$='.jpg'], a[href$='.gif'], a[href$='.png'], a[href$='.bmp'], a[href$='.jpeg'], a[href$='.svg'], a[href$='.eps'] {
 	padding: 5px 20px 5px 0;
 	background: transparent url(../images/icons/icon_pic.gif) no-repeat center right;
 }
 
-a[href$='.mov'], a[href$='.wmv'], a[href$='.mp4'], a[href$='.avi'], a[href$='.mpg'] { 
+a[href$='.mov'], a[href$='.wmv'], a[href$='.mp4'], a[href$='.avi'], a[href$='.mpg'] {
 	padding: 5px 20px 5px 0;
 	background: transparent url(../images/icons/icon_film.gif) no-repeat center right;
 }
 
-a[href$='.mp3'], a[href$='.wav'], a[href$='.ogg'], a[href$='.wma'], a[href$='.m4a'] { 
+a[href$='.mp3'], a[href$='.wav'], a[href$='.ogg'], a[href$='.wma'], a[href$='.m4a'] {
 	padding: 5px 20px 5px 0;
 	background: transparent url(../images/icons/icon_music.gif) no-repeat center right;
 }
@@ -139,12 +134,12 @@ a[href ^="xmpp:"] {
     background: transparent url(../images/icons/icon_jabber.gif) no-repeat center right;
 }
 
-a[href *="icq.com"] { 
+a[href *="icq.com"] {
 	padding: 5px 20px 5px 0;
 	background: transparent url(../images/icons/icon_icq.gif) no-repeat center right;
 }
 
-a[href *="edit.yahoo.com/config/send_webmesg?"] { 
+a[href *="edit.yahoo.com/config/send_webmesg?"] {
 	padding: 5px 20px 5px 0;
 	background: transparent url(../images/icons/icon_yim.gif) no-repeat center right;
 }

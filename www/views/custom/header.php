@@ -86,13 +86,6 @@ header("Content-type: text/html; charset=utf-8");
         hljs.initHighlightingOnLoad();
         hljs.initLineNumbersOnLoad();
     </script>
-<?php
-    if (request("action") == 'rating') {
-?>
-    <script type="text/javascript" src="<?= html_escape(url_static('js/swfobject.js')) ?>"></script>
-<?php
-    }
-?>
 
     <?= getattr($view, 'head') ?>
 </head>

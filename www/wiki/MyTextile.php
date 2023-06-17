@@ -138,7 +138,7 @@ class MyTextile extends Textile {
         // To avoid CSRF exploits we restrict all images to textblock attachments
         $allowed = false;
         // $allowed_urls are exceptions to this rule
-        $allowed_urls = array("static/images/", "plot/");
+        $allowed_urls = array("static/images/");
 
         foreach ($allowed_urls as $url) {
             if (starts_with(strtolower($srcpath), IA_URL . $url) ||
