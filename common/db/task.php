@@ -76,7 +76,7 @@ function task_delete_from_rounds($task_id) {
     }
 }
 
-// Delete a task, including scores, jobs and page
+// Delete a task, including tags, scores, jobs and page
 // WARNING: This is irreversible.
 function task_delete($task) {
     log_assert_valid(task_validate($task));
@@ -121,6 +121,12 @@ function task_delete($task) {
         db_query("DELETE FROM `ia_job`
                   WHERE `id` IN ({$formated_job_ids})");
     }
+
+    // Delete task tags
+    $query = sprintf('DELETE FROM ia_task_tags ' .
+                     'WHERE task_id = "%s"',
+                     $task['id']);
+    db_query($query);
 
     // Delete task
     db_query("DELETE FROM `ia_task` WHERE `id` = '".
