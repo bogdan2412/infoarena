@@ -81,7 +81,7 @@ function tag_get_parents($tag_ids) {
 function tag_get_id($tag) {
     log_assert(is_tag($tag));
     $query = sprintf(
-        "SELECT id FROM ia_tags WHERE name = %s AND type = %s AND parent = %s",
+        "SELECT id FROM ia_tags WHERE binary name = %s AND type = %s AND parent = %s",
         db_quote($tag["name"]), db_quote($tag["type"]), db_quote($tag["parent"])
     );
     $result = db_fetch($query);
