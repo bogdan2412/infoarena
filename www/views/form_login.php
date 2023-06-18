@@ -17,7 +17,7 @@
         'access_key' => 'p',
 ), 'password') ?>
         <li>
-            <input type="checkbox" value="on" id="form_remember" name="remember" class="checkbox"<?= fval('remember') ? ' checked="checked"' : '' ?>/>
+            <input type="checkbox" value="on" id="form_remember" name="remember" class="checkbox"<?= fval('remember') ? ' checked="checked"' : '' ?>>
             <label class="checkbox" for="form_remember">Păstrează-mă autentificat 5 zile</label>
         </li>
     </ul>

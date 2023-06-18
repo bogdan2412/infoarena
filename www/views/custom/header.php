@@ -39,7 +39,7 @@ header("Content-type: text/html; charset=utf-8");
     if (GOOGLE_SITE_VERIFICATION) {
         print("<meta name=\"google-site-verification\" content=\"" .
               GOOGLE_SITE_VERIFICATION .
-              "\"/>");
+              "\">");
     }
     }
 
@@ -52,18 +52,18 @@ header("Content-type: text/html; charset=utf-8");
 
     <title><?= html_escape(getattr($view, 'title')) ?></title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,500;1,400;1,500&amp;family=Ubuntu:ital,wght@0,300;0,400;1,300;1,400&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,500;1,400;1,500&amp;family=Ubuntu:ital,wght@0,300;0,400;1,300;1,400&amp;display=swap" rel="stylesheet">
 
-    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/sitewide.css')) ?>"/>
-    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/iconize.css')) ?>"/>
-    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/screen.css')) ?>"/>
-    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/tabber.css')) ?>"/>
-    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/highlight-theme.css')) ?>"/>
+    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/sitewide.css')) ?>">
+    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/iconize.css')) ?>">
+    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/screen.css')) ?>">
+    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/tabber.css')) ?>">
+    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/highlight-theme.css')) ?>">
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/print.css')) ?>" media="print">
 
     <!-- custom CSS load; overwritting just some css rules -->
-    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('custom/css/sitewide.css')) ?>"/>
-    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('custom/css/screen.css')) ?>"/>
+    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('custom/css/sitewide.css')) ?>">
+    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('custom/css/screen.css')) ?>">
 
     <link rel="icon" href="<?= IA_URL."/static/custom/images/favicon.svg" ?>" type="image">
     <script src="<?= html_escape(url_static('js/config.js.php')) ?>"></script>
@@ -115,7 +115,7 @@ $is_admin = ('admin' == getattr($identity_user, 'security_level'));
         <li><a href="<?= html_escape(url_textblock('concursuri-virtuale')) ?>">Concursuri virtuale</a></li>
         <li><a href="<?= html_escape(url_textblock('clasament-rating')) ?>">Clasament</a></li>
 		<li><?= format_link_access(url_monitor(array('user' => identity_get_username())), "Monitorul de evaluare", 'm') ?></li>
-        <li class="separator"><hr/></li>
+        <li class="separator"><hr></li>
 		<?php if (SIDEBAR_ELEMENTS['task-search']) { ?>
             <li><a href="<?= url_task_search([]) ?>">Categorii probleme</a></li>
         <?php } ?>
@@ -142,14 +142,14 @@ $is_admin = ('admin' == getattr($identity_user, 'security_level'));
         <?php if (SIDEBAR_ELEMENTS['about']) { ?>
             <li><a href="<?= html_escape(url_textblock(ABOUT_PAGE)) ?>">Despre <?= SITE_NAME ?></a></li>
         <?php } ?>
-        <li class="separator"><hr/></li>
+        <li class="separator"><hr></li>
         <?php if (!identity_is_anonymous()) { ?>
             <li><a href="<?= html_escape(url_submit()) ?>"><strong>Trimite soluții</strong></a></li>
             <li><?= format_link_access(url_account(), "Contul meu", 'c') ?></li>
 			<!-- mihai adaugare elemente top-menu la sidebar -->
 			<li><?= format_link_access(url_user_profile($identity_user['username']), 'Profilul meu', 'p') ?></li>
 			<?php if ($is_admin) { ?>
-			<li class="separator"><hr/></li>
+			<li class="separator"><hr></li>
 			<li><?= format_link_access(url_admin(), 'Administrativ', 'a') ?></li>
 			<?php } ?>
 			<!-- end adaugare elemente sidebar-->
@@ -169,7 +169,7 @@ $is_admin = ('admin' == getattr($identity_user, 'security_level'));
     <div id="login">
         <?php if (!isset($no_sidebar_login)) include(IA_ROOT_DIR.'www/views/form_login.php') ?>
         <p>
-        <?= format_link(url_register(), "Mă înregistrez!" ) ?><br/>
+        <?= format_link(url_register(), "Mă înregistrez!" ) ?><br>
         <?= format_link(url_resetpass(), "Mi-am uitat parola..." ) ?>
         </p>
     </div>

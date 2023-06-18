@@ -20,14 +20,14 @@
             <span class="fieldHelp">Numele fișierului nu poate conține spații.</span>
         </li>
 
-        <br/>
+        <br>
         <li>
             <input type="checkbox" name="autoextract" value="1" <?= fval_checkbox('autoextract') ?> id="form_autoextract" class="checkbox">
             <label class="checkbox" for="form_autoextract">Expandează arhiva .zip</label>
             <span class="fieldHelp">Trimite o arhivă Zip cu unul sau mai multe fișiere. Se va crea câte un atașament pentru fiecare fișier din arhivă.</span>
         </li>
 
-        <br/>
+        <br>
         <li>
             <span class="fieldHelp"><?= format_link(url_attachment_list($page_name), "Listează celelalte atașamente") ?></span>
         </li>

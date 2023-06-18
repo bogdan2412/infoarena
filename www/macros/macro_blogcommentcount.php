@@ -10,12 +10,12 @@ function macro_blogcommentcount($args) {
         return macro_error('Expecting argument `topic_id`');
     }
 
-    $query = sprintf("SELECT numReplies FROM ia_smf_topics 
+    $query = sprintf("SELECT numReplies FROM ia_smf_topics
                       WHERE ID_TOPIC = %d", db_escape($topic_id));
     $res = db_fetch($query);
 
     $html = '<p style="text-align: right;">';
-    $html .= '<img style="vertical-align: middle;" src="'.url_static('images/comment.png').'"/>';
+    $html .= '<img style="vertical-align: middle;" src="'.url_static('images/comment.png').'">';
     $html .= '&nbsp;<a href="'.IA_SMF_URL.'?topic='.$topic_id.'.0">Comentarii ('.$res['numReplies'].')</a>';
     $html .= '</p>';
     return $html;

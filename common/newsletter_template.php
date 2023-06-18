@@ -50,10 +50,10 @@ log_assert(isset($user_is_anonymous));
         <tr><td style="background-color:#d9ffbe; text-align:left; border:0" align="left" border="0" bgcolor="#dnffbe">
           <span style="font-size:8pt; line-height:200%; color:#006000; font-family:sans-serif; text-decoration:none;">
             <strong>Subiect:</strong>
-            <?= html_escape($subject) ?><br/>
+            <?= html_escape($subject) ?><br>
             <?php if (is_db_date($textblock['timestamp'])) { ?>
               <strong>Data:</strong>
-              <?= html_escape(strftime('%Y-%m-%d', db_date_parse($textblock['creation_timestamp']))) ?><br/>
+              <?= html_escape(strftime('%Y-%m-%d', db_date_parse($textblock['creation_timestamp']))) ?><br>
             <?php } ?>
           </span>
         </td></tr>

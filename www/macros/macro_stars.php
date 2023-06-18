@@ -40,7 +40,7 @@ function macro_stars($args) {
             $img = 'half';
 
         $url = url_absolute(url_static("images/stars/{$type}-{$img}.png"));
-        $html .= "<img src=\"".html_escape($url)."\" alt=\"{$type}\"/>";
+        $html .= "<img src=\"".html_escape($url)."\" alt=\"{$type}\">";
     }
 
     // add hidden text to allow js sorting

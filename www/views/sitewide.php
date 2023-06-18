@@ -17,9 +17,9 @@ function ia_template_header() {
         <div id="userbox">
         <?= format_link(url_user_profile($username, true), format_user_avatar($username, "normal", true), false) ?>
             <div class="user">
-                <strong><?= html_escape($identity_user['full_name']) ?></strong><br/>
+                <strong><?= html_escape($identity_user['full_name']) ?></strong><br>
                 <?= format_user_ratingbadge($username, $identity_user['rating_cache']) ?>
-                <?= format_link_access(url_user_profile($username, true), $username, 'p') ?><br/>
+                <?= format_link_access(url_user_profile($username, true), $username, 'p') ?><br>
                 <?= format_post_link(url_logout(), "logout", array(), true, array('class' => 'logout')) ?> |
                 <?= format_link_access(url_account(), 'contul meu', 'c') ?>
             </div>
@@ -27,7 +27,7 @@ function ia_template_header() {
     <?php } ?>
     <?php if (IA_DEVELOPMENT_MODE) { ?>
         <div id="dev_warning">
-            Bravely working in development mode&hellip;<br/>Keep it up!
+            Bravely working in development mode&hellip;<br>Keep it up!
         </div>
     <?php } ?>
 
@@ -148,10 +148,10 @@ function ia_template_footer() {
         <a class="badge" rel="license" href="http://creativecommons.org/licenses/by-nc/2.5/">
             <img
                 alt="Creative Commons License"
-                src="<?= url_static('images/CreativeCommonsBadge.png') ?>"/>
+                src="<?= url_static('images/CreativeCommonsBadge.png') ?>">
         </a>
         Cu excepția cazurilor în care se specifică altfel, conținutul
-        site-ului <?= SITE_NAME ?><br/>este publicat sub licența
+        site-ului <?= SITE_NAME ?><br>este publicat sub licența
         <a rel="license" href="http://creativecommons.org/licenses/by-nc/2.5/">Creative
         Commons Attribution-NonCommercial 2.5</a>.
 
@@ -161,12 +161,12 @@ function ia_template_footer() {
                 <license rdf:resource="http://creativecommons.org/licenses/by-nc/2.5/">
             </Work>
             <License rdf:about="http://creativecommons.org/licenses/by-nc/2.5/">
-                <permits rdf:resource="http://web.resource.org/cc/Reproduction"/>
-                <permits rdf:resource="http://web.resource.org/cc/Distribution"/>
-                <requires rdf:resource="http://web.resource.org/cc/Notice"/>
-                <requires rdf:resource="http://web.resource.org/cc/Attribution"/>
-                <prohibits rdf:resource="http://web.resource.org/cc/CommercialUse"/>
-                <permits rdf:resource="http://web.resource.org/cc/DerivativeWorks"/>
+                <permits rdf:resource="http://web.resource.org/cc/Reproduction">
+                <permits rdf:resource="http://web.resource.org/cc/Distribution">
+                <requires rdf:resource="http://web.resource.org/cc/Notice">
+                <requires rdf:resource="http://web.resource.org/cc/Attribution">
+                <prohibits rdf:resource="http://web.resource.org/cc/CommercialUse">
+                <permits rdf:resource="http://web.resource.org/cc/DerivativeWorks">
             </License>
         </rdf:RDF>
     </p>

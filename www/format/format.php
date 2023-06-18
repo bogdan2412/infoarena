@@ -494,6 +494,6 @@ function format_acm_score($score, $penalty, $submission) {
     } else {
         $result .= 'red">-' . $submission;
     }
-    $result .= '</span><br/>' . $penalty . '</center>';
+    $result .= '</span><br>' . $penalty . '</center>';
     return $result;
 }

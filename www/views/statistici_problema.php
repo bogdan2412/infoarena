@@ -64,15 +64,15 @@ if (count($data['time']) === 0) {
         echo 'Clasament după '.$long_wording[$criteria];
         $column_infos[count($column_infos) - 1]['title'] = $header_wording[$criteria];
         echo format_table($data[$criteria], $column_infos, $options);
-        echo '<br/>';
+        echo '<br>';
     }
 }
 
 echo '<h2>Alte statistici</h2>';
-echo 'Numărul mediu de submisii greșite: '.$view['average_wrong_submissions'].'<br/>';
+echo 'Numărul mediu de submisii greșite: '.$view['average_wrong_submissions'].'<br>';
 if (!identity_is_anonymous()) {
-    echo 'Numărul tău de submisii greșite: '.$view['user_wrong_submissions'].'<br/>';
+    echo 'Numărul tău de submisii greșite: '.$view['user_wrong_submissions'].'<br>';
 }
-echo 'Procentajul de reușită: '.$view['solved_percentage'].'%<br/>';
+echo 'Procentajul de reușită: '.$view['solved_percentage'].'%<br>';
 
 include 'footer.php';

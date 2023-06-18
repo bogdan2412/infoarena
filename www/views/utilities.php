@@ -56,7 +56,7 @@ function ferr($param_name, $escape_html = true) {
         }
     }
 
-    return implode("<br/>", $error);
+    return implode("<br>", $error);
 }
 
 // returns a form error span, html-escaped by default.

@@ -325,23 +325,23 @@ function macro_tasks($args) {
         $pager_hidden_fields = '';
         foreach (pager_init_options($args) as $option => $value) {
             $pager_hidden_fields .=
-                '<input type="hidden" name="'.$option.'" value="'.$value.'"/>';
+                '<input type="hidden" name="'.$option.'" value="'.$value.'">';
         }
         if ($filter) {
             $pager_hidden_fields .=
-                '<input type="hidden" name="filtru" value="'.$filter.'"/>';
+                '<input type="hidden" name="filtru" value="'.$filter.'">';
         }
 
         $as_user .=
             '<span>Vezi această listă din perspectiva altui utilizator: '
             .'<form method="get" action="" style="display:inline">'
             .'  <input type="text" placeholder="GavrilaVlad" name="user"'
-            .'      value="'.request('user', '').'"/>'
+            .'      value="'.request('user', '').'">'
             .$pager_hidden_fields
             .'  <input style="display:inline-block"'
             .'         type="submit" value="Vezi" class="button">'
             .'</form>'
-            .'</span><br/>';
+            .'</span><br>';
     }
 
     if ($filter_user_id !== $user_id) {
@@ -352,7 +352,7 @@ function macro_tasks($args) {
                 $filter_user['username'],
                 $filter_user['full_name'],
                 $filter_user['rating_cache'])
-            .'</span><br/>';
+            .'</span><br>';
     } else if (request('user') && request('user') != identity_get_username()) {
         $as_user .=
             '<span style="color: red;">Nu există un utilizator cu acest'

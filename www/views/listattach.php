@@ -35,9 +35,9 @@ function format_attach_name($row) {
 
     $attachurl = '<span id="rename_'.$row['id'].'" style="display: none">';
     $attachurl .= '<form action="'.url_attachment_rename($page_name).'" method="post">';
-    $attachurl .= '<input type="hidden" name="old_name" value="'.$row['name'].'"/>';
-    $attachurl .= '<input type="text" name="new_name" value="'.$row['name'].'"/>';
-    $attachurl .= '<input type="submit" value="OK" class="button"/>';
+    $attachurl .= '<input type="hidden" name="old_name" value="'.$row['name'].'">';
+    $attachurl .= '<input type="text" name="new_name" value="'.$row['name'].'">';
+    $attachurl .= '<input type="submit" value="OK" class="button">';
     $attachurl .= '</form></span>';
     $attachurl .= '<span id="link_'.$row['id'].'">';
     $attachurl .= format_link(url_attachment($page_name, $row['name']), $row['name']);
@@ -143,8 +143,8 @@ $column_infos = array(
     <?php
         if($view['total_entries']) {
     ?>
-    <p><input type="submit" value="Descarcă ZIP" class="button" name="download"/></p>
-    <p><input type="submit" value="Șterge atașamente" class="button" name="delete" onclick = "return confirm('Această acțiune este ireversibilă! Dorești să continui?');"/></p>
+    <p><input type="submit" value="Descarcă ZIP" class="button" name="download"></p>
+    <p><input type="submit" value="Șterge atașamente" class="button" name="delete" onclick = "return confirm('Această acțiune este ireversibilă! Dorești să continui?');"></p>
     <?php } ?>
     </form>
 <?php include('footer.php'); ?>

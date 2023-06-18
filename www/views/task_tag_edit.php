@@ -26,7 +26,7 @@
                 }
             }
             echo '<li class="tag_list_item">
-                    <input type="checkbox" '.$checked.' name="algorithm_tags[]" value="'.$sub_tag['id'].'"/> '
+                    <input type="checkbox" '.$checked.' name="algorithm_tags[]" value="'.$sub_tag['id'].'"> '
                     .$sub_tag['name'].
                 '</li>';
         }

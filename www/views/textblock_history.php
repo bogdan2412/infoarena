@@ -136,7 +136,7 @@ $options = array(
     type = "submit"
     value = "Compară versiunile selectate"
     class = "button compare-button"
-/>
+>
 </div>
 
 <?php
@@ -149,7 +149,7 @@ echo format_table($revisions, $column_infos, $options);
     type = "submit"
     value = "Compară versiunile selectate"
     class = "button compare-button"
-/>
+>
 </div>
 </form>
 

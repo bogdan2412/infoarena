@@ -95,7 +95,7 @@ if (array_key_exists('security_level', $form_values)) {
             <?php
                 // display avatar
                 $avatar_url = url_user_avatar($user['username'], "big");
-                echo '<img class="avatar" src="'.html_escape($avatar_url).'" alt="avatar"/>';
+                echo '<img class="avatar" src="'.html_escape($avatar_url).'" alt="avatar">';
             ?>
         </li>
         <li>
@@ -124,7 +124,7 @@ if (array_key_exists('security_level', $form_values)) {
                 type="checkbox"
                 <?php if (fval('newsletter')) echo 'checked="checked"'; ?>
                 name="newsletter"
-                id="form_newsletter"/>
+                id="form_newsletter">
             <label for="form_newsletter" class="checkbox">
                 Mă abonez la newsletter. Sunt de acord să primesc pe e-mail
                 noutăți despre <?= SITE_NAME ?>. Mă pot dezabona oricând.

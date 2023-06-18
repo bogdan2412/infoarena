@@ -56,7 +56,7 @@ if (($round_id = textblock_security_is_round($page['security'])) &&
 <ul class="form">
     <li id="field_title">
         <label for="form_title">Titlu</label>
-        <input type="text" name="title" value="<?= fval('title') ?>" id="form_title"/>
+        <input type="text" name="title" value="<?= fval('title') ?>" id="form_title">
         <?= ferr_span('title') ?>
     </li>
 

@@ -111,7 +111,7 @@
                     type="checkbox"
                     <?php if (fval('newsletter')) echo 'checked="checked"'; ?>
                     name="newsletter"
-                    id="form_newsletter"/>
+                    id="form_newsletter">
                 <label for="form_newsletter" class="checkbox">
                     Mă abonez la newsletter. Sunt de acord să primesc pe
                     e-mail noutăți despre <?= SITE_NAME ?>. Mă pot dezabona oricând.
@@ -123,7 +123,7 @@
         <li>
             <?= ferr_span('tnc') ?>
             <input type="checkbox" <?php if (fval('tnc'))
-                                       echo 'checked="checked"'; ?> name="tnc" id="form_tnc"/>
+                                       echo 'checked="checked"'; ?> name="tnc" id="form_tnc">
             <label for="form_tnc" class="checkbox">Sunt de acord cu <a href="<?= html_escape(url_textblock('termeni-si-conditii')) ?>">termenii și condițiile de utilizare</a> ale site-ului <?= SITE_NAME ?>.</label>
         </li>
         <li>

@@ -39,7 +39,7 @@ header("Content-type: text/html; charset=utf-8");
     if (GOOGLE_SITE_VERIFICATION) {
         print("<meta name=\"google-site-verification\" content=\"" .
               GOOGLE_SITE_VERIFICATION .
-              "\"/>");
+              "\">");
     }
     }
 
@@ -52,11 +52,11 @@ header("Content-type: text/html; charset=utf-8");
 
     <title><?= html_escape(getattr($view, 'title')) ?></title>
 
-    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/sitewide.css')) ?>"/>
-    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/iconize.css')) ?>"/>
-    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/screen.css')) ?>"/>
-    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/tabber.css')) ?>"/>
-    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/highlight-theme.css')) ?>"/>
+    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/sitewide.css')) ?>">
+    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/iconize.css')) ?>">
+    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/screen.css')) ?>">
+    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/tabber.css')) ?>">
+    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/highlight-theme.css')) ?>">
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/print.css')) ?>" media="print">
     <link rel="icon" href="<?= IA_URL."favicon.ico" ?>" type="image/vnd.microsoft.icon">
     <script src="<?= html_escape(url_static('js/config.js.php')) ?>"></script>
@@ -124,7 +124,7 @@ ia_template_topnav($topnav_select, $is_admin);
         <?php if (SIDEBAR_ELEMENTS['about']) { ?>
             <li><a href="<?= html_escape(url_textblock(ABOUT_PAGE)) ?>">Despre <?= SITE_NAME ?></a></li>
         <?php } ?>
-        <li class="separator"><hr/></li>
+        <li class="separator"><hr></li>
         <li><?= format_link_access(url_monitor(array('user' => identity_get_username())), "Monitorul de evaluare", 'm') ?></li>
         <?php if (!identity_is_anonymous()) { ?>
             <li><a href="<?= html_escape(url_submit()) ?>"><strong>Trimite soluții</strong></a></li>
@@ -148,7 +148,7 @@ ia_template_topnav($topnav_select, $is_admin);
     <div id="login">
         <?php if (!isset($no_sidebar_login)) include(IA_ROOT_DIR.'www/views/form_login.php') ?>
         <p>
-        <?= format_link(url_register(), "Mă înregistrez!" ) ?><br/>
+        <?= format_link(url_register(), "Mă înregistrez!" ) ?><br>
         <?= format_link(url_resetpass(), "Mi-am uitat parola..." ) ?>
         </p>
     </div>

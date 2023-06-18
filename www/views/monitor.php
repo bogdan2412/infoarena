@@ -245,9 +245,9 @@ if (!$jobs) {
     <div class ="skip-job">
         <form id="skip-jobs-form" enctype="multipart/form-data" action="<?= html_escape(url_job_skip($view['filters'])) ?>"
                method="post" class="reeval" id="job_reeval">
-        <input type="hidden" name="skipped-jobs" id="skipped-jobs"/>
+        <input type="hidden" name="skipped-jobs" id="skipped-jobs">
         <input type="checkbox" id="skip-all-checkbox">
-        <input type="submit" class="button important" value="Ignoră submisiile selectate"/>
+        <input type="submit" class="button important" value="Ignoră submisiile selectate">
         </form>
     </div>
 
@@ -279,7 +279,7 @@ if (!$display_only_table) {
     </p>
 
     <p>
-        <br/>
+        <br>
         <?= format_link("documentatie/monitorul-de-evaluare", "Ce este și cum se folosește") ?>
         monitorul de evaluare.
     </p>
