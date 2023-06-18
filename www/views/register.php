@@ -52,7 +52,7 @@
     </fieldset>
 
     <!-- Hack for valid html (autocomplete is not in the spec). -->
-    <script language="JavaScript">
+    <script>
         <!--
                                                          document.getElementById("form_password").setAttribute("autocomplete", "off");
         document.getElementById("form_password2").setAttribute("autocomplete", "off");

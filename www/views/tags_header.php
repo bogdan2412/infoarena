@@ -31,7 +31,7 @@ function tag_format_input_box($field, $value = null, $width = "50", $name = "tag
 ?>
 
 <link rel="stylesheet" type="text/css" href="<?= html_escape(url_static("css/wick.css")) ?> ">
-<script language="JavaScript">
+<script>
 /* <![CDATA[ */
 function checkForm() {
     answer = true;
@@ -50,4 +50,4 @@ echo "];\n";
 ?>
 /* ]]> */
 </script>
-<script language="JavaScript" src="<?php echo html_escape(url_static("js/wick.js")) ?>"></script>
+<script src="<?php echo html_escape(url_static("js/wick.js")) ?>"></script>
