@@ -20,7 +20,7 @@ function macro_userwidget($args) {
     }
     $ret = '<img src="';
     $ret .= url_absolute(IA_URL_PREFIX . "userwidget/" . $user);
-    $ret .= '" />';
+    $ret .= '">';
     return $ret;
 }
 ?>

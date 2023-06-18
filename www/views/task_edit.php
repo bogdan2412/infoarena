@@ -98,7 +98,7 @@ $form_fields = array(
 
 <?php if (identity_can("task-delete", $task)) { ?>
     <form action="<?= html_escape(url_task_delete()) ?>" method="post" style="float: right">
-        <input type="hidden" name="task_id" value="<?= html_escape($task_id) ?>" />
+        <input type="hidden" name="task_id" value="<?= html_escape($task_id) ?>">
         <input
             onclick="return confirm('Această acțiune este ireversibilă! Dorești să continui?')"
             type="submit"
@@ -112,7 +112,7 @@ $form_fields = array(
             <?php else: ?>
             class="button important"
             <?php endif; ?>
-        />
+       >
     </form>
 <?php } ?>
 
@@ -184,7 +184,7 @@ $form_fields = array(
         <?= view_form_field_li($form_fields['evaluator'], 'evaluator') ?>
 
         <?= view_form_field_li($form_fields['type'], 'type') ?>
-        <li><hr /></li>
+        <li><hr></li>
         <li id="field_params">
             <?= format_param_editor_list(
                     $param_infos, $form_values, $form_errors); ?>
@@ -195,7 +195,7 @@ $form_fields = array(
     <div class="submit">
         <ul class="form">
             <li id="field_submit">
-                <input type="submit" value="Salvează" id="form_submit" class="button important" />
+                <input type="submit" value="Salvează" id="form_submit" class="button important">
             </li>
         </ul>
     </div>

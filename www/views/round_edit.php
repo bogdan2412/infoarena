@@ -71,8 +71,8 @@ $form_fields = array(
 <h1>Editare runda <?= format_link(url_textblock($round['page_name']), $round['title']) ?></h1>
 
 <form action="<?= html_escape(url_round_delete($round['id'])) ?>" method="post" style="float: right">
-    <input type="hidden" name="" value="<?= html_escape($round['id']) ?>" />
-    <input onclick="" type="submit" value="Șterge runda" id="form_delete" class="button important" />
+    <input type="hidden" name="" value="<?= html_escape($round['id']) ?>">
+    <input onclick="" type="submit" value="Șterge runda" id="form_delete" class="button important">
 </form>
 
 <?php if ($round['state'] == 'running') { ?>
@@ -102,7 +102,7 @@ $form_fields = array(
   <ul class="form">
    <?= view_form_field_li($form_fields['type'], 'type') ?>
    <?= view_form_field_li($form_fields['public_eval'], 'public_eval') ?>
-   <li><hr /></li>
+   <li><hr></li>
    <li id="field_params">
     <?= format_param_editor_list(
         $param_infos, $form_values, $form_errors); ?>
@@ -115,7 +115,7 @@ $form_fields = array(
     <input type="submit"
            value="Salvează"
            id="form_submit"
-           class="button important" />
+           class="button important">
    </li>
   </ul>
  </div>

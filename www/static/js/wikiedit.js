@@ -25,7 +25,7 @@ function WikiEdit_Preview() {
 
     // visual clue to indicate that preview is loading
     container.html('<div class="loading"> <img src="'
-        + BASE_HREF + 'static/images/indicator.gif" />Se încarcă...</div>');
+        + BASE_HREF + 'static/images/indicator.gif">Se încarcă...</div>');
     container.show();
 
     // request preview

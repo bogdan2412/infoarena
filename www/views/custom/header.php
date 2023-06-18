@@ -24,7 +24,7 @@ header("Content-type: text/html; charset=utf-8");
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <?php
     // Hack to insert meta description and keywords for home page.
     // Description should get us a better snippet for keywords that hit our
@@ -33,8 +33,8 @@ header("Content-type: text/html; charset=utf-8");
     // a macro?).
     if (getattr($view, 'page_name') == "home") {
 ?>
-    <meta name="Description" content="Concursuri de programare, Știri și articole de informatică, Comunitate online. Arhivă de probleme, Evaluare 24/24, Forum, Resurse educaționale, Pregătire pentru olimpiadă." />
-    <meta name="keywords" content="Concursuri, Informatică, Programare, Comunitate, Algoritmi, Articole, Evaluare, Pregătire" />
+    <meta name="Description" content="Concursuri de programare, Știri și articole de informatică, Comunitate online. Arhivă de probleme, Evaluare 24/24, Forum, Resurse educaționale, Pregătire pentru olimpiadă.">
+    <meta name="keywords" content="Concursuri, Informatică, Programare, Comunitate, Algoritmi, Articole, Evaluare, Pregătire">
 <?php
     if (GOOGLE_SITE_VERIFICATION) {
         print("<meta name=\"google-site-verification\" content=\"" .
@@ -59,13 +59,13 @@ header("Content-type: text/html; charset=utf-8");
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/screen.css')) ?>"/>
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/tabber.css')) ?>"/>
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/highlight-theme.css')) ?>"/>
-    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/print.css')) ?>" media="print" />
+    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/print.css')) ?>" media="print">
 
     <!-- custom CSS load; overwritting just some css rules -->
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('custom/css/sitewide.css')) ?>"/>
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('custom/css/screen.css')) ?>"/>
 
-    <link rel="icon" href="<?= IA_URL."/static/custom/images/favicon.svg" ?>" type="image" />
+    <link rel="icon" href="<?= IA_URL."/static/custom/images/favicon.svg" ?>" type="image">
     <script src="<?= html_escape(url_static('js/config.js.php')) ?>"></script>
     <script src="<?= html_escape(IA_DEVELOPMENT_MODE?url_static('js/jquery-1.7.2.js'):'//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js') ?>"></script>
     <script src="<?= html_escape(url_static('js/default.js')) ?>"></script>

@@ -41,7 +41,7 @@ function solution_field() {
 ?>
     <li id="field_solution">
         <label for="form_solution">Fișier</label>
-        <input type="file" name="solution" id="form_solution" />
+        <input type="file" name="solution" id="form_solution">
         <?= ferr_span('solution', false) ?>
     </li>
 <?php
@@ -122,7 +122,7 @@ function display_submit_form($inline_form = false, $task_id = null) {
     }
     if ($inline_form) {
 ?>
-<input type="hidden" name="task_id" value="<?= html_escape($task_id) ?>" id="form_task" />
+<input type="hidden" name="task_id" value="<?= html_escape($task_id) ?>" id="form_task">
 <ul class="form">
 <?php
         solution_field();
@@ -140,7 +140,7 @@ function display_submit_form($inline_form = false, $task_id = null) {
     }
 ?>
     <li id="field_submit">
-        <input type="submit" class="button" value="Trimite" id="form_submit" />
+        <input type="submit" class="button" value="Trimite" id="form_submit">
     </li>
 </ul>
 </form>

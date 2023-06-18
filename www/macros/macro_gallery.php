@@ -43,7 +43,7 @@ function macro_gallery($args) {
     foreach ($atts as $attach) {
         $thumbsrc = url_image_resize($attach['page'], $attach['name'], "130x80");
         $fullsrc = url_image_resize($attach['page'], $attach['name'], null);
-        $buffer .= "<a href=\"".html_escape($fullsrc)."\"><img src=\"".html_escape($thumbsrc)."\" alt=\"".html_escape($attach['page'])."\" /></a>";
+        $buffer .= "<a href=\"".html_escape($fullsrc)."\"><img src=\"".html_escape($thumbsrc)."\" alt=\"".html_escape($attach['page'])."\"></a>";
     }
     $buffer .= '</div>';
     $buffer .= format_pager($options);

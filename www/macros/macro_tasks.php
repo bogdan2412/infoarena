@@ -339,7 +339,7 @@ function macro_tasks($args) {
             .'      value="'.request('user', '').'"/>'
             .$pager_hidden_fields
             .'  <input style="display:inline-block"'
-            .'         type="submit" value="Vezi" class="button" />'
+            .'         type="submit" value="Vezi" class="button">'
             .'</form>'
             .'</span><br/>';
     }

@@ -13,8 +13,8 @@
             <label for="form_files">Fișier/Fișiere</label>
             <?= ferr_span('files') ?>
             <?= ferr_span('file_size') ?>
-            <input type="hidden" name="MAX_FILE_SIZE" value="<?= IA_ATTACH_MAXSIZE ?>" />
-            <input type="file" name="files[]" value="<?= fval('files') ?>" id="form_files" size="50" multiple="" />
+            <input type="hidden" name="MAX_FILE_SIZE" value="<?= IA_ATTACH_MAXSIZE ?>">
+            <input type="file" name="files[]" value="<?= fval('files') ?>" id="form_files" size="50" multiple="">
 
             <span class="fieldHelp">Dimensiunea maximă admisă este de <?= IA_ATTACH_MAXSIZE / 1024 / 1024 ?>MB.</span>
             <span class="fieldHelp">Numele fișierului nu poate conține spații.</span>
@@ -22,7 +22,7 @@
 
         <br/>
         <li>
-            <input type="checkbox" name="autoextract" value="1" <?= fval_checkbox('autoextract') ?> id="form_autoextract" class="checkbox" />
+            <input type="checkbox" name="autoextract" value="1" <?= fval_checkbox('autoextract') ?> id="form_autoextract" class="checkbox">
             <label class="checkbox" for="form_autoextract">Expandează arhiva .zip</label>
             <span class="fieldHelp">Trimite o arhivă Zip cu unul sau mai multe fișiere. Se va crea câte un atașament pentru fiecare fișier din arhivă.</span>
         </li>
@@ -36,7 +36,7 @@
 
 <ul class="form clear">
     <li>
-        <input type="submit" class="button important" value="Atașează" id="form_submit" />
+        <input type="submit" class="button important" value="Atașează" id="form_submit">
     </li>
 </ul>
 

@@ -33,7 +33,7 @@ function format_attribs($attribs = array())
 // Format an open html tag:
 // <tag k1="v1" k2="v2" .. >
 // You have to manually close the tag somehow.
-// You can use format_tag with no content for an empty <... /> tag.
+// You can use format_tag with no content for an empty <...> tag.
 function format_open_tag($tag, $attribs = array())
 {
     log_assert(preg_match("/[a-z][a-z0-9]*/", $tag), "Invalid tag '$tag'");
@@ -51,7 +51,7 @@ function format_tag($tag, $content = null, $attribs = array(), $escape = true) {
     log_assert(preg_match("/[a-z][a-z0-9]*/", $tag), "Invalid tag '$tag'");
 
     if (is_null($content)) {
-        return "<$tag ".format_attribs($attribs)." />";
+        return "<$tag ".format_attribs($attribs).">";
     } else {
         if ($escape) {
             $content = html_escape($content);
@@ -88,9 +88,9 @@ function format_post_link($url, $content, $post_data = array(), $escape = true, 
 
     // Display a little "check" button beside the link if
     // javascript is disabled, by using a form with hidden fields.
-    $form_content = '<input type="submit" style="margin: 0; padding: 0" value="&#10003;" />';
+    $form_content = '<input type="submit" style="margin: 0; padding: 0" value="&#10003;">';
     foreach ($post_data as $key => $value) {
-        $form_content .= '<input type="hidden" name="' . html_escape($key) . '" value="' . html_escape($value) . '" />';
+        $form_content .= '<input type="hidden" name="' . html_escape($key) . '" value="' . html_escape($value) . '">';
     }
     $form_attr = array("class" => "inline_form",
                        "method" => "post",
@@ -191,7 +191,7 @@ function format_user_normal($user_name, $user_fullname, $rating = null) {
     $result .= format_link($user_url,
                            format_user_avatar($user_name, "small", false),
                            false);
-    $result .= "<span class=\"fullname\">$user_fullname</span><br />";
+    $result .= "<span class=\"fullname\">$user_fullname</span><br>";
     $result .= $rbadge;
     $result .= "<span class=\"username\">"
                .format_link($user_url, $user_name)
@@ -336,10 +336,10 @@ function format_blogpost_author($blogpost, $show_social = true) {
     $text = '<div class="strap blogheader">'
           . ($show_social ? format_social_buttons($blogpost) : "")
           . format_user_avatar($blogpost['user_name'], 'forum')
-          . '<br />'
+          . '<br>'
           . format_user_link($blogpost['user_name'],
                              $blogpost['user_fullname'])
-          . '<br />'
+          . '<br>'
           . format_date($blogpost['creation_timestamp'], 'd MMMM yyyy')
           . '</div>';
     return $text;

@@ -56,7 +56,7 @@ if (!$jobs) {
                     format_link($url, $hiddenMsg, false) .
                     '</div>';
 
-        $processing = '<img src="'.url_static('images/indicator.gif').'" />';
+        $processing = '<img src="'.url_static('images/indicator.gif').'">';
         $processing .= '<span class="job-status-processing">se evaluează';
         $processing .= '</span>';
         $processing = '<div class="processing">'.

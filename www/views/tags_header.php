@@ -23,14 +23,14 @@ function tag_format_input_box($field, $value = null, $width = "50", $name = "tag
     if (!is_null($value)) {
         $output .= ' value="'.$value.'"';
     }
-    $output .= ' autocomplete="off" />';
+    $output .= ' autocomplete="off">';
     $output .= '<table id="wick_'.$name.'" class="floater"><tr><td><div class="wick_content"></div></td></tr></table>';
     $output .= "</li>";
     return $output;
 }
 ?>
 
-<link rel="stylesheet" type="text/css" href="<?= html_escape(url_static("css/wick.css")) ?> " />
+<link rel="stylesheet" type="text/css" href="<?= html_escape(url_static("css/wick.css")) ?> ">
 <script language="JavaScript">
 /* <![CDATA[ */
 function checkForm() {

@@ -33,7 +33,7 @@
         echo "</ul>";
     }
 ?>
-<input type="submit" class="button important" value="Salvează" />
+<input type="submit" class="button important" value="Salvează">
 </form>
 
 <?php include('footer.php'); ?>

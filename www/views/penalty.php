@@ -17,13 +17,13 @@
       <li>
         <label for="form_username">Nume utilizator</label>
         <?= ferr_span('username') ?>
-        <input type="text" name="username" id="form_username" value="<?= fval('username') ?>" />
+        <input type="text" name="username" id="form_username" value="<?= fval('username') ?>">
       </li>
 
       <li>
         <label for="form_round_id">ID concurs</label>
         <?= ferr_span('round_id') ?>
-        <input type="text" name="round_id" id="form_round_id" value="<?= fval('round_id') ?>" />
+        <input type="text" name="round_id" id="form_round_id" value="<?= fval('round_id') ?>">
       </li>
 
     </ul>
@@ -31,7 +31,7 @@
 
   <ul class="form clear">
     <li>
-      <input type="submit" value="Inainte" id="form_submit" class="button important" />
+      <input type="submit" value="Înainte" id="form_submit" class="button important">
     </li>
   </ul>
 </form>

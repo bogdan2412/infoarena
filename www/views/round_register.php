@@ -9,7 +9,7 @@ include(CUSTOM_THEME . 'header.php');
 <form action="<?= html_escape(getattr($view, 'action')) ?>" method="post" class="register">
     <ul class="form">
         <li id="form_submit">
-            <input type="submit" value="Confirmă înscrierea" id="form_submit" class="button important" />
+            <input type="submit" value="Confirmă înscrierea" id="form_submit" class="button important">
         </li>
     </ul>
 </form>

@@ -44,7 +44,7 @@ if (!$jobs) {
             return format_link($url, $msg, false);
         }
         if ($row['status'] == 'processing') {
-            $img = '<img src="'.url_static('images/indicator.gif').'" />';
+            $img = '<img src="'.url_static('images/indicator.gif').'">';
             $msg = $img.' <span class="job-status-processing">se evaluează</span>';
             return format_link($url, $msg, false);
         }

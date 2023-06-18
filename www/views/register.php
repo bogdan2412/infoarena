@@ -27,26 +27,26 @@
 <form enctype="multipart" action="<?= html_escape($action) ?>" method="post" class="profile clear">
     <fieldset>
         <legend>
-            <img src="<?= html_escape(url_static('images/icons/key.gif')) ?>" alt="!" />
+            <img src="<?= html_escape(url_static('images/icons/key.gif')) ?>" alt="!">
             Utilizator <?= SITE_NAME ?>
         </legend>
         <ul class="form">
             <li>
                 <label for='form_username'>Nume cont utilizator</label>
                 <?= ferr_span('username') ?>
-                <input type="text" name="username" value="<?= fval('username') ?>" id="form_username" />
+                <input type="text" name="username" value="<?= fval('username') ?>" id="form_username">
                 <span class="fieldHelp">Fără spații sau diacritice.</span>
             </li>
             <li>
                 <label for='form_password'>Parolă</label>
                 <?= ferr_span('password') ?>
-                <input type="password" name="password" id="form_password" />
+                <input type="password" name="password" id="form_password">
                 <span class="fieldHelp">Cel puțin 4 caractere.</span>
             </li>
             <li>
                 <label for='form_password2'>Confirmare parolă</label>
                 <?= ferr_span('password2') ?>
-                <input type="password" name="password2" id="form_password2" />
+                <input type="password" name="password2" id="form_password2">
             </li>
         </ul>
     </fieldset>
@@ -65,13 +65,13 @@
             <li>
                 <label for="form_full_name">Nume complet</label>
                 <?= ferr_span('full_name') ?>
-                <input type="text" name="full_name" value="<?= fval('full_name') ?>" id="form_full_name" />
+                <input type="text" name="full_name" value="<?= fval('full_name') ?>" id="form_full_name">
                 <span class="fieldHelp">Conturile cu nume greșite sau false vor fi dezactivate.</span>
             </li>
             <li>
                 <label for="form_email">Adresa de e-mail</label>
                 <?= ferr_span('email') ?>
-                <input type="text" name="email" value="<?= fval('email') ?>" id="form_email" />
+                <input type="text" name="email" value="<?= fval('email') ?>" id="form_email">
                 <span class="fieldHelp">
                     Aici vei primi (în caz că dorești) mesaje de la alți
                     utilizatori, noutăți <?= SITE_NAME ?>.
@@ -127,7 +127,7 @@
             <label for="form_tnc" class="checkbox">Sunt de acord cu <a href="<?= html_escape(url_textblock('termeni-si-conditii')) ?>">termenii și condițiile de utilizare</a> ale site-ului <?= SITE_NAME ?>.</label>
         </li>
         <li>
-            <input type="submit" value="Înregistrează-mă" id="form_submit" class="button important" />
+            <input type="submit" value="Înregistrează-mă" id="form_submit" class="button important">
         </li>
     </ul>
 

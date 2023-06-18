@@ -24,7 +24,7 @@ if (!$display_only_table && (identity_can('job-reeval')
                method="post" class="reeval" id="job_reeval" onsubmit="return confirm(\'Se vor reevalua '.
                html_escape($view['total_entries']).' job-uri! Continuăm?\')">';
     echo '<ul class="form hollyfix"><li id="field_submit">';
-    echo '<input type="submit" class="button important" value="Re-evaluează!" id="form_reeval" />';
+    echo '<input type="submit" class="button important" value="Re-evaluează!" id="form_reeval">';
     echo '</li></ul></form>';
 }
 
@@ -89,7 +89,7 @@ if (!$jobs) {
             return format_link($url, $msg, false);
         }
         if ($row['status'] == 'processing') {
-            $msg = '<img src="'.url_static('images/indicator.gif').'" />';
+            $msg = '<img src="'.url_static('images/indicator.gif').'">';
             $msg .= '<span class="job-status-processing">se evaluează';
 //            if (array_key_exists('done_tests', $row)) {
 //                $done = $row['done_tests'];
@@ -246,7 +246,7 @@ if (!$jobs) {
         <form id="skip-jobs-form" enctype="multipart/form-data" action="<?= html_escape(url_job_skip($view['filters'])) ?>"
                method="post" class="reeval" id="job_reeval">
         <input type="hidden" name="skipped-jobs" id="skipped-jobs"/>
-        <input type="checkbox" id="skip-all-checkbox" />
+        <input type="checkbox" id="skip-all-checkbox">
         <input type="submit" class="button important" value="Ignoră submisiile selectate"/>
         </form>
     </div>
@@ -272,7 +272,7 @@ if (!$display_only_table) {
             ?>
             data-interval="<?php echo MONITOR_AUTOREFRESH_INTERVAL; ?>"
             id="autorefresh"
-            onclick="Monitor_ToggleRefresh(this.checked)" />
+            onclick="Monitor_ToggleRefresh(this.checked)">
         <label for="autorefresh">
             auto refresh monitor
         </label>

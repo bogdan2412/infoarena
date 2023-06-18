@@ -81,7 +81,7 @@ function format_operations($row) {
 $column_infos = array(
     array (
         'html_title' => '<input type="checkbox" ' .
-                'onclick="attachments_toggle_selection(this.checked)" />',
+                'onclick="attachments_toggle_selection(this.checked)">',
         'key' => 'zip',
         'rowform' => 'format_attach_zip'
     ),

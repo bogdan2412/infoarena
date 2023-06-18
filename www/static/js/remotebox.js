@@ -14,7 +14,7 @@ function RemoteBox_Load(remotebox_function ) {
     }
 
     // visual clue to indicate that remotebox is loading
-    container.html('<div class="loading"> <img src="/static/images/indicator.gif" />Se încarcă...</div>');
+    container.html('<div class="loading"> <img src="/static/images/indicator.gif">Se încarcă...</div>');
 
     container.load(RemoteBox_Url, {},
         function(responseText, textStatus, req) {

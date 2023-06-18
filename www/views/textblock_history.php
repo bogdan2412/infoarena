@@ -130,7 +130,7 @@ $options = array(
 // We need to use a hidden field to pass "action=diff" as "get"
 // because the form submit erases it from the url otherwise
 ?>
-<input type = "hidden" name = "action" value = "diff" />
+<input type = "hidden" name = "action" value = "diff">
 <div class="compare-button-container">
 <input
     type = "submit"

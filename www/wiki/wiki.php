@@ -115,10 +115,10 @@ function wiki_process_textblock_recursive($textblock, $cache = true) {
         // Start unwinding.
         $include_stop = true;
         --$include_count;
-        //echo "hit maximum recursion $include_count <br />";
+        //echo "hit maximum recursion $include_count <br>";
         return;
     }
-    //echo "going in level $include_count $args[page]<br />";
+    //echo "going in level $include_count $args[page]<br>";
 
     if ($cache) {
         $res = wiki_process_textblock($textblock);

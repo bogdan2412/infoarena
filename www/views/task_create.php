@@ -32,7 +32,7 @@ $form_fields = array (
     <div class="submit">
         <ul class="form">
             <li id="field_submit">
-                <input type="submit" value="Creează task" id="form_submit" class="button important" />
+                <input type="submit" value="Creează task" id="form_submit" class="button important">
             </li>
         </ul>
     </div>

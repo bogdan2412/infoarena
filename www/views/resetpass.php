@@ -14,7 +14,7 @@
         <li>
             <label for="form_username">Cont de utilizator</label>
             <?= ferr_span('username') ?>
-            <input type="text" name="username" id="form_username" value="<?= fval('username') ?>" />
+            <input type="text" name="username" id="form_username" value="<?= fval('username') ?>">
             <span class="fieldHelp">dacă l-ai uitat, introdu doar adresa de e-mail</span>
         </li>
 
@@ -25,13 +25,13 @@
         <li>
             <label for="form_email">Adresa de e-mail</label>
             <?= ferr_span('email') ?>
-            <input type="text" name="email" id="form_email" value="<?= fval('email') ?>" />
+            <input type="text" name="email" id="form_email" value="<?= fval('email') ?>">
         </li>
     </ul>
 </fieldset>
 <ul class="form clear">
     <li>
-        <input type="submit" value="Trimite-mi instrucțiuni" id="form_submit" class="button important" />
+        <input type="submit" value="Trimite-mi instrucțiuni" id="form_submit" class="button important">
     </li>
 </ul>
 </form>

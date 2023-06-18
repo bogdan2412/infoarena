@@ -41,8 +41,8 @@ if (($round_id = textblock_security_is_round($page['security'])) &&
 </script>
 
 <form accept-charset="utf-8" action="<?= html_escape(url_textblock_edit($page_name)) ?>" method="post" id="form_wikiedit" <?= tag_form_event() ?>>
-<input type="hidden" id="form_page_name" value="<?= html_escape(isset($page_name) ? $page_name : '') ?>" />
-<input type="hidden" name="last_revision" value="<?=html_escape($last_revision)?>" />
+<input type="hidden" id="form_page_name" value="<?= html_escape(isset($page_name) ? $page_name : '') ?>">
+<input type="hidden" name="last_revision" value="<?=html_escape($last_revision)?>">
 
 <?php if (ferr('was_modified', false)) { ?>
 <div class="wiki_was_modified"><?= ferr('was_modified', false); ?></div>
@@ -50,7 +50,7 @@ if (($round_id = textblock_security_is_round($page['security'])) &&
 
 <div class="wiki_text_block" id="wiki_preview" style="display: none;"></div>
 <div id="wiki_preview_toolbar" style="display: none;">
-    <input type="button" class="button" id="preview_close" value="Ascunde Preview" />
+    <input type="button" class="button" id="preview_close" value="Ascunde Preview">
 </div>
 
 <ul class="form">
@@ -71,7 +71,7 @@ if (($round_id = textblock_security_is_round($page['security'])) &&
     <?php if (array_key_exists('forum_topic', $form_values)) { ?>
     <li id="field_forum_topic">
         <label for="form_forum_topic">Forum Topic</label>
-        <input type="text" name="forum_topic" value="<?= fval('forum_topic') ?>" id="form_forum_topic" />
+        <input type="text" name="forum_topic" value="<?= fval('forum_topic') ?>" id="form_forum_topic">
         <?= ferr_span('forum_topic') ?>
     </li>
     <?php } ?>
@@ -124,9 +124,9 @@ if (($round_id = textblock_security_is_round($page['security'])) &&
     <?php } ?>
 
     <li id="field_submit">
-        <input type="submit" value="Salvează" id="form_submit" class="button important" />
-        <input type="submit" value="Salvează și editează" name="form_save_and_edit" class="button" />
-        <input type="button" value="Preview" id="form_preview" class="button" />
+        <input type="submit" value="Salvează" id="form_submit" class="button important">
+        <input type="submit" value="Salvează și editează" name="form_save_and_edit" class="button">
+        <input type="button" value="Preview" id="form_preview" class="button">
     </li>
 </ul>
 

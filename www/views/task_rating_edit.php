@@ -46,7 +46,7 @@ $form_fields = array(
     <ul class="form">
         <li id="field_submit">
             <input type="submit" value="Salvează" id="form_submit"
-                   class="button important" />
+                   class="button important">
         </li>
     </ul>
 </div>

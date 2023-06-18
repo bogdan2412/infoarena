@@ -158,7 +158,7 @@ function ia_template_footer() {
         <!--/Creative Commons License-->
         <rdf:RDF xmlns="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
             <Work rdf:about="">
-                <license rdf:resource="http://creativecommons.org/licenses/by-nc/2.5/" />
+                <license rdf:resource="http://creativecommons.org/licenses/by-nc/2.5/">
             </Work>
             <License rdf:about="http://creativecommons.org/licenses/by-nc/2.5/">
                 <permits rdf:resource="http://web.resource.org/cc/Reproduction"/>

@@ -37,10 +37,10 @@ function format_operations($row) {
 function inline_post_form($url, $post_data=array(), $default_value="", $submit_button="OK") {
     $form = '<form class="inline_form" method="post" action="' . html_escape($url) . '"> ';
     foreach ($post_data as $key => $value) {
-        $form .= '<input type="hidden" name="' . html_escape($key) . '" value="' . html_escape($value) . '" />';
+        $form .= '<input type="hidden" name="' . html_escape($key) . '" value="' . html_escape($value) . '">';
     }
-    $form .= '<input type="text" name="name" value="' . html_escape($default_value) . '" /> ';
-    $form .= '<input class="button" type="submit" value="' . html_escape($submit_button) . '" />';
+    $form .= '<input type="text" name="name" value="' . html_escape($default_value) . '"> ';
+    $form .= '<input class="button" type="submit" value="' . html_escape($submit_button) . '">';
     $form .= '</form>';
     return $form;
 }

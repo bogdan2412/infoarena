@@ -61,7 +61,7 @@ echo macro_tasks($args);
     <ul class="form">
         <li id="field_submit">
             <input type="button" value="Salvează modificări"
-             onclick="do_post()" class="button important" />
+             onclick="do_post()" class="button important">
         </li>
     </ul>
 </div>

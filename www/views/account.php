@@ -26,24 +26,24 @@ include('tags_header.php');
 <form enctype="multipart/form-data" action="<?= html_escape($action) ?>" method="post" class="profile clear" <?= tag_form_event() ?>>
 
 <fieldset>
-    <legend><img src="<?= html_escape(url_static('images/icons/key.gif')) ?>" alt="!" /> Informații legate de securitate</legend>
+    <legend><img src="<?= html_escape(url_static('images/icons/key.gif')) ?>" alt="!"> Informații legate de securitate</legend>
     <ul class="form">
         <li>
             <label for='form_passwordold'>Parola curentă</label>
             <?= ferr_span('passwordold') ?>
-            <input type="password" name='passwordold' id="form_passwordold" />
+            <input type="password" name='passwordold' id="form_passwordold">
             <span class="fieldHelp">Completează doar dacă vrei să schimbi parola sau adresa de e-mail.</span>
         </li>
         <li>
             <label for='form_password'>Parola nouă</label>
             <?= ferr_span('password') ?>
-            <input type="password" name='password' id="form_password" />
+            <input type="password" name='password' id="form_password">
             <span class="fieldHelp">Cel puțin 4 caractere.</span>
         </li>
         <li>
             <label for='form_password2'>Confirmare parola nouă</label>
             <?= ferr_span('password2') ?>
-            <input type="password" name='password2' id="form_password2" />
+            <input type="password" name='password2' id="form_password2">
         </li>
 
 <?php
@@ -73,13 +73,13 @@ if (array_key_exists('security_level', $form_values)) {
         </li>
             <label for="form_name">Nume complet</label>
             <?= ferr_span('full_name') ?>
-            <input type="text" name="full_name" value="<?= fval('full_name') ?>" id="form_name" />
+            <input type="text" name="full_name" value="<?= fval('full_name') ?>" id="form_name">
             <span class="fieldHelp">Conturile cu nume greșite sau false vor fi dezactivate.</span>
         </li>
         <li>
             <label for="form_email">Adresa e-mail</label>
             <?= ferr_span('email') ?>
-            <input type="text" name="email" value="<?= fval('email') ?>" id="form_email" />
+            <input type="text" name="email" value="<?= fval('email') ?>" id="form_email">
             <span class="fieldHelp">
                 Aici vei primi (în caz că dorești) mesaje de la alți
                 utilizatori, noutăți <?= SITE_NAME ?>.
@@ -111,7 +111,7 @@ if (array_key_exists('security_level', $form_values)) {
             ?>
             <label for="form_avatar">Avatar nou</label>
             <?= ferr_span('avatar') ?>
-            <input type="file" name="avatar" id="form_avatar" />
+            <input type="file" name="avatar" id="form_avatar">
             <span class="fieldHelp">O poză în format JPEG, PNG sau GIF, dimensiune maximă <?= IA_AVATAR_MAXSIZE/1024 . " KB." ?></span>
         </li>
     </ul>
@@ -134,7 +134,7 @@ if (array_key_exists('security_level', $form_values)) {
         <?php endif; ?>
     </li>
     <li>
-        <input type="submit" value="Salvează" id="form_submit" class="button important" />
+        <input type="submit" value="Salvează" id="form_submit" class="button important">
     </li>
 </ul>
 </form>

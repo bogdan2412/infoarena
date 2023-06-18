@@ -77,7 +77,7 @@ $show_groups = $view['group_tests'] &&
  if ($show_feedback_column) {
             echo '<th><img src="/static/images/visible.png" '.
                 'title="Feedback" alt="Feedback" '.
-                'style="height: 18px; width: auto;" /></th>';
+                'style="height: 18px; width: auto;"></th>';
         } ?>
         <th>Test</th>
         <th>Timp execuție</th>

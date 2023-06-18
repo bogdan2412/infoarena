@@ -3,7 +3,7 @@
   <tr>
     <td>
 <fieldset>
-    <legend><img src="<?= html_escape(url_static('images/icons/login.png')) ?>" alt="!" /> Autentificare</legend>
+    <legend><img src="<?= html_escape(url_static('images/icons/login.png')) ?>" alt="!"> Autentificare</legend>
     <ul class="form">
 <?= view_form_field_li(array(
         'name' => 'Cont de utilizator',
@@ -52,7 +52,7 @@ if (isset($view['captcha'])) {
 </table>
 <ul class="form clear">
   <li>
-    <input type="submit" value="Autentificare" id="form_submit" class="button important" />
+    <input type="submit" value="Autentificare" id="form_submit" class="button important">
   </li>
 </ul>
 </form>

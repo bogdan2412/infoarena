@@ -5,7 +5,7 @@
     } else {
         echo "Atenție! Aceasta este ultima versiune a paginii.";
     }
-    echo ", scrisă la " . html_escape($textblock['timestamp']) . ".<br />";
+    echo ", scrisă la " . html_escape($textblock['timestamp']) . ".<br>";
     if ($view['revision'] > 1) {
         echo format_link(url_textblock_revision($view['page_name'], $view['revision'] - 1), "Revizia anterioară");
     }

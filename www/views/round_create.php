@@ -35,7 +35,7 @@ $form_fields = array(
     <input type="submit"
            value="Creează runda"
            id="form_submit"
-           class="button important" />
+           class="button important">
    </li>
   </ul>
  </div>
