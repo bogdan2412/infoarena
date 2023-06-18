@@ -22,7 +22,7 @@ if (isset($form_errors) || isset($form_values)) {
 header("Content-type: text/html; charset=utf-8");
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="ro">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <?php

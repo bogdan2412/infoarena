@@ -22,7 +22,7 @@ log_assert(isset($in_browser));
 log_assert(isset($user_is_anonymous));
 
 ?>
-<html>
+<html lang="ro">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <?php if ($in_browser) { ?>
