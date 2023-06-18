@@ -72,7 +72,8 @@ function url_from_args($args) {
                 foreach ($v as $sv) {
                     $url .= ($first ? "?" : "&");
                     $first = false;
-                    $url .= $k. '[]=' . urlencode($sv);
+                    $url .= sprintf('%s%s=%s',
+                                    $k, urlencode('[]'), urlencode($sv));
                 }
             } else {
                 $url .= ($first ? "?" : "&");
