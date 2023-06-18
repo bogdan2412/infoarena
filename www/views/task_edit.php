@@ -5,7 +5,7 @@ require_once(IA_ROOT_DIR."www/format/form.php");
 require_once(IA_ROOT_DIR."www/views/task_edit_header.php");
 
 $view['head'] = getattr($view, 'head').
-    "<script type=\"text/javascript\" src=\"" . html_escape(url_static("js/parameditor.js")) . "\"></script>";
+    "<script src=\"" . html_escape(url_static("js/parameditor.js")) . "\"></script>";
 
 include(CUSTOM_THEME . 'header.php');
 include('tags_header.php');

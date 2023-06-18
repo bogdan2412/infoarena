@@ -307,7 +307,7 @@ function format_social_buttons($textblock,
     }
 
     if (in_array('+1', $buttons)) {
-        $social .= '<script type="text/javascript" src="https://apis.googl'
+        $social .= '<script src="https://apis.googl'
                 . 'e.com/js/plusone.js"></script><g:plusone size="tall" hr'
                 . 'ef="' . html_escape($url) . '"> </g:plusone>';
     }

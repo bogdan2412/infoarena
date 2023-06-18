@@ -31,7 +31,7 @@ if (isset($view['captcha'])) {
     <legend>Verificare</legend>
     <ul class="form">
         <li>
-            <script type="text/javascript">
+            <script>
                 var RecaptchaOptions = {
                 theme : 'clean',
                 };

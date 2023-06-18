@@ -4,9 +4,9 @@
 if (!isset($view['head'])) {
     $view['head'] = "";
 }
-$view['head'] .= "<script type=\"text/javascript\" src=\"" . html_escape(url_static("js/dual.js")) . "\" ></script>";
-$view['head'] .= "<script type=\"text/javascript\" src=\"" . html_escape(url_static("js/roundedit.js")) . "\" ></script>";
-$view['head'] .= "<script type=\"text/javascript\" src=\"" . html_escape(url_static("js/parameditor.js")) . "\" ></script>";
+$view['head'] .= "<script src=\"" . html_escape(url_static("js/dual.js")) . "\" ></script>";
+$view['head'] .= "<script src=\"" . html_escape(url_static("js/roundedit.js")) . "\" ></script>";
+$view['head'] .= "<script src=\"" . html_escape(url_static("js/parameditor.js")) . "\" ></script>";
 
 require_once(IA_ROOT_DIR."common/round.php");
 require_once(IA_ROOT_DIR."www/format/form.php");

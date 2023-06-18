@@ -1,7 +1,7 @@
 <?php
 
 // link JS
-$view['head'] = getattr($view, 'head')."<script type=\"text/javascript\" src=\"" . html_escape(url_static("js/wikiedit.js")) . "\"></script>";
+$view['head'] = getattr($view, 'head')."<script src=\"" . html_escape(url_static("js/wikiedit.js")) . "\"></script>";
 
 include(CUSTOM_THEME . 'header.php');
 include('tags_header.php');
@@ -26,7 +26,7 @@ if (($round_id = textblock_security_is_round($page['security'])) &&
 <?= html_escape($round['title']) ?></a></h1>
 <?php } ?>
 
-<script type="text/javascript">
+<script>
     function toggleSpecial() {
         var select = document.getElementById("security_select");
         var option = select.options[select.selectedIndex].value;

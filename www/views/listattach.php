@@ -5,7 +5,7 @@ require_once(IA_ROOT_DIR . "www/format/format.php");
 
 ?>
 
-<script type="text/javascript">
+<script>
     function rename_form(id) {
         if (document.getElementById("rename_"+id).style.display == "none") {
             document.getElementById("rename_"+id).style.display = "inline";

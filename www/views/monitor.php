@@ -6,12 +6,12 @@ require_once(IA_ROOT_DIR.'www/format/list.php');
 require_once(IA_ROOT_DIR."www/format/form.php");
 
 if (!$display_only_table) {
-    $view['head'] = '<script type="text/javascript" src="'.html_escape(url_static('js/monitor.js')).'"></script>';
+    $view['head'] = '<script src="'.html_escape(url_static('js/monitor.js')).'"></script>';
     include(CUSTOM_THEME . 'header.php');
     $monitor_params = array('only_table' => 1, 'first_entry' => $first_entry, 'display_entries' => $view['display_entries']);
     $url_monitor = url_absolute(url_complex('monitor', $view['filters'] + $monitor_params));
 ?>
-    <script type="text/javascript">
+    <script>
         Monitor_Url = '<?= $url_monitor ?>';
     </script>
 <?php

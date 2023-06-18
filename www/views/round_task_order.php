@@ -8,7 +8,7 @@ include(CUSTOM_THEME . 'header.php');
 echo round_edit_tabs($view['round_id'], 'round-edit-task-order');
 ?>
 
-<script type="text/javascript">
+<script>
     function do_post() {
         var formElem = document.task_order_form;
 

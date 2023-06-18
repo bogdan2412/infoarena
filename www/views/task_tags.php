@@ -106,7 +106,7 @@ foreach ($categories as $category) {
 echo format_table($authors, $column_infos,
     array('css_class' => 'category fill-screen tag-table'));
 ?>
-<script type="text/javascript" src="<?= html_escape(url_static('js/task_tags.js')) ?>"></script>
+<script src="<?= html_escape(url_static('js/task_tags.js')) ?>"></script>
 <?php
 include(IA_ROOT_DIR.'www/views/footer.php');
 ?>

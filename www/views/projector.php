@@ -7,7 +7,7 @@ require_once(IA_ROOT_DIR.'www/format/list.php');
 require_once(IA_ROOT_DIR."www/format/form.php");
 
 $view['head'] = '
-<script type="text/javascript">
+<script>
 function RefreshPage() {
     window.location = window.location + " ";
 }

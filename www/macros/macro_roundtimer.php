@@ -71,7 +71,7 @@ function macro_roundtimer($args) {
 
     // timer script
     $html = '<span id = "' . html_escape($timer_id) . '">';
-    $html .= '<script type="text/javascript">';
+    $html .= '<script>';
     $html .= 'newRoundTimer(' .
         '"' . html_escape($timer_id) . '"' .
         ',"' . html_escape(format_date(time(), $format)) . '"' .

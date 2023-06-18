@@ -5,7 +5,7 @@ require_once(IA_ROOT_DIR.'www/format/format.php');
 require_once(IA_ROOT_DIR.'www/format/list.php');
 require_once(IA_ROOT_DIR."www/format/form.php");
 
-$view['head'] = '<script type="text/javascript" src="'.
+$view['head'] = '<script src="'.
     html_escape(url_static('js/liveeval.js')).'"></script>';
 $view['head'] = $view['head'] . '
 <style type="text/css">
@@ -30,7 +30,7 @@ $view['head'] = $view['head'] . '
 include(CUSTOM_THEME . 'header.php');
 $url_monitor = "http://www.infoarena.ro/liveeval";
 ?>
-    <script type="text/javascript">
+    <script>
         Monitor_Url = '<?= $url_monitor ?>';
     </script>
 <?php

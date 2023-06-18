@@ -66,23 +66,23 @@ header("Content-type: text/html; charset=utf-8");
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('custom/css/screen.css')) ?>"/>
 
     <link rel="icon" href="<?= IA_URL."/static/custom/images/favicon.svg" ?>" type="image" />
-    <script type="text/javascript" src="<?= html_escape(url_static('js/config.js.php')) ?>"></script>
-    <script type="text/javascript" src="<?= html_escape(IA_DEVELOPMENT_MODE?url_static('js/jquery-1.7.2.js'):'//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js') ?>"></script>
-    <script type="text/javascript" src="<?= html_escape(url_static('js/default.js')) ?>"></script>
-    <script type="text/javascript" src="<?= html_escape(url_static('js/tabber-minimized.js')) ?>"></script>
-    <script type="text/javascript" src="<?= html_escape(url_static('js/submit.js')) ?>"></script>
-    <script type="text/javascript" src="<?= html_escape(url_static('js/remotebox.js')) ?>"></script>
-    <script type="text/javascript" src="<?= html_escape(url_static('js/postdata.js')) ?>"></script>
-    <script type="text/javascript" src="<?= html_escape(url_static('js/highlight.pack.js')) ?>"></script>
-    <script type="text/javascript" src="<?= html_escape(url_static('js/highlight-line-numbers.min.js')) ?>"></script>
-    <script type="text/javascript" src="<?= html_escape(url_static('js/tags.js')) ?>"></script>
-    <script type="text/javascript" src="<?= html_escape(url_static('js/roundtimer.js')) ?>"></script>
-    <script type="text/javascript" src="<?= html_escape(url_static('js/restoreparity.js')) ?>"></script>
-    <script type="text/javascript" src="<?= html_escape(url_static('js/foreach.js')) ?>"></script>
-    <script type="text/javascript" src="<?= html_escape(url_static('js/sorttable.js')) ?>"></script>
-    <script type="text/javascript" src="<?= html_escape(url_static('js/tablednd.js')) ?>"></script>
+    <script src="<?= html_escape(url_static('js/config.js.php')) ?>"></script>
+    <script src="<?= html_escape(IA_DEVELOPMENT_MODE?url_static('js/jquery-1.7.2.js'):'//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js') ?>"></script>
+    <script src="<?= html_escape(url_static('js/default.js')) ?>"></script>
+    <script src="<?= html_escape(url_static('js/tabber-minimized.js')) ?>"></script>
+    <script src="<?= html_escape(url_static('js/submit.js')) ?>"></script>
+    <script src="<?= html_escape(url_static('js/remotebox.js')) ?>"></script>
+    <script src="<?= html_escape(url_static('js/postdata.js')) ?>"></script>
+    <script src="<?= html_escape(url_static('js/highlight.pack.js')) ?>"></script>
+    <script src="<?= html_escape(url_static('js/highlight-line-numbers.min.js')) ?>"></script>
+    <script src="<?= html_escape(url_static('js/tags.js')) ?>"></script>
+    <script src="<?= html_escape(url_static('js/roundtimer.js')) ?>"></script>
+    <script src="<?= html_escape(url_static('js/restoreparity.js')) ?>"></script>
+    <script src="<?= html_escape(url_static('js/foreach.js')) ?>"></script>
+    <script src="<?= html_escape(url_static('js/sorttable.js')) ?>"></script>
+    <script src="<?= html_escape(url_static('js/tablednd.js')) ?>"></script>
 
-    <script type="text/javascript">
+    <script>
         hljs.initHighlightingOnLoad();
         hljs.initLineNumbersOnLoad();
     </script>
@@ -176,8 +176,8 @@ $is_admin = ('admin' == getattr($identity_user, 'security_level'));
     <?php } ?>
     <p class="user-count"><?php echo user_count(); ?> membri înregistrați</p>
     <div id="srv_time" class="user-count" align="center"></div>
-    <script type="text/javascript" src="<?= html_escape(url_static('js/time.js')) ?>"></script>
-    <script type="text/javascript">loadTime(<?= format_date(null, 'HH, mm, ss');?>);</script>
+    <script src="<?= html_escape(url_static('js/time.js')) ?>"></script>
+    <script>loadTime(<?= format_date(null, 'HH, mm, ss');?>);</script>
 
     <?php if (SIDEBAR_ELEMENTS['ad']) {
         include(IA_ROOT_DIR.'www/views/sidebar_ad.php');

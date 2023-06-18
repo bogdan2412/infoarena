@@ -52,7 +52,7 @@
     </fieldset>
 
     <!-- Hack for valid html (autocomplete is not in the spec). -->
-    <script language="JavaScript" type="text/javascript">
+    <script language="JavaScript">
         <!--
                                                          document.getElementById("form_password").setAttribute("autocomplete", "off");
         document.getElementById("form_password2").setAttribute("autocomplete", "off");
@@ -87,7 +87,7 @@
             <legend>Verificare</legend>
             <ul class="form">
                 <li>
-                    <script type="text/javascript">
+                    <script>
                         var RecaptchaOptions = {
                             theme : 'clean',
                         };
