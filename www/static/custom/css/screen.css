@@ -43,7 +43,7 @@ The basic layout of the homepage is as follows:
 */
 
 #content_small {
-	margin-top: 10px;    
+	margin-top: 10px;
 }
 
 #nav li {
@@ -118,6 +118,10 @@ ul.htabs {
 /* Tasks table */
 table.tasks {
     line-height: 1.7em;
+}
+
+table.tasks .open_task {
+  float: right;
 }
 
 .inlineSubmit #form_compiler {

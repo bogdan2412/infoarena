@@ -130,6 +130,17 @@ function format_img($src, $alt, $attr = array()) {
     return format_tag("img", null, $attr);
 }
 
+function format_open_tests_img(): string {
+  $url = url_static('images/open_small.png');
+  $alt = 'open book';
+  $attr = [
+    'class' => 'open_task',
+    'title' => 'teste publice',
+  ];
+  $html = format_img($url, $alt, $attr);
+  return $html;
+}
+
 // Format avatar img.
 function format_user_avatar($user_name, $size_type = "full",
                             $absolute = false)

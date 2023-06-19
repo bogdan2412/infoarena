@@ -54,11 +54,9 @@ function format_solved_by_column($row) {
 
 
 function format_title($row) {
-    $title = "<span style=\"float:left;\">".format_link(url_textblock($row["page_name"]), $row["title"])."</span>";
+    $title = format_link(url_textblock($row["page_name"]), $row["title"]);
     if ($row['open_tests']) {
-        $title .= "<span style=\"float:right;\">";
-        $title .= format_link(url_task($row['id']), format_img(url_static("images/open_small.png"), ""), false);
-        $title .= "</span>";
+      $title .= format_open_tests_img();
     }
     return $title;
 }
