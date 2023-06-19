@@ -50,9 +50,7 @@ if ($first_view_source) {
         echo '</div>';
 ?>
 <form action="" method="POST">
-    <center>
-    <input type="submit" name="force_view_source" id="force_view_source" class="button important" value="Vezi sursa">
-    </center>
+  <input type="submit" name="force_view_source" id="force_view_source" class="button important" value="Vezi sursa">
 </form>
 <?php
 

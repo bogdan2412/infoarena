@@ -497,7 +497,7 @@ function format_acm_score($score, $penalty, $submission) {
     }
 
     $penalty -= ($submission - 1) * 20;
-    $result = '<center><span style="font-size: 18px;text-weight: bold;color: ';
+    $result = '<span style="font-size: 18px;text-weight: bold;color: ';
     if ($score > 0) {
         $result .= 'green">+';
         if ($submission > 1)
@@ -505,6 +505,6 @@ function format_acm_score($score, $penalty, $submission) {
     } else {
         $result .= 'red">-' . $submission;
     }
-    $result .= '</span><br>' . $penalty . '</center>';
+    $result .= '</span><br>' . $penalty;
     return $result;
 }
