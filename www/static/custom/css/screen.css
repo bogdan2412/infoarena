@@ -89,30 +89,33 @@ input.important {
 
 /* horizontal tabs */
 ul.htabs {
-    margin: 1.5em 0 1em 0;
-    border-bottom: 1px solid #778;
-    font-weight: bold;
+  border-bottom: 1px solid #2097fc;
+  font-weight: bold;
+  margin: 1.5em 0 1em 0;
+  padding-bottom: 0;
 }
 
-.htabs li a {
-    border-bottom: 2px solid #FFF;
-    background: #FFF;
+.htabs li a,
+.htabs li a:link,
+.htabs li a:visited {
+  background: #fff;
+  border-color: #2097fc;
+  color: #2097fc;
+  display: inline-block;
 }
-
-.htabs li a:link { color: #2097fc; }
 
 .htabs li a:hover {
-    color: #222;
-    background: #a8ddff;
-    border: 1px solid #778;
-	border-bottom: 2px solid #FFF;
+  background: #a8ddff;
+  border-color: #2097fc;
+  color: #222;
 }
 
 .htabs li.active a {
-    background: #2097fc;
-	color: #FFF;
-    text-decoration: none;
+	color: #fff;
 	font-weight: 600;
+  background: #2097fc;
+  border-bottom: 0;
+  text-decoration: none;
 }
 
 /* Tasks table */
