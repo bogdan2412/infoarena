@@ -6,11 +6,11 @@ require_once(IA_ROOT_DIR . 'www/format/format.php');
 include(CUSTOM_THEME . 'header.php');
 
 function format_title($row) {
-    $title = '<span style=\"float:left;\">' .
+    $title = '<span style="float:left;">' .
              format_link(url_textblock($row["page_name"]),
                          $row["task_title"]) . "</span>";
     if ($row['open_source'] || $row['open_tests']) {
-        $title .= "<span style=\"float:right;\">";
+        $title .= '<span style="float:right;">';
         $title .= format_link(url_task($row['task_id']),
                               format_img(url_static("images/open_small.png"),
                                          ""),
