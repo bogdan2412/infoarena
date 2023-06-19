@@ -124,8 +124,8 @@ function format_table($data, $column_infos = null, $options = null)
 
     // Check for multipler formers.
     foreach ($column_infos as $column) {
-        log_assert(isset($column['valform']) + 
-               isset($column['rowform']) + 
+        log_assert(isset($column['valform']) +
+               isset($column['rowform']) +
                isset($column['dateform']) <= 1,
                "Column info can't have multiple format functions");
     }
@@ -189,7 +189,7 @@ function format_table($data, $column_infos = null, $options = null)
             }
             $result .= format_tag('td', $val, $args, false);
         }
-        $result .= '</tr>';
+        $result .= "</tr>\n";
     }
 
     $result .= "</tbody>";

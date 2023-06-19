@@ -102,7 +102,7 @@ function _format_standard_pager_link($options, $number) {
         $args['accesskey'] = $number;
     }
 
-    return format_link(url_from_args($url_args), $number, false, $args);
+    return format_link(url_from_args($url_args), $number, false, $args) . "\n";
 }
 
 // Internal for format_standard_pager
@@ -111,7 +111,7 @@ function _format_standard_pager_link_with_text($options, $text) {
     $param_prefix = getattr($options, 'param_prefix', '');
     $url_args[$param_prefix.'display_entries'] = $options['display_entries'];
 
-    return format_link(url_from_args($url_args), $text, false, array());
+    return format_link(url_from_args($url_args), $text, false, array()) . "\n";
 }
 
 // Formats a standard pager. Used by format_table.
