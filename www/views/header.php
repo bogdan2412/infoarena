@@ -154,7 +154,7 @@ ia_template_topnav($topnav_select, $is_admin);
     </div>
     <?php } ?>
     <p class="user-count"><?php echo user_count(); ?> membri înregistrați</p>
-    <div id="srv_time" class="user-count" align="center"></div>
+    <div id="srv_time" class="user-count"></div>
     <script src="<?= html_escape(url_static('js/time.js')) ?>"></script>
     <script>loadTime(<?= format_date(null, 'HH, mm, ss');?>);</script>
 
