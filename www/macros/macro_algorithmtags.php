@@ -32,12 +32,12 @@ function macro_algorithmtags($args) {
     if ($cnt_category == 1) {
         $category_word = "categorie";
     }
-    $html_code = "<div id=\"task_tags\">";
+    $html_code = "<div>";
     $html_code .= "<h3> Indicii de rezolvare</h3>";
     $html_code .= '<a id="show_tags" href="javascript:show_tags()">
                 Arată '.count($tags_tree).' '.$category_word.'</a>';
 
-    $html_code .= '<ul id="task_tags">';
+    $html_code .= '<ul>';
     foreach ($tags_tree as $tag) {
         $tag_id = $tag['id'];
         $tag_name = $tag['name'];
