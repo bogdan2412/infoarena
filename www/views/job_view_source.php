@@ -19,7 +19,6 @@ include(CUSTOM_THEME . 'header.php');
     <th class="score">Scor</th>
     <td class="score"><?= html_escape(is_null($job['score']) ? "Ascuns" : $job['score']) ?></td>
 </tr>
-</tr>
 <tr>
     <th class="compiler-id">Compilator</th>
     <td class="compiler-id"><?= html_escape($job['compiler_id']) ?></td>
