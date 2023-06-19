@@ -70,7 +70,7 @@ if (array_key_exists('security_level', $form_values)) {
     <?php if (identity_can('user-tag', $view['user'])) { ?>
         <?= tag_format_input_box(array("label" => "Tag-uri", "name" => "tags"), fval('tags')) ?>
     <?php } ?>
-        </li>
+        <li>
             <label for="form_name">Nume complet</label>
             <?= ferr_span('full_name') ?>
             <input type="text" name="full_name" value="<?= fval('full_name') ?>" id="form_name">
