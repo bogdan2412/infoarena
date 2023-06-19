@@ -24,7 +24,7 @@ log_assert(isset($user_is_anonymous));
 ?>
 <html lang="ro">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta charset="utf-8">
   <?php if ($in_browser) { ?>
     <script src="<?= html_escape(url_static('js/config.js.php')) ?>"></script>
     <script src="<?= html_escape(IA_DEVELOPMENT_MODE?url_static('js/jquery-1.7.2.js'):'//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js') ?>"></script>

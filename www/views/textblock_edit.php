@@ -40,7 +40,7 @@ if (($round_id = textblock_security_is_round($page['security'])) &&
     }
 </script>
 
-<form accept-charset="utf-8" action="<?= html_escape(url_textblock_edit($page_name)) ?>" method="post" id="form_wikiedit" <?= tag_form_event() ?>>
+<form action="<?= html_escape(url_textblock_edit($page_name)) ?>" method="post" id="form_wikiedit" <?= tag_form_event() ?>>
 <input type="hidden" id="form_page_name" value="<?= html_escape(isset($page_name) ? $page_name : '') ?>">
 <input type="hidden" name="last_revision" value="<?=html_escape($last_revision)?>">
 

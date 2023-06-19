@@ -19,12 +19,11 @@ if (isset($form_errors) || isset($form_values)) {
     }
 }
 
-header("Content-type: text/html; charset=utf-8");
 ?>
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
 <?php
     // Hack to insert meta description and keywords for home page.
     // Description should get us a better snippet for keywords that hit our
