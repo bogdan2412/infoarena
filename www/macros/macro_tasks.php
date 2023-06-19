@@ -333,7 +333,7 @@ function macro_tasks($args) {
         }
 
         $as_user .=
-            '<span>Vezi această listă din perspectiva altui utilizator: '
+            '<div>Vezi această listă din perspectiva altui utilizator: '
             .'<form method="get" action="" style="display:inline">'
             .'  <input type="text" placeholder="GavrilaVlad" name="user"'
             .'      value="'.request('user', '').'">'
@@ -341,7 +341,7 @@ function macro_tasks($args) {
             .'  <input style="display:inline-block"'
             .'         type="submit" value="Vezi" class="button">'
             .'</form>'
-            .'</span><br>';
+            .'</div><br>';
     }
 
     if ($filter_user_id !== $user_id) {
