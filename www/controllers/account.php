@@ -8,25 +8,6 @@ require_once(IA_ROOT_DIR."www/controllers/account_validator.php");
 require_once(IA_ROOT_DIR."www/config.php");
 require_once(IA_ROOT_DIR."common/avatar.php");
 
-// identify target user and check permission to edit profile
-// Yields flash_error & redirect when username invalid or security error
-function account_validate_user() {
-    $username = request('username');
-    if (!$username) {
-        // no username specified. we're probably talking about
-        // current remote user
-        global $identity_user;
-        $user = $identity_user;
-    } else {
-        // validate username
-        $user = user_get_by_username($username);
-    }
-
-    // permission check
-
-    return $user;
-}
-
 // Controller to update user profile
 // $username is the name of the user to edit.
 function controller_account($username = null) {
