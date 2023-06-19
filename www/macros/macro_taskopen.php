@@ -19,8 +19,11 @@ function macro_taskopen($args) {
         return "";
     }
     $html = '<div class="banner">';
-    $html .= '<img style="vertical-align: middle; float: left;" src="'.
-             url_static('images/open_big.png').'">';
+    $html .= '<img ' .
+      'alt="open book" ' .
+      'style="vertical-align: middle; float: left;" src="' .
+      url_static('images/open_big.png') .
+      '">';
     $text = 'Poți vedea testele pentru această problemă';
     $html .= "<em>$text accesând </em><strong>".
              format_link(
