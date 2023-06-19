@@ -337,7 +337,7 @@ function macro_tasks($args) {
             .'  <input style="display:inline-block"'
             .'         type="submit" value="Vezi" class="button">'
             .'</form>'
-            .'</div><br>';
+            .'</div>';
     }
 
     if ($filter_user_id !== $user_id) {
@@ -348,7 +348,7 @@ function macro_tasks($args) {
                 $filter_user['username'],
                 $filter_user['full_name'],
                 $filter_user['rating_cache'])
-            .'</span><br>';
+            .'</span>';
     } else if (request('user') && request('user') != identity_get_username()) {
         $as_user .=
             '<span style="color: red;">Nu există un utilizator cu acest'
@@ -357,9 +357,7 @@ function macro_tasks($args) {
 
     if ($as_user) {
         $as_user =
-            '<div style="display:block; margin-bottom:30px;">'
-            .'  <div style="float:right; text-align: right;">'.$as_user.'</div>'
-            .'</div>';
+          '<div style="text-align: right;">'.$as_user.'</div>';
     }
 
     return $as_user.$tabs.format_table($tasks, $column_infos, $options);
