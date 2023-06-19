@@ -126,10 +126,13 @@ if (!$jobs) {
 
     // For the round column.
     function format_round_link($row) {
-    //    return $row['round_id'];
+      if ($row['round_title']) {
         return format_link(
-                url_textblock($row['round_page_name']),
-                $row['round_title']);
+          url_textblock($row['round_page_name']),
+          $row['round_title']);
+      } else {
+        return '';
+      }
     }
 
     // For the detail column.
