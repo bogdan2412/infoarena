@@ -82,7 +82,7 @@ if (($round_id = textblock_security_is_round($page['security'])) &&
 
     <?php if (array_key_exists('security', $form_values)) { ?>
     <li id="field_security">
-        <label for="form_security">Nivel de securitate al paginii
+        <label for="security_select">Nivel de securitate al paginii
         <a href="<?= html_escape(url_textblock('documentatie/securitate')) ?>">(?)</a></label>
 
         <select id="security_select" name="security" onchange="toggleSpecial()">
