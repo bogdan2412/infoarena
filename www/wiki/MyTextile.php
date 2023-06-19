@@ -1,18 +1,22 @@
 <?php
 
-@require_once(IA_ROOT_DIR."www/wiki/Textile.php");
+require_once(IA_ROOT_DIR."lib/third-party/Netcarver/Textile/DataBag.php");
+require_once(IA_ROOT_DIR."lib/third-party/Netcarver/Textile/Parser.php");
+require_once(IA_ROOT_DIR."lib/third-party/Netcarver/Textile/Tag.php");
 require_once(IA_ROOT_DIR."common/attachment.php");
 require_once(IA_ROOT_DIR."common/string.php");
 require_once(IA_ROOT_DIR."www/wiki/latex.php");
 require_once(IA_ROOT_DIR."www/utilities.php");
 require_once(IA_ROOT_DIR . 'www/url.php');
-class MyTextile extends Textile {
+class MyTextile extends \Netcarver\Textile\Parser {
+
+  function __construct($doctype = 'xhtml') {
+    parent::__construct($doctype);
+    $this->span_tags['$'] = 'var';
+  }
+
     // FIXME: If you see a pointless textile error try tweaking this value.
     private $my_error_reporting = 0xF7F7;
-
-    function __construct($options = array()) {
-        @Textile::Textile($options);
-    }
 
     // Parse and execute a macro (or return an error div).
     function process_macro($str) {
@@ -88,7 +92,7 @@ class MyTextile extends Textile {
     // some filter features we don't use. This is sort of bad because
     // you can inject arbritary html.
     function do_format_block($args) {
-        $str = getattr($args, 'text', '');
+        $str = getattr($args, 'content', '');
         $matches = array();
         if (preg_match('/^  \s*  ([a-z][a-z0-9\+\#\-\(\)\.]*)  \s* \|(.*)/sxi',
                        $str, $matches)) {
@@ -182,14 +186,14 @@ class MyTextile extends Textile {
     function process($content) {
         //log_print("Starting textile");
         $this->error_reporting_level = error_reporting($this->my_error_reporting);
-        $res = parent::process($content);
+        $res = parent::parse($content);
         error_reporting($this->error_reporting_level);
         //log_print("Stopping textile");
         return $res;
     }
 
     // Wrap around do_format_block, restore errors.
-    function format_block($args) {
+    function fTextile($args) {
         if ($this->error_reporting_level === false) {
             return do_format_block($args);
         }
@@ -199,7 +203,7 @@ class MyTextile extends Textile {
         //log_print_r($args);
         //log_backtrace();
         $res = $this->do_format_block($args);
-        $res = getattr($args, 'pre', '').$res.getattr($args, 'post', '');
+        $res = getattr($args, 'before', '').$res.getattr($args, 'after', '');
         //log_print("DONE format_block {$args['text']}");
 
         error_reporting($this->my_error_reporting);
