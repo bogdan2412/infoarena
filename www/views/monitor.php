@@ -162,7 +162,7 @@ if (!$jobs) {
         if ($row['can_skip']) {
             $msg = format_tag(
                     "input",
-                    "",
+                    null,
                     array(
                         "type" => "checkbox",
                         "class" => "skip_job",
@@ -170,9 +170,10 @@ if (!$jobs) {
             $msg .= format_tag(
                     'a',
                     'ignoră',
-                    array(
-                        "type" => "button",
-                        "class" => "skip-job-link"));
+                    [
+                      'class' => 'skip-job-link',
+                      'href' => '#',
+                    ]);
             return $msg;
         }
 
@@ -244,7 +245,7 @@ if (!$jobs) {
         ?>
     <div class ="skip-job">
         <form id="skip-jobs-form" enctype="multipart/form-data" action="<?= html_escape(url_job_skip($view['filters'])) ?>"
-               method="post" class="reeval" id="job_reeval">
+               method="post" class="reeval">
         <input type="hidden" name="skipped-jobs" id="skipped-jobs">
         <input type="checkbox" id="skip-all-checkbox">
         <input type="submit" class="button important" value="Ignoră submisiile selectate">

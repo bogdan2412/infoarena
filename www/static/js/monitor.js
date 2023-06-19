@@ -9,7 +9,7 @@ function SkipJobs() {
         list.push($(this).val());
     });
     if (list.length == 0) {
-        alert("Atenție! Selectează cel putin un job.");
+        alert("Atenție! Selectează cel puțin un job.");
         return false;
     }
 
@@ -57,6 +57,7 @@ function Monitor_Init() {
                 }
                 return;
             }});
+        return false;
     });
 
     $("#skip-all-checkbox").live("click", function() {
