@@ -286,7 +286,6 @@ function macro_tasks($args) {
     if ($show_ratings) {
         $column_infos[] = array(
                 'html_title' => 'Dificultate',
-                'title_css_class' => 'new_feature',
                 'css_class' => 'rating',
                 'key' => 'rating',
                 'valform' => 'format_rating_column',
@@ -295,7 +294,6 @@ function macro_tasks($args) {
     if ($show_solved_by) {
         $column_infos[] = array(
                 'title' => 'Rezolvată de',
-                'title_css_class' => 'new_feature',
                 'css_class' => '',
                 'rowform' => 'format_solved_by_column',
         );
