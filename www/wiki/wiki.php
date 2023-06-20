@@ -9,16 +9,6 @@ require_once(IA_ROOT_DIR."common/cache.php");
 // Process textile and returns html with special macro tags.
 function wiki_process_only_textile($content) {
     require_once(IA_ROOT_DIR."www/wiki/MyTextile.php");
-    //log_print("PROCESS TEXTILE");
-    // TODO
-    $options = array(
-            'disable_html' => true,
-            'disable_filters' => true,
-            'trim_spaces' => false,
-            'charset' => 'utf-8',
-            'char_encoding' => 0,
-            'preserve_spaces' => true,
-    );
     $weaver = new MyTextile();
     $res = $weaver->process($content);
     unset($weaver);
