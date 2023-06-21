@@ -1,12 +1,12 @@
 <?php
 
-require_once(IA_ROOT_DIR."lib/third-party/Netcarver/Textile/DataBag.php");
-require_once(IA_ROOT_DIR."lib/third-party/Netcarver/Textile/Parser.php");
-require_once(IA_ROOT_DIR."lib/third-party/Netcarver/Textile/Tag.php");
-require_once(IA_ROOT_DIR."common/attachment.php");
-require_once(IA_ROOT_DIR."common/string.php");
-require_once(IA_ROOT_DIR."www/wiki/latex.php");
-require_once(IA_ROOT_DIR."www/utilities.php");
+require_once(IA_ROOT_DIR . 'lib/third-party/Netcarver/Textile/DataBag.php');
+require_once(IA_ROOT_DIR . 'lib/third-party/Netcarver/Textile/Parser.php');
+require_once(IA_ROOT_DIR . 'lib/third-party/Netcarver/Textile/Tag.php');
+require_once(IA_ROOT_DIR . 'common/attachment.php');
+require_once(IA_ROOT_DIR . 'common/string.php');
+require_once(IA_ROOT_DIR . 'www/wiki/latex.php');
+require_once(IA_ROOT_DIR . 'www/utilities.php');
 require_once(IA_ROOT_DIR . 'www/url.php');
 class MyTextile extends \Netcarver\Textile\Parser {
 
@@ -14,9 +14,6 @@ class MyTextile extends \Netcarver\Textile\Parser {
     parent::__construct($doctype);
     $this->span_tags['$'] = 'var';
   }
-
-  // FIXME: If you see a pointless textile error try tweaking this value.
-  private $my_error_reporting = 0xF7F7;
 
   // Parse and execute a macro (or return an error div).
   function process_macro($str) {
@@ -79,15 +76,18 @@ class MyTextile extends \Netcarver\Textile\Parser {
   // By default textile passes the text to html unchanged (it has
   // some filter features we don't use. This is sort of bad because
   // you can inject arbritary html.
-  function do_format_block($args) {
+  function fTextile($args) {
     $str = getattr($args, 'content', '');
     $matches = array();
     if (preg_match('/^  \s*  ([a-z][a-z0-9\+\#\-\(\)\.]*)  \s* \|(.*)/sxi',
                    $str, $matches)) {
-      return $this->process_pipe_block($matches[1], $matches[2]);
+      $res = $this->process_pipe_block($matches[1], $matches[2]);
     } else {
-      return $this->process_macro($str);
+      $res = $this->process_macro($str);
     }
+
+    $res = getattr($args, 'before', '') . $res . getattr($args, 'after', '');
+    return $res;
   }
 
   function is_wiki_link($link) {
@@ -110,7 +110,7 @@ class MyTextile extends \Netcarver\Textile\Parser {
   // Override format_link
   // We hook in here to process the url part
   // FIXME: should I do this with format_url?
-  function do_format_link($args) {
+  function fLink($args) {
     $url = getattr($args, 'urlx', '');
     if ($this->is_wiki_link($url)) {
       $matches = array();
@@ -127,8 +127,7 @@ class MyTextile extends \Netcarver\Textile\Parser {
     return $res;
   }
 
-  // Image magic.
-  function do_format_image($args) {
+  function fImage($args) {
     $srcpath = getattr($args, 'url', '');
 
     $extra = $args['title'] ?? '';
@@ -174,31 +173,7 @@ class MyTextile extends \Netcarver\Textile\Parser {
     return $res;
   }
 
-  // The current error reporting level is saved here.
-  private $error_reporting_level = false;
-
-  // Save error_reporting_level.
-  function process($content) {
-    $this->error_reporting_level = error_reporting($this->my_error_reporting);
-    $res = parent::parse($content);
-    error_reporting($this->error_reporting_level);
-    return $res;
-  }
-
-  // Wrap around do_format_block, restore errors.
-  function fTextile($args) {
-    if ($this->error_reporting_level === false) {
-      return do_format_block($args);
-    }
-    error_reporting($this->error_reporting_level);
-
-    $res = $this->do_format_block($args);
-    $res = getattr($args, 'before', '').$res.getattr($args, 'after', '');
-
-    error_reporting($this->my_error_reporting);
-    return $res;
-  }
-
+  // Unused for now.
   function format_latex($args) {
     $str = getattr($args, 'text', '');
 
@@ -210,40 +185,7 @@ class MyTextile extends \Netcarver\Textile\Parser {
       $html .= "<pre>".html_escape($str).'</pre>';
     }
 
-    if ($this->error_reporting_level === false) {
-      return $html;
-    }
-
-    error_reporting($this->error_reporting_level);
-
-    $html = getattr($args, 'pre', '').$html.getattr($args, 'post', '');
-    error_reporting($this->my_error_reporting);
+    $html = getattr($args, 'before', '') . $html . getattr($args, 'after', '');
     return $html;
-  }
-
-  // Wrap around do_format_link, restore errors.
-  function fLink($args) {
-    if ($this->error_reporting_level === false) {
-      return do_format_link($args);
-    }
-    error_reporting($this->error_reporting_level);
-
-    $res = $this->do_format_link($args);
-
-    error_reporting($this->my_error_reporting);
-    return $res;
-  }
-
-  // Wrap around do_format_image, restore errors.
-  function fImage($args) {
-    if ($this->error_reporting_level === false) {
-      return do_format_image($args);
-    }
-    error_reporting($this->error_reporting_level);
-
-    $res = $this->do_format_image($args);
-
-    error_reporting($this->my_error_reporting);
-    return $res;
   }
 }

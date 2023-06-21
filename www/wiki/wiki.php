@@ -10,7 +10,7 @@ require_once(IA_ROOT_DIR."common/cache.php");
 function wiki_process_only_textile($content) {
     require_once(IA_ROOT_DIR."www/wiki/MyTextile.php");
     $weaver = new MyTextile();
-    $res = $weaver->process($content);
+    $res = $weaver->parse($content);
     unset($weaver);
 
     return $res;
