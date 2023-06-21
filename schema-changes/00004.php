@@ -25,11 +25,22 @@ function process_row(string $table, array $row): void {
     [ 'ranking htabs', "/\(htabs\)\* /", "*(htabs).\n* " ],
     [ 'tables', "/^(table.*\.) \|/m", "$1\n|" ],
     [ 'images-styled-aligned', "/!(\{[^}]+\})([<>])([^!]+)!/", '!$2$1$3!' ],
+    [ 'curly-star', "/\{\*([^*}]+)\*\}/", '[*$1*]' ],
+    [ 'curly-tilde', "/\{~([^~}]+)~\}/", '[~$1~]' ],
+    [ 'curly-undescore', "/\{_([^_}]+)_\}/", '[_$1_]' ],
+    [ 'curly-dollar', "/\{\\$([^$}]+)\\$\}/", '[$$1$]' ],
+    [ 'exponent-left', "/(?<![ \t\n\[])\\^([a-z0-9]+)\\^/i", '[^$1^]' ],
+    [ 'exponent-right', "/\\^([a-z0-9]+)\\^(?=[^ \t\r\n\]])/i", '[^$1^]' ],
+    [ 'tilde-left', "/(?<![ \t\n\[])~([a-z0-9]+)~/i", '[~$1~]' ],
+    [ 'tilde-right', "/~([a-z0-9]+)~(?=[^ \t\r\n\]])/i", '[~$1~]' ],
+    [ 'dollar-left', "/(?<![ \t\n\[])\\$([a-z0-9]+)\\$/i", '[$$1$]' ],
+    [ 'dollar-right', "/\\$([a-z0-9]+)\\$(?=[^ \t\r\n\]])/i", '[$$1$]' ],
   ];
 
   foreach ($changes as $rec) {
     update_regexp($table, $row, $rec[0], $rec[1], $rec[2]);
   }
+
   if ($row['text'] != $orig_text) {
     save_row($table, $row);
   }
