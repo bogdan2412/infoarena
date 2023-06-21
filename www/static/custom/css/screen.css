@@ -160,3 +160,7 @@ td.rating, th.rating {
 #task-filter-help div {
     border: none;
 }
+
+.text-right {
+  text-align: right;
+}
