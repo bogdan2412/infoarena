@@ -75,7 +75,7 @@ input, select, textarea {
     font-family: 'Ubuntu', Trebuchet MS, Tahoma, Helvetica, Arial, sans-serif;
 }
 
-input.button {
+input.button, a.button {
 	background-color: #2097fc;
 	background-image: none;
     border: 0;

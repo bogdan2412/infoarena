@@ -602,7 +602,7 @@ select {
     cursor: pointer;
 }
 
-input.button {
+input.button, a.button {
     cursor: pointer;
     border: 1px double #999999;
     border-top-color: #CCCCCC;
