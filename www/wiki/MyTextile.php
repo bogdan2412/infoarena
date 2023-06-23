@@ -220,7 +220,7 @@ class MyTextile extends \Netcarver\Textile\Parser {
     preg_match_all($pattern, $html, $matches);
     $offenders = $matches[1];
 
-    if (str_contains($html, '<script')) { // no word boundary check here
+    if (strpos($html, '<script') !== false) { // no word boundary check here
       $offenders[] = '&lt;script';
     }
 
