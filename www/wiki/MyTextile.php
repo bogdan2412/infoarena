@@ -10,6 +10,31 @@ require_once(IA_ROOT_DIR . 'www/utilities.php');
 require_once(IA_ROOT_DIR . 'www/url.php');
 class MyTextile extends \Netcarver\Textile\Parser {
 
+  const JAVASCRIPT_EVENTS = [
+    // form events
+    'onblur', 'onchange', 'oncontextmenu', 'onfocus', 'oninput', 'oninvalid',
+    'onreset', 'onsearch', 'onselect', 'onsubmit',
+
+    // keyboard events
+    'onkeydown', 'onkeypress', 'onkeyup',
+
+    // mouse events
+    'onclick', 'ondblclick', 'onmousedown', 'onmousemove', 'onmouseout',
+    'onmouseover', 'onmouseup', 'onmousewheel', 'onwheel',
+
+    // drag events
+    'ondrag', 'ondragend', 'ondragenter', 'ondragleave', 'ondragover',
+    'ondragstart', 'ondrop', 'onscroll',
+
+    // clipboard events
+    'oncopy', 'oncut', 'onpaste',
+  ];
+  const REJECTION_MESSAGE =
+    '<div class="rejected-textile">' .
+    '  Your input was rejected because it contains Javascript code.' .
+    '  The offending substring(s) were «<strong>%s</strong>».' .
+    '</div>';
+
   function __construct($doctype = 'xhtml') {
     parent::__construct($doctype);
     $this->span_tags['$'] = 'var';
@@ -186,6 +211,30 @@ class MyTextile extends \Netcarver\Textile\Parser {
     }
 
     $html = getattr($args, 'before', '') . $html . getattr($args, 'after', '');
+    return $html;
+  }
+
+  function rejectJavaScript(string $html): string {
+    $joined = implode('|', self::JAVASCRIPT_EVENTS);
+    $pattern = sprintf('/\W(%s)\W/', $joined);
+    preg_match_all($pattern, $html, $matches);
+    $offenders = $matches[1];
+
+    if (str_contains($html, '<script')) { // no word boundary check here
+      $offenders[] = '&lt;script';
+    }
+
+    if (count($offenders)) {
+      $joinedOffenders = implode(', ', $offenders);
+      return sprintf(self::REJECTION_MESSAGE, $joinedOffenders);
+    } else {
+      return $html;
+    }
+  }
+
+  function parse($text): string {
+    $html = parent::parse($text);
+    $html = $this->rejectJavaScript($html);
     return $html;
   }
 }

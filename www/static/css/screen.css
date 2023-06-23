@@ -321,7 +321,7 @@ button.gsc-search-button.gsc-search-button-v2, .gsc-search-button-v2, td.gsc-sea
 	display: block;
 }
 
-td.gsc-input{ 
+td.gsc-input{
 	border: none !important;
 	display: block;
     padding-bottom: 5px;
@@ -1827,4 +1827,8 @@ li.selected-filter.sub-selected-filters > a:hover,
 
 .skip-job-link {
     cursor: pointer;
+}
+
+div.rejected-textile {
+  color: red;
 }
