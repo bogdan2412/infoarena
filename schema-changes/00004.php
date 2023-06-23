@@ -3,7 +3,6 @@
 const TABLES = [ 'ia_textblock', 'ia_textblock_revision' ];
 
 main();
-exit; // FIXME
 
 function main(): void {
   foreach (TABLES as $table) {
