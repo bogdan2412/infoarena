@@ -6,16 +6,6 @@ require_once(IA_ROOT_DIR."www/url.php");
 require_once(IA_ROOT_DIR."common/textblock.php");
 require_once(IA_ROOT_DIR."common/cache.php");
 
-// Process textile and returns html with special macro tags.
-function wiki_process_only_textile($content) {
-    require_once(IA_ROOT_DIR."www/wiki/MyTextile.php");
-    $weaver = new MyTextile();
-    $res = $weaver->parse($content);
-    unset($weaver);
-
-    return $res;
-}
-
 // Used in wiki_process_macros.
 // PRIVATE function.
 function wiki_macro_callback($matches) {
@@ -36,9 +26,6 @@ function wiki_macro_callback($matches) {
         $argval = $args[$i][2];
         $macro_args[$argname] = str_replace('""', '"', $argval);
     }
-/*    log_print("Exec macro $macro_name");
-    log_print_r($macro_args);
-    log_print_r($matches);*/
     return execute_macro($macro_name, $macro_args);
 }
 
@@ -50,18 +37,13 @@ function wiki_process_only_macros($content) {
                 ((?: (?:[a-z][a-z0-9_]*) \s* = \s*
                     "(?:(?:[^"]*(?:"")*)*)" \s* )* \s*)
                 ><\/span>/xi', 'wiki_macro_callback', $content);
-/*    return preg_replace_callback(
-            '/ <?([a-z][a-z0-9_]*) \s*
-                ((?: (?:[a-z][a-z0-9_]*) \s* = \s*
-                    "(?:(?:[^"]*(?:"")*)*)" \s* )* \s*)
-                \?>/xi', 'wiki_macro_callback', $content);*/
 }
 
 // No caching, used by JSON and others
 // Transforms textile into full html with no cache.
 // There is no $tb object in JSON, so we're sort of fucked.
 function wiki_process_text($content) {
-    return wiki_process_only_macros(wiki_process_only_textile($content));
+    return wiki_process_only_macros(Wiki::processTextile($content));
 }
 
 // This processes a big chunk of wiki-formatted text and returns html.
@@ -77,7 +59,7 @@ function wiki_process_textblock($tb) {
                    db_date_parse($tb['timestamp']);
         $cache_res = disk_cache_get($cache_id);
         if ($cache_res == false) {
-            $cache_res = wiki_process_only_textile($tb['text']);
+            $cache_res = Wiki::processTextile($tb['text']);
             disk_cache_set($cache_id, $cache_res);
         }
         return wiki_process_only_macros($cache_res);
@@ -109,7 +91,6 @@ function wiki_process_textblock_recursive($textblock, $cache = true) {
         //echo "hit maximum recursion $include_count <br>";
         return;
     }
-    //echo "going in level $include_count $args[page]<br>";
 
     if ($cache) {
         $res = wiki_process_textblock($textblock);

@@ -4,6 +4,13 @@
  * Everything to do with parsing and rendering Textile, LaTex and in-house macros.
  **/
 
+require_once IA_ROOT_DIR . 'common/cache.php';
+require_once IA_ROOT_DIR . 'common/textblock.php';
+require_once IA_ROOT_DIR . 'www/identity.php';
+require_once IA_ROOT_DIR . 'www/macros/macros.php';
+require_once IA_ROOT_DIR . 'www/url.php';
+require_once IA_ROOT_DIR . 'www/wiki/MyTextile.php';
+
 class Wiki {
 
   // Parses and prints a textblock. Use this to insert dynamic textblocks
@@ -25,6 +32,15 @@ class Wiki {
     if ($div) {
       echo '</div>';
     }
+  }
+
+  // Process Textile (and macros) and returns the HTML string.
+  static function processTextile(string $content): string {
+    $weaver = new MyTextile();
+    $res = $weaver->parse($content);
+    unset($weaver);
+
+    return $res;
   }
 
 }
