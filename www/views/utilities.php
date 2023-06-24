@@ -3,7 +3,6 @@
 require_once(IA_ROOT_DIR . 'common/db/textblock.php');
 require_once(IA_ROOT_DIR . 'lib/Wiki.php');
 require_once(IA_ROOT_DIR . 'www/format/format.php');
-require_once(IA_ROOT_DIR . 'www/wiki/wiki.php');
 
 // returns a form value, html-escaped by default.
 function fval($param_name, $escape_html = true) {

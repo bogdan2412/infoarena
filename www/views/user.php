@@ -1,9 +1,7 @@
 <?php
-require_once(IA_ROOT_DIR . 'www/wiki/wiki.php');
+require_once(IA_ROOT_DIR . 'common/tags.php');
 require_once(IA_ROOT_DIR . 'www/format/format.php');
 require_once(IA_ROOT_DIR . 'www/format/list.php');
-
-require_once(IA_ROOT_DIR . 'common/tags.php');
 
 $username = $user['username'];
 
@@ -49,7 +47,7 @@ if ('view' == $action) {
     }
 
     echo '<div class="wiki_text_block">';
-    echo wiki_process_textblock($textblock);
+    echo Wiki::processTextblock($textblock);
     echo '</div>';
 }
 else {

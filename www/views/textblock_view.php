@@ -1,7 +1,5 @@
 <?php
 
-require_once(IA_ROOT_DIR.'www/wiki/wiki.php');
-
 // site header
 include(CUSTOM_THEME . 'header.php');
 
@@ -15,7 +13,7 @@ if (getattr($view, 'revision')) {
 
 // textblock content
 echo '<div class="wiki_text_block">';
-echo wiki_process_textblock($textblock);
+echo Wiki::processTextblock($textblock);
 echo '</div>';
 
 // page comments

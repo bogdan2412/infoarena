@@ -1,7 +1,6 @@
 <?php
 require_once(IA_ROOT_DIR.'www/format/pager.php');
 require_once(IA_ROOT_DIR.'www/format/format.php');
-require_once(IA_ROOT_DIR.'www/wiki/wiki.php');
 
 // site header
 include(CUSTOM_THEME . 'header.php');
@@ -20,7 +19,7 @@ foreach ($subpages as $subpage) {
     echo '<div class="item">';
 
     $url = url_textblock($subpage['name']);
-    $text = wiki_process_textblock_recursive($subpage);
+    $text = Wiki::processTextblockRecursive($subpage);
     // Hijack title if already there.
     if (preg_match('/^\s*<h1>(.*)<\/h1>(.*)$/sxi', $text, $matches)) {
         echo '<h1>'.format_link($url, $matches[1], false).'</h1>';

@@ -1,10 +1,10 @@
 <?php
 
-require_once(IA_ROOT_DIR . "common/db/textblock.php");
-require_once(IA_ROOT_DIR . "common/db/tags.php");
-require_once(IA_ROOT_DIR . "common/textblock.php");
-require_once(IA_ROOT_DIR . "www/wiki/wiki.php");
-require_once(IA_ROOT_DIR . "www/controllers/textblock.php");
+require_once(IA_ROOT_DIR . 'common/db/tags.php');
+require_once(IA_ROOT_DIR . 'common/db/textblock.php');
+require_once(IA_ROOT_DIR . 'common/textblock.php');
+require_once(IA_ROOT_DIR . 'www/controllers/textblock.php');
+require_once(IA_ROOT_DIR . 'lib/Wiki.php');
 
 // Newsletter index. Display list of all newsletters.
 function controller_newsletter_index() {

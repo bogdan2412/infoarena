@@ -46,7 +46,7 @@ include(CUSTOM_THEME . 'header.php');
 if ($first_view_source) {
         $force_view_textblock = textblock_get_revision(IA_FORCE_VIEW_SOURCE_PAGE);
         echo '<div class="wiki_text_block">';
-        echo wiki_process_textblock($force_view_textblock);
+        echo Wiki::processTextblock($force_view_textblock);
         echo '</div>';
 ?>
 <form action="" method="POST">

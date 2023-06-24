@@ -1,86 +1,86 @@
 <?php
 
-global $identity_user;
+  global $identity_user;
 
-require_once(IA_ROOT_DIR.'www/format/table.php');
-require_once(IA_ROOT_DIR.'www/format/format.php');
-require_once(IA_ROOT_DIR.'www/wiki/wiki.php');
+  require_once(IA_ROOT_DIR . 'lib/Wiki.php');
+  require_once(IA_ROOT_DIR . 'www/format/format.php');
+  require_once(IA_ROOT_DIR . 'www/format/table.php');
 
-$table_options = array(
+  $table_options = array(
     'css_class' => 'fill-screen newsletter',
     'show_count' => true,
-);
-$table_columns = array(
+  );
+  $table_columns = array(
     array(
-        'title' => 'Titlu',
-        'key' => 'title',
-        'rowform' => 'format_newsletter_title',
+      'title' => 'Titlu',
+      'key' => 'title',
+      'rowform' => 'format_newsletter_title',
     ),
     array(
-        'title' => 'Editor',
-        'key' => 'username',
-        'rowform' => 'format_newsletter_user',
+      'title' => 'Editor',
+      'key' => 'username',
+      'rowform' => 'format_newsletter_user',
     ),
     array(
-        'title' => 'Dată',
-        'key' => 'creation_timestamp',
-        'valform' => 'format_date',
+      'title' => 'Dată',
+      'key' => 'creation_timestamp',
+      'valform' => 'format_date',
     ),
-);
+  );
 
-function format_newsletter_title($row) {
+  function format_newsletter_title($row) {
     return format_link(url_textblock($row['name']), $row['title']);
-}
+  }
 
-function format_newsletter_user($row) {
+  function format_newsletter_user($row) {
     return format_user_tiny($row["user_name"], $row["user_fullname"],
-        $row["rating_cache"]);
-}
+                            $row["rating_cache"]);
+  }
 
-// site header
-include(CUSTOM_THEME . 'header.php');
-echo format_tag('h1', html_escape($view['title']));
+  // site header
+  include(CUSTOM_THEME . 'header.php');
+  echo format_tag('h1', html_escape($view['title']));
 
 ?>
 
 <p>Aceasta este lista de newsletter-e trimise până acum membrilor infoarena
-care s-au abonat să le primească.</p>
+  care s-au abonat să le primească.</p>
 
 <div class="notice">
-    <?php if (identity_is_anonymous()) { ?>
+  <?php if (identity_is_anonymous()) { ?>
 
-      <p>Ca să primești newsletter-ul infoarena trebuie să fii
-        <a href="<?= url_register() ?>">înregistrat</a>.</p>
+    <p>Ca să primești newsletter-ul infoarena trebuie să fii
+      <a href="<?= url_register() ?>">înregistrat</a>.</p>
 
-      <p>Dacă ai deja cont pe infoarena
-        <a href="<?= url_account() ?>">verifică opțiunile contului tău</a>.</p>
+    <p>Dacă ai deja cont pe infoarena
+      <a href="<?= url_account() ?>">verifică opțiunile contului tău</a>.</p>
 
     <?php } elseif ($identity_user['newsletter']) { ?>
 
-      <p>Ești abonat la newsletter-ul infoarena cu adresa de email
-      <strong><em><?= $identity_user['email'] ?></em></strong>.</p>
+        <p>Ești abonat la newsletter-ul infoarena cu adresa de email
+          <strong><em><?= $identity_user['email'] ?></em></strong>.</p>
 
-      <p>Dacă nu mai dorești să primești newsletter-ul infoarena, te poți
-      dezabona din <a href="<?= url_account(identity_get_username()) ?>">
-      opțiunile contului tău</a>.</p>
+        <p>Dacă nu mai dorești să primești newsletter-ul infoarena, te poți
+          dezabona din <a href="<?= url_account(identity_get_username()) ?>">
+          opțiunile contului tău</a>.</p>
 
-    <?php } else { ?>
+  <?php } else { ?>
 
-      <p><strong>Nu ești abonat la newsletter-ul infoarena.</strong> :(
+    <p><strong>Nu ești abonat la newsletter-ul infoarena.</strong> :(
 
       Te rugăm sa te abonezi modificând
       <a href="<?= url_account(identity_get_username()) ?>">opțiunile contului
-      tău</a>.</p>
+        tău</a>.</p>
 
-      <p>Te poți dezabona oricând ulterior.</p>
+    <p>Te poți dezabona oricând ulterior.</p>
 
-    <?php } ?>
+  <?php } ?>
 </div>
 
 <?php
-echo format_table($letters, $table_columns, $table_options);
+  echo format_table($letters, $table_columns, $table_options);
 
-// site footer
-include('footer.php');
+  // site footer
+  include('footer.php');
 
 ?>

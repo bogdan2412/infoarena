@@ -6,7 +6,6 @@ require_once(IA_ROOT_DIR . "common/db/blog.php");
 require_once(IA_ROOT_DIR . "common/textblock.php");
 require_once(IA_ROOT_DIR . "lib/Wiki.php");
 require_once(IA_ROOT_DIR . "www/format/pager.php");
-require_once(IA_ROOT_DIR . "www/wiki/wiki.php");
 
 function controller_blog_feed() {
     $view = array();
@@ -19,7 +18,7 @@ function controller_blog_feed() {
     $blog = blog_get_range(null, 0, IA_MAX_FEED_ITEMS);
     for ($i = 0; $i < count($blog); $i++) {
         $view['item'][$i]['title'] = strip_tags($blog[$i]['title']);
-        $view['item'][$i]['description'] = wiki_process_textblock_recursive($blog[$i]);
+        $view['item'][$i]['description'] = Wiki::processTextblockRecursive($blog[$i]);
         $view['item'][$i]['pubDate'] = date('r', strtotime($blog[$i]['creation_timestamp']));
         $view['item'][$i]['guid']['value'] = sha1($blog[$i]['name'].$blog[$i]['creation_timestamp']);
         $view['item'][$i]['guid']['isPermaLink'] = 'false';

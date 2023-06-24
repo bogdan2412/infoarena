@@ -40,7 +40,7 @@ function get_snippet($tb, $max_num_words, $whole_news = false,
 
     if ($cache_res == false) {
         $url = url_textblock($tb['name']);
-        $html_text = wiki_process_textblock_recursive($tb);
+        $html_text = Wiki::processTextblockRecursive($tb);
 
         $cache_res .= hijack_title($html_text, $url, $tb['title']);
         $cache_res .= '<div class="wiki_text_block">';

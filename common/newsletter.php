@@ -1,10 +1,10 @@
 <?php
 
-require_once(IA_ROOT_DIR . "common/db/db.php");
-require_once(IA_ROOT_DIR . "common/textblock.php");
-require_once(IA_ROOT_DIR . "common/user.php");
-require_once(IA_ROOT_DIR . "www/wiki/wiki.php");
-require_once(IA_ROOT_DIR . "www/url.php");
+require_once(IA_ROOT_DIR . 'common/db/db.php');
+require_once(IA_ROOT_DIR . 'common/textblock.php');
+require_once(IA_ROOT_DIR . 'common/user.php');
+require_once(IA_ROOT_DIR . 'lib/Wiki.php');
+require_once(IA_ROOT_DIR . 'www/url.php');
 
 // Render HTML newsletter for recipient $user, from given $textblock.
 // The newsletter is personalized for the recipient by doing a
@@ -22,7 +22,7 @@ function newsletter_body_html($textblock, $user, $in_browser = false) {
 
     $replace = array("username" => $user['username']);
     textblock_template_replace($textblock, $replace);
-    $body_html = wiki_process_text($textblock['text']);
+    $body_html = Wiki::processText($textblock['text']);
     $subject = newsletter_subject($textblock, $user);
 
     // Generate HTML using newsletter template.

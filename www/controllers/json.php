@@ -1,9 +1,9 @@
 <?php
 
-require_once(IA_ROOT_DIR.'common/db/textblock.php');
-require_once(IA_ROOT_DIR.'common/db/task.php');
-require_once(IA_ROOT_DIR.'www/wiki/wiki.php');
-require_once(IA_ROOT_DIR.'common/db/job.php');
+require_once(IA_ROOT_DIR . 'common/db/job.php');
+require_once(IA_ROOT_DIR . 'common/db/task.php');
+require_once(IA_ROOT_DIR . 'common/db/textblock.php');
+require_once(IA_ROOT_DIR . 'lib/Wiki.php');
 
 // This controller serves as a data server for AJAX requests.
 // Instead of generating HTML content to be displayed in a browser,
@@ -29,7 +29,7 @@ function controller_json($suburl) {
             if (!identity_can('textblock-view', $textblock)) {
                 $output = 'Not enough privileges to preview this page';
             } else {
-                $output = wiki_process_text($page_content);
+                $output = Wiki::processText($page_content);
             }
 
             // view

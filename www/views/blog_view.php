@@ -1,6 +1,5 @@
 <?php
 
-require_once(IA_ROOT_DIR.'www/wiki/wiki.php');
 require_once(IA_ROOT_DIR.'www/macros/macro_smfcomments.php');
 
 // site header
@@ -22,7 +21,7 @@ if (getattr($view, 'revision')) {
 // blog content
 echo '<div class="wiki_text_block">';
 echo '<div class="blog">';
-$text = wiki_process_textblock($textblock);
+$text = Wiki::processTextblock($textblock);
 echo hijack_title($text, null, $textblock['title']);
 echo format_blogpost_author($first_textblock, $textblock['security'] != 'private');
 
