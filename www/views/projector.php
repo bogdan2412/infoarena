@@ -124,7 +124,7 @@ if (!$jobs) {
     print format_table($jobs, $column_infos, $options);
 }
 
-// Please don't use wiki_include() here because this is traffic
+// Please don't use Wiki::include() here because this is traffic
 // intensive page.
 
 ?>

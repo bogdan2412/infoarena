@@ -1,5 +1,5 @@
 <?php
-    include(CUSTOM_THEME . 'header.php');
+  include(CUSTOM_THEME . 'header.php');
 ?>
 
 <h1><?= html_escape($title) ?></h1>
@@ -35,8 +35,7 @@
     </li>
 </ul>
 </form>
-
-<?php wiki_include('template/resetarea-parolei'); ?>
+<?php Wiki::include('template/resetarea-parolei'); ?>
 
 <?php
     include('footer.php');

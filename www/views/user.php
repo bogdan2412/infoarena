@@ -1,9 +1,9 @@
 <?php
-require_once(IA_ROOT_DIR.'www/wiki/wiki.php');
-require_once(IA_ROOT_DIR.'www/format/format.php');
-require_once(IA_ROOT_DIR.'www/format/list.php');
+require_once(IA_ROOT_DIR . 'www/wiki/wiki.php');
+require_once(IA_ROOT_DIR . 'www/format/format.php');
+require_once(IA_ROOT_DIR . 'www/format/list.php');
 
-require_once(IA_ROOT_DIR.'common/tags.php');
+require_once(IA_ROOT_DIR . 'common/tags.php');
 
 $username = $user['username'];
 
@@ -24,7 +24,7 @@ if (identity_is_admin()) {
 }
 
 // display user info across all user profile pages
-echo wiki_include($template_userheader, array('user' => $username));
+echo Wiki::include($template_userheader, array('user' => $username));
 
 // show profile tabs
 $options = array(
@@ -54,7 +54,7 @@ if ('view' == $action) {
 }
 else {
     // showing ratings / statistics
-    echo wiki_include($template, array('user' => $user['username']));
+    echo Wiki::include($template, array('user' => $user['username']));
 }
 
 // site footer

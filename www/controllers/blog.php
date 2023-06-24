@@ -4,6 +4,7 @@ require_once(IA_ROOT_DIR . "common/db/textblock.php");
 require_once(IA_ROOT_DIR . "common/db/tags.php");
 require_once(IA_ROOT_DIR . "common/db/blog.php");
 require_once(IA_ROOT_DIR . "common/textblock.php");
+require_once(IA_ROOT_DIR . "lib/Wiki.php");
 require_once(IA_ROOT_DIR . "www/format/pager.php");
 require_once(IA_ROOT_DIR . "www/wiki/wiki.php");
 

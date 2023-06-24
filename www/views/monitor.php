@@ -259,7 +259,7 @@ if (!$jobs) {
     }
 }
 
-// Please don't use wiki_include() here because this is traffic
+// Please don't use Wiki::include() here because this is traffic
 // intensive page.
 
 if (!$display_only_table) {

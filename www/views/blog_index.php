@@ -10,7 +10,7 @@ echo '<link rel="alternate" type="application/rss+xml" title="Blog infoarena" hr
 
 // blog sidebar
 echo '<div class="blog-sidebar">';
-wiki_include(IA_BLOG_SIDEBAR);
+Wiki::include(IA_BLOG_SIDEBAR);
 echo '</div>';
 
 echo '<div class="blog">';

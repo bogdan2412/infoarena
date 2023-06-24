@@ -1,8 +1,9 @@
 <?php
 
-require_once(IA_ROOT_DIR.'www/wiki/wiki.php');
-require_once(IA_ROOT_DIR.'common/db/textblock.php');
-require_once(IA_ROOT_DIR.'www/format/format.php');
+require_once(IA_ROOT_DIR . 'common/db/textblock.php');
+require_once(IA_ROOT_DIR . 'lib/Wiki.php');
+require_once(IA_ROOT_DIR . 'www/format/format.php');
+require_once(IA_ROOT_DIR . 'www/wiki/wiki.php');
 
 // returns a form value, html-escaped by default.
 function fval($param_name, $escape_html = true) {
@@ -67,27 +68,6 @@ function ferr_span($param_name, $escape_html = true) {
         return '<span class="fieldError">' . $error . '</span>';
     } else {
         return null;
-    }
-}
-
-// Parse and print a textblock. Use this to insert dynamic textblocks
-// inside static templates / views.
-function wiki_include($page_name, $template_args = null, $div = true) {
-    $textblock = textblock_get_revision($page_name);
-    log_assert($textblock, "Nu am găsit $page_name");
-
-    if ($div) {
-        echo '<div class="wiki_text_block">';
-    }
-    if (!is_null($template_args)) {
-        textblock_template_replace($textblock, $template_args);
-        // No caching, we're using template magic.
-        echo wiki_process_text($textblock['text']);
-    } else {
-        echo wiki_process_textblock($textblock);
-    }
-    if ($div) {
-        echo '</div>';
     }
 }
 

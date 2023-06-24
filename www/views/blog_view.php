@@ -11,7 +11,7 @@ include('textblock_header.php');
 
 // blog sidebar
 echo '<div class="blog-sidebar">';
-wiki_include(IA_BLOG_SIDEBAR);
+Wiki::include(IA_BLOG_SIDEBAR);
 echo '</div>';
 
 // revision warning

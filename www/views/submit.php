@@ -29,6 +29,6 @@ require_once("submit_form.php");
 display_submit_form(false, fval("task_id", false));
 ?>
 
-<?php wiki_include('template/trimite-solutii') ?>
+<?php Wiki::include('template/trimite-solutii') ?>
 
 <?php include('footer.php'); ?>
