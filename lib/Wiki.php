@@ -13,8 +13,26 @@ require_once IA_ROOT_DIR . 'www/wiki/MyTextile.php';
 
 class Wiki {
   const MAX_RECURSIVE_INCLUDES = 5;
+  const MATHJAX_PATTERNS = [
+    '/\\\\\(.+\\\\\)/',
+    '/\\\\\[.+\\\\\]/',
+    '/\$\$.+\$\$/',
+  ];
 
   private static int $recursionDepth = 0;
+  private static bool $hasMathJax = false;
+
+  private static function checkForMathJax(string $s): void {
+    if (!self::$hasMathJax) {
+      foreach (self::MATHJAX_PATTERNS as $pat) {
+        self::$hasMathJax |= preg_match($pat, $s);
+      }
+    }
+  }
+
+  static function hasMathJax(): bool {
+    return self::$hasMathJax;
+  }
 
   // Parses and prints a textblock. Use this to insert dynamic textblocks
   // inside static templates / views.
@@ -39,6 +57,7 @@ class Wiki {
 
   // Process Textile (and macros) and returns the HTML string.
   static function processTextile(string $content): string {
+    self::checkForMathJax($content);
     $weaver = new MyTextile();
     $res = $weaver->parse($content);
     unset($weaver);
@@ -99,6 +118,8 @@ class Wiki {
       if ($cache_res == false) {
         $cache_res = self::processTextile($tb['text']);
         disk_cache_set($cache_id, $cache_res);
+      } else {
+        self::checkForMathJax($cache_res);
       }
       return self::processOnlyMacros($cache_res);
     }
