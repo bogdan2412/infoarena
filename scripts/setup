@@ -171,7 +171,6 @@ if (read_bool('Should I try to configure apache for you?', true)) {
     $dirs = array($ia_root . 'attach',
                   $ia_root . 'cache',
                   $config_vars['IA_AVATAR_FOLDER'],
-                  $ia_root . 'www/static/images/latex',
                   $ia_root . 'www/static/images/tmp',
                   $ia_root . 'smf/attachments');
     foreach ($dirs as $dir) {

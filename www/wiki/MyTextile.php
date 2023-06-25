@@ -5,7 +5,6 @@ require_once(IA_ROOT_DIR . 'lib/third-party/Netcarver/Textile/Parser.php');
 require_once(IA_ROOT_DIR . 'lib/third-party/Netcarver/Textile/Tag.php');
 require_once(IA_ROOT_DIR . 'common/attachment.php');
 require_once(IA_ROOT_DIR . 'common/string.php');
-require_once(IA_ROOT_DIR . 'www/wiki/latex.php');
 require_once(IA_ROOT_DIR . 'www/utilities.php');
 require_once(IA_ROOT_DIR . 'www/url.php');
 class MyTextile extends \Netcarver\Textile\Parser {
@@ -196,22 +195,6 @@ class MyTextile extends \Netcarver\Textile\Parser {
     }
     $res = parent::fImage($args);
     return $res;
-  }
-
-  // Unused for now.
-  function format_latex($args) {
-    $str = getattr($args, 'text', '');
-
-    if (IA_LATEX_ENABLE) {
-      $html = latex_content($str);
-    }
-    else {
-      $html = macro_error("LaTeX support is disabled.");
-      $html .= "<pre>".html_escape($str).'</pre>';
-    }
-
-    $html = getattr($args, 'before', '') . $html . getattr($args, 'after', '');
-    return $html;
   }
 
   function rejectJavaScript(string $html): string {

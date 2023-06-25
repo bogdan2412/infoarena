@@ -18,7 +18,7 @@ hphp-redeploy: hphp-build hphp-install
 
 clean-cache:
 	find cache/ -type f -exec rm {} +
-	rm -rf www/static/images/{latex,tmp}/*
+	rm -rf www/static/images/tmp/*
 
 clean-hphp:
 	rm -rf hphp/build/*

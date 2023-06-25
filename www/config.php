@@ -63,9 +63,6 @@ define("IA_BLOG_SIDEBAR", "blog-sidebar");
 // Textblock for force view source page
 define('IA_FORCE_VIEW_SOURCE_PAGE', 'template/force-view-source-page');
 
-// LaTeX support
-define("IA_LATEX_ENABLE", !IA_DEVELOPMENT_MODE);
-
 // List of safe MIME types
 // FIXME: add more?
 $IA_SAFE_MIME_TYPES = [
