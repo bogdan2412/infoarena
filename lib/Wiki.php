@@ -14,8 +14,8 @@ require_once IA_ROOT_DIR . 'www/wiki/MyTextile.php';
 class Wiki {
   const MAX_RECURSIVE_INCLUDES = 5;
   const MATHJAX_PATTERNS = [
-    '/\\\\\(.+\\\\\)/',
-    '/\\\\\[.+\\\\\]/',
+    '/\\\(.+\\\)/',
+    '/\\\[.+\\\]/',
     '/\$\$.+\$\$/',
   ];
 
