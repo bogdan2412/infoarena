@@ -52,7 +52,7 @@ if (isset($form_errors) || isset($form_values)) {
     <title><?= html_escape(getattr($view, 'title')) ?></title>
 
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/sitewide.css')) ?>">
-    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/iconize.css')) ?>">
+    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/third-party/iconize-0.5/iconize.css')) ?>">
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/screen.css')) ?>">
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/third-party/tabber.css')) ?>">
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/third-party/highlight-theme.css')) ?>">
