@@ -59,20 +59,20 @@ if (isset($form_errors) || isset($form_values)) {
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/print.css')) ?>" media="print">
     <link rel="icon" href="<?= IA_URL."favicon.ico" ?>" type="image/vnd.microsoft.icon">
     <script src="<?= html_escape(url_static('js/config.js.php')) ?>"></script>
-    <script src="<?= html_escape(IA_DEVELOPMENT_MODE?url_static('js/jquery-1.7.2.js'):'//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js') ?>"></script>
+    <script src="<?= html_escape(IA_DEVELOPMENT_MODE?url_static('js/third-party/jquery-1.7.2.js'):'//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js') ?>"></script>
     <script src="<?= html_escape(url_static('js/default.js')) ?>"></script>
-    <script src="<?= html_escape(url_static('js/tabber-minimized.js')) ?>"></script>
+    <script src="<?= html_escape(url_static('js/third-party/tabber-minimized.js')) ?>"></script>
     <script src="<?= html_escape(url_static('js/submit.js')) ?>"></script>
     <script src="<?= html_escape(url_static('js/remotebox.js')) ?>"></script>
     <script src="<?= html_escape(url_static('js/postdata.js')) ?>"></script>
-    <script src="<?= html_escape(url_static('js/highlight.pack.js')) ?>"></script>
-    <script src="<?= html_escape(url_static('js/highlight-line-numbers.min.js')) ?>"></script>
+    <script src="<?= html_escape(url_static('js/third-party/highlight.pack.js')) ?>"></script>
+    <script src="<?= html_escape(url_static('js/third-party/highlight-line-numbers.min.js')) ?>"></script>
     <script src="<?= html_escape(url_static('js/tags.js')) ?>"></script>
     <script src="<?= html_escape(url_static('js/roundtimer.js')) ?>"></script>
     <script src="<?= html_escape(url_static('js/restoreparity.js')) ?>"></script>
-    <script src="<?= html_escape(url_static('js/foreach.js')) ?>"></script>
-    <script src="<?= html_escape(url_static('js/sorttable.js')) ?>"></script>
-    <script src="<?= html_escape(url_static('js/tablednd.js')) ?>"></script>
+    <script src="<?= html_escape(url_static('js/third-party/foreach.js')) ?>"></script>
+    <script src="<?= html_escape(url_static('js/third-party/sorttable.js')) ?>"></script>
+    <script src="<?= html_escape(url_static('js/third-party/tablednd.js')) ?>"></script>
 
     <script>
         hljs.initHighlightingOnLoad();

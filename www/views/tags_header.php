@@ -50,4 +50,4 @@ echo "];\n";
 ?>
 /* ]]> */
 </script>
-<script src="<?php echo html_escape(url_static("js/wick.js")) ?>"></script>
+<script src="<?php echo html_escape(url_static("js/third-party/wick.js")) ?>"></script>
