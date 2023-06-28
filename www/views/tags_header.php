@@ -30,7 +30,7 @@ function tag_format_input_box($field, $value = null, $width = "50", $name = "tag
 }
 ?>
 
-<link rel="stylesheet" type="text/css" href="<?= html_escape(url_static("css/wick.css")) ?> ">
+<link rel="stylesheet" type="text/css" href="<?= html_escape(url_static("css/third-party/wick.css")) ?> ">
 <script>
 /* <![CDATA[ */
 function checkForm() {

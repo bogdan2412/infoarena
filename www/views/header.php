@@ -54,8 +54,8 @@ if (isset($form_errors) || isset($form_values)) {
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/sitewide.css')) ?>">
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/iconize.css')) ?>">
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/screen.css')) ?>">
-    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/tabber.css')) ?>">
-    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/highlight-theme.css')) ?>">
+    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/third-party/tabber.css')) ?>">
+    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/third-party/highlight-theme.css')) ?>">
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/print.css')) ?>" media="print">
     <link rel="icon" href="<?= IA_URL."favicon.ico" ?>" type="image/vnd.microsoft.icon">
     <script src="<?= html_escape(url_static('js/config.js.php')) ?>"></script>
