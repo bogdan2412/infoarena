@@ -20,7 +20,7 @@ if (isset($form_errors) || isset($form_values)) {
 }
 
 ?>
-<!DOCTYPE>
+<!DOCTYPE html>
 <html lang="ro">
 <head>
     <meta charset="utf-8">
