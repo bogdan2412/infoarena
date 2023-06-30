@@ -7,8 +7,7 @@ if (!defined('IA_SETUP_SCRIPT')) {
     require_once(IA_ROOT_DIR . "common/common.php");
     require_once(IA_ROOT_DIR . "common/db/db.php");
 
-    if (realpath(IA_ROOT_DIR.'scripts') != realpath($script_dir)
-        && realpath(IA_ROOT_DIR.'docker-setup') != realpath($script_dir)) {
+    if (realpath(IA_ROOT_DIR.'scripts') != realpath($script_dir)) {
         log_error("You should only include this file from scripts");
     }
 
