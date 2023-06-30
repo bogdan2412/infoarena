@@ -129,22 +129,18 @@ function identity_require($action, $object = null) {
 //
 // Here's a good example why PHP sucks.
 function init_php_session($remember_user = false) {
+  if (session_status() === PHP_SESSION_NONE) {
     session_name('infoarena2_session');
     ini_set('session.gc_maxlifetime', IA_SESSION_LIFETIME_SECONDS);
     if ($remember_user) {
-        session_cache_limiter('private');
-        session_cache_expire(IA_SESSION_LIFETIME_SECONDS / 60);
-        session_set_cookie_params(IA_SESSION_LIFETIME_SECONDS, '/', IA_COOKIE_DOMAIN);
+      session_cache_limiter('private');
+      session_cache_expire(IA_SESSION_LIFETIME_SECONDS / 60);
+      session_set_cookie_params(IA_SESSION_LIFETIME_SECONDS, '/', IA_COOKIE_DOMAIN);
     } else {
-        session_set_cookie_params(0, '/', IA_COOKIE_DOMAIN);
+      session_set_cookie_params(0, '/', IA_COOKIE_DOMAIN);
     }
-    if (defined('IA_HPHP_ENV')) {
-        // FIXME: Raises PHP Warning: Constant SID already defined when
-        // init_php_session is called a second time.
-        @session_start();
-    } else {
-        session_start();
-    }
+    session_start();
+  }
 }
 
 // identity information from cookie-based session

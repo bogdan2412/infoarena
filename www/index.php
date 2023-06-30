@@ -16,6 +16,9 @@ require_once IA_ROOT_DIR.'www/identity.php';
 require_once IA_ROOT_DIR.'common/db/db.php';
 db_connect();
 
+require_once '../lib/Core.php';
+Core::init();
+
 // restore identity (if such a session exists)
 identity_restore();
 

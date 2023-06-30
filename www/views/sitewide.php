@@ -9,7 +9,8 @@ require_once(IA_ROOT_DIR."www/format/format.php");
 // limited application logic.
 
 // display site header
-function ia_template_header() {
+  function ia_template_header() {
+    // FIXME: Keep this in sync with template/bits/header.tpl while they coexist.
     global $identity_user;
 ?>
 <div id="header" class="clear">

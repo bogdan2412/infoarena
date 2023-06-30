@@ -375,6 +375,15 @@ if (IA_DEVELOPMENT_MODE) {
     );
 }
 
+function get_execution_stats_log() {
+  global $execution_stats;
+
+  if (IA_DEVELOPMENT_MODE) {
+    log_execution_stats();
+  }
+  return $execution_stats['log_copy'] ?? '';
+}
+
 // All timing our logic is done in UTC, the sensible way.
 // FORCE default timezone.
 if (function_exists("date_default_timezone_set")) {

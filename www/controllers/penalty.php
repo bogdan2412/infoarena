@@ -1,11 +1,9 @@
 <?php
-require_once(IA_ROOT_DIR . 'common/db/smf.php');
-require_once(IA_ROOT_DIR . 'common/db/user.php');
-require_once(IA_ROOT_DIR . 'common/user.php');
-require_once(IA_ROOT_DIR . 'common/email.php');
-
-// displays form to identify user. On submit it sends e-mail with confirmation
-// link.
+require_once IA_ROOT_DIR . 'common/db/smf.php';
+require_once IA_ROOT_DIR . 'common/db/user.php';
+require_once IA_ROOT_DIR . 'common/user.php';
+require_once IA_ROOT_DIR . 'common/email.php';
+require_once IA_ROOT_DIR . 'www/views/utilities.php';
 
 function controller_penalty() {
     global $identity_user;
@@ -38,6 +36,8 @@ function controller_penalty() {
                 $errors['username'] = 'Nu există niciun utilizator cu acest ' .
                     'nume de cont.';
             }
+        } else {
+          $errors['username'] = 'Trebuie să completezi acest cîmp.';
         }
 
         $data['round_id'] = getattr($_POST, 'round_id');
@@ -47,12 +47,12 @@ function controller_penalty() {
             if (!$round) {
                 $errors['round_id'] = 'Nu există runda cu acest ID.';
             }
+        } else {
+          $errors['round_id'] = 'Trebuie să completezi acest cîmp.';
         }
 
         if (isset($user) && $user && isset($round) && $round) {
             redirect(url_penalty_edit($user['id'], $round['id']));
-        } else {
-            flash_error('Trebuie să completezi ambele câmpuri.');
         }
 
     }
@@ -60,11 +60,11 @@ function controller_penalty() {
         // initial display of form
     }
 
-    // page title
-    $view = array();
-    $view['title'] = 'Penalty';
-    $view['form_errors'] = $errors;
-    $view['form_values'] = $data;
-    $view['no_sidebar_login'] = true;
-    execute_view_die('views/penalty.php', $view);
+    RecentPage::addCurrentPage('Penalty');
+    Smart::assign([
+      'formErrors' => $errors,
+      'formValues' => $data,
+      'showSidebarLogin' => false,
+    ]);
+    Smart::display('penalty.tpl');
 }

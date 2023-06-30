@@ -60,7 +60,7 @@ if (isset($form_errors) || isset($form_values)) {
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/third-party/highlight-theme.css')) ?>">
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/print.css')) ?>" media="print">
 
-    <!-- custom CSS load; overwritting just some css rules -->
+    <!-- custom CSS load; overwriting just some css rules -->
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('custom/css/sitewide.css')) ?>">
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('custom/css/screen.css')) ?>">
 
