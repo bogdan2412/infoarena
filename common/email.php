@@ -34,7 +34,7 @@ function send_email($to, $subject, $plain_text_message, $from = null,
     $headers = 'From: ' . $from . "\n" .
                'Reply-To: ' . $reply_to . "\n" .
                "Content-type: text/plain\n" .
-               'X-Mailer: ' . SITE_NAME . '/newsletter';
+               'X-Mailer: ' . SITE_NAME;
 
     // log
     if ($do_log) {

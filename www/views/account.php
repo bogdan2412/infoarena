@@ -119,21 +119,6 @@ if (array_key_exists('security_level', $form_values)) {
 
 <ul class="form clear">
     <li>
-        <?php if (NEWSLETTER) : ?>
-            <input
-                type="checkbox"
-                <?php if (fval('newsletter')) echo 'checked="checked"'; ?>
-                name="newsletter"
-                id="form_newsletter">
-            <label for="form_newsletter" class="checkbox">
-                Mă abonez la newsletter. Sunt de acord să primesc pe e-mail
-                noutăți despre <?= SITE_NAME ?>. Mă pot dezabona oricând.
-            </label>
-        <?php else : ?>
-            <input type="hidden" name="newsletter" value="0">
-        <?php endif; ?>
-    </li>
-    <li>
         <input type="submit" value="Salvează" id="form_submit" class="button important">
     </li>
 </ul>

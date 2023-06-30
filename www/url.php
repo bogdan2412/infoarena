@@ -266,11 +266,6 @@ function url_user_avatar($username, $size_type = "full") {
     return url_complex("avatar/".$size_type."/".$username);
 }
 
-function url_unsubscribe($username, $key) {
-    log_assert($key);
-    return url_complex('unsubscribe/'.$username, array('c' => $key));
-}
-
 // Task/round stuff.
 
 function url_task($task_id) {
@@ -416,17 +411,6 @@ function url_forum() {
 
 function url_userwidget($user_id) {
     return url_complex("userwidget/".$user_id, array());
-}
-
-// Newsletter
-
-function url_newsletter($page_name, $rev = null) {
-    return url_textblock_revision($page_name, $rev);
-}
-
-function url_newsletter_preview_body($page_name, $rev = null) {
-    return url_complex($page_name, array('revision' => $rev,
-            'preview' => 'body'));
 }
 
 function url_admin() {

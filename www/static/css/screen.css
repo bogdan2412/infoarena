@@ -1522,14 +1522,6 @@ ul.okr .comment {
     color: gray;
 }
 
-/* newsletter preview */
-
-#newsletter_preview {
-    width: 95%;
-    height: 600px;
-    border: none;
-}
-
 /* Round status icons */
 .round-complete, .round-waiting, .round-running {
     width: 16px;

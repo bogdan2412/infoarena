@@ -25,7 +25,6 @@ function controller_register() {
         $data['password2'] = request('password2');
         $data['full_name'] = trim(request('full_name'));
         $data['email'] = trim(request('email'));
-        $data['newsletter'] = (request('newsletter') ? 1 : 0);
         $data['tnc'] = (request('tnc') ? 1 : 0);
 
         pay_tokens(IA_TOKENS_REGISTER);
@@ -38,7 +37,6 @@ function controller_register() {
             $user['password'] = user_hash_password($data['password'], $data['username']);
             $user['full_name'] = $data['full_name'];
             $user['email'] = $data['email'];
-            $user['newsletter'] = $data['newsletter'];
             // There are no acceptable errors in user_create.
             user_create($user, remote_ip_info());
 
@@ -52,7 +50,6 @@ function controller_register() {
         }
     } else {
         // form is displayed for the first time. Fill in default values.
-        $data['newsletter'] = 1;
         $data['tnc'] = 1;
     }
 

@@ -10,16 +10,6 @@ function user_hash_password($password, $username) {
     return sha1(strtolower($username).$password);
 }
 
-// Computes user unsubscribe key. User must supply this exact key in order
-// to unsubscribe from the mailing list.
-// $user is user object as returned by user_get_by_username(...)
-function user_unsubscribe_key($user) {
-    $key = sha1('u:'.$user['username'].':'.$user['password'].':'.IA_SECRET);
-
-    // trim key. make it shorter since long URLs suck in text/plain emails
-    return substr($key, 0, 16);
-}
-
 // Computes reset password confirmation key.
 // User must supply this in order to reset their password.
 // $user is user object as returned by user_get_by_username(...)
@@ -37,7 +27,6 @@ function user_init()
     $user['security_level'] = 'normal';
     $user['rating_cache'] = 0;
     $user['id'] = -1;
-    $user['newsletter'] = 1;
 
     return $user;
 }
@@ -93,13 +82,6 @@ function user_validate($user) {
                $user['security_level'] != 'admin' &&
                $user['security_level'] != 'intern') {
         $errors['security_level'] = "Nivel de securitate invalid.";
-    }
-
-    // Newsletter
-    if (!array_key_exists('newsletter', $user)) {
-        $errors['newsletter'] = "Lipsește bitul de newsletter.";
-    } else if ($user['newsletter'] != '0' && $user['newsletter'] != '1') {
-        $errors['newsletter'] = "Se acceptă doar 0/1";
     }
 
     return $errors;
