@@ -8,7 +8,7 @@ class OS {
     }
 
     static function execute(string $command): array {
-        log_print('Executing %s', $command);
+        log_print(sprintf('Executing %s', $command));
         exec($command, $arr, $exitCode);
         $output = implode("\n", $arr);
 

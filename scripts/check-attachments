@@ -9,7 +9,7 @@ db_connect();
 log_print("Checking attachment dir...");
 log_warn("This script consumes tons of memory so errors might occur");
 
-$res = db_query("SELECT `id`, `name`, `page`, `size`, `aws` FROM ia_file");
+$res = db_query("SELECT `id`, `name`, `page`, `size` FROM ia_file");
 
 $extra_files = array_flip(glob(IA_ROOT_DIR . "attach/*"));
 $extra_atts = array();
@@ -19,10 +19,6 @@ $mismatched_sizes = array();
 
 // Check attachments.
 while ($att = db_next_row($res)) {
-    if ($att['aws']) {
-        continue;
-    }
-
     ++$total_atts;
     $fname = attachment_get_filepath($att);
     if (array_key_exists($fname, $extra_files)) {
@@ -125,13 +121,9 @@ if (count($mismatched_sizes) != 0) {
 }
 
 if (read_bool("Check mimetypes (could take a long time)?", false)) {
-    $res = db_query("SELECT `id`, `name`, `page`, `mime_type`, `aws` FROM ia_file");
+    $res = db_query("SELECT `id`, `name`, `page`, `mime_type` FROM ia_file");
     $mismatched_mimetypes = array();
     while ($att = db_next_row($res)) {
-        if ($att['aws']) {
-            continue;
-        }
-
         $fname = attachment_get_filepath($att);
         if (!is_file($fname)) {
             continue;

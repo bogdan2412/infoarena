@@ -240,10 +240,4 @@ function image_resize($image_info, $filepath, $new_image_info,
             // unsupported image type
             return false;
     }
-        }
-
-function attachment_should_be_in_aws($page_name, $attachment_name) {
-    return is_problem_page($page_name) &&
-        is_grader_testfile($attachment_name) &&
-        IA_AWS_FOR_GRADER_FILES;
 }
