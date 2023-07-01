@@ -4,7 +4,7 @@ require_once(IA_ROOT_DIR."www/format/pager.php");
 require_once(IA_ROOT_DIR."common/db/textblock.php");
 require_once(IA_ROOT_DIR."common/db/attachment.php");
 require_once(IA_ROOT_DIR.'www/controllers/zip_attachment.php');
-require_once(IA_ROOT_DIR."common/external_libs/zipfile.php");
+require_once(IA_ROOT_DIR."lib/third-party/zipfile.php");
 require_once(IA_ROOT_DIR."common/avatar.php");
 
 // Try to get the textblock model for a certain page.

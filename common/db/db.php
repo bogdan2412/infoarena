@@ -4,7 +4,7 @@
 require_once(IA_ROOT_DIR."common/db/db_mysql.php");
 
 if (!MYSQL_NATIVE) {
-    require_once IA_ROOT_DIR . 'common/external_libs/php-mysql-mysqli-wrapper/mysql.php';
+    require_once IA_ROOT_DIR . 'lib/third-party/php-mysql-mysqli-wrapper/mysql.php';
 }
 
 // Executes query, fetches the all result rows

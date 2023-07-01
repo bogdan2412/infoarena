@@ -1,7 +1,7 @@
 <?php
 
 require_once(IA_ROOT_DIR . 'common/db/db.php');
-require_once(IA_ROOT_DIR . 'common/external_libs/recaptchalib.php');
+require_once(IA_ROOT_DIR . 'lib/third-party/recaptchalib.php');
 
 /**
  * Get the current tokens
