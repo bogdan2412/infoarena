@@ -37,51 +37,6 @@ require_once(IA_ROOT_DIR."www/format/format.php");
 <?php
 }
 
-// display main navigation bar
-function ia_template_topnav($selected = SITE_NAME, $is_admin = false) {
-    global $identity_user;
-
-    $pre = array($selected => '<strong>');
-    $post = array($selected => '</strong>');
-?>
-<div id="topnav">
-<ul>
-    <li>
-        <?= getattr($pre, SITE_NAME) ?>
-        <?= format_link(url_home(), NAV_HOMEPAGE_TEXT, false) ?>
-        <?= getattr($post, SITE_NAME) ?>
-    </li>
-<?php if (identity_is_anonymous()) { ?>
-    <li>
-        <?= getattr($pre, 'login')?>
-        <?= format_link(url_login(), "autentificare") ?>
-        <?= getattr($post, 'login') ?>
-    </li>
-    <li>
-        <?= getattr($pre, 'register')?>
-        <?= format_link(url_register(), "înregistrare") ?>
-        <?= getattr($post, 'register') ?>
-    </li>
-<?php } else { ?>
-    <li>
-        <?= getattr($pre, 'profile') ?>
-        <?= format_link_access(url_user_profile($identity_user['username']), 'profilul meu', 'p') ?>
-        <?= getattr($post, 'profile') ?></li>
-
-    <?php if ($is_admin) { ?>
-        <li>
-            <?= getattr($pre, 'admin') ?>
-            <?= format_link(url_admin(), 'admin') ?>
-            <?= getattr($post, 'admin') ?>
-        </li>
-    <?php } ?>
-<?php } ?>
-</ul>
-</div>
-
-<?php
-}
-
 function ia_template_footer() {
 ?>
 <div id="footer">

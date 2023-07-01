@@ -180,8 +180,5 @@ function controller_account($username = null) {
     $view['action'] = url_account($user['username']);
     $view['avatar_exists'] = attachment_get('avatar', IA_USER_TEXTBLOCK_PREFIX .
             $user['username']);
-    if ($ownprofile) {
-        $view['topnav_select'] = 'profile';
-    }
     execute_view_die('views/account.php', $view);
 }

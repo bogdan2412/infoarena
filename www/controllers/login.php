@@ -101,7 +101,6 @@ function controller_login() {
     $view['title'] = "Autentificare";
     $view['form_values'] = $data;
     $view['form_errors'] = $form_errors;
-    $view['topnav_select'] = 'login';
     $view['no_sidebar_login'] = true;
 
     if (get_tokens() < IA_TOKENS_LOGIN) {

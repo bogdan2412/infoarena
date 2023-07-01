@@ -88,13 +88,8 @@ if (isset($form_errors) || isset($form_values)) {
 <div id="page">
 
 <?php
-if (!isset($topnav_select)) {
-    $topnav_select = SITE_NAME;
-}
 ia_template_header();
 $is_admin = ('admin' == getattr($identity_user, 'security_level'));
-#mihai remove top-nav
-#ia_template_topnav($topnav_select, $is_admin);
 ?>
 
 <div id="content_small" class="clear">

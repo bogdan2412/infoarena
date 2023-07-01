@@ -14,7 +14,7 @@ function RefreshPage() {
 setTimeout(RefreshPage, 2000);
 </script>
 <style type="text/css">
-#sidebar, #header, #topnav, #breadcrumbs {
+#sidebar, #header, #breadcrumbs {
     display: none;
 }
 #main {

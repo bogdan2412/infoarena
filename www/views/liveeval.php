@@ -9,7 +9,7 @@ $view['head'] = '<script src="'.
     html_escape(url_static('js/liveeval.js')).'"></script>';
 $view['head'] = $view['head'] . '
 <style type="text/css">
-#sidebar, #header, #topnav, #breadcrumbs {
+#sidebar, #header, #breadcrumbs {
     display: none;
 }
 #main {

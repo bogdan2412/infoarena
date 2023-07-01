@@ -52,9 +52,6 @@ function controller_textblock_view($page_name, $rev_num = null,
     $view['revision_count'] = $rev_count;
     $view['page_name'] = $page['name'];
     $view['textblock'] = $page;
-    if ($page_name == 'admin') {
-        $view['topnav_select'] = 'admin';
-    }
     execute_view_die($display_view, $view);
 }
 

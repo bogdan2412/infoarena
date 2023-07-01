@@ -114,53 +114,6 @@ body#infoarena {
     float: left;
     margin-right: 6px;
 }
-/* top navigation bar */
-#topnav {
-    float: left;
-    width: auto;
-    line-height: normal;
-    margin: 0 0 .5em 1em;
-    padding: 0 6px 0 0;
-    background: url('../images/tab/end.gif') right bottom no-repeat;
-}
-
-#topnav ul {
-    float: left;
-    margin: 0;
-    padding: 0 0 0 6px;
-    background: url('../images/tab/begin.gif') left bottom no-repeat;
-}
-
-#topnav li {
-    float: left;
-    padding: 0;
-    margin: 0 .4em 0 .4em;
-    display: inline;
-    list-style-type: none;
-}
-
-#topnav a {
-    display: block;
-    color: white;
-    font-size: 8pt;
-    padding: .1em 0 .5em 0;
-}
-
-#topnav a:hover {
-    text-decoration: underline;
-}
-
-#topnav strong {
-    display: block;
-    background: url('../images/tab/a_end.gif') right bottom no-repeat;
-    padding-right: 4px;
-}
-
-#topnav strong a {
-    background: url('../images/tab/a_begin.gif') left bottom no-repeat;
-    padding-left: 12px;
-    padding-right: 6px;
-}
 
 /* misc */
 .clear {

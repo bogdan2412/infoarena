@@ -63,7 +63,6 @@ function controller_register() {
     $view['page_name'] = 'register';
     $view['form_errors'] = $errors;
     $view['form_values'] = $data;
-    $view['topnav_select'] = 'register';
     $view['action'] = url_register();
     $view['no_sidebar_login'] = true;
     execute_view_die('views/register.php', $view);

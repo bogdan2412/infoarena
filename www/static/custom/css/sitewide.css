@@ -33,28 +33,6 @@
     color:#222;
 }
 
-/* top navigation bar */
-#topnav {
-    background: url('../images/tab/end.gif') right bottom no-repeat;
-}
-
-#topnav ul {
-    background: url('../images/tab/begin.gif') left bottom no-repeat;
-}
-
-#topnav a {
-    font-size: 9pt;
-}
-
-#topnav strong {
-    background: url('../images/tab/a_end.gif') right bottom no-repeat;
-
-}
-
-#topnav strong a {
-    background: url('../images/tab/a_begin.gif') left bottom no-repeat;
-}
-
 /* datagrids */
 td.number, th.number, td.date, th.date, th.state {
     text-align: center;

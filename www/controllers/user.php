@@ -21,7 +21,6 @@ function controller_user_view($username, $action, $rev_num = null) {
         'page_name' => $page_name,
         'action' => $action,
         'user' => $user,
-        'topnav_select' => 'profile',
         'template_userheader' => 'template/userheader',
     );
 
