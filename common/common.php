@@ -314,9 +314,8 @@ function check_requirements() {
         log_error("PHP 5.0 required.");
     }
 
-    $mysqlExtension = MYSQL_NATIVE ? 'mysql' : 'mysqli';
-    if (array_search($mysqlExtension, $extensions) === false) {
-        log_error("{$mysqlExtension} extension required.");
+    if (array_search('mysqli', $extensions) === false) {
+        log_error("mysqli extension missing.");
     }
     if (array_search('gd', $extensions) === false) {
         log_warn("gd extension missing.");

@@ -1,32 +1,29 @@
 <?php
 // This module contains various database-related functions and routines.
 
-require_once(IA_ROOT_DIR."common/db/db_mysql.php");
-
-if (!MYSQL_NATIVE) {
-    require_once IA_ROOT_DIR . 'lib/third-party/php-mysql-mysqli-wrapper/mysql.php';
-}
+require_once IA_ROOT_DIR . 'common/db/db_mysql.php';
+require_once IA_ROOT_DIR . 'lib/third-party/php-mysql-mysqli-wrapper/mysql.php';
 
 // Executes query, fetches the all result rows
 function db_fetch_all($query) {
-    $result = db_query($query, true);
-    if ($result) {
-        $buffer = array();
-        while ($row = db_next_row($result)) {
-            $buffer[] = $row;
-        }
-        db_free($result);
-        return $buffer;
-    } else {
-        return null;
+  $result = db_query($query, true);
+  if ($result) {
+    $buffer = array();
+    while ($row = db_next_row($result)) {
+      $buffer[] = $row;
     }
+    db_free($result);
+    return $buffer;
+  } else {
+    return null;
+  }
 }
 
 // tells whether given string is a valid datetime value
 // see parse_datetime()
 function is_db_date($string) {
-    $timestamp = db_date_parse($string);
-    return (false !== $timestamp);
+  $timestamp = db_date_parse($string);
+  return (false !== $timestamp);
 }
 
 // parse value of a datetime parameter in SQL format.
@@ -35,28 +32,28 @@ function is_db_date($string) {
 // returns unix timestamp or FALSE upon error
 // NOTE: We cannot use strptime() since it doesn't work on windows
 function db_date_parse($string) {
-    if ($string === null) {
-        return false;
-    }
-
-    // maybe it's a date&time
-    $matches = null;
-    $ret = preg_match('/^(\\d{4})-(\\d{2})-(\\d{2}) (\\d{2}):(\\d{2}):(\\d{2})$/',
-                      $string, $matches);
-    if ($ret) {
-        return mktime($matches[4], $matches[5], $matches[6],
-                      $matches[2], $matches[3], $matches[1]);
-    }
-
-    // probably just a date
-    $ret = preg_match('/^(\\d{4})-(\\d{2})-(\\d{2})$/',
-                      $string, $matches);
-    if ($ret) {
-        return mktime(12, 0, 0, $matches[2], $matches[3], $matches[1]);
-    }
-
-    // unknown date format
+  if ($string === null) {
     return false;
+  }
+
+  // maybe it's a date&time
+  $matches = null;
+  $ret = preg_match('/^(\\d{4})-(\\d{2})-(\\d{2}) (\\d{2}):(\\d{2}):(\\d{2})$/',
+                    $string, $matches);
+  if ($ret) {
+    return mktime($matches[4], $matches[5], $matches[6],
+                  $matches[2], $matches[3], $matches[1]);
+  }
+
+  // probably just a date
+  $ret = preg_match('/^(\\d{4})-(\\d{2})-(\\d{2})$/',
+                    $string, $matches);
+  if ($ret) {
+    return mktime(12, 0, 0, $matches[2], $matches[3], $matches[1]);
+  }
+
+  // unknown date format
+  return false;
 }
 
 // formats unix timestamp as a datetime parameter value, suitable for SQL.
@@ -67,13 +64,13 @@ function db_date_parse($string) {
 //
 // All times in the database are UTC!!!
 function db_date_format($timestamp = null) {
-    if ($timestamp === null) {
-        $res = date('Y-m-d H:i:s');
-    } else {
-        $res = date('Y-m-d H:i:s', $timestamp);
-    }
+  if ($timestamp === null) {
+    $res = date('Y-m-d H:i:s');
+  } else {
+    $res = date('Y-m-d H:i:s', $timestamp);
+  }
 
-    return $res;
+  return $res;
 }
 
 // Executes SQL query and returns value of the first column in the first
@@ -82,33 +79,33 @@ function db_date_format($timestamp = null) {
 //
 // WARNING: This function asserts there is at most 1 result row and 1 column.
 function db_query_value($query, $default_value = null) {
-    global $dbLink;
+  global $dbLink;
 
-    $rows = db_fetch_all($query);
+  $rows = db_fetch_all($query);
 
-    if (count($rows) == 0) {
-        return $default_value;
-    }
+  if (count($rows) == 0) {
+    return $default_value;
+  }
 
-    // failsafe
-    log_assert(1 == count($rows), 'db_query_value() expects 1 row at most');
-    $row = array_values($rows[0]);
-    log_assert(1 == count($row), 'db_query_value() expects 1 column at most');
+  // failsafe
+  log_assert(1 == count($rows), 'db_query_value() expects 1 row at most');
+  $row = array_values($rows[0]);
+  log_assert(1 == count($row), 'db_query_value() expects 1 column at most');
 
-    return $row[0];
+  return $row[0];
 }
 
 // Retries the query for $retries times or until it succeeded.
 // Wrapper for db_query.
 // Returns native PHP mysql resource handle.
 function db_query_retry($query, $retries) {
-    $result = false;
+  $result = false;
 
-    for ($try = 0; $try <= $retries && !$result; ++$try) {
-        $result = db_query($query);
-    }
+  for ($try = 0; $try <= $retries && !$result; ++$try) {
+    $result = db_query($query);
+  }
 
-    return $result;
+  return $result;
 }
 
 // Executes SQL INSERT statement (wrapper for db_query)
@@ -131,23 +128,23 @@ function db_query_retry($query, $retries) {
 //
 // Returns last insert-ed primary key value
 function db_insert($table, $dict) {
-    global $dbLink;
+  global $dbLink;
 
-    foreach ($dict as $k => $v) {
-        if (is_null($v)) {
-            unset($dict[$k]);
-        }
+  foreach ($dict as $k => $v) {
+    if (is_null($v)) {
+      unset($dict[$k]);
     }
+  }
 
-    $query = "INSERT INTO `{$table}` (`";
-    $query .= join('`, `', array_keys($dict));
-    $query .= "`) VALUES (";
-    $query .= join(", ", array_map('db_quote', array_values($dict)));
-    $query .= ")";
+  $query = "INSERT INTO `{$table}` (`";
+  $query .= join('`, `', array_keys($dict));
+  $query .= "`) VALUES (";
+  $query .= join(", ", array_map('db_quote', array_values($dict)));
+  $query .= ")";
 
-    db_query($query);
+  db_query($query);
 
-    return db_insert_id();
+  return db_insert_id();
 }
 
 // Executes SQL UPDATE statement (wrapper for db_query)
@@ -172,38 +169,38 @@ function db_insert($table, $dict) {
 // SET `full_name` = 'Gigi Kent', `password` = 'xxx'
 // WHERE username='wickedman'
 function db_update($table, $dict, $where = null) {
-    global $dbLink;
+  global $dbLink;
 
-    // fail safe
-    log_assert(1 <= count($dict), 'db_update() called with empty $dict');
+  // fail safe
+  log_assert(1 <= count($dict), 'db_update() called with empty $dict');
 
-    // build query
-    $query = "UPDATE `{$table}`\nSET ";
-    $first = true;
-    foreach ($dict as $k => $v) {
-        //  - comma
-        if (!$first) {
-            $query .= ', ';
-        }
-        $first = false;
-
-        //  - field-value pair
-        if (is_null($v)) {
-            $v = 'NULL';
-        }
-        else {
-            $v = db_quote($v);
-        }
-        $query .= "`{$k}` = {$v}";
+  // build query
+  $query = "UPDATE `{$table}`\nSET ";
+  $first = true;
+  foreach ($dict as $k => $v) {
+    //  - comma
+    if (!$first) {
+      $query .= ', ';
     }
-    //  - WHERE clause
-    if (!is_null($where)) {
-        $query .= " WHERE ".$where;
+    $first = false;
+
+    //  - field-value pair
+    if (is_null($v)) {
+      $v = 'NULL';
     }
+    else {
+      $v = db_quote($v);
+    }
+    $query .= "`{$k}` = {$v}";
+  }
+  //  - WHERE clause
+  if (!is_null($where)) {
+    $query .= " WHERE ".$where;
+  }
 
-    db_query($query);
+  db_query($query);
 
-    return db_affected_rows();
+  return db_affected_rows();
 }
 
 // Quotes a variable so it can be safely placed inside an SQL query.
@@ -211,74 +208,72 @@ function db_update($table, $dict, $where = null) {
 //
 // NOTE: this function is always safe to concat inline.
 function db_quote($arg) {
-    if (is_null($arg)) {
-        return 'NULL';
-    } else if (is_string($arg)) {
-        return "'" . db_escape($arg) . "'";
-    } else if (is_numeric($arg)) {
-        // FIXME: is_numeric guarantees mysql safety?
-        // FIXME: does it also guarantee that mysql can parse it?
-        return (string)$arg;
-        //return "'" . db_escape((string)$arg) . "'";
-    } else if (is_bool($arg)) {
-        if ($arg) {
-            return 'TRUE';
-        } else {
-            return 'FALSE';
-        }
-    } else if (is_array($arg) || is_object($arg) || is_sql_resource($arg) || is_callable($arg)) {
-        log_error("Can't db_quote complex objects");
-        return (string)$arg;
+  if (is_null($arg)) {
+    return 'NULL';
+  } else if (is_string($arg)) {
+    return "'" . db_escape($arg) . "'";
+  } else if (is_numeric($arg)) {
+    // FIXME: is_numeric guarantees mysql safety?
+    // FIXME: does it also guarantee that mysql can parse it?
+    return (string)$arg;
+    //return "'" . db_escape((string)$arg) . "'";
+  } else if (is_bool($arg)) {
+    if ($arg) {
+      return 'TRUE';
     } else {
-        log_error("Unknown object type?");
+      return 'FALSE';
     }
+  } else if (is_array($arg) || is_object($arg) || is_sql_resource($arg) || is_callable($arg)) {
+    log_error("Can't db_quote complex objects");
+    return (string)$arg;
+  } else {
+    log_error("Unknown object type?");
+  }
 }
 
 // Escape an array of strings.
 function db_escape_array($array) {
-    $ret = implode(',', array_map('db_quote', $array));
+  $ret = implode(',', array_map('db_quote', $array));
 
-    return $ret;
+  return $ret;
 }
 
 // Executes query, fetches only FIRST result row
 function db_fetch($query) {
-    $result = db_query($query, true);
-    if ($result) {
-        $row = db_next_row($result);
-        if ($row === false) {
-            db_free($result);
-            return null;
-        }
-        db_free($result);
-        return $row;
-    } else {
-        return null;
+  $result = db_query($query, true);
+  if ($result) {
+    $row = db_next_row($result);
+    if ($row === false) {
+      db_free($result);
+      return null;
     }
+    db_free($result);
+    return $row;
+  } else {
+    return null;
+  }
 }
 
 // Wrapper for is_resource(), which only works with mysql_*, not mysqli_*.
 function is_sql_resource($var) {
-    return MYSQL_NATIVE
-        ? is_resource($var)
-        : ($var instanceof mysqli || $var instanceof mysqli_result);
+  return ($var instanceof mysqli || $var instanceof mysqli_result);
 }
 
 // FIXME: This shouldn't be here. Move it in common/db/task.php or
 // common/db/round.php
 function db_get_task_filter_clause($filter, $table_alias) {
-    if ($filter == IA_TLF_SOLVED) {
-        return "{$table_alias}.score = 100";
-    } else if ($filter == IA_TLF_TRIED) {
-        return "{$table_alias}.score < 100";
-    } else if ($filter == IA_TLF_UNSOLVED) {
-        return "{$table_alias}.score is null";
-    } else {
-        return '1';
-    }
+  if ($filter == IA_TLF_SOLVED) {
+    return "{$table_alias}.score = 100";
+  } else if ($filter == IA_TLF_TRIED) {
+    return "{$table_alias}.score < 100";
+  } else if ($filter == IA_TLF_UNSOLVED) {
+    return "{$table_alias}.score is null";
+  } else {
+    return '1';
+  }
 }
 
 function db_table_exists(string $table_name): bool {
-    $val = db_query_value("show tables like '$table_name'");
-    return ($val !== null);
+  $val = db_query_value("show tables like '$table_name'");
+  return ($val !== null);
 }

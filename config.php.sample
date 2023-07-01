@@ -234,10 +234,6 @@ define('SIDEBAR_ELEMENTS', [
     'task-search' => false,
 ]);
 
-// True: use the built-in mysql_* functions.
-// False: use the wrapper library.
-define('MYSQL_NATIVE', true);
-
 define('ENABLED_COMPILERS', array(
     'c-32' => 'GNU C - 32bit',
     'cpp-32' => 'GNU C++ - 32bit',
