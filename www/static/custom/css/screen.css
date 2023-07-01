@@ -18,30 +18,6 @@ body {
     color: #6A6A6B;
 }
 
-
-/* Layout */
-/*
-The basic layout of the homepage is as follows:
-
-- #page
-    - #header
-    - #content
-        - #sidebar
-        - #main
-            - h1
-            - .wiki_text_block
-                - h[2|3|4]
-                - ul
-                - ol
-                - ...
-            - .news
-                .item
-                    .date
-                    h3
-                    .wiki_text_block
-    - #footer
-*/
-
 #content_small {
 	margin-top: 10px;
 }

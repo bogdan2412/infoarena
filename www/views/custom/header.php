@@ -32,7 +32,7 @@ if (isset($form_errors) || isset($form_values)) {
     // a macro?).
     if (getattr($view, 'page_name') == "home") {
 ?>
-    <meta name="Description" content="Concursuri de programare, Știri și articole de informatică, Comunitate online. Arhivă de probleme, Evaluare 24/24, Forum, Resurse educaționale, Pregătire pentru olimpiadă.">
+    <meta name="Description" content="Concursuri de programare, Comunitate online. Arhivă de probleme, Evaluare 24/24, Forum, Resurse educaționale, Pregătire pentru olimpiadă.">
     <meta name="keywords" content="Concursuri, Informatică, Programare, Comunitate, Algoritmi, Articole, Evaluare, Pregătire">
 <?php
     if (GOOGLE_SITE_VERIFICATION) {

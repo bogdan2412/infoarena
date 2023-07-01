@@ -213,32 +213,6 @@ function db_update($table, $dict, $where = null) {
     return db_affected_rows();
 }
 
-// FIXME: obliterate
-
-/**
- * News
- * This is for the special "news" controller.
- */
-function news_get_range($start, $range, $prefix = null) {
-    $query = sprintf("SELECT
-                        *
-                      FROM ia_textblock
-                      WHERE `name` LIKE 'stiri/%s%%'
-                      ORDER BY ia_textblock.`creation_timestamp` DESC
-                      LIMIT %s, %s",
-                     db_escape($prefix), db_quote((int)$start), db_quote((int)$range));
-    return db_fetch_all($query);
-}
-
-function news_count($prefix = null) {
-    $query = sprintf("SELECT COUNT(*) AS `cnt`
-                      FROM ia_textblock
-                      WHERE `name` LIKE 'stiri/%s%%'",
-                      db_escape($prefix));
-    $tmp = db_fetch($query);
-    return $tmp['cnt'];
-}
-
 // Quotes a variable so it can be safely placed inside an SQL query.
 // This will surround strings with quotes and leave integers alone.
 //
