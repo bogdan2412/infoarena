@@ -72,10 +72,6 @@ function security_query($user, $action, $object) {
             $result = security_job($user, $action, $object);
             break;
 
-        case 'blog':
-            $result = security_blog($user, $action, $object);
-            break;
-
         default:
             log_error('Invalid action group: "'.$group.'"');
             break;
@@ -551,23 +547,6 @@ function security_macro($user, $action, $args) {
             log_error('Invalid macro action: '.$action);
             break;
     }
-}
-
-function security_blog($user, $action, $round) {
-    $usersec = getattr($user, 'security_level', 'anonymous');
-    $is_admin = $usersec == 'admin';
-
-    // Log query response.
-    $action = security_simplify_action($action);
-    $level = ($is_admin ? 'admin' : 'other');
-    if (IA_LOG_SECURITY) {
-        $objid = $round['id'];
-        log_print("SECURITY QUERY BLOG: ".
-                "($level, $action, $objid): ".
-                "(level, action, object)");
-    }
-
-    return $is_admin;
 }
 
 // There is no job-eval, jobs are evaluated on the spot,

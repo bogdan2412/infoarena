@@ -45,20 +45,6 @@ VirtualHost {
     PathTranslation = hphp/endpoint/
 
     RewriteRules {
-      news_redirect {
-        pattern = ^/stiri/(.*)$
-        to = /blog/$1
-        qsa = true
-        redirect = 301
-      }
-
-      news_feed_redirect {
-        pattern = ^/news_feed$
-        to = /blog?action=rss
-        qsa = true
-        redirect = 301
-      }
-
       www {
         pattern = ^/(.*)$
         to = index.php?page=$1

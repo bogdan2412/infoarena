@@ -216,10 +216,6 @@ function is_task_id($task_id) {
            strlen($task_id) < 64;
 }
 
-function is_blog_post($blog_post) {
-    return is_page_name($blog_post) && substr($blog_post, 0, 5) == 'blog/';
-}
-
 // Check job id
 function is_job_id($job_id) {
     return is_whole_number($job_id);

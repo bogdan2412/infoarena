@@ -233,7 +233,6 @@ define('CUSTOM_THEME', '');
 define('NAV_HOMEPAGE_TEXT', 'info<em>arena</em>');
 
 define('TOPNAV_ELEMENTS', [
-    'blog' => true,
     'forum' => true,
     'calendar' => true,
     'messages' => true,

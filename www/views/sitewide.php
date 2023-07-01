@@ -51,13 +51,6 @@ function ia_template_topnav($selected = SITE_NAME, $is_admin = false) {
         <?= format_link(url_home(), NAV_HOMEPAGE_TEXT, false) ?>
         <?= getattr($post, SITE_NAME) ?>
     </li>
-    <?php if (TOPNAV_ELEMENTS['blog']) { ?>
-        <li>
-            <?= getattr($pre, 'blog') ?>
-            <?= format_link_access(url_blog(), "blog", 'b') ?>
-            <?= getattr($post, 'blog') ?>
-        </li>
-    <?php } ?>
     <?php if (TOPNAV_ELEMENTS['forum']) { ?>
         <li>
             <?= getattr($pre, 'forum') ?>

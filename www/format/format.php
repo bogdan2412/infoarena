@@ -338,25 +338,6 @@ function format_social_buttons($textblock,
 }
 
 /**
- * Formats the blog post author
- *
- * @param array $blogpost    the blogpost textblock
- * @return string
- */
-function format_blogpost_author($blogpost, $show_social = true) {
-    $text = '<div class="strap blogheader">'
-          . ($show_social ? format_social_buttons($blogpost) : "")
-          . format_user_avatar($blogpost['user_name'], 'forum')
-          . '<br>'
-          . format_user_link($blogpost['user_name'],
-                             $blogpost['user_fullname'])
-          . '<br>'
-          . format_date($blogpost['creation_timestamp'], 'd MMMM yyyy')
-          . '</div>';
-    return $text;
-}
-
-/**
  * Formats the task author tags
  *
  * @param array $authors    an array containing the author tags

@@ -189,30 +189,6 @@ else if ($urlstart == 'lista-inregistrare') {
     controller_round_register_view($obj_id);
 }
 
-// Blog RSS feed
-else if ($page == 'blog' && $action == 'rss') {
-    require_once IA_ROOT_DIR.'www/controllers/blog.php';
-    controller_blog_feed();
-}
-
-// Blog index
-else if ($page == 'blog') {
-    require_once IA_ROOT_DIR.'www/controllers/blog.php';
-    controller_blog_index();
-}
-
-// Blog edit
-else if ($urlstart == 'blog' && $action == 'edit') {
-    require_once IA_ROOT_DIR.'www/controllers/textblock_edit.php';
-    controller_textblock_edit($page, 'private');
-}
-
-// Blog view
-else if ($urlstart == 'blog' && $action == 'view') {
-    require_once IA_ROOT_DIR.'www/controllers/blog.php';
-    controller_blog_view($page, request('revision'));
-}
-
 // textblock controllers
 // FIXME: quick array of sorts?
 //  - edit textblock

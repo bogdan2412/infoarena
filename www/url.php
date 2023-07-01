@@ -106,17 +106,6 @@ function url_textblock_history($page_name) {
     return url_complex($page_name, array('action' => 'history'));
 }
 
-function url_blog_feed() {
-    return url_complex('blog', array('action' => 'rss'));
-}
-
-function url_blog($tag = null) {
-    if ($tag) {
-        return url_complex('blog', array('tag' => $tag));
-    }
-    return url_complex('blog');
-}
-
 function url_textblock_diff($page_name, $revfrom, $revto) {
     return url_complex($page_name, array(
             'action' => 'diff',

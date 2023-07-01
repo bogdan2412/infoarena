@@ -41,12 +41,6 @@ if (isset($form_errors) || isset($form_values)) {
               "\">");
     }
     }
-
-    // Add aditional meta data for other pages such as blog posts
-    $meta_info = getattr($view, 'meta_info', array());
-    foreach ($meta_info as $tag) {
-        echo format_tag('meta', null, $tag);
-    }
 ?>
 
     <title><?= html_escape(getattr($view, 'title')) ?></title>

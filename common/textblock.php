@@ -28,9 +28,6 @@ function hijack_title(&$text, $url, $title) {
 //
 // Some exceptions:
 //    * news -- they are fully rendered in the snippet if $whole_news is true
-//    * blog posts having a huge first paragraph -- although we exceed the
-//        number of words allowed we should have a snippet for this kind of
-//        posts after all
 function get_snippet($tb, $max_num_words, $whole_news = false,
         $remove_images = true) {
     $cache_id = 'snip_' . preg_replace('/[^a-z0-9\.\-_]/i', '_',

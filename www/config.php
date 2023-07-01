@@ -57,9 +57,6 @@ define("IA_IMAGE_RESIZE_MAX_HEIGHT", 800);
 // Textblock name for sidebar ad
 define("IA_SIDEBAR_PAGE", "sidebar-ad");
 
-// Textblock name for blog sidebar
-define("IA_BLOG_SIDEBAR", "blog-sidebar");
-
 // Textblock for force view source page
 define('IA_FORCE_VIEW_SOURCE_PAGE', 'template/force-view-source-page');
 

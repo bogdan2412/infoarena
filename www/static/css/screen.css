@@ -379,58 +379,6 @@ iframe#master-1 {
     border-bottom: none;
 }
 
-/* Blog */
-/* Blog headers are smaller. */
-#main .blog .item  h1 {
-    font-size: 13pt;
-}
-
-.blog {
-    width: 540px;
-}
-
-.blog-list li {
-    list-style-type: none;
-    text-indent: -1em;
-    font-size: 11px;
-    line-height: 1.3em;
-}
-
-.blog-list li:before {
-    content: "\00BB \0020";
-}
-
-.blog-list li a:hover {
-}
-
-.blog .item {
-    margin-bottom: 3em;
-    width: 100%;
-}
-
-.blog .item .wiki_text_block {
-    line-height: 1.5em;
-}
-
-.blog .item .date {
-    float: right;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 8.5pt;
-    margin: 5px 0px 5px 0;
-    color: #060;
-}
-
-.blog-sidebar {
-    border: 1px solid silver;
-    width: 190px;
-    position: relative;
-    float: right;
-    clear: right;
-    padding-left: 0.5em;
-    -moz-border-radius: 8px;
-    -webkit-border-radius: 8px;
-}
-
 /* News */
 .news {
     /*width:340px;
@@ -502,20 +450,6 @@ iframe#master-1 {
     -webkit-border-radius: 8px;
     color:#555;
     line-height: 1.5em;
-}
-
-/* Blog header concerning author */
-.blogheader {
-    background-image: none;
-    height: 75px;
-    font-size: 13px;
-    padding-left: 5px;
-    background-color: transparent;
-}
-
-.blogheader img {
-    float: left;
-    margin-right: 15px;
 }
 
 /* Macros */
