@@ -58,10 +58,6 @@ function textblock_validate($tb) {
         $errors['user_id'] = 'ID de utilizator invalid.';
     }
 
-    if (!is_null(getattr($tb, 'forum_topic')) && !is_whole_number(getattr($tb, 'forum_topic'))) {
-        $errors['forum_topic'] = 'Topic forum invalid.';
-    }
-
     // NOTE: missing timestamp is OK!!!
     // It stands for 'current moment'.
     if (!is_db_date(getattr($tb, 'timestamp', db_date_format()))) {

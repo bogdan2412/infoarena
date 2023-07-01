@@ -20,7 +20,6 @@ $benchmark_urls = array(
     IA_URL . "monitor?first_entry=53425&round=arhiva&status=done&compiler=cpp",
     IA_URL . "links",
     IA_URL . "problema/adunare",
-    IA_URL . "preoni-2007/runda-1/9",
     IA_URL . "unirea-2007/rezultate-9-10",
     IA_URL . "utilizator/domino?action=stats",
     IA_URL . "bogdan2412/cache-stress-test",

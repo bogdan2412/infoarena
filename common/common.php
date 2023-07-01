@@ -284,7 +284,7 @@ function is_taggable($obj) {
  * @return bool
  */
 function is_valid_size_type($size_type) {
-    $size_types = array("full", "tiny", "small", "normal", "forum", "big");
+    $size_types = array("full", "tiny", "small", "normal", "big");
     return in_array($size_type, $size_types);
 }
 

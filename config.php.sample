@@ -51,15 +51,8 @@ define('IA_DEVELOPMENT_MODE', true);
 // FIXME: move to common/common.php
 define('IA_HTTP_ENV', isset($_SERVER['REQUEST_URI']));
 
-// SMF database prefix (required!)
-define('IA_SMF_DB_PREFIX', 'ia_smf_');
-
 // "The" url to infoarena home page.
 define('IA_URL', IA_URL_HOST . IA_URL_PREFIX);
-
-// URL to SMF. No trailing slash
-// Example: http://localhost/infoarena_smf
-define('IA_SMF_URL', IA_URL . 'forum');
 
 // Enable support for https connections. If enabled, secure connections are
 // enforced for login and register pages.
@@ -85,8 +78,6 @@ define('IA_DEBUG_MODE', true);
 
 // This aren't really settings.
 // FIXME: Couldn't find a better place to put this in.
-//  - NOTE: it can't reside in common/db/*.php files since SMF
-//    cannot link db api.
 //  - NOTE: it can't reside in www/* since judge needs it too
 define('IA_TASK_TEXTBLOCK_PREFIX', 'problema/');
 define('IA_USER_TEXTBLOCK_PREFIX', 'utilizator/');
@@ -232,18 +223,11 @@ define('CUSTOM_THEME', '');
 // Text of the homepage link in the top navigation menu
 define('NAV_HOMEPAGE_TEXT', 'info<em>arena</em>');
 
-define('TOPNAV_ELEMENTS', [
-    'forum' => true,
-    'calendar' => true,
-    'messages' => true,
-]);
-
 define('SIDEBAR_ELEMENTS', [
     'about' => true,
     'ad' => true,
     'archives' => true,
     'articles' => true,
-    'calendar' => true,
     'docs' => true,
     'downloads' => true,
     'links' => true,

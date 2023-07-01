@@ -394,10 +394,6 @@ function url_changes_rss() {
     return url_complex("changes", array('format' => 'rss'));
 }
 
-function url_forum() {
-    return IA_SMF_URL;
-}
-
 function url_userwidget($user_id) {
     return url_complex("userwidget/".$user_id, array());
 }

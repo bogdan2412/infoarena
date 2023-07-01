@@ -116,7 +116,6 @@ function security_simplify_action($action) {
         case 'textblock-restore':
         case 'textblock-attach':
         case 'textblock-create':
-        case 'textblock-change-topic':
         case 'textblock-copy':
         case 'simple-rev-edit':
             return 'simple-rev-edit';
@@ -539,7 +538,6 @@ function security_macro($user, $action, $args) {
             return true;
         case 'macro-debug':
         case 'macro-remotebox':
-        case 'macro-preoni':
             // only administrators can execute these macros
             return $usersec == 'admin';
 

@@ -310,17 +310,6 @@ function task_validate_parameters($task_type, $parameters) {
     return $errors;
 }
 
-function task_get_topic($task_id) {
-    if (!is_task_id($task_id)) {
-        log_error("Invalid task id");
-    }
-
-    // Get task
-    $task = task_get($task_id);
-    $task_page = textblock_get_revision($task["page_name"]);
-    return $task_page["forum_topic"];
-}
-
 // Receives a list of method and algorithm tag ids and links them to task_id
 function task_update_tags($task_id, $method_tags_id, $algorithm_tags_id) {
     log_assert(is_array($method_tags_id), 'method_tags must be an array');

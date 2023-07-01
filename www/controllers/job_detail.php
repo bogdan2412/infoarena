@@ -155,7 +155,6 @@ function controller_job_view_source($job_id) {
 
     $view = array();
     $view['title'] = 'Cod sursă (job #'.$job_id.')';
-    $view['topic_id'] = task_get_topic($job['task_id']);
     $view['job'] = $job;
     $view['lang'] = $job['compiler_id'];
     if ($view['lang'] == 'c') {

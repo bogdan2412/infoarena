@@ -2,7 +2,6 @@
 
 require_once(IA_ROOT_DIR.'www/views/sitewide.php');
 require_once(IA_ROOT_DIR.'www/views/utilities.php');
-require_once(IA_ROOT_DIR.'www/macros/macro_calendar.php');
 
 // Basic view checks.
 log_assert(is_array($view));
@@ -32,7 +31,7 @@ if (isset($form_errors) || isset($form_values)) {
     // a macro?).
     if (getattr($view, 'page_name') == "home") {
 ?>
-    <meta name="Description" content="Concursuri de programare, Comunitate online. Arhivă de probleme, Evaluare 24/24, Forum, Resurse educaționale, Pregătire pentru olimpiadă.">
+    <meta name="Description" content="Concursuri de programare, Comunitate online. Arhivă de probleme, Evaluare 24/24, Resurse educaționale, Pregătire pentru olimpiadă.">
     <meta name="keywords" content="Concursuri, Informatică, Programare, Comunitate, Algoritmi, Articole, Evaluare, Pregătire">
 <?php
     if (GOOGLE_SITE_VERIFICATION) {
@@ -128,12 +127,6 @@ ia_template_topnav($topnav_select, $is_admin);
     <?php if (GOOGLE_SEARCH && !IA_DEVELOPMENT_MODE) { ?>
         <div id="google-search">
             <?php include(IA_ROOT_DIR.'www/views/google_search.php'); ?>
-        </div>
-    <?php } ?>
-
-    <?php if (SIDEBAR_ELEMENTS['calendar']) { ?>
-        <div id="calendar">
-            <?= macro_calendar(array()) ?>
         </div>
     <?php } ?>
 

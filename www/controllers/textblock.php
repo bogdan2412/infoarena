@@ -52,7 +52,6 @@ function controller_textblock_view($page_name, $rev_num = null,
     $view['revision_count'] = $rev_count;
     $view['page_name'] = $page['name'];
     $view['textblock'] = $page;
-    $view['forum_topic'] = $page['forum_topic'];
     if ($page_name == 'admin') {
         $view['topnav_select'] = 'admin';
     }
@@ -104,8 +103,6 @@ function controller_textblock_diff($page_name) {
     $diff_content = diff_inline(array($revfrom['text'], $revto['text']));
     $diff_security = diff_inline(array($revfrom['security'],
                                        $revto['security']));
-    $diff_forum = diff_string(array($revfrom['forum_topic'],
-                                    $revto['forum_topic']));
 
     $view = array();
     $view['page_name'] = $page['name'];
@@ -117,7 +114,6 @@ function controller_textblock_diff($page_name) {
     $view['diff_title'] = $diff_title;
     $view['diff_content'] = $diff_content;
     $view['diff_security'] = $diff_security;
-    $view['diff_forum'] = $diff_forum;
     execute_view_die('views/textblock_diff.php', $view);
 }
 
@@ -152,7 +148,7 @@ function controller_textblock_restore($page_name, $rev_num) {
 
     textblock_add_revision($rev['name'], $rev['title'], $rev['text'],
                            getattr($identity_user, 'id'), $rev['security'],
-                           $rev['forum_topic'], null,
+                           null,
                            $rev['creation_timestamp'],
                            remote_ip_info());
     flash("Pagina a fost înlocuită cu revizia {$rev_num}.");

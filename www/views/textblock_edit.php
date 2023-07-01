@@ -70,14 +70,6 @@ if (($round_id = textblock_security_is_round($page['security'])) &&
         </div>
     </li>
 
-    <?php if (array_key_exists('forum_topic', $form_values)) { ?>
-    <li id="field_forum_topic">
-        <label for="form_forum_topic">Forum Topic</label>
-        <input type="text" name="forum_topic" value="<?= fval('forum_topic') ?>" id="form_forum_topic">
-        <?= ferr_span('forum_topic') ?>
-    </li>
-    <?php } ?>
-
     <?php if (identity_can('textblock-tag', $view['page'])) { ?>
        <?= tag_format_input_box(array("label" => "Tag-uri", "name" => "tags"), fval('tags')) ?>
     <?php } ?>

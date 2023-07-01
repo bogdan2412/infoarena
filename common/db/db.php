@@ -1,14 +1,7 @@
 <?php
 // This module contains various database-related functions and routines.
 
-// To avoid some name clashes with SMF, we have an alternate database API
-// when working inside SMF.
-if (defined("IA_FROM_SMF")) {
-    require_once(IA_ROOT_DIR."common/db/db_smf_mysql.php");
-}
-else {
-    require_once(IA_ROOT_DIR."common/db/db_mysql.php");
-}
+require_once(IA_ROOT_DIR."common/db/db_mysql.php");
 
 if (!MYSQL_NATIVE) {
     require_once IA_ROOT_DIR . 'common/external_libs/php-mysql-mysqli-wrapper/mysql.php';

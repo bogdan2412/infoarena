@@ -16,12 +16,6 @@ echo '<div class="wiki_text_block">';
 echo Wiki::processTextblock($textblock);
 echo '</div>';
 
-// page comments
-if (getattr($view, 'forum_topic')) {
-    require_once(IA_ROOT_DIR.'www/macros/macro_smfcomments.php');
-    echo macro_smfcomments(array('topic_id' => $view['forum_topic'], 'display' => 'hide'));
-}
-
 // site footer
 include('footer.php');
 

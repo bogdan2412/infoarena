@@ -60,7 +60,7 @@ function avatar_update($temporary_name, $filepath, $username) {
  */
 function avatar_cache_resized($filepath, $image_info, $new_filename) {
   $resize_sizes = array('L16x16' => 'tiny/', 'L32x32' => 'small/',
-                        'L50x50' => 'normal/' , '75x75'=> 'forum/', '150x150' => 'big/');
+                        'L50x50' => 'normal/' , '150x150' => 'big/');
 
   // Hardlink / Copy the original image
   $new_filepath = IA_AVATAR_FOLDER . 'full/' . $new_filename;
@@ -96,7 +96,7 @@ function avatar_delete($username) {
   $user = user_get_by_username($username);
   $username = $user['username'];
 
-  $resize_folders = array('tiny/', 'small/', 'normal/', 'forum/', 'big/');
+  $resize_folders = array('tiny/', 'small/', 'normal/', 'big/');
 
   // Unlink the hardlinked full-sized image
   $filepath = IA_AVATAR_FOLDER . 'full/a' . $username;

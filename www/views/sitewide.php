@@ -2,10 +2,10 @@
 
 require_once(IA_ROOT_DIR."www/format/format.php");
 
-// site-wide templates (templates shared with SMF / search)
+// site-wide templates (templates shared with search)
 //
 // This file may be included from different environments
-// (currently SMF and infoarena website) so it can use only
+// (currently infoarena website) so it can use only
 // limited application logic.
 
 // display site header
@@ -51,20 +51,6 @@ function ia_template_topnav($selected = SITE_NAME, $is_admin = false) {
         <?= format_link(url_home(), NAV_HOMEPAGE_TEXT, false) ?>
         <?= getattr($post, SITE_NAME) ?>
     </li>
-    <?php if (TOPNAV_ELEMENTS['forum']) { ?>
-        <li>
-            <?= getattr($pre, 'forum') ?>
-            <?= format_link_access(url_forum(), "forum", 'f') ?>
-            <?= getattr($post, 'forum') ?>
-        </li>
-    <?php } ?>
-    <?php if (TOPNAV_ELEMENTS['calendar']) { ?>
-        <li>
-            <?= getattr($pre, 'calendar') ?>
-            <?= format_link(url_forum() . "?action=calendar", "calendar") ?>
-            <?= getattr($post, 'calendar') ?>
-        </li>
-    <?php } ?>
 <?php if (identity_is_anonymous()) { ?>
     <li>
         <?= getattr($pre, 'login')?>
@@ -82,33 +68,12 @@ function ia_template_topnav($selected = SITE_NAME, $is_admin = false) {
         <?= format_link_access(url_user_profile($identity_user['username']), 'profilul meu', 'p') ?>
         <?= getattr($post, 'profile') ?></li>
 
-    <?php if (TOPNAV_ELEMENTS['messages']) { ?>
-        <li>
-            <?= getattr($pre, 'pm') ?>
-	        <?php
-                $new_pm_count = smf_get_pm_count($identity_user['username']);
-                if ($new_pm_count) { ?>
-                <?= format_link(url_forum() . "?action=pm", "<b>mesaje (".$new_pm_count.")</b>", false) ?>
-	        <?php } else { ?>
-                <?= format_link(url_forum() . "?action=pm", "mesaje") ?>
-	        <?php } ?>
-            <?= getattr($post, 'pm') ?>
-        </li>
-    <?php } ?>
-
     <?php if ($is_admin) { ?>
         <li>
             <?= getattr($pre, 'admin') ?>
             <?= format_link(url_admin(), 'admin') ?>
             <?= getattr($post, 'admin') ?>
         </li>
-        <?php if (TOPNAV_ELEMENTS['forum']) { ?>
-            <li>
-                <?= getattr($pre, 'smf_admin') ?>
-                <?= format_link(url_forum() . "?action=admin", "forum admin") ?>
-                <?= getattr($post, 'smf_admin') ?>
-            </li>
-        <?php } ?>
     <?php } ?>
 <?php } ?>
 </ul>

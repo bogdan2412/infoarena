@@ -24,47 +24,47 @@ $identity_user = null;
 
 // Returns whether current user is anonymous
 function identity_is_anonymous() {
-    global $identity_user;
-    return is_null($identity_user);
+  global $identity_user;
+  return is_null($identity_user);
 }
 
 function identity_is_admin() {
-    global $identity_user;
-    return $identity_user && ($identity_user['security_level'] == 'admin');
+  global $identity_user;
+  return $identity_user && ($identity_user['security_level'] == 'admin');
 }
 
 // Get current user, or null if anonymous.
 function identity_get_user() {
-    global $identity_user;
-    return $identity_user;
+  global $identity_user;
+  return $identity_user;
 }
 
 // Get user_id for current user, or null if anonymous
 function identity_get_user_id() {
-    global $identity_user;
-    if (is_null($identity_user)) {
-        return null;
-    } else {
-        return $identity_user['id'];
-    }
+  global $identity_user;
+  if (is_null($identity_user)) {
+    return null;
+  } else {
+    return $identity_user['id'];
+  }
 }
 
 // Returns remote user's username or NULL if anonymous
 function identity_get_username() {
-    global $identity_user;
-    if (is_null($identity_user)) {
-        return null;
-    } else {
-        return $identity_user['username'];
-    }
+  global $identity_user;
+  if (is_null($identity_user)) {
+    return null;
+  } else {
+    return $identity_user['username'];
+  }
 }
 
 // Returns true iff a banned user is logged in.
 // Note: We allow the user to log in, but prevent her from doing anything
 // meaningful. This way we can inform the user that she is banned.
 function identity_is_banned() {
-    global $identity_user;
-    return ($identity_user && $identity_user['banned']);
+  global $identity_user;
+  return ($identity_user && $identity_user['banned']);
 }
 
 // Check whether current user (or any other arbitrary user) can perform
@@ -72,55 +72,55 @@ function identity_is_banned() {
 // This is a wrapper for the more-generic, session-independent permission
 // module.
 function identity_can($action, $object = null) {
-    global $identity_user;
+  global $identity_user;
 
-    // Allow banned users to view textblocks. They need to be able to view the
-    // home page (with the flash message 'you are banned').
-    if (identity_is_banned() && ($action != 'textblock-view')) {
-        return false;
-    }
+  // Allow banned users to view textblocks. They need to be able to view the
+  // home page (with the flash message 'you are banned').
+  if (identity_is_banned() && ($action != 'textblock-view')) {
+    return false;
+  }
 
-    return security_query($identity_user, $action, $object);
+  return security_query($identity_user, $action, $object);
 }
 
 // Require login first.
 // It makes a lot of sense to separate this from security. No matter what
 // dumb little security.php might say, some things absolutely require login.
 function identity_require_login() {
-    if (identity_is_anonymous()) {
-        flash_error("Mai întâi trebuie să te autentifici.");
+  if (identity_is_anonymous()) {
+    flash_error("Mai întâi trebuie să te autentifici.");
 
-        // save current URL. We redirect to here right after logging in
-        $_SESSION['_ia_redirect'] = $_SERVER['REQUEST_URI'];
-        redirect(url_login());
-    }
+    // save current URL. We redirect to here right after logging in
+    $_SESSION['_ia_redirect'] = $_SERVER['REQUEST_URI'];
+    redirect(url_login());
+  }
 }
 
 // This function is similar to identity_can(), except that it automatically
 // redirects to the login page and displays a generic message when faced
 // with insufficient privileges.
 function identity_require($action, $object = null) {
-    $can = identity_can($action, $object);
-    if (!$can) {
-        if (identity_is_anonymous()) {
-            // when user is anonymous, send it to login page
-            // and redirect it back after login
+  $can = identity_can($action, $object);
+  if (!$can) {
+    if (identity_is_anonymous()) {
+      // when user is anonymous, send it to login page
+      // and redirect it back after login
 
-            flash_error("Mai întâi trebuie să te autentifici.");
-            // save current URL. We redirect to here right after logging in
-            $_SESSION['_ia_redirect'] = url_absolute($_SERVER['REQUEST_URI']);
-            redirect(url_login());
-        } else if (identity_is_banned()) {
-            flash_error('Contul tău este blocat.');
-            redirect(url_home());
-        } else {
-            // User doesn't have enough privileges, tell him to fuck off.
-            flash_error('Nu ai permisiuni suficiente pentru a executa această '
-                        .'acțiune! Te redirectez...');
-            redirect(url_home());
-        }
+      flash_error("Mai întâi trebuie să te autentifici.");
+      // save current URL. We redirect to here right after logging in
+      $_SESSION['_ia_redirect'] = url_absolute($_SERVER['REQUEST_URI']);
+      redirect(url_login());
+    } else if (identity_is_banned()) {
+      flash_error('Contul tău este blocat.');
+      redirect(url_home());
+    } else {
+      // User doesn't have enough privileges, tell him to fuck off.
+      flash_error('Nu ai permisiuni suficiente pentru a executa această '
+                  .'acțiune! Te redirectez...');
+      redirect(url_home());
     }
-    return $can;
+  }
+  return $can;
 }
 
 // Initializes long-lived PHP session.
@@ -146,65 +146,65 @@ function init_php_session($remember_user = false) {
 // identity information from cookie-based session
 // Returns identity (user) object instance
 function identity_from_session() {
-    init_php_session();
+  init_php_session();
 
-    if (isset($_SESSION['_ia_identity'])) {
-        // log_print('Restoring identity from PHP session');
-        $username = $_SESSION['_ia_identity'];
+  if (isset($_SESSION['_ia_identity'])) {
+    // log_print('Restoring identity from PHP session');
+    $username = $_SESSION['_ia_identity'];
 
-        $identity = user_get_by_username($username);
-        if (!$identity) {
-            log_warn("Closing broken session");
-            identity_end_session();
-        }
-    } else {
-        $identity = null;
+    $identity = user_get_by_username($username);
+    if (!$identity) {
+      log_warn("Closing broken session");
+      identity_end_session();
     }
+  } else {
+    $identity = null;
+  }
 
-    return $identity;
+  return $identity;
 }
 
 // Obtain identity information from HTTP AUTH headers
 // Returns identity (user) object instance
 function identity_from_http() {
-    $user = getattr($_SERVER, 'PHP_AUTH_USER');
-    $pass = getattr($_SERVER, 'PHP_AUTH_PW');
+  $user = getattr($_SERVER, 'PHP_AUTH_USER');
+  $pass = getattr($_SERVER, 'PHP_AUTH_PW');
 
-    if (!defined("IA_FROM_SMF") && ($user || $pass)) {
-        // somebody is trying to authenticate via HTTP
-        // log_print('Restoring identity from HTTP AUTH headers');
-        $user = user_test_password($user, $pass);
+  if ($user || $pass) {
+    // somebody is trying to authenticate via HTTP
+    // log_print('Restoring identity from HTTP AUTH headers');
+    $user = user_test_password($user, $pass);
 
-        if (!$user) {
-            log_warn("Invalid HTTP AUTH username/password");
-        }
-
-        return $user;
-    } else {
-        // nobody is trying to authenticate via HTTP
-        return null;
+    if (!$user) {
+      log_warn("Invalid HTTP AUTH username/password");
     }
+
+    return $user;
+  } else {
+    // nobody is trying to authenticate via HTTP
+    return null;
+  }
 }
 
 // Wraps all authentication entry points
 // Return identity_user.
 function identity_restore() {
-    global $identity_user;
+  global $identity_user;
 
-    if (!$identity_user) {
-        $identity_user = identity_from_session();
-    }
+  if (!$identity_user) {
+    $identity_user = identity_from_session();
+  }
 
-    if (!$identity_user) {
-        $identity_user = identity_from_http();
-    }
+  if (!$identity_user) {
+    $identity_user = identity_from_http();
+  }
 
-    if ($identity_user) {
-        log_assert(is_array($identity_user) && getattr($identity_user, 'id'),
-                   'Invalid user object, identity code broke!');
-    }
+  if ($identity_user) {
+    log_assert(is_array($identity_user) && getattr($identity_user, 'id'),
+               'Invalid user object, identity code broke!');
+  }
 
-    return $identity_user;
+  return $identity_user;
 }
 
 
@@ -212,22 +212,22 @@ function identity_restore() {
 // When $remember_user is true, it will persist session for
 // IA_SESSION_LIFETIME_SECONDS seconds.
 function identity_start_session($user, $remember_user = false) {
-    session_write_close();
-    init_php_session($remember_user);
-    $_SESSION['_ia_identity'] = $user['username'];
+  session_write_close();
+  init_php_session($remember_user);
+  $_SESSION['_ia_identity'] = $user['username'];
 }
 
 // Update session information. Use this if you change data of current
 // remote user.
 function identity_update_session($user) {
-    $_SESSION['_ia_identity'] = $user['username'];
+  $_SESSION['_ia_identity'] = $user['username'];
 }
 
 // Terminate session for current user.
 function identity_end_session() {
-    if (isset($_SESSION['_ia_identity'])) {
-        unset($_SESSION['_ia_identity']);
-    }
-    session_write_close();
-    init_php_session();
+  if (isset($_SESSION['_ia_identity'])) {
+    unset($_SESSION['_ia_identity']);
+  }
+  session_write_close();
+  init_php_session();
 }

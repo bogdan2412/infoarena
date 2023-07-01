@@ -1,7 +1,6 @@
 <?php
 
 require_once(IA_ROOT_DIR."common/db/db.php");
-require_once(IA_ROOT_DIR."common/db/smf.php");
 require_once(IA_ROOT_DIR."common/user.php");
 require_once(IA_ROOT_DIR."common/cache.php");
 //require_once(IA_ROOT_DIR."common/db/tags.php");
@@ -130,7 +129,7 @@ function user_get_by_id($user_id)
 }
 
 // Create a new user.
-// This also creates an user page and SMF user.
+// This also creates a user page.
 // $user must be a valid user struct, user_id ignored
 // Returns created $user or throws up on error.
 function user_create($user, $remote_ip_info=null)
@@ -156,11 +155,6 @@ function user_create($user, $remote_ip_info=null)
                            $replace, 'public',
                            $new_user['id'], $remote_ip_info);
 
-    // Create SMF user
-    require_once(IA_ROOT_DIR."common/db/smf.php");
-    $smf_id = smf_create_user($user);
-    log_assert($smf_id, "SMF user for {$user['username']} not created.");
-
     // Cache and return
     return _user_cache_add($new_user);
 }
@@ -168,16 +162,12 @@ function user_create($user, $remote_ip_info=null)
 // Update user information.
 // $user should be a complete user struct.
 // Uses db_update evilness.
-// Also updates SMF, which is good.
 function user_update($user)
 {
     log_assert_valid(user_validate($user));
 
     // Update DB
     db_update("ia_user", $user, "id = ".db_quote($user['id']));
-
-    // Update SMF
-    smf_update_user($user);
 
     _user_cache_add($user);
 }

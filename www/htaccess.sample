@@ -6,16 +6,15 @@ RewriteBase --write-me-IA_URL_PREFIX--
 
 RewriteCond %{REQUEST_URI}  !^.*/index\.php$
 RewriteCond %{REQUEST_URI}  !^.*/static/.*$
-RewriteCond %{REQUEST_URI}  !^.*/forum/.*$
 RewriteCond %{REQUEST_URI}  !^.*/robots\.txt$
 RewriteCond %{REQUEST_URI}  !^.*/favicon\.ico$
 RewriteCond %{REQUEST_URI}  !^.*/avatar/.*$
 RewriteRule ^(.*) index.php?page=$1 [QSA]
 
-RewriteRule ^avatar/(tiny|small|normal|forum|big|full)/(.+)$ static/images/avatar/$1/a$2
+RewriteRule ^avatar/(tiny|small|normal|big|full)/(.+)$ static/images/avatar/$1/a$2
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^static/images/avatar/(tiny|small|normal|forum|big|full)/(.+)$ static/images/avatar/$1/noimage
+RewriteRule ^static/images/avatar/(tiny|small|normal|big|full)/(.+)$ static/images/avatar/$1/noimage
 
 php_value magic_quotes_gpc 0
 php_value register_globals 0

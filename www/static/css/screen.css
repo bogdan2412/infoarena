@@ -1226,44 +1226,6 @@ table.registered-users {
     width: 99%;
 }
 
-/* calendar */
-
-.calendar {
-    border: 1px solid #cccccc;
-    background: url(../images/date.png) no-repeat top left;
-    width: 180px;
-    padding-left: 0.3ex;
-    padding-right: 0.3ex;
-    line-height: 1.2em;
-    -moz-border-radius: 7px;
-    -webkit-border-radius: 7px;
-}
-
-.calendar .date {
-    font-size: 8pt;
-    font-weight: bold;
-    margin-top: 4pt;
-}
-.calendar .header {
-    text-align: center;
-    font-weight: bold;
-    padding-top: 2pt;
-    padding-bottom: 3pt;
-    border-bottom: 1px solid #cccccc;
-}
-
-.calendar a {
-    color: #6a6a6b;
-}
-
-.calendar .header img {
-    vertical-align: middle;
-}
-
-.calendar .event {
-    font-size: 8pt;
-}
-
 /* quote */
 .quote {
     border: 1px solid #000000;
@@ -1333,12 +1295,6 @@ table.registered-users {
     line-height: 2em;
     -moz-border-radius: 7px;
     -webkit-border-radius: 7px;
-}
-
-.report {
-    background: url(../images/report.png) no-repeat scroll center left;
-    float: right;
-    padding-left: 2em;
 }
 
 .picture-box {

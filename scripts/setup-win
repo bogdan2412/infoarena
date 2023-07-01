@@ -1,8 +1,5 @@
 <?php
 
-// required by forum-fix
-require_once(dirname($argv[0]) . "/utilities.php");
-
 // Add slashes to a string.
 function slash_string($string, $start, $end)
 {
@@ -167,13 +164,8 @@ if (read_bool("Should I try to configure apache for you?", true)) {
     }
 }
 
-// FIXME: configure forum
-if (read_bool("Should I try to configure the forum (ugly db stuff)?", true)) {
-    include("forum-fix-win");
-}
 printf("---\n");
 
-print("FIXME: forum is not completely functional\n");
 print("FIXME: eval won't work, but it doesn't matter.\n");
 
 print("\nDone. Please read coding standards. Happy coding!\n");

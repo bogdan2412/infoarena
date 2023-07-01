@@ -1,9 +1,6 @@
-.DS_Store
 config.php
 eval/config.php
 
-hphp/config.hdf
-hphp/build
 infoarena
 apache.conf
 www/.htaccess
@@ -14,12 +11,7 @@ jrun/jrun
 
 attach/*
 cache/
-smf/attachments/*
-scripts/newsletter-logs/
 www/static/images/avatar/
-www/static/images/latex/
 www/static/images/tmp/
-
-lint/.phutil_module_cache
 
 *~

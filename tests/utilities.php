@@ -139,7 +139,6 @@ function test_cleanup()
 {
     $test_accounts = "('test_dudE1', 'teSt_dude2', 'teSt_helper1', 'test_hElper2', 'tEst_adMin')";
     db_query("DELETE FROM ia_user WHERE `username` IN $test_accounts");
-    db_query("DELETE FROM ia_smf_members WHERE `memberName` IN $test_accounts");
     db_query("DELETE FROM ia_task WHERE `id` LIKE 'test\_%'");
     db_query("DELETE FROM ia_round WHERE `id` LIKE 'test\_%'");
     // Remove various stuff from the wiki.

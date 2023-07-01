@@ -24,10 +24,7 @@ if (read_bool('Do you want to change the template/userinfo textblock?',
     "r=%user%}\r\n|_. Nume | == userinfo(user=\"%user%\" info=\"fullname\")== ".
     "|\r\n| |_. Cont | ==userinfo(user=\"%user%\" info=\"username\")== |\r\n| ".
     "|_. Rating | ==userinfo(user=\"%user%\" info=\"rating\")== |\r\n| |_. Sta".
-    "tut | ==userinfo(user=\"%user%\" info=\"security\")== |\r\n|_. Forum | ==".
-    "SmfLink(user=\"%user%\" link=\"pm\" caption=\"trimite mesaj privat\")==, ".
-    "==SmfLink(user=\"%user%\" link=\"stats\" caption=\"vezi activitate\")== |".
-    "\r\n\r\n\r\n";
+    "tut | ==userinfo(user=\"%user%\" info=\"security\")== |\r\n\r\n\r\n";
     textblock_add_revision('template/userinfo', 'template/userinfo',
             $textfortextblock, 1, 'protected');
 }
@@ -42,7 +39,7 @@ $noimage_filepath = attachment_get_filepath(attachment_get('noimage',
 if (file_exists(IA_AVATAR_FOLDER) == false) {
     mkdir(IA_AVATAR_FOLDER, 0777);
 }
-$size_types = array('tiny', 'small', 'normal', 'forum', 'big', 'full');
+$size_types = array('tiny', 'small', 'normal', 'big', 'full');
 foreach ($size_types as $size) {
     if (file_exists(IA_AVATAR_FOLDER . '/' . $size) == false) {
         mkdir(IA_AVATAR_FOLDER . '/' . $size, 0777);

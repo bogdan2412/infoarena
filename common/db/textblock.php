@@ -15,7 +15,7 @@ require_once(IA_ROOT_DIR."common/common.php");
 // FIXME: hash parameter?
 function textblock_add_revision(
         $name, $title, $content, $user_id, $security = "public",
-        $forum_topic = null, $timestamp = null, $creation_timestamp = null,
+        $timestamp = null, $creation_timestamp = null,
         $remote_ip_info = null) {
     $name = normalize_page_name($name);
 
@@ -27,7 +27,6 @@ function textblock_add_revision(
         'text' => $content,
         'user_id' => $user_id,
         'security' => $security,
-        'forum_topic' => $forum_topic,
         'timestamp' => $timestamp,
         'creation_timestamp' => $creation_timestamp,
         'remote_ip_info' => $remote_ip_info,
@@ -65,12 +64,12 @@ function textblock_add_revision(
     }
     $query = sprintf("INSERT INTO ia_textblock
             (name, `text`, `title`, `creation_timestamp`,
-                    `timestamp`, `user_id`, `security`, `forum_topic`,
+                    `timestamp`, `user_id`, `security`,
                     `remote_ip_info`)
-            VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, %s)",
+            VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', %s)",
             db_escape($name), db_escape($content), db_escape($title),
             db_escape($creation_timestamp), db_escape($timestamp),
-            db_escape($user_id), db_escape($security), db_quote($forum_topic),
+            db_escape($user_id), db_escape($security),
             db_quote($remote_ip_info));
     return db_query($query);
 }
@@ -106,7 +105,7 @@ function textblock_delete_revision($revision, $curr)
 // This is the function called by most query functions.
 function textblock_complex_query($options) {
     $field_list = '`name`, `title`, `creation_timestamp`, `timestamp`, ' .
-                  '`security`, `user_id`, `forum_topic`, `remote_ip_info`';
+                  '`security`, `user_id`, `remote_ip_info`';
 
     // Select content.
     if (getattr($options, 'content', false) == true) {
@@ -258,8 +257,7 @@ function textblock_grep($substr, $page, $regexp = false, $offset = null, $count 
         $compare = "REGEXP";
     }
     $query = sprintf("SELECT `name`, `title`, `creation_timestamp`, `timestamp`,
-                            `user_id`, `security`, `forum_topic`,
-                            `remote_ip_info`
+                            `user_id`, `security`, `remote_ip_info`
                       FROM ia_textblock
                       WHERE `name` LIKE '%s' AND
                             (`text` $compare '%s' OR `title` $compare '%s')
@@ -373,7 +371,6 @@ function textblock_copy($old_textblock, $new_name, $user_id, $remote_ip_info) {
     textblock_add_revision($new_textblock['name'], $new_textblock['title'],
                            $new_textblock['text'], $new_textblock['user_id'],
                            $new_textblock['security'],
-                           $new_textblock['forum_topic'],
                            null, $new_textblock['creation_timestamp'],
                            $remote_ip_info);
 

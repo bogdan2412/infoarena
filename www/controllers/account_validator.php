@@ -46,8 +46,7 @@ function validate_user_data($data, $register, $user = null) {
             $errors['username'] = 'Numele de utilizator conține caractere '
                                   .'invalide.';
         }
-        elseif (user_get_by_username($data['username']) ||
-                smf_get_member_by_name($data['username'])) {
+        elseif (user_get_by_username($data['username'])) {
             $errors['username'] = 'Numele de utilizator este rezervat de altcineva. Vă '
                                   .'rugăm alegeți altul.';
         }

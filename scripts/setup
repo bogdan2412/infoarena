@@ -168,8 +168,7 @@ if (read_bool('Should I try to configure apache for you?', true)) {
     $dirs = array($ia_root . 'attach',
                   $ia_root . 'cache',
                   $config_vars['IA_AVATAR_FOLDER'],
-                  $ia_root . 'www/static/images/tmp',
-                  $ia_root . 'smf/attachments');
+                  $ia_root . 'www/static/images/tmp');
     foreach ($dirs as $dir) {
         if (!is_dir($dir)) {
             mkdir($dir);
@@ -296,10 +295,4 @@ if (read_bool("Should I try to build the avatar cache folder?", true)) {
     print("Building the avatar cache folder\n");
     passthru("{$ia_root}scripts/make-avatar-folder");
     print("Done building the avatar cache folder\n\n");
-}
-
-// Try and configure forum
-if (read_bool("Should I try to configure the forum (ugly db stuff)?", true)) {
-    system("{$ia_root}scripts/forum-fix");
-    print("Done configuring the forum\n\n");
 }

@@ -2,7 +2,7 @@
 
 require_once(IA_ROOT_DIR."common/db/user.php");
 
-// Password hash function. Must be compatible with SMF.
+// Password hash function.
 //
 // Also takes into account user name so that users
 // sharing the same password can't be detected

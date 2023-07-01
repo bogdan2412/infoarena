@@ -1,16 +1,5 @@
 ## infoarena apache config
 
-# Forum config
-Alias --write-me-IA_URL_PREFIX--forum "--write-me-IA_ROOT_DIR--smf/"
-<Directory "--write-me-IA_ROOT_DIR--smf/">
-    Order deny,allow
-    Deny from all
-    Allow from ::1
-    Allow from 127.0.0.1
-    AllowOverride All
-    DirectoryIndex index.php
-</Directory>
-
 # Main site.
 Alias --write-me-IA_URL_PREFIX-- "--write-me-IA_ROOT_DIR--www/"
 <Directory "--write-me-IA_ROOT_DIR--www/">

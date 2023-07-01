@@ -34,13 +34,6 @@ include(CUSTOM_THEME . 'header.php');
     <td class="size"><?= round($job['job_size']/1024, 2)." kb" ?></td>
 </tr>
 </table>
-<div class="report">
-<?php if ($topic_id) { ?>
-<a href="<?= url_forum().'?action=post;topic='.$topic_id ?>">Raportează această sursă</a>
-<?php } else { ?>
-<a href="<?= url_forum().'?action=pm;sa=send;u=3' ?>">Raportează această sursă</a>
-<?php } ?>
-</div>
 <?php
 
 if ($first_view_source) {

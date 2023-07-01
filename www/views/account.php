@@ -10,7 +10,7 @@ include('tags_header.php');
 <div class="section">
     <h3>Avatar</h3>
 
-    <p>Încarcă-ți o poză care să apară în clasamete, pe pagina ta și pe forum.</p>
+    <p>Încarcă-ți o poză care să apară în clasamente și pe pagina ta.</p>
 </div>
 
 <div class="section">

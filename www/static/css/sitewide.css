@@ -178,7 +178,6 @@ body#infoarena {
 }
 
 /* color-coded user ratings */
-/* put some extra work to override SMF CSS */
 a.rating-badge-1, a.rating-badge-2, a.rating-badge-3, a.rating-badge-4,
 a.rating-badge-5,
 a.rating-badge-1:link, a.rating-badge-2:link, a.rating-badge-3:link,
@@ -283,13 +282,13 @@ td.number, th.number, td.date, th.date {
 }
 
 /* Tag lists */
-ul.tag_list { 
-    list-style-type: none; 
-} 
- 
-li.tag_list_item { 
-    padding-left: 15px; 
-} 
+ul.tag_list {
+    list-style-type: none;
+}
+
+li.tag_list_item {
+    padding-left: 15px;
+}
 
 .sub_tag_name {
     display: inline;
