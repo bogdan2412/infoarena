@@ -13,7 +13,6 @@ $BACKUP_PATHS_WEEKLY = array(
     'conf/conf-' => array(IA_LIVE_DIR.'/trac.htpasswd',
                           IA_LIVE_DIR.'/nginx.conf',
                           IA_LIVE_DIR.'/apache.conf',
-                          IA_ROOT_DIR.'/hphp/config.hdf',
                           IA_ROOT_DIR.'/config.php'),
 );
 

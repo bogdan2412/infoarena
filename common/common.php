@@ -321,17 +321,15 @@ function check_requirements() {
     if (array_search('gd', $extensions) === false) {
         log_warn("gd extension missing.");
     }
-    if (!defined('IA_HPHP_ENV')) {
-        if (array_search('zip', $extensions) === false) {
-            log_warn("zip extension missing.");
-        }
-        if (!function_exists("finfo_open")) {
-            log_warn('finfo_open missing, falling back to mime_content_type.');
-            if (!function_exists("mime_content_type")) {
-                log_warn('mime_content_type missing, mime-types will ' .
-                         'default to application/octet-stream.');
-            }
-        }
+    if (array_search('zip', $extensions) === false) {
+      log_warn("zip extension missing.");
+    }
+    if (!function_exists("finfo_open")) {
+      log_warn('finfo_open missing, falling back to mime_content_type.');
+      if (!function_exists("mime_content_type")) {
+        log_warn('mime_content_type missing, mime-types will ' .
+                 'default to application/octet-stream.');
+      }
     }
     if (array_search('mbstring', $extensions) === false) {
         log_warn('mbstring extension missing. inline diff and ' .
@@ -339,7 +337,7 @@ function check_requirements() {
     }
 
     // Check for retarded php.ini settings.
-    if (IA_HTTP_ENV && !defined('IA_HPHP_ENV')) {
+    if (IA_HTTP_ENV) {
         log_assert(!ini_get("session.auto_start"),
                    "Please disable session.auto_start. It kills babies!");
         log_assert(ini_get("session.use_cookies"),
