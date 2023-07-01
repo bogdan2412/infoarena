@@ -1,4 +1,0 @@
-#!/bin/bash
-
-# re-build dependencies database
-ctags --php-kinds=+f-cdv -f - --languages=php -R $1www/ $1scripts/ $1common/ $1eval/ | cut -f1-2
