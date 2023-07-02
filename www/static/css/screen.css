@@ -136,60 +136,6 @@ blockquote p {
   padding: 15px;
 }
 
-#miscbox {
-  float: right;
-  width: 188px;
-}
-
-#upcoming {
-  margin-bottom: 10px;
-}
-
-#upcoming, #newprobs {
-  background: #fc0 url(../images/upcoming.jpg) no-repeat bottom left;
-  border: 1px solid #fc0;
-  padding: 5px;
-}
-
-#upcoming ul, #newprobs ul {
-  background: #fff;
-  border: 1px solid #fc0;
-  padding: 5px;
-}
-
-#upcoming h2, #newprobs h2 {
-  color: #840;
-  font-size: 14px;
-  font-weight: bold;
-  text-transform: uppercase;
-}
-
-#upcoming li, #newprobs li {
-  background: #fff url(../images/misc_li.jpg) no-repeat center bottom;
-  border-bottom: 1px solid #cecece;
-  display: block;
-}
-
-#upcoming a, #newprobs a {
-  display: block;
-  line-height: 1.1;
-  text-decoration: none;
-}
-
-#upcoming a, #newprobs a {
-  font-size: 11px;
-  padding: 5px;
-}
-
-#upcoming a:hover, #newprobs a:hover {
-  background: #F8F8EF;
-  text-decoration: underline;
-}
-
-#upcoming a span {
-  display: block;
-}
-
 /* Wikipage options (actions) */
 #wikiOps {
   font-size: 8pt;
@@ -653,39 +599,6 @@ form#form_wikiedit input#form_title {
   width: 100%;
 }
 
-/* layout table */
-.wiki_text_block table.layout th, .wiki_text_block table.layout td {
-  border: none;
-  padding-right: 5%;
-  padding: 0 .3em 0 .3em;
-  text-align: left;
-  vertical-align: top;
-  width: 50%;
-}
-
-.wiki_text_block table.layout th {
-  background-color: white;
-  font-family: Georgia, "Times New Roman", Times, serif;
-  font-size: 13pt;
-  font-weight: normal;
-}
-
-/* layout table with 3 columns */
-.wiki_text_block table.layout3 th, .wiki_text_block table.layout3 td {
-  border: none;
-  padding: 1em;
-  text-align: left;
-  vertical-align: top;
-  width: 30%;
-}
-
-.wiki_text_block table.layout3 th, .wiki_text_block table.layout3 p.title {
-  background-color: white;
-  font-family: Arial, Tahoma, sans-serif;
-  font-size: 1.3em;
-  font-weight: normal;
-}
-
 .wiki_text_block .compact {
   width: auto;
 }
@@ -718,44 +631,6 @@ form#form_wikiedit input#form_title {
   font-size: 11px;
   line-height: 1.3em;
   list-style-type: none;
-}
-
-/* vertical menu */
-.vmenu {
-  -moz-border-radius: 8px;
-  -webkit-border-radius: 8px;
-  background-color: #f0f0f0;
-  border: 1px solid silver;
-  float: right;
-  margin: .5em;
-  padding: .5em;
-  width: 13em;
-}
-
-.vmenu li {
-  list-style-type: none;
-  margin-left: 1em;
-}
-
-.vmenu li.section {
-  font-weight: bold;
-  margin-left: 0;
-}
-
-.vmenu br {
-  display: none;
-}
-
-.vmenu li a {
-  display: block;
-  padding-left: .4em;
-  width: 98%;
-}
-
-.vmenu li a: hover {
-  background-color: #006699;
-  color: white;
-  text-decoration: none;
 }
 
 /* horizontal tabs */
@@ -796,45 +671,6 @@ ul.htabs {
   background: #2097fc;
   border-bottom: 0;
   text-decoration: none;
-}
-
-/* horizontal tabs, level 2 */
-ul.htabs-2 {
-  border-bottom: 1px solid #778;
-  font-size: .9em;
-  font-weight: bold;
-  margin: 1.5em 0 1em 0;
-  padding: 0.9pt 3pt;
-  width: 60%;
-}
-
-.htabs-2 li {
-  display: inline;
-  list-style: none;
-  margin: 0;
-}
-
-.htabs-2 li a {
-  background: #DDD;
-  border-bottom: none;
-  border: 1px solid #778;
-  padding: 3px 0.5em;
-  text-decoration: none;
-}
-
-.htabs-2 li a:link { color: #000; }
-.htabs-2 li a:visited { color: #333; }
-
-.htabs-2 li a:hover {
-  background: #AAA;
-  border-color: #272;
-  color: #000;
-}
-
-.htabs-2 li.active a {
-  background: white;
-  border-bottom: 1px solid white;
-  text-decoration: underline;
 }
 
 .job-status-skipped {
@@ -1212,56 +1048,6 @@ table.registered-users {
   padding: 0.25em;
 }
 
-/* comment thread */
-.comments {
-  padding: 1em;
-}
-
-.comment {
-  margin: 1em 0 1em 0;
-  padding: 0.1em;
-}
-
-.comment .timestamp {
-  display: block;
-  float: right;
-  font-size: .85em;
-}
-
-.comment .body {
-  margin: .5em;
-  padding: .5em;
-}
-
-.comment .header {
-  -moz-border-radius: 7px;
-  -webkit-border-radius: 7px;
-  background-color: #f6f6f6;
-  border-bottom: 1px solid #f0f0f0;
-  padding: .2em;
-}
-
-.comments .comment-author {
-  border: 2px solid green;
-}
-
-.comments .comment-author .header {
-  background-color: #e7ffe7;
-  border-bottom: 1px solid green;
-}
-
-.comments .toolbar {
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  background-color: #f6f6f6;
-  margin: 1em 0 1em 0;
-  padding: .75em;
-}
-
-.comments .toolbar a {
-  font-weight: bold;
-}
-
 .banner {
   -moz-border-radius: 7px;
   -webkit-border-radius: 7px;
@@ -1273,20 +1059,6 @@ table.registered-users {
   padding: 0.3em;
   text-align: center;
   width: 100%;
-}
-
-.picture-box {
-  border: 1px solid gray;
-  float: left;
-  font-size: .85em;
-  margin: 0 1em 1em 0;
-  padding: 5px;
-}
-
-.picture-box img {
-  border: 1px solid silver;
-  display: block;
-  margin-bottom: 5px;
 }
 
 /* Round status icons */
@@ -1355,15 +1127,6 @@ ul.tag_filters {
   display: none;
 }
 
-/* Show new feature indicator */
-.new_feature:after {
-  color: red;
-  content: "nou!";
-  font-size: 10px;
-  font-weight: bold;
-  vertical-align: super;
-}
-
 /* Sort tables */
 .hidden {
   display: none;
@@ -1388,45 +1151,6 @@ table.form {
 
 table.form td {
   border: 0px;
-}
-
-/* Selected filters div for task filtering */
-.vertical-align-wrapper {
-}
-
-#selected-filters-wrapper.vertical-align-wrapper {
-  height: 30px;
-  text-align: center;
-  width: 100%;
-}
-
-#selected-filters {
-  -moz-border-radius: 10px;
-  -webkit-border-radius: 10px;
-  -webkit-box-shadow: 0px 2px 3px #555;
-  background: #171717;
-  border-radius: 10px;
-  border: solid 0px;
-  height: 30px;
-  margin-top: 10px;
-  margin: auto;
-  text-shadow: 0px 2px 3px #171717;
-  width: 70%;
-}
-
-#selected-filters a {
-  -webkit-transition: color 0.1s ease-in;
-  color: #555;
-  font-family: monospace;
-  font-size: 14px;
-  line-height: 30px;
-  text-shadow: 0px 2px 3px #171717;
-  transition: color 0.1s ease-in;
-}
-
-#selected-filters a:hover {
-  color: #fff;
-  text-decoration: none;
 }
 
 /* Menu for task filtering */

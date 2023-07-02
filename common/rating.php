@@ -104,7 +104,6 @@ function rating_update_deviation(&$users, $username, $timestamp) {
     $user['timestamp'] = $timestamp;
 }
 
-// FIXME: Throw in some comments
 function rating_gspot($deviation) {
     $deviation = 1.0 / sqrt(1.0 + 3.0 * sqr(IA_RATING_Q) * sqr($deviation) / sqr(M_PI));
     return $deviation;
@@ -117,7 +116,6 @@ function rating_expected_score($rating1, $rating2, $deviation2) {
     return $score;
 }
 
-// FIXME: Throw in some comments
 function rating_score($score1, $score2, $variance) {
     if ($score1 > $score2) {
         if (!$score2) {
@@ -137,7 +135,6 @@ function rating_score($score1, $score2, $variance) {
 
 // Update ratings considering user_scores. Assume now is $timestamp.
 // $timestamp is UNIX timestamp
-// FIXME: Throw in some comments
 //
 // $user_scores array format is:
 //  array(
@@ -171,7 +168,6 @@ function rating_update(&$users, $user_scores, $timestamp) {
     $score_variance = sqrt($score_variance / $user_count);
 
     // Voodoo Magic
-    // FIXME: Throw in some comments if you understand anything about this
     $chunk_count = ceil(($user_count-1) / IA_RATING_MAX_CHUNK);
     foreach ($user_scores as $username => $score) {
         log_assert(isset($users[$username]));
