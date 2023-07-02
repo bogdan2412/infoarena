@@ -31,7 +31,7 @@
       <li>
         <a href="{url_google_search()}">Căutare probleme</a>
       </li>
-      {include "bits/googleSearch.tpl"}
+      {include "layout/googleSearch.tpl"}
     {/if}
 
     {if $identity}
@@ -66,7 +66,7 @@
     {/if}
   </ul>
 
-  {include "bits/sidebarLogin.tpl"}
+  {include "layout/sidebarLogin.tpl"}
 
   <p class="user-count">
     {user_count()} membri înregistrați

@@ -11,30 +11,30 @@
     </title>
 
     <meta charset="utf-8">
-    {include "bits/phpConstants.tpl"}
-    {include "bits/metaDescription.tpl"}
-    {include "bits/googleSiteVerification.tpl"}
+    {include "layout/phpConstants.tpl"}
+    {include "layout/metaDescription.tpl"}
+    {include "layout/googleSiteVerification.tpl"}
     {include "layout/fonts.tpl"}
     {include "layout/css.tpl"}
     {include "layout/favicon.tpl"}
-    {include "bits/js.tpl"}
+    {include "layout/js.tpl"}
   </head>
 
   <body id="infoarena">
     <div id="page">
-      {include "bits/header.tpl"}
+      {include "layout/header.tpl"}
       <div class="clear" id="content_small">
-        {include "bits/sidebar.tpl"}
+        {include "layout/sidebar.tpl"}
 
         <div id="main">
-          {include "bits/recentPages.tpl"}
-          {include "bits/flashMessages.tpl"}
+          {include "layout/recentPages.tpl"}
+          {include "layout/flashMessages.tpl"}
 
           {block "content"}{/block}
         </div>
       </div>
     </div>
 
-    {include "bits/footer.tpl"}
+    {include "layout/footer.tpl"}
   </body>
 </html>
