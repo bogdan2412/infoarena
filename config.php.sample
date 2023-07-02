@@ -216,17 +216,6 @@ define('MONITOR_AUTOREFRESH_INTERVAL', 5000); // milliseconds
 // require the user to explicitly delete all attachments first.
 define('SECURE_DELETION', false);
 
-define('SIDEBAR_ELEMENTS', [
-    'about' => true,
-    'ad' => true,
-    'archives' => true,
-    'articles' => true,
-    'docs' => true,
-    'downloads' => true,
-    'links' => true,
-    'task-search' => false,
-]);
-
 define('ENABLED_COMPILERS', array(
     'c-32' => 'GNU C - 32bit',
     'cpp-32' => 'GNU C++ - 32bit',

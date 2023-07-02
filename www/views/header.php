@@ -92,19 +92,12 @@ $is_admin = ('admin' == getattr($identity_user, 'security_level'));
 <div id="sidebar">
     <ul id="nav" class="clear">
         <li><a href="<?= html_escape(url_home()) ?>">Home</a></li>
-        <?php if (SIDEBAR_ELEMENTS['archives']) { ?>
-            <li><?= format_link_access(url_textblock('arhiva'), "Arhiva de probleme", 'a') ?></li>
-            <li><a href="<?= html_escape(url_textblock('arhiva-educationala')) ?>">Arhiva educațională</a></li>
-            <li><a href="<?= html_escape(url_textblock('arhiva-monthly')) ?>">Arhiva monthly</a></li>
-        <?php } ?>
         <li><a href="<?= html_escape(url_textblock('concursuri')) ?>">Concursuri</a></li>
         <li><a href="<?= html_escape(url_textblock('concursuri-virtuale')) ?>">Concursuri virtuale</a></li>
         <li><a href="<?= html_escape(url_textblock('clasament-rating')) ?>">Clasament</a></li>
 		<li><?= format_link_access(url_monitor(array('user' => identity_get_username())), "Monitorul de evaluare", 'm') ?></li>
         <li class="separator"><hr></li>
-		<?php if (SIDEBAR_ELEMENTS['task-search']) { ?>
-            <li><a href="<?= url_task_search([]) ?>">Categorii probleme</a></li>
-        <?php } ?>
+        <li><a href="<?= url_task_search([]) ?>">Categorii probleme</a></li>
 
         <?php if (GOOGLE_SEARCH && !IA_DEVELOPMENT_MODE) { ?>
 		    <li><a href="<?= html_escape(url_google_search()) ?>">Căutare probleme</a></li>
@@ -113,21 +106,6 @@ $is_admin = ('admin' == getattr($identity_user, 'security_level'));
 		    </div>
         <?php } ?>
 
-        <?php if (SIDEBAR_ELEMENTS['articles']) { ?>
-            <li><a href="<?= html_escape(url_textblock('articole')) ?>">Articole</a></li>
-        <?php } ?>
-        <?php if (SIDEBAR_ELEMENTS['downloads']) { ?>
-            <li><a href="<?= html_escape(url_textblock('downloads')) ?>">Downloads</a></li>
-        <?php } ?>
-        <?php if (SIDEBAR_ELEMENTS['links']) { ?>
-            <li><a href="<?= html_escape(url_textblock('links')) ?>">Links</a></li>
-        <?php } ?>
-        <?php if (SIDEBAR_ELEMENTS['docs']) { ?>
-            <li><a href="<?= html_escape(url_textblock('documentatie')) ?>">Documentație</a></li>
-        <?php } ?>
-        <?php if (SIDEBAR_ELEMENTS['about']) { ?>
-            <li><a href="<?= html_escape(url_textblock(ABOUT_PAGE)) ?>">Despre <?= SITE_NAME ?></a></li>
-        <?php } ?>
         <li class="separator"><hr></li>
         <?php if (!identity_is_anonymous()) { ?>
             <li><a href="<?= html_escape(url_submit()) ?>"><strong>Trimite soluții</strong></a></li>
@@ -156,10 +134,6 @@ $is_admin = ('admin' == getattr($identity_user, 'security_level'));
     <div id="srv_time" class="user-count"></div>
     <script src="<?= html_escape(url_static('js/time.js')) ?>"></script>
     <script>loadTime(<?= format_date(null, 'HH, mm, ss');?>);</script>
-
-    <?php if (SIDEBAR_ELEMENTS['ad']) {
-        include(IA_ROOT_DIR.'www/views/sidebar_ad.php');
-    } ?>
 </div>
 
 <div id="main">

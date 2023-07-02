@@ -54,9 +54,6 @@ define('IA_CACHE_SIZE', 256 * 1024 * 1024);
 define("IA_IMAGE_RESIZE_MAX_WIDTH", 800);
 define("IA_IMAGE_RESIZE_MAX_HEIGHT", 800);
 
-// Textblock name for sidebar ad
-define("IA_SIDEBAR_PAGE", "sidebar-ad");
-
 // Textblock for force view source page
 define('IA_FORCE_VIEW_SOURCE_PAGE', 'template/force-view-source-page');
 
