@@ -1137,13 +1137,6 @@ table.sortable th {
   cursor: pointer;
 }
 
-/* Make social buttons appear on the right */
-div.social_buttons {
-  float: right;
-  height: 65px;
-  margin: 5px;
-}
-
 /* Make form tables have no border */
 table.form {
   width: 100%;

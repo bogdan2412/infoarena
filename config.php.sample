@@ -191,12 +191,6 @@ define('IA_TOKENS_LOGIN', 20);
 define('IA_CAPTCHA_PUBLIC_KEY', '6LesuwQAAAAAAPHgdh9Hem1KJfvd5Ng1yRoIweio');
 define('IA_CAPTCHA_PRIVATE_KEY', '6LesuwQAAAAAAF3FUPWFGQD1xPITFagjqWUO9Urs');
 
-// Facebook App-Id
-define('IA_FACEBOOK_APP_ID', '159779000715246');
-
-// Twitter Account
-define('IA_TWITTER_ACCOUNT', 'infoarena.ro');
-
 // Security setup for certain kinds of textblock actions
 define('SEC_TEXTBLOCK_SIMPLE_VIEW_PRIVATE', ['admin']);
 define('SEC_TEXTBLOCK_SIMPLE_REV_EDIT_PUBLIC', ['admin', 'helper', 'normal']);
