@@ -1,4 +1,4 @@
-<?php include(CUSTOM_THEME . 'header.php'); ?>
+<?php require_once 'header.php'; ?>
 
 <h1>Atașează la pagina <?= format_link(url_textblock($view['page_name']), $view['page_name']) ?></h1>
 

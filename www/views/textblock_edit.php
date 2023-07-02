@@ -3,7 +3,7 @@
 // link JS
 $view['head'] = getattr($view, 'head')."<script src=\"" . html_escape(url_static("js/wikiedit.js")) . "\"></script>";
 
-include(CUSTOM_THEME . 'header.php');
+require_once 'header.php';
 include('tags_header.php');
 
 // insert task edit tabs

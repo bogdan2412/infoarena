@@ -1,4 +1,4 @@
-<?php include(CUSTOM_THEME . 'header.php'); ?>
+<?php require_once 'header.php'; ?>
 
 <h1><?= html_escape($view['title']) ?></h1>
 

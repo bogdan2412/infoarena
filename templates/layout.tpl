@@ -14,9 +14,9 @@
     {include "bits/phpConstants.tpl"}
     {include "bits/metaDescription.tpl"}
     {include "bits/googleSiteVerification.tpl"}
-    {include "theme/{$theme}/fonts.tpl"}
-    {include "theme/{$theme}/css.tpl"}
-    {include "theme/{$theme}/favicon.tpl"}
+    {include "layout/fonts.tpl"}
+    {include "layout/css.tpl"}
+    {include "layout/favicon.tpl"}
     {include "bits/js.tpl"}
   </head>
 

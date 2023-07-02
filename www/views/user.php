@@ -5,8 +5,7 @@ require_once(IA_ROOT_DIR . 'www/format/list.php');
 
 $username = $user['username'];
 
-// site header
-include(CUSTOM_THEME . 'header.php');
+require_once 'header.php';
 
 // banned user notice and ban/unban buttons
 if (identity_is_admin()) {

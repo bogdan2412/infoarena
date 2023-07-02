@@ -12,43 +12,25 @@ body#infoarena {
 
 #header {
     height: 64px;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #fff;
     background: url('../images/logo_bg.jpg') repeat-x top left;
     position: relative;
 }
 
 #header h1 a {
-    background:url('../images/logo.jpg') no-repeat left top;
-    height:60px;
-    width:300px;
-    text-indent:-9999px;
+    background: url('../images/logo.svg') no-repeat left top;
+    height: 60px;
+    width: 200px;
+    text-indent: -9999px;
     display: block;
-}
-
-/* search box in site header */
-#search {
-    float:right;
-    padding: 12px 15px;
-    background:#5C880B url(../images/search.jpg) no-repeat bottom left;
-}
-
-#search input {
-    vertical-align:middle;
-    padding: 0;
-    font-size: 10pt;
-}
-
-#search #inputbox {
-    width:120px;
 }
 
 /* userbox in site header */
 #userbox {
     float: right;
-    background:#5C880B url(../images/search.jpg) no-repeat bottom left;
+    background-color: #ffb500;
     width: 250px;
     font-size: 8pt;
-    line-height: 1.5em;
 }
 
 #userbox img {
@@ -68,7 +50,7 @@ body#infoarena {
 }
 
 #userbox, #userbox a {
-    color: #eee;
+    color: #222;
 }
 
 #userbox a.logout {
@@ -78,12 +60,12 @@ body#infoarena {
 
 /* site footer */
 #footer {
-    border-top:1px solid #B7D285;
+    border-top: 1px solid #fff;
     background:url(../images/footer.jpg) repeat-x top;
     margin-top:1px;
     padding:10px 20px;
     font-size:11px;
-    color:#999;
+    color: #222;
 }
 
 #footer ul {
@@ -229,9 +211,8 @@ table.fill-screen, table.fill-screen tr {
 }
 
 /* datagrids */
-
-td.number, th.number, td.date, th.date {
-    text-align: right;
+td.number, th.number, td.date, th.date, th.state {
+    text-align: center;
 }
 
 /* Tag lists */

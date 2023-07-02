@@ -216,13 +216,6 @@ define('MONITOR_AUTOREFRESH_INTERVAL', 5000); // milliseconds
 // require the user to explicitly delete all attachments first.
 define('SECURE_DELETION', false);
 
-// Theme selection
-// You can change it to 'custom/' to access the custom folder for css and images
-define('CUSTOM_THEME', '');
-
-// Text of the homepage link in the top navigation menu
-define('NAV_HOMEPAGE_TEXT', 'info<em>arena</em>');
-
 define('SIDEBAR_ELEMENTS', [
     'about' => true,
     'ad' => true,

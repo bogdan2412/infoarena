@@ -1,5 +1,5 @@
 <?php
-include(IA_ROOT_DIR.'www/views/' . CUSTOM_THEME . 'header.php');
+include(IA_ROOT_DIR.'www/views/header.php');
 
 require_once(IA_ROOT_DIR.'www/format/table.php');
 

@@ -1,7 +1,7 @@
 <?php
-require_once(IA_ROOT_DIR.'www/views/utilities.php');
-include(CUSTOM_THEME . 'header.php');
-include('tags_header.php');
+require_once IA_ROOT_DIR . 'www/views/utilities.php';
+require_once 'header.php';
+require_once 'tags_header.php';
 ?>
 
 <h1><?= html_escape($view['title']) ?></h1>

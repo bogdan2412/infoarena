@@ -44,13 +44,19 @@ if (isset($form_errors) || isset($form_values)) {
 
     <title><?= html_escape(getattr($view, 'title')) ?></title>
 
+    <link href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,500;1,400;1,500&amp;family=Ubuntu:ital,wght@0,300;0,400;1,300;1,400&amp;display=swap" rel="stylesheet">
+
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/sitewide.css')) ?>">
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/third-party/iconize-0.5/iconize.css')) ?>">
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/screen.css')) ?>">
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/third-party/tabber.css')) ?>">
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/third-party/highlight-theme.css')) ?>">
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/print.css')) ?>" media="print">
-    <link rel="icon" href="<?= IA_URL."favicon.ico" ?>" type="image/vnd.microsoft.icon">
+
+    <link
+      href="<?= IA_URL."static/images/favicon.svg" ?>"
+      rel="icon"
+      type="image/svg+xml">
     <script src="<?= html_escape(url_static('js/config.js.php')) ?>"></script>
     <script src="<?= html_escape(IA_DEVELOPMENT_MODE?url_static('js/third-party/jquery-1.7.2.js'):'//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js') ?>"></script>
     <script src="<?= html_escape(url_static('js/default.js')) ?>"></script>
@@ -94,9 +100,19 @@ $is_admin = ('admin' == getattr($identity_user, 'security_level'));
         <li><a href="<?= html_escape(url_textblock('concursuri')) ?>">Concursuri</a></li>
         <li><a href="<?= html_escape(url_textblock('concursuri-virtuale')) ?>">Concursuri virtuale</a></li>
         <li><a href="<?= html_escape(url_textblock('clasament-rating')) ?>">Clasament</a></li>
-        <?php if (SIDEBAR_ELEMENTS['task-search']) { ?>
-            <li><a href="<?= url_task_search([]) ?>">Caută probleme</a></li>
+		<li><?= format_link_access(url_monitor(array('user' => identity_get_username())), "Monitorul de evaluare", 'm') ?></li>
+        <li class="separator"><hr></li>
+		<?php if (SIDEBAR_ELEMENTS['task-search']) { ?>
+            <li><a href="<?= url_task_search([]) ?>">Categorii probleme</a></li>
         <?php } ?>
+
+        <?php if (GOOGLE_SEARCH && !IA_DEVELOPMENT_MODE) { ?>
+		    <li><a href="<?= html_escape(url_google_search()) ?>">Căutare probleme</a></li>
+		    <div id="google-search">
+			    <?php include(IA_ROOT_DIR.'www/views/google_search.php'); ?>
+		    </div>
+        <?php } ?>
+
         <?php if (SIDEBAR_ELEMENTS['articles']) { ?>
             <li><a href="<?= html_escape(url_textblock('articole')) ?>">Articole</a></li>
         <?php } ?>
@@ -113,18 +129,19 @@ $is_admin = ('admin' == getattr($identity_user, 'security_level'));
             <li><a href="<?= html_escape(url_textblock(ABOUT_PAGE)) ?>">Despre <?= SITE_NAME ?></a></li>
         <?php } ?>
         <li class="separator"><hr></li>
-        <li><?= format_link_access(url_monitor(array('user' => identity_get_username())), "Monitorul de evaluare", 'm') ?></li>
         <?php if (!identity_is_anonymous()) { ?>
             <li><a href="<?= html_escape(url_submit()) ?>"><strong>Trimite soluții</strong></a></li>
             <li><?= format_link_access(url_account(), "Contul meu", 'c') ?></li>
+			<!-- mihai adaugare elemente top-menu la sidebar -->
+			<li><?= format_link_access(url_user_profile($identity_user['username']), 'Profilul meu', 'p') ?></li>
+			<?php if ($is_admin) { ?>
+			<li class="separator"><hr></li>
+			<li><?= format_link_access(url_admin(), 'Administrativ', 'a') ?></li>
+			<?php } ?>
+			<!-- end adaugare elemente sidebar-->
         <?php } ?>
-    </ul>
 
-    <?php if (GOOGLE_SEARCH && !IA_DEVELOPMENT_MODE) { ?>
-        <div id="google-search">
-            <?php include(IA_ROOT_DIR.'www/views/google_search.php'); ?>
-        </div>
-    <?php } ?>
+    </ul>
 
     <?php if (identity_is_anonymous()) { ?>
     <div id="login">
@@ -142,7 +159,7 @@ $is_admin = ('admin' == getattr($identity_user, 'security_level'));
 
     <?php if (SIDEBAR_ELEMENTS['ad']) {
         include(IA_ROOT_DIR.'www/views/sidebar_ad.php');
-        } ?>
+    } ?>
 </div>
 
 <div id="main">

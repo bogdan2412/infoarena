@@ -3,7 +3,7 @@ require_once(IA_ROOT_DIR . 'www/macros/macro_stars.php');
 require_once(IA_ROOT_DIR . 'www/format/table.php');
 require_once(IA_ROOT_DIR . 'www/format/format.php');
 
-include(CUSTOM_THEME . 'header.php');
+require_once 'header.php';
 
 function format_title($row) {
     $title = format_link(url_textblock($row["page_name"]), $row["task_title"]);

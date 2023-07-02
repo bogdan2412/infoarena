@@ -1,14 +1,14 @@
 <?php
 
 // site header
-include(CUSTOM_THEME . 'header.php');
+require_once 'header.php';
 
 // wiki page header (actions)
-include('textblock_header.php');
+require_once 'textblock_header.php';
 
 // revision warning
 if (getattr($view, 'revision')) {
-    include('revision_warning.php');
+  require_once 'revision_warning.php';
 }
 
 // textblock content

@@ -53,7 +53,7 @@ function compiler_field() {
     <li id="field_compiler">
         <label for="form_compiler">Compilator</label>
         <select name="compiler_id" id="form_compiler">
-            <option value="-">[ Alegeți compilator ]</option>
+            <option value="-">[ Alegeți compilatorul ]</option>
             <?php foreach (ENABLED_COMPILERS as $comp => $text) { ?>
                 <option
                     value="<?= $comp ?>"

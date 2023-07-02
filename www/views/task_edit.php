@@ -7,7 +7,7 @@ require_once(IA_ROOT_DIR."www/views/task_edit_header.php");
 $view['head'] = getattr($view, 'head').
     "<script src=\"" . html_escape(url_static("js/parameditor.js")) . "\"></script>";
 
-include(CUSTOM_THEME . 'header.php');
+require_once 'header.php';
 include('tags_header.php');
 
 echo task_edit_tabs($view['task_id'], request("action"));

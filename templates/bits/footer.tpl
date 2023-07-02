@@ -1,7 +1,7 @@
 <div id="footer">
   <ul class="clear">
     <li class="copyright">
-      © {$smarty.const.COPYRIGHT_FIRST_YEAR} - {$currentYear}
+      © {$smarty.const.COPYRIGHT_FIRST_YEAR}-{$currentYear}
 
       {if $smarty.const.COPYRIGHT_OWNER_PAGE}
         <a href="{url_textblock($smarty.const.COPYRIGHT_OWNER_PAGE)}">

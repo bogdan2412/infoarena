@@ -5,8 +5,8 @@
 }
 
 body {
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 9pt;
+    font-family: 'Ubuntu', Verdana, Arial, Helvetica, sans-serif;
+    font-size: 10pt;
     line-height: 1.5;
     text-align: center;
     color: #222;
@@ -66,7 +66,8 @@ div.loading img {
     float: right;
     width: 20em;
     padding: 0.8em;
-    background-color: #B7D285;
+    background-color: #2097fc;
+    color: #fff;
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
 }
@@ -118,6 +119,7 @@ blockquote p {
 #content_small {
     clear: both;
     margin-left: 10px;
+    margin-top: 10px;
     background: url(../images/main_small.jpg) repeat-y ;
 }
 
@@ -234,7 +236,7 @@ blockquote p {
 
 #nav li {
     display: block;
-    font-size: 10pt;
+    font-size: 11pt;
 }
 
 #nav li a {
@@ -334,7 +336,7 @@ iframe#master-1 {
 
 /* Headers */
 #main h1, #main h2, #main h3 {
-    font-family: Georgia, "Times New Roman", Times, serif;
+    font-family: 'Cabin', Georgia, "Times New Roman", Times, serif;
     font-weight: normal;
 }
 
@@ -358,8 +360,8 @@ iframe#master-1 {
 
 /* Breadcrumbs */
 #breadcrumbs {
-    font-size:11px;
-    line-height:2;
+    font-size: 12px;
+    line-height: 2;
     margin: 0;
     margin-top: -10px;
     border-bottom: 1px solid #f0f0f0;
@@ -393,8 +395,8 @@ div.macroMessage {
 /* Flash */
 div.flash {
     text-align: center;
-    background-color: #ffa;
-    color: black;
+    background-color: #ffb500;
+    color: #222;
     margin: 1em auto 1em auto;
     padding: .5em .5em .5em 17px;
     border: 1px solid olive;
@@ -431,7 +433,7 @@ div.notice {
 form {
     margin: 0;
     padding: 4px;
-    font-size: 1em;
+    font-size: 1.05em;
 }
 
 form.inline_form {
@@ -449,7 +451,7 @@ input[type='text'], input[type='password'], select {
 }
 
 input, select, textarea {
-    font-family: Trebuchet MS, Tahoma, Helvetica, Arial, sans-serif;
+    font-family: 'Ubuntu', Trebuchet MS, Tahoma, Helvetica, Arial, sans-serif;
     padding: .2em;
 }
 
@@ -459,22 +461,18 @@ select {
 
 input.button, a.button {
     cursor: pointer;
-    border: 1px double #999999;
-    border-top-color: #CCCCCC;
-    border-left-color: #CCCCCC;
-    background-color: #FFFFFF;
-    background-image: url('../images/background_form_element.gif');
-    background-repeat: repeat-x;
-    color: black;
+  	background-color: #2097fc;
+    border: 0;
+    color: white;
     margin: 0;
     font-weight: bold;
     font-size: .95em;
-    padding: .2em;
+    padding: .35em .6em;
 }
 
 input.important {
-    border-width: 3px;
-    font-size: 1em;
+  border-width: 3px;
+  font-size: 1.05em;
 }
 
 input.button:active {
@@ -796,9 +794,9 @@ form.round li#field_tasks select {
 
 /* horizontal tabs */
 ul.htabs {
-    padding: 0.9pt 3pt;
+    padding: 0.9pt 3pt 0;
     margin: 1.5em 0 1em 0;
-    border-bottom: 1px solid #778;
+    border-bottom: 1px solid #2097fc;
     font-weight: bold;
 }
 
@@ -808,27 +806,30 @@ ul.htabs {
     display: inline;
 }
 
-.htabs li a {
-    padding: 3px 0.5em;
-    border: 1px solid #778;
+.htabs li a,
+.htabs li a:link,
+.htabs li a:visited {
+    background: #fff;
+    border: 1px solid #2097fc;
     border-bottom: none;
-    background: #DED;
+    color: #2097fc;
+    display: inline-block;
+    padding: 3px 0.5em;
     text-decoration: none;
 }
 
-.htabs li a:link { color: #484; }
-.htabs li a:visited { color: #676; }
-
 .htabs li a:hover {
-    color: #000;
-    background: #AEA;
-    border-color: #272;
+  background: #a8ddff;
+  border-color: #2097fc;
+  color: #222;
 }
 
 .htabs li.active a {
-    background: white;
-    border-bottom: 1px solid white;
-    text-decoration: underline;
+	color: #fff;
+	font-weight: 600;
+  background: #2097fc;
+  border-bottom: 0;
+  text-decoration: none;
 }
 
 /* horizontal tabs, level 2 */
@@ -931,7 +932,11 @@ ul.htabs-2 {
 
 /* Tasks table */
 table.tasks {
-    line-height: 2em;
+    line-height: 1.7em;
+}
+
+table.tasks .open_task {
+  float: right;
 }
 
 /* Basic table css */
@@ -994,11 +999,11 @@ th {
 }
 
 .inlineSubmit #form_compiler {
-    width: 7em;
+    width: 13em;
 }
 
 .inlineSubmit #form_round {
-    width: 9em;
+    width: 12em;
 }
 
 /* reeval form */
@@ -1129,6 +1134,7 @@ table.monitor {
 .tasks td.score, .tasks th.score {
     width: 10%;
     padding-right: 4pt;
+	  text-align: center;
 }
 .tasks td.score {
     font-size: .7em;
@@ -1159,11 +1165,16 @@ table.monitor {
     font-size: 1em;
 }
 
+#monitor-table, table.tasks  {
+	font-size: 10.4pt;
+}
+
 /* rankings */
 td.rank, th.rank {
     width: 2em;
 }
 td.rating, th.rating {
+	  text-align: center;
     width: 2em;
 }
 
@@ -1286,7 +1297,7 @@ table.registered-users {
 
 .banner {
     border: 0pt none;
-    background-color: rgb(210, 244, 219);
+    background-color: #b2d7f1;
     padding: 0.3em;
     display: table;
     width: 99%;
@@ -1338,6 +1349,7 @@ ul.okr .comment {
     width: 16px;
     height: 16px;
     display: block;
+	  margin: auto;
 }
 
 .round-complete {
@@ -1570,7 +1582,6 @@ li:hover > ul.submenu {
 #task-filter-help div {
     display: inline-block;
     vertical-align: middle;
-    border: solid 1px #699A0A;
     background-color: #BAD48A;
     width: 20px;
     height: 20px;
@@ -1634,4 +1645,8 @@ li.selected-filter.sub-selected-filters > a:hover,
 
 div.rejected-textile {
   color: red;
+}
+
+.text-right {
+  text-align: right;
 }

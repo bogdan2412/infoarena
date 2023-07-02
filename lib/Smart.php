@@ -136,7 +136,6 @@ class Smart {
       'cssFiles' => $cssFiles,
       'currentYear' => date('Y'),
       'jsFiles' => $jsFiles,
-      'theme' => self::getTheme(),
       'identity' => $identity_user,
       'ratingBadge' => $ratingBadge,
     ]);
@@ -149,12 +148,6 @@ class Smart {
       $result[] = url_static($url);
     }
     return $result;
-  }
-
-  private static function getTheme(): string {
-    return CUSTOM_THEME
-      ? 'nerdy'
-      : 'default';
   }
 
   private static function finalize(): void {
