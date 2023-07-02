@@ -63,9 +63,8 @@ div.loading img {
 }
 
 #sidebar2 {
-  -moz-border-radius: 10px;
-  -webkit-border-radius: 10px;
   background-color: #2097fc;
+  border-radius: 10px;
   color: #fff;
   float: right;
   padding: 0.8em;

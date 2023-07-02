@@ -229,9 +229,8 @@ li.tag_list_item {
 }
 
 .sub_tag_name {
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
   background-color: #DDE;
+  border-radius: 4px;
   display: inline;
   font-size: 11px;
   padding-bottom: 0.2em;
@@ -241,8 +240,7 @@ li.tag_list_item {
 }
 
 .tag_name {
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
+  border-radius: 5px;
   color: #FFF0E1;
   display: inline;
   font-size: 10px;
