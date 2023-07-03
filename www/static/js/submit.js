@@ -147,4 +147,3 @@ function Submit_Init() {
 }
 
 $(document).ready(Submit_Init);
-//connect(window, 'onload', Submit_Init);

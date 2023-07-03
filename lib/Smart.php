@@ -25,7 +25,7 @@ class Smart {
       'css' => [ 'css/third-party/iconize-0.5/iconize.css' ],
     ],
     'jquery' => [
-      'js' => [ 'js/third-party/jquery-1.7.2.js' ],
+      'js' => [ 'js/third-party/jquery-3.7.0.js' ],
     ],
     'main' => [
       'css' => [ 'css/sitewide.css', 'css/screen.css', 'css/print.css' ],

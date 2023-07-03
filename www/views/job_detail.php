@@ -75,7 +75,8 @@
       <?php
 
         if ($show_feedback_column) {
-          echo '<th><img src="/static/images/visible.png" '.
+          $url = url_static('images/visible.png');
+          echo '<th><img src="' . $url . '" '.
                'title="Feedback" alt="Feedback" '.
                'style="height: 18px; width: auto;"></th>';
         } ?>
