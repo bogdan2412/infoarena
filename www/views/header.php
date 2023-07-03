@@ -62,7 +62,6 @@ if (isset($form_errors) || isset($form_values)) {
     <script src="<?= html_escape(url_static('js/default.js')) ?>"></script>
     <script src="<?= html_escape(url_static('js/third-party/tabber-minimized.js')) ?>"></script>
     <script src="<?= html_escape(url_static('js/submit.js')) ?>"></script>
-    <script src="<?= html_escape(url_static('js/remotebox.js')) ?>"></script>
     <script src="<?= html_escape(url_static('js/postdata.js')) ?>"></script>
     <script src="<?= html_escape(url_static('js/third-party/highlight.pack.js')) ?>"></script>
     <script src="<?= html_escape(url_static('js/third-party/highlight-line-numbers.min.js')) ?>"></script>

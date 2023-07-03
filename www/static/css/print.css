@@ -9,7 +9,7 @@
     margin: 0;
   }
 
-  .inlineSubmit, #remotebox {
+  .inlineSubmit {
     display: none;
   }
 
