@@ -91,22 +91,12 @@ div.loading img {
 
 /* block quotes */
 blockquote {
-  background-position: 0 2px;
-  background-repeat: no-repeat;
-  background: url('../images/quotes1.png');
-  margin: 1em 0 1em 0;
-  text-indent: 25px;
-}
-
-blockquote p {
-  background-position: bottom right;
-  background-repeat: no-repeat;
-  background: url('../images/quotes2.png');
-  display: inline;
+  border-left: 5px solid #bbb;
+  font-size: 120%;
   font-style: italic;
   line-height: 2em;
-  margin: 0;
-  padding-right: 24px;
+  margin: 1em 0 1em 0;
+  padding-left: 0.8em;
 }
 
 #page {
@@ -116,7 +106,7 @@ blockquote p {
 }
 
 #content_small {
-  background: url(../images/main_small.jpg) repeat-y ;
+  background: linear-gradient(to right, #fff 178px, #f2f2f2 190px, #fff 191px);
   clear: both;
   margin-left: 10px;
   margin-top: 10px;
@@ -129,7 +119,8 @@ blockquote p {
 }
 
 #main {
-  background: #fff url(../images/main_tile.jpg) repeat-x top;
+  background: linear-gradient(#f6f6f6, #fff 52px);
+  border-top: 1px solid #d0d0d0;
   border-left: 1px solid #d0d0d0;
   margin-left: 191px;
   padding: 15px;
@@ -141,7 +132,7 @@ blockquote p {
 }
 
 #wikiOps ul {
-  background: url(../images/wiki.jpg) repeat-x bottom left;
+  background: linear-gradient(#fff, #f4f4f4);
 }
 
 #wikiOps ul {
@@ -169,25 +160,30 @@ blockquote p {
 
 /* Sidebar :: Main menu */
 #nav {
+  list-style: none;
   margin-right: 2px;
 }
 
 #nav li {
-  display: block;
   font-size: 11pt;
+  padding: 0.05em 9px;
 }
 
 #nav li a {
-  background: url(../images/bullet.gif) no-repeat 3px center ;
   color: #6A6A6B;
-  display: block;
-  padding: 3px 15px;
   text-decoration: none;
   width: 80%;
 }
 
+#nav li:not(.separator)::before {
+  color: #fc0;
+  content: "\2022"; /* bullet */
+  font-size: 18px;
+  margin-left: -0.4em;
+  margin-right: 0.3em;
+}
+
 #nav li a:hover {
-  background: #FFEFB1 url(../images/bullet.gif) no-repeat 3px center ;
   color: #333;
 }
 
@@ -556,8 +552,7 @@ form#form_wikiedit input#form_title {
 
 /* Wiki text block */
 .wiki_text_block a.wiki_link_external {
-  background-repeat: no-repeat;
-  background: transparent url(../images/external.png) scroll center right;
+  background: transparent url(../images/external.png) no-repeat center right;
   color: #549DC6;
   padding-right: 13px;
 }
