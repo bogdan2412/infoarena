@@ -51,7 +51,7 @@ if (isset($form_errors) || isset($form_values)) {
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/screen.css')) ?>">
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/third-party/tabber.css')) ?>">
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/third-party/highlight-theme.css')) ?>">
-    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/print.css')) ?>" media="print">
+    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/print.css')) ?>">
 
     <link
       href="<?= IA_URL."static/images/favicon.svg" ?>"

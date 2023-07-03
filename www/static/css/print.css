@@ -1,29 +1,31 @@
-#header, #sidebar, #breadcrumbs, #wikiOps, #log {
-  display: none;
-}
+@media print {
+  #header, #sidebar, #breadcrumbs, #wikiOps, #log {
+    display: none;
+  }
 
-#main, #content_small {
-  background: white;
-  border: 0;
-  margin: 0;
-}
+  #main, #content_small {
+    background: white;
+    border: 0;
+    margin: 0;
+  }
 
-.inlineSubmit, #remotebox {
-  display: none;
-}
+  .inlineSubmit, #remotebox {
+    display: none;
+  }
 
-#footer {
-  background: white;
-  margin: 1em 0 0 0;
-  text-align: left;
-}
+  #footer {
+    background: white;
+    margin: 1em 0 0 0;
+    text-align: left;
+  }
 
-#footer li {
-  display: none;
-}
+  #footer li {
+    display: none;
+  }
 
-#footer ul li.copyright {
-  display: block;
-  float: left;
-  list-style-type: none;
+  #footer ul li.copyright {
+    display: block;
+    float: left;
+    list-style-type: none;
+  }
 }

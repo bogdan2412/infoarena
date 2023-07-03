@@ -28,7 +28,7 @@ class Smart {
       'js' => [ 'js/third-party/jquery-1.7.2.js' ],
     ],
     'main' => [
-      'css' => [ 'css/sitewide.css', 'css/screen.css' ],
+      'css' => [ 'css/sitewide.css', 'css/screen.css', 'css/print.css' ],
       'js' => [
         'js/config.js.php', 'js/default.js', 'js/postdata.js', 'js/remotebox.js',
         'js/restoreparity.js', 'js/roundtimer.js', 'js/submit.js', 'js/tags.js',
