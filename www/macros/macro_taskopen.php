@@ -18,18 +18,16 @@ function macro_taskopen($args) {
     if (!$task['open_tests']) {
         return "";
     }
-    $html = '<div class="banner">';
-    $html .= '<img ' .
-      'alt="open book" ' .
-      'style="vertical-align: middle; float: left;" src="' .
-      url_static('images/open_big.png') .
-      '">';
-    $text = 'Poți vedea testele pentru această problemă';
-    $html .= "<em>$text accesând </em><strong>".
-             format_link(
-                url_attachment_list("problema/$task_id"), 'atașamentele').
-             '</strong>.';
-    $html .= '</div>';
+    $imgSrc = url_static('images/open_big.png');
+    $link = format_link(url_attachment_list("problema/$task_id"), 'atașamentele');
+    $html = sprintf(
+      '<div class="banner">' .
+      '<div>' .
+      '<img alt="open book" src="%s">' .
+      'Poți vedea testele pentru această problemă accesând %s.' .
+      '</div>' .
+      '</div>',
+      $imgSrc, $link);
     return $html;
 }
 ?>
