@@ -25,7 +25,7 @@ class Smart {
       'css' => [ 'css/third-party/iconize-0.5/iconize.css' ],
     ],
     'jquery' => [
-      'js' => [ 'js/third-party/jquery-3.7.0.js' ],
+      'js' => [ 'js/third-party/jquery-3.7.0.min.js' ],
     ],
     'main' => [
       'css' => [ 'css/sitewide.css', 'css/screen.css', 'css/print.css' ],
@@ -38,6 +38,10 @@ class Smart {
         'foreach', 'highlight', 'iconize', 'jquery', 'sorttable', 'tabber',
         'tablednd',
       ],
+    ],
+    'monitor' => [
+      'js' => [ 'js/monitor.js' ],
+      'deps' => [ 'jquery' ],
     ],
     'sorttable' => [
       'js' => [ 'js/third-party/sorttable.js' ],

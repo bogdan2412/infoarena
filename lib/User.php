@@ -11,7 +11,8 @@ class User {
   }
 
   static function getCurrentUserMonitorUrl(): string {
-    return self::getMonitorUrl(identity_get_username());
+    $username = identity_get_username() ?? '';
+    return self::getMonitorUrl($username);
   }
 
   static function getMonitorUrl(string $username): string {
@@ -34,6 +35,11 @@ class User {
 
   static function isAnonymous(): bool {
     return identity_is_anonymous();
+  }
+
+  static function getCurrentUsername(): string {
+    global $identity_user;
+    return getattr($identity_user, 'username') ?? '';
   }
 
 }

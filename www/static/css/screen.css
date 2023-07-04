@@ -762,6 +762,10 @@ tr.even td {
   background-color: #f0f0f0;
 }
 
+table.alternating-colors tr:nth-child(even) {
+  background-color:#f0f0f0;
+}
+
 th {
   background: #ddd;
 }

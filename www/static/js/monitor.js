@@ -1,79 +1,111 @@
-var Monitor_Url;
-var Monitor_Timeout; // dictated by checkbox data-interval
-var Monitor_AutoRefresh; // dictated by checkbox checked state
-var Monitor_RefreshTimeout = null;
+$(function() {
 
-function SkipJobs() {
-  var list = new Array;
-  $(".skip_job:checked").each(function() {
-    list.push($(this).val());
-  });
-  if (list.length == 0) {
-    alert("Atenție! Selectează cel puțin un job.");
-    return false;
+  var autorefreshTimeout = null;
+  var autorefreshInterval = null;
+
+  init();
+
+  function init() {
+    autorefreshInterval = $('#autorefresh').data('interval');
+    checkCheckboxIfHashExists();
+    if (autorefreshIsChecked()) {
+      createTimeout();
+    }
+    $('#autorefresh').change(onAutorefreshChange);
+    $('.skip_job').change(onSkipChange);
+    $('.skip-job-link').click(onSkipLinkClick)
+    $("#skip-all-checkbox").change(onSkipAllChange);
+    $('#skip-jobs-form').submit(onSkipFormSubmit);
   }
 
-  if (submit = confirm(
-    "Ești sigur că vrei să ignori " + list.length + " job-uri?")) {
-    $("#skipped-jobs").val(list.join());
-    return;
+  function checkCheckboxIfHashExists() {
+    var hash = window.location.hash;
+    if (hash == '#auto') {
+      $('#autorefresh').prop('checked', true);
+    }
   }
-  return false;
-}
 
-function Monitor_Refresh() {
-  Monitor_RefreshTimeout = null;
-  if (Monitor_AutoRefresh) { // could have been turned off after it was enqueued
-    $("#monitor-table").load(Monitor_Url, {},
-                             function(responseText, statusText, req) {
-                               if (Monitor_AutoRefresh && Monitor_RefreshTimeout === null) {
-                                 Monitor_RefreshTimeout =
-                                   setTimeout(Monitor_Refresh, Monitor_Timeout);
-                               }
-                             });
+  function autorefreshIsChecked() {
+    return $('#autorefresh').prop('checked');
   }
-}
 
-function Monitor_Init() {
-  Monitor_AutoRefresh = $('#autorefresh')[0].checked;
-  Monitor_Timeout = $('#autorefresh').data('interval');
-  $(document).on('click', '.skip_job', function() {
-    Monitor_AutoRefresh = false;
-    clearTimeout(Monitor_RefreshTimeout);
-    Monitor_RefreshTimeout = null;
+  function createTimeout() {
+    autorefreshTimeout = setTimeout(refreshIfCheckboxChecked, autorefreshInterval);
+    appendHashIfNeeded();
+  }
+
+  function deleteTimeout() {
+    if (autorefreshTimeout) {
+      clearTimeout(autorefreshTimeout);
+      autorefreshTimeout = null;
+    }
+  }
+
+  function refreshIfCheckboxChecked() {
+    if (autorefreshIsChecked()) {
+      location.reload();
+    }
+  }
+
+  function appendHashIfNeeded() {
+    var autorefreshInServerConfig = $('#autorefresh').data('config');
+    if (!autorefreshInServerConfig) {
+      window.location.hash = 'auto';
+    }
+  }
+
+  function onAutorefreshChange() {
+    if (autorefreshIsChecked()) {
+      createTimeout();
+    } else {
+      deleteTimeout();
+    }
+  }
+
+  function onSkipChange() {
     $('#autorefresh').prop('checked', false);
-  });
-  $("#skip-jobs-form").on('submit', SkipJobs);
-
-  $(document).on('click', '.skip-job-link', function() {
-    var job_id = $(this).prev().val();
-    $.ajax({url:BASE_HREF + 'json/job-skip?job_id=' + escape(job_id),
-            type:'POST', dataType: 'json', success:
-            function(data, textStatus, req) {
-              if (textStatus == 'error') {
-                alert('Eroare! Nu se poate ignora submisia.');
-              } else {
-                Monitor_Refresh();
-              }
-              return;
-            }});
-    return false;
-  });
-
-  $("#skip-all-checkbox").on("click", function() {
-    $(".skip_job").prop('checked', $(this).prop('checked'));
-  })
-
-  Monitor_ToggleRefresh(Monitor_AutoRefresh);
-}
-
-
-
-function Monitor_ToggleRefresh(selected) {
-  Monitor_AutoRefresh = selected;
-  if (Monitor_AutoRefresh) {
-    Monitor_Refresh();
   }
-}
 
-$(document).ready(Monitor_Init);
+  function onSkipLinkClick() {
+    var jobId = $(this).prev().val();
+
+    if (!confirm('Confirmi ignorarea jobului #' + jobId + '?')) {
+      return false;
+    }
+
+    var url = BASE_HREF + 'json/job-skip?job_id=' + jobId;
+    var success = function(data, textStatus, req) {
+      if (textStatus == 'error') {
+        alert('Eroare! Nu am putut ignora jobul.');
+      } else {
+        location.reload();
+      }
+    }
+
+    $.post(url, success);
+    return false;
+  }
+
+  function onSkipAllChange() {
+    var val = $(this).prop('checked');
+    $(".skip_job").prop('checked', val);
+  }
+
+  function onSkipFormSubmit() {
+    var list = [];
+    $('.skip_job:checked').each(function() {
+      list.push($(this).val());
+    });
+
+    if (list.length == 0) {
+      alert('Trebuie să selectezi cel puțin un job.');
+      return false;
+    }
+
+    $('#skipped-jobs').val(list.join());
+
+    var msg = 'Confirmi ignorarea a ' + list.length + ' joburi?'
+    return confirm(msg);
+  }
+
+});

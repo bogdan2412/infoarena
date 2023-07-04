@@ -8,17 +8,17 @@ require_once(IA_ROOT_DIR."www/format/format.php");
 // See format_table for an explanation.
 function build_default_column_infos($data)
 {
-    if (count($data) < 1) {
-        return false;
-    }
-    $infos = array();
-    foreach ($data[1] as $key => $value)  {
-        $infos[] = array(
-                'title' => $key,
-                'key' => $key,
-        );
-    }
-    return $infos;
+  if (count($data) < 1) {
+    return false;
+  }
+  $infos = array();
+  foreach ($data[1] as $key => $value)  {
+    $infos[] = array(
+      'title' => $key,
+      'key' => $key,
+    );
+  }
+  return $infos;
 }
 
 // This function formats data into a table.
@@ -41,7 +41,6 @@ function build_default_column_infos($data)
 // The various *form fields are mutually exclusive.
 //
 // $options is an array of options (you can skip any of them):
-//      skip_header: Will skip the header.
 //      css_class: The css class for the table tag.
 //      css_row_parity: Adds class=even and class=odd for table rows.
 //          Defaults to true!
@@ -50,177 +49,175 @@ function build_default_column_infos($data)
 // paging table footer.
 function format_table($data, $column_infos = null, $options = null)
 {
-    // No data means nothing to print.
-    if (count($data) < 1) {
-        return false;
+  // No data means nothing to print.
+  if (count($data) < 1) {
+    return false;
+  }
+
+  $result = "";
+  // Paging.
+  if (getattr($options, 'pager_style', 'none') != 'none') {
+    $result .= format_pager($options);
+  }
+
+  // Table starting tag.
+  if (isset($options['css_class'])) {
+    $result .= "<table class='" . $options['css_class'] . "'>";
+  } else {
+    $result .= "<table>";
+  }
+
+  // Handle missing column infos.
+  if ($column_infos == null) {
+    $column_infos = build_default_column_infos($data);
+  }
+
+  // sort instructions
+  $sort_field = getattr($options, 'sort_field',
+                        getattr($options, 'default_sort_field'));
+  $sort_direction = getattr($options, 'sort_direction',
+                            getattr($options, 'default_sort_direction', SORT_ASC));
+
+  // Table header: Column names.
+  $result .= "<thead><tr>";
+  foreach ($column_infos as $column) {
+    $args = array();
+    if (isset($column['css_class'])) {
+      $args['class'] = $column['css_class'];
+      if (isset($column['title_css_class'])) {
+        $args['class'] .= ' ' . $column['title_css_class'];
+      }
+    }
+    if (isset($column['css_style'])) {
+      $args['style'] = $column['css_style'];
     }
 
-    $result = "";
-    // Paging.
-    if (getattr($options, 'pager_style', 'none') != 'none') {
-        $result .= format_pager($options);
-    }
-
-    // Table starting tag.
-    if (isset($options['css_class'])) {
-        $result .= "<table class='" . $options['css_class'] . "'>";
+    $key = getattr($column, 'key');
+    if (isset($column['html_title'])) {
+      $caption = getattr($column, 'html_title', $key);
     } else {
-        $result .= "<table>";
+      $caption = html_escape(getattr($column, 'title', $key));
     }
 
-    // Handle missing column infos.
-    if ($column_infos == null) {
-        $column_infos = build_default_column_infos($data);
+    // sortable columns
+    if ($key && getattr($column, 'sortable')) {
+      if ($key == $sort_field) {
+        $a_direction = (SORT_ASC == $sort_direction ? SORT_DESC : SORT_ASC);
+        $span_class = ' sort-field-active';
+      }
+      else {
+        $a_direction = $sort_direction;
+        $span_class = '';
+      }
+
+      $caption .= '&nbsp;<span class="sort-field'.html_escape($span_class).'">'
+        ._format_sort_link($options, $key, $a_direction)
+        .'</span> ';
     }
 
-    // sort instructions
-    $sort_field = getattr($options, 'sort_field',
-                          getattr($options, 'default_sort_field'));
-    $sort_direction = getattr($options, 'sort_direction',
-                              getattr($options, 'default_sort_direction', SORT_ASC));
+    $result .= format_tag('th', $caption, $args, false);
+  }
+  $result .= "</tr></thead>";
 
-    // Table header: Column names.
-    if (!getattr($options, 'skip_header', false)) {
-        $result .= "<thead><tr>";
-        foreach ($column_infos as $column) {
-            $args = array();
-            if (isset($column['css_class'])) {
-                $args['class'] = $column['css_class'];
-                if (isset($column['title_css_class'])) {
-                    $args['class'] .= ' ' . $column['title_css_class'];
-                }
-            }
-            if (isset($column['css_style'])) {
-                $args['style'] = $column['css_style'];
-            }
-
-            $key = getattr($column, 'key');
-            if (isset($column['html_title'])) {
-                $caption = getattr($column, 'html_title', $key);
-            } else {
-                $caption = html_escape(getattr($column, 'title', $key));
-            }
-
-            // sortable columns
-            if ($key && getattr($column, 'sortable')) {
-                if ($key == $sort_field) {
-                    $a_direction = (SORT_ASC == $sort_direction ? SORT_DESC : SORT_ASC);
-                    $span_class = ' sort-field-active';
-                }
-                else {
-                    $a_direction = $sort_direction;
-                    $span_class = '';
-                }
-
-                $caption .= '&nbsp;<span class="sort-field'.html_escape($span_class).'">'
-                           ._format_sort_link($options, $key, $a_direction)
-                           .'</span> ';
-            }
-
-            $result .= format_tag('th', $caption, $args, false);
-        }
-        $result .= "</tr></thead>";
-    }
-
-    // Check for multipler formers.
-    foreach ($column_infos as $column) {
-        log_assert(isset($column['valform']) +
+  // Check for multipler formers.
+  foreach ($column_infos as $column) {
+    log_assert(isset($column['valform']) +
                isset($column['rowform']) +
                isset($column['dateform']) <= 1,
                "Column info can't have multiple format functions");
+  }
+
+  // Table body: data
+  $result .= "<tbody>";
+  for ($i = 0; $i < count($data); ++$i) {
+    $row = $data[$i];
+
+    // row style class (you can use both row_style & css_row_parity)
+    $func = getattr($options, 'row_style', null);
+    $class = '';
+    if ($func && is_callable($func)) {
+      $class .= $func($row);
+    }
+    if (getattr($options, 'css_row_parity', true)) {
+      if ($class) {
+        $class .= ' ';
+      }
+      $class .= ($i % 2 ? 'even' : 'odd');
     }
 
-    // Table body: data
-    $result .= "<tbody>";
-    for ($i = 0; $i < count($data); ++$i) {
-        $row = $data[$i];
-
-        // row style class (you can use both row_style & css_row_parity)
-        $func = getattr($options, 'row_style', null);
-        $class = '';
-        if ($func && is_callable($func)) {
-            $class .= $func($row);
-        }
-        if (getattr($options, 'css_row_parity', true)) {
-            if ($class) {
-                $class .= ' ';
-            }
-            $class .= ($i % 2 ? 'even' : 'odd');
-        }
-
-        if (!$class) {
-            $result .= '<tr>';
-        }
-        else {
-            $result .= '<tr class="'.html_escape($class).'">';
-        }
-
-        // Dump the actual data.
-        foreach ($column_infos as $column) {
-            // Handle row formatter.
-            if (isset($column['rowform'])) {
-                log_assert(is_callable($column['rowform']));
-                if (key_exists('key', $column)) {
-                    $val = $column['rowform']($row, $column['key']);
-                } else {
-                    $val = $column['rowform']($row);
-                }
-            } else {
-                $key = $column['key'];
-                $val = $row[$key];
-
-                // Handle val formatter.
-                if (isset($column['valform'])) {
-                    log_assert(is_callable($column['valform']));
-                    $val = $column['valform']($val);
-                // Handle date formatter.
-                } else if (isset($column['dateform'])) {
-                    // log_assert(is_timestamp($val));
-                    $val = date($column['dateform'], $val);
-                }
-            }
-
-            $args = array();
-            if (isset($column['css_class'])) {
-                $args['class'] = $column['css_class'];
-            }
-            if (isset($column['css_style'])) {
-                $args['style'] = $column['css_style'];
-            }
-            $result .= format_tag('td', $val, $args, false);
-        }
-        $result .= "</tr>\n";
+    if (!$class) {
+      $result .= '<tr>';
+    }
+    else {
+      $result .= '<tr class="'.html_escape($class).'">';
     }
 
-    $result .= "</tbody>";
+    // Dump the actual data.
+    foreach ($column_infos as $column) {
+      // Handle row formatter.
+      if (isset($column['rowform'])) {
+        log_assert(is_callable($column['rowform']));
+        if (key_exists('key', $column)) {
+          $val = $column['rowform']($row, $column['key']);
+        } else {
+          $val = $column['rowform']($row);
+        }
+      } else {
+        $key = $column['key'];
+        $val = $row[$key];
 
-    $result .= "</table>";
+        // Handle val formatter.
+        if (isset($column['valform'])) {
+          log_assert(is_callable($column['valform']));
+          $val = $column['valform']($val);
+          // Handle date formatter.
+        } else if (isset($column['dateform'])) {
+          // log_assert(is_timestamp($val));
+          $val = date($column['dateform'], $val);
+        }
+      }
 
-    // Paging.
-    if (getattr($options, 'pager_style', 'none') != 'none') {
-            $result .= format_pager($options);
+      $args = array();
+      if (isset($column['css_class'])) {
+        $args['class'] = $column['css_class'];
+      }
+      if (isset($column['css_style'])) {
+        $args['style'] = $column['css_style'];
+      }
+      $result .= format_tag('td', $val, $args, false);
     }
+    $result .= "</tr>\n";
+  }
 
-    return $result;
+  $result .= "</tbody>";
+
+  $result .= "</table>";
+
+  // Paging.
+  if (getattr($options, 'pager_style', 'none') != 'none') {
+    $result .= format_pager($options);
+  }
+
+  return $result;
 }
 
 // Internal for format_table
 function _format_sort_link($options, $sort_field, $sort_direction) {
-    $url_args = getattr($options, 'url_args', $_GET);
-    $param_prefix = getattr($options, 'param_prefix', '');
+  $url_args = getattr($options, 'url_args', $_GET);
+  $param_prefix = getattr($options, 'param_prefix', '');
 
-    $url_args[$param_prefix.'sort_field'] = $sort_field;
-    if (SORT_DESC == $sort_direction) {
-        $url_args[$param_prefix.'sort_desc'] = 1;
-        $caption = '&or;';
-    }
-    else {
-        if (isset($url_args[$param_prefix.'sort_desc']))
-            unset($url_args[$param_prefix.'sort_desc']);
-        $caption = '&and;';
-    }
+  $url_args[$param_prefix.'sort_field'] = $sort_field;
+  if (SORT_DESC == $sort_direction) {
+    $url_args[$param_prefix.'sort_desc'] = 1;
+    $caption = '&or;';
+  }
+  else {
+    if (isset($url_args[$param_prefix.'sort_desc']))
+      unset($url_args[$param_prefix.'sort_desc']);
+    $caption = '&and;';
+  }
 
-    return format_link(url_from_args($url_args), $caption, false);
+  return format_link(url_from_args($url_args), $caption, false);
 }
 
 ?>

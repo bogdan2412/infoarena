@@ -54,7 +54,7 @@ class RecentPage {
   }
 
   private static function lookup(string $url): int {
-    $i = self::NUM_PAGES - 1;
+    $i = count(self::$pages) - 1;
 
     while ($i >= 0 && self::$pages[$i]->getUrl() != $url) {
       $i--;

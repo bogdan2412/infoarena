@@ -24,18 +24,17 @@
         </a>
       </div>
     </div>
-
-    {if $smarty.const.IA_DEVELOPMENT_MODE}
-      <div id="dev_warning">
-        Bravely working in development mode&hellip;<br>Keep it up!
-      </div>
-    {/if}
-
-    <h1>
-      <a href="{$smarty.const.IA_URL_PREFIX}">
-        {$smarty.const.SITE_NAME} informatică de performanță
-      </a>
-    </h1>
-
   {/if}
+
+  {if $smarty.const.IA_DEVELOPMENT_MODE}
+    <div id="dev_warning">
+      Bravely working in development mode&hellip;<br>Keep it up!
+    </div>
+  {/if}
+
+  <h1>
+    <a href="{$smarty.const.IA_URL_PREFIX}">
+      {$smarty.const.SITE_NAME} informatică de performanță
+    </a>
+  </h1>
 </div>
