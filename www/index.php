@@ -57,7 +57,7 @@ if (IA_HTTPS_ENABLED) {
 // FIXME: change this to Romanian!
 $directmaps = array_flip(array('register', 'changes',
                                'login', 'logout', 'json', 'job_detail',
-                               'monitor', 'projector', 'submit', 'userinfo',
+                               'monitor', 'submit', 'userinfo',
                                'search', 'job_skip', 'liveeval',
                                'resetpass', 'reeval',
                                'userwidget', 'statistici_problema',
