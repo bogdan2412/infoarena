@@ -91,7 +91,7 @@ function controller_textblock_edit($page_name, $security = 'public') {
             if (identity_can('textblock-tag', $new_page)) {
                 tag_update("textblock", $new_page['name'], "tag", $values['tags']);
             }
-            flash('Am actualizat conținutul.');
+            FlashMessage::addSuccess('Am actualizat conținutul.');
 
             // Redirect depends of the pressed submit button
             $save_and_edit = getattr($_POST, 'form_save_and_edit');

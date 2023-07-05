@@ -31,7 +31,7 @@ if ($page == '') {
 
 // Check page name.
 if (!is_page_name($page)) {
-    flash_error('invalid URL');
+    FlashMessage::addError('invalid URL');
     redirect(url_home());
 }
 
@@ -303,6 +303,6 @@ else if ($action == 'view') {
 
 // invalid URL
 else {
-    flash_error('URL invalid.');
+    FlashMessage::addError('URL invalid.');
     redirect(url_home());
 }

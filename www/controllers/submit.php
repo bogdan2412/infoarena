@@ -35,15 +35,15 @@ function controller_submit() {
         }
 
         if (isset($errors['submit_limit']) && count($errors) == 1) {
-            flash_error($errors['submit_limit']);
+            FlashMessage::addError($errors['submit_limit']);
             redirect(getattr($_SERVER, 'HTTP_REFERER', url_submit()));
         }
 
         if ($errors) {
-            flash_error('NU am salvat soluția trimisă. Unul sau mai multe câmpuri
+            FlashMessage::addError('NU am salvat soluția trimisă. Unul sau mai multe câmpuri
                          nu au fost completate corect.');
         } else {
-            flash('Solutia a fost salvata.');
+            FlashMessage::addSuccess('Am salvat soluția.');
             redirect(getattr($_SERVER, 'HTTP_REFERER', url_submit()));
         }
         // Fall through to submit form.

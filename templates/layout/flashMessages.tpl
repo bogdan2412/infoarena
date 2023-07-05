@@ -1,7 +1,5 @@
-{if FlashMessage::hasMessage()}
-  <div
-    class="flash {FlashMessage::getCssClass()}"
-    id="flash">
-    {FlashMessage::getMessage()|escape}
+{foreach FlashMessage::getMessages() as $fm}
+  <div class="flash flash-{$fm.type}">
+    {$fm.text|escape}
   </div>
-{/if}
+{/foreach}

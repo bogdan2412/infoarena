@@ -161,16 +161,5 @@ if (isset($recent_pages) && (1 < count($recent_pages))) {
 ?>
 
 <?php
-    // display flash message
-    if (isset($_SESSION['_ia_flash'])) { ?>
-
-<div id="flash" class="flash <?= html_escape(getattr($_SESSION, '_ia_flash_class')) ?>"><?= html_escape($_SESSION['_ia_flash']) ?></div>
-
-<?php
-        // clear flash message
-        unset($_SESSION['_ia_flash']);
-        if (isset($_SESSION['_ia_flash_class'])) {
-            unset($_SESSION['_ia_flash_class']);
-        }
-    }
+  Smart::displayBit('layout/flashMessages.tpl');
 ?>

@@ -12,12 +12,12 @@ function controller_reeval() {
     }
 
     if (!request_is_post()) {
-        flash_error('Nu se poate reevalua.');
+        FlashMessage::addError('Nu se poate reevalua.');
         redirect(url_monitor());
     }
     $count = job_get_count($filters);
     if ($count > IA_REEVAL_MAXJOBS) {
-        flash_error('Prea multe job-uri!');
+        FlashMessage::addError('Prea multe job-uri!');
         redirect(url_monitor());
     }
     job_reeval($filters);
@@ -27,7 +27,7 @@ function controller_reeval() {
     // caution.
     parameter_update_global('full_rating_update', 1);
 
-    flash('Se reevaluează următoarele job-uri... ');
+    FlashMessage::addInfo('Reevaluez următoarele job-uri... ');
     redirect(url_monitor($filters));
 }
 ?>

@@ -8,14 +8,14 @@ function controller_statistici_problema() {
     // Validate task_id
     $task_id = request('task');
     if (!is_task_id($task_id)) {
-        flash_error('Identificatorul de task este invalid.');
+        FlashMessage::addError('Identificatorul de task este invalid.');
         redirect(url_home());
     }
 
     // Get task
     $task = task_get($task_id);
     if (!$task) {
-        flash_error('Problema nu există.');
+        FlashMessage::addError('Problema nu există.');
         redirect(url_home());
     }
 
@@ -29,7 +29,7 @@ function controller_statistici_problema() {
 
     $round = round_get($round_id);
     if (!$round) {
-        flash_error('Runda nu exista');
+        FlashMessage::addError('Runda nu există');
         redirect(url_home());
     }
 

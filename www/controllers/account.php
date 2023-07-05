@@ -22,7 +22,7 @@ function controller_account($username = null) {
     } else {
         $user = user_get_by_username($username);
         if (!$user) {
-            flash_error('Cont de utilizator inexistent.');
+            FlashMessage::addError('Cont de utilizator inexistent.');
             redirect(url_home());
         }
     }
@@ -145,9 +145,9 @@ function controller_account($username = null) {
 
             // done. redirect to same page so user has a strong confirmation
             // of data being saved
-            flash("Am salvat modificările.");
+            FlashMessage::addSuccess("Am salvat modificările.");
         } else {
-            flash_error('Am întâlnit probleme. Verifică datele introduse.');
+            FlashMessage::addError('Am întâlnit probleme. Verifică datele introduse.');
         }
     } else {
         // form is displayed for the first time. Fill in default values

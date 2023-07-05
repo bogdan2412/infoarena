@@ -25,6 +25,7 @@ function safe_job_submit($args, $user) {
     } else if (is_null($task = task_get($args['task_id']))) {
         $errors['task_id'] = "Task-ul {$args['task_id']} nu există.";
     }
+    $taskId = $task['id'] ?? '';
 
     // Validate round id.
     $round = null;
@@ -37,7 +38,7 @@ function safe_job_submit($args, $user) {
     }
     // Check if task is new and hasn't been added to any rounds
     if (getattr($args, "round_id") == "" &&
-        !task_get_submit_rounds($task["id"], $user) &&
+        !task_get_submit_rounds($taskId, $user) &&
         security_query($user, 'task-submit', $task)) {
         unset($errors["round_id"]);
     }

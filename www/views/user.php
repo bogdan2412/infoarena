@@ -11,9 +11,6 @@ require_once 'header.php';
 if (identity_is_admin()) {
     $url = url_user_control($user['id']);
     if ($user['banned']) {
-        echo '<div class="flash">';
-        echo '  Acest utilizator este blocat.';
-        echo '</div>';
         echo '<a href="' . $url . '" class="user-control unban">deblochează</a>';
     } else {
         echo '<a href="' . $url . '" class="user-control ban">blochează</a>';

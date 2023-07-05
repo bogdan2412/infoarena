@@ -88,7 +88,7 @@ function identity_can($action, $object = null) {
 // dumb little security.php might say, some things absolutely require login.
 function identity_require_login() {
   if (identity_is_anonymous()) {
-    flash_error("Mai întâi trebuie să te autentifici.");
+    FlashMessage::addError("Mai întâi trebuie să te autentifici.");
 
     // save current URL. We redirect to here right after logging in
     $_SESSION['_ia_redirect'] = $_SERVER['REQUEST_URI'];
@@ -106,16 +106,16 @@ function identity_require($action, $object = null) {
       // when user is anonymous, send it to login page
       // and redirect it back after login
 
-      flash_error("Mai întâi trebuie să te autentifici.");
+      FlashMessage::addError("Mai întâi trebuie să te autentifici.");
       // save current URL. We redirect to here right after logging in
       $_SESSION['_ia_redirect'] = url_absolute($_SERVER['REQUEST_URI']);
       redirect(url_login());
     } else if (identity_is_banned()) {
-      flash_error('Contul tău este blocat.');
+      FlashMessage::addError('Contul tău este blocat.');
       redirect(url_home());
     } else {
       // User doesn't have enough privileges, tell him to fuck off.
-      flash_error('Nu ai permisiuni suficiente pentru a executa această '
+      FlashMessage::addError('Nu ai permisiuni suficiente pentru a executa această '
                   .'acțiune! Te redirectez...');
       redirect(url_home());
     }

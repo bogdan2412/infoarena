@@ -7,7 +7,7 @@ function controller_job_skip() {
     $filters = job_get_filters();
 
     if (!request_is_post()) {
-        flash_error('Nu se pot ignora submisii.');
+        FlashMessage::addError('Nu se pot ignora submisii.');
         redirect(url_monitor());
     }
 
@@ -34,6 +34,6 @@ function controller_job_skip() {
         ++$number;
     }
 
-    flash('S-au ignorat ' . $number . ' job-uri');
+    FlashMessage::addSuccess('Am ignorat ' . $number . ' joburi.');
     redirect(url_monitor($filters));
 }

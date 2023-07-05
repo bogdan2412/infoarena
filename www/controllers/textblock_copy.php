@@ -12,7 +12,7 @@ function controller_textblock_copy($page_name) {
         identity_require('textblock-copy', $page);
     } else {
         // Missing page.
-        flash_error("Pagină inexistentă.");
+        FlashMessage::addError("Pagină inexistentă.");
         redirect(url_home());
     }
 
@@ -32,7 +32,7 @@ function controller_textblock_copy($page_name) {
         if (!$errors) {
             textblock_copy($page, $new_name, identity_get_user_id(),
                 remote_ip_info());
-            flash("Pagina a fost copiată.");
+            FlashMessage::addSuccess("Am copiat pagina.");
             redirect(url_textblock($new_name));
         }
     }

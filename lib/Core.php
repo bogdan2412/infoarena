@@ -18,7 +18,7 @@ class Core {
 
   static function init() {
     spl_autoload_register('Core::autoload', true);
-    FlashMessage::init();
+    FlashMessage::restoreFromSession();
     Smart::init();
   }
 

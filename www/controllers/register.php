@@ -41,11 +41,10 @@ function controller_register() {
 
             // give user enough tokens to pass login without captcha
             pay_tokens(-IA_TOKENS_LOGIN);
-            flash("Felicitări! Contul a fost creat. Acum te poți "
-                  ."autentifica.");
+            FlashMessage::addSuccess('Ți-am creat contul. Acum te poți autentifica.');
             redirect(url_login());
         } else {
-            flash_error('Am intâlnit probleme. Verifică datele introduse.');
+            FlashMessage::addError('Am intâlnit probleme. Verifică datele introduse.');
         }
     } else {
         // form is displayed for the first time. Fill in default values.

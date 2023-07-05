@@ -26,14 +26,14 @@ function controller_round_details($round_id) {
 
     // Validate round_id
     if (!is_round_id($round_id)) {
-        flash_error('Identificatorul rundei este invalid');
+        FlashMessage::addError('Identificatorul rundei este invalid');
         redirect(url_home());
     }
 
     // Get round
     $round = round_get($round_id);
     if (!$round) {
-        flash_error("Runda nu există");
+        FlashMessage::addError("Runda nu există");
         redirect(url_home());
     }
 
@@ -199,7 +199,7 @@ function controller_round_details($round_id) {
             $round['type'] != $new_round['type']);
 
         if (!$result) {
-            flash_error('Eroare la actualizarea listei. Încercați din nou');
+            FlashMessage::addError('Eroare la actualizarea listei. Încercați din nou');
             redirect(url_round_edit_params($round_id));
         }
 
@@ -207,9 +207,15 @@ function controller_round_details($round_id) {
             tag_update("round", $new_round['id'], "tag", $values['tags']);
         }
 
-        flash("Runda a fost modificată cu succes.");
+        FlashMessage::addSuccess("Am modificat runda.");
         // FIXME: don't redirect, update $view information instead
         redirect(url_round_edit_params($round_id));
+    }
+
+    if ($round['state'] == 'complete') {
+      FlashMessage::addWarning('Atenție! Această rundă s-a terminat, orice modificare este descurajată.');
+    } else if ($round['state'] == 'running') {
+      FlashMessage::addWarning('Atenție! Runda este activă chiar acum. Orice modificare poate avea urmări neplăcute.');
     }
 
     // Create view.
@@ -230,14 +236,14 @@ function controller_round_details($round_id) {
 function controller_round_task_order($round_id) {
     // Validate round_id
     if (!is_round_id($round_id)) {
-        flash_error('Identificatorul rundei este invalid');
+        FlashMessage::addError('Identificatorul rundei este invalid');
         redirect(url_home());
     }
 
     // Get round
     $round = round_get($round_id);
     if (!$round) {
-        flash_error("Runda nu există");
+        FlashMessage::addError("Runda nu există");
         redirect(url_home());
     }
 
@@ -345,7 +351,7 @@ function controller_round_create() {
             // This should never fail.
             log_assert(round_create($round, $round_params,
                     identity_get_user_id(), remote_ip_info()));
-            flash("O nouă rundă a fost creată, acum poți să editezi detalii.");
+            FlashMessage::addSuccess("Am creat runda, acum poți să o editezi.");
             redirect(url_round_edit($round['id']));
         }
     }
@@ -372,14 +378,14 @@ function controller_round_create() {
 function controller_round_delete_view($round_id) {
     // Validate round_id
     if (!is_round_id($round_id)) {
-        flash_error('Identificatorul rundei este invalid');
+        FlashMessage::addError('Identificatorul rundei este invalid');
         redirect(url_home());
     }
 
     // Get round
     $round = round_get($round_id);
     if (!$round) {
-        flash_error("Runda nu există");
+        FlashMessage::addError("Runda nu există");
         redirect(url_home());
     }
 
@@ -425,19 +431,19 @@ function controller_round_delete_view($round_id) {
 
 function controller_round_delete($round_id) {
     if (!request_is_post()) {
-        flash_error('Runda nu a putut fi ștearsă.');
+        FlashMessage::addError('Runda nu a putut fi ștearsă.');
     }
 
     // Validate round_id
     if (!is_round_id($round_id)) {
-        flash_error('Identificatorul rundei este invalid.');
+        FlashMessage::addError('Identificatorul rundei este invalid.');
         redirect(url_home());
     }
 
     // Get round
     $round = round_get($round_id);
     if (!$round) {
-        flash_error('Runda nu există.');
+        FlashMessage::addError('Runda nu există.');
         redirect(url_home());
     }
 
@@ -447,6 +453,6 @@ function controller_round_delete($round_id) {
     // Delete all the round related information from the database
     round_delete($round_id);
 
-    flash('Runda a fost ștearsă.');
+    FlashMessage::addSuccess('Am șters runda.');
     redirect(url_home());
 }

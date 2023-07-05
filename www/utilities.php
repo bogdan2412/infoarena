@@ -83,6 +83,7 @@ function redirect($absolute_url, $code = 302) {
         header('HTTP/1.1 302 Found');
     }
     header("Location: {$absolute_url}\n\n");
+    FlashMessage::saveToSession();
     session_write_close();
     save_tokens();
     die();
@@ -185,20 +186,6 @@ function die_http_error($code = 404, $msg = "File not found") {
     echo '<h1>'.$msg.'</h1>';
     echo '<p><a href="'.IA_URL.'">Înapoi la prima pagină</a></p>';
     die();
-}
-
-// Use flash() to display a message right after redirecting the user.
-// Message is displayed only once.
-function flash($message, $style_class = null) {
-    global $_SESSION;
-    $_SESSION['_ia_flash'] = $message;
-    $_SESSION['_ia_flash_class'] = $style_class;
-}
-
-// This is a simple binding for flash() with a fixed CSS style class
-// for displaying error messages
-function flash_error($message) {
-    flash($message, 'flashError');
 }
 
 // Execute a view. Variables in $view are placed in the

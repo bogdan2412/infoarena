@@ -7,7 +7,7 @@ require_once(IA_ROOT_DIR."www/format/pager.php");
 // Displays form to register remote user to given round_id
 function controller_round_register($round_id) {
     if (!is_round_id($round_id)) {
-        flash_error("Identificatorul rundei este invalid.");
+        FlashMessage::addError("Identificatorul rundei este invalid.");
         redirect(url_home());
     }
     $round = round_get($round_id);
@@ -16,7 +16,7 @@ function controller_round_register($round_id) {
     if ($round) {
         identity_require('round-register', $round);
     } else {
-        flash_error('Runda specificată nu există în baza de date.');
+        FlashMessage::addError('Runda specificată nu există în baza de date.');
         redirect(url_home());
     }
 
@@ -26,10 +26,10 @@ function controller_round_register($round_id) {
         // Toggle user's registration status
         if (!$user_is_registered) {
             round_register_user($round['id'], identity_get_user_id());
-            flash('Ai fost înregistrat la "'.$round['title'].'"!');
+            FlashMessage::addSuccess('Te-ai înregistrat la "'.$round['title'].'"!');
         } else {
             round_unregister_user($round['id'], identity_get_user_id());
-            flash('Ai fost dezînregistrat de la "'.$round['title'].'"!');
+            FlashMessage::addSuccess('Te-ai dezînregistrat de la "'.$round['title'].'"!');
         }
         redirect(url_textblock($round['page_name']));
     } else {
@@ -52,7 +52,7 @@ function controller_round_register($round_id) {
 // Displays registered users to given round_id
 function controller_round_register_view($round_id) {
     if (!is_round_id($round_id)) {
-        flash_error("Identificatorul rundei este invalid.");
+        FlashMessage::addError("Identificatorul rundei este invalid.");
         redirect(url_home());
     }
     $round = round_get($round_id);
@@ -61,7 +61,7 @@ function controller_round_register_view($round_id) {
     if ($round) {
         identity_require('round-register-view', $round);
     } else {
-        flash_error('Runda specificată nu există în baza de date.');
+        FlashMessage::addError('Runda specificată nu există în baza de date.');
         redirect(url_home());
     }
 

@@ -75,18 +75,6 @@ $form_fields = array(
     <input onclick="" type="submit" value="Șterge runda" id="form_delete" class="button important">
 </form>
 
-<?php if ($round['state'] == 'running') { ?>
-    <div class="warning">
-     Atenție! Runda este activă chiar acum. Orice modificare poate avea urmări neplăcute!
-    </div>
-<?php } elseif ($round['state'] == 'waiting') { ?>
-    Această rundă nu a rulat încă.
-<?php } elseif ($round['state'] == 'complete') { ?>
-    <div class="warning">
-     Atenție! Această rundă s-a terminat, orice modificare este descurajată.
-    </div>
-<?php } ?>
-
 <form action="<?= html_escape(getattr($view, 'action')) ?>" method="post" class="task">
  <fieldset>
   <legend>Informații generale</legend>

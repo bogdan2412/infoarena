@@ -12,7 +12,7 @@ function controller_textblock_move($page_name) {
         identity_require('textblock-move', $page);
     } else {
         // Missing page.
-        flash_error("Pagină inexistentă.");
+        FlashMessage::addError("Pagină inexistentă.");
         redirect(url_home());
     }
 
@@ -31,7 +31,7 @@ function controller_textblock_move($page_name) {
 
         if (!$errors) {
             textblock_move($page_name, $new_name);
-            flash("Pagina a fost mutată.");
+            FlashMessage::addSuccess("Am mutat pagina.");
             redirect(url_textblock($new_name));
         }
     }

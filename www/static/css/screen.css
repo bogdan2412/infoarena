@@ -327,11 +327,10 @@ div.macroMessage {
 
 /* Flash */
 div.flash {
-  background-color: #ffb500;
-  background-image: url('../images/icons/notice.gif');
   background-position: 4px 50%;
   background-repeat: no-repeat;
-  border: 1px solid olive;
+  border: 1px solid #222;
+  border-radius: 4px;
   color: #222;
   margin: 1em auto 1em auto;
   padding: .5em .5em .5em 17px;
@@ -339,10 +338,24 @@ div.flash {
   width: 50%;
 }
 
-div.flashError {
-  background-color: #cc0000;
+div.flash.flash-success {
+  background-color: #ccffcc;
+  background-image: url('../images/icons/task_solved.gif');
+}
+
+div.flash.flash-info {
+  background-color: #ccccff;
+  background-image: url('../images/icons/notice.gif');
+}
+
+div.flash.flash-warning {
+  background-color: #ffcc00;
+  background-image: url('../images/icons/notice.gif');
+}
+
+div.flash.flash-error {
+  background-color: #cc2222;
   background-image: url('../images/icons/error.gif');
-  border: 1px solid pink;
   color: white;
 }
 

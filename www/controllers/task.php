@@ -20,14 +20,14 @@ require_once(IA_ROOT_DIR . "common/task_rating.php");
 function controller_task_details($task_id) {
     // validate task_id
     if (!is_task_id($task_id)) {
-        flash_error('Identificatorul de task este invalid.');
+        FlashMessage::addError('Identificatorul de task este invalid.');
         redirect(url_home());
     }
 
     // Get task
     $task = task_get($task_id);
     if (!$task) {
-        flash_error("Problema nu există.");
+        FlashMessage::addError("Problema nu există.");
         redirect(url_home());
     }
 
@@ -162,10 +162,10 @@ function controller_task_details($task_id) {
             }
             mem_cache_delete("task-authors-by-id:".$new_task["id"]);
 
-            flash("Parametrii au fost salvați cu succes.");
+            FlashMessage::addSuccess("Am salvat parametrii.");
             redirect(url_task_edit($task_id, 'task-edit-params'));
         } else {
-            flash_error("Sunt erori în datele introduse.");
+            FlashMessage::addError("Sunt erori în datele introduse.");
         }
     }
 
@@ -231,7 +231,7 @@ function controller_task_create() {
 
             // This should never fail.
             log_assert(task_create($task, $task_params, remote_ip_info()));
-            flash("Un nou task a fost creat, acum poți să-l editezi.");
+            FlashMessage::addSuccess("Am creat problema, acum poți să o editezi.");
             redirect(url_task_edit($task['id'], 'task-edit-params'));
         }
     }
@@ -249,20 +249,20 @@ function controller_task_create() {
 // Deletes a task.
 function controller_task_delete($task_id) {
     if (!request_is_post()) {
-        flash_error("Problema nu a putut fi ștearsă.");
+        FlashMessage::addError("Problema nu a putut fi ștearsă.");
         redirect(url_home());
     }
 
     // Validate task_id
     if (!is_task_id($task_id)) {
-        flash_error("Problemă inexistentă.");
+        FlashMessage::addError("Problemă inexistentă.");
         redirect(url_home());
     }
 
     // Get task
     $task = task_get($task_id);
     if (!$task) {
-        flash_error("Problemă inexistentă.");
+        FlashMessage::addError("Problemă inexistentă.");
         redirect(url_home());
     }
 
@@ -272,7 +272,7 @@ function controller_task_delete($task_id) {
     // Delete the task
     task_delete($task);
 
-    flash("Problema a fost ștearsă.");
+    FlashMessage::addSuccess("Am șters problema.");
     redirect(url_home());
 }
 
@@ -280,7 +280,7 @@ function controller_task_delete($task_id) {
 function controller_task_ratings($task_id) {
     // Validate task id
     if (!is_task_id($task_id)) {
-        flash_error("Problemă inexistentă.");
+        FlashMessage::addError("Problemă inexistentă.");
         redirect(url_home());
     }
 
@@ -306,7 +306,7 @@ function controller_task_ratings($task_id) {
             $rating_value = request($rating_field);
 
             if (!task_is_rating_value($rating_value)) {
-                flash_error("Datele introduse nu sunt valide.");
+                FlashMessage::addError("Datele introduse nu sunt valide.");
                 redirect(url_task_edit($task_id, 'task-edit-ratings'));
             }
 
@@ -315,7 +315,7 @@ function controller_task_ratings($task_id) {
 
         task_rating_add($task_id, $user_id, $ratings);
 
-        flash("Ratingurile au fost salvate cu succes.");
+        FlashMessage::addSuccess("Am salvat ratingurile.");
         redirect(url_task_edit($task_id, 'task-edit-ratings'));
     }
 
@@ -333,7 +333,7 @@ function controller_task_ratings($task_id) {
 // Tag a task
 function controller_task_tag($task_id) {
     if (!is_task_id($task_id)) {
-        flash_error("Problemă inexistentă.");
+        FlashMessage::addError("Problemă inexistentă.");
         redirect(url_home());
     }
 
@@ -341,7 +341,7 @@ function controller_task_tag($task_id) {
     identity_require('task-tag', $task);
 
     if (!$task) {
-        flash_error("Problemă inexistentă.");
+        FlashMessage::addError("Problemă inexistentă.");
         redirect(url_home());
     }
 
@@ -351,13 +351,13 @@ function controller_task_tag($task_id) {
         $reportAdminMsg = 'Datele trimise sunt invalide. Raportează această problemă unui admin.';
 
         if (!is_array($algorithm_tags_id)) {
-            flash_error($reportAdminMsg);
+            FlashMessage::addError($reportAdminMsg);
             redirect(url_task_edit($task_id, 'task-edit-tags'));
         }
 
         foreach ($algorithm_tags_id as $tag_id) {
             if (!is_tag_id($tag_id)) {
-                flash_error($reportAdminMsg);
+                FlashMessage::addError($reportAdminMsg);
                 redirect(url_task_edit($task_id, 'task-edit-tags'));
             }
         }
@@ -370,12 +370,12 @@ function controller_task_tag($task_id) {
             }
         }
         if ($count != count($algorithm_tags_id)) {
-            flash_error($reportAdminMsg);
+            FlashMessage::addError($reportAdminMsg);
             redirect(url_task_edit($task_id, 'task-edit-tags'));
         }
 
         task_update_tags($task_id, $method_tags_id, $algorithm_tags_id);
-        flash("Tagurile au fost salvate cu succes.");
+        FlashMessage::addSuccess("Am salvat tagurile.");
         redirect(url_task_edit($task_id, 'task-edit-tags'));
     }
 
@@ -402,12 +402,12 @@ function controller_task_search() {
     }
 
     if (!is_array($tags)) {
-        flash_error("Filtru invalid.");
+        FlashMessage::addError("Filtru invalid.");
         redirect(url_home());
     }
     foreach ($tags as $tag) {
         if (!is_tag_id($tag)) {
-            flash_error("Filtru invalid.");
+            FlashMessage::addError("Filtru invalid.");
             redirect(url_home());
         }
     }

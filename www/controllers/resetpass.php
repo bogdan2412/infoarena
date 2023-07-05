@@ -81,11 +81,11 @@ Echipa %s
             send_email($to, $subject, $message);
 
             // notify user
-            flash('Am trimis instructiuni pe e-mail.');
+            FlashMessage::addSuccess('Ți-am trimis instrucțiuni prin e-mail.');
             redirect(url_login());
         }
         else {
-            flash_error('Trebuie să completezi cel puțin unul din câmpuri.');
+            FlashMessage::addError('Trebuie să completezi cel puțin unul din câmpuri.');
         }
     }
     else {
@@ -110,13 +110,13 @@ function controller_resetpass_confirm($username) {
         $user = user_get_by_username($username);
     }
     if (!$user) {
-        flash_error('Numele de utilizator este invalid.');
+        FlashMessage::addError('Numele de utilizator este invalid.');
         redirect(url_home());
     }
 
     // validate confirmation code
     if ($cpass != user_resetpass_key($user)) {
-        flash_error('Codul de confirmare nu este corect.');
+        FlashMessage::addError('Codul de confirmare nu este corect.');
         redirect(url_home());
     }
 
@@ -151,8 +151,7 @@ Echipa %s
     send_email($to, $subject, $message);
 
     // notify user
-    flash('Parola a fost resetată și trimisă pe e-mail. Verifică-ți ' .
-          'e-mail-ul ca să afli noua parolă.');
+    FlashMessage::addSuccess('Ți-am resetat parola și ți-am trimis-o prin e-mail.');
     redirect(url_login());
 }
 

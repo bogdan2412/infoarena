@@ -10,7 +10,6 @@ function controller_login() {
     // array for the captcha error
     $form_errors = array();
 
-    // The flash error
     $errors = '';
 
     // process input?
@@ -64,7 +63,7 @@ function controller_login() {
             $remember_user = ($data['remember'] ? true : false);
             identity_start_session($user, $remember_user);
 
-            flash('Bine ai venit!');
+            FlashMessage::addSuccess('Bine ai venit!');
 
             // redirect
             if (isset($_SESSION['_ia_redirect'])) {
@@ -89,7 +88,7 @@ function controller_login() {
                 $_SESSION['_ia_redirect'] = $_SERVER['HTTP_REFERER'];
             }
 
-            flash_error($errors);
+            FlashMessage::addError($errors);
         }
     }
 

@@ -95,7 +95,7 @@ class Smart {
   static function addResources(...$keys): void {
     foreach ($keys as $key) {
       if (!isset(self::RESOURCE_MAP[$key])) {
-        flash_error("Unknown resource ID {$key}");
+        FlashMessage::addError("Unknown resource ID {$key}");
         redirect(url_home());
       }
       self::$includedResources[] = $key;
@@ -115,6 +115,12 @@ class Smart {
     } else {
       self::$theSmarty->assign($arg1, $arg2);
     }
+  }
+
+  // Display a single template without the layout. Used during the migration
+  // to Smarty.
+  static function displayBit(string $templateName): void {
+    print self::$theSmarty->fetch($templateName);
   }
 
   /* Prepare and display a template. */
