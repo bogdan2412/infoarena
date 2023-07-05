@@ -126,17 +126,6 @@ handle_config_file($config_vars,
 handle_config_file($config_vars,
         $ia_root.'apache.conf.sample', $ia_root.'apache.conf');
 
-if ($dblink && read_bool("Should I try to import the sample database?", true)) {
-    $cmd = sprintf("mysql --user=%s --password=%s --host=%s %s < %s",
-            $config_vars['IA_DB_USER'],
-            $config_vars['IA_DB_PASS'],
-            $config_vars['IA_DB_HOST'],
-            $config_vars['IA_DB_NAME'],
-            '"' . $config_vars['IA_ROOT_DIR'] . "db.sql" . '"');
-    print("Running $cmd\n");
-    system($cmd);
-}
-
 // Configure apache
 if (read_bool("Should I try to configure apache for you?", true)) {
     $sitename = slash_string($config_vars['IA_URL_PREFIX'], false, false);
