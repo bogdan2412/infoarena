@@ -1,7 +1,6 @@
 <?php
 
 require_once(IA_ROOT_DIR . 'www/url.php');
-require_once(IA_ROOT_DIR . 'common/db/tokens.php');
 // Wrapper around htmlentities which defaults charset to UTF-8
 function html_escape($string, $quote_style = ENT_COMPAT, $charset = "UTF-8")
 {
@@ -85,7 +84,6 @@ function redirect($absolute_url, $code = 302) {
     header("Location: {$absolute_url}\n\n");
     FlashMessage::saveToSession();
     session_write_close();
-    save_tokens();
     die();
 }
 
@@ -245,7 +243,6 @@ function execute_view_die($view_file_name, $view) {
         log_execution_stats();
     }
     session_write_close();
-    save_tokens();
     die();
 }
 

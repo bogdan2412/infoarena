@@ -128,7 +128,6 @@ class Smart {
   static function display(string $templateName): void {
     self::addResources('main');
     print self::fetch($templateName);
-    self::finalize();
   }
 
   static function fetch(string $templateName): string {
@@ -158,9 +157,5 @@ class Smart {
       $result[] = url_static($url);
     }
     return $result;
-  }
-
-  private static function finalize(): void {
-    save_tokens();
   }
 }

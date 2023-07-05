@@ -1,23 +1,10 @@
 <?php
 
 require_once(IA_ROOT_DIR . 'common/tags.php');
-require_once(IA_ROOT_DIR . 'common/db/tokens.php');
 
 // validates registration input data (wrapper for validate_data)
 function validate_register_data($data) {
-    $errors = validate_user_data($data, true, null);
-
-    // If we're going to sell our soul to evil technologies, at least make
-    // sure we have to.
-    if (IA_TOKENS_REGISTER) {
-        // Give enough tokens back for a login
-        $errors['captcha'] = check_captcha_for_tokens(IA_TOKENS_CAPTCHA, true);
-        if (!$errors['captcha']) {
-            unset($errors['captcha']);
-        }
-    }
-
-    return $errors;
+    return validate_user_data($data, true, null);
 }
 
 // validates user profile input data (wrapper for validate_data)

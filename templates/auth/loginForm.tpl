@@ -1,6 +1,5 @@
 {$username=$username|default:''}
 {$remember=$remember|default:false}
-{$captcha=$captcha|default:false}
 <form action="{url_login()|escape}" class="login" method="post">
   <table class="form">
     <tr>
@@ -39,31 +38,6 @@
           </ul>
         </fieldset>
       </td>
-
-      {if $captcha}
-        <td>
-          <fieldset>
-            <legend>Verificare</legend>
-            <ul class="form">
-              <li>
-                <script>
-                  var RecaptchaOptions = {
-                    theme : 'clean',
-                  };
-                </script>
-
-                <label>Scrieți cuvintele de mai jos:</label>
-                {* ferr_span('captcha') *}
-                {* $view['captcha'] *}
-                <span class="fieldHelp">
-                  Vă rugăm să transcrieți cuvintele de mai sus în această
-                  căsuță pentru verificare.
-                </span>
-              </li>
-            </ul>
-          </fieldset>
-        </td>
-      {/if}
     </tr>
   </table>
 

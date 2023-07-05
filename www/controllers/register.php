@@ -2,7 +2,6 @@
 
 require_once(IA_ROOT_DIR . 'common/db/user.php');
 require_once(IA_ROOT_DIR . 'www/controllers/account_validator.php');
-require_once(IA_ROOT_DIR . 'common/db/tokens.php');
 
 function controller_register() {
     $submit = request_is_post();
@@ -26,7 +25,6 @@ function controller_register() {
         $data['email'] = trim(request('email'));
         $data['tnc'] = (request('tnc') ? 1 : 0);
 
-        pay_tokens(IA_TOKENS_REGISTER);
         $errors = validate_register_data($data);
         // 2. process
         if (count($errors) == 0) {
@@ -39,8 +37,6 @@ function controller_register() {
             // There are no acceptable errors in user_create.
             user_create($user, remote_ip_info());
 
-            // give user enough tokens to pass login without captcha
-            pay_tokens(-IA_TOKENS_LOGIN);
             FlashMessage::addSuccess('Ți-am creat contul. Acum te poți autentifica.');
             redirect(url_login());
         } else {
@@ -49,11 +45,6 @@ function controller_register() {
     } else {
         // form is displayed for the first time. Fill in default values.
         $data['tnc'] = 1;
-    }
-
-    if(get_tokens() < IA_TOKENS_REGISTER) {
-        $view['captcha'] = recaptcha_get_html(IA_CAPTCHA_PUBLIC_KEY, null,
-                true);
     }
 
     // attach form is displayed for the first time or a validation error occured

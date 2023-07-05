@@ -7,9 +7,6 @@ function controller_login() {
     // when displaying the form for the first time, this is filled with
     $data = array();
 
-    // array for the captcha error
-    $form_errors = array();
-
     $errors = '';
 
     // process input?
@@ -35,11 +32,6 @@ function controller_login() {
             }
         }
 
-        // Get some tokens from the captcha
-        // It's not like that matters in any way because we do not receive
-        // enough for the login cost
-        $form_errors['captcha'] = check_captcha_for_tokens();
-
         // obtain referer
         $referer = getattr($_SERVER, 'HTTP_REFERER', '');
         if ($referer == url_login()) {
@@ -47,18 +39,8 @@ function controller_login() {
             $referer = null;
         }
 
-        // pay tokens for loging in
-        if (!pay_tokens(IA_TOKENS_LOGIN)) {
-            if ($form_errors['captcha']) {
-                $errors = 'Vă rugăm să confirmați că sunteți om.';
-                unset($form_errors['captcha']);
-            }
-        }
-
         // process
         if (!$errors) {
-            // good user receives some tokens back enough to logout and login as a different user
-            pay_tokens(-IA_TOKENS_LOGIN);
             // persist user to session (login)
             $remember_user = ($data['remember'] ? true : false);
             identity_start_session($user, $remember_user);
@@ -92,12 +74,7 @@ function controller_login() {
         }
     }
 
-    $captcha = (get_tokens() < IA_TOKENS_LOGIN)
-      ? recaptcha_get_html(IA_CAPTCHA_PUBLIC_KEY, null, true)
-      : false;
-
     Smart::assign([
-      'captcha' => $captcha,
       'remember' => $data['remember'] ?? false,
       'showSidebarLogin' => false,
       'username' => $data['username'] ?? '',
