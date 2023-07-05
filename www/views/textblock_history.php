@@ -109,7 +109,7 @@ $column_infos = array(
 );
 
 $options = array(
-    'css_class' => 'textblock-history',
+    'css_class' => 'alternating-colors fill-screen',
     'display_entries' => $display_entries,
     'total_entries' => $total_entries,
     'first_entry' => $first_entry,
@@ -140,7 +140,6 @@ $options = array(
 </div>
 
 <?php
-$options["css_class"] = "fill-screen";
 echo format_table($revisions, $column_infos, $options);
 ?>
 

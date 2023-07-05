@@ -31,8 +31,7 @@ class Smart {
       'css' => [ 'css/sitewide.css', 'css/screen.css', 'css/print.css' ],
       'js' => [
         'js/config.js.php', 'js/default.js', 'js/postdata.js',
-        'js/restoreparity.js', 'js/roundtimer.js', 'js/submit.js', 'js/tags.js',
-        'js/time.js',
+        'js/roundtimer.js', 'js/submit.js', 'js/tags.js', 'js/time.js',
       ],
       'deps' => [
         'foreach', 'highlight', 'iconize', 'jquery', 'sorttable', 'tabber',

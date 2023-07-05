@@ -62,7 +62,7 @@ function macro_roundlist($args) {
     $options["total_entries"] = (int)$rounds["count"];
     unset($rounds["count"]);
 
-    $options["css_class"] = "fill-screen rounds";
+    $options["css_class"] = "alternating-colors fill-screen rounds";
 
     $column_infos = array();
     $column_infos[] = array(

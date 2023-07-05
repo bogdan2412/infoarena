@@ -91,7 +91,7 @@ $tasks = $view['tasks'];
 $options = pager_init_options();
 $options['total_entries'] = count($tasks);
 $options['row_style'] = 'task_row_style';
-$options['css_class'] = 'tasks fill-screen filter_results';
+$options['css_class'] = 'alternating-colors tasks fill-screen filter_results';
 $options['show_count'] = true;
 $options['show_display_entries'] = false;
 

@@ -67,7 +67,6 @@ if (isset($form_errors) || isset($form_values)) {
     <script src="<?= html_escape(url_static('js/third-party/highlight-line-numbers.min.js')) ?>"></script>
     <script src="<?= html_escape(url_static('js/tags.js')) ?>"></script>
     <script src="<?= html_escape(url_static('js/roundtimer.js')) ?>"></script>
-    <script src="<?= html_escape(url_static('js/restoreparity.js')) ?>"></script>
     <script src="<?= html_escape(url_static('js/third-party/foreach.js')) ?>"></script>
     <script src="<?= html_escape(url_static('js/third-party/sorttable.js')) ?>"></script>
     <script src="<?= html_escape(url_static('js/third-party/tablednd.js')) ?>"></script>

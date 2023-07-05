@@ -62,7 +62,7 @@ $column_infos = array(
             'pager_style' => 'standard',
             'show_count' => true,
             'show_display_entries' => true,
-            'css_class' => 'fill-screen',
+            'css_class' => 'alternating-colors fill-screen',
         );
 
         echo format_table($view['textblock_list'], $column_infos, $options);

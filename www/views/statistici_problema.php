@@ -45,9 +45,7 @@ if (count($data['time']) === 0) {
         ),
     );
 
-    $options = array(
-        'css_row_parity' => false,
-    );
+    $options = [];
 
     $long_wording = array(
         'time' => 'timpul de execuție',

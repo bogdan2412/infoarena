@@ -102,7 +102,6 @@ sorttable = {
             sortrevind.innerHTML = stIsIE ? '&nbsp<font face="webdings">5</font>' : '&nbsp;&#x25BE;';
             this.appendChild(sortrevind);
 
-            recolorTable(table);
             return;
           }
           if (this.className.search(/\bsorttable_sorted_reverse\b/) != -1) {
@@ -117,7 +116,6 @@ sorttable = {
             sortfwdind.innerHTML = stIsIE ? '&nbsp<font face="webdings">6</font>' : '&nbsp;&#x25B4;';
             this.appendChild(sortfwdind);
 
-            recolorTable(table);
             return;
           }
 
@@ -162,7 +160,6 @@ sorttable = {
 
 	        delete row_array;
 
-          recolorTable(table);
 	      });
 	    }
     }
@@ -174,7 +171,7 @@ sorttable = {
     for (var i=0; i<table.tBodies[0].rows.length; i++) {
       text = sorttable.getInnerText(table.tBodies[0].rows[i].cells[column]);
       if (text != '') {
-        if (text.match(/^-?[£$¤]?[\d,.]+%?$/)) {
+        if (text.match(/^-?[Â£$Â¤]?[\d,.]+%?$/)) {
           return sorttable.sort_numeric;
         }
         // check for a date: dd/mm/yyyy or dd/mm/yy

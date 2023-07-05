@@ -42,8 +42,6 @@ function build_default_column_infos($data)
 //
 // $options is an array of options (you can skip any of them):
 //      css_class: The css class for the table tag.
-//      css_row_parity: Adds class=even and class=odd for table rows.
-//          Defaults to true!
 //
 // Additionally you can merge a pager_options, and it will display a
 // paging table footer.
@@ -132,17 +130,11 @@ function format_table($data, $column_infos = null, $options = null)
   for ($i = 0; $i < count($data); ++$i) {
     $row = $data[$i];
 
-    // row style class (you can use both row_style & css_row_parity)
+    // row style class
     $func = getattr($options, 'row_style', null);
     $class = '';
     if ($func && is_callable($func)) {
       $class .= $func($row);
-    }
-    if (getattr($options, 'css_row_parity', true)) {
-      if ($class) {
-        $class .= ' ';
-      }
-      $class .= ($i % 2 ? 'even' : 'odd');
     }
 
     if (!$class) {

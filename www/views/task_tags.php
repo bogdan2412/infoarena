@@ -91,7 +91,7 @@ foreach ($categories as $category) {
     </ul>
     <?php
     echo format_table($category["sub_tags"], $column_infos,
-        array('css_class' => 'category fill-screen tag-table'));
+        array('css_class' => 'alternating-colors category fill-screen tag-table'));
     ?>
 <?php
 }
@@ -104,7 +104,7 @@ foreach ($categories as $category) {
 ?>]</div>
 <?php
 echo format_table($authors, $column_infos,
-    array('css_class' => 'category fill-screen tag-table'));
+    array('css_class' => 'alternating-colors category fill-screen tag-table'));
 ?>
 <script src="<?= html_escape(url_static('js/task_tags.js')) ?>"></script>
 <?php

@@ -684,29 +684,9 @@ ul.htabs {
   width: 7em;
 }
 
-/* job eval tests */
-.job-eval-tests {
-  font-family: monospace;
-}
-
 .job-eval-tests td, .job-eval-tests th {
-  border: 1px solid silver;
-  padding: .1em;
-  vertical-align: middle;
-}
-
-.job-eval-tests tr.odd td {
-  background-color: white;
-}
-
-.job-eval-tests tr.even td {
-  background-color: #ddd;
-}
-
-.job-eval-tests th {
-  background-color: lightgray;
-  font-weight: bold;
-  padding: .1em;
+  padding-bottom: 2px;
+  padding-top: 2px;
 }
 
 .total_score {
@@ -758,12 +738,16 @@ td.hljs-ln-code {
   background: #fff !important;
 }
 
-tr.even td {
+table.alternating-colors tr:nth-child(even) {
   background-color: #f0f0f0;
 }
 
-table.alternating-colors tr:nth-child(even) {
-  background-color:#f0f0f0;
+table tr.color0 {
+  background-color: #fff !important;
+}
+
+table tr.color1 {
+  background-color: #f0f0f0 !important;
 }
 
 th {

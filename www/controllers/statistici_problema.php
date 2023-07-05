@@ -67,7 +67,7 @@ function controller_statistici_problema() {
         $position = 1;
         foreach ($ranking as &$contestant) {
             $contestant['position'] = $position;
-            $contestant['special_score'] .= $measurement_unit[$criteria];
+            $contestant['special_score'] .= ' ' . $measurement_unit[$criteria];
             $position = $position + 1;
         }
     }

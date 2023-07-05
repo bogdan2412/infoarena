@@ -69,7 +69,7 @@
       }
     }
 ?>
-<table class="job-eval-tests">
+<table class="job-eval-tests alternating-colors">
   <thead>
     <tr>
       <?php
@@ -93,16 +93,9 @@
   <tbody>
     <?php
       $last_group = 0;
-      if (!$view["group_tests"]) {
-        $test_row = 0;
-      }
       foreach ($view['tests'] as $test) {
-        if ($view["group_tests"]) {
-          echo '<tr class="'.($test['test_group'] % 2 == 1 ? "odd" : "even").'">';
-        } else {
-          echo '<tr class="'.($test_row % 2 == 1 ? "odd" : "even").'">';
-          $test_row++;
-        }
+        $row_css_class = get_row_css_class($view['group_tests'], $test['test_group']);
+        echo "<tr class=\"{$row_css_class}\">";
         if ($show_feedback_column) {
           if (!getattr($test, 'is_public_test')) {
             echo '<td class="number">✗</td>';
@@ -115,12 +108,12 @@
         if ($test["grader_message"] == "Time limit exceeded.") {
           echo '<td class="number">Depășit</td>';
         } else {
-          echo '<td class="number">'.$test['exec_time'].'ms</td>';
+          echo '<td class="number">'.$test['exec_time'].' ms</td>';
         }
         if ($test["grader_message"] == "Memory limit exceeded.") {
           echo '<td class="number">Depășit</td>';
         } else {
-          echo '<td class="number">'.$test['mem_used'].'kb</td>';
+          echo '<td class="number">'.$test['mem_used'].' kb</td>';
         }
         echo '<td>'.html_escape($test['grader_message']).'</td>';
         echo '<td class="number">'.$test['points'].'</td>';
@@ -149,4 +142,14 @@
 <?php } ?>
 <?php Wiki::include('template/borderou'); ?>
 
-<?php include('footer.php'); ?>
+<?php
+
+include('footer.php');
+
+function get_row_css_class($jobHasTestGroups, $testGroup): string {
+  return $jobHasTestGroups
+    ? (($testGroup % 2) ? 'color0' : 'color1')
+    : '';
+}
+
+?>
