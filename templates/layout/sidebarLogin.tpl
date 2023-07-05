@@ -2,7 +2,7 @@
 
 {if User::isAnonymous() && $showSidebarLogin}
   <div id="login">
-    include(IA_ROOT_DIR.'www/views/form_login.php')
+    {include "auth/loginForm.tpl"}
     <p>
       <a href="{url_register()}">Mă înregistrez</a>
       <br>

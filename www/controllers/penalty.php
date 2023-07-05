@@ -63,7 +63,6 @@ function controller_penalty() {
     Smart::assign([
       'formErrors' => $errors,
       'formValues' => $data,
-      'showSidebarLogin' => false,
     ]);
     Smart::display('penalty.tpl');
 }

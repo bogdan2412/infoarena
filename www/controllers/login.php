@@ -92,20 +92,15 @@ function controller_login() {
         }
     }
 
-    // always reset password before displaying web form
-    $data['password'] = '';
+    $captcha = (get_tokens() < IA_TOKENS_LOGIN)
+      ? recaptcha_get_html(IA_CAPTCHA_PUBLIC_KEY, null, true)
+      : false;
 
-    $view = array();
-    $view['page_name'] = "login";
-    $view['title'] = "Autentificare";
-    $view['form_values'] = $data;
-    $view['form_errors'] = $form_errors;
-    $view['no_sidebar_login'] = true;
-
-    if (get_tokens() < IA_TOKENS_LOGIN) {
-        $view['captcha'] = recaptcha_get_html(IA_CAPTCHA_PUBLIC_KEY, null,
-                true);
-    }
-
-    execute_view_die('views/login.php', $view);
+    Smart::assign([
+      'captcha' => $captcha,
+      'remember' => $data['remember'] ?? false,
+      'showSidebarLogin' => false,
+      'username' => $data['username'] ?? '',
+    ]);
+    Smart::display('auth/login.tpl');
 }

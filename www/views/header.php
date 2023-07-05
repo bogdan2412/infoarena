@@ -121,7 +121,7 @@ $is_admin = ('admin' == getattr($identity_user, 'security_level'));
 
     <?php if (identity_is_anonymous()) { ?>
     <div id="login">
-        <?php if (!isset($no_sidebar_login)) include(IA_ROOT_DIR.'www/views/form_login.php') ?>
+        <?php if (!isset($no_sidebar_login)) Smart::displayBit('auth/loginForm.tpl'); ?>
         <p>
         <?= format_link(url_register(), "Mă înregistrez!" ) ?><br>
         <?= format_link(url_resetpass(), "Mi-am uitat parola..." ) ?>
