@@ -359,22 +359,6 @@ div.flash.flash-error {
   color: white;
 }
 
-div.warning {
-  background-color: #FFDDDD;
-  border: 1px solid #CC0000;
-  padding: 0.4em;
-  position: relative;
-  width: 55%;
-}
-
-div.notice {
-  border: 1px dashed olive;
-  color: black;
-  margin: 1em 0em 1em 0em;
-  padding: .2em .2em .2em 20px;
-  width: 55%;
-}
-
 /* Forms */
 form {
   font-size: 1.05em;

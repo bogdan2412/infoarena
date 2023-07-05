@@ -1,4 +1,4 @@
-<div class="warning">
+<div class="flash flash-warning">
     <?php
     if ($view['revision'] < $view['revision_count']) {
         echo "Atenție! Aceasta este o versiune veche a paginii.";

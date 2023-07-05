@@ -1,5 +1,5 @@
 {if empty($jobs)}
-  <div class="notice">
+  <div>
     Nici o soluție în coada de evaluare.
   </div>
 {else}

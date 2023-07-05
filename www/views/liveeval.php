@@ -43,7 +43,7 @@ $selected = null;
 echo "<div id=\"monitor-table\">";
 
 if (!$jobs) {
-    echo "<div class=\"notice\">Nici o soluție în coada de evaluare.</div>";
+    echo "<div>Nici o soluție în coada de evaluare.</div>";
 } else {
     // For the score column.
     function format_state($row) {
