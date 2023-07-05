@@ -1,7 +1,7 @@
 <?php
 
 // link main configuration
-require_once dirname($argv[0]) . '/../config.php';
+require_once __DIR__ . '/../config.php';
 
 // Judge username/password, used via HTTP AUTH basic to download tests and
 // graders. Judge has to have admin access.
