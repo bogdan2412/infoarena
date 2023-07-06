@@ -2,7 +2,6 @@
 
 class Reporter {
   private array $tasks;
-  private Database $db;
   private Checkpointer $checkpointer;
   private bool $sqlFormat;
 
@@ -10,9 +9,8 @@ class Reporter {
   private array $unhandledTasks = [];
   private array $unchangedTasks = [];
 
-  function __construct(array $tasks, Database $db, Checkpointer $checkpointer, bool $sqlFormat) {
+  function __construct(array $tasks, Checkpointer $checkpointer, bool $sqlFormat) {
     $this->tasks = $tasks;
-    $this->db = $db;
     $this->checkpointer = $checkpointer;
     $this->sqlFormat = $sqlFormat;
   }
@@ -20,7 +18,7 @@ class Reporter {
   function run() {
     foreach ($this->tasks as $task) {
       $cp = $this->checkpointer->readTask($task['id']);
-      $this->processCheckpoint($task['id'], $cp);
+      $this->processCheckpoint($task['id'], $task['params']['timelimit'], $cp);
     }
 
     $this->reportExceptions('Skipped tasks', $this->skippedTasks);
@@ -28,14 +26,12 @@ class Reporter {
     $this->reportExceptions('Unchanged time limits', $this->unchangedTasks);
   }
 
-  private function processCheckpoint(string $taskId, ?TaskCheckpoint $cp) {
+  private function processCheckpoint(string $taskId, float $timeLimit, ?TaskCheckpoint $cp) {
     if (!$cp) {
       $this->unhandledTasks[] = $taskId;
     } else if ($cp->skipped) {
       $this->skippedTasks[] = $taskId;
     } else if ($cp->acceptedTimeLimit) {
-      $params = $this->db->getTaskParams($taskId);
-      $timeLimit = $params['timelimit'];
       if ($cp->acceptedTimeLimit == $timeLimit) {
         $this->unchangedTasks[] = $taskId;
       } else {

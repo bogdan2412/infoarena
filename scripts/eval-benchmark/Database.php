@@ -45,6 +45,10 @@ class Database {
       return $a['id'] <=> $b['id'];
     });
 
+    foreach ($tasks as &$task) {
+      $task['params'] = $this->getTaskParams($task['id']);
+    }
+
     return $tasks;
   }
 
@@ -53,10 +57,11 @@ class Database {
     if (!$task) {
       throw new BException('Task %s not found.', [ $id ]);
     }
+    $task['params'] = $this->getTaskParams($id);
     return $task;
   }
 
-  function getTaskParams(string $taskId): array {
+  private function getTaskParams(string $taskId): array {
     return task_get_parameters($taskId);
   }
 

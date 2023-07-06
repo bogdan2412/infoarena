@@ -25,9 +25,7 @@ class TaskBenchmark {
     $this->batchMode = $batchMode;
 
     $this->cp = new TaskCheckpoint();
-
-    $params = $db->getTaskParams($task['id']);
-    WorkStack::setTask($this->task, $params);
+    WorkStack::setTask($this->task);
   }
 
   function getTask(): array {
@@ -120,11 +118,11 @@ class TaskBenchmark {
       $this->timeAnalyzer = new TimeAnalyzer($this->cp->timePairs);
 
       if ($this->timeAnalyzer->isCornerCase()) {
-        return;
+        $this->newLimits = [];
+      } else {
+        $this->makeNewLimits();
+        $this->logRecommendations();
       }
-
-      $this->makeNewLimits();
-      $this->logRecommendations();
     }
   }
 

@@ -56,7 +56,7 @@ class Main {
   }
 
   private function printReport() {
-    $reporter = new Reporter($this->tasks, $this->db, $this->checkpointer, false);
+    $reporter = new Reporter($this->tasks, $this->checkpointer, false);
     $reporter->run();
   }
 

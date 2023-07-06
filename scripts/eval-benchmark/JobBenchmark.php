@@ -18,7 +18,7 @@ class JobBenchmark {
     $this->owner = $this->db->getUser($this->job['user_id']);
     WorkStack::setJob($this->job, $this->owner);
     $this->grader = new BenchmarkGrader(
-      WorkStack::getTask(), WorkStack::getTaskParams(), $this->job);
+      WorkStack::getTask(), $this->job);
   }
 
   // Returns an array of TimePair's

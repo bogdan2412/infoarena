@@ -8,7 +8,6 @@
 class WorkStack {
   private static int $taskCount;
   private static array $task;
-  private static array $taskParams;
   private static int $taskNo;
 
   private static int $jobCount;
@@ -29,9 +28,8 @@ class WorkStack {
     return self::$taskCount;
   }
 
-  static function setTask(array $task, array $taskParams): void {
+  static function setTask(array $task): void {
     self::$task = $task;
-    self::$taskParams = $taskParams;
     self::$taskNo++;
   }
 
@@ -39,12 +37,8 @@ class WorkStack {
     return self::$task;
   }
 
-  static function getTaskParams(): array {
-    return self::$taskParams;
-  }
-
   static function getTaskTimeLimit(): float {
-    return (float)self::$taskParams['timelimit'];
+    return (float)self::$task['params']['timelimit'];
   }
 
   static function getTaskTestCount(): int {

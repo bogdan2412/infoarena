@@ -3,7 +3,7 @@
 class TimeAnalyzer {
   // Don't recommend anything if the time limit is already this low.
   // If we do recommend something, don't go below this limit.
-  const MIN_TIME_LIMIT = 0.1;
+  const MIN_TIME_LIMIT = 0.0;
 
   // Time limit recommendations below this limit will be rounded up to a
   // multiple of 0.05. Time limit recommendations above this limit will be

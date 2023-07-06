@@ -8,11 +8,11 @@ require_once(IA_ROOT_DIR . 'eval/utilities.php');
 class BenchmarkGrader extends ClassicGrader {
   const JAIL_DIR = IA_ROOT_DIR . 'eval/jail/';
 
-  function __construct(array $task, array $task_params, array $job) {
+  function __construct(array $task, array $job) {
     // Don't get hung up on memory constraints. They may have to do with
     // 64- versus 32- bit architectures. Just give the program another MB.
-    $task_params['memlimit'] += 1024;
-    parent::__construct($task, $task_params, $job);
+    $task['params']['memlimit'] += 1024;
+    parent::__construct($task, $task['params'], $job);
   }
 
   function compileJobSource(): void {
