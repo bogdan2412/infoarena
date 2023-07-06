@@ -11,7 +11,7 @@ class Main {
     $this->checkUsage();
     $this->setupComponents();
     $this->loadTasks();
-    if ($this->args->getReportMode()) {
+    if ($this->args->getReportMode() || $this->args->getSqlMode()) {
       $this->printReport();
     } else {
       $this->benchmarkAllTasks();
@@ -56,7 +56,8 @@ class Main {
   }
 
   private function printReport() {
-    $reporter = new Reporter($this->tasks, $this->checkpointer, false);
+    $sqlMode = $this->args->getSqlMode();
+    $reporter = new Reporter($this->tasks, $this->checkpointer, $sqlMode);
     $reporter->run();
   }
 

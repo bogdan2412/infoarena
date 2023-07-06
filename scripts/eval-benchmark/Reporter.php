@@ -1,6 +1,13 @@
 <?php
 
 class Reporter {
+  const SQL_QUERY =
+    'update ia_parameter_value ' .
+    'set value = %g ' .
+    'where object_type = "task" ' .
+    'and object_id = "%s" ' .
+    'and parameter_id = "timelimit";';
+
   private array $tasks;
   private Checkpointer $checkpointer;
   private bool $sqlFormat;
@@ -43,8 +50,13 @@ class Reporter {
   }
 
   private function reportChange($taskId, $oldTimeLimit, $newTimeLimit) {
-    Log::info("Time limit for %s changed from %g to %g",
-              [ $taskId, $oldTimeLimit, $newTimeLimit ]);
+    if ($this->sqlFormat) {
+      printf(self::SQL_QUERY, $newTimeLimit, $taskId);
+      print "\n";
+    } else {
+      Log::info("Time limit for %s changed from %g to %g",
+                [ $taskId, $oldTimeLimit, $newTimeLimit ]);
+    }
   }
 
   private function reportExceptions(string $description, array $taskIds) {

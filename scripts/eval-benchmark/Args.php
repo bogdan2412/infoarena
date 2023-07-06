@@ -5,9 +5,10 @@ class Args {
   private string $taskId;
   private bool $batchMode;
   private bool $reportMode;
+  private bool $sqlMode;
 
   function parse() {
-    $opts = getopt('bc:rt:');
+    $opts = getopt('bc:rst:');
     if (empty($opts)) {
       $this->usage();
       exit(1);
@@ -16,6 +17,7 @@ class Args {
     $this->taskId = $opts['t'] ?? '';
     $this->batchMode = isset($opts['b']);
     $this->reportMode = isset($opts['r']);
+    $this->sqlMode = isset($opts['s']);
     $this->validate();
   }
 
@@ -26,6 +28,7 @@ class Args {
     print "    -b:         Benchmark only, in batch mode (non-interactive).\n";
     print "    -c <dir>:   Use this directory to read and write checkpoint files.\n";
     print "    -r:         Print a report of data computed so far.\n";
+    print "    -s:         Print SQL statements for the proposed changes.\n";
     print "    -t <task>:  Benchmark only this task. If empty, benchmark all tasks.\n";
     print "                in alphabetical order.\n";
   }
@@ -39,8 +42,8 @@ class Args {
     if ($this->reportMode && $this->batchMode) {
       throw new BException('The options -b and -r are incompatible.');
     }
-    if ($this->reportMode && $this->taskId) {
-      throw new BException('The options -r and -t are incompatible.');
+    if ($this->reportMode && $this->sqlMode) {
+      throw new BException('The options -r and -s are incompatible.');
     }
   }
 
@@ -58,5 +61,9 @@ class Args {
 
   function getReportMode(): bool {
     return $this->reportMode;
+  }
+
+  function getSqlMode(): bool {
+    return $this->sqlMode;
   }
 }
