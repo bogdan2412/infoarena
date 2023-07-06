@@ -11,7 +11,11 @@ class Main {
     $this->checkUsage();
     $this->setupComponents();
     $this->loadTasks();
-    $this->benchmarkAllTasks();
+    if ($this->args->getReportMode()) {
+      $this->printReport();
+    } else {
+      $this->benchmarkAllTasks();
+    }
   }
 
   private function parseCommandLineArgs() {
@@ -49,6 +53,11 @@ class Main {
     $this->tasks = ($taskId)
       ? [ $this->db->loadTaskById($taskId) ]
       : $this->db->loadTasks();
+  }
+
+  private function printReport() {
+    $reporter = new Reporter($this->tasks, $this->db, $this->checkpointer, false);
+    $reporter->run();
   }
 
   private function benchmarkAllTasks() {

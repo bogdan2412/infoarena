@@ -5,16 +5,7 @@ class Checkpointer {
 
   function __construct(string $dir) {
     $this->dir = rtrim($dir, '/');
-    $this->checkNonemptyDirName();
     $this->createDirIfNeeded();
-  }
-
-  private function checkNonemptyDirName() {
-    if (!$this->dir) {
-      throw new BException(
-        "Please specify a checkpoint directory with -c <dir>, e.g. -c /tmp/benchmark.\n" .
-        'This allows us to save/restore progress.');
-    }
   }
 
   private function createDirIfNeeded() {
