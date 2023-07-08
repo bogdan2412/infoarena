@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT_DIR."www/format/format.php");
+require_once(Config::ROOT."www/format/format.php");
 
 // Wrapper for format_ulol
 function format_ul($items, $class = null) {

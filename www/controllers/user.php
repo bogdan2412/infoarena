@@ -1,8 +1,8 @@
 <?php
 
-require_once(IA_ROOT_DIR."common/textblock.php");
-require_once(IA_ROOT_DIR."common/db/textblock.php");
-require_once(IA_ROOT_DIR."common/db/user.php");
+require_once(Config::ROOT."common/textblock.php");
+require_once(Config::ROOT."common/db/textblock.php");
+require_once(Config::ROOT."common/db/user.php");
 
 // View user profile (personal page, rating evolution, statistics)
 // $action is one of (view | rating | stats)

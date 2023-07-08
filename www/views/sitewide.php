@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT_DIR."www/format/format.php");
+require_once(Config::ROOT."www/format/format.php");
 
 // site-wide templates (templates shared with search)
 //

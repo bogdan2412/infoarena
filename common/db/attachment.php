@@ -1,8 +1,8 @@
 <?php
 
-require_once(IA_ROOT_DIR."common/db/db.php");
-require_once(IA_ROOT_DIR."common/attachment.php");
-require_once(IA_ROOT_DIR."common/cache.php");
+require_once(Config::ROOT."common/db/db.php");
+require_once(Config::ROOT."common/attachment.php");
+require_once(Config::ROOT."common/cache.php");
 
 // Add $attachment to cache if not null and return $attachment.
 function _attachment_cache_add($attachment) {
@@ -186,7 +186,7 @@ function attachment_get_count($page, $name='%', $start = 0, $count = 99999999) {
 // FIXME: does this belong here?
 function attachment_get_filepath($attach) {
   log_assert(is_array($attach));
-  return IA_ROOT_DIR.'attach/'.
+  return Config::ROOT.'attach/'.
     strtolower(preg_replace('/[^a-z0-9\.\-_]/i', '_', $attach['page'])) . '_' .
     preg_replace('/[^a-z0-9\.\-_]/i', '_', $attach['name']) . '_' .
     $attach['id'];

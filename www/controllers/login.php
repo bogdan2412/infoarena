@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT_DIR . "common/db/user.php");
+require_once(Config::ROOT . "common/db/user.php");
 
 function controller_login() {
     // `data` dictionary is a dictionary with data to be displayed by form view

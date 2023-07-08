@@ -1,7 +1,7 @@
 <?php
 
-require_once(IA_ROOT_DIR."common/db/round.php");
-require_once(IA_ROOT_DIR."www/macros/macro_include.php");
+require_once(Config::ROOT."common/db/round.php");
+require_once(Config::ROOT."www/macros/macro_include.php");
 
 // Display registration invitation for a round when user is not registered.
 // If user is already registered, display a confirmation message instead.

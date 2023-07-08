@@ -2,8 +2,8 @@
 <?php
 
 require_once(dirname($argv[0]) . "/utilities.php");
-require_once(IA_ROOT_DIR.'www/utilities.php');
-require_once(IA_ROOT_DIR.'common/db/db.php');
+require_once(Config::ROOT.'www/utilities.php');
+require_once(Config::ROOT.'common/db/db.php');
 
 test_cleanup();
 test_prepare();

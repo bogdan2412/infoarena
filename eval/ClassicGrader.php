@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT_DIR . 'eval/BaseGrader.php');
+require_once(Config::ROOT . 'eval/BaseGrader.php');
 
 class ClassicGrader extends BaseGrader {
 
@@ -24,7 +24,7 @@ class ClassicGrader extends BaseGrader {
         $memlimit = $this->task['memlimit'];
 
         $jrunres = run_file($this->job['compiler_id'],
-                            IA_ROOT_DIR.'eval/temp/user',
+                            Config::ROOT.'eval/temp/user',
                             $jaildir,
                             (int)$timelimit,
                             (int)$memlimit,

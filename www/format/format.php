@@ -1,11 +1,11 @@
 <?php
 
-require_once(IA_ROOT_DIR."common/db/user.php");
-require_once(IA_ROOT_DIR."common/user.php");
-require_once(IA_ROOT_DIR."common/rating.php");
-require_once(IA_ROOT_DIR."www/url.php");
-require_once(IA_ROOT_DIR."www/utilities.php");
-require_once(IA_ROOT_DIR."www/JSON.php");
+require_once(Config::ROOT."common/db/user.php");
+require_once(Config::ROOT."common/user.php");
+require_once(Config::ROOT."common/rating.php");
+require_once(Config::ROOT."www/url.php");
+require_once(Config::ROOT."www/utilities.php");
+require_once(Config::ROOT."www/JSON.php");
 
 // Format an array of xml attributes.
 // Return '' or 'k1="v1" k2="v2"'.

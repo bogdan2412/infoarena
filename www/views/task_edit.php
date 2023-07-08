@@ -1,8 +1,8 @@
 <?php
-require_once(IA_ROOT_DIR."common/task.php");
-require_once(IA_ROOT_DIR."common/tags.php");
-require_once(IA_ROOT_DIR."www/format/form.php");
-require_once(IA_ROOT_DIR."www/views/task_edit_header.php");
+require_once(Config::ROOT."common/task.php");
+require_once(Config::ROOT."common/tags.php");
+require_once(Config::ROOT."www/format/form.php");
+require_once(Config::ROOT."www/views/task_edit_header.php");
 
 $view['head'] = getattr($view, 'head').
     "<script src=\"" . html_escape(url_static("js/parameditor.js")) . "\"></script>";

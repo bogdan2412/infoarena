@@ -1,6 +1,6 @@
 <?php
-require_once(IA_ROOT_DIR . "common/tags.php");
-require_once(IA_ROOT_DIR . "common/string.php");
+require_once(Config::ROOT . "common/tags.php");
+require_once(Config::ROOT . "common/string.php");
 
 // Displays an interface in which admins can define algorithm tag categories
 function controller_task_tags() {

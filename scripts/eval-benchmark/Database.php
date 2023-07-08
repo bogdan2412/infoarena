@@ -1,8 +1,8 @@
 <?php
 
-require_once(IA_ROOT_DIR . 'common/log.php');
-require_once(IA_ROOT_DIR . 'common/db/job.php');
-require_once(IA_ROOT_DIR . 'common/db/task_statistics.php');
+require_once(Config::ROOT . 'common/log.php');
+require_once(Config::ROOT . 'common/db/job.php');
+require_once(Config::ROOT . 'common/db/task_statistics.php');
 
 class Database {
   const ADMIN_USERNAMES = [ 'francu', 'Catalin.Francu', 'mihai.tutu' ];

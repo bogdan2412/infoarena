@@ -1,9 +1,9 @@
 <?php
 
-require_once(IA_ROOT_DIR . 'common/db/job.php');
-require_once(IA_ROOT_DIR . 'common/db/task.php');
-require_once(IA_ROOT_DIR . 'common/db/textblock.php');
-require_once(IA_ROOT_DIR . 'lib/Wiki.php');
+require_once(Config::ROOT . 'common/db/job.php');
+require_once(Config::ROOT . 'common/db/task.php');
+require_once(Config::ROOT . 'common/db/textblock.php');
+require_once(Config::ROOT . 'lib/Wiki.php');
 
 // This controller serves as a data server for AJAX requests.
 // Instead of generating HTML content to be displayed in a browser,
@@ -50,7 +50,7 @@ function controller_json($suburl) {
                 die_http_error(400, 'Task invalid.');
             }
 
-            require_once(IA_ROOT_DIR . "www/views/submit_form.php");
+            require_once(Config::ROOT . "www/views/submit_form.php");
             $json = task_get_submit_options($task_id);
             $view = array(
                 'json' => $json,

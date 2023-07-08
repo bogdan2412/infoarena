@@ -2,10 +2,10 @@
 
 // FIXME: This should be marged with macro_rankings.php
 
-require_once(IA_ROOT_DIR . "www/format/table.php");
-require_once(IA_ROOT_DIR . "www/format/pager.php");
-require_once(IA_ROOT_DIR . "www/format/format.php");
-require_once(IA_ROOT_DIR . "common/db/score.php");
+require_once(Config::ROOT . "www/format/table.php");
+require_once(Config::ROOT . "www/format/pager.php");
+require_once(Config::ROOT . "www/format/format.php");
+require_once(Config::ROOT . "common/db/score.php");
 
 // Displays *interactive* rankings table displaying user *ratings*.
 //

@@ -1,5 +1,5 @@
 <?php
-require_once(IA_ROOT_DIR.'common/tags.php');
+require_once(Config::ROOT.'common/tags.php');
 
 // Add this to every form that has the autocomplete input box
 function tag_form_event() {

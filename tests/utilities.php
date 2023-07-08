@@ -1,10 +1,10 @@
 <?php
 
 require_once(dirname($argv[0]) . "/../config.php");
-require_once(IA_ROOT_DIR."common/log.php");
-require_once(IA_ROOT_DIR."common/common.php");
-require_once(IA_ROOT_DIR."common/db/db.php");
-require_once(IA_ROOT_DIR."common/db/user.php");
+require_once(Config::ROOT."common/log.php");
+require_once(Config::ROOT."common/common.php");
+require_once(Config::ROOT."common/db/db.php");
+require_once(Config::ROOT."common/db/user.php");
 
 if (!IA_DEVELOPMENT_MODE) {
     // These tests alter the database and can remove user created content
@@ -84,7 +84,7 @@ function curl_test($args)
 // dies on failure.
 function validate_html($content)
 {
-    $fname = IA_ROOT_DIR . 'tests/temp.html';
+    $fname = Config::ROOT . 'tests/temp.html';
     file_put_contents($fname, $content);
 
     $result = shell_exec("validate --warn --verbose $fname");

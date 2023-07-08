@@ -1,8 +1,8 @@
 <?php
 
-require_once(IA_ROOT_DIR."common/db/db.php");
-require_once(IA_ROOT_DIR."common/common.php");
-require_once(IA_ROOT_DIR."common/cache.php");
+require_once(Config::ROOT."common/db/db.php");
+require_once(Config::ROOT."common/common.php");
+require_once(Config::ROOT."common/cache.php");
 
 // Get list of all tag names, filtered by type and parent
 function tag_get_all($types = null, $parent = null) {

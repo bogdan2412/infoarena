@@ -1,8 +1,8 @@
 <?php
 // This module contains various database-related functions and routines.
 
-require_once IA_ROOT_DIR . 'common/db/db_mysql.php';
-require_once IA_ROOT_DIR . 'lib/third-party/php-mysql-mysqli-wrapper/mysql.php';
+require_once Config::ROOT . 'common/db/db_mysql.php';
+require_once Config::ROOT . 'lib/third-party/php-mysql-mysqli-wrapper/mysql.php';
 
 // Executes query, fetches the all result rows
 function db_fetch_all($query) {

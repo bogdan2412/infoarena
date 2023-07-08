@@ -1,7 +1,7 @@
 <?php
 
-require_once(IA_ROOT_DIR.'www/views/sitewide.php');
-require_once(IA_ROOT_DIR.'www/views/utilities.php');
+require_once(Config::ROOT.'www/views/sitewide.php');
+require_once(Config::ROOT.'www/views/utilities.php');
 
 // Basic view checks.
 log_assert(is_array($view));
@@ -100,7 +100,7 @@ $is_admin = ('admin' == getattr($identity_user, 'security_level'));
         <?php if (GOOGLE_SEARCH && !IA_DEVELOPMENT_MODE) { ?>
 		    <li><a href="<?= html_escape(url_google_search()) ?>">Căutare probleme</a></li>
 		    <div id="google-search">
-			    <?php include(IA_ROOT_DIR.'www/views/google_search.php'); ?>
+			    <?php include(Config::ROOT.'www/views/google_search.php'); ?>
 		    </div>
         <?php } ?>
 

@@ -1,7 +1,7 @@
 <?php
 
-require_once(IA_ROOT_DIR . "common/db/textblock.php");
-require_once(IA_ROOT_DIR . "common/tags.php");
+require_once(Config::ROOT . "common/db/textblock.php");
+require_once(Config::ROOT . "common/tags.php");
 
 // Edit a textblock
 function controller_textblock_edit($page_name, $security = 'public') {

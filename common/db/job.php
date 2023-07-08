@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT_DIR."common/db/db.php");
+require_once(Config::ROOT."common/db/db.php");
 
 /*function db_format_field_list($fields) {
     return $result;

@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT_DIR . 'eval/BaseGrader.php');
+require_once(Config::ROOT . 'eval/BaseGrader.php');
 
 class InteractiveGrader extends BaseGrader {
     protected function testCaseJudge($testno, $jaildir) {
@@ -39,7 +39,7 @@ class InteractiveGrader extends BaseGrader {
 
         $interact_process = run_file(
             $this->evaluatorCompilerId['interact'],
-            IA_ROOT_DIR.'eval/temp/evaluators/interact',
+            Config::ROOT.'eval/temp/evaluators/interact',
             $jaildir,
             array(
                 'user' => IA_JUDGE_TASK_INTERACT_TIMELIMIT,
@@ -54,7 +54,7 @@ class InteractiveGrader extends BaseGrader {
 
         $user_process = run_file(
             $this->job['compiler_id'],
-            IA_ROOT_DIR.'eval/temp/user',
+            Config::ROOT.'eval/temp/user',
             $user_jaildir,
             array(
                 'user' => $time_limit,

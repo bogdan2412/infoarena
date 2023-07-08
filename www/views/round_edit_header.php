@@ -1,8 +1,8 @@
 <?php
 
-require_once(IA_ROOT_DIR . "www/format/format.php");
-require_once(IA_ROOT_DIR . "www/format/list.php");
-require_once(IA_ROOT_DIR . "www/url.php");
+require_once(Config::ROOT . "www/format/format.php");
+require_once(Config::ROOT . "www/format/list.php");
+require_once(Config::ROOT . "www/url.php");
 
 function round_edit_tabs($round_id, $active) {
     $tabs = array();

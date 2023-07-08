@@ -1,7 +1,7 @@
 <?php
 
-require_once(IA_ROOT_DIR."common/db/db.php");
-require_once(IA_ROOT_DIR."common/task_rating.php");
+require_once(Config::ROOT."common/db/db.php");
+require_once(Config::ROOT."common/task_rating.php");
 
 function task_rating_get_all($task_id) {
     $query = "SELECT user_id, idea, theory, coding FROM ia_task_ratings

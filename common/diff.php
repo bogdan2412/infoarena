@@ -1,10 +1,10 @@
 <?php
-require_once(IA_ROOT_DIR."common/log.php");
+require_once(Config::ROOT."common/log.php");
 
-// puts the contents of a string into a temporary files 
+// puts the contents of a string into a temporary files
 // returns the temporary file name
 function file_put_string($string) {
-    $name = tempnam(IA_ROOT_DIR.'attach/', "ia");
+    $name = tempnam(Config::ROOT.'attach/', "ia");
     $fp = fopen($name, "w");
     if (!$fp) {
         return "";
@@ -19,7 +19,7 @@ function file_put_string($string) {
 // output array format is:
 // array(
 //      ...
-//      block_index => array( 
+//      block_index => array(
 //                      ...
 //                      op_index => array(
 //                          type  => added | deleted | normal
@@ -49,9 +49,9 @@ function diff_string($string) {
         }
     }
 
-    // parse diff output 
+    // parse diff output
     $result = array();
-    $block_cnt = 0; $op_cnt = -1; 
+    $block_cnt = 0; $op_cnt = -1;
     foreach ($lines as $line) {
         if (strlen($line) == 0 || preg_match("/^(---|\+\+\+)/", $line)) {
             continue;
@@ -95,7 +95,7 @@ function lcs($a, $b) {
     );
 
     // run lcs process
-    $process = proc_open("iconv -f utf8 -t utf32 | " . IA_ROOT_DIR.
+    $process = proc_open("iconv -f utf8 -t utf32 | " . Config::ROOT.
         "/common/lcs" . " | iconv -f utf32 -t utf8", $descriptorspec, $pipes);
     log_assert(is_resource($process), "Could not create process.");
 

@@ -1,8 +1,8 @@
 <?php
 
-require_once IA_ROOT_DIR.'common/db/task_statistics.php';
-require_once IA_ROOT_DIR.'common/db/task.php';
-require_once IA_ROOT_DIR.'common/statistics-config.php';
+require_once Config::ROOT.'common/db/task_statistics.php';
+require_once Config::ROOT.'common/db/task.php';
+require_once Config::ROOT.'common/statistics-config.php';
 
 function controller_statistici_problema() {
     // Validate task_id

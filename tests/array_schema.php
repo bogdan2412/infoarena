@@ -2,8 +2,8 @@
 <?php
 
 require_once(dirname($argv[0]) . "/utilities.php");
-require_once(IA_ROOT_DIR.'common/array_schema.php');
-require_once(IA_ROOT_DIR.'common/array_path.php');
+require_once(Config::ROOT.'common/array_schema.php');
+require_once(Config::ROOT.'common/array_path.php');
 
 test_cleanup();
 test_prepare();
@@ -307,4 +307,3 @@ test_array_validate(
 );
 
 test_cleanup();
-

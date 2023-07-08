@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT_DIR . 'www/url.php');
+require_once(Config::ROOT . 'www/url.php');
 // Wrapper around htmlentities which defaults charset to UTF-8
 function html_escape($string, $quote_style = ENT_COMPAT, $charset = "UTF-8")
 {

@@ -1,9 +1,9 @@
 <?php
 
-require_once(IA_ROOT_DIR . 'common/db/user.php');
-require_once(IA_ROOT_DIR . 'common/db/score.php');
-require_once(IA_ROOT_DIR . 'common/user.php');
-require_once(IA_ROOT_DIR . 'common/email.php');
+require_once(Config::ROOT . 'common/db/user.php');
+require_once(Config::ROOT . 'common/db/score.php');
+require_once(Config::ROOT . 'common/user.php');
+require_once(Config::ROOT . 'common/email.php');
 
 function controller_penalty_edit() {
     global $identity_user;

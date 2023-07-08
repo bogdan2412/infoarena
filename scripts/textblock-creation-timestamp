@@ -3,20 +3,20 @@
 // This script is used to repair all text attachments that weren't in Linux format.
 
 require_once(dirname($argv[0]) . "/utilities.php");
-require_once(IA_ROOT_DIR."common/textblock.php");
-require_once(IA_ROOT_DIR."common/db/textblock.php");
+require_once(Config::ROOT."common/textblock.php");
+require_once(Config::ROOT."common/db/textblock.php");
 
 ini_set("memory_limit", "128M");
 
 function add_datetime_column($table, $column, $after) {
     $query = sprintf("SHOW COLUMNS FROM %s LIKE '%s'", db_escape($table), db_escape($column));
     if (db_fetch($query) != null) {
-        //FIXME: only for testing; remove this before commit 
+        //FIXME: only for testing; remove this before commit
         $query = sprintf("ALTER TABLE %s DROP %s", db_escape($table), db_escape($column));
         db_query($query);
         log_print(sprintf("Coloana %s exista deja in %s!", $column, $table));
     }
-    $query = sprintf("ALTER TABLE %s ADD %s DATETIME NOT NULL AFTER %s", 
+    $query = sprintf("ALTER TABLE %s ADD %s DATETIME NOT NULL AFTER %s",
                      db_escape($table), db_escape($column), db_escape($after));
     db_query($query);
 }
@@ -45,4 +45,3 @@ add_datetime_column("ia_textblock", "creation_timestamp", "title");
 add_datetime_column("ia_textblock_revision", "creation_timestamp", "title");
 update_table("ia_textblock");
 update_table("ia_textblock_revision");
-

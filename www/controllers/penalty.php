@@ -1,8 +1,8 @@
 <?php
-require_once IA_ROOT_DIR . 'common/db/user.php';
-require_once IA_ROOT_DIR . 'common/user.php';
-require_once IA_ROOT_DIR . 'common/email.php';
-require_once IA_ROOT_DIR . 'www/views/utilities.php';
+require_once Config::ROOT . 'common/db/user.php';
+require_once Config::ROOT . 'common/user.php';
+require_once Config::ROOT . 'common/email.php';
+require_once Config::ROOT . 'www/views/utilities.php';
 
 function controller_penalty() {
     global $identity_user;

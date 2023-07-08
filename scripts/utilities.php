@@ -3,11 +3,11 @@
 if (!defined('IA_SETUP_SCRIPT')) {
     $script_dir = dirname($argv[0]);
     require_once($script_dir . "/../config.php");
-    require_once(IA_ROOT_DIR . "common/log.php");
-    require_once(IA_ROOT_DIR . "common/common.php");
-    require_once(IA_ROOT_DIR . "common/db/db.php");
+    require_once(Config::ROOT . "common/log.php");
+    require_once(Config::ROOT . "common/common.php");
+    require_once(Config::ROOT . "common/db/db.php");
 
-    if (realpath(IA_ROOT_DIR.'scripts') != realpath($script_dir)) {
+    if (realpath(Config::ROOT.'scripts') != realpath($script_dir)) {
         log_error("You should only include this file from scripts");
     }
 

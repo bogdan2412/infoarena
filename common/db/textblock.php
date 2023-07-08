@@ -1,11 +1,11 @@
 <?php
 
-require_once(IA_ROOT_DIR."common/db/db.php");
-require_once(IA_ROOT_DIR."common/db/tags.php");
-require_once(IA_ROOT_DIR."common/db/attachment.php");
-require_once(IA_ROOT_DIR."common/security.php");
-require_once(IA_ROOT_DIR."common/textblock.php");
-require_once(IA_ROOT_DIR."common/common.php");
+require_once(Config::ROOT."common/db/db.php");
+require_once(Config::ROOT."common/db/tags.php");
+require_once(Config::ROOT."common/db/attachment.php");
+require_once(Config::ROOT."common/security.php");
+require_once(Config::ROOT."common/textblock.php");
+require_once(Config::ROOT."common/common.php");
 
 // Textblock-related db functions.
 //

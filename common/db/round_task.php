@@ -1,7 +1,7 @@
 <?php
 
-require_once(IA_ROOT_DIR."common/db/db.php");
-require_once(IA_ROOT_DIR."common/db/task.php");
+require_once(Config::ROOT."common/db/db.php");
+require_once(Config::ROOT."common/db/task.php");
 
 // Updates the `order_id` for a (round, task) pair.
 function round_task_update_order_id($round_id, $task_id, $order_id) {

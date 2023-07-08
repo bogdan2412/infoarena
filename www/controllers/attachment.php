@@ -1,11 +1,11 @@
 <?php
 
-require_once(IA_ROOT_DIR."www/format/pager.php");
-require_once(IA_ROOT_DIR."common/db/textblock.php");
-require_once(IA_ROOT_DIR."common/db/attachment.php");
-require_once(IA_ROOT_DIR.'www/controllers/zip_attachment.php');
-require_once(IA_ROOT_DIR."lib/third-party/zipfile.php");
-require_once(IA_ROOT_DIR."common/avatar.php");
+require_once(Config::ROOT."www/format/pager.php");
+require_once(Config::ROOT."common/db/textblock.php");
+require_once(Config::ROOT."common/db/attachment.php");
+require_once(Config::ROOT.'www/controllers/zip_attachment.php');
+require_once(Config::ROOT."lib/third-party/zipfile.php");
+require_once(Config::ROOT."common/avatar.php");
 
 // Try to get the textblock model for a certain page.
 function try_textblock_get($page_name) {
@@ -156,7 +156,7 @@ function controller_attachment_submit($page_name) {
       }
 
       // extract archived file to a tempory file on disk
-      $tmpname = tempnam(IA_ROOT_DIR . 'attach/', 'iatmp');
+      $tmpname = tempnam(Config::ROOT . 'attach/', 'iatmp');
       log_assert($tmpname);
       $res = extract_zipped_attachment($ziparchive, $att['zipindex'],
                                        $tmpname);

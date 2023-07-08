@@ -4,12 +4,12 @@
  * Everything to do with parsing and rendering Textile, LaTex and in-house macros.
  **/
 
-require_once IA_ROOT_DIR . 'common/cache.php';
-require_once IA_ROOT_DIR . 'common/textblock.php';
-require_once IA_ROOT_DIR . 'www/identity.php';
-require_once IA_ROOT_DIR . 'www/macros/macros.php';
-require_once IA_ROOT_DIR . 'www/url.php';
-require_once IA_ROOT_DIR . 'www/wiki/MyTextile.php';
+require_once Config::ROOT . 'common/cache.php';
+require_once Config::ROOT . 'common/textblock.php';
+require_once Config::ROOT . 'www/identity.php';
+require_once Config::ROOT . 'www/macros/macros.php';
+require_once Config::ROOT . 'www/url.php';
+require_once Config::ROOT . 'www/wiki/MyTextile.php';
 
 class Wiki {
   const MAX_RECURSIVE_INCLUDES = 5;

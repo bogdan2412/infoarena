@@ -1,7 +1,7 @@
 <?php
-require_once(IA_ROOT_DIR . 'common/tags.php');
-require_once(IA_ROOT_DIR . 'www/format/format.php');
-require_once(IA_ROOT_DIR . 'www/format/list.php');
+require_once(Config::ROOT . 'common/tags.php');
+require_once(Config::ROOT . 'www/format/format.php');
+require_once(Config::ROOT . 'www/format/list.php');
 
 $username = $user['username'];
 

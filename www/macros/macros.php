@@ -4,7 +4,7 @@
 function get_macro_include_file($macro_name)
 {
     $macro_name = strtolower($macro_name);
-    return IA_ROOT_DIR . "www/macros/macro_$macro_name.php";
+    return Config::ROOT . "www/macros/macro_$macro_name.php";
 }
 
 // Format an error message as a html div.

@@ -1,13 +1,13 @@
 <?php
 
-require_once(IA_ROOT_DIR."common/db/db.php");
-require_once(IA_ROOT_DIR."common/db/round.php");
-require_once(IA_ROOT_DIR."common/db/round_task.php");
-require_once(IA_ROOT_DIR."common/db/task.php");
-require_once(IA_ROOT_DIR."common/round.php");
-require_once(IA_ROOT_DIR."common/tags.php");
-require_once(IA_ROOT_DIR."common/textblock.php");
-require_once(IA_ROOT_DIR."www/format/pager.php");
+require_once(Config::ROOT."common/db/db.php");
+require_once(Config::ROOT."common/db/round.php");
+require_once(Config::ROOT."common/db/round_task.php");
+require_once(Config::ROOT."common/db/task.php");
+require_once(Config::ROOT."common/round.php");
+require_once(Config::ROOT."common/tags.php");
+require_once(Config::ROOT."common/textblock.php");
+require_once(Config::ROOT."www/format/pager.php");
 
 // Displays form to either create a new round or edit an existing one.
 // This form does not edit round content (its associated textblock)

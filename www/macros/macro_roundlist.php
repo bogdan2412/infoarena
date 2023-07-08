@@ -1,8 +1,8 @@
 <?php
 
-require_once(IA_ROOT_DIR . "www/format/table.php");
-require_once(IA_ROOT_DIR . "www/format/pager.php");
-require_once(IA_ROOT_DIR . "common/db/round.php");
+require_once(Config::ROOT . "www/format/table.php");
+require_once(Config::ROOT . "www/format/pager.php");
+require_once(Config::ROOT . "common/db/round.php");
 
 function format_title($row) {
     $title = "<span>" . format_link(url_textblock($row["page_name"]), $row["title"]) . "</span>";

@@ -3,7 +3,7 @@
 // Only show operations the current user can do.
 
 // Check view parameters.
-require_once(IA_ROOT_DIR . "common/textblock.php");
+require_once(Config::ROOT . "common/textblock.php");
 log_assert_valid(textblock_validate($textblock));
 ?>
 <div id="wikiOps">

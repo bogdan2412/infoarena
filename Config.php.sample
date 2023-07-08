@@ -1,8 +1,12 @@
 <?php
 
 class Config {
+  // database connection
   const DB_HOST = 'localhost';
   const DB_NAME = 'nerdarena';
   const DB_USER = 'root';
   const DB_PASSWORD = '';
+
+  // Filesystem root of this installation. Include a trailing slash.
+  const ROOT = __DIR__ . '/';
 }

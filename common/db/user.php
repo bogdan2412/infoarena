@@ -1,9 +1,9 @@
 <?php
 
-require_once(IA_ROOT_DIR."common/db/db.php");
-require_once(IA_ROOT_DIR."common/user.php");
-require_once(IA_ROOT_DIR."common/cache.php");
-//require_once(IA_ROOT_DIR."common/db/tags.php");
+require_once(Config::ROOT."common/db/db.php");
+require_once(Config::ROOT."common/user.php");
+require_once(Config::ROOT."common/cache.php");
+//require_once(Config::ROOT."common/db/tags.php");
 
 // Add an user to the cache, or update if already there.
 // Nothing happens if null is passed.
@@ -148,7 +148,7 @@ function user_create($user, $remote_ip_info=null)
     log_assert($new_user, "Failed creating user");
 
     // Create user page.
-    require_once(IA_ROOT_DIR . "common/textblock.php");
+    require_once(Config::ROOT . "common/textblock.php");
     $replace = array("user_id" => $user['username']);
     textblock_copy_replace('template/newuser',
                            IA_USER_TEXTBLOCK_PREFIX.$user['username'],

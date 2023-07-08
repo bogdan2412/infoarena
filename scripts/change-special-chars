@@ -5,7 +5,7 @@
 // and their revisions.
 
 require_once(dirname($argv[0]) . "/utilities.php");
-require_once(IA_ROOT_DIR . "common/common.php");
+require_once(Config::ROOT . "common/common.php");
 
 db_connect();
 

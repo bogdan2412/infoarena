@@ -1,12 +1,12 @@
 <?php
 
-require_once(IA_ROOT_DIR . 'lib/third-party/Netcarver/Textile/DataBag.php');
-require_once(IA_ROOT_DIR . 'lib/third-party/Netcarver/Textile/Parser.php');
-require_once(IA_ROOT_DIR . 'lib/third-party/Netcarver/Textile/Tag.php');
-require_once(IA_ROOT_DIR . 'common/attachment.php');
-require_once(IA_ROOT_DIR . 'common/string.php');
-require_once(IA_ROOT_DIR . 'www/utilities.php');
-require_once(IA_ROOT_DIR . 'www/url.php');
+require_once(Config::ROOT . 'lib/third-party/Netcarver/Textile/DataBag.php');
+require_once(Config::ROOT . 'lib/third-party/Netcarver/Textile/Parser.php');
+require_once(Config::ROOT . 'lib/third-party/Netcarver/Textile/Tag.php');
+require_once(Config::ROOT . 'common/attachment.php');
+require_once(Config::ROOT . 'common/string.php');
+require_once(Config::ROOT . 'www/utilities.php');
+require_once(Config::ROOT . 'www/url.php');
 class MyTextile extends \Netcarver\Textile\Parser {
 
   const JAVASCRIPT_EVENTS = [

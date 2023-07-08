@@ -1,5 +1,5 @@
 <?php
-require_once IA_ROOT_DIR . 'www/views/utilities.php';
+require_once Config::ROOT . 'www/views/utilities.php';
 require_once 'header.php';
 require_once 'tags_header.php';
 ?>

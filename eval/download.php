@@ -1,7 +1,7 @@
 <?php
 
-require_once(IA_ROOT_DIR . 'common/common.php');
-require_once(IA_ROOT_DIR . 'common/db/attachment.php');
+require_once(Config::ROOT . 'common/common.php');
+require_once(Config::ROOT . 'common/db/attachment.php');
 
 function copy_grader_file($task, $filename, $target) {
     $attempts = 0;
@@ -39,10 +39,10 @@ function copy_attachment_file($pagename, $filename, $target) {
     }
 
     // Make grader dir, in case it doesn't exit.
-    @mkdir(IA_ROOT_DIR.'eval/grader_cache/'.$pagename.'/', 0700, true);
+    @mkdir(Config::ROOT.'eval/grader_cache/'.$pagename.'/', 0700, true);
 
     // My cached version timestamp
-    $cachefname = IA_ROOT_DIR.'eval/grader_cache/'.$pagename.'/'.$filename;
+    $cachefname = Config::ROOT.'eval/grader_cache/'.$pagename.'/'.$filename;
 
     clearstatcache();
     // Check modification time and file size.

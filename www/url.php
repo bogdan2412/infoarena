@@ -1,7 +1,7 @@
 <?php
 
-require_once(IA_ROOT_DIR . 'www/config.php');
-require_once(IA_ROOT_DIR . 'common/common.php');
+require_once(Config::ROOT . 'www/config.php');
+require_once(Config::ROOT . 'common/common.php');
 
 // Creates URLs to various parts of the infoarena website.
 // Please avoid hard-coding URLs throughout the code.

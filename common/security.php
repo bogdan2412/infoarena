@@ -1,9 +1,9 @@
 <?php
 
-require_once IA_ROOT_DIR.'common/db/user.php';
-require_once IA_ROOT_DIR.'common/db/round.php';
-require_once IA_ROOT_DIR.'common/db/task.php';
-require_once IA_ROOT_DIR.'common/textblock.php';
+require_once Config::ROOT.'common/db/user.php';
+require_once Config::ROOT.'common/db/round.php';
+require_once Config::ROOT.'common/db/task.php';
+require_once Config::ROOT.'common/textblock.php';
 
 
 // This module implements everything related to security.

@@ -1,9 +1,9 @@
 <?php
 
-require_once IA_ROOT_DIR.'common/db/db.php';
-require_once IA_ROOT_DIR.'common/task.php';
-require_once IA_ROOT_DIR.'common/db/parameter.php';
-require_once IA_ROOT_DIR.'common/db/round_task.php';
+require_once Config::ROOT.'common/db/db.php';
+require_once Config::ROOT.'common/task.php';
+require_once Config::ROOT.'common/db/parameter.php';
+require_once Config::ROOT.'common/db/round_task.php';
 
 // Add $task to cache if not null, return $task.
 function _task_cache_add($task) {
@@ -47,7 +47,7 @@ function task_create($task, $task_params, $remote_ip_info = null) {
         task_update_parameters($task['id'], $task_params);
 
         // Copy templates.
-        require_once IA_ROOT_DIR.'common/textblock.php';
+        require_once Config::ROOT.'common/textblock.php';
         $replace = array('task_id' => $task['id'],
                          'task_title' => ucfirst($task['id']),
         );

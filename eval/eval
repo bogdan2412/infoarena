@@ -3,23 +3,23 @@
 
 require_once(dirname($argv[0]) . "/config.php");
 
-require_once(IA_ROOT_DIR.'common/log.php');
-require_once(IA_ROOT_DIR.'common/common.php');
+require_once(Config::ROOT.'common/log.php');
+require_once(Config::ROOT.'common/common.php');
 
-require_once(IA_ROOT_DIR.'common/score.php');
-require_once(IA_ROOT_DIR.'common/task.php');
-require_once(IA_ROOT_DIR.'common/round.php');
-require_once(IA_ROOT_DIR.'common/security.php');
-require_once(IA_ROOT_DIR.'common/db/task.php');
-require_once(IA_ROOT_DIR.'common/db/job.php');
-require_once(IA_ROOT_DIR.'common/db/user.php');
-require_once(IA_ROOT_DIR.'common/db/task_statistics.php');
+require_once(Config::ROOT.'common/score.php');
+require_once(Config::ROOT.'common/task.php');
+require_once(Config::ROOT.'common/round.php');
+require_once(Config::ROOT.'common/security.php');
+require_once(Config::ROOT.'common/db/task.php');
+require_once(Config::ROOT.'common/db/job.php');
+require_once(Config::ROOT.'common/db/user.php');
+require_once(Config::ROOT.'common/db/task_statistics.php');
 
-require_once(IA_ROOT_DIR.'eval/utilities.php');
-require_once(IA_ROOT_DIR.'eval/download.php');
-require_once(IA_ROOT_DIR.'eval/Exceptions.php');
-require_once(IA_ROOT_DIR.'eval/ClassicGrader.php');
-require_once(IA_ROOT_DIR.'eval/InteractiveGrader.php');
+require_once(Config::ROOT.'eval/utilities.php');
+require_once(Config::ROOT.'eval/download.php');
+require_once(Config::ROOT.'eval/Exceptions.php');
+require_once(Config::ROOT.'eval/ClassicGrader.php');
+require_once(Config::ROOT.'eval/InteractiveGrader.php');
 
 error_reporting(0xFFFF);
 
@@ -184,7 +184,7 @@ if (array_key_exists('d', $options)) {
     if ($pid = pcntl_fork()) {
         die();
     }
-    file_put_contents(IA_ROOT_DIR . 'eval/eval.pid', getmypid() . "\n");
+    file_put_contents(Config::ROOT . 'eval/eval.pid', getmypid() . "\n");
 }
 
 // FIXME: Is there a better way to redirect output? No freopen in php.

@@ -5,9 +5,9 @@
  */
 
 require_once(__DIR__ . "/../config.php");
-require_once(IA_ROOT_DIR . "common/db/db.php");
-require_once(IA_ROOT_DIR . "common/db/task.php");
-require_once(IA_ROOT_DIR . "common/log.php");
+require_once(Config::ROOT . "common/db/db.php");
+require_once(Config::ROOT . "common/db/task.php");
+require_once(Config::ROOT . "common/log.php");
 
 db_connect();
 

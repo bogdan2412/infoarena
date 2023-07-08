@@ -1,8 +1,8 @@
 <?php
-require_once(IA_ROOT_DIR.'common/tags.php');
-require_once(IA_ROOT_DIR.'common/db/tags.php');
-require_once(IA_ROOT_DIR.'common/db/db.php');
-require_once(IA_ROOT_DIR.'common/db/task.php');
+require_once(Config::ROOT.'common/tags.php');
+require_once(Config::ROOT.'common/db/tags.php');
+require_once(Config::ROOT.'common/db/db.php');
+require_once(Config::ROOT.'common/db/task.php');
 
 // ==AlgorithmTags(task_id="task_id")==
 // Shows the algorithm tags attached to a tasked

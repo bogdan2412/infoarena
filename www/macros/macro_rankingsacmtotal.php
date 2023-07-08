@@ -1,10 +1,10 @@
 <?php
 
-require_once(IA_ROOT_DIR . "www/format/table.php");
-require_once(IA_ROOT_DIR . "www/format/format.php");
-require_once(IA_ROOT_DIR . "common/db/score.php");
-require_once(IA_ROOT_DIR . "common/db/round.php");
-require_once(IA_ROOT_DIR . "common/security.php");
+require_once(Config::ROOT . "www/format/table.php");
+require_once(Config::ROOT . "www/format/format.php");
+require_once(Config::ROOT . "common/db/score.php");
+require_once(Config::ROOT . "common/db/round.php");
+require_once(Config::ROOT . "common/security.php");
 
 function macro_rankingsacmtotal($args) {
     $round_ids = getattr($args, 'rounds');

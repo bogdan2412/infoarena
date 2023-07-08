@@ -1,13 +1,13 @@
 <?php
 
-require_once(IA_ROOT_DIR.'common/db/db.php');
-require_once(IA_ROOT_DIR.'www/controllers/attachment.php');
-require_once(IA_ROOT_DIR.'www/controllers/image_attachment.php');
-require_once(IA_ROOT_DIR.'common/db/attachment.php');
-require_once(IA_ROOT_DIR.'www/controllers/account_validator.php');
-require_once(IA_ROOT_DIR.'common/common.php');
-require_once(IA_ROOT_DIR.'www/config.php');
-require_once(IA_ROOT_DIR.'common/attachment.php');
+require_once(Config::ROOT.'common/db/db.php');
+require_once(Config::ROOT.'www/controllers/attachment.php');
+require_once(Config::ROOT.'www/controllers/image_attachment.php');
+require_once(Config::ROOT.'common/db/attachment.php');
+require_once(Config::ROOT.'www/controllers/account_validator.php');
+require_once(Config::ROOT.'common/common.php');
+require_once(Config::ROOT.'www/config.php');
+require_once(Config::ROOT.'common/attachment.php');
 
 /**
  * Returns whether the attachment of the given page is an avatar attachment

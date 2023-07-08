@@ -1,10 +1,10 @@
 <?php
 
-require_once IA_ROOT_DIR.'common/db/db.php';
-require_once IA_ROOT_DIR.'common/db/round.php';
-require_once IA_ROOT_DIR.'common/parameter.php';
-require_once IA_ROOT_DIR.'common/rating.php';
-require_once IA_ROOT_DIR.'common/cache.php';
+require_once Config::ROOT.'common/db/db.php';
+require_once Config::ROOT.'common/db/round.php';
+require_once Config::ROOT.'common/parameter.php';
+require_once Config::ROOT.'common/rating.php';
+require_once Config::ROOT.'common/cache.php';
 
 // Updates a user's rating and deviation
 function score_update_rating($user_id, $round_id, $deviation, $rating) {

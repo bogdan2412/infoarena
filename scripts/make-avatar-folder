@@ -2,14 +2,14 @@
 <?php
 
 require_once(dirname($argv[0]) . '/utilities.php');
-require_once(IA_ROOT_DIR . 'common/db/db.php');
-require_once(IA_ROOT_DIR . 'www/controllers/attachment.php');
-require_once(IA_ROOT_DIR . 'www/controllers/image_attachment.php');
-require_once(IA_ROOT_DIR . 'common/db/attachment.php');
-require_once(IA_ROOT_DIR . 'common/cache.php');
-require_once(IA_ROOT_DIR . 'common/db/user.php');
-require_once(IA_ROOT_DIR . 'common/avatar.php');
-require_once(IA_ROOT_DIR . 'common/db/textblock.php');
+require_once(Config::ROOT . 'common/db/db.php');
+require_once(Config::ROOT . 'www/controllers/attachment.php');
+require_once(Config::ROOT . 'www/controllers/image_attachment.php');
+require_once(Config::ROOT . 'common/db/attachment.php');
+require_once(Config::ROOT . 'common/cache.php');
+require_once(Config::ROOT . 'common/db/user.php');
+require_once(Config::ROOT . 'common/avatar.php');
+require_once(Config::ROOT . 'common/db/textblock.php');
 
 // Database connect
 db_connect();

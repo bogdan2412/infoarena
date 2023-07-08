@@ -1,9 +1,9 @@
 <?php
 
-require_once(IA_ROOT_DIR.'www/format/table.php');
-require_once(IA_ROOT_DIR.'www/format/format.php');
-require_once(IA_ROOT_DIR.'www/format/list.php');
-require_once(IA_ROOT_DIR."www/format/form.php");
+require_once(Config::ROOT.'www/format/table.php');
+require_once(Config::ROOT.'www/format/format.php');
+require_once(Config::ROOT.'www/format/list.php');
+require_once(Config::ROOT."www/format/form.php");
 
 $view['head'] = '<script src="'.
     html_escape(url_static('js/liveeval.js')).'"></script>';

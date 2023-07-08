@@ -1,8 +1,8 @@
 <?php
 
-require_once(IA_ROOT_DIR . "common/db/textblock.php");
-require_once(IA_ROOT_DIR . "common/cache.php");
-require_once(IA_ROOT_DIR . "lib/third-party/simple_html_dom.php");
+require_once(Config::ROOT . "common/db/textblock.php");
+require_once(Config::ROOT . "common/cache.php");
+require_once(Config::ROOT . "lib/third-party/simple_html_dom.php");
 
 // Hijacks title from $text if already there. If $url is null the title
 // will not have a link.

@@ -1,11 +1,11 @@
 <?php
 
-require_once(IA_ROOT_DIR."common/db/user.php");
-require_once(IA_ROOT_DIR."common/db/attachment.php");
-require_once(IA_ROOT_DIR."common/avatar.php");
-require_once(IA_ROOT_DIR."www/controllers/account_validator.php");
-require_once(IA_ROOT_DIR."www/config.php");
-require_once(IA_ROOT_DIR."common/avatar.php");
+require_once(Config::ROOT."common/db/user.php");
+require_once(Config::ROOT."common/db/attachment.php");
+require_once(Config::ROOT."common/avatar.php");
+require_once(Config::ROOT."www/controllers/account_validator.php");
+require_once(Config::ROOT."www/config.php");
+require_once(Config::ROOT."common/avatar.php");
 
 // Controller to update user profile
 // $username is the name of the user to edit.

@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT_DIR . "common/db/task.php");
+require_once(Config::ROOT . "common/db/task.php");
 
 // Display solution submission form for a given task
 //
@@ -40,7 +40,7 @@ function macro_tasksubmit($args) {
 
 <a href="<?= html_escape(url_monitor()."?task=".$task['id']."&user=".$identity_user['username']) ?>">Vezi soluțiile trimise de tine</a>
 <?php
-    require_once(IA_ROOT_DIR . "www/views/submit_form.php");
+    require_once(Config::ROOT . "www/views/submit_form.php");
     display_submit_form(true, $task_id);
 
     $buffer = ob_get_contents();

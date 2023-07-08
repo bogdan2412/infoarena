@@ -1,12 +1,12 @@
 <?php
 
-require_once(IA_ROOT_DIR . "common/db/task.php");
-require_once(IA_ROOT_DIR . "common/db/user.php");
-require_once(IA_ROOT_DIR . "common/db/tags.php");
-require_once IA_ROOT_DIR.'common/db/task_statistics.php';
-require_once(IA_ROOT_DIR . "common/cache.php");
-require_once(IA_ROOT_DIR . "www/format/format.php");
-require_once(IA_ROOT_DIR . "www/macros/macro_stars.php");
+require_once(Config::ROOT . "common/db/task.php");
+require_once(Config::ROOT . "common/db/user.php");
+require_once(Config::ROOT . "common/db/tags.php");
+require_once Config::ROOT.'common/db/task_statistics.php';
+require_once(Config::ROOT . "common/cache.php");
+require_once(Config::ROOT . "www/format/format.php");
+require_once(Config::ROOT . "www/macros/macro_stars.php");
 
 // Displays a task field, be it a hard-coded field such as task author or a grader parameter such as `timelimit`.
 // NOTE: The macro employs a simple caching mechanism (via static variables, cache expires at the end of the request)

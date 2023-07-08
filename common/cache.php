@@ -1,5 +1,5 @@
 <?php
-require_once(IA_ROOT_DIR . "common/string.php");
+require_once(Config::ROOT . "common/string.php");
 
 // Check if there is something in the cache newer that date.
 // If date is null age doesn't matter.
@@ -10,14 +10,14 @@ require_once(IA_ROOT_DIR . "common/string.php");
 
 // Used internally to determine file path from cache_id
 function _disk_cache_path($cache_id) {
-    return IA_ROOT_DIR . "cache/" . $cache_id;
+    return Config::ROOT . "cache/" . $cache_id;
 }
 
 // Recursively delete directories
 function _recursive_delete($path) {
     $path = realpath($path);
-    log_assert($path != IA_ROOT_DIR . "cache/" &&
-               starts_with($path, IA_ROOT_DIR . "cache/"));
+    log_assert($path != Config::ROOT . "cache/" &&
+               starts_with($path, Config::ROOT . "cache/"));
     foreach (glob($path . "/*") as $file_name) {
         if (is_dir($file_name)) {
             _recursive_delete($file_name);
@@ -71,7 +71,7 @@ function disk_cache_get($cache_id) {
 // If $cache_id is in cache, then pass it to the client.
 // Fails if not found.
 function disk_cache_serve($cache_id, $http_file_name, $mime_type = null) {
-    require_once(IA_ROOT_DIR . 'www/utilities.php');
+    require_once(Config::ROOT . 'www/utilities.php');
     $file_name = _disk_cache_path($cache_id);
 
     if (IA_LOG_DISK_CACHE) {
@@ -115,11 +115,11 @@ function disk_cache_delete($cache_id) {
 
 // Delete the entire disk cache
 function disk_cache_purge() {
-    foreach (glob(IA_ROOT_DIR . "cache/*", GLOB_ONLYDIR) as $dir_name) {
+    foreach (glob(Config::ROOT . "cache/*", GLOB_ONLYDIR) as $dir_name) {
         _recursive_delete($dir_name);
     }
 
-    foreach (glob(IA_ROOT_DIR . "cache/*") as $file_name) {
+    foreach (glob(Config::ROOT . "cache/*") as $file_name) {
         unlink($file_name);
     }
 }

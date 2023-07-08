@@ -1,17 +1,17 @@
 #! /usr/bin/env php
 <?php
-// This script is used to repair bad filenames in the IA_ROOT_DIR/attach folder.
+// This script is used to repair bad filenames in the Config::ROOT/attach folder.
 // Previously infoarena lowercased the filename for any attachment making "test" and "Test"
 // having the same file in the attach folder. This script tries to fix this behavior.
 
 require_once(dirname($argv[0]) . "/utilities.php");
-require_once(IA_ROOT_DIR."common/db/attachment.php");
+require_once(Config::ROOT."common/db/attachment.php");
 
 ini_set("memory_limit", "128M");
 
 function attachment_get_bad_filepath($attach) {
     assert(is_array($attach));
-    return IA_ROOT_DIR.'attach/'.
+    return Config::ROOT.'attach/'.
             strtolower(preg_replace('/[^a-z0-9\.\-_]/i', '_', $attach['page'])) . '_' .
             strtolower(preg_replace('/[^a-z0-9\.\-_]/i', '_', $attach['name'])) . '_' .
             $attach['id'];

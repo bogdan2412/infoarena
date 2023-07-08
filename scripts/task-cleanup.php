@@ -11,7 +11,7 @@
 // With the -d <task_id> option, deletes the task.
 
 require_once(__DIR__ . '/utilities.php');
-require_once(IA_ROOT_DIR . 'common/db/task.php');
+require_once(Config::ROOT . 'common/db/task.php');
 db_connect();
 
 // parse the -d command line argument

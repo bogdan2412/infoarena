@@ -1,14 +1,14 @@
 <?php
 
-require_once(IA_ROOT_DIR . "www/format/list.php");
-require_once(IA_ROOT_DIR . "www/format/table.php");
-require_once(IA_ROOT_DIR . "www/format/pager.php");
-require_once(IA_ROOT_DIR . "common/db/round.php");
-require_once(IA_ROOT_DIR . "common/db/task.php");
-require_once(IA_ROOT_DIR . "common/db/user.php");
-require_once IA_ROOT_DIR.'common/db/task_statistics.php';
-require_once(IA_ROOT_DIR . "common/round.php");
-require_once(IA_ROOT_DIR . "www/macros/macro_stars.php");
+require_once(Config::ROOT . "www/format/list.php");
+require_once(Config::ROOT . "www/format/table.php");
+require_once(Config::ROOT . "www/format/pager.php");
+require_once(Config::ROOT . "common/db/round.php");
+require_once(Config::ROOT . "common/db/task.php");
+require_once(Config::ROOT . "common/db/user.php");
+require_once Config::ROOT.'common/db/task_statistics.php';
+require_once(Config::ROOT . "common/round.php");
+require_once(Config::ROOT . "www/macros/macro_stars.php");
 
 function format_score_column($val) {
     if (is_null($val)) {

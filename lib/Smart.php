@@ -57,7 +57,7 @@ class Smart {
 
   static function init(): void {
     $s = new Smarty();
-    $s->template_dir = IA_ROOT_DIR . 'templates';
+    $s->template_dir = Config::ROOT . 'templates';
     $s->compile_dir = sys_get_temp_dir() . '/templates_c';
     self::$theSmarty = $s;
   }

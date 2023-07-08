@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT_DIR . "common/db/textblock.php");
+require_once(Config::ROOT . "common/db/textblock.php");
 
 // Initial copy controller.
 function controller_textblock_copy($page_name) {

@@ -1,8 +1,8 @@
 <?php
 
-require_once(IA_ROOT_DIR.'common/db/job.php');
-require_once(IA_ROOT_DIR.'common/db/task.php');
-require_once(IA_ROOT_DIR.'common/db/round.php');
+require_once(Config::ROOT.'common/db/job.php');
+require_once(Config::ROOT.'common/db/task.php');
+require_once(Config::ROOT.'common/db/round.php');
 
 // Safe function to validate and submit a job.
 // $args contains:

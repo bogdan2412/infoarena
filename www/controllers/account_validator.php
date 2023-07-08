@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT_DIR . 'common/tags.php');
+require_once(Config::ROOT . 'common/tags.php');
 
 // validates registration input data (wrapper for validate_data)
 function validate_register_data($data) {

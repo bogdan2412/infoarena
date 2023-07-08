@@ -1,7 +1,7 @@
 <?php
 
-require_once(IA_ROOT_DIR . "common/db/textblock.php");
-require_once(IA_ROOT_DIR . "www/format/format.php");
+require_once(Config::ROOT . "common/db/textblock.php");
+require_once(Config::ROOT . "www/format/format.php");
 
 // FIXME: document this macro
 function macro_grep($args) {

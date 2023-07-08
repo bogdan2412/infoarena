@@ -4,9 +4,9 @@
 
 require_once(dirname($argv[0]) . "/utilities.php");
 
-require_once(IA_ROOT_DIR."www/config.php");
-require_once(IA_ROOT_DIR."common/db/round.php");
-require_once(IA_ROOT_DIR."common/db/score.php");
+require_once(Config::ROOT."www/config.php");
+require_once(Config::ROOT."common/db/round.php");
+require_once(Config::ROOT."common/db/score.php");
 db_connect();
 
 

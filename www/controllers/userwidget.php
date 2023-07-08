@@ -1,7 +1,7 @@
 <?php
 
-require_once(IA_ROOT_DIR . "common/db/user.php");
-require_once(IA_ROOT_DIR . "www/format/format.php");
+require_once(Config::ROOT . "common/db/user.php");
+require_once(Config::ROOT . "www/format/format.php");
 
 /**
  * Displays an image with user statistics.

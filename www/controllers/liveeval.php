@@ -1,8 +1,8 @@
 <?php
 
-require_once(IA_ROOT_DIR."common/db/job.php");
-require_once(IA_ROOT_DIR."common/db/task.php");
-require_once(IA_ROOT_DIR."www/controllers/job_filters.php");
+require_once(Config::ROOT."common/db/job.php");
+require_once(Config::ROOT."common/db/task.php");
+require_once(Config::ROOT."www/controllers/job_filters.php");
 
 function controller_liveeval() {
     global $identity_user;

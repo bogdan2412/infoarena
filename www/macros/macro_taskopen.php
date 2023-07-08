@@ -1,5 +1,5 @@
 <?php
-require_once(IA_ROOT_DIR . "common/db/task.php");
+require_once(Config::ROOT . "common/db/task.php");
 
 function macro_taskopen($args) {
     $task_id = getattr($args, 'task_id');

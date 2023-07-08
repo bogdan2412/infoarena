@@ -8,7 +8,7 @@ class Core {
 
   static function autoload($className) {
     foreach (self::AUTOLOAD_PATHS as $path) {
-      $filename = IA_ROOT_DIR . $path . '/' . $className . '.php';
+      $filename = Config::ROOT . $path . '/' . $className . '.php';
       if (file_exists($filename)) {
         require_once $filename;
         return;

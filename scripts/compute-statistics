@@ -2,9 +2,9 @@
 <?php
 
 require_once dirname($argv[0]) . "/utilities.php";
-require_once IA_ROOT_DIR."common/db/db_mysql.php";
-require_once IA_ROOT_DIR."common/db/db.php";
-require_once IA_ROOT_DIR.'common/statistics-config.php';
+require_once Config::ROOT."common/db/db_mysql.php";
+require_once Config::ROOT."common/db/db.php";
+require_once Config::ROOT.'common/statistics-config.php';
 
 db_connect();
 
@@ -52,12 +52,12 @@ foreach ($criteria_column as $current => $column) {
             ORDER BY special_score ASC, `ia_job`.`submit_time` ASC
         ";
     }
-    
+
     $result = db_query($query);
     $num_rows = db_num_rows($result);
-    
+
     log_print("Total rows to process for $current: $num_rows");
-    
+
     $total = 0;
     $task_entries_count = array();
     $task_users_entries = array();
@@ -70,12 +70,12 @@ foreach ($criteria_column as $current => $column) {
         $special_score = $row['special_score'];
         $submit_time = $row['submit_time'];
         $pair = $task_id.",".$round_id;
-        
+
         if (!array_key_exists($pair, $task_entries_count)) {
             $task_entries_count[$pair] = 0;
             $task_users_entries[$pair] = array();
         }
-        
+
         if (!array_key_exists($user_id, $task_users_entries[$pair]) &&
             $task_entries_count[$pair] < IA_STATISTICS_MAX_TOP_SIZE) {
             $task_users_entries[$pair][$user_id] = true;
@@ -87,15 +87,15 @@ foreach ($criteria_column as $current => $column) {
             $total++;
         }
     }
-    
+
     db_free($result);
-    
+
     $query = "
         INSERT INTO `ia_score_task_top_users`
         VALUES $values
     ";
     db_query($query);
-    
+
     log_print("Computed $total entries for $current");
 }
 

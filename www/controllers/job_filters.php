@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT_DIR."www/utilities.php");
+require_once(Config::ROOT."www/utilities.php");
 
 function job_get_filters() {
     $available_filters = array('task', 'user', 'round', 'job_begin', 'job_end',

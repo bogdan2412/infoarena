@@ -1,6 +1,6 @@
 <?php
 
-require_once IA_ROOT_DIR.'common/task.php';
+require_once Config::ROOT.'common/task.php';
 
 abstract class BaseGrader {
     protected $task, $job;
@@ -25,7 +25,7 @@ abstract class BaseGrader {
             'evaluator' => 'evaluatorul problemei',
             'interact' => 'programul interactiv',
         );
-        eval_assert(clean_dir(IA_ROOT_DIR.'eval/temp/evaluators'),
+        eval_assert(clean_dir(Config::ROOT.'eval/temp/evaluators'),
                     "Can't create temp evaluators dir.");
 
         $this->evaluatorCompilerId = array();
@@ -35,9 +35,9 @@ abstract class BaseGrader {
             }
 
             eval_assert(
-                clean_dir(IA_ROOT_DIR.'eval/temp/evaluators/'.$eval_type),
+                clean_dir(Config::ROOT.'eval/temp/evaluators/'.$eval_type),
                 "Can't create temp evaluators dir for $eval_type");
-            $source_file = IA_ROOT_DIR.'eval/temp/evaluators/'.$eval_type.
+            $source_file = Config::ROOT.'eval/temp/evaluators/'.$eval_type.
                            '/'.$this->task[$eval_type];
             if (!copy_grader_file($this->task, $this->task[$eval_type],
                                   $source_file)) {
@@ -49,7 +49,7 @@ abstract class BaseGrader {
             }
 
             $compiler_messages = '';
-            eval_assert(@chdir(IA_ROOT_DIR.'eval/temp/evaluators/'.$eval_type),
+            eval_assert(@chdir(Config::ROOT.'eval/temp/evaluators/'.$eval_type),
                 "Can't chdir to temp evaluators dir for $eval_type");
             $compiler_type = null;
             if (!compile_file($this->task[$eval_type],
@@ -69,9 +69,9 @@ abstract class BaseGrader {
      * means compiling the user's source file.
      */
     protected function processUserSubmission() {
-        eval_assert(clean_dir(IA_ROOT_DIR.'eval/temp/user/'),
+        eval_assert(clean_dir(Config::ROOT.'eval/temp/user/'),
                     "Can't clean temp user dir.");
-        eval_assert(@chdir(IA_ROOT_DIR.'eval/temp/user/'),
+        eval_assert(@chdir(Config::ROOT.'eval/temp/user/'),
                     "Can't chdir to temp user dir.");
 
         $source_file = 'user_file.'.$this->job['compiler_id'];
@@ -103,9 +103,9 @@ abstract class BaseGrader {
         );
 
         // Clean temporary directory and chdir to it
-        eval_assert(clean_dir(IA_ROOT_DIR.'eval/temp/'),
+        eval_assert(clean_dir(Config::ROOT.'eval/temp/'),
                     "Can't clean temp dir.");
-        eval_assert(@chdir(IA_ROOT_DIR.'eval/temp/'),
+        eval_assert(@chdir(Config::ROOT.'eval/temp/'),
                     "Can't chdir to temp dir.");
 
         // Compile all source files
@@ -195,7 +195,7 @@ abstract class BaseGrader {
 
         // Run task eval, and check result
         $jrunres = run_file($this->evaluatorCompilerId['evaluator'],
-                            IA_ROOT_DIR.'eval/temp/evaluators/evaluator',
+                            Config::ROOT.'eval/temp/evaluators/evaluator',
                             $jaildir,
                             IA_JUDGE_TASK_EVAL_TIMELIMIT,
                             IA_JUDGE_TASK_EVAL_MEMLIMIT,
@@ -278,10 +278,10 @@ abstract class BaseGrader {
             $group_idx++;
             foreach ($group as $testno) {
                 if (IA_JUDGE_KEEP_JAILS) {
-                    $jaildir = (IA_ROOT_DIR.'eval/jail/'.
+                    $jaildir = (Config::ROOT.'eval/jail/'.
                                 $this->job['id'].'-'.$testno.'/');
                 } else {
-                    $jaildir = IA_ROOT_DIR.'eval/jail/';
+                    $jaildir = Config::ROOT.'eval/jail/';
                 }
 
                 // Clean and chdir to jail dir.

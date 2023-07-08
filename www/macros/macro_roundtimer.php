@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT_DIR . "common/db/round.php");
+require_once(Config::ROOT . "common/db/round.php");
 
 // Displays a timer that counts down to the beginning / end of a round
 // given as parameter, then it refreshes the page. You can adjust the

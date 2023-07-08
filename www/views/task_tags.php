@@ -1,7 +1,7 @@
 <?php
-include(IA_ROOT_DIR.'www/views/header.php');
+include(Config::ROOT.'www/views/header.php');
 
-require_once(IA_ROOT_DIR.'www/format/table.php');
+require_once(Config::ROOT.'www/format/table.php');
 
 // Returns a tag's name along with a inline form
 // which will be used for renaming.
@@ -108,5 +108,5 @@ echo format_table($authors, $column_infos,
 ?>
 <script src="<?= html_escape(url_static('js/task_tags.js')) ?>"></script>
 <?php
-include(IA_ROOT_DIR.'www/views/footer.php');
+include(Config::ROOT.'www/views/footer.php');
 ?>

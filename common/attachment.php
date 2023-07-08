@@ -1,5 +1,5 @@
 <?php
-require_once(IA_ROOT_DIR . "common/db/attachment.php");
+require_once(Config::ROOT . "common/db/attachment.php");
 
 // Validates an attachment struct.
 function attachment_validate($att) {

@@ -1,7 +1,7 @@
 <?php
 
-require_once(IA_ROOT_DIR."common/db/user.php");
-require_once IA_ROOT_DIR.'common/db/round.php';
+require_once(Config::ROOT."common/db/user.php");
+require_once Config::ROOT.'common/db/round.php';
 
 // Display solved tasks for given user.
 // When failed_tasks_hack is true, it displays failed tasks instead.

@@ -1,5 +1,5 @@
 <?php
-require_once(IA_ROOT_DIR.'www/views/sitewide.php');
+require_once(Config::ROOT.'www/views/sitewide.php');
 ?>
 </div>
 </div>

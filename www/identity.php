@@ -1,8 +1,8 @@
 <?php
 
-require_once(IA_ROOT_DIR."common/db/user.php");
-require_once(IA_ROOT_DIR."common/security.php");
-require_once(IA_ROOT_DIR."www/url.php");
+require_once(Config::ROOT."common/db/user.php");
+require_once(Config::ROOT."common/security.php");
+require_once(Config::ROOT."www/url.php");
 
 // This module helps access and manage information about the current remote
 // user, whether it is a visitor (anonymous) or an authenticated user.

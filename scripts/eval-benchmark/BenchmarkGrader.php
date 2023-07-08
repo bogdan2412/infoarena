@@ -1,12 +1,12 @@
 <?php
 
-require_once(IA_ROOT_DIR . 'eval/ClassicGrader.php');
-require_once(IA_ROOT_DIR . 'eval/Exceptions.php');
-require_once(IA_ROOT_DIR . 'eval/download.php');
-require_once(IA_ROOT_DIR . 'eval/utilities.php');
+require_once(Config::ROOT . 'eval/ClassicGrader.php');
+require_once(Config::ROOT . 'eval/Exceptions.php');
+require_once(Config::ROOT . 'eval/download.php');
+require_once(Config::ROOT . 'eval/utilities.php');
 
 class BenchmarkGrader extends ClassicGrader {
-  const JAIL_DIR = IA_ROOT_DIR . 'eval/jail/';
+  const JAIL_DIR = Config::ROOT . 'eval/jail/';
 
   function __construct(array $task, array $job) {
     // Don't get hung up on memory constraints. They may have to do with

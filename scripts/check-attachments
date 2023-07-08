@@ -2,8 +2,8 @@
 <?php
 
 require_once(dirname($argv[0]) . "/utilities.php");
-require_once(IA_ROOT_DIR . "common/attachment.php");
-require_once(IA_ROOT_DIR . "common/db/attachment.php");
+require_once(Config::ROOT . "common/attachment.php");
+require_once(Config::ROOT . "common/db/attachment.php");
 db_connect();
 
 log_print("Checking attachment dir...");
@@ -11,7 +11,7 @@ log_warn("This script consumes tons of memory so errors might occur");
 
 $res = db_query("SELECT `id`, `name`, `page`, `size` FROM ia_file");
 
-$extra_files = array_flip(glob(IA_ROOT_DIR . "attach/*"));
+$extra_files = array_flip(glob(Config::ROOT . "attach/*"));
 $extra_atts = array();
 $total_files = count($extra_files);
 $total_atts = 0;
@@ -162,13 +162,13 @@ if (read_bool("Check mimetypes (could take a long time)?", false)) {
 
 if (read_bool("Enforce permissions?", false)) {
     $defowner = null;
-    if (preg_match('/\/home\/([^\/]*)/', IA_ROOT_DIR, $matches)) {
+    if (preg_match('/\/home\/([^\/]*)/', Config::ROOT, $matches)) {
         $defowner = $matches[1];
     }
     $userown = read_line("Owning user?", $defowner);
     $groupown = read_line("Owning group?", $defowner);
     $errs = false;
-    $files = glob(IA_ROOT_DIR . "attach/*");
+    $files = glob(Config::ROOT . "attach/*");
     foreach ($files as $file) {
         $err = array();
         if (@chmod($file, 0640) == false) {

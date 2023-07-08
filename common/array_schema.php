@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT_DIR.'common/common.php');
+require_once(Config::ROOT.'common/common.php');
 
 // Get an array element.
 // Path can be a string, int or array of string or ints.

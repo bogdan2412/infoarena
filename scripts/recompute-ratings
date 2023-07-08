@@ -8,16 +8,16 @@
 // that (1) a completed round was edited or (2) a job was reevaluated.
 
 require_once(dirname($argv[0]) . "/utilities.php");
-require_once(IA_ROOT_DIR."www/config.php");
-require_once(IA_ROOT_DIR."www/identity.php");
-require_once(IA_ROOT_DIR."common/db/round.php");
-require_once(IA_ROOT_DIR."common/db/score.php");
-require_once(IA_ROOT_DIR."common/db/parameter.php");
-require_once(IA_ROOT_DIR."common/db/user.php");
-require_once(IA_ROOT_DIR."common/round.php");
-require_once(IA_ROOT_DIR."common/score.php");
-require_once(IA_ROOT_DIR."common/rating.php");
-require_once(IA_ROOT_DIR."common/parameter.php");
+require_once(Config::ROOT."www/config.php");
+require_once(Config::ROOT."www/identity.php");
+require_once(Config::ROOT."common/db/round.php");
+require_once(Config::ROOT."common/db/score.php");
+require_once(Config::ROOT."common/db/parameter.php");
+require_once(Config::ROOT."common/db/user.php");
+require_once(Config::ROOT."common/round.php");
+require_once(Config::ROOT."common/score.php");
+require_once(Config::ROOT."common/rating.php");
+require_once(Config::ROOT."common/parameter.php");
 db_connect();
 
 // parse the -f, --full command-line argument

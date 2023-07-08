@@ -9,7 +9,7 @@ include('tags_header.php');
 // insert task edit tabs
 if (($task_id = textblock_security_is_task($page['security'])) &&
     (identity_can('task-edit', task_get($task_id)))) {
-    require_once(IA_ROOT_DIR."www/views/task_edit_header.php");
+    require_once(Config::ROOT."www/views/task_edit_header.php");
     echo task_edit_tabs($task_id, request("action"));
 ?>
 <h1>Editare enunț <a href="<?= html_escape(url_task($task_id)) ?>">
@@ -19,7 +19,7 @@ if (($task_id = textblock_security_is_task($page['security'])) &&
 // insert round edit tabs
 if (($round_id = textblock_security_is_round($page['security'])) &&
     (identity_can('round-edit', $round = round_get($round_id)))) {
-    require_once(IA_ROOT_DIR."www/views/round_edit_header.php");
+    require_once(Config::ROOT."www/views/round_edit_header.php");
     echo round_edit_tabs($round_id, request("action"));
 ?>
 <h1>Editare pagină <a href="<?= html_escape(url_round($round_id)) ?>">

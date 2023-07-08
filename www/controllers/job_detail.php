@@ -1,8 +1,8 @@
 <?php
 
-require_once(IA_ROOT_DIR . "common/task.php");
-require_once(IA_ROOT_DIR . "common/db/task.php");
-require_once(IA_ROOT_DIR . "common/db/job.php");
+require_once(Config::ROOT . "common/task.php");
+require_once(Config::ROOT . "common/db/task.php");
+require_once(Config::ROOT . "common/db/job.php");
 
 function controller_job_detail($job_id) {
     $action = request('action', 'view');

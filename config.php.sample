@@ -1,13 +1,12 @@
 <?php
 
+require_once __DIR__ . '/Config.php';
+
 // Global configuration file.
 // This is just a sample file. Copy this over to config.php and edit.
 
 // Here is the essential configuration. You only need to modify this
 // to get it working.
-
-// This is the subversion checkout directory. include trailing slash.
-define('IA_ROOT_DIR', '--write-me-IA_ROOT_DIR--');
 
 // Keep database connection alive when lost
 define('IA_DB_KEEP_ALIVE', false);

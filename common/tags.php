@@ -1,7 +1,7 @@
 <?php
 
-require_once(IA_ROOT_DIR."common/db/db.php");
-require_once(IA_ROOT_DIR."common/db/tags.php");
+require_once(Config::ROOT."common/db/db.php");
+require_once(Config::ROOT."common/db/tags.php");
 
 function tag_split($tag_data) {
     $tags = explode(",", $tag_data);

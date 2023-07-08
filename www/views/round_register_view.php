@@ -1,7 +1,7 @@
 <?php
 
-require_once(IA_ROOT_DIR . 'www/format/table.php');
-require_once(IA_ROOT_DIR . 'www/format/format.php');
+require_once(Config::ROOT . 'www/format/table.php');
+require_once(Config::ROOT . 'www/format/format.php');
 require_once 'header.php';
 
 echo '<h1>Utilizatori înregistrați la '.format_link(url_textblock($round['page_name']), $round['title']).'</h1>';

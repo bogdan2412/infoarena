@@ -1,7 +1,7 @@
 <?php
 
-require_once(IA_ROOT_DIR.'www/format/format.php');
-require_once(IA_ROOT_DIR.'common/common.php');
+require_once(Config::ROOT.'www/format/format.php');
+require_once(Config::ROOT.'common/common.php');
 
 /**
  * Returns a an image which links to it's location of a giver username

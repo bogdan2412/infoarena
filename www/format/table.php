@@ -1,8 +1,8 @@
 <?php
 
-require_once(IA_ROOT_DIR."www/utilities.php");
-require_once(IA_ROOT_DIR."www/format/pager.php");
-require_once(IA_ROOT_DIR."www/format/format.php");
+require_once(Config::ROOT."www/utilities.php");
+require_once(Config::ROOT."www/format/pager.php");
+require_once(Config::ROOT."www/format/format.php");
 
 // This builds a bunch of default $column_infos for format_table.
 // See format_table for an explanation.

@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT_DIR."common/common.php");
+require_once(Config::ROOT."common/common.php");
 
 // NOTE: These functions are untested. They will become useful if we
 // send array paths to javascript. Until then it's better to work with
@@ -58,7 +58,7 @@ function array_path_split($path)
             if ($pos + 1 >= $len) {
                 log_error("Invalid array path: Ends with dot.");
             }
-            
+
             // Check first character
             $char = $path[++$pos];
             if (($char < 'a' || $char > 'z') &&

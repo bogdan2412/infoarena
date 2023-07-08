@@ -1,6 +1,6 @@
 <?php
 
-require_once(IA_ROOT_DIR . "common/job.php");
+require_once(Config::ROOT . "common/job.php");
 
 // Big bad submit controller.
 function controller_submit() {

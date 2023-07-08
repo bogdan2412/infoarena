@@ -1,8 +1,8 @@
 <?php
 
-require_once(IA_ROOT_DIR."common/db/db.php");
-require_once(IA_ROOT_DIR."common/db/parameter.php");
-require_once(IA_ROOT_DIR."common/db/round_task.php");
+require_once(Config::ROOT."common/db/db.php");
+require_once(Config::ROOT."common/db/parameter.php");
+require_once(Config::ROOT."common/db/round_task.php");
 
 function _round_cache_add($round) {
     if ($round) {
@@ -50,7 +50,7 @@ function round_create($round, $round_params, $user_id, $remote_ip_info = null) {
         round_update_parameters($round['id'], $round_params);
 
         // Copy templates.
-        require_once(IA_ROOT_DIR . "common/textblock.php");
+        require_once(Config::ROOT . "common/textblock.php");
         $replace = array("round_id" => $round['id']);
         textblock_copy_replace("template/newround", $round['page_name'],
                 $replace, "round: {$round['id']}", $user_id, $remote_ip_info);

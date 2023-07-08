@@ -1,7 +1,7 @@
 <?php
 
-require_once(IA_ROOT_DIR."common/db/task_rating.php");
-require_once(IA_ROOT_DIR."common/rating.php");
+require_once(Config::ROOT."common/db/task_rating.php");
+require_once(Config::ROOT."common/rating.php");
 
 // Computes the rating out of the array $ratings
 // $ratings contains arrays of ratings

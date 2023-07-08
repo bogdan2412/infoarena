@@ -35,11 +35,11 @@ function format_backtrace($level, $backtrace = false) {
     return false;
   }
 
-  // Filename. Strips IA_ROOT_DIR.
+  // Filename. Strips Config::ROOT.
   $file = false;
   if (isset($backtrace[$level]['file'])) {
     $file = $backtrace[$level]['file'];
-    $file = preg_replace("/^".preg_quote(IA_ROOT_DIR, '/')."/", "", $file);
+    $file = preg_replace("/^".preg_quote(Config::ROOT, '/')."/", "", $file);
   }
 
   // Source line.

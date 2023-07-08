@@ -1,8 +1,8 @@
 <?php
 
-  require_once(IA_ROOT_DIR . 'www/views/header.php');
-  require_once(IA_ROOT_DIR . 'www/format/format.php');
-  require_once(IA_ROOT_DIR . 'www/url.php');
+  require_once(Config::ROOT . 'www/views/header.php');
+  require_once(Config::ROOT . 'www/format/format.php');
+  require_once(Config::ROOT . 'www/url.php');
 
   // display group sum column?
   $show_groups = $view['group_tests'] &&

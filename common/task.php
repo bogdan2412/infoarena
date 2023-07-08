@@ -1,5 +1,5 @@
 <?php
-require_once(IA_ROOT_DIR . "common/textblock.php");
+require_once(Config::ROOT . "common/textblock.php");
 
 // This module implements task and task-param related stuff.
 

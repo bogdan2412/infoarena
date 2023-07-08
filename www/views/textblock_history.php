@@ -1,8 +1,8 @@
 <?php
 require_once 'header.php';
-require_once(IA_ROOT_DIR . "www/format/table.php");
-require_once(IA_ROOT_DIR . "www/format/format.php");
-require_once(IA_ROOT_DIR . "www/format/form.php");
+require_once(Config::ROOT . "www/format/table.php");
+require_once(Config::ROOT . "www/format/format.php");
+require_once(Config::ROOT . "www/format/form.php");
 ?>
 
 <h1>Istoria paginii <?= format_link(url_textblock($page_name), $page_name) ?></h1>
