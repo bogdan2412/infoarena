@@ -9,10 +9,6 @@ require_once __DIR__ . '/lib/Request.php';
 // Here is the essential configuration. You only need to modify this
 // to get it working.
 
-// cookie domain
-// leave null when working on localhost
-define('IA_COOKIE_DOMAIN', null);
-
 // infoarena session lifetime
 // defaults to 5days
 define('IA_SESSION_LIFETIME_SECONDS', 5 * 24 * 3600);

@@ -135,9 +135,9 @@ function init_php_session($remember_user = false) {
     if ($remember_user) {
       session_cache_limiter('private');
       session_cache_expire(IA_SESSION_LIFETIME_SECONDS / 60);
-      session_set_cookie_params(IA_SESSION_LIFETIME_SECONDS, '/', IA_COOKIE_DOMAIN);
+      session_set_cookie_params(IA_SESSION_LIFETIME_SECONDS, '/');
     } else {
-      session_set_cookie_params(0, '/', IA_COOKIE_DOMAIN);
+      session_set_cookie_params(0, '/');
     }
     session_start();
   }
