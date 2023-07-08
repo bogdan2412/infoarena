@@ -26,3 +26,9 @@ copyFromSampleFile 'www/.htaccess'
 echo "* making some directories and files world-writable"
 mkdir -p /tmp/templates_c
 chmod 777 /tmp/templates_c
+
+echo "* compiling lcs.cpp"
+g++ common/lcs.cpp -O2 -static -o common/lcs
+
+echo "* creating avatar folder (remember to also run scripts/make-avatar-folder)"
+mkdir -p www/static/images/avatar/
