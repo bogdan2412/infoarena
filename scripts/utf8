@@ -1,8 +1,0 @@
-#! /usr/bin/env php
-<?php
-require_once(dirname($argv[0]) . "/utilities.php");
-
-db_connect();
-db_query("ALTER TABLE `ia_textblock` CONVERT TO CHARACTER SET 'utf8';");
-db_query("ALTER TABLE `ia_textblock_revision` CONVERT TO CHARACTER SET 'utf8';");
-?>
