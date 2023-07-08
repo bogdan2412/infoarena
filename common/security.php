@@ -36,7 +36,7 @@ function security_query($user, $action, $object) {
     $username = getattr($user, 'username', 'null');
     $usersec = getattr($user, 'security_level', 'anonymous');
     $object_id = getattr($object, 'id', getattr($object, 'name', $object));
-    if (IA_LOG_SECURITY) {
+    if (Config::LOG_SECURITY) {
         log_print("SECURITY QUERY: ".
                 "($username, $usersec, $action, $object_id): ".
                 "(username, level, action, object)");
@@ -78,7 +78,7 @@ function security_query($user, $action, $object) {
     }
 
     log_assert(is_bool($result), "SECURITY: FAILED, didn't return a bool");
-    if (IA_LOG_SECURITY) {
+    if (Config::LOG_SECURITY) {
         if ($result) {
             log_print('SECURITY: GRANTED');
         } else {
@@ -241,7 +241,7 @@ function security_textblock($user, $action, $textblock) {
 
     // Log query response.
     $action = security_simplify_action($action);
-    if (IA_LOG_SECURITY) {
+    if (Config::LOG_SECURITY) {
         $objid = is_null($textblock) ? 'NULL' : $textblock['name'];
         log_print("SECURITY QUERY TEXTBLOCK: ".
                 "($usersec, $action, $objid): ".
@@ -289,7 +289,7 @@ function security_attach($user, $action, $attach) {
 
     // Log query response.
     $level = ($is_admin ? 'admin' : ($is_owner ? 'owner' : 'other'));
-    if (IA_LOG_SECURITY) {
+    if (Config::LOG_SECURITY) {
         $objid = $attach['user_id'];
         log_print("SECURITY QUERY ATTACH: ".
                   "($level, $action, $objid): ".
@@ -314,7 +314,7 @@ function security_attach($user, $action, $attach) {
     if (textblock_security_is_task($tb['security']) &&
         preg_match('/^grader\_/', $att_name)) {
         $newaction = preg_replace('/^attach/', 'grader', $action);
-        if (IA_LOG_SECURITY) {
+        if (Config::LOG_SECURITY) {
             log_print("SECURITY: CONVERTING $action to $newaction");
         }
         $action = $newaction;
@@ -332,7 +332,7 @@ function security_user($user, $action, $target_user) {
     // Log query response.
     $action = security_simplify_action($action);
     $level = ($is_admin ? 'admin' : ($is_self ? 'self' : 'other'));
-    if (IA_LOG_SECURITY) {
+    if (Config::LOG_SECURITY) {
         $objid = $target_user['username'];
         log_print("SECURITY QUERY USER: ".
                   "($level, $action, $objid): ".
@@ -379,7 +379,7 @@ function security_task($user, $action, $task) {
     // Log query response.
     $action = security_simplify_action($action);
     $level = ($is_admin ? 'admin' : ($is_owner ? 'owner' : 'other'));
-    if (IA_LOG_SECURITY) {
+    if (Config::LOG_SECURITY) {
         $objid = $task['id'];
         log_print("SECURITY QUERY TASK: ".
                 "($level, $action, $objid): ".
@@ -464,7 +464,7 @@ function security_round($user, $action, $round) {
     // Log query response.
     $action = security_simplify_action($action);
     $level = ($is_admin ? 'admin' : 'other');
-    if (IA_LOG_SECURITY) {
+    if (Config::LOG_SECURITY) {
         $objid = $round['id'];
         log_print("SECURITY QUERY ROUND: ".
                 "($level, $action, $objid): ".
@@ -562,7 +562,7 @@ function security_job($user, $action, $job) {
     $action = security_simplify_action($action);
     $level = ($is_admin ? 'admin' : ($is_owner ? 'owner' :
         ($is_task_owner ? 'task-owner' : 'other')));
-    if (IA_LOG_SECURITY) {
+    if (Config::LOG_SECURITY) {
         $objid = getattr($job, 'id');
         log_print("SECURITY QUERY JOB: ".
                 "($level, $action, $objid): ".

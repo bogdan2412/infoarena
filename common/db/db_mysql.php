@@ -126,13 +126,13 @@ function db_query($query, $unbuffered = false) {
     } else {
         // Print query info.
         //log_backtrace();
-        if (IA_LOG_SQL_QUERY && strpos($query, 'EXPLAIN') !== 0) {
+        if (Config::LOG_SQL_QUERIES && strpos($query, 'EXPLAIN') !== 0) {
             log_print("SQL QUERY: '$query'");
             if (!$unbuffered && strpos($query, 'SELECT') === 0) {
                 log_print("SQL QUERY ROWS: ".db_num_rows($result));
             }
         }
-        if (IA_LOG_SQL_QUERY_EXPLAIN && !$unbuffered &&
+        if (Config::LOG_SQL_QUERIES_EXPLAIN && !$unbuffered &&
                 strpos($query, 'SELECT') === 0) {
             // FIXME: pipes, proper format.
             $explanation = db_fetch_all("EXPLAIN EXTENDED $query");

@@ -9,23 +9,6 @@ require_once __DIR__ . '/lib/Request.php';
 // Here is the essential configuration. You only need to modify this
 // to get it working.
 
-// Logging options. Anything else in normal operation is a bug.
-// Filling error_log on a production machine sucks.
-define('IA_ERROR_REPORTING', E_ALL & ~E_DEPRECATED & ~E_USER_WARNING & ~E_USER_NOTICE);
-
-// If true then log all security checks.
-// Warning: tons of output.
-define('IA_LOG_SECURITY', false);
-
-// If true then log disk cache hits/misses
-define('IA_LOG_DISK_CACHE', false);
-
-// Log each and every SQL query. Not for the faint of heart.
-define('IA_LOG_SQL_QUERY', false);
-
-// Try to EXPLAIN every select query, useful when optimizing.
-define('IA_LOG_SQL_QUERY_EXPLAIN', false);
-
 // Security setup for certain kinds of textblock actions
 define('SEC_TEXTBLOCK_SIMPLE_VIEW_PRIVATE', ['admin']);
 define('SEC_TEXTBLOCK_SIMPLE_REV_EDIT_PUBLIC', ['admin', 'helper', 'normal']);

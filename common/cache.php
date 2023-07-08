@@ -56,12 +56,12 @@ function disk_cache_get($cache_id) {
     $file_name = _disk_cache_path($cache_id);
 
     if (@is_readable($file_name)) {
-        if (IA_LOG_DISK_CACHE) {
+        if (Config::LOG_DISK_CACHE) {
             log_print("CACHE: DISK: HIT on $cache_id");
         }
         return file_get_contents($file_name);
     } else {
-        if (IA_LOG_DISK_CACHE) {
+        if (Config::LOG_DISK_CACHE) {
             log_print("CACHE: DISK: MISS on $cache_id");
         }
         return false;
@@ -74,7 +74,7 @@ function disk_cache_serve($cache_id, $http_file_name, $mime_type = null) {
     require_once(Config::ROOT . 'www/utilities.php');
     $file_name = _disk_cache_path($cache_id);
 
-    if (IA_LOG_DISK_CACHE) {
+    if (Config::LOG_DISK_CACHE) {
         log_print("CACHE: DISK: SERVE $cache_id");
     }
     http_serve($file_name, $http_file_name, $mime_type);
@@ -96,7 +96,7 @@ function disk_cache_set($cache_id, $buffer, $ttl = 0) {
     }
     $ret = @file_put_contents($file_name, $buffer, LOCK_EX);
 
-    if (IA_LOG_DISK_CACHE) {
+    if (Config::LOG_DISK_CACHE) {
         if ($ret) {
             log_print("CACHE: DISK: SET $cache_id");
         } else {

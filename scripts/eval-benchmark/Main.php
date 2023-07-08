@@ -35,9 +35,9 @@ class Main {
   }
 
   private function warnIfNoisyLogLevel() {
-    if (IA_ERROR_REPORTING & E_USER_NOTICE) {
-      Log::warn('We advise changing this value in config.php:');
-      Log::warn("\n    define('IA_ERROR_REPORTING', E_ALL & ~E_USER_NOTICE);\n");
+    if (Config::ERROR_REPORTING & E_USER_NOTICE) {
+      Log::warn('We advise changing this value in Config.php:');
+      Log::warn("\n    const ERROR_REPORTING = E_ALL & ~E_USER_NOTICE;\n");
       Log::warn('Allowing E_USER_NOTICE will clutter this script\'s log with jail info.');
     }
   }

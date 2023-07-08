@@ -340,7 +340,7 @@ function check_requirements() {
 // FIXME: I have no idea on where to move these things.
 
 // Force max error reporting.
-error_reporting(IA_ERROR_REPORTING);
+error_reporting(Config::ERROR_REPORTING);
 
 // Initialize execution stats.
 if (Config::DEVELOPMENT_MODE) {

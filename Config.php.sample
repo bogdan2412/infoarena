@@ -30,7 +30,13 @@ class Config {
   // Session duration in seconds.
   const SESSION_DURATION = 5 * 86400;
 
+  // Logging and error settings.
+  const ERROR_REPORTING = E_ALL & ~E_USER_NOTICE;
   const FATAL_ERROR_MASK = E_ALL & ~E_USER_NOTICE & ~E_USER_WARNING;
+  const LOG_SECURITY = false;
+  const LOG_DISK_CACHE = false;
+  const LOG_SQL_QUERIES = false;
+  const LOG_SQL_QUERIES_EXPLAIN = false;
 
   const ROUND_TEXTBLOCK_PREFIX = 'runda/';
   const TASK_TEXTBLOCK_PREFIX = 'problema/';
