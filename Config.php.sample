@@ -47,6 +47,10 @@ class Config {
   const TASK_TEXTBLOCK_PREFIX = 'problema/';
   const USER_TEXTBLOCK_PREFIX = 'utilizator/';
 
+  // Job monitor autorefresh options.
+  const MONITOR_AUTOREFRESH = false;
+  const MONITOR_AUTOREFRESH_INTERVAL = 5000; // milliseconds
+
   // Set this to something random.
   const RESET_PASSWORD_SALT = '';
 

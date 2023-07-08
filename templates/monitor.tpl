@@ -37,9 +37,9 @@
 
   <p>
     <input
-      {if $smarty.const.MONITOR_AUTOREFRESH}checked{/if}
-      data-config="{$smarty.const.MONITOR_AUTOREFRESH}"
-      data-interval="{$smarty.const.MONITOR_AUTOREFRESH_INTERVAL}"
+      {if Config::MONITOR_AUTOREFRESH}checked{/if}
+      data-config="{Config::MONITOR_AUTOREFRESH}"
+      data-interval="{Config::MONITOR_AUTOREFRESH_INTERVAL}"
       id="autorefresh"
       type="checkbox">
 
