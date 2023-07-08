@@ -82,17 +82,6 @@ function ia_template_footer() {
 ?>
 </div>
 
-<?php if (!Config::DEVELOPMENT_MODE && GOOGLE_ANALYTICS_TRACKING_ID) { ?>
-    <script src="http://www.google-analytics.com/urchin.js">
-    </script>
-    <script>
-    _uacct = "<?php echo GOOGLE_ANALYTICS_TRACKING_ID; ?>";
-    _udn = "infoarena.ro";
-    urchinTracker();
-    </script>
-<?php } ?>
-
 <?php
 }
-
 ?>
