@@ -9,12 +9,6 @@ require_once __DIR__ . '/lib/Request.php';
 // Here is the essential configuration. You only need to modify this
 // to get it working.
 
-// Enabled the create_function_cached cached.
-// If false then create_function_cached_cached is the same
-// as create_function_cached
-define('IA_ENABLE_CREATE_FUNCTION_CACHE', true);
-
-
 // Disable memory cache by default because it requires additional stuff
 define('IA_MEM_CACHE_METHOD', 'none');
 
