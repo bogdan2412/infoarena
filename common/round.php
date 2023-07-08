@@ -165,7 +165,7 @@ function round_init($round_id, $round_type, $user = null) {
             'id' => $round_id,
             'type' => $round_type,
             'title' => $round_id,
-            'page_name' => IA_ROUND_TEXTBLOCK_PREFIX . $round_id,
+            'page_name' => Config::ROUND_TEXTBLOCK_PREFIX . $round_id,
             'state' => 'waiting',
             'start_time' => NULL,
             'public_eval' => (($round_type == 'archive') ? 1 : 0),

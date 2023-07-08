@@ -167,7 +167,7 @@ function is_page_name($page_name) {
 function get_page_user_name($page_name) {
     $matches = array();
     preg_match("/^ ".
-                preg_quote(IA_USER_TEXTBLOCK_PREFIX, '/').
+                preg_quote(Config::USER_TEXTBLOCK_PREFIX, '/').
                 '('.IA_RE_USER_NAME.") (\/?.*) $/xi",
                 $page_name, $matches);
     return $matches;

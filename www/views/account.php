@@ -102,7 +102,7 @@ if (array_key_exists('security_level', $form_values)) {
             <?php
                 if ($view['avatar_exists']) {
                     echo format_post_link(url_attachment_delete(
-                                IA_USER_TEXTBLOCK_PREFIX . $user['username'],
+                                Config::USER_TEXTBLOCK_PREFIX . $user['username'],
                                 'avatar'), "Șterge Avatar", array(), true,
                                 array('onclick' => "return confirm('Această " .
                                         'acțiune este ireversibilă! Dorești ' .

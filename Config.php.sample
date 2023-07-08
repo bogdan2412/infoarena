@@ -20,9 +20,18 @@ class Config {
   // Filesystem root of this installation. Include a trailing slash.
   const ROOT = __DIR__ . '/';
 
-  // Define the place the avatars are being stored
+  // Directory for user profile pictures.
   const AVATAR_DIR = __DIR__ .  '/www/static/images/avatar/';
 
   // Activate some debugging tools and disable some external resources.
   const DEVELOPMENT_MODE = true;
+
+  // Session duration in seconds.
+  const SESSION_DURATION = 5 * 86400;
+
+  const FATAL_ERROR_MASK = E_ALL & ~E_USER_NOTICE & ~E_USER_WARNING;
+
+  const ROUND_TEXTBLOCK_PREFIX = 'runda/';
+  const TASK_TEXTBLOCK_PREFIX = 'problema/';
+  const USER_TEXTBLOCK_PREFIX = 'utilizator/';
 }

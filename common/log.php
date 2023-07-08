@@ -275,13 +275,13 @@ function logging_error_handler($errno, $errstr, $errfile, $errline) {
   }
 
   // The behaviour of this function is defined with error_log in php.ini
-  if (IA_PHP_FATAL_ERROR_MASK & $errno) {
+  if (Config::FATAL_ERROR_MASK & $errno) {
     $errstr = "Fatal:\t>>>" . $errstr . "<<<\t";
   }
   error_log($errstr);
 
   // Die on certain fatal errors:
-  if (IA_PHP_FATAL_ERROR_MASK & $errno) {
+  if (Config::FATAL_ERROR_MASK & $errno) {
     // Print a full backtrace on fatal errors.
     error_log("Caught a fatal error, printing a full backtrace");
     log_backtrace(2, false, true);

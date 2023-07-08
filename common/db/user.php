@@ -151,7 +151,7 @@ function user_create($user, $remote_ip_info=null)
     require_once(Config::ROOT . "common/textblock.php");
     $replace = array("user_id" => $user['username']);
     textblock_copy_replace('template/newuser',
-                           IA_USER_TEXTBLOCK_PREFIX.$user['username'],
+                           Config::USER_TEXTBLOCK_PREFIX.$user['username'],
                            $replace, 'public',
                            $new_user['id'], $remote_ip_info);
 

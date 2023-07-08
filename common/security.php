@@ -298,7 +298,7 @@ function security_attach($user, $action, $attach) {
 
     // Speed hack: avatars are always visible. This is good.
     if ($action == 'attach-download' && $att_name == 'avatar' &&
-            starts_with($att_page, IA_USER_TEXTBLOCK_PREFIX)) {
+            starts_with($att_page, Config::USER_TEXTBLOCK_PREFIX)) {
         return true;
     }
 

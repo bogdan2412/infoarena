@@ -212,17 +212,17 @@ function url_resetpass_confirm($username, $key) {
 }
 
 function url_user_profile($username) {
-    return url_complex(IA_USER_TEXTBLOCK_PREFIX . $username, array(), true);
+    return url_complex(Config::USER_TEXTBLOCK_PREFIX . $username, array(), true);
 }
 
 function url_user_rating($username) {
-    return url_complex(IA_USER_TEXTBLOCK_PREFIX . $username, array(
+    return url_complex(Config::USER_TEXTBLOCK_PREFIX . $username, array(
             'action' => 'rating'
     ), true);
 }
 
 function url_user_stats($username) {
-    return url_complex(IA_USER_TEXTBLOCK_PREFIX . $username, array(
+    return url_complex(Config::USER_TEXTBLOCK_PREFIX . $username, array(
             'action' => 'stats'
     ));
 }

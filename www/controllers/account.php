@@ -83,7 +83,7 @@ function controller_account($username = null) {
             // FIXME: use attachments code. Too bad attachments code is just as ugly.
             if ($avatar) {
                 // Add the file to the database.
-                $user_page = IA_USER_TEXTBLOCK_PREFIX.$user['username'];
+                $user_page = Config::USER_TEXTBLOCK_PREFIX.$user['username'];
                 $file_name = 'avatar';
                 $attach = attachment_get($file_name, $user_page);
                 if ($attach) {
@@ -178,7 +178,7 @@ function controller_account($username = null) {
     $view['form_errors'] = $errors;
     $view['form_values'] = $data;
     $view['action'] = url_account($user['username']);
-    $view['avatar_exists'] = attachment_get('avatar', IA_USER_TEXTBLOCK_PREFIX .
+    $view['avatar_exists'] = attachment_get('avatar', Config::USER_TEXTBLOCK_PREFIX .
             $user['username']);
     execute_view_die('views/account.php', $view);
 }

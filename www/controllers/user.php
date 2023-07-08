@@ -15,7 +15,7 @@ function controller_user_view($username, $action, $rev_num = null) {
     }
 
     // Build view.
-    $page_name = IA_USER_TEXTBLOCK_PREFIX.$user['username'];
+    $page_name = Config::USER_TEXTBLOCK_PREFIX.$user['username'];
     $view = array(
         'title' => $user['full_name'].' ('.$user['username'].')',
         'page_name' => $page_name,

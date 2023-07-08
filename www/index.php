@@ -283,7 +283,7 @@ else if ('confirm' == $urlstart) {
 }
 
 // user profile, view personal page / statistics / rating evolution
-else if (IA_USER_TEXTBLOCK_PREFIX == $urlstart.'/' &&
+else if (Config::USER_TEXTBLOCK_PREFIX == $urlstart.'/' &&
          ('view' == $action || 'rating' == $action || 'stats' == $action )) {
     require_once Config::ROOT.'www/controllers/user.php';
     controller_user_view($page_id, $action, request('revision'));

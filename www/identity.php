@@ -125,17 +125,17 @@ function identity_require($action, $object = null) {
 
 // Initializes long-lived PHP session.
 // When remember user is `true`, it will persist session for
-// IA_SESSION_LIFETIME_SECONDS seconds.
+// Config::SESSION_DURATION seconds.
 //
 // Here's a good example why PHP sucks.
 function init_php_session($remember_user = false) {
   if (session_status() === PHP_SESSION_NONE) {
     session_name('infoarena2_session');
-    ini_set('session.gc_maxlifetime', IA_SESSION_LIFETIME_SECONDS);
+    ini_set('session.gc_maxlifetime', Config::SESSION_DURATION);
     if ($remember_user) {
       session_cache_limiter('private');
-      session_cache_expire(IA_SESSION_LIFETIME_SECONDS / 60);
-      session_set_cookie_params(IA_SESSION_LIFETIME_SECONDS, '/');
+      session_cache_expire(Config::SESSION_DURATION / 60);
+      session_set_cookie_params(Config::SESSION_DURATION, '/');
     } else {
       session_set_cookie_params(0, '/');
     }
@@ -210,7 +210,7 @@ function identity_restore() {
 
 // Persists $user to session. This is used when logging in.
 // When $remember_user is true, it will persist session for
-// IA_SESSION_LIFETIME_SECONDS seconds.
+// Config::SESSION_DURATION seconds.
 function identity_start_session($user, $remember_user = false) {
   session_write_close();
   init_php_session($remember_user);
