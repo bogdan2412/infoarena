@@ -183,12 +183,7 @@ log_assert(strstr($res['content'], '<a href="'.
 log_assert(strstr($res['content'], '<a href="'.
             url_textblock('problema/biti')));
 
-
-// Yuck
 $wait = 4;
-if (IA_MEM_CACHE_METHOD != "none") {
-    $wait += IA_MEM_CACHE_ROUND_EXPIRATION;
-}
 log_print("Waiting for $wait seconds...");
 usleep($wait * 1000000);
 

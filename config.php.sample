@@ -9,38 +9,6 @@ require_once __DIR__ . '/lib/Request.php';
 // Here is the essential configuration. You only need to modify this
 // to get it working.
 
-// Disable memory cache by default because it requires additional stuff
-define('IA_MEM_CACHE_METHOD', 'none');
-
-// Default TTL for cache items.
-define('IA_MEM_CACHE_EXPIRATION', 3600);
-
-// TTL for tag caches.
-define('IA_MEM_CACHE_TAGS_EXPIRATION', 3600);
-
-// Maximum tags to use in cache
-define('IA_MAX_TAGS_TO_CACHE', 2);
-
-if (IA_MEM_CACHE_METHOD === 'memcached') {
-    define('IA_MEMCACHED_HOST', '127.0.0.1');
-    define('IA_MEMCACHED_PORT', 11211);
-
-    // Round TTL.
-    define('IA_MEM_CACHE_ROUND_EXPIRATION', 3600);
-
-    // Task TTL.
-    define('IA_MEM_CACHE_TASK_EXPIRATION', 3600);
-} else {
-    // Smaller TTLs because evaluator doesn't have access to cache to
-    // invalidate old data on updates.
-
-    // Round TTL.
-    define('IA_MEM_CACHE_ROUND_EXPIRATION', 10);
-
-    // Task TTL.
-    define('IA_MEM_CACHE_TASK_EXPIRATION', 10);
-}
-
 // Logging options. Anything else in normal operation is a bug.
 // Filling error_log on a production machine sucks.
 define('IA_ERROR_REPORTING', E_ALL & ~E_DEPRECATED & ~E_USER_WARNING & ~E_USER_NOTICE);
@@ -51,9 +19,6 @@ define('IA_LOG_SECURITY', false);
 
 // If true then log disk cache hits/misses
 define('IA_LOG_DISK_CACHE', false);
-
-// If true then log mem cache hits/misses
-define('IA_LOG_MEM_CACHE', false);
 
 // Log each and every SQL query. Not for the faint of heart.
 define('IA_LOG_SQL_QUERY', false);

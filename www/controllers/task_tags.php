@@ -110,13 +110,6 @@ function controller_task_tags_rename() {
         redirect(url_task_tags());
     }
     tag_update_by_id($tag_id, $tag);
-    // Clear author cache for all tasks tagged with the tag.
-    if ($tag["type"] == "author") {
-        $task_ids = tag_get_objects("task", array($tag_id), false);
-        foreach ($task_ids as $task_id) {
-            mem_cache_delete("task-authors-by-id:".$task_id["id"]);
-        }
-    }
 
     FlashMessage::addSuccess("Am redenumit tagul.");
     redirect(url_task_tags());

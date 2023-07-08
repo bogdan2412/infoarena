@@ -4,19 +4,6 @@ require_once(Config::ROOT."common/db/db.php");
 require_once(Config::ROOT."common/db/parameter.php");
 require_once(Config::ROOT."common/db/round_task.php");
 
-function _round_cache_add($round) {
-    if ($round) {
-        mem_cache_set("round-by-id:{$round['id']}", $round, IA_MEM_CACHE_ROUND_EXPIRATION);
-        return $round;
-    } else {
-        return null;
-    }
-}
-
-function _round_cache_delete($round) {
-    mem_cache_delete("round-by-id:{$round['id']}");
-}
-
 // Get round
 function round_get($round_id) {
     if (!$round_id) {
@@ -26,13 +13,9 @@ function round_get($round_id) {
     // this assert breaks templates pages with round_id = %round_id%
     log_assert(is_round_id($round_id));
 
-    if (($res = mem_cache_get("round-by-id:$round_id")) !== false) {
-        return $res;
-    }
-
     $query = sprintf("SELECT * FROM ia_round WHERE `id` = %s",
                      db_quote($round_id));
-    return _round_cache_add(db_fetch($query));
+    return db_fetch($query);
 }
 
 // Create new round
@@ -43,7 +26,6 @@ function round_create($round, $round_params, $user_id, $remote_ip_info = null) {
     log_assert_valid(round_validate_parameters($round['type'], $round_params));
 
     db_insert('ia_round', $round);
-    _round_cache_delete($round);
     $new_round = round_get($round['id']);
 
     if ($new_round) {
@@ -55,10 +37,8 @@ function round_create($round, $round_params, $user_id, $remote_ip_info = null) {
         textblock_copy_replace("template/newround", $round['page_name'],
                 $replace, "round: {$round['id']}", $user_id, $remote_ip_info);
 
-        _round_cache_add($round);
         return true;
     } else {
-        _round_cache_delete($round);
         return false;
     }
 }
@@ -96,12 +76,8 @@ function round_recompute_score($round_id) {
 // Update a round.
 function round_update($round) {
     log_assert_valid(round_validate($round));
-    if (db_update('ia_round', $round,
-            "`id` = '".db_escape($round['id'])."'")) {
-        _round_cache_add($round);
-    } else {
-        _round_cache_delete($round);
-    }
+    db_update('ia_round', $round,
+              "`id` = '".db_escape($round['id'])."'");
 }
 
 // Returns array with all tasks attached to the specified round
@@ -263,7 +239,7 @@ function round_update_task_list($round_id, $old_tasks, $tasks,
 
     foreach ($old_tasks as $task) {
         // Update parent round cache for old tasks
-        task_get_parent_rounds($task, true);
+        task_get_parent_rounds($task);
         if ($force_update_security) {
             task_update_security($task, 'check');
         }
@@ -298,7 +274,7 @@ function round_update_task_list($round_id, $old_tasks, $tasks,
     if ($result) {
         foreach ($tasks as $task) {
             // Update parent round cache for new tasks
-            task_get_parent_rounds($task, true);
+            task_get_parent_rounds($task);
             if ($force_update_security) {
                 task_update_security($task, 'check');
             }
@@ -531,9 +507,6 @@ function round_get_many($options) {
 
 function round_delete($round_id) {
     log_assert(is_round_id($round_id));
-
-    // Delete round from cache
-    _round_cache_delete($round_id);
 
     // Delete job_tests
     $query = sprintf("SELECT `id`

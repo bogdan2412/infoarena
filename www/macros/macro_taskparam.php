@@ -4,7 +4,6 @@ require_once(Config::ROOT . "common/db/task.php");
 require_once(Config::ROOT . "common/db/user.php");
 require_once(Config::ROOT . "common/db/tags.php");
 require_once Config::ROOT.'common/db/task_statistics.php';
-require_once(Config::ROOT . "common/cache.php");
 require_once(Config::ROOT . "www/format/format.php");
 require_once(Config::ROOT . "www/macros/macro_stars.php");
 

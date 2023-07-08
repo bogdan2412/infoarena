@@ -1,7 +1,6 @@
 <?php
 
 require_once(Config::ROOT . "common/db/textblock.php");
-require_once(Config::ROOT . "common/cache.php");
 require_once(Config::ROOT . "lib/third-party/simple_html_dom.php");
 
 // Hijacks title from $text if already there. If $url is null the title

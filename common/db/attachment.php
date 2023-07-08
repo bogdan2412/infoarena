@@ -2,23 +2,6 @@
 
 require_once(Config::ROOT."common/db/db.php");
 require_once(Config::ROOT."common/attachment.php");
-require_once(Config::ROOT."common/cache.php");
-
-// Add $attachment to cache if not null and return $attachment.
-function _attachment_cache_add($attachment) {
-  if (!is_null($attachment)) {
-    log_assert_valid(attachment_validate($attachment));
-    mem_cache_set("attachment-by-id:{$attachment['id']}", $attachment);
-    mem_cache_set("attachment-by-name:".
-                  $attachment['page'] . '$' . $attachment['name'], $attachment);
-  }
-  return $attachment;
-}
-
-function _attachment_cache_delete($att) {
-  mem_cache_delete("attachment-by-id:{$att['id']}");
-  mem_cache_delete("attachment-by-name:".$att['page']."$".$att['name']);
-}
 
 // Get attachment by name
 function attachment_get($name, $page) {
@@ -26,42 +9,20 @@ function attachment_get($name, $page) {
   log_assert(is_page_name($page));
   $page = normalize_page_name($page);
 
-  if (($res = mem_cache_get("attachment-by-name:$page$$name")) !== false) {
-    return $res;
-  }
-
   $query = sprintf("SELECT *, DATE_FORMAT(`timestamp`, '%%Y-%%M-%%D %%h:%%i:%%s')
                       FROM ia_file
                       WHERE BINARY `name` = '%s' AND
                             `page` = '%s'",
                    db_escape($name), db_escape($page));
-
-  // This way nulls (missing attachments) get cached too.
-  $attachment = db_fetch($query);
-  if ($attachment != null) {
-    return _attachment_cache_add($attachment);
-  } else {
-    return mem_cache_set("attachment-by-name:$page$$name", null);
-  }
+  return db_fetch($query);
 }
 
 function attachment_get_by_id($id) {
-  if (($res = mem_cache_get("attachment-by-id:$id")) !== false) {
-    return $res;
-  }
-
   $query = sprintf("SELECT *
                       FROM ia_file
                       WHERE `id` = '%s'",
                    db_escape($id));
-
-  // This way nulls (missing attachments) get cached too.
-  $attachment = db_fetch($query);
-  if ($attachment != null) {
-    return _attachment_cache_add($attachment);
-  } else {
-    return mem_cache_set("attachment-by-id:$id", null);
-  }
+  return db_fetch($query);
 }
 
 // Update an attachment. FIXME: hash args.
@@ -79,8 +40,6 @@ function attachment_update($id, $name, $size, $mime_type, $page, $user_id,
   );
 
   db_update('ia_file', $attachment, '`id` = '.db_quote($id));
-
-  _attachment_cache_add($attachment);
 }
 
 // Inserts an attachment in the db
@@ -98,7 +57,6 @@ function attachment_insert($name, $size, $mime_type, $page, $user_id,
 
   db_insert('ia_file', $attachment);
   $attachment['id'] = db_insert_id();
-  _attachment_cache_add($attachment);
 
   return $attachment['id'];
 }
@@ -113,7 +71,6 @@ function attachment_delete($attach) {
   if (db_affected_rows() != 1) {
     return false;
   }
-  _attachment_cache_delete($attach);
   if (!@unlink(attachment_get_filepath($attach))) {
     return false;
   }
@@ -130,10 +87,8 @@ function attachment_rename($attach, $new_name) {
     return false;
   }
 
-  _attachment_cache_delete($attach);
   $new_attach = $attach;
   $new_attach['name'] = $new_name;
-  _attachment_cache_add($new_attach);
 
   if (!@rename(attachment_get_filepath($attach), attachment_get_filepath($new_attach))) {
     return false;

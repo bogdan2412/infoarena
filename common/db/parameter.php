@@ -1,7 +1,6 @@
 <?php
 
 require_once(Config::ROOT."common/db/db.php");
-require_once(Config::ROOT."common/cache.php");
 
 // Round / task parameters
 // This is sort of shared between rounds and tasks.
@@ -30,19 +29,11 @@ function parameter_update_values($object_type, $object_id, $dict) {
                          db_quote($k), db_quote($v));
         db_query($query);
     }
-
-    // Store to cache.
-    mem_cache_set("$object_type-params-by-id:$object_id", $dict);
 }
 
 // Returns hash with task parameter values
 function parameter_get_values($object_type, $object_id) {
     log_assert($object_type == 'task' || $object_type == 'round');
-
-    // Search in cache.
-    if (($res = mem_cache_get("$object_type-params-by-id:$object_id")) !== false) {
-        return $res;
-    }
 
     $query = sprintf("SELECT *
                       FROM ia_parameter_value
@@ -53,8 +44,6 @@ function parameter_get_values($object_type, $object_id) {
         $dict[$row['parameter_id']] = $row['value'];
     }
 
-    // Store in cache
-    mem_cache_set("$object_type-params-by-id:$object_id", $dict);
     return $dict;
 }
 

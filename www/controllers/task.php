@@ -160,7 +160,6 @@ function controller_task_details($task_id) {
                         $values['tag_'.$type], $parent);
                 }
             }
-            mem_cache_delete("task-authors-by-id:".$new_task["id"]);
 
             FlashMessage::addSuccess("Am salvat parametrii.");
             redirect(url_task_edit($task_id, 'task-edit-params'));
@@ -437,7 +436,7 @@ function controller_task_search() {
 
     $authors = tag_get_with_counts(array('author'), $tags);
     $tags = tag_build_tree(tag_get_with_counts(array('method', 'algorithm'),
-                                                 $tags));
+                                               $tags));
     $view = array();
     $view['title'] = "Rezultatele filtrării";
     $view['tasks'] = $tasks;

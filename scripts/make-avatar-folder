@@ -6,7 +6,6 @@ require_once(Config::ROOT . 'common/db/db.php');
 require_once(Config::ROOT . 'www/controllers/attachment.php');
 require_once(Config::ROOT . 'www/controllers/image_attachment.php');
 require_once(Config::ROOT . 'common/db/attachment.php');
-require_once(Config::ROOT . 'common/cache.php');
 require_once(Config::ROOT . 'common/db/user.php');
 require_once(Config::ROOT . 'common/avatar.php');
 require_once(Config::ROOT . 'common/db/textblock.php');
