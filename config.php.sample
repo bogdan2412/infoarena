@@ -9,11 +9,6 @@ require_once __DIR__ . '/lib/Request.php';
 // Here is the essential configuration. You only need to modify this
 // to get it working.
 
-// Security setup for certain kinds of textblock actions
-define('SEC_TEXTBLOCK_SIMPLE_VIEW_PRIVATE', ['admin']);
-define('SEC_TEXTBLOCK_SIMPLE_REV_EDIT_PUBLIC', ['admin', 'helper', 'normal']);
-define('SEC_TEXTBLOCK_SIMPLE_REV_EDIT_OTHER', ['admin']);
-
 // Monitor autorefresh options
 define('MONITOR_AUTOREFRESH', true);
 define('MONITOR_AUTOREFRESH_INTERVAL', 5000); // milliseconds

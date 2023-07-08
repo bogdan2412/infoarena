@@ -251,7 +251,7 @@ function security_textblock($user, $action, $textblock) {
     switch ($action) {
         case 'simple-view':
             if ($textsec == 'private') {
-                return in_array($usersec, SEC_TEXTBLOCK_SIMPLE_VIEW_PRIVATE);
+                return in_array($usersec, Config::SEC_VIEW_PRIVATE);
             } else {
                 return true;
             }
@@ -262,9 +262,9 @@ function security_textblock($user, $action, $textblock) {
         // Reversible modifications.
         case 'simple-rev-edit':
             if ($textsec == 'public') {
-                return in_array($usersec, SEC_TEXTBLOCK_SIMPLE_REV_EDIT_PUBLIC);
+                return in_array($usersec, Config::SEC_REV_EDIT_PUBLIC);
             } else {
-                return in_array($usersec, SEC_TEXTBLOCK_SIMPLE_REV_EDIT_OTHER);
+                return in_array($usersec, Config::SEC_REV_EDIT_OTHER);
             }
 
         // Permanent changes. Admin only

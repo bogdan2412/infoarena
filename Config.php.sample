@@ -38,6 +38,11 @@ class Config {
   const LOG_SQL_QUERIES = false;
   const LOG_SQL_QUERIES_EXPLAIN = false;
 
+  // Security: roles needed for certains actions.
+  const SEC_VIEW_PRIVATE = ['admin'];
+  const SEC_REV_EDIT_PUBLIC = ['admin', 'helper', 'normal'];
+  const SEC_REV_EDIT_OTHER = ['admin'];
+
   const ROUND_TEXTBLOCK_PREFIX = 'runda/';
   const TASK_TEXTBLOCK_PREFIX = 'problema/';
   const USER_TEXTBLOCK_PREFIX = 'utilizator/';
