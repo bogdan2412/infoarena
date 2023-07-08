@@ -13,7 +13,7 @@ function db_connect() {
     }
 
     // log_print("Connecting to database...");
-    if (!$dbLink = @mysql_connect(IA_DB_HOST, IA_DB_USER, IA_DB_PASS)) {
+    if (!$dbLink = @mysql_connect(Config::DB_HOST, Config::DB_USER, Config::DB_PASSWORD)) {
         if (IA_DB_KEEP_ALIVE) {
             $timeout = 0;
             do {
@@ -25,14 +25,14 @@ function db_connect() {
                 $timeout = min(max(1, $timeout * 2), 60);
 
                 // Try and reconnect to the database server
-                $dbLink = @mysql_connect(IA_DB_HOST, IA_DB_USER, IA_DB_PASS);
+                $dbLink = @mysql_connect(Config::DB_HOST, Config::DB_USER, Config::DB_PASSWORD);
             } while (!db_isalive());
             log_print('Connected to database.');
         } else {
             log_error('Cannot connect to database.');
         }
     }
-    if (!mysql_select_db(IA_DB_NAME, $dbLink)) {
+    if (!mysql_select_db(Config::DB_NAME, $dbLink)) {
         log_error('Cannot select database.');
     }
     mysql_query('SET NAMES utf8');
@@ -167,10 +167,10 @@ function db_next_row($result) {
 
 function db_execute_sql_file(string $fileName): void {
     $command = sprintf('mysql -h %s -u %s %s %s < %s',
-                       IA_DB_HOST,
-                       IA_DB_USER,
-                       IA_DB_NAME,
-                       IA_DB_PASS ? ('-p' . IA_DB_PASS) : '',
+                       Config::DB_HOST,
+                       Config::DB_USER,
+                       Config::DB_NAME,
+                       Config::DB_PASSWORD ? ('-p' . Config::DB_PASSWORD) : '',
                        $fileName);
 
     // TODO: better include system.
