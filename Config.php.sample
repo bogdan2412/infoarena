@@ -44,4 +44,7 @@ class Config {
   const SMTP = false;
   const SMTP_HOST = 'localhost';
   const SMTP_PORT = 25;
+
+  // Engine ID of the Google custom search engine.
+  const GOOGLE_CSE_TOKEN = '';
 }

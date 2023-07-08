@@ -9,7 +9,7 @@
     </p>
 </div>
 
-<script async src="https://cse.google.com/cse.js?cx=<?= GOOGLE_CSE_TOKEN ?>"></script>
+<script async src="https://cse.google.com/cse.js?cx=<?= Config::GOOGLE_CSE_TOKEN ?>"></script>
 <div class="gcse-searchbox-only"></div>
 <div class="gcse-searchresults-only"></div>
 

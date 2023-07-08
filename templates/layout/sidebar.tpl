@@ -27,7 +27,7 @@
       <a href="{url_task_search([])}">Categorii probleme</a>
     </li>
 
-    {if $smarty.const.GOOGLE_SEARCH && !Config::DEVELOPMENT_MODE}
+    {if Config::GOOGLE_CSE_TOKEN && !Config::DEVELOPMENT_MODE}
       <li>
         <a href="{url_google_search()}">Căutare probleme</a>
       </li>

@@ -13,7 +13,6 @@
     <meta charset="utf-8">
     {include "layout/phpConstants.tpl"}
     {include "layout/metaDescription.tpl"}
-    {include "layout/googleSiteVerification.tpl"}
     {include "layout/fonts.tpl"}
     {include "layout/css.tpl"}
     {include "layout/favicon.tpl"}

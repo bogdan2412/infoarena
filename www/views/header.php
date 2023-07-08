@@ -34,11 +34,6 @@ if (isset($form_errors) || isset($form_values)) {
     <meta name="Description" content="Concursuri de programare, Comunitate online. Arhivă de probleme, Evaluare 24/24, Resurse educaționale, Pregătire pentru olimpiadă.">
     <meta name="keywords" content="Concursuri, Informatică, Programare, Comunitate, Algoritmi, Articole, Evaluare, Pregătire">
 <?php
-    if (GOOGLE_SITE_VERIFICATION) {
-        print("<meta name=\"google-site-verification\" content=\"" .
-              GOOGLE_SITE_VERIFICATION .
-              "\">");
-    }
     }
 ?>
 
@@ -97,7 +92,7 @@ $is_admin = ('admin' == getattr($identity_user, 'security_level'));
         <li class="separator"><hr></li>
         <li><a href="<?= url_task_search([]) ?>">Categorii probleme</a></li>
 
-        <?php if (GOOGLE_SEARCH && !Config::DEVELOPMENT_MODE) { ?>
+        <?php if (Config::GOOGLE_CSE_TOKEN && !Config::DEVELOPMENT_MODE) { ?>
 		    <li><a href="<?= html_escape(url_google_search()) ?>">Căutare probleme</a></li>
 		    <div id="google-search">
 			    <?php include(Config::ROOT.'www/views/google_search.php'); ?>
