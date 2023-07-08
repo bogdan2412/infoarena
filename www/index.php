@@ -46,12 +46,6 @@ $page_id = implode('/', array_slice($pagepath, 1));
 $action = request('action', 'view');
 
 
-if (IA_HTTPS_ENABLED) {
-    if (!is_connection_secure()) {
-        redirect(IA_URL_HTTPS_HOST . $_SERVER['REQUEST_URI'], 301);
-    }
-}
-
 // Direct mapping list
 // Note: array_flip() flips keys with values in a dictionary.
 // FIXME: change this to Romanian!

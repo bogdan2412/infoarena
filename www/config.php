@@ -69,5 +69,3 @@ $IA_SAFE_MIME_TYPES = [
 ];
 
 define('IA_USER_MAX_ARCHIVE_WAITING_JOBS', 1);
-
-$IA_HTTPS_ENDPOINTS = array_flip(array('login', 'register'));

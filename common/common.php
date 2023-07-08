@@ -384,21 +384,6 @@ if (function_exists("date_default_timezone_set")) {
 }
 
 /*
- * Checks whether the current connection is through the https request
- *
- * returns bool
- */
-function is_connection_secure() {
-    $https = getattr($_SERVER, 'HTTPS', null);
-
-    if ($https == 'on' || $https == '1' ||
-        getattr($_SERVER, 'HTTP_X_FORWARDED_PROTO') === 'https') {
-        return true;
-    }
-    return false;
-}
-
-/*
  * Return information about the remote IP address. Useful for logging.
  * This isn't necessarily just an IP address. It might contain proxy
  * information when available.

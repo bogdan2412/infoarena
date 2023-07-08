@@ -60,7 +60,7 @@ foreach ($tasks as $t) {
         $user = user_get_by_id($t['user_id']);
         printf("* Problema [%s](%s%s%s) (autor:%s) %s(%d erori)\n",
                $t['id'],
-               IA_URL_HTTPS_HOST,
+               IA_URL_HOST,
                IA_URL_PREFIX,
                $t['page_name'],
                $user['username'],

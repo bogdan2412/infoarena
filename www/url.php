@@ -17,41 +17,24 @@ require_once(Config::ROOT . 'common/common.php');
 //
 // If $absolute is true(default false) then IA_URL_HOST will be included in
 // the url.
-function url_complex($document = '', $args = array(), $absolute = false,
-                     $secure_connection = false) {
+function url_complex($document = '', $args = array(), $absolute = false) {
     $document = $document ?? '';
     log_assert(false === strpos($document, '?'), 'Page name contains ?');
     log_assert(is_array($args), "Argument list must be an array");
     log_assert(!array_key_exists("page", $args), "Argument list contains page");
-    if ($secure_connection == true) {
-        log_assert($absolute == true);
-    }
     $args['page'] = $document;
     $url = url_from_args($args, $absolute);
     if ($absolute) {
-        return url_absolute($url, $secure_connection);
+        return url_absolute($url);
     } else  {
         return $url;
     }
 }
 
 // Makes an url absolute. It just prepends IA_URL_HOST
-function url_absolute($url, $secure_connection = null) {
+function url_absolute($url) {
     log_assert(strpos($url, 'http') !== 0, "Url begins with http");
-    if (is_null($secure_connection)) {
-        if (is_connection_secure()) {
-            $url = IA_URL_HTTPS_HOST . $url;
-        } else {
-            $url = IA_URL_HOST . $url;
-        }
-    } else {
-        if ($secure_connection) {
-            $url = IA_URL_HTTPS_HOST . $url;
-        } else {
-            $url = IA_URL_HOST . $url;
-        }
-    }
-
+    $url = IA_URL_HOST . $url;
     return $url;
 }
 
@@ -196,7 +179,7 @@ function url_image_resize($page, $file, $resize) {
 // User stuff
 
 function url_login() {
-    return url_complex("login", array(), true, IA_HTTPS_ENABLED);
+    return url_complex("login", array(), true, true);
 }
 
 function url_logout() {
@@ -212,7 +195,7 @@ function url_account($user = false) {
 }
 
 function url_register() {
-    return url_complex("register", array(), true, IA_HTTPS_ENABLED);
+    return url_complex("register", array(), true, true);
 }
 
 function url_resetpass($username = false) {

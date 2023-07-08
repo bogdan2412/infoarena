@@ -13,7 +13,6 @@ define('IA_DB_KEEP_ALIVE', false);
 
 // Web host. This is probably localhost. no trailing slash here
 define('IA_URL_HOST', '--write-me-IA_URL_HOST--');
-define('IA_URL_HTTPS_HOST', '--write-me-IA_URL_HOST--');
 
 // URL prefix, without the IA_URL_HOST part
 // (only the part relative to the web server).
@@ -40,10 +39,6 @@ define('IA_HTTP_ENV', isset($_SERVER['REQUEST_URI']));
 
 // "The" url to infoarena home page.
 define('IA_URL', IA_URL_HOST . IA_URL_PREFIX);
-
-// Enable support for https connections. If enabled, secure connections are
-// enforced for login and register pages.
-define('IA_HTTPS_ENABLED', !IA_DEVELOPMENT_MODE);
 
 // cookie domain
 // leave null when working on localhost
