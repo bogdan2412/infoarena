@@ -182,7 +182,7 @@ function http_serve($disk_file_name, $http_file_name, $mime_type = null, $cache_
 function die_http_error($code = 404, $msg = "File not found") {
     header("HTTP/1.1 $code");
     echo '<h1>'.$msg.'</h1>';
-    echo '<p><a href="'.IA_URL.'">Înapoi la prima pagină</a></p>';
+    echo '<p><a href="'.Config::URL_HOST . Config::URL_PREFIX.'">Înapoi la prima pagină</a></p>';
     die();
 }
 

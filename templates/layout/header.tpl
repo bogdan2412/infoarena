@@ -33,7 +33,7 @@
   {/if}
 
   <h1>
-    <a href="{$smarty.const.IA_URL_PREFIX}">
+    <a href="{Config::URL_PREFIX}">
       {$smarty.const.SITE_NAME} informatică de performanță
     </a>
   </h1>

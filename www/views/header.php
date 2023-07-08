@@ -54,7 +54,7 @@ if (isset($form_errors) || isset($form_values)) {
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/print.css')) ?>">
 
     <link
-      href="<?= IA_URL."static/images/favicon.svg" ?>"
+      href="<?= Config::URL_HOST . Config::URL_PREFIX."static/images/favicon.svg" ?>"
       rel="icon"
       type="image/svg+xml">
     <script src="<?= html_escape(url_static('js/config.js.php')) ?>"></script>

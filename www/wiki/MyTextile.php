@@ -141,7 +141,7 @@ class MyTextile extends \Netcarver\Textile\Parser {
       if (preg_match("/^ ([^\?]+) \? (".IA_RE_ATTACHMENT_NAME.") $/sxi", $url, $matches)) {
         $args['urlx'] = url_attachment($matches[1], $matches[2]);
       } else {
-        $args['urlx'] = IA_URL_PREFIX . $url;
+        $args['urlx'] = Config::URL_PREFIX . $url;
       }
     } else {
       $args['inner'] = $this->add_css_class($args['inner'], 'wiki_link_external');
@@ -165,8 +165,8 @@ class MyTextile extends \Netcarver\Textile\Parser {
     $allowed_urls = array("static/images/");
 
     foreach ($allowed_urls as $url) {
-      if (starts_with(strtolower($srcpath), IA_URL . $url) ||
-          starts_with(strtolower($srcpath), IA_URL_PREFIX . $url)) {
+      if (starts_with(strtolower($srcpath), Config::URL_HOST . Config::URL_PREFIX . $url) ||
+          starts_with(strtolower($srcpath), Config::URL_PREFIX . $url)) {
         $allowed = true;
         break;
       }

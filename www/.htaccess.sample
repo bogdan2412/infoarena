@@ -1,6 +1,6 @@
 RewriteEngine On
 
-# Same as IA_URL_PREFIX
+# Same as Config::URL_PREFIX
 # Slashes at both ends
 RewriteBase --write-me-IA_URL_PREFIX--
 

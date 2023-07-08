@@ -57,7 +57,9 @@ function copy_attachment_file($pagename, $filename, $target) {
         $cachefsize === false || $cachefsize != $att['size']) {
         $curl = curl_init();
         // Can't use url_attachment here because it's in www.
-        curl_setopt($curl, CURLOPT_URL, IA_URL . "$pagename?action=download&file=$filename");
+        curl_setopt($curl, CURLOPT_URL,
+                    Config::URL_HOST . Config::URL_PREFIX .
+                    "$pagename?action=download&file=$filename");
         curl_setopt($curl, CURLOPT_USERPWD, IA_JUDGE_USERNAME . ":" . IA_JUDGE_PASSWORD);
 
         $cachefd = fopen($cachefname, "wb");

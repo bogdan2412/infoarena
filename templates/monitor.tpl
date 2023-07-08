@@ -51,7 +51,7 @@
   <br>
 
   <p>
-    <a href="{$smarty.const.IA_URL_PREFIX}documentatie/monitorul-de-evaluare">
+    <a href="{Config::URL_PREFIX}documentatie/monitorul-de-evaluare">
       Ce este și cum se folosește
     </a>
     monitorul de evaluare.

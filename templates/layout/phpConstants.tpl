@@ -1,3 +1,3 @@
 <script defer>
-  const HREF_BASE = '{$smarty.const.IA_URL_PREFIX}';
+  const HREF_BASE = '{Config::URL_PREFIX}';
 </script>

@@ -15,7 +15,7 @@ require_once(Config::ROOT . 'common/common.php');
 //
 // NOTE: don't add ?x=y stuff in $document
 //
-// If $absolute is true(default false) then IA_URL_HOST will be included in
+// If $absolute is true(default false) then Config::URL_HOST will be included in
 // the url.
 function url_complex($document = '', $args = array(), $absolute = false) {
     $document = $document ?? '';
@@ -31,10 +31,10 @@ function url_complex($document = '', $args = array(), $absolute = false) {
     }
 }
 
-// Makes an url absolute. It just prepends IA_URL_HOST
+// Makes an url absolute. It just prepends Config::URL_HOST
 function url_absolute($url) {
     log_assert(strpos($url, 'http') !== 0, "Url begins with http");
-    $url = IA_URL_HOST . $url;
+    $url = Config::URL_HOST . $url;
     return $url;
 }
 
@@ -42,7 +42,7 @@ function url_absolute($url) {
 // These are the exact $args you will receive in $_GET
 function url_from_args($args) {
     // First part.
-    $url = IA_URL_PREFIX . getattr($args, "page", "home");
+    $url = Config::URL_PREFIX . getattr($args, "page", "home");
 
     // Actual args.
     $first = true;

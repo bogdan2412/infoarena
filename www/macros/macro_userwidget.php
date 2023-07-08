@@ -19,7 +19,7 @@ function macro_userwidget($args) {
         return macro_error("Utilizator inexistent.");
     }
     $ret = '<img src="';
-    $ret .= url_absolute(IA_URL_PREFIX . "userwidget/" . $user);
+    $ret .= url_absolute(Config::URL_PREFIX . "userwidget/" . $user);
     $ret .= '">';
     return $ret;
 }

@@ -13,7 +13,7 @@ if (!IA_DEVELOPMENT_MODE) {
 }
 
 // Test with curl. $args format:
-// * url: url to curl. If http:// is ommited IA_URL_HOST is assumed.
+// * url: url to curl. If http:// is ommited Config::URL_HOST is assumed.
 // * post: post arguments (use url_ functions for get args).
 // * user: user to curl as. HTTP auth is used, password is always pwd.
 // * validate_html: boolean, default true. Automatic html validation.
@@ -28,7 +28,7 @@ function curl_test($args)
     );
 
     if (strpos($args["url"], 'http://') === false) {
-        $curl_args[CURLOPT_URL] = IA_URL_HOST . $args['url'];
+        $curl_args[CURLOPT_URL] = Config::URL_HOST . $args['url'];
     } else {
         $curl_args[CURLOPT_URL] = $args['url'];
     }

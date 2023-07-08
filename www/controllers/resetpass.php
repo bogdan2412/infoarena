@@ -73,7 +73,7 @@ Echipa %s
                                $user['full_name'],
                                $clink,
                                SITE_NAME,
-                               IA_URL
+                               Config::URL_HOST . Config::URL_PREFIX
 
             );
 
@@ -145,7 +145,7 @@ Echipa %s
                        $user['username'],
                        url_login(),
                        SITE_NAME,
-                       IA_URL);
+                       Config::URL_HOST . Config::URL_PREFIX);
 
     // send e-mail
     send_email($to, $subject, $message);
