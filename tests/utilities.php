@@ -6,7 +6,7 @@ require_once(Config::ROOT."common/common.php");
 require_once(Config::ROOT."common/db/db.php");
 require_once(Config::ROOT."common/db/user.php");
 
-if (!IA_DEVELOPMENT_MODE) {
+if (!Config::DEVELOPMENT_MODE) {
     // These tests alter the database and can remove user created content
     // by mistake (it has happened in the past).
     log_error("You should never run these tests in a production environment");

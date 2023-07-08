@@ -6,6 +6,7 @@ class Config {
   const DB_NAME = 'nerdarena';
   const DB_USER = 'root';
   const DB_PASSWORD = '';
+  const DB_KEEP_ALIVE = false;
 
   // The concatenation URL_HOST + URL_PREFIX should yield the URL of the home
   // page of your installation.
@@ -18,4 +19,10 @@ class Config {
 
   // Filesystem root of this installation. Include a trailing slash.
   const ROOT = __DIR__ . '/';
+
+  // Define the place the avatars are being stored
+  const AVATAR_DIR = __DIR__ .  '/www/static/images/avatar/';
+
+  // Activate some debugging tools and disable some external resources.
+  const DEVELOPMENT_MODE = true;
 }

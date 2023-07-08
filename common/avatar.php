@@ -63,7 +63,7 @@ function avatar_cache_resized($filepath, $image_info, $new_filename) {
                         'L50x50' => 'normal/' , '150x150' => 'big/');
 
   // Hardlink / Copy the original image
-  $new_filepath = IA_AVATAR_FOLDER . 'full/' . $new_filename;
+  $new_filepath = Config::AVATAR_DIR . 'full/' . $new_filename;
   if (is_file($new_filepath) || is_link($new_filepath)) {
     unlink($new_filepath);
   }
@@ -82,7 +82,7 @@ function avatar_cache_resized($filepath, $image_info, $new_filename) {
 
     // resizing
     image_resize($image_info, $filepath, $new_image_info,
-                 IA_AVATAR_FOLDER.$resize_folder.$new_filename);
+                 Config::AVATAR_DIR.$resize_folder.$new_filename);
   }
 }
 
@@ -99,14 +99,14 @@ function avatar_delete($username) {
   $resize_folders = array('tiny/', 'small/', 'normal/', 'big/');
 
   // Unlink the hardlinked full-sized image
-  $filepath = IA_AVATAR_FOLDER . 'full/a' . $username;
+  $filepath = Config::AVATAR_DIR . 'full/a' . $username;
   if (is_file($filepath) || is_link($filepath)) {
     unlink($filepath);
   }
 
   // Delete the resized ones
   foreach ($resize_folders as $resize_folder) {
-    $filepath = IA_AVATAR_FOLDER . $resize_folder . 'a'
+    $filepath = Config::AVATAR_DIR . $resize_folder . 'a'
       . $username;
     if (is_file($filepath) || is_link($filepath)) {
       unlink($filepath);

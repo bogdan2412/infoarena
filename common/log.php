@@ -86,7 +86,7 @@ function format_message_backtrace($message, $backtrace_level = 0) {
 // trigger_error which split multi-line strings.
 function trigger_error_split($error_msg, $error_type)
 {
-  if (IA_DEVELOPMENT_MODE && IA_HTTP_ENV) {
+  if (Config::DEVELOPMENT_MODE && Request::isWeb()) {
     // FIXME: Un-hack this
     // when in development mode, also save mesage in log buffer
     // so it can be displayed to user inside rendering page
@@ -286,7 +286,7 @@ function logging_error_handler($errno, $errstr, $errfile, $errline) {
     error_log("Caught a fatal error, printing a full backtrace");
     log_backtrace(2, false, true);
 
-    if (IA_HTTP_ENV && IA_DEVELOPMENT_MODE) {
+    if (Request::isWeb() && Config::DEVELOPMENT_MODE) {
       $msg = $errstr."\nPrinting full backtrace:\n";
       $backtrace = debug_backtrace();
       for ($i = 1; $i < count($backtrace); ++$i) {
@@ -302,7 +302,7 @@ function logging_error_handler($errno, $errstr, $errfile, $errline) {
         print("<pre>".htmlentities($msg)."</pre>");
       }
     }
-    if (IA_HTTP_ENV && !IA_DEVELOPMENT_MODE) {
+    if (Request::isWeb() && !Config::DEVELOPMENT_MODE) {
       header('HTTP/1.1 500 Internal Error');
     }
     die();
@@ -313,7 +313,7 @@ function logging_error_handler($errno, $errstr, $errfile, $errline) {
 function log_execution_stats() {
   global $execution_stats;
   log_assert($execution_stats);
-  log_assert(IA_DEVELOPMENT_MODE);
+  log_assert(Config::DEVELOPMENT_MODE);
 
   $msg = 'Time='
     .(round((microtime(true)-$execution_stats['timestamp'])*100)/100)

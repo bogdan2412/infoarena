@@ -26,7 +26,7 @@ require_once(Config::ROOT."www/format/format.php");
             </div>
         </div>
     <?php } ?>
-    <?php if (IA_DEVELOPMENT_MODE) { ?>
+    <?php if (Config::DEVELOPMENT_MODE) { ?>
         <div id="dev_warning">
             Bravely working in development mode&hellip;<br>Keep it up!
         </div>
@@ -56,7 +56,7 @@ function ia_template_footer() {
         <li><?= format_link(url_textblock("contact"), "Contact") ?></li>
         <li class="top"><a href="#header">Sari la începutul paginii &uarr;</a></li>
     </ul>
-<?php if (!IA_DEVELOPMENT_MODE) { ?>
+<?php if (!Config::DEVELOPMENT_MODE) { ?>
     <p class="cc">
         <a class="badge" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
             <img
@@ -82,7 +82,7 @@ function ia_template_footer() {
 ?>
 </div>
 
-<?php if (!IA_DEVELOPMENT_MODE && GOOGLE_ANALYTICS_TRACKING_ID) { ?>
+<?php if (!Config::DEVELOPMENT_MODE && GOOGLE_ANALYTICS_TRACKING_ID) { ?>
     <script src="http://www.google-analytics.com/urchin.js">
     </script>
     <script>

@@ -58,7 +58,7 @@ if (isset($form_errors) || isset($form_values)) {
       rel="icon"
       type="image/svg+xml">
     <script src="<?= html_escape(url_static('js/config.js.php')) ?>"></script>
-    <script src="<?= html_escape(IA_DEVELOPMENT_MODE?url_static('js/third-party/jquery-3.7.0.min.js'):'//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js') ?>"></script>
+    <script src="<?= html_escape(Config::DEVELOPMENT_MODE?url_static('js/third-party/jquery-3.7.0.min.js'):'//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js') ?>"></script>
     <script src="<?= html_escape(url_static('js/default.js')) ?>"></script>
     <script src="<?= html_escape(url_static('js/third-party/tabber-minimized.js')) ?>"></script>
     <script src="<?= html_escape(url_static('js/submit.js')) ?>"></script>
@@ -97,7 +97,7 @@ $is_admin = ('admin' == getattr($identity_user, 'security_level'));
         <li class="separator"><hr></li>
         <li><a href="<?= url_task_search([]) ?>">Categorii probleme</a></li>
 
-        <?php if (GOOGLE_SEARCH && !IA_DEVELOPMENT_MODE) { ?>
+        <?php if (GOOGLE_SEARCH && !Config::DEVELOPMENT_MODE) { ?>
 		    <li><a href="<?= html_escape(url_google_search()) ?>">Căutare probleme</a></li>
 		    <div id="google-search">
 			    <?php include(Config::ROOT.'www/views/google_search.php'); ?>

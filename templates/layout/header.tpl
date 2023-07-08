@@ -26,7 +26,7 @@
     </div>
   {/if}
 
-  {if $smarty.const.IA_DEVELOPMENT_MODE}
+  {if Config::DEVELOPMENT_MODE}
     <div id="dev_warning">
       Bravely working in development mode&hellip;<br>Keep it up!
     </div>

@@ -3,7 +3,7 @@ require_once '../config.php';
 require_once Config::ROOT.'www/config.php';
 require_once Config::ROOT.'common/log.php';
 require_once Config::ROOT.'common/common.php';
-if (IA_DEVELOPMENT_MODE) {
+if (Config::DEVELOPMENT_MODE) {
     log_print('- -- --- ---- ----- Request: '.$_SERVER['QUERY_STRING']);
 }
 check_requirements();

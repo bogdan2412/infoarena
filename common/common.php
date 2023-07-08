@@ -336,7 +336,7 @@ function check_requirements() {
     }
 
     // Check for retarded php.ini settings.
-    if (IA_HTTP_ENV) {
+    if (Request::isWeb()) {
         log_assert(!ini_get("session.auto_start"),
                    "Please disable session.auto_start. It kills babies!");
         log_assert(ini_get("session.use_cookies"),
@@ -360,7 +360,7 @@ function check_requirements() {
 error_reporting(IA_ERROR_REPORTING);
 
 // Initialize execution stats.
-if (IA_DEVELOPMENT_MODE) {
+if (Config::DEVELOPMENT_MODE) {
     $execution_stats = array(
         'timestamp' => microtime(true),
         'queries' => 0,
@@ -371,7 +371,7 @@ if (IA_DEVELOPMENT_MODE) {
 function get_execution_stats_log() {
   global $execution_stats;
 
-  if (IA_DEVELOPMENT_MODE) {
+  if (Config::DEVELOPMENT_MODE) {
     log_execution_stats();
   }
   return $execution_stats['log_copy'] ?? '';

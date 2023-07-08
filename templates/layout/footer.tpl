@@ -35,7 +35,7 @@
     </li>
   </ul>
 
-  {if $smarty.const.IA_DEVELOPMENT_MODE}
+  {if Config::DEVELOPMENT_MODE}
     <textarea id="log" rows="50" cols="80">
       {get_execution_stats_log()}
     </textarea>

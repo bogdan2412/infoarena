@@ -36,13 +36,13 @@ $userlist = user_get_list(false);
 $noimage_filepath = attachment_get_filepath(attachment_get('noimage',
                     'template/infoarena'));
 // creating the avatar folder if it does not exists, and grant it permissions
-if (file_exists(IA_AVATAR_FOLDER) == false) {
-    mkdir(IA_AVATAR_FOLDER, 0777);
+if (file_exists(Config::AVATAR_DIR) == false) {
+    mkdir(Config::AVATAR_DIR, 0777);
 }
 $size_types = array('tiny', 'small', 'normal', 'big', 'full');
 foreach ($size_types as $size) {
-    if (file_exists(IA_AVATAR_FOLDER . '/' . $size) == false) {
-        mkdir(IA_AVATAR_FOLDER . '/' . $size, 0777);
+    if (file_exists(Config::AVATAR_DIR . '/' . $size) == false) {
+        mkdir(Config::AVATAR_DIR . '/' . $size, 0777);
     }
 }
 

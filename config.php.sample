@@ -1,33 +1,13 @@
 <?php
 
 require_once __DIR__ . '/Config.php';
+require_once __DIR__ . '/lib/Request.php';
 
 // Global configuration file.
 // This is just a sample file. Copy this over to config.php and edit.
 
 // Here is the essential configuration. You only need to modify this
 // to get it working.
-
-// Keep database connection alive when lost
-define('IA_DB_KEEP_ALIVE', false);
-
-// Define the place the avatars are being stored
-define('IA_AVATAR_FOLDER', '--write-me-IA_AVATAR_FOLDER--');
-
-
-// Congratulations! You're done with the essential configuration.
-// --------------------------------------------------------------
-// There are some more settings to adjust but they are optional.
-
-// Enable this when working on your own local copy. It gives you a few
-// debugging & profiling tools. Additionally, it disables Google Analytics
-// or other external resources.
-define('IA_DEVELOPMENT_MODE', true);
-
-// Determine if script is runing in an HTTP environment. Otherwise it is
-// probably running in CLI mode. Don't change it.
-// FIXME: move to common/common.php
-define('IA_HTTP_ENV', isset($_SERVER['REQUEST_URI']));
 
 // cookie domain
 // leave null when working on localhost

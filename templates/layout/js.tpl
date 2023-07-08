@@ -15,7 +15,7 @@
   </script>
 {/if}
 
-{if !$smarty.const.IA_DEVELOPMENT_MODE && $smarty.const.GOOGLE_ANALYTICS_TRACKING_ID}
+{if !Config::DEVELOPMENT_MODE && $smarty.const.GOOGLE_ANALYTICS_TRACKING_ID}
   <script src="http://www.google-analytics.com/urchin.js"></script>
   <script>
     _uacct = "{$smarty.const.GOOGLE_ANALYTICS_TRACKING_ID}";

@@ -14,7 +14,7 @@ function db_connect() {
 
     // log_print("Connecting to database...");
     if (!$dbLink = @mysql_connect(Config::DB_HOST, Config::DB_USER, Config::DB_PASSWORD)) {
-        if (IA_DB_KEEP_ALIVE) {
+        if (Config::DB_KEEP_ALIVE) {
             $timeout = 0;
             do {
                 log_warn("Cannot connect to database, retrying in {$timeout} seconds.");
@@ -99,7 +99,7 @@ function db_query($query, $unbuffered = false) {
     global $dbLink;
 
     // Make sure we are connected.
-    if (IA_DB_KEEP_ALIVE) {
+    if (Config::DB_KEEP_ALIVE) {
         db_keepalive();
     }
 
@@ -117,7 +117,7 @@ function db_query($query, $unbuffered = false) {
 
     if (!$result) {
         // Query failed. Have we lost connection?
-        if (IA_DB_KEEP_ALIVE && db_keepalive()) {
+        if (Config::DB_KEEP_ALIVE && db_keepalive()) {
             // Try query again
             return db_query($query, $unbuffered);
         }
@@ -146,7 +146,7 @@ function db_query($query, $unbuffered = false) {
         }
     }
 
-    if (IA_DEVELOPMENT_MODE) {
+    if (Config::DEVELOPMENT_MODE) {
         global $execution_stats;
         $execution_stats['queries']++;
     }
