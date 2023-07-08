@@ -104,7 +104,7 @@ function db_query($query, $unbuffered = false) {
     }
 
     // Disable unbuffered queries.
-    if (!IA_DB_MYSQL_UNBUFFERED_QUERY) {
+    if (!Config::DB_UNBUFFERED) {
         $unbuffered = false;
     }
 

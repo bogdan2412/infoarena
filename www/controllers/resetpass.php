@@ -121,7 +121,7 @@ function controller_resetpass_confirm($username) {
     }
 
     // reset password
-    $new_password = sha1(mt_rand(1000000, 9999999).IA_SECRET);
+    $new_password = sha1(mt_rand(1000000, 9999999).Config::RESET_PASSWORD_SALT);
     $new_password = substr($new_password, 0, 6);
     $user['password'] = user_hash_password($new_password, $user['username']);
     user_update($user);

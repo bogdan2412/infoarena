@@ -14,7 +14,7 @@ function user_hash_password($password, $username) {
 // User must supply this in order to reset their password.
 // $user is user object as returned by user_get_by_username(...)
 function user_resetpass_key($user) {
-    $key = sha1('r:'.$user['username'].':'.$user['password'].':'.IA_SECRET);
+    $key = sha1('r:'.$user['username'].':'.$user['password'].':'.Config::RESET_PASSWORD_SALT);
 
     // trim key. make it shorter since long URLs suck in text/plain emails
     return substr($key, 0, 16);

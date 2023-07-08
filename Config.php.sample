@@ -7,6 +7,7 @@ class Config {
   const DB_USER = 'root';
   const DB_PASSWORD = '';
   const DB_KEEP_ALIVE = false;
+  const DB_UNBUFFERED = false;
 
   // The concatenation URL_HOST + URL_PREFIX should yield the URL of the home
   // page of your installation.
@@ -34,4 +35,13 @@ class Config {
   const ROUND_TEXTBLOCK_PREFIX = 'runda/';
   const TASK_TEXTBLOCK_PREFIX = 'problema/';
   const USER_TEXTBLOCK_PREFIX = 'utilizator/';
+
+  // Set this to something random.
+  const RESET_PASSWORD_SALT = '';
+
+  // Mail settings.
+  const EMAIL_FROM = 'test@test.com';
+  const SMTP = false;
+  const SMTP_HOST = 'localhost';
+  const SMTP_PORT = 25;
 }
