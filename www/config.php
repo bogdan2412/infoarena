@@ -26,8 +26,6 @@ define("IA_SUBMISSION_MAXSIZE", 256*1024);
 // maximum avatar file-size
 define("IA_AVATAR_MAXSIZE", 400*1024);
 
-// Number of items in a RSS feed
-define('IA_MAX_FEED_ITEMS', 15);
 date_default_timezone_set('GMT');
 
 // Constrains and default value for pager display_rows.
@@ -43,11 +41,8 @@ define('IA_DATE_DEFAULT_TIMEZONE', 'Europe/Bucharest');
 define('IA_DATE_DEFAULT_FORMAT', 'd MMMM yyyy HH:mm:ss');
 
 // Cache directory
-define('IA_CACHE_ENABLE', true);
 define('IA_IMAGE_CACHE_ENABLE', true);
 define('IA_TEXTILE_CACHE_ENABLE', true);
-// FIXME: proper cleaning mechanism.
-define('IA_CACHE_SIZE', 256 * 1024 * 1024);
 
 // Image resampling
 //  - constraints for image resampling
