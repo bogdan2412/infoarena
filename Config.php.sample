@@ -72,4 +72,15 @@ class Config {
   const COPYRIGHT_FIRST_YEAR = 2012;
   const COPYRIGHT_OWNER = 'NerdArena';
   const ABOUT_PAGE = 'despre-nerdarena';
+
+  const ENABLED_COMPILERS = [
+    'c-32' => 'GNU C - 32bit',
+    'cpp-32' => 'GNU C++ - 32bit',
+    'c-64' => 'GNU C - 64bit',
+    'cpp-64' => 'GNU C++ - 64bit',
+    'fpc' => 'FreePascal',
+    'java' => 'Java',
+    'rs' => 'Rust',
+    'py' => 'Python3 (FOARTE EXPERIMENTAL!)',
+  ];
 }

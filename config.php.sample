@@ -8,14 +8,3 @@ require_once __DIR__ . '/lib/Request.php';
 
 // Here is the essential configuration. You only need to modify this
 // to get it working.
-
-define('ENABLED_COMPILERS', array(
-    'c-32' => 'GNU C - 32bit',
-    'cpp-32' => 'GNU C++ - 32bit',
-    'c-64' => 'GNU C - 64bit',
-    'cpp-64' => 'GNU C++ - 64bit',
-    'fpc' => 'FreePascal',
-    'java' => 'Java',
-    'rs' => 'Rust',
-    'py' => 'Python3 (FOARTE EXPERIMENTAL!)',
-));
