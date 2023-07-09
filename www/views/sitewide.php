@@ -52,7 +52,6 @@ function ia_template_footer() {
         <li><?= format_link(url_textblock("contact"), "Contact") ?></li>
         <li class="top"><a href="#header">Sari la începutul paginii &uarr;</a></li>
     </ul>
-<?php if (!Config::DEVELOPMENT_MODE) { ?>
     <p class="cc">
         <a class="badge" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
             <img
@@ -64,9 +63,7 @@ function ia_template_footer() {
         <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Creative
         Commons Attribution-NonCommercial-ShareAlike 4.0 International</a>.
     </p>
-<?php
-    }
-    else {
+<?php if (Config::DEVELOPMENT_MODE) {
         // Development mode: display current page's log in site footer
         global $execution_stats;
         log_execution_stats();

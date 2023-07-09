@@ -159,7 +159,7 @@ a.rating-badge-1:hover { border-color: #ee0000; }
   color: gray;
   font-family: monospace;
   font-size: 9pt;
-  width: 98%;
+  width: 100%;
 }
 
 #log_active {
