@@ -2,10 +2,8 @@ config.php
 Config.php
 eval/config.php
 
-infoarena
 apache.conf
 www/.htaccess
-www/.user.ini
 
 common/lcs
 jrun/jrun
