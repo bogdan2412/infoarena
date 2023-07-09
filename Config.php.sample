@@ -42,7 +42,7 @@ class Config {
 
   // Security: roles needed for certains actions.
   const SEC_VIEW_PRIVATE = ['admin'];
-  const SEC_REV_EDIT_PUBLIC = ['admin', 'helper', 'normal'];
+  const SEC_REV_EDIT_PUBLIC = ['admin', 'helper'];
   const SEC_REV_EDIT_OTHER = ['admin'];
 
   const ROUND_TEXTBLOCK_PREFIX = 'runda/';
