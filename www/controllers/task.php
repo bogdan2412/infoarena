@@ -183,7 +183,7 @@ function controller_task_details($task_id) {
     // deletion kicks in when (1) the task has attachments and (2) secure
     // deletion is enabled in the config file.
     $view['secure_delete'] =
-        SECURE_DELETION &&
+        Config::SECURE_DELETION &&
         count(attachment_get_all($task['page_name']));
 
     execute_view_die("views/task_edit.php", $view);

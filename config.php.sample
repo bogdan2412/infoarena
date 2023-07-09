@@ -9,10 +9,6 @@ require_once __DIR__ . '/lib/Request.php';
 // Here is the essential configuration. You only need to modify this
 // to get it working.
 
-// Secure deletion: if true, prevent deleting tasks with attachments. Instead,
-// require the user to explicitly delete all attachments first.
-define('SECURE_DELETION', false);
-
 define('ENABLED_COMPILERS', array(
     'c-32' => 'GNU C - 32bit',
     'cpp-32' => 'GNU C++ - 32bit',

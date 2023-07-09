@@ -47,6 +47,10 @@ class Config {
   const TASK_TEXTBLOCK_PREFIX = 'problema/';
   const USER_TEXTBLOCK_PREFIX = 'utilizator/';
 
+  // If true, prevent deleting tasks with attachments. Instead, require the
+  // user to explicitly delete all attachments first.
+  const SECURE_DELETION = true;
+
   // Job monitor autorefresh options.
   const MONITOR_AUTOREFRESH = false;
   const MONITOR_AUTOREFRESH_INTERVAL = 5000; // milliseconds
