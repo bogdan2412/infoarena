@@ -2,7 +2,7 @@
 
 if (!defined('IA_SETUP_SCRIPT')) {
     $script_dir = dirname($argv[0]);
-    require_once($script_dir . "/../config.php");
+    require_once($script_dir . "/../Config.php");
     require_once(Config::ROOT . "common/log.php");
     require_once(Config::ROOT . "common/common.php");
     require_once(Config::ROOT . "common/db/db.php");

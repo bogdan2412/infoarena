@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname($argv[0]) . "/../config.php");
+require_once(dirname($argv[0]) . "/../Config.php");
 require_once(Config::ROOT."common/log.php");
 require_once(Config::ROOT."common/common.php");
 require_once(Config::ROOT."common/db/db.php");
