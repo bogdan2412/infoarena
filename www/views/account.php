@@ -82,7 +82,7 @@ if (array_key_exists('security_level', $form_values)) {
             <input type="text" name="email" value="<?= fval('email') ?>" id="form_email">
             <span class="fieldHelp">
                 Aici vei primi (în caz că dorești) mesaje de la alți
-                utilizatori, noutăți <?= SITE_NAME ?>.
+                utilizatori, noutăți <?= Config::SITE_NAME ?>.
             </span>
         </li>
     </ul>

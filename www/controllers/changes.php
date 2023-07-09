@@ -30,11 +30,13 @@ function controller_changes($page_name) {
 
     if (request('format') == 'rss') {
         $view = array();
-        $view['channel']['title'] = 'Modificări pe ' . SITE_NAME;
+        $view['channel']['title'] = 'Modificări pe ' . Config::SITE_NAME;
         $view['channel']['link'] = url_absolute(url_changes());
-        $view['channel']['description'] = 'Ultimele modificări din wiki-ul ' . SITE_NAME;
+        $view['channel']['description'] = 'Ultimele modificări din wiki-ul ' . Config::SITE_NAME;
         $view['channel']['language'] = 'ro-ro';
-        $view['channel']['copyright'] = COPYRIGHT_FIRST_YEAR . ' - ' . COPYRIGHT_OWNER;
+        $view['channel']['copyright'] =
+          sprintf('%s-%s %s', Config::COPYRIGHT_FIRST_YEAR, date('Y'),
+                  Config::COPYRIGHT_OWNER);
 
         $view['item'] = array();
 
@@ -60,7 +62,7 @@ function controller_changes($page_name) {
         execute_view_die('views/rss.php', $view);
     } else {
         $view = array();
-        $view['title'] = 'Modificări pe ' . SITE_NAME;
+        $view['title'] = 'Modificări pe ' . Config::SITE_NAME;
         $view['page_name'] = 'changes';
         $view['revisions'] = $revisions;
         execute_view_die('views/changes.php', $view);

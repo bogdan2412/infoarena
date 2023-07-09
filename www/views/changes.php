@@ -5,7 +5,7 @@ require_once 'header.php';
 
 ?>
 
-<h1>Ultimele modificări de pe <?= SITE_NAME ?></h1>
+<h1>Ultimele modificări de pe <?= Config::SITE_NAME ?></h1>
 
 <a class="feed" href="<?= html_escape(url_absolute(url_changes_rss())) ?>" title="RSS Modificari" >RSS</a>
 

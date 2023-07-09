@@ -1,20 +1,13 @@
 <div id="footer">
   <ul class="clear">
     <li class="copyright">
-      © {$smarty.const.COPYRIGHT_FIRST_YEAR}-{$currentYear}
-
-      {if $smarty.const.COPYRIGHT_OWNER_PAGE}
-        <a href="{url_textblock($smarty.const.COPYRIGHT_OWNER_PAGE)}">
-          {$smarty.const.COPYRIGHT_OWNER}
-        </a>
-      {else}
-        {$smarty.const.COPYRIGHT_OWNER}
-      {/if}
+      © {Config::COPYRIGHT_FIRST_YEAR}-{$currentYear}
+      {Config::COPYRIGHT_OWNER}
     </li>
 
     <li class="separate">
-      <a href="{url_textblock($smarty.const.ABOUT_PAGE)}">
-        Despre {$smarty.const.SITE_NAME}
+      <a href="{url_textblock(Config::ABOUT_PAGE)}">
+        Despre {Config::SITE_NAME}
       </a>
     </li>
 
@@ -51,7 +44,7 @@
       </a>
 
       Cu excepția cazurilor în care se specifică altfel, conținutul site-ului
-      {$smarty.const.SITE_NAME}<br>
+      {Config::SITE_NAME}<br>
       este publicat sub licența
 
       <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">

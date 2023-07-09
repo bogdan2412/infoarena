@@ -6,7 +6,7 @@
     <title>
       {block "title"}{/block}
       {if $pageType != 'home'}
-        | {$smarty.const.SITE_NAME}
+        | {Config::SITE_NAME}
       {/if}
     </title>
 

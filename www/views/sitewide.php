@@ -32,7 +32,7 @@ require_once(Config::ROOT."www/format/format.php");
         </div>
     <?php } ?>
 
-    <h1><?= format_link(url_home(), SITE_NAME . ' informatică de performanță') ?></h1>
+    <h1><?= format_link(url_home(), Config::SITE_NAME . ' informatică de performanță') ?></h1>
 </div>
 <?php
 }
@@ -42,16 +42,12 @@ function ia_template_footer() {
 <div id="footer">
     <ul class="clear">
         <li class="copyright">
-            &copy;
-            <?= COPYRIGHT_FIRST_YEAR . '-' . date("Y") ?>
-            <?php if (COPYRIGHT_OWNER_PAGE): ?>
-                <?= format_link(url_textblock(COPYRIGHT_OWNER_PAGE), COPYRIGHT_OWNER) ?>
-            <?php else: ?>
-                <?= COPYRIGHT_OWNER ?>
-            <?php endif; ?>
+            ©
+            <?= Config::COPYRIGHT_FIRST_YEAR . '-' . date("Y") ?>
+            <?= Config::COPYRIGHT_OWNER ?>
         </li>
         <li class="separate"><?= format_link(url_home(), "Prima pagină") ?></li>
-        <li><?= format_link(url_textblock(ABOUT_PAGE), 'Despre ' . SITE_NAME) ?></li>
+        <li><?= format_link(url_textblock(Config::ABOUT_PAGE), 'Despre ' . Config::SITE_NAME) ?></li>
         <li><?= format_link(url_textblock("termeni-si-conditii"), "Termeni și condiții") ?></li>
         <li><?= format_link(url_textblock("contact"), "Contact") ?></li>
         <li class="top"><a href="#header">Sari la începutul paginii &uarr;</a></li>
@@ -64,7 +60,7 @@ function ia_template_footer() {
                 src="<?= url_static('images/creative-commons.png') ?>">
         </a>
         Cu excepția cazurilor în care se specifică altfel, conținutul
-        site-ului <?= SITE_NAME ?><br>este publicat sub licența
+        site-ului <?= Config::SITE_NAME ?><br>este publicat sub licența
         <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Creative
         Commons Attribution-NonCommercial-ShareAlike 4.0 International</a>.
     </p>

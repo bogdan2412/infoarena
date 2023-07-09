@@ -25,7 +25,7 @@ function send_email($to, $subject, $plain_text_message, $from = null,
     $reply_to = $from;
   }
 
-  $subject = SITE_NAME . ': ' . $subject;
+  $subject = Config::SITE_NAME . ': ' . $subject;
 
   // word-wrap message, some mail-clients are stupid
   $message = wordwrap($plain_text_message, IA_EMAIL_WORDRAP);
@@ -34,7 +34,7 @@ function send_email($to, $subject, $plain_text_message, $from = null,
   $headers = 'From: ' . $from . "\n" .
     'Reply-To: ' . $reply_to . "\n" .
     "Content-type: text/plain\n" .
-    'X-Mailer: ' . SITE_NAME;
+    'X-Mailer: ' . Config::SITE_NAME;
 
   // log
   if ($do_log) {

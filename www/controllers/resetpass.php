@@ -67,12 +67,12 @@ Dacă nu ai facut o astfel de solicitare, ignoră acest mesaj, iar parola nu va 
 Echipa %s
 %s
 ",
-                               SITE_NAME,
+                               Config::SITE_NAME,
                                $user['username'],
                                $user['email'],
                                $user['full_name'],
                                $clink,
-                               SITE_NAME,
+                               Config::SITE_NAME,
                                Config::URL_HOST . Config::URL_PREFIX
 
             );
@@ -144,7 +144,7 @@ Echipa %s
                        $new_password,
                        $user['username'],
                        url_login(),
-                       SITE_NAME,
+                       Config::SITE_NAME,
                        Config::URL_HOST . Config::URL_PREFIX);
 
     // send e-mail

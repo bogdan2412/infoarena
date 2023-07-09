@@ -66,4 +66,10 @@ class Config {
 
   // Engine ID of the Google custom search engine.
   const GOOGLE_CSE_TOKEN = '';
+
+  // Various credits.
+  const SITE_NAME = 'NerdArena';
+  const COPYRIGHT_FIRST_YEAR = 2012;
+  const COPYRIGHT_OWNER = 'NerdArena';
+  const ABOUT_PAGE = 'despre-nerdarena';
 }
