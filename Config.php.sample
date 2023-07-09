@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/lib/Request.php';
+
 class Config {
   // database connection
   const DB_HOST = 'localhost';
