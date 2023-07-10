@@ -660,9 +660,15 @@ ul.htabs {
   text-decoration: none;
 }
 
+.job-status-processing {
+  background: url(../images/indicator.gif) no-repeat left center;
+  padding-left: 20px;
+}
+
 .job-status-skipped {
   color: #555;
 }
+
 /* Job details */
 .job {
   width: 100%;

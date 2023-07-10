@@ -83,7 +83,9 @@ class Wiki {
       $argval = $args[$i][2];
       $macro_args[$argname] = str_replace('""', '"', $argval);
     }
-    return execute_macro($macro_name, $macro_args);
+
+    $result = execute_macro($macro_name, $macro_args);
+    return $result ?? '';
   }
 
   // Proces macros in content.

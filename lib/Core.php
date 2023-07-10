@@ -4,6 +4,7 @@ class Core {
 
   const AUTOLOAD_PATHS = [
     'lib',
+    'lib/model',
   ];
 
   static function autoload($className) {
@@ -18,6 +19,8 @@ class Core {
 
   static function init() {
     spl_autoload_register('Core::autoload', true);
+    Time::init();
+    DB::init();
     FlashMessage::restoreFromSession();
     Smart::init();
   }

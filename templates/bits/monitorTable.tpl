@@ -15,7 +15,7 @@
         <th>Mărime</th>
         <th>Dată</th>
         <th>Stare</th>
-        {if $anySkippableJobs}
+        {if $showSkips}
           <th>Ignoră submisii</th>
         {/if}
       </tr>
@@ -25,29 +25,29 @@
       {foreach $jobs as $job}
         <tr>
           <td>
-            <a href="{url_job_detail($job.id)}">#{$job.id}</a>
+            <a href="job_detail/{$job->id}">#{$job->id}</a>
           </td>
           <td>
-            {include "bits/userTiny.tpl" username=$job.user_name name=$job.user_fullname}
+            {include "bits/userTiny.tpl" user=$job->getUser()}
           </td>
           <td>
-            {format_task_link($job)}
+            {include "bits/taskLink.tpl" task=$job->getTask()}
           </td>
           <td>
-            {format_round_link($job)}
+            {include "bits/roundLink.tpl" round=$job->getRound()}
           </td>
           <td>
-            {format_size($job)}
+            {include "bits/sourceLink.tpl"}
           </td>
           <td>
-            {format_short_date($job.submit_time)}
+            {$job->submit_time|fullDateTime}
           </td>
           <td>
-            {format_state($job)}
+            {include "bits/jobStatus.tpl"}
           </td>
-          {if $anySkippableJobs}
+          {if $showSkips}
             <td>
-              {format_skip($job)}
+              {include "bits/jobSkip.tpl"}
             </td>
           {/if}
         </tr>
@@ -57,10 +57,10 @@
 
   {include "bits/pager.tpl"}
 
-  {if $anySkippableJobs}
+  {if $showSkips}
     <div class="skip-job">
       <form
-        action="{$skipUrl|escape}"
+        action="job_skip"
         class="reeval"
         id="skip-jobs-form"
         method="post">

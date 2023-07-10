@@ -135,7 +135,6 @@ function job_get_by_id($job_id, $contents = false) {
 // that relate only to ia_job table
 function job_get_range_wheres_job($filters) {
     $user = getattr($filters, 'user');
-    $task_security = getattr($filters, 'task_security');
 
     $task = getattr($filters, 'task');
     $round = getattr($filters, 'round');
@@ -217,21 +216,9 @@ function job_get_range_wheres_job($filters) {
 // Returns a where clause array based on complex filters
 // that are not related to ia_job table
 function job_get_range_wheres($filters) {
-    $user = getattr($filters, 'user');
     $task_security = getattr($filters, 'task_security');
-
-    $task = getattr($filters, 'task');
-    $round = getattr($filters, 'round');
-    $job_begin = getattr($filters, 'job_begin');
-    $job_end = getattr($filters, 'job_end');
-    $job_id = getattr($filters, 'job_id');
-    $time_begin = getattr($filters, 'time_begin');
-    $time_end = getattr($filters, 'time_end');
-    $compiler = getattr($filters, 'compiler');
-    $status = getattr($filters, 'status');
     $score_begin = getattr($filters, 'score_begin');
     $score_end = getattr($filters, 'score_end');
-    $eval_msg = getattr($filters, 'eval_msg');
 
     $wheres = array("TRUE");
     if (!is_null($score_begin) && is_whole_number($score_begin)) {
@@ -241,7 +228,7 @@ function job_get_range_wheres($filters) {
         $wheres[] = sprintf("(`job`.`score` <= '%s') AND (`round`.`public_eval` = 1)", db_escape($score_end));
     }
     if (array_key_exists($task_security, task_get_security_types())) {
-        $wheres[] = sprintf("`task`.`security` = %s",
+        $wheres[] = sprintf("`task`.`security` = '%s'",
             db_escape($task_security));
     }
 

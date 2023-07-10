@@ -59,6 +59,7 @@ class Smart {
     $s = new Smarty();
     $s->template_dir = Config::ROOT . 'templates';
     $s->compile_dir = sys_get_temp_dir() . '/templates_c';
+    $s->registerPlugin('modifier', 'fullDateTime', 'Time::fullDateTime');
     self::$theSmarty = $s;
   }
 

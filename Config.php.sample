@@ -26,6 +26,8 @@ class Config {
   // Directory for user profile pictures.
   const AVATAR_DIR = __DIR__ .  '/www/static/images/avatar/';
 
+  const LOCALE = 'ro_RO.utf8';
+
   // Activate some debugging tools and disable some external resources.
   const DEVELOPMENT_MODE = true;
 

@@ -8,7 +8,6 @@
       action="{url_reeval($filters)}"
       class="reeval"
       enctype="multipart/form-data"
-      id="job_reeval"
       method="post"
       onsubmit="return confirm('Confirmi reevaluarea a {$jobCount} de joburi?');">
 
