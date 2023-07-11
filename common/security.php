@@ -129,7 +129,6 @@ function security_simplify_action($action) {
         case 'task-create':
         case 'task-delete':
         case 'task-tag':
-        case 'task-reeval':
         case 'task-edit-ratings':
         case 'textblock-delete':
         case 'textblock-delete-revision':
@@ -147,7 +146,6 @@ function security_simplify_action($action) {
         case 'textblock-change-security':
         case 'textblock-tag':
         case 'textblock-global-history':
-        case 'job-reeval':
         case 'round-delete':
         case 'task-edit-owner':
         case 'simple-critical':

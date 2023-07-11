@@ -2,7 +2,6 @@
 
 require_once Config::ROOT . 'common/db/job.php';
 require_once Config::ROOT . 'common/db/task.php';
-require_once Config::ROOT . 'www/controllers/job_filters.php';
 require_once Config::ROOT . 'www/format/format.php';
 require_once Config::ROOT . 'www/format/list.php';
 require_once Config::ROOT . 'www/format/pager.php';
@@ -11,11 +10,11 @@ const MONITOR_ROWS = 25;
 
 // Job monitor controller.
 function controller_monitor() {
-  $filters = job_get_filters();
+  $filters = JobFilters::parseFromRequest();
 
   $options = pager_init_options([ 'display_entries' => MONITOR_ROWS ]);
 
-  $jobs = Job::getWithFilters($filters, $options['first_entry'], $options['display_entries']);
+  $jobs = Job::getRangeWithFilters($filters, $options['first_entry'], $options['display_entries']);
   $jobCount = Job::countWithFilters($filters);
 
   $pagerOptions = [
@@ -30,7 +29,6 @@ function controller_monitor() {
 
   RecentPage::addCurrentPage('Monitorul de evaluare');
   Smart::assign([
-    'filters' => $filters,
     'jobCount' => $jobCount,
     'jobs' => $jobs,
     'pagerOptions' => $pagerOptions,
@@ -45,8 +43,7 @@ function controller_monitor() {
 function showReevalForm(int $jobCount): bool {
   return
     ($jobCount <= IA_REEVAL_MAXJOBS) &&
-    (identity_can('job-reeval') ||
-     (request('task') && identity_can('task-reeval', task_get(request('task')))));
+    User::canReevalJobs();
 }
 
 function makeTabs(array $filters): array {

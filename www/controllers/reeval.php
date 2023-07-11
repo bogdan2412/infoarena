@@ -1,33 +1,39 @@
 <?php
 require_once(Config::ROOT."common/db/job.php");
-require_once(Config::ROOT."www/controllers/job_filters.php");
 require_once(Config::ROOT."common/db/task.php");
 
 function controller_reeval() {
-    $filters = job_get_filters();
+  if (!User::canReevalJobs()) {
+    FlashMessage::addError('Nu ai permisiunea să reevaluezi joburi.');
+    redirect(url_home());
+  }
 
-    if (!isset($filters["task"]) ||
-            !identity_can('task-reeval', task_get($filters['task']))) {
-        identity_require('job-reeval');
-    }
+  $referer = $_SERVER['HTTP_REFERER'];
+  if (!request_is_post()) {
+    FlashMessage::addError('Nu pot ignora joburi printr-un request de tip GET.');
+    redirect($referer);
+  }
 
-    if (!request_is_post()) {
-        FlashMessage::addError('Nu se poate reevalua.');
-        redirect(url_monitor());
-    }
-    $count = job_get_count($filters);
-    if ($count > IA_REEVAL_MAXJOBS) {
-        FlashMessage::addError('Prea multe job-uri!');
-        redirect(url_monitor());
-    }
-    job_reeval($filters);
+  $filters = JobFilters::parseFromUrl($referer);
+  $jobCount = Job::countWithFilters($filters);
+  if ($jobCount > IA_REEVAL_MAXJOBS) {
+    $msg = sprintf('Poți solicita reevaluarea a cel mult %s joburi.', IA_REEVAL_MAXJOBS);
+    FlashMessage::addError($msg);
+    redirect($referer);
+  }
 
-    // In theory we only need to trigger a full rating update when any of the
-    // jobs belong to a completed, rated round. But this errs on the side of
-    // caution.
-    parameter_update_global('full_rating_update', 1);
+  $jobs = Job::getAllWithFilters($filters);
+  foreach ($jobs as $job) {
+    $job->status = 'waiting';
+    $job->save();
+  }
 
-    FlashMessage::addInfo('Reevaluez următoarele job-uri... ');
-    redirect(url_monitor($filters));
+  // In theory we only need to trigger a full rating update when any of the
+  // jobs belong to a completed, rated round. But this errs on the side of
+  // caution.
+  parameter_update_global('full_rating_update', 1);
+
+  FlashMessage::addSuccess('Am marcat joburile pentru reevaluare.');
+  redirect($referer);
 }
 ?>

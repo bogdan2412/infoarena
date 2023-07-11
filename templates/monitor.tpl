@@ -5,7 +5,7 @@
 {block "content"}
   {if $showReevalForm}
     <form
-      action="{url_reeval($filters)}"
+      action="reeval"
       class="reeval"
       enctype="multipart/form-data"
       method="post"
@@ -15,7 +15,6 @@
         <li id="field_submit">
           <input
             class="button important"
-            id="form_reeval"
             type="submit"
             value="Re-evaluează!">
         </li>

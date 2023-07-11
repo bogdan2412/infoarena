@@ -346,21 +346,6 @@ function job_get_count($filters) {
     return $res['cnt'];
 }
 
-// Re-eval a bunch of jobs based on complex filterss
-function job_reeval($filters) {
-    $query = <<<SQL
-UPDATE `ia_job` AS `job`
-       LEFT JOIN `ia_user` AS `user` ON `job`.`user_id` = `user`.`id`
-       LEFT JOIN `ia_task` AS `task` ON `job`.`task_id` = `task`.`id`
-       LEFT JOIN `ia_round` AS `round` ON `job`.`round_id` = `round`.`id`
-SET `job`.`status` = "waiting"
-SQL;
-    $wheres = job_get_range_wheres($filters);
-    $wheres_job = job_get_range_wheres_job($filters);
-    $query .= " WHERE (".implode(") AND (", $wheres).") AND (".implode(") AND (", $wheres_job).")";
-    return db_query($query);
-}
-
 // Updates ia_job_test table
 function job_test_update($job_id, $test_number, $test_group, $exec_time, $mem_limit,
                          $grader_exec_time, $grader_mem_limit, $points, $grader_msg) {

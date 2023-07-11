@@ -68,4 +68,8 @@ class User extends Base {
     return getattr($identity_user, 'username') ?? '';
   }
 
+  static function canReevalJobs() {
+    return self::isAdmin();
+  }
+
 }

@@ -66,13 +66,18 @@ class Job extends Base {
     }
   }
 
-  static function getWithFilters(array $filters, int $offset, int $limit): array {
+  static function getRangeWithFilters(array $filters, int $offset, int $limit): array {
     $query = self::buildQueryWithFilters($filters);
     return $query
       ->order_by_desc('id')
       ->offset($offset)
       ->limit($limit)
       ->find_many();
+  }
+
+  static function getAllWithFilters(array $filters): array {
+    $query = self::buildQueryWithFilters($filters);
+    return $query->find_many();
   }
 
   static function countWithFilters(array $filters) {
