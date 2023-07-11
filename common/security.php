@@ -149,7 +149,6 @@ function security_simplify_action($action) {
         case 'round-delete':
         case 'task-edit-owner':
         case 'simple-critical':
-        case 'job-liveeval':
             return 'simple-critical';
 
         // Special actions fall through

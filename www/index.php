@@ -52,8 +52,7 @@ $action = request('action', 'view');
 $directmaps = array_flip(array('register', 'changes',
                                'login', 'logout', 'json', 'job_detail',
                                'monitor', 'submit', 'userinfo',
-                               'search', 'job_skip', 'liveeval',
-                               'resetpass', 'reeval',
+                               'search', 'job_skip', 'resetpass', 'reeval',
                                'userwidget', 'statistici_problema',
                                'penalty', 'penalty_edit', 'user_control',
 ));
