@@ -15,14 +15,14 @@ function controller_reeval() {
   }
 
   $filters = JobFilters::parseFromUrl($referer);
-  $jobCount = Job::countWithFilters($filters);
+  $jobCount = $filters->count();
   if ($jobCount > IA_REEVAL_MAXJOBS) {
     $msg = sprintf('Poți solicita reevaluarea a cel mult %s joburi.', IA_REEVAL_MAXJOBS);
     FlashMessage::addError($msg);
     redirect($referer);
   }
 
-  $jobs = Job::getAllWithFilters($filters);
+  $jobs = $filters->getAll();
   foreach ($jobs as $job) {
     $job->status = 'waiting';
     $job->save();

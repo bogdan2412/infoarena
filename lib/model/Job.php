@@ -4,32 +4,6 @@ class Job extends Base {
 
   public static $_table = 'ia_job';
 
-  // Note: filtering by score requires that the round is publicly evaluated.
-  const FILTERS = [
-    // preprocessing function, field, operator, join
-    'compiler' => [ null, 'j.compiler_id', '=', null ],
-    'eval_msg' => [ 'Job::prependPercent', 'j.eval_message', 'like', null ],
-    'job_begin' => [ null, 'j.id', '>=', null ],
-    'job_end' => [ null, 'j.id', '<=', null ],
-    'job_id' => [ null, 'j.id', '=', null ],
-    'round' => [ null, 'j.round_id', '=', null ],
-    'score_begin' => [ null, 'j.score', '>=', 'round' ],
-    'score_end' => [ null, 'j.score', '<=', 'round' ],
-    'status' => [ null, 'j.status', '=', null ],
-    'task' => [ null, 'j.task_id', '=', null ],
-    'task_security' => [ 'Task::getValidSecurity', 't.security', '=', 'task' ],
-    'time_begin' => [ 'strtotime', 'j.submit_time', '>=', null ],
-    'time_end' => [ 'strtotime', 'j.submit_time', '<=', null ],
-    'user' => [ 'User::getIdFromUsername', 'j.user_id', '=', null ],
-  ];
-
-  const METHODS = [
-    '=' => 'where',
-    '>=' => 'where_gte',
-    '<=' => 'where_lte',
-    'like' => 'where_like',
-  ];
-
   function getRound(): ?Round {
     return Round::get_by_id($this->round_id) ?: null;
   }
@@ -64,73 +38,6 @@ class Job extends Base {
     } else {
       return $msg;
     }
-  }
-
-  static function getRangeWithFilters(array $filters, int $offset, int $limit): array {
-    $query = self::buildQueryWithFilters($filters);
-    return $query
-      ->order_by_desc('id')
-      ->offset($offset)
-      ->limit($limit)
-      ->find_many();
-  }
-
-  static function getAllWithFilters(array $filters): array {
-    $query = self::buildQueryWithFilters($filters);
-    return $query->find_many();
-  }
-
-  static function countWithFilters(array $filters) {
-    $query = self::buildQueryWithFilters($filters);
-    return $query->count();
-  }
-
-  private static function buildQueryWithFilters(array $filters): ORM {
-    $joins = [];
-    $query = Model::factory('job')
-      ->table_alias('j')
-      ->select('j.*');
-
-    foreach ($filters as $key => $value) {
-      if (isset(self::FILTERS[$key])) {
-        list($preprocessor, $field, $op, $join) = self::FILTERS[$key];
-        if ($preprocessor) {
-          $value = call_user_func($preprocessor, $value);
-        }
-        if ($value) {
-          $method = self::METHODS[$op];
-          $query = $query->$method($field, $value);
-          if ($join) {
-            $joins[$join] = true;
-          }
-        }
-      }
-    }
-
-    $query = self::addJoins($query, $joins);
-    return $query;
-  }
-
-  private static function addJoins(ORM $query, array $joins): ORM {
-    foreach ($joins as $join => $ignored) {
-      switch ($join) {
-        case 'task':
-          $query = $query->join('ia_task', [ 'j.task_id', '=', 't.id' ], 't');
-          break;
-        case 'round':
-          $query = $query->raw_join(
-            'join ia_round',
-            '(j.round_id = r.id) and (r.public_eval)',
-            'r');
-          break;
-      }
-    }
-
-    return $query;
-  }
-
-  private static function prependPercent(string $str): string {
-    return '%' . $str;
   }
 
   // Returns true iff the current user owns the job.

@@ -10,12 +10,12 @@ const MONITOR_ROWS = 25;
 
 // Job monitor controller.
 function controller_monitor() {
-  $filters = JobFilters::parseFromRequest();
+  $jobFilters = JobFilters::parseFromRequest();
 
   $options = pager_init_options([ 'display_entries' => MONITOR_ROWS ]);
 
-  $jobs = Job::getRangeWithFilters($filters, $options['first_entry'], $options['display_entries']);
-  $jobCount = Job::countWithFilters($filters);
+  $jobs = $jobFilters->getRange($options['first_entry'], $options['display_entries']);
+  $jobCount = $jobFilters->count();
 
   $pagerOptions = [
     'display_entries' => $options['display_entries'],
@@ -24,7 +24,7 @@ function controller_monitor() {
     'show_count' => true,
     'surround_pages' => 3,
     'total_entries' => $jobCount,
-    'url_args' => $filters + [ 'page' => 'monitor' ],
+    'url_args' => $jobFilters->asArray() + [ 'page' => 'monitor' ],
   ];
 
   RecentPage::addCurrentPage('Monitorul de evaluare');
@@ -34,7 +34,7 @@ function controller_monitor() {
     'pagerOptions' => $pagerOptions,
     'showReevalForm' => showReevalForm($jobCount),
     'showSkips' => User::isAdmin(),
-    'tabs' => makeTabs($filters),
+    'tabs' => makeTabs($jobFilters->asArray()),
   ]);
   Smart::addResources('monitor');
   Smart::display('monitor.tpl');
