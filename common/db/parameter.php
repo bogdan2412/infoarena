@@ -46,35 +46,3 @@ function parameter_get_values($object_type, $object_id) {
 
     return $dict;
 }
-
-// Creates or updates the value for a global parameter.
-function parameter_update_global($id, $value) {
-    // delete existing value if any
-    $query = sprintf("DELETE FROM ia_parameter_value
-                      WHERE object_type = 'global' AND parameter_id = %s",
-                     db_quote($id));
-    db_query($query);
-
-    // insert given value
-    $query = sprintf("INSERT INTO ia_parameter_value
-                            (`object_type`, `parameter_id`, `value`)
-                          VALUES ('global', %s, %s)",
-                     db_quote($id), db_quote($value));
-    db_query($query);
-}
-
-/**
- * Retrieves the value for a global parameter.
- * @param string $id Parameter name.
- * @param mixed $default Default value to return if the parameter is not set.
- **/
-function parameter_get_global($id, $default = null) {
-    $query = sprintf("SELECT *
-                      FROM ia_parameter_value
-                      WHERE object_type = 'global' AND parameter_id = %s",
-                     db_quote($id));
-    $rows = db_fetch_all($query);
-    return $rows[0]['value'] ?? $default;
-}
-
-?>

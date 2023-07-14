@@ -18,6 +18,7 @@ require_once(Config::ROOT."common/round.php");
 require_once(Config::ROOT."common/score.php");
 require_once(Config::ROOT."common/rating.php");
 require_once(Config::ROOT."common/parameter.php");
+require_once __DIR__ . '/../lib/Core.php';
 db_connect();
 
 // parse the -f, --full command-line argument
@@ -29,11 +30,11 @@ if ($full) {
     rating_clear();
     // Until the need arises again for a full update, we can perform incremental
     // updates.
-    parameter_update_global('full_rating_update', 0);
+    Variable::poke('Rating.fullUpdate', 0);
 }
 
 // complain if a full update is required, but -f was not given
-$fullRequired = parameter_get_global('full_rating_update', 0);
+$fullRequired = Variable::peek('Rating.fullUpdate', 1);
 log_assert($full || !$fullRequired,
            "A full rating update is required. This becomes necessary when jobs " .
            "are reevaluated or when completed rounds are edited. This script " .

@@ -184,7 +184,7 @@ function controller_round_details($round_id) {
         // other criteria into account, such as whether the round affects ratings.
         if (($round['state'] == 'complete') ||
             ($new_round['state'] == 'complete')) {
-            parameter_update_global('full_rating_update', 1);
+            Variable::poke('Rating.fullUpdate', 1);
         }
 
         /**
