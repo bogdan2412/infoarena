@@ -18,6 +18,7 @@ require_once(Config::ROOT . "www/format/format.php");
             document.getElementById("rename_link_"+id).textContent = "Redenumește";
         }
 
+        return false;
     }
     function attachments_toggle_selection(checked) {
         $('input.attach-checkbox').prop("checked", checked);
@@ -73,7 +74,7 @@ function format_operations($row) {
                                "Șterge", array(), true,
                                array("onclick" => "return confirm('Această acțiune este ireversibilă! Dorești să continui?')"));
 
-    $renurl = '<a href="#" id="rename_link_'.$row['id'].'" onclick="rename_form('.$row['id'].')">Redenumește</a>';
+    $renurl = '<a href="#" id="rename_link_'.$row['id'].'" onclick="return rename_form('.$row['id'].')">Redenumește</a>';
 
     return '['.$delurl.'] ['.$renurl.']';
 }
