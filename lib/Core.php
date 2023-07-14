@@ -1,5 +1,7 @@
 <?php
 
+Core::init();
+
 class Core {
 
   const AUTOLOAD_PATHS = [

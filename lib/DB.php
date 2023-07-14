@@ -17,4 +17,10 @@ class DB {
     }
   }
 
+  static function tableExists(string $tableName): bool {
+    $r = ORM::for_table($tableName)
+      ->raw_query("show tables like '$tableName'")
+      ->find_one();
+    return ($r !== false);
+  }
 }
