@@ -5,28 +5,32 @@ require_once(Config::ROOT . "www/format/list.php");
 require_once(Config::ROOT . "www/url.php");
 
 function task_edit_tabs($task_id, $active) {
-    $tabs = array();
+  $tabs = [];
+  $task = Task::get_by_id($task_id);
 
-    $tab_names = array('edit' => 'Enunț',
-                       'task-edit-params' => 'Parametri',
-                       'task-edit-tags' => 'Taguri',
-                       'task-edit-ratings' => 'Ratinguri');
+  if ($task->isEditable()) {
+    $url = url_task_edit($task_id, 'edit');
+    $tabs['edit'] = format_link($url, 'Enunț');
+  }
 
-    $permissions = array('edit' => 'task-edit',
-                         'task-edit-params' => 'task-edit',
-                         'task-edit-tags' => 'task-tag',
-                         'task-edit-ratings' => 'task-edit-ratings');
+  if ($task->isEditable()) {
+    $url = url_task_edit($task_id, 'task-edit-params');
+    $tabs['task-edit-params'] = format_link($url, 'Parametri');
+  }
 
-    $task = task_get($task_id);
-    foreach ($tab_names as $action => $text) {
-        if (identity_can($permissions[$action], $task)) {
-            $tabs[$action] = format_link(
-                                url_task_edit($task_id, $action), $text);
-        }
-    }
-    $tabs[$active] = array($tabs[$active], array('class' => 'active'));
+  if ($task->areTagsEditable()) {
+    $url = url_task_edit($task_id, 'task-edit-tags');
+    $tabs['task-edit-tags'] = format_link($url, 'Taguri');
 
-    return format_ul($tabs, 'htabs');
+  }
+  if ($task->areRatingsEditable()) {
+    $url = url_task_edit($task_id, 'task-edit-ratings');
+    $tabs['task-edit-ratings'] = format_link($url, 'Ratinguri');
+  }
+
+  $tabs[$active] = [ $tabs[$active], [ 'class' => 'active' ] ];
+
+  return format_ul($tabs, 'htabs');
 }
 
 ?>

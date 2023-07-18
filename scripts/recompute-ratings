@@ -9,7 +9,6 @@
 
 require_once(dirname($argv[0]) . "/utilities.php");
 require_once(Config::ROOT."www/config.php");
-require_once(Config::ROOT."www/identity.php");
 require_once(Config::ROOT."common/db/round.php");
 require_once(Config::ROOT."common/db/score.php");
 require_once(Config::ROOT."common/db/parameter.php");

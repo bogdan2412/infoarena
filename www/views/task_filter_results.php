@@ -95,11 +95,7 @@ $options['css_class'] = 'alternating-colors tasks fill-screen filter_results';
 $options['show_count'] = true;
 $options['show_display_entries'] = false;
 
-if (identity_is_anonymous()) {
-    $user_id = null;
-} else {
-    $user_id = identity_get_user_id();
-}
+$user_id = Identity::getId();
 
 $column_infos = array();
 
@@ -128,7 +124,7 @@ $column_infos[] = array(
         'css_class' => 'rating',
         'key' => 'rating',
         'valform' => 'format_rating_column');
-if (!is_null($user_id)) {
+if ($user_id) {
     $column_infos[] = array (
             'title' => 'Scorul tău',
             'css_class' => 'score',

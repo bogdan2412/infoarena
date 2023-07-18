@@ -21,7 +21,7 @@ function try_textblock_get($page_name) {
 // List attachments to a textblock
 function controller_attachment_list($page_name) {
   $page = try_textblock_get($page_name);
-  identity_require('textblock-list-attach', $page);
+  Identity::enforceViewTextblock($page);
 
   $view = array();
   $options = pager_init_options();
@@ -49,7 +49,7 @@ function controller_attachment_create($page_name) {
     die();
   }
   $page = try_textblock_get($page_name);
-  identity_require('textblock-attach', $page);
+  Identity::enforceEditTextblockReversibly($page);
 
   // Initial attachment page. Rather empty.
   $view = array();
@@ -63,9 +63,7 @@ function controller_attachment_create($page_name) {
 // Submit an attachment to a textblock.
 function controller_attachment_submit($page_name) {
   $page = try_textblock_get($page_name);
-  identity_require('textblock-attach', $page);
-
-  global $identity_user;
+  Identity::enforceEditTextblockReversibly($page);
 
   // Create view objects.
   $view = array();
@@ -210,27 +208,27 @@ function controller_attachment_submit($page_name) {
         continue;
       }
 
-      $attach = attachment_get($file_att['name'], $page_name);
+      $attach = Attachment::normalizeAndGetByNamePage($file_att['name'], $page_name);
       if ($attach) {
         // Attachment already exists, overwrite.
-        identity_require('attach-overwrite', $attach);
-        attachment_update($attach['id'], $file_att['name'],
+        Identity::enforceEditAttachmentIrreversibly($attach);
+        attachment_update($attach->id, $file_att['name'],
                           $file_att['size'], $file_att['type'], $page_name,
-                          $identity_user['id'], remote_ip_info());
+                          Identity::getId(), remote_ip_info());
         $rewrite_count++;
       }
       else {
         // New attachment. Insert.
         attachment_insert($file_att['name'], $file_att['size'],
-                          $file_att['type'], $page_name, $identity_user['id'],
+                          $file_att['type'], $page_name, Identity::getId(),
                           remote_ip_info());
       }
 
       // check if update/insert went ok
-      $attach = attachment_get($file_att['name'], $page_name);
+      $attach = Attachment::normalizeAndGetByNamePage($file_att['name'], $page_name);
       if ($attach) {
-        $file_att['attach_id'] = $attach['id'];
-        $file_att['attach_obj'] = $attach;
+        $file_att['attach_id'] = $attach->id;
+        $file_att['attach_obj'] = $attach->as_array();
         $attach_okcount++;
       }
     }
@@ -322,15 +320,16 @@ function controller_attachment_delete($page_name, $file_name, $more_files = 0) {
     redirect(url_textblock($page_name));
   }
 
-  $attach = attachment_get($file_name, $page_name);
-  identity_require('attach-delete', $attach);
+  $attach = Attachment::normalizeAndGetByNamePage($file_name, $page_name);
   if (!$attach) {
     FlashMessage::addError('Fișierul nu există.');
     redirect(url_textblock($page_name));
   }
 
+  Identity::enforceEditAttachmentIrreversibly($attach);
+
   // Delete from data base.
-  if (!attachment_delete($attach)) {
+  if (!attachment_delete($attach->as_array())) {
     FlashMessage::addError('Nu am reușit să șterg fișierul.');
     redirect(url_textblock($page_name));
   }
@@ -395,8 +394,8 @@ function controller_attachment_rename($page_name, $old_name, $new_name) {
     redirect(url_textblock($page_name));
   }
 
-  $old_attach = attachment_get($old_name, $page_name);
-  identity_require('attach-rename', $old_attach);
+  $old_attach = Attachment::normalizeAndGetByNamePage($old_name, $page_name);
+  Identity::enforceEditAttachmentIrreversibly($old_attach);
   if (!$old_attach) {
     FlashMessage::addError('Fișierul nu există.');
     redirect(url_textblock($page_name));
@@ -410,7 +409,7 @@ function controller_attachment_rename($page_name, $old_name, $new_name) {
   };
 
   // Rename in data base.
-  if (!attachment_rename($old_attach, $new_name)) {
+  if (!attachment_rename($old_attach->as_array(), $new_name)) {
     FlashMessage::addError('Nu am reușit să redenumesc fișierul.');
     redirect(url_textblock($page_name));
   }
@@ -429,11 +428,11 @@ function try_attachment_get($page_name, $file_name) {
   }
 
   // get attachment info
-  $attach = attachment_get($file_name, $page_name);
+  $attach = Attachment::normalizeAndGetByNamePage($file_name, $page_name);
   if (!$attach) {
     die_http_error();
   }
-  if (!identity_can('attach-download', $attach)) {
+  if (!$attach->isViewable()) {
     FlashMessage::addError('Nu aveți permisiuni pentru a descărca fișierul '
                 . $file_name);
     redirect(url_textblock($page_name));
@@ -441,12 +440,12 @@ function try_attachment_get($page_name, $file_name) {
 
   // this is just a check to see if the file exists, we used to have
   // attachments with no actual file on disk
-  $real_name = attachment_get_filepath($attach);
+  $real_name = attachment_get_filepath($attach->as_array());
   if (!file_exists($real_name)) {
     die_http_error();
   }
 
-  return $attach;
+  return $attach->as_array();
 }
 
 // download an attachment

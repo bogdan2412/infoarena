@@ -68,7 +68,7 @@ if (count($data['time']) === 0) {
 
 echo '<h2>Alte statistici</h2>';
 echo 'Numărul mediu de submisii greșite: '.$view['average_wrong_submissions'].'<br>';
-if (!identity_is_anonymous()) {
+if (Identity::isLoggedIn()) {
     echo 'Numărul tău de submisii greșite: '.$view['user_wrong_submissions'].'<br>';
 }
 echo 'Procentajul de reușită: '.$view['solved_percentage'].'%<br>';

@@ -1,14 +1,14 @@
 <?php
 
 function controller_logout() {
-    if (!request_is_post()) {
-        FlashMessage::addError('Nu te-am putut deconecta.');
-        redirect(url_home());
-    }
-    identity_end_session();
+  Identity::enforceLoggedIn();
 
-    FlashMessage::addSuccess('Pe curînd!');
+  if (!request_is_post()) {
+    FlashMessage::addError('Nu te-am putut deconecta.');
     redirect(url_home());
+  }
+
+  Session::logout();
 }
 
 ?>

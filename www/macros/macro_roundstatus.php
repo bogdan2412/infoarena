@@ -26,11 +26,6 @@ function macro_roundstatus($args) {
         return macro_error("Round '$round_id' not found");
     }
 
-    // WTF is round-view?
-    if (!identity_can('round-view', $round)) {
-        return macro_permission_error();
-    }
-
     if ($round['state'] == 'waiting') {
         return '<span class="round status waiting">Această rundă nu a început încă.</span>';
     } elseif ($round['state'] == 'running') {

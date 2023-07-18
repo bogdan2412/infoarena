@@ -23,6 +23,7 @@ class Core {
     spl_autoload_register('Core::autoload', true);
     Time::init();
     DB::init();
+    Session::init();
     FlashMessage::restoreFromSession();
     Smart::init();
   }

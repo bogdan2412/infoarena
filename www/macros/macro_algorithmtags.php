@@ -18,8 +18,8 @@ function macro_algorithmtags($args) {
 
     $tags_tree = tag_build_tree(array_merge($tags, $sub_tags));
 
-    $task = task_get($task_id);
-    if (!identity_can('task-view-tags', $task)) {
+    $task = Task::get_by_id($task_id);
+    if (!$task->areTagsViewable()) {
         return "";
     }
 

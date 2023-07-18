@@ -40,21 +40,20 @@ class Job extends Base {
     }
   }
 
-  // Returns true iff the current user owns the job.
-  function isOwner(): bool {
-    return User::getCurrentId() == $this->user_id;
-  }
-
   function isPartialFeedbackViewable(): bool {
     $task = $this->getTask();
     if (!$task->isViewable() || !$task->public_tests) {
       return false;
     }
 
+    return Identity::ownsJob($this);
+  }
+
+  function isViewable(): bool {
+    $task = $this->getTask();
     return
-      $this->isOwner() ||
-      User::isAdmin() ||
-      User::isIntern();
+      !$task->isPrivate() ||
+      Identity::ownsTask($task);
   }
 
   function isScoreViewable(): bool {
@@ -68,23 +67,16 @@ class Job extends Base {
       return true;
     }
 
-    return
-      $task->isOwner() ||
-      User::isAdmin() ||
-      User::isIntern();
+    return Identity::ownsTask($task);
   }
 
   function isSourceViewable(): bool {
-    if (User::isAdmin()) {
-      return true;
-    }
-
-    if ($this->isOwner()) {
+    if (Identity::getId() == $this->user_id) {
       return true;
     }
 
     $task = $this->getTask();
-    if ($task->isOwner()) {
+    if (Identity::ownsTask($task)) {
       return true;
     }
 

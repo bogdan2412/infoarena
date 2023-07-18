@@ -9,7 +9,6 @@ require_once(Config::ROOT.'common/common.php');
 require_once(Config::ROOT.'common/score.php');
 require_once(Config::ROOT.'common/task.php');
 require_once(Config::ROOT.'common/round.php');
-require_once(Config::ROOT.'common/security.php');
 require_once(Config::ROOT.'common/db/task.php');
 require_once(Config::ROOT.'common/db/job.php');
 require_once(Config::ROOT.'common/db/user.php');

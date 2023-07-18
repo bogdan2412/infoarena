@@ -5,7 +5,6 @@ require_once Config::ROOT . 'common/email.php';
 require_once Config::ROOT . 'www/views/utilities.php';
 
 function controller_penalty() {
-    global $identity_user;
 
     // `data` dictionary is a dictionary with data to be displayed by form view
     $data = array();
@@ -14,10 +13,7 @@ function controller_penalty() {
     // It is a dictionary, indexed by field names
     $errors = array();
 
-    $changer_name = getattr($identity_user, 'username');
-    $changer = user_get_by_username($changer_name);
-
-    if (!user_is_admin($changer)) {
+    if (!Identity::isAdmin()) {
         redirect(url_home());
     }
 

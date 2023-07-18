@@ -6,13 +6,8 @@ require_once(Config::ROOT . 'common/user.php');
 require_once(Config::ROOT . 'common/email.php');
 
 function controller_penalty_edit() {
-    global $identity_user;
-
     //security check
-    $changer_name = getattr($identity_user, 'username');
-    $changer = user_get_by_username($changer_name);
-
-    if (!user_is_admin($changer)) {
+    if (!Identity::isAdmin()) {
         redirect(url_home());
     }
 

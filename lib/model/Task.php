@@ -12,6 +12,17 @@ class Task extends Base {
     }
   }
 
+  function isInAnyRunningRounds(): bool {
+    $numRunningRounds = Model::factory('Round')
+      ->table_alias('r')
+      ->join('ia_round_task', [ 'r.id', '=', 'rt.round_id' ], 'rt')
+      ->where('rt.task_id', $this->id)
+      ->where('r.state', 'running')
+      ->count();
+
+    return ($numRunningRounds > 0);
+  }
+
   function getIncompleteRounds() {
     return Model::factory('Round')
       ->table_alias('r')
@@ -27,19 +38,77 @@ class Task extends Base {
     return $this->security == 'private';
   }
 
-  // Returns true iff the current user owns the task.
-  function isOwner(): bool {
-    return User::getCurrentId() == $this->user_id;
+  function isPublic(): bool {
+    return $this->security == 'public';
   }
 
-  // Returns true iff the current user can view details of this task.
   function isViewable(): bool {
     return
-      !$this->isPrivate() ||
-      $this->isOwner() ||
-      User::isAdmin() ||
-      User::isHelper() ||
-      User::isIntern();
+      $this->isPublic() ||
+      Identity::ownsTask($this);
+  }
+
+  function areStatsViewable(): bool {
+    return
+      $this->isPublic() ||
+      Identity::ownsTask($this);
+  }
+
+  function isLastScoreViewable(): bool {
+    return
+      $this->isPublic() ||
+      Identity::ownsTask($this);
+  }
+
+  function areTagsViewable(): bool {
+    return
+      $this->isPublic() ||
+      Identity::ownsTask($this);
+  }
+
+  function areGraderAttachmentsViewable(): bool {
+    return
+      ($this->isPublic() && $this->open_tests) ||
+      Identity::ownsTask($this);
+  }
+
+  function isEditable(): bool {
+    return Identity::ownsTask($this);
+  }
+
+  function areRatingsEditable(): bool {
+    return Identity::ownsTask($this);
+  }
+
+  function areTagsEditable(): bool {
+    return Identity::ownsTask($this);
+  }
+
+  function isAuthorEditable(): bool {
+    return Identity::isAdmin();
+  }
+
+  function isSecurityEditable(): bool {
+    return Identity::isAdmin();
+  }
+
+  function isOpenEditable(): bool {
+    return Identity::isAdmin();
+  }
+
+  function isDeletable(): bool {
+    return Identity::ownsTask($this);
+  }
+
+  function canSubmit(): bool {
+    if (Identity::ownsTask($this)) {
+      return true;
+    }
+
+    return
+      Identity::isLoggedIn() &&
+      !$this->isPrivate() &&
+      $this->isInAnyRunningRounds();
   }
 
 }

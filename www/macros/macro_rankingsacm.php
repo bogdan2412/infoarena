@@ -4,7 +4,6 @@ require_once(Config::ROOT . "www/format/table.php");
 require_once(Config::ROOT . "www/format/format.php");
 require_once(Config::ROOT . "common/db/score.php");
 require_once(Config::ROOT . "common/db/round.php");
-require_once(Config::ROOT . "common/security.php");
 
 function macro_rankingsacm($args) {
     $round_id = getattr($args, 'round');
@@ -72,9 +71,9 @@ function macro_rankingsacm($args) {
     ));
 
     $rankings = array();
-    if (identity_can('round-view-scores', $round)) {
+    if (Identity::mayViewRoundScores($round)) {
         $rankings = score_get_rankings_acm($round_id, true);
-    } else if (identity_can('round-acm-view-partial-scores', $round)) {
+    } else if (Identity::mayViewAcmRoundPartialScores($round)) {
         $rankings = score_get_rankings_acm($round_id, false);
     }
 

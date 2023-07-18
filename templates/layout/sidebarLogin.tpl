@@ -1,6 +1,6 @@
 {$showSidebarLogin=$showSidebarLogin|default:true}
 
-{if User::isAnonymous() && $showSidebarLogin}
+{if Identity::isAnonymous() && $showSidebarLogin}
   <div id="login">
     {include "auth/loginForm.tpl"}
     <p>

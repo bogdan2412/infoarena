@@ -2,10 +2,10 @@
     require_once(Config::ROOT."www/views/task_edit_header.php");
 
     require_once 'header.php';
-    $task_id = $view['task']['id'];
-    $task_link = url_task($view['task']['id']);
-    $task_title = $view['task']['title'];
-    $action_link = url_task_edit($view['task']['id'], 'task-edit-tags');
+    $task_id = $view['task']->id;
+    $task_link = url_task($view['task']->id);
+    $task_title = $view['task']->title;
+    $action_link = url_task_edit($view['task']->id, 'task-edit-tags');
     $task_tags = $view['task_tags'];
 
     echo task_edit_tabs($task_id, request("action"));

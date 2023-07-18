@@ -67,7 +67,7 @@ if (array_key_exists('security_level', $form_values)) {
 <fieldset>
     <legend>Schimbă informații personale</legend>
     <ul class="form">
-    <?php if (identity_can('user-tag', $view['user'])) { ?>
+    <?php if (Identity::mayTagUser()) { ?>
         <?= tag_format_input_box(array("label" => "Tag-uri", "name" => "tags"), fval('tags')) ?>
     <?php } ?>
         <li>
@@ -94,7 +94,7 @@ if (array_key_exists('security_level', $form_values)) {
         <li>
             <?php
                 // display avatar
-                $avatar_url = url_user_avatar($user['username'], "big");
+                $avatar_url = url_user_avatar($user->username, "big");
                 echo '<img class="avatar" src="'.html_escape($avatar_url).'" alt="avatar">';
             ?>
         </li>
@@ -102,7 +102,7 @@ if (array_key_exists('security_level', $form_values)) {
             <?php
                 if ($view['avatar_exists']) {
                     echo format_post_link(url_attachment_delete(
-                                Config::USER_TEXTBLOCK_PREFIX . $user['username'],
+                                Config::USER_TEXTBLOCK_PREFIX . $user->username,
                                 'avatar'), "Șterge Avatar", array(), true,
                                 array('onclick' => "return confirm('Această " .
                                         'acțiune este ireversibilă! Dorești ' .

@@ -18,7 +18,7 @@ class User extends Base {
   }
 
   static function getCurrentUserMonitorUrl(): string {
-    $username = identity_get_username() ?? '';
+    $username = Identity::getUsername();
     return self::getMonitorUrl($username);
   }
 
@@ -36,40 +36,9 @@ class User extends Base {
     return url_user_rating($username);
   }
 
-  static function isAdmin(): bool {
-    return self::hasSecurityLevel('admin');
-  }
-
-  static function isHelper(): bool {
-    return self::hasSecurityLevel('helper');
-  }
-
-  static function isIntern(): bool {
-    return self::hasSecurityLevel('intern');
-  }
-
-  private static function hasSecurityLevel(string $level): bool {
-    global $identity_user;
-    $realLevel = getattr($identity_user, 'security_level');
-    return ($realLevel == $level);
-  }
-
-  static function isAnonymous(): bool {
-    return identity_is_anonymous();
-  }
-
-  static function getCurrentId(): int {
-    global $identity_user;
-    return getattr($identity_user, 'id') ?? 0;
-  }
-
-  static function getCurrentUsername(): string {
-    global $identity_user;
-    return getattr($identity_user, 'username') ?? '';
-  }
-
-  static function canReevalJobs() {
-    return self::isAdmin();
+  function isEditable(): bool {
+    return Identity::isAdmin() ||
+      ($this->id == Identity::getId());
   }
 
 }

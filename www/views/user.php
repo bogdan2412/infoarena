@@ -8,7 +8,7 @@ $username = $user['username'];
 require_once 'header.php';
 
 // banned user notice and ban/unban buttons
-if (identity_is_admin()) {
+if (Identity::isAdmin()) {
   $url = url_user_control($user['id']);
   if ($user['banned']) {
     echo '<a href="' . $url . '" class="user-control unban">deblochează</a>';

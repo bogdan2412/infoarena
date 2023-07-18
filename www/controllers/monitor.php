@@ -33,7 +33,7 @@ function controller_monitor() {
     'jobs' => $jobs,
     'pagerOptions' => $pagerOptions,
     'showReevalForm' => showReevalForm($jobCount),
-    'showSkips' => User::isAdmin(),
+    'showSkips' => Identity::isAdmin(),
     'tabs' => makeTabs($jobFilters->asArray()),
   ]);
   Smart::addResources('monitor');
@@ -43,13 +43,13 @@ function controller_monitor() {
 function showReevalForm(int $jobCount): bool {
   return
     ($jobCount <= IA_REEVAL_MAXJOBS) &&
-    User::canReevalJobs();
+    Identity::mayReevalJobs();
 }
 
 function makeTabs(array $filters): array {
   $tabs = [];
   $selected = null;
-  $me = User::getCurrentUsername();
+  $me = Identity::getUsername();
 
   // my jobs tab
   $user = getattr($filters, 'user');

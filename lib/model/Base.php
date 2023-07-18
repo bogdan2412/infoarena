@@ -63,4 +63,17 @@ class Base extends Model {
     exit;
   }
 
+  /**
+   * Copies the values of all fields except id.
+   * TODO: Can we just use PHP's clone()?
+   **/
+  function parisClone(): Model {
+    $clone = Model::factory(get_called_class())->create();
+    $fields = $this->as_array();
+    foreach ($fields as $key => $value) {
+      $clone->$key = $value;
+    }
+    return $clone;
+  }
+
 }

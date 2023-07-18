@@ -8,20 +8,16 @@ function controller_job_skip() {
     redirect(url_monitor());
   }
 
-  $job_ids = explode(",", request('skipped-jobs'));
-  $jobs = [];
-  foreach ($job_ids as $id) {
-    $job = job_get_by_id((int)$id);
-    if ($job) {
-      identity_require('job-skip', $job);
-      $jobs[] = $job;
-    }
-  }
+  Identity::enforceSkipJobs();
 
+  $job_ids = explode(',', request('skipped-jobs'));
   $count = 0;
-  foreach ($jobs as $job) {
-    if ($job['status'] != 'skipped') {
-      job_update($job['id'], 'skipped');
+
+  foreach ($job_ids as $id) {
+    $job = Job::get_by_id($id);
+    if ($job && $job->status != 'skipped') {
+      $job->status = 'skipped';
+      $job->save();
       $count++;
     }
   }

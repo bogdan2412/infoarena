@@ -48,13 +48,13 @@
       <li>
         <a
           accesskey="p"
-          href="{User::getProfileUrl($identity.username)}">
+          href="{User::getProfileUrl($identity->username)}">
           <span class="access-key">P</span>rofilul meu
         </a>
       </li>
     {/if}
 
-    {if User::isAdmin()}
+    {if Identity::isAdmin()}
 		  <li class="separator"><hr></li>
 		  <li>
         <a

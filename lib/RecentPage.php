@@ -31,8 +31,7 @@ class RecentPage {
   }
 
   private static function restoreFromSession(): void {
-    init_php_session();
-    $data = $_SESSION['_ia_recent_pages'] ?? [];
+    $data = Session::get('recentPages', []);
     foreach ($data as $pair) {
       self::$pages[] = new RecentPage($pair[0], $pair[1], false);
     }
@@ -44,7 +43,7 @@ class RecentPage {
       $key = strtolower($rp->url); // for historic reasons
       $data[$key] = [ $rp->url, $rp->title ];
     }
-    $_SESSION['_ia_recent_pages'] = $data;
+    Session::set('recentPages', $data);
   }
 
   private static function isWorthKeeping(string $url): bool {

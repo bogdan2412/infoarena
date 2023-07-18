@@ -4,7 +4,6 @@ require_once(Config::ROOT . "www/format/table.php");
 require_once(Config::ROOT . "www/format/format.php");
 require_once(Config::ROOT . "common/db/score.php");
 require_once(Config::ROOT . "common/db/round.php");
-require_once(Config::ROOT . "common/security.php");
 
 function macro_rankingsacmtotal($args) {
     $round_ids = getattr($args, 'rounds');
@@ -13,7 +12,7 @@ function macro_rankingsacmtotal($args) {
     $rounds = array();
     foreach ($round_param as $param) {
         $round = preg_split('/\s*\:\s*/', $param);
-        if (!identity_can('round-view-scores', round_get($round[0]))) {
+        if (!Identity::mayViewRoundScores(round_get($round[0]))) {
             continue;
         }
         array_push($rounds, array(

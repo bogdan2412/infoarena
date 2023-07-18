@@ -15,35 +15,35 @@
 <table class="job">
   <tr>
     <th class="user-id">Utilizator</th>
-    <td class="user-id"><?= format_user_tiny($job['user_name'], $job['user_fullname']) ?></td>
+    <td class="user-id"><?= format_user_tiny($user->username, $user->full_name) ?></td>
     <th class="submit-time">Dată</th>
-    <td class="submit-time"><?= format_date($job['submit_time']) ?></td>
+    <td class="submit-time"><?= format_date($job->submit_time) ?></td>
   </tr>
   <tr>
     <th class="task-id">Problemă</th>
-    <td class="task-id"><?= format_link(url_textblock($job['task_page_name']), $job['task_title']) ?></td>
+    <td class="task-id"><?= format_link(url_textblock($task->page_name), $task->title) ?></td>
     <th class="status">Status</th>
-    <td class="status"><strong><?= html_escape($job['status']) ?></strong></td>
+    <td class="status"><strong><?= html_escape($job->status) ?></strong></td>
   </tr>
   <tr>
     <th class="round-id">Rundă</th>
     <td class="round-id">
-      <?= format_link(url_textblock($job['round_page_name']), $job['round_title']) ?></td>
+      <?= format_link(url_textblock($round->page_name), $round->title) ?></td>
     <th class="compiler-id">Compilator</th>
     <td class="compiler-id">
-      <?= html_escape($job['compiler_id']) ?>
-      <?php if (identity_can('job-view-source', $job)) { ?>
-        | <?= format_link(url_job_view_source($job['id']), "Vezi sursa") ?>
+      <?= html_escape($job->compiler_id) ?>
+      <?php if ($job->isSourceViewable()) { ?>
+        | <?= format_link(url_job_view_source($job->id), 'Vezi sursa') ?>
       <?php } ?>
     </td>
   </tr>
   <tr>
     <th class="score">Scor</th>
-    <td class="score" colspan="<?= identity_can('job-view-ip', $job) ? 1 : 3 ?>">
-      <?= html_escape(is_null($job['score']) ? "Ascuns" : $job['score']) ?></td>
-    <?php if (identity_can('job-view-ip', $job)) { ?>
+    <td class="score" colspan="<?= Identity::mayViewIpAddresses() ? 1 : 3 ?>">
+      <?= html_escape(is_null($job->score) ? "Ascuns" : $job->score) ?></td>
+    <?php if (Identity::mayViewIpAddresses()) { ?>
       <th class="ip">IP</th>
-      <td class="ip"><?= $job['remote_ip_info'] ? html_escape($job['remote_ip_info']) : '<em>lipseste</em>' ?></td>
+      <td class="ip"><?= $job->remote_ip_info ? html_escape($job->remote_ip_info) : '<em>lipsește</em>' ?></td>
     <?php } ?>
   </tr>
 
@@ -51,17 +51,17 @@
 
 <h2>Raport evaluator</h2>
 
-<?php if ('done' != $job['status']) { ?>
+<?php if ('done' != $job->status) { ?>
   <p>Această sursă nu a fost evaluată încă.</p>
 <?php } else { ?>
   <div class="job-eval-log">
-    <?= html_escape($job['eval_log']) ?>
+    <?= html_escape($job->eval_log) ?>
   </div>
 <?php } ?>
 
 <?php
 
-  if ('done' == $job['status'] && count($tests) > 0) {
+  if ('done' == $job->status && count($tests) > 0) {
     $show_feedback_column = false;
     foreach ($view['tests'] as $test) {
       if (getattr($test, 'is_public_test')) {
@@ -126,15 +126,15 @@
         echo '</tr>';
       }
       $line_spanning = 4 + ($show_groups ? 1: 0) + ($show_feedback_column ? 1: 0);
-      if (getattr($job, 'penalty') !== null) {
+      if (isset($penalty)) {
         echo '<tr><td colspan="'.$line_spanning.'"> Penalizare '
-           . $job['penalty']['description'] . '</td><td class="number">-'
-           . $job['penalty']['amount'] . '</td></tr>';
+           . $penalty['description'] . '</td><td class="number">-'
+           . $penalty['amount'] . '</td></tr>';
       }
 
-      if (!is_null($job['score'])) {
+      if (!is_null($job->score)) {
         echo '<tr><td colspan="'.$line_spanning.'">'.
-             'Punctaj total</td><td class="total_score number">'.$job['score'].'</td></tr>';
+             'Punctaj total</td><td class="total_score number">'.$job->score.'</td></tr>';
       }
     ?>
   </tbody>

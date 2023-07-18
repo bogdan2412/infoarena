@@ -7,10 +7,8 @@ if (Config::DEVELOPMENT_MODE) {
     log_print('- -- --- ---- ----- Request: '.$_SERVER['QUERY_STRING']);
 }
 check_requirements();
-require_once Config::ROOT.'common/security.php';
 require_once Config::ROOT.'www/url.php';
 require_once Config::ROOT.'www/utilities.php';
-require_once Config::ROOT.'www/identity.php';
 require_once Config::ROOT.'common/db/db.php';
 require_once '../lib/Core.php';
 
@@ -43,7 +41,6 @@ $pagepath = explode('/', $page);
 $urlstart = getattr($pagepath, 0, '');
 $page_id = implode('/', array_slice($pagepath, 1));
 $action = request('action', 'view');
-
 
 // Direct mapping list
 // Note: array_flip() flips keys with values in a dictionary.

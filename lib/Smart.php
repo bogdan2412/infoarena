@@ -132,21 +132,20 @@ class Smart {
   }
 
   static function fetch(string $templateName): string {
-    global $identity_user;
-
     list ($cssFiles, $jsFiles) = self::collectResourcesWithDeps();
     $cssFiles = self::makeRelativeUrls($cssFiles);
     $jsFiles = self::makeRelativeUrls($jsFiles);
+    $identity = Identity::get();
 
-    $ratingBadge = $identity_user
-      ? new RatingBadge($identity_user['username'], $identity_user['rating_cache'])
+    $ratingBadge = $identity
+      ? new RatingBadge($identity->username, $identity->rating_cache)
       : null;
 
     self::assign([
       'cssFiles' => $cssFiles,
       'currentYear' => date('Y'),
       'jsFiles' => $jsFiles,
-      'identity' => $identity_user,
+      'identity' => $identity,
       'ratingBadge' => $ratingBadge,
     ]);
     return self::$theSmarty->fetch($templateName);

@@ -22,7 +22,7 @@ $diffurl = url_textblock_diff($rev['name'], $rev['revision_id'] - 1, $rev['revis
 $difflink = (!$created) ? " (".format_link($diffurl, "modificări").")" : "";
 $tstamp = format_date($rev['timestamp']);
 $created_or_changed = $created ? "creat" : "modificat";
-if (identity_can('textblock-view-ip', $rev) && $rev['remote_ip_info']) {
+if (Identity::mayViewIpAddresses() && $rev['remote_ip_info']) {
     $remote_ip = '('.$rev['remote_ip_info'].') ';
 } else {
     $remote_ip = '';

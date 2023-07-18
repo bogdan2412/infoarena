@@ -24,7 +24,7 @@
     ?>
     &nbsp;
     <?php
-    if (identity_can('textblock-delete-revision', $view['textblock'])) {
+    if (Identity::mayDeleteRevision()) {
         echo format_post_link(url_textblock_delete_revision($view['page_name'], $view['revision']), "Șterge");
     }
     ?>

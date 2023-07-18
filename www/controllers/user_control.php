@@ -1,7 +1,7 @@
 <?php
 
 function controller_user_control() {
-    if (!identity_is_admin()) {
+    if (!Identity::isAdmin()) {
         redirect(url_home());
     }
 

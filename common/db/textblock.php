@@ -3,7 +3,6 @@
 require_once(Config::ROOT."common/db/db.php");
 require_once(Config::ROOT."common/db/tags.php");
 require_once(Config::ROOT."common/db/attachment.php");
-require_once(Config::ROOT."common/security.php");
 require_once(Config::ROOT."common/textblock.php");
 require_once(Config::ROOT."common/common.php");
 

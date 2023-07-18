@@ -3,7 +3,6 @@
 require_once Config::ROOT.'common/db/db.php';
 require_once Config::ROOT.'common/statistics-config.php';
 require_once Config::ROOT.'common/db/task.php';
-require_once Config::ROOT.'www/identity.php';
 
 /*
    Returns an array of maps containing the best $max_top_size user

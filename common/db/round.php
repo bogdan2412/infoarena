@@ -82,10 +82,9 @@ function round_update($round) {
 
 // Returns array with all tasks attached to the specified round
 //
-// :WARNING: This does not select all fields related to each task,
-// but rather chooses a few.
-// Make sure that calls such as identity_require() have all necessary
-// information to yield a correct answer.
+// :WARNING: This does not select all fields related to each task, but rather
+// chooses a few.  Make sure that Identity has all necessary information to
+// yield a correct answer.
 //
 // FIXME: sensible ordering.
 // FIXME: cache tasks.

@@ -52,7 +52,7 @@ function macro_rankings($args) {
     $rounds = array();
     foreach ($round_param as $param) {
         $round = preg_split('/\s*\:\s*/', $param);
-        if (!identity_can('round-view-scores', round_get($round[0]))) {
+        if (!Identity::mayViewRoundScores(round_get($round[0]))) {
             continue;
         }
         array_push($rounds, array(

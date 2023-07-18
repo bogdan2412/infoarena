@@ -6,7 +6,6 @@
 
 require_once Config::ROOT . 'common/cache.php';
 require_once Config::ROOT . 'common/textblock.php';
-require_once Config::ROOT . 'www/identity.php';
 require_once Config::ROOT . 'www/macros/macros.php';
 require_once Config::ROOT . 'www/url.php';
 require_once Config::ROOT . 'www/wiki/MyTextile.php';

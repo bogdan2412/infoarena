@@ -11,17 +11,18 @@ require_once(Config::ROOT."www/format/format.php");
 // display site header
   function ia_template_header() {
     // FIXME: Keep this in sync with template/bits/header.tpl while they coexist.
-    global $identity_user;
 ?>
 <div id="header" class="clear">
-    <?php if (!identity_is_anonymous()) { $username = $identity_user['username']; ?>
+<?php
+    $identity = Identity::get();
+    if ($identity) {  ?>
         <div id="userbox">
-        <?= format_link(url_user_profile($username, true), format_user_avatar($username, "normal", true), false) ?>
+        <?= format_link(url_user_profile($identity->username, true), format_user_avatar($identity->username, "normal", true), false) ?>
             <div class="user">
-                <strong><?= html_escape($identity_user['full_name']) ?></strong><br>
-                <?= format_user_ratingbadge($username, $identity_user['rating_cache']) ?>
+                <strong><?= html_escape($identity->full_name) ?></strong><br>
+                <?= format_user_ratingbadge($identity->username, $identity->rating_cache) ?>
                 <span id="active-username">
-                  <?= format_link(url_user_profile($username, true), $username) ?><br>
+                  <?= format_link(url_user_profile($identity->username, true), $identity->username) ?><br>
                 </span>
                 <?= format_post_link(url_logout(), "logout", array(), true, array('class' => 'logout')) ?> |
                 <?= format_link_access(url_account(), 'contul meu', 'c') ?>

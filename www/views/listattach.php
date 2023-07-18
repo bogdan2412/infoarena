@@ -60,7 +60,7 @@ function format_attach_zip($row) {
 }
 
 function format_ip($row) {
-    if ($row['remote_ip_info'] && identity_can('attach-view-ip', $row)) {
+    if ($row['remote_ip_info'] && Identity::mayViewIpAddresses()) {
         return html_escape($row['remote_ip_info']);
     } else {
         return 'N/A';

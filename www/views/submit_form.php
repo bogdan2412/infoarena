@@ -4,37 +4,36 @@ require_once(Config::ROOT . "www/views/utilities.php");
 // Returns list of rounds to which a task can be submitted
 // along with a default round
 function task_get_submit_options($task_id) {
-    // Fetch task parent rounds.
-    $rounds = array();
-    $round_ids = task_get_submit_rounds($task_id,
-                                        identity_get_user());
+  // Fetch task parent rounds.
+  $rounds = array();
+  $round_ids = task_get_submit_rounds($task_id);
 
-    // Check if task is new and hasn't been added to any round yet
-    if (count($round_ids) == 0) {
-        $task = task_get($task_id);
-        if (identity_can("task-submit", $task)) {
-            $rounds[] = array("id" => "", "title" => "Inexistent");
-        }
-        $default = "";
-    } else {
-        // Try and determine what round a user wants to submit to.
-        $default = getattr($_SESSION, '_ia_last_submit_round', NULL);
-        if (!is_round_id($default) || !in_array($default, $round_ids)) {
-            if (count($round_ids) == 1) {
-                $default = $round_ids[0];
-            } else {
-                $rounds[] = array("id" => "", "title" => "[ Alegeți runda ]");
-                $default = "";
-            }
-        }
-        foreach($round_ids as $round_id) {
-            $round = round_get($round_id);
-            $rounds[] = array("id" => $round_id,
-                              "title" => $round["title"]);
-        }
+  // Check if task is new and hasn't been added to any round yet
+  if (count($round_ids) == 0) {
+    $task = Task::get_by_id($task_id);
+    if ($task->canSubmit()) {
+      $rounds[] = array("id" => "", "title" => "Inexistent");
     }
+    $default = "";
+  } else {
+    // Try and determine what round a user wants to submit to.
+    $default = getattr($_SESSION, '_ia_last_submit_round', NULL);
+    if (!is_round_id($default) || !in_array($default, $round_ids)) {
+      if (count($round_ids) == 1) {
+        $default = $round_ids[0];
+      } else {
+        $rounds[] = array("id" => "", "title" => "[ Alegeți runda ]");
+        $default = "";
+      }
+    }
+    foreach($round_ids as $round_id) {
+      $round = round_get($round_id);
+      $rounds[] = array("id" => $round_id,
+                        "title" => $round["title"]);
+    }
+  }
 
-    return array("rounds" => $rounds, "default" => $default);
+  return array("rounds" => $rounds, "default" => $default);
 }
 
 function solution_field() {

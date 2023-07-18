@@ -13,7 +13,7 @@ include('tags_header.php');
 echo task_edit_tabs($view['task_id'], request("action"));
 
 // Validate task.
-log_assert_valid(task_validate($task));
+log_assert_valid(task_validate($task->as_array()));
 
 $form_fields = array(
         'title' => array(
@@ -96,7 +96,7 @@ $form_fields = array(
     </a>
 </h1>
 
-<?php if (identity_can("task-delete", $task)) { ?>
+<?php if ($task->isDeletable()) { ?>
     <form action="<?= html_escape(url_task_delete()) ?>" method="post" style="float: right">
         <input type="hidden" name="task_id" value="<?= html_escape($task_id) ?>">
         <input
@@ -125,17 +125,17 @@ $form_fields = array(
     <ul class="form">
         <?= view_form_field_li($form_fields['title'], 'title') ?>
         <?= view_form_field_li($form_fields['page_name'], 'page_name') ?>
-        <?php if (identity_can('task-edit-owner', $task)) { ?>
+        <?php if ($task->isAuthorEditable()) { ?>
             <?= view_form_field_li($form_fields['user'], 'user') ?>
         <?php } ?>
         <?= view_form_field_li($form_fields['source'], 'source') ?>
-        <?php if (identity_can('task-change-security', $task)) { ?>
+        <?php if ($task->isSecurityEditable()) { ?>
            <?= view_form_field_li($form_fields['security'], 'security') ?>
         <?php } ?>
    </ul>
     </fieldset>
 
-    <?php if (identity_can('task-tag', $task)) {
+    <?php if ($task->areTagsEditable()) {
         $tag_fields = Array('author' => Array("label" => "Autor",
                                                 "name" => "tag_author"),
                             'contest' => Array("label" => "Concurs",
@@ -164,7 +164,7 @@ $form_fields = array(
 <?php
 // FIXME: Field should be generated from task_get_types()
 ?>
-    <?php if (identity_can('task-change-open', $task)) { ?>
+  <?php if ($task->isOpenEditable()) { ?>
     <fieldset>
     <legend>Acces la surse și teste</legend>
     <ul class="form">

@@ -67,7 +67,7 @@ function task_get_parameter_infos() {
 }
 
 // Initialize a task object
-function task_init($task_id, $task_type, $user = null) {
+function task_init($task_id, $task_type, ?User $user = null) {
     $task = array(
             'id' => $task_id,
             'type' => $task_type,
@@ -86,11 +86,7 @@ function task_init($task_id, $task_type, $user = null) {
     );
 
     // User stuff. ugly
-    if (is_null($user)) {
-        $task['user_id'] = 0;
-    } else {
-        $task['user_id'] = $user['id'];
-    }
+    $task['user_id'] = $user->id ?? 0;
 
     log_assert_valid(task_validate($task));
     return $task;

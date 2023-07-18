@@ -47,9 +47,6 @@ function macro_roundtimer($args) {
     if (!$round) {
         return macro_error("Invalid round identifier");
     }
-    if (!identity_can('round-view', $round)) {
-        return macro_permission_error();
-    }
 
     // for archives don't display anything
     if (is_null($round['type'])) {

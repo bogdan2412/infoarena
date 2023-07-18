@@ -1,20 +1,20 @@
 <div class="clear" id="header">
   {if $identity}
     <div id="userbox">
-      <a href="{User::getProfileUrl($identity.username)}">
+      <a href="{User::getProfileUrl($identity->username)}">
         <img
-          alt="imagine de profil {$identity.username}"
-          src="{User::getAvatarUrl($identity.username, 'normal')}">
+          alt="imagine de profil {$identity->username}"
+          src="{User::getAvatarUrl($identity->username, 'normal')}">
       </a>
 
       <div class="user">
-        <strong>{$identity.full_name|escape}</strong>
+        <strong>{$identity->full_name|escape}</strong>
         <br>
 
         {include "bits/ratingBadge.tpl" rb=$ratingBadge}
         <span id="active-username">
-          <a href="{User::getProfileUrl($identity.username)}">
-            {$identity.username}
+          <a href="{User::getProfileUrl($identity->username)}">
+            {$identity->username}
           </a>
         </span>
         <br>

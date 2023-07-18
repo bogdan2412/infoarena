@@ -25,7 +25,7 @@ function macro_include($args) {
     }
 
     // check permissions
-    if (!identity_can('textblock-view', $textblock)) {
+    if (!Identity::mayViewTextblock($textblock)) {
         return macro_permission_error();
     }
 

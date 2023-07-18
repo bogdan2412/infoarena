@@ -78,7 +78,6 @@ if (isset($form_errors) || isset($form_values)) {
 
 <?php
 ia_template_header();
-$is_admin = ('admin' == getattr($identity_user, 'security_level'));
 ?>
 
 <div id="content_small" class="clear">
@@ -88,7 +87,7 @@ $is_admin = ('admin' == getattr($identity_user, 'security_level'));
         <li><a href="<?= html_escape(url_textblock('concursuri')) ?>">Concursuri</a></li>
         <li><a href="<?= html_escape(url_textblock('concursuri-virtuale')) ?>">Concursuri virtuale</a></li>
         <li><a href="<?= html_escape(url_textblock('clasament-rating')) ?>">Clasament</a></li>
-		<li><?= format_link_access(url_monitor(array('user' => identity_get_username())), "Monitorul de evaluare", 'm') ?></li>
+		<li><?= format_link_access(url_monitor(array('user' => Identity::getUsername())), "Monitorul de evaluare", 'm') ?></li>
         <li class="separator"><hr></li>
         <li><a href="<?= url_task_search([]) ?>">Categorii probleme</a></li>
 
@@ -100,21 +99,19 @@ $is_admin = ('admin' == getattr($identity_user, 'security_level'));
         <?php } ?>
 
         <li class="separator"><hr></li>
-        <?php if (!identity_is_anonymous()) { ?>
+        <?php if (Identity::isLoggedIn()) { ?>
             <li><a href="<?= html_escape(url_submit()) ?>"><strong>Trimite soluții</strong></a></li>
             <li><?= format_link_access(url_account(), "Contul meu", 'c') ?></li>
-			<!-- mihai adaugare elemente top-menu la sidebar -->
-			<li><?= format_link_access(url_user_profile($identity_user['username']), 'Profilul meu', 'p') ?></li>
-			<?php if ($is_admin) { ?>
+			<li><?= format_link_access(url_user_profile(Identity::getUsername()), 'Profilul meu', 'p') ?></li>
+			<?php if (Identity::isAdmin()) { ?>
 			<li class="separator"><hr></li>
 			<li><?= format_link_access(url_admin(), 'Administrativ', 'a') ?></li>
 			<?php } ?>
-			<!-- end adaugare elemente sidebar-->
         <?php } ?>
 
     </ul>
 
-    <?php if (identity_is_anonymous()) { ?>
+    <?php if (Identity::isAnonymous()) { ?>
     <div id="login">
         <?php if (!isset($no_sidebar_login)) Smart::displayBit('auth/loginForm.tpl'); ?>
         <p>
@@ -130,31 +127,7 @@ $is_admin = ('admin' == getattr($identity_user, 'security_level'));
 </div>
 
 <div id="main">
-<?php
-
-// breadcrumbs with recent pages
-if (isset($recent_pages) && (1 < count($recent_pages))) {
-    $bstring = '';
-    foreach ($recent_pages as $rec_key => $rec_entry) {
-        list($rec_url, $rec_title) = $rec_entry;
-
-        $rec_title = html_escape($rec_title);
-
-        if ($bstring) {
-            $bstring .= ' <span class="separator">|</span> ';
-        }
-        if ($current_url_key == $rec_key) {
-            $bstring .= "<strong>{$rec_title}</strong>";
-        }
-        else {
-            $bstring .= "<a href=\"" . html_escape($rec_url) . "\">{$rec_title}</a>";
-        }
-    }
-    echo '<p id="breadcrumbs">Pagini recente &raquo; ' . $bstring . '</p>';
-}
-
-?>
-
-<?php
-  Smart::displayBit('layout/flashMessages.tpl');
-?>
+  <?php
+    Smart::displayBit('layout/recentPages.tpl');
+    Smart::displayBit('layout/flashMessages.tpl');
+  ?>

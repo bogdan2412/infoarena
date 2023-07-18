@@ -8,7 +8,7 @@ include('tags_header.php');
 
 // insert task edit tabs
 if (($task_id = textblock_security_is_task($page['security'])) &&
-    (identity_can('task-edit', task_get($task_id)))) {
+    (Task::get_by_id($task_id)->isEditable())) {
     require_once(Config::ROOT."www/views/task_edit_header.php");
     echo task_edit_tabs($task_id, request("action"));
 ?>
@@ -18,7 +18,7 @@ if (($task_id = textblock_security_is_task($page['security'])) &&
 
 // insert round edit tabs
 if (($round_id = textblock_security_is_round($page['security'])) &&
-    (identity_can('round-edit', $round = round_get($round_id)))) {
+    Identity::ownsRound($round = round_get($round_id))) {
     require_once(Config::ROOT."www/views/round_edit_header.php");
     echo round_edit_tabs($round_id, request("action"));
 ?>
@@ -70,7 +70,7 @@ if (($round_id = textblock_security_is_round($page['security'])) &&
         </div>
     </li>
 
-    <?php if (identity_can('textblock-tag', $view['page'])) { ?>
+    <?php if (Identity::mayTagTextblock()) { ?>
        <?= tag_format_input_box(array("label" => "Tag-uri", "name" => "tags"), fval('tags')) ?>
     <?php } ?>
 

@@ -3,10 +3,7 @@ require_once(Config::ROOT."common/db/job.php");
 require_once(Config::ROOT."common/db/task.php");
 
 function controller_reeval() {
-  if (!User::canReevalJobs()) {
-    FlashMessage::addError('Nu ai permisiunea să reevaluezi joburi.');
-    redirect(url_home());
-  }
+  Identity::enforceReevalJobs();
 
   $referer = $_SERVER['HTTP_REFERER'];
   if (!request_is_post()) {
