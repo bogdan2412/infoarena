@@ -32,7 +32,7 @@
                 name="remember"
                 type="checkbox">
               <label class="checkbox" for="form_remember">
-                Păstrează-mă autentificat 5 zile
+                Păstrează-mă autentificat 30 de zile.
               </label>
             </li>
           </ul>

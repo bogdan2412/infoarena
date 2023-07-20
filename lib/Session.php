@@ -8,13 +8,14 @@
 
 class Session {
 
-  const SESSION_NAME = 'nerdarena-session';
-  const ONE_YEAR_IN_SECONDS = 365 * 86400;
+  const SESSION_COOKIE = 'nerdarena-session';
+  const LOGIN_COOKIE = 'nerdarena-login';
+  const ONE_MONTH_IN_SECONDS = 30 * 86400;
 
   static function init(): void {
-    session_name(self::SESSION_NAME);
+    session_name(self::SESSION_COOKIE);
 
-    if (isset($_COOKIE[self::SESSION_NAME])) {
+    if (isset($_COOKIE[self::SESSION_COOKIE])) {
       self::start();
     }
 
@@ -41,20 +42,15 @@ class Session {
 
   // If we have a valid long lived login cookie, transfer it to the session.
   private static function loadUserFromCookie(): void {
-    $lll = $_COOKIE['login'] ?? null;
-    if ($lll) {
-      $cookie = Cookie::get_by_string($lll);
-      $user = $cookie ? User::get_by_id($cookie->userId) : null;
+    $cookieVal = $_COOKIE[self::LOGIN_COOKIE] ?? null;
+    if ($cookieVal) {
+      $user = Cookie::getUser($cookieVal);
       if ($user) {
         self::set('userId', $user->id);
         Identity::set($user->id);
       } else {
         // The cookie is invalid.
-        self::unsetCookie('login');
-        unset($_COOKIE['login']);
-        if ($cookie) {
-          $cookie->delete();
-        }
+        self::unsetLoginCookie();
       }
     }
   }
@@ -63,7 +59,7 @@ class Session {
     self::set('userId', $user->id);
     if ($remember) {
       $cookie = Cookie::create($user->id);
-      setcookie('login', $cookie->string, time() + self::ONE_YEAR_IN_SECONDS, '/');
+      setcookie(self::LOGIN_COOKIE, $cookie->string, time() + self::ONE_MONTH_IN_SECONDS, '/');
     }
 
     log_print($user->username . ' logged in, IP=' . $_SERVER['REMOTE_ADDR']);
@@ -89,13 +85,8 @@ class Session {
 
   static function logout(): void {
     log_print(Identity::getUsername() . ' logged out, IP=' . $_SERVER['REMOTE_ADDR']);
-    $string = $_COOKIE['login'] ?? '';
-    $cookie = Cookie::get_by_string($string);
-    if ($cookie) {
-      $cookie->delete();
-    }
-    self::unsetCookie('login');
-    unset($_COOKIE['login']);
+
+    self::unsetLoginCookie();
     self::kill();
     Util::redirectToHome();
   }
@@ -115,33 +106,29 @@ class Session {
   static function unsetVar($var): void {
     if (isset($_SESSION)) {
       unset($_SESSION[$var]);
-      if (!count($_SESSION)) {
-        // Note that this will prevent us from creating another session this same request.
-        // This does not seem to cause a problem at the moment.
-        self::kill();
-      }
     }
   }
 
-  static function unsetCookie($name): void {
+  private static function unsetCookie($name): void {
     unset($_COOKIE[$name]);
     setcookie($name, '', time() - 3600, '/');
   }
 
+  private static function unsetLoginCookie(): void {
+    if (isset($_COOKIE[self::LOGIN_COOKIE])) {
+      Cookie::delete_all_by_string($_COOKIE[self::LOGIN_COOKIE]);
+      self::unsetCookie(self::LOGIN_COOKIE);
+    }
+  }
+
   static function has($var): bool {
-    return isset($_SESSION) && isset($_SESSION[$var]);
+    return isset($_SESSION[$var]);
   }
 
   private static function kill(): void {
-    if (!isset($_SESSION)) {
-      self::start(); // It has to have been started in order to be destroyed.
-    }
-    session_unset();
-    @session_destroy();
+    $_SESSION = []; // unset all variables
     if (ini_get("session.use_cookies")) {
-      self::unsetCookie(session_name());
+      self::unsetCookie(self::SESSION_COOKIE);
     }
   }
-
-
 }

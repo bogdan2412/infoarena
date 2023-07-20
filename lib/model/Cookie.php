@@ -11,4 +11,12 @@ class Cookie extends Base {
     return $c;
   }
 
+  static function getUser(string $cookieVal): ?User {
+    $cookie = Cookie::get_by_string($cookieVal);
+    $user = $cookie
+      ? (User::get_by_id($cookie->userId) ?: null)
+      : null;
+    return $user;
+  }
+
 }
