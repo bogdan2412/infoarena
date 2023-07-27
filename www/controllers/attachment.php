@@ -451,8 +451,8 @@ function try_attachment_get($page_name, $file_name) {
 // download an attachment
 function controller_attachment_download($page_name, $file_name,
                                         $restrict_to_safe_mime_types = false) {
-  // referer check
-  if (http_referer_check()) {
+  // referrer check
+  if (http_referrer_check()) {
     $attach = try_attachment_get($page_name, $file_name);
     // serve attachment with proper mime types
     global $IA_SAFE_MIME_TYPES;
@@ -475,7 +475,7 @@ function controller_attachment_download($page_name, $file_name,
 }
 
 function controller_attachment_download_zip($page_name, $arguments) {
-  if (http_referer_check()) {
+  if (http_referrer_check()) {
     $files = array();
     foreach ($arguments as $value) {
       if (is_numeric($value)) {

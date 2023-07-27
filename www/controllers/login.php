@@ -32,11 +32,11 @@ function controller_login() {
       }
     }
 
-    // obtain referer
-    $referer = getattr($_SERVER, 'HTTP_REFERER', '');
-    if ($referer == url_login()) {
+    // obtain referrer
+    $referrer = getattr($_SERVER, 'HTTP_REFERER', '');
+    if ($referrer == url_login()) {
       // we don't care about the login page
-      $referer = null;
+      $referrer = null;
     }
 
     // process
@@ -48,9 +48,9 @@ function controller_login() {
       $referrer = Util::getReferrer();
       Session::login($user, $remember, $referrer);
     } else {
-      // save referer so we know where to redirect when login finally
+      // save referrer so we know where to redirect when login finally
       // succeeds.
-      if (!isset($_SESSION['_ia_redirect']) && $referer) {
+      if (!isset($_SESSION['_ia_redirect']) && $referrer) {
         $_SESSION['_ia_redirect'] = $_SERVER['HTTP_REFERER'];
       }
 

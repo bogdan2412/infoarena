@@ -23,6 +23,6 @@ function controller_job_skip() {
   }
 
   FlashMessage::addSuccess('Am ignorat ' . $count . ' joburi.');
-  $referer = $_SERVER['HTTP_REFERER'];
-  redirect($referer);
+  $referrer = $_SERVER['HTTP_REFERER'];
+  redirect($referrer);
 }
