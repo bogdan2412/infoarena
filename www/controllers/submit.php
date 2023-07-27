@@ -35,7 +35,7 @@ function controller_submit() {
 
     if (isset($errors['submit_limit']) && count($errors) == 1) {
       FlashMessage::addError($errors['submit_limit']);
-      redirect(getattr($_SERVER, 'HTTP_REFERER', url_submit()));
+      Util::redirectToSelf();
     }
 
     if ($errors) {
@@ -43,7 +43,7 @@ function controller_submit() {
                          nu au fost completate corect.');
     } else {
       FlashMessage::addSuccess('Am salvat soluția.');
-      redirect(getattr($_SERVER, 'HTTP_REFERER', url_submit()));
+      Util::redirectToSelf();
     }
     // Fall through to submit form.
   }

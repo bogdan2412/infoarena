@@ -6,6 +6,7 @@ function controller_login() {
   // `data` dictionary is a dictionary with data to be displayed by form view
   // when displaying the form for the first time, this is filled with
   $data = array();
+  $referrer = Util::getReferrer();
 
   $errors = '';
 
@@ -32,33 +33,18 @@ function controller_login() {
       }
     }
 
-    // obtain referrer
-    $referrer = getattr($_SERVER, 'HTTP_REFERER', '');
-    if ($referrer == url_login()) {
-      // we don't care about the login page
-      $referrer = null;
-    }
-
     // process
     if (!$errors) {
-      // persist user to session (login)
-      FlashMessage::addSuccess('Bine ai venit!');
       $user = User::get_by_id($user['id']);
       $remember = ($data['remember'] ? true : false);
-      $referrer = Util::getReferrer();
       Session::login($user, $remember, $referrer);
     } else {
-      // save referrer so we know where to redirect when login finally
-      // succeeds.
-      if (!isset($_SESSION['_ia_redirect']) && $referrer) {
-        $_SESSION['_ia_redirect'] = $_SERVER['HTTP_REFERER'];
-      }
-
       FlashMessage::addError($errors);
     }
   }
 
   Smart::assign([
+    'referrer' => $referrer,
     'remember' => $data['remember'] ?? false,
     'showSidebarLogin' => false,
     'username' => $data['username'] ?? '',

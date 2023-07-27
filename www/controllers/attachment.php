@@ -451,52 +451,41 @@ function try_attachment_get($page_name, $file_name) {
 // download an attachment
 function controller_attachment_download($page_name, $file_name,
                                         $restrict_to_safe_mime_types = false) {
-  // referrer check
-  if (http_referrer_check()) {
-    $attach = try_attachment_get($page_name, $file_name);
-    // serve attachment with proper mime types
-    global $IA_SAFE_MIME_TYPES;
-    if (in_array($attach['mime_type'], $IA_SAFE_MIME_TYPES)) {
-      $mime_type = $attach['mime_type'];
-    } else {
-      if ($restrict_to_safe_mime_types) {
-        die_http_error(403, 'Permission denied');
-      }
-      $mime_type = "application/octet-stream";
-    }
-
-    http_serve(attachment_get_filepath($attach),
-               $file_name,
-               $mime_type);
+  $attach = try_attachment_get($page_name, $file_name);
+  // serve attachment with proper mime types
+  global $IA_SAFE_MIME_TYPES;
+  if (in_array($attach['mime_type'], $IA_SAFE_MIME_TYPES)) {
+    $mime_type = $attach['mime_type'];
   } else {
-    // redirect to main page
-    redirect(url_absolute(url_home()));
+    if ($restrict_to_safe_mime_types) {
+      die_http_error(403, 'Permission denied');
+    }
+    $mime_type = "application/octet-stream";
   }
+
+  http_serve(attachment_get_filepath($attach),
+             $file_name,
+             $mime_type);
 }
 
 function controller_attachment_download_zip($page_name, $arguments) {
-  if (http_referrer_check()) {
-    $files = array();
-    foreach ($arguments as $value) {
-      if (is_numeric($value)) {
-        $files[] = request($value);
-      }
+  $files = array();
+  foreach ($arguments as $value) {
+    if (is_numeric($value)) {
+      $files[] = request($value);
     }
-    $zipfile = new zipfile();
-    foreach ($files as $filename) {
-      $attach = try_attachment_get($page_name, $filename);
-      $local_file_path = null;
-      $local_file_path = attachment_get_filepath($attach);
-      $fh = fopen($local_file_path, "r");
-      $contents = fread($fh, filesize($local_file_path));
-      $zipfile->add_file($contents, $filename);
-    }
-
-    header("Content-type: application/octet-stream");
-    header("Content-disposition: attachment; filename=$page_name.zip");
-    echo $zipfile->file();
-  } else {
-    // redirect to main page
-    redirect(url_absolute(url_home()));
   }
+  $zipfile = new zipfile();
+  foreach ($files as $filename) {
+    $attach = try_attachment_get($page_name, $filename);
+    $local_file_path = null;
+    $local_file_path = attachment_get_filepath($attach);
+    $fh = fopen($local_file_path, "r");
+    $contents = fread($fh, filesize($local_file_path));
+    $zipfile->add_file($contents, $filename);
+  }
+
+  header("Content-type: application/octet-stream");
+  header("Content-disposition: attachment; filename=$page_name.zip");
+  echo $zipfile->file();
 }

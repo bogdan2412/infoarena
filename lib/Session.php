@@ -62,6 +62,7 @@ class Session {
       setcookie(self::LOGIN_COOKIE, $cookie->string, time() + self::ONE_MONTH_IN_SECONDS, '/');
     }
 
+    FlashMessage::addSuccess('Bine ai venit!');
     log_print($user->username . ' logged in, IP=' . $_SERVER['REMOTE_ADDR']);
 
     $postData = self::get('postData');

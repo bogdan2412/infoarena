@@ -21,6 +21,15 @@ class Util {
     self::redirect(Config::URL_PREFIX . 'login');
   }
 
+  static function redirectToReferrer(): void {
+    $referrer = self::getReferrer();
+    if ($referrer) {
+      self::redirect($referrer);
+    } else {
+      self::redirectToHome();
+    }
+  }
+
   // Redirects to the same page, stripping any GET parameters but preserving
   // any slash-delimited arguments.
   static function redirectToSelf(): void {

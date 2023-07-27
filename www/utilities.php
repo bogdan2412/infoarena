@@ -72,8 +72,6 @@ function request_is_post() {
 // If output started before issuing a redirect means you're either
 // printing stuff too early or you're trying to redirect too late (view?).
 // Either way, it is a bug and it must be solved rather than handled gracefully
-//
-// FIXME: bool to se ia_redirect to REQUEST_URI? might be usefull.
 function redirect($absolute_url, $code = 302) {
   log_assert($code === 301 || $code === 302);
   if ($code === 301) {
@@ -85,17 +83,6 @@ function redirect($absolute_url, $code = 302) {
   FlashMessage::saveToSession();
   session_write_close();
   die();
-}
-
-// Checks if the referrer is the same as the host
-function http_referrer_check() {
-  return true;
-  //FIXME: this is broken
-  $HTTP_REFERRER = getattr($_SERVER, 'HTTP_REFERER');
-  $HTTP_HOST = getattr($_SERVER, 'HTTP_HOST');
-  return
-    $HTTP_REFERRER == null ||
-    substr($HTTP_REFERRER, 0, (strlen($HTTP_HOST)+7)) == "http://".$HTTP_HOST;
 }
 
 // Client side caching... let's save some bandwidth

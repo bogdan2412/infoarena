@@ -5,18 +5,18 @@ require_once(Config::ROOT."common/db/task.php");
 function controller_reeval() {
   Identity::enforceReevalJobs();
 
-  $referrer = $_SERVER['HTTP_REFERER'];
   if (!request_is_post()) {
     FlashMessage::addError('Nu pot ignora joburi printr-un request de tip GET.');
-    redirect($referrer);
+    Util::redirectToReferrer();
   }
 
+  $referrer = Util::getReferrer();
   $filters = JobFilters::parseFromUrl($referrer);
   $jobCount = $filters->count();
   if ($jobCount > IA_REEVAL_MAXJOBS) {
     $msg = sprintf('Poți solicita reevaluarea a cel mult %s joburi.', IA_REEVAL_MAXJOBS);
     FlashMessage::addError($msg);
-    redirect($referrer);
+    Util::redirectToReferrer();
   }
 
   $jobs = $filters->getAll();
@@ -31,6 +31,5 @@ function controller_reeval() {
   Variable::poke('Rating.fullUpdate', 1);
 
   FlashMessage::addSuccess('Am marcat joburile pentru reevaluare.');
-  redirect($referrer);
+  Util::redirectToReferrer();
 }
-?>
