@@ -2,7 +2,7 @@
 {$remember=$remember|default:false}
 {$username=$username|default:''}
 <form action="{url_login()|escape}" class="login" method="post">
-  <input type="hidden" name="referrer" value="{$referrer|escape:html}">
+  <input type="hidden" name="referrer" value="{$referrer|escape}">
 
   <table class="form">
     <tr>
