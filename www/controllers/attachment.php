@@ -12,7 +12,7 @@ function try_textblock_get($page_name) {
   $page = textblock_get_revision($page_name);
   if (!$page) {
     FlashMessage::addError('Cerere invalidă');
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   return $page;

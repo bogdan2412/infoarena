@@ -14,7 +14,7 @@ function controller_penalty() {
     $errors = array();
 
     if (!Identity::isAdmin()) {
-        redirect(url_home());
+        Util::redirectToHome();
     }
 
     // submit?

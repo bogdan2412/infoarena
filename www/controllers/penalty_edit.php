@@ -8,7 +8,7 @@ require_once(Config::ROOT . 'common/email.php');
 function controller_penalty_edit() {
     //security check
     if (!Identity::isAdmin()) {
-        redirect(url_home());
+        Util::redirectToHome();
     }
 
     //get parameters
@@ -33,7 +33,7 @@ function controller_penalty_edit() {
             score_update($task['user_id'], $task['task_id'], $task['round_id'], $task['score']);
         }
 
-        redirect(url_home());
+        Util::redirectToHome();
     } else {
         //initial display of the form
     }

@@ -24,7 +24,7 @@ function controller_task_tags() {
 function controller_task_tags_add() {
   Identity::enforceEditTags();
   if (!request_is_post()) {
-    redirect(url_task_tags());
+    Util::redirectToSelf();
   }
 
   $tag = array(
@@ -34,23 +34,23 @@ function controller_task_tags_add() {
   );
   if (!is_tag($tag)) {
     FlashMessage::addError("Nume de tag invalid.");
-    redirect(url_task_tags());
+    Util::redirectToSelf();
   }
   $tag_id = tag_get_id($tag);
   if (!is_null($tag_id)) {
     FlashMessage::addError("Tagul există deja.");
-    redirect(url_task_tags());
+    Util::redirectToSelf();
   }
 
   tag_assign_id($tag);
-  redirect(url_task_tags());
+  Util::redirectToSelf();
 }
 
 // Delete a "method" or "algorithm" tag
 function controller_task_tags_delete() {
   Identity::enforceEditTags();
   if (!request_is_post()) {
-    redirect(url_task_tags());
+    Util::redirectToSelf();
   }
 
   $tag = array(
@@ -60,31 +60,31 @@ function controller_task_tags_delete() {
   );
   if (!is_tag($tag)) {
     FlashMessage::addError("Nume de tag invalid.");
-    redirect(url_task_tags());
+    Util::redirectToSelf();
   }
   $tag_id = tag_get_id($tag);
   if (is_null($tag_id)) {
     FlashMessage::addError("Tag inexistent.");
-    redirect(url_task_tags());
+    Util::redirectToSelf();
   }
 
   // Do not delete tags if they have been added to tasks.
   $task_count = tag_count_objects("task", array($tag_id), true);
   if ($task_count != 0) {
     FlashMessage::addError("Nu poți șterge un tag care a fost asociat deja unei probleme.");
-    redirect(url_task_tags());
+    Util::redirectToSelf();
   }
 
   tag_delete_by_id($tag_id);
   FlashMessage::addSuccess("Am șters tagul.");
-  redirect(url_task_tags());
+  Util::redirectToSelf();
 }
 
 // Rename a "method" or "algorithm" tag
 function controller_task_tags_rename() {
   Identity::enforceEditTags();
   if (!request_is_post()) {
-    redirect(url_task_tags());
+    Util::redirectToSelf();
   }
 
   $tag = array(
@@ -95,22 +95,22 @@ function controller_task_tags_rename() {
   $new_name = request("name", "");
   if (!is_tag($tag) || !is_tag_name($new_name)) {
     FlashMessage::addError("Nume de tag invalid.");
-    redirect(url_task_tags());
+    Util::redirectToSelf();
   }
   $tag_id = tag_get_id($tag);
   if (is_null($tag_id)) {
     FlashMessage::addError("Tag inexistent.");
-    redirect(url_task_tags());
+    Util::redirectToSelf();
   }
 
   $tag["name"] = $new_name;
   // Check that the new tag doesn't already exist.
   if (tag_get_id($tag)) {
     FlashMessage::addError("Tagul există deja.");
-    redirect(url_task_tags());
+    Util::redirectToSelf();
   }
   tag_update_by_id($tag_id, $tag);
 
   FlashMessage::addSuccess("Am redenumit tagul.");
-  redirect(url_task_tags());
+  Util::redirectToSelf();
 }

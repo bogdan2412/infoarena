@@ -7,7 +7,7 @@ require_once(Config::ROOT."www/format/pager.php");
 function controller_round_register($round_id) {
   if (!is_round_id($round_id)) {
     FlashMessage::addError("Identificatorul rundei este invalid.");
-    redirect(url_home());
+    Util::redirectToHome();
   }
   $round = round_get($round_id);
 
@@ -16,7 +16,7 @@ function controller_round_register($round_id) {
     Identity::enforceRegisterForRound($round);
   } else {
     FlashMessage::addError('Runda specificată nu există în baza de date.');
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   $user_is_registered = round_is_registered($round['id'], Identity::getId());
@@ -52,13 +52,13 @@ function controller_round_register($round_id) {
 function controller_round_register_view($round_id) {
   if (!is_round_id($round_id)) {
     FlashMessage::addError("Identificatorul rundei este invalid.");
-    redirect(url_home());
+    Util::redirectToHome();
   }
   $round = round_get($round_id);
 
   if (!$round) {
     FlashMessage::addError('Runda specificată nu există în baza de date.');
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   $options = pager_init_options();

@@ -61,7 +61,7 @@ function controller_textblock_diff($page_name) {
     Identity::enforceViewTextblock($page);
   } else {
     FlashMessage::addError("Această pagină nu există.");
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   // Validate revision ids.
@@ -126,7 +126,7 @@ function controller_textblock_restore($page_name, $rev_num) {
     Identity::enforceEditTextblockReversibly($page);
   } else {
     FlashMessage::addError("Pagina nu există.");
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   if (is_null($rev_num)) {
@@ -154,7 +154,7 @@ function controller_textblock_history($page_name) {
     Identity::enforceViewTextblock($page);
   } else {
     FlashMessage::addError("Pagina nu există.");
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   $options = pager_init_options();
@@ -204,11 +204,11 @@ function controller_textblock_delete($page_name) {
   } else {
     // Missing page.
     FlashMessage::addError("Pagină inexistentă.");
-    redirect(url_home);
+    Util::redirectToHome();
   }
   textblock_delete($page_name);
   FlashMessage::addSuccess("Am șters pagina.");
-  redirect(url_home());
+  Util::redirectToHome();
 }
 
 // Delete a list of textblocks
@@ -253,17 +253,17 @@ function controller_textblock_delete_revision($page = null, $rev_num = null) {
 
   if ($page == null) {
     FlashMessage::addError("Nu ai specificat pagina.");
-    redirect(url_home());
+    Util::redirectToHome();
   }
   if ($rev_num == null) {
     FlashMessage::addError("Nu ai specificat numărul reviziei.");
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   $total_revs = textblock_get_revision_count($page);
   if ($rev_num > $total_revs) {
     FlashMessage::addError("Nu există revizia.");
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   $revision = textblock_get_revision(
@@ -277,7 +277,7 @@ function controller_textblock_delete_revision($page = null, $rev_num = null) {
     Identity::enforceDeleteRevision();
   } else {
     FlashMessage::addError("Revizie inexistentă.");
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   textblock_delete_revision($revision, $rev_num == $total_revs);

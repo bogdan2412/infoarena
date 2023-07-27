@@ -111,13 +111,13 @@ function controller_resetpass_confirm($username) {
     }
     if (!$user) {
         FlashMessage::addError('Numele de utilizator este invalid.');
-        redirect(url_home());
+        Util::redirectToHome();
     }
 
     // validate confirmation code
     if ($cpass != user_resetpass_key($user)) {
         FlashMessage::addError('Codul de confirmare nu este corect.');
-        redirect(url_home());
+        Util::redirectToHome();
     }
 
     // reset password

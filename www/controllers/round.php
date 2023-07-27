@@ -25,14 +25,14 @@ function controller_round_details($round_id) {
   // Validate round_id
   if (!is_round_id($round_id)) {
     FlashMessage::addError('Identificatorul rundei este invalid');
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   // Get round
   $round = round_get($round_id);
   if (!$round) {
     FlashMessage::addError("Runda nu există");
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   // Security check
@@ -234,14 +234,14 @@ function controller_round_task_order($round_id) {
   // Validate round_id
   if (!is_round_id($round_id)) {
     FlashMessage::addError('Identificatorul rundei este invalid');
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   // Get round
   $round = round_get($round_id);
   if (!$round) {
     FlashMessage::addError("Runda nu există");
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   // Security check
@@ -373,14 +373,14 @@ function controller_round_delete_view($round_id) {
   // Validate round_id
   if (!is_round_id($round_id)) {
     FlashMessage::addError('Identificatorul rundei este invalid');
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   // Get round
   $round = round_get($round_id);
   if (!$round) {
     FlashMessage::addError("Runda nu există");
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   Identity::enforceDeleteRound();
@@ -430,14 +430,14 @@ function controller_round_delete($round_id) {
   // Validate round_id
   if (!is_round_id($round_id)) {
     FlashMessage::addError('Identificatorul rundei este invalid.');
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   // Get round
   $round = round_get($round_id);
   if (!$round) {
     FlashMessage::addError('Runda nu există.');
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   Identity::enforceDeleteRound();
@@ -446,5 +446,5 @@ function controller_round_delete($round_id) {
   round_delete($round_id);
 
   FlashMessage::addSuccess('Am șters runda.');
-  redirect(url_home());
+  Util::redirectToHome();
 }

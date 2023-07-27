@@ -11,7 +11,7 @@ function controller_user_view($username, $action, $rev_num = null) {
   $user = user_get_by_username($username);
   if (!$user) {
     FlashMessage::addError("Utilizator inexistent.");
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   // Build view.

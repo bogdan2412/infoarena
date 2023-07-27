@@ -5,7 +5,7 @@ function controller_logout() {
 
   if (!request_is_post()) {
     FlashMessage::addError('Nu te-am putut deconecta.');
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   Session::logout();

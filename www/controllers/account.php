@@ -20,7 +20,7 @@ function controller_account($username = null) {
     $user = User::get_by_username($username);
     if (!$user) {
       FlashMessage::addError('Cont de utilizator inexistent.');
-      redirect(url_home());
+      Util::redirectToHome();
     }
   }
 

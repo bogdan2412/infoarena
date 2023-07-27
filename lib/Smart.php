@@ -98,7 +98,7 @@ class Smart {
     foreach ($keys as $key) {
       if (!isset(self::RESOURCE_MAP[$key])) {
         FlashMessage::addError("Unknown resource ID {$key}");
-        redirect(url_home());
+        Util::redirectToHome();
       }
       self::$includedResources[] = $key;
     }

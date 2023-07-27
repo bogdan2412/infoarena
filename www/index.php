@@ -29,7 +29,7 @@ if ($page == '') {
 // Check page name.
 if (!is_page_name($page)) {
     FlashMessage::addError('invalid URL');
-    redirect(url_home());
+    Util::redirectToHome();
 }
 
 
@@ -293,5 +293,5 @@ else if ($action == 'view') {
 // invalid URL
 else {
     FlashMessage::addError('URL invalid.');
-    redirect(url_home());
+    Util::redirectToHome();
 }

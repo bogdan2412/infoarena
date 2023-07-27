@@ -2,17 +2,17 @@
 
 function controller_user_control() {
     if (!Identity::isAdmin()) {
-        redirect(url_home());
+        Util::redirectToHome();
     }
 
     $user_id = request('user_id');
     if (!$user_id) {
-        redirect(url_home());
+        Util::redirectToHome();
     }
 
     $user = user_get_by_id($user_id);
     if (!$user) {
-        redirect(url_home());
+        Util::redirectToHome();
     }
 
     $user['banned'] = !$user['banned'];

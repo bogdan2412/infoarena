@@ -13,7 +13,7 @@ function controller_textblock_copy($page_name) {
   } else {
     // Missing page.
     FlashMessage::addError("Pagină inexistentă.");
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   $values = array();

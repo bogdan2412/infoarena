@@ -21,14 +21,14 @@ function controller_task_details($task_id) {
   // validate task_id
   if (!is_task_id($task_id)) {
     FlashMessage::addError('Identificatorul de task este invalid.');
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   // Get task
   $task = Task::get_by_id($task_id);
   if (!$task) {
     FlashMessage::addError("Problema nu există.");
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   Identity::enforceEditTask($task);
@@ -243,20 +243,20 @@ function controller_task_create() {
 function controller_task_delete($task_id) {
   if (!request_is_post()) {
     FlashMessage::addError("Problema nu a putut fi ștearsă.");
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   // Validate task_id
   if (!is_task_id($task_id)) {
     FlashMessage::addError("Problemă inexistentă.");
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   // Get task
   $task = Task::get_by_id($task_id);
   if (!$task) {
     FlashMessage::addError("Problemă inexistentă.");
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   // Security check
@@ -266,7 +266,7 @@ function controller_task_delete($task_id) {
   task_delete($task->as_array());
 
   FlashMessage::addSuccess("Am șters problema.");
-  redirect(url_home());
+  Util::redirectToHome();
 }
 
 // Edit ratings for a task
@@ -274,14 +274,14 @@ function controller_task_ratings($task_id) {
   // Validate task id
   if (!is_task_id($task_id)) {
     FlashMessage::addError("Problemă inexistentă.");
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   // Get task
   $task = Task::get_by_id($task_id);
   if (!$task) {
     falsh_error("Problemă inexistentă.");
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   Identity::enforceEditTaskRatings($task);
@@ -326,13 +326,13 @@ function controller_task_ratings($task_id) {
 function controller_task_tag($task_id) {
   if (!is_task_id($task_id)) {
     FlashMessage::addError("Problemă inexistentă.");
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   $task = Task::get_by_id($task_id);
   if (!$task) {
     FlashMessage::addError("Problemă inexistentă.");
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   Identity::enforceEditTaskTags($task);
@@ -395,12 +395,12 @@ function controller_task_search() {
 
   if (!is_array($tags)) {
     FlashMessage::addError("Filtru invalid.");
-    redirect(url_home());
+    Util::redirectToHome();
   }
   foreach ($tags as $tag) {
     if (!is_tag_id($tag)) {
       FlashMessage::addError("Filtru invalid.");
-      redirect(url_home());
+      Util::redirectToHome();
     }
   }
 

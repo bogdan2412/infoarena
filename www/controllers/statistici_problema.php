@@ -9,14 +9,14 @@ function controller_statistici_problema() {
   $task_id = request('task');
   if (!is_task_id($task_id)) {
     FlashMessage::addError('Identificatorul de task este invalid.');
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   // Get task
   $task = Task::get_by_id($task_id);
   if (!$task) {
     FlashMessage::addError('Problema nu există.');
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   // Security check
@@ -30,7 +30,7 @@ function controller_statistici_problema() {
   $round = round_get($round_id);
   if (!$round) {
     FlashMessage::addError('Runda nu există');
-    redirect(url_home());
+    Util::redirectToHome();
   }
 
   $view = array();
