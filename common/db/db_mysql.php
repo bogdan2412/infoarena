@@ -32,7 +32,7 @@ function db_connect() {
             log_error('Cannot connect to database.');
         }
     }
-    if (!mysql_select_db(Config::DB_NAME, $dbLink)) {
+    if (!mysql_select_db(DB::getDatabaseName(), $dbLink)) {
         log_error('Cannot select database.');
     }
     mysql_query('SET NAMES utf8');
@@ -169,7 +169,7 @@ function db_execute_sql_file(string $fileName): void {
     $command = sprintf('mysql -h %s -u %s %s %s < %s',
                        Config::DB_HOST,
                        Config::DB_USER,
-                       Config::DB_NAME,
+                       DB::getDatabaseName(),
                        Config::DB_PASSWORD ? ('-p' . Config::DB_PASSWORD) : '',
                        $fileName);
 

@@ -12,9 +12,9 @@ require_once Config::ROOT.'www/url.php';
 require_once Config::ROOT.'www/utilities.php';
 require_once Config::ROOT.'www/identity.php';
 require_once Config::ROOT.'common/db/db.php';
-db_connect();
-
 require_once '../lib/Core.php';
+
+db_connect();
 
 // restore identity (if such a session exists)
 identity_restore();

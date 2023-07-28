@@ -9,11 +9,11 @@ class TestHeaderLinkToHomepage extends FunctionalTest {
   function run(): void {
     $this->driver->get($this->homepageUrl);
 
-    $someOtherPage = $this->getLinkByText('Concursuri');
+    $someOtherPage = $this->getLinkByText('Monitorul de evaluare');
     $someOtherPage->click();
 
     $link = $this->getElementByCss('#header h1 a');
-    $expectedText = Config::SITE_NAME . ' informatică de performanță';
+    $expectedText = Config::SITE_NAME . ' — informatică de performanță';
     $this->assertLinkText($link, $expectedText);
     $this->assertLinkUrl($link, Config::URL_PREFIX);
   }

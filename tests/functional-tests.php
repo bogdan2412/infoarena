@@ -1,12 +1,21 @@
 <?php
 
 require_once __DIR__ . '/../Config.php';
+require_once __DIR__ . '/../common/log.php';
+require_once __DIR__ . '/../www/url.php';
 require_once __DIR__ . '/vendor/autoload.php';
+
 use Facebook\WebDriver\Exception\Internal\WebDriverCurlException;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\RemoteWebElement;
 use Facebook\WebDriver\WebDriverBy;
+
+if (!Config::DEVELOPMENT_MODE || !Config::TESTING_MODE) {
+  print "To run functional tests, please set DEVELOPMENT_MODE = true and TESTING_MODE = true " .
+    "in Config.php\n";
+  exit;
+}
 
 $suite = new TestSuite();
 $suite->run();
@@ -98,6 +107,35 @@ abstract class FunctionalTest {
     return $this->getElement(WebDriverBy::cssSelector($cssSelector));
   }
 
+  protected function getIdentityUsername(): string {
+    try {
+      $link = $this->getElementByCss('#active-username a');
+      return $link->getText();
+    } catch (Exception $e) {
+      return '';
+    }
+  }
+
+  protected function visitMonitorPage(): void {
+    $this->driver->get(Config::URL_HOST . url_monitor());
+  }
+
+  protected function login(string $username, string $password) {
+    $identity = $this->getIdentityUsername();
+    if ($identity == $username) {
+      return; // already logged in
+    }
+
+    if ($identity) {
+      $logoutLink = $this->getLinkByText('logout');
+      $logoutLink->click();
+    }
+
+    $this->getElementByCss('#form_username')->sendKeys($username);
+    $this->getElementByCss('#form_password')->sendKeys($password);
+    $this->getElementByCss('#form_submit')->click();
+  }
+
   protected function assert(bool $cond, string $errorMsg): void {
     if (!$cond) {
       throw new Exception($errorMsg);
@@ -114,6 +152,13 @@ abstract class FunctionalTest {
     $actualUrl = $link->getAttribute('href');
     $msg = sprintf('Expected link URL [%s], found [%s]', $expectedUrl, $actualUrl);
     $this->assert($actualUrl == $expectedUrl, $msg);
+  }
+
+  protected function assertLoggedInAs(string $expectedUsername): void {
+    $actualUsername = $this->getIdentityUsername();
+    $msg = sprintf('Expected to be logged in as [%s], found [%s]',
+                   $expectedUsername, $actualUsername);
+    $this->assert($actualUsername == $expectedUsername, $msg);
   }
 
   abstract function run(): void;

@@ -6,10 +6,13 @@ class Config {
   // database connection
   const DB_HOST = 'localhost';
   const DB_NAME = 'nerdarena';
+  const DB_TEST_NAME = 'nerdarena_test';
   const DB_USER = 'root';
   const DB_PASSWORD = '';
   const DB_KEEP_ALIVE = false;
   const DB_UNBUFFERED = false;
+  const DB_COMMAND = 'mariadb';
+  const DB_DUMP_COMMAND = 'mariadb-dump';
 
   // The concatenation URL_HOST + URL_PREFIX should yield the URL of the home
   // page of your installation.
@@ -30,6 +33,9 @@ class Config {
 
   // Activate some debugging tools and disable some external resources.
   const DEVELOPMENT_MODE = true;
+
+  // Set to true while running functional tests.
+  const TESTING_MODE = false;
 
   // Session duration in seconds.
   const SESSION_DURATION = 5 * 86400;

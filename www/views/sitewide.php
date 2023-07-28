@@ -20,7 +20,9 @@ require_once(Config::ROOT."www/format/format.php");
             <div class="user">
                 <strong><?= html_escape($identity_user['full_name']) ?></strong><br>
                 <?= format_user_ratingbadge($username, $identity_user['rating_cache']) ?>
-                <?= format_link_access(url_user_profile($username, true), $username, 'p') ?><br>
+                <span id="active-username">
+                  <?= format_link(url_user_profile($username, true), $username) ?><br>
+                </span>
                 <?= format_post_link(url_logout(), "logout", array(), true, array('class' => 'logout')) ?> |
                 <?= format_link_access(url_account(), 'contul meu', 'c') ?>
             </div>

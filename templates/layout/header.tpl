@@ -12,12 +12,18 @@
         <br>
 
         {include "bits/ratingBadge.tpl" rb=$ratingBadge}
-        <a accesskey="p" href="{User::getProfileUrl($identity.username)}">
-          {$identity.username}
-        </a>
+        <span id="active-username">
+          <a href="{User::getProfileUrl($identity.username)}">
+            {$identity.username}
+          </a>
+        </span>
         <br>
 
-        <a class="logout" href="{url_logout()}">logout</a>
+        <a
+          class="logout"
+          href="javascript:PostData('{url_logout()}', [])">
+          logout
+        </a>
         |
         <a accesskey="c" href="{User::getAccountUrl()}">
           <span class="access-key">c</span>ontul meu
