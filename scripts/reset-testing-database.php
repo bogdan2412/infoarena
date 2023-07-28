@@ -25,7 +25,8 @@ class DataInjector {
   function run(): void {
     $this->createNewUserTemplate();
     $this->createUsers();
-    $this->createLoginTemplate();
+    $this->createSimpleTemplate('login');
+    $this->createSimpleTemplate('userheader');
     $this->createPage('home', 'Home page', 'This is the home page.', $this->admin['id'], 'public', 5);
   }
 
@@ -39,11 +40,11 @@ class DataInjector {
       5);
   }
 
-  function createLoginTemplate(): void {
+  function createSimpleTemplate(string $name): void {
     $this->createPage(
-      'template/login',
-      'template/login',
-      'This is the login template.',
+      "template/{$name}",
+      "template/{$name}",
+      "This is the {$name} template.",
       $this->admin['id'],
       'public',
       5);
@@ -58,6 +59,8 @@ class DataInjector {
 
   private function createUser(
     string $username, string $name, string $password, string $security): array {
+
+    printf("Creating user %s (%s)\n", $username, $name);
 
     $user = [
       'id' => 0,
@@ -78,6 +81,7 @@ class DataInjector {
   // key.
   private function createPage(string $name, string $title, string $contents,
                       int $userId, string $security, int $numRevisions): void {
+    printf("Creating page %s (%s)\n", $name, $title);
     for ($i = 1; $i <= $numRevisions; $i++) {
       $timestamp = $this->secondsAgo($numRevisions - $i);
       $revContents = $contents . " This is revision $i.";

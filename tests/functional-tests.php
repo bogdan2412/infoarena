@@ -6,6 +6,7 @@ require_once __DIR__ . '/../www/url.php';
 require_once __DIR__ . '/vendor/autoload.php';
 
 use Facebook\WebDriver\Exception\Internal\WebDriverCurlException;
+use Facebook\WebDriver\Firefox\FirefoxOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\RemoteWebElement;
@@ -43,7 +44,10 @@ class TestSuite {
   }
 
   private function connectToDriver(): void {
+    $firefoxOptions = new FirefoxOptions();
+    $firefoxOptions->addArguments(['-headless']);
     $capabilities = DesiredCapabilities::firefox();
+    $capabilities->setCapability(FirefoxOptions::CAPABILITY, $firefoxOptions);
 
     try {
       $this->driver = RemoteWebDriver::create(self::DRIVER_URL, $capabilities);
@@ -107,6 +111,10 @@ abstract class FunctionalTest {
     return $this->getElement(WebDriverBy::cssSelector($cssSelector));
   }
 
+  protected function getElementByXpath(string $xpath): RemoteWebElement {
+    return $this->getElement(WebDriverBy::xpath($xpath));
+  }
+
   protected function getIdentityUsername(): string {
     try {
       $link = $this->getElementByCss('#active-username a');
@@ -118,6 +126,10 @@ abstract class FunctionalTest {
 
   protected function visitMonitorPage(): void {
     $this->driver->get(Config::URL_HOST . url_monitor());
+  }
+
+  protected function visitUserProfile(string $username): void {
+    $this->driver->get(url_user_profile($username));
   }
 
   protected function login(string $username, string $password) {
@@ -139,6 +151,16 @@ abstract class FunctionalTest {
   protected function assert(bool $cond, string $errorMsg): void {
     if (!$cond) {
       throw new Exception($errorMsg);
+    }
+  }
+
+  protected function assertTextExists(string $text): void {
+    $quoted = addslashes($text);
+    $xpath = "//*[contains(text(),'{$quoted}')]";
+    try {
+      $elem = $this->getElementByXpath($xpath);
+    } catch (Exception $e) {
+      throw new Exception("Text not found in page: $text");
     }
   }
 
