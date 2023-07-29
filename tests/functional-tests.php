@@ -14,6 +14,7 @@ use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\RemoteWebElement;
 use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverSelect;
 
 if (!Config::DEVELOPMENT_MODE || !Config::TESTING_MODE) {
   print "To run functional tests, please set DEVELOPMENT_MODE = true and TESTING_MODE = true " .
@@ -121,6 +122,11 @@ abstract class FunctionalTest {
 
   protected function getElementByXpath(string $xpath): RemoteWebElement {
     return $this->getElement(WebDriverBy::xpath($xpath));
+  }
+
+  protected function getSelectByCss(string $css): WebDriverSelect {
+    $elem = $this->getElementByCss($css);
+    return new WebDriverSelect($elem);
   }
 
   protected function getIdentityUsername(): string {
