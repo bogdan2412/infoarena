@@ -140,9 +140,25 @@ abstract class FunctionalTest {
     $this->driver->get(url_user_profile($username));
   }
 
+  protected function visitUserAccount(string $username): void {
+    $url = Config::URL_HOST . url_account($username);
+    $this->driver->get($url);
+  }
+
+  protected function visitOwnAccount(): void {
+    $url = Config::URL_HOST . url_account();
+    $this->driver->get($url);
+  }
+
   protected function clickLinkByText(string $text): void {
     $link = $this->getLinkByText($text);
     $link->click();
+  }
+
+  protected function changeInput(string $css, string $text): void {
+    $elem = $this->getElementByCss($css);
+    $elem->clear();
+    $elem->sendKeys($text);
   }
 
   protected function login(string $username, string $password) {
@@ -182,8 +198,16 @@ abstract class FunctionalTest {
     $quoted = addslashes($text);
     $xpath = "//*[contains(text(),'{$quoted}')]";
     try {
-      $elem = $this->getElementByXpath($xpath);
+      $this->getElementByXpath($xpath);
       throw new Exception("Unwanted text found: [{$text}].");
+    } catch (NoSuchElementException $e) {
+    }
+  }
+
+  protected function assertNoElement(string $css): void {
+    try {
+      $this->getElementByCss($css);
+      throw new Exception("Unwanted element found: [{$css}].");
     } catch (NoSuchElementException $e) {
     }
   }

@@ -7,7 +7,7 @@ class TestUserBan extends FunctionalTest {
     $this->testAdminCanBan();
   }
 
-  private function testHelperCannotBan() {
+  private function testHelperCannotBan(): void {
     $this->login('helper', '1234');
     $this->visitUserProfile('intern');
     $this->assertNoLink('blochează');
