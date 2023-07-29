@@ -3,6 +3,18 @@
 class TestUserEditOther extends FunctionalTest {
 
   function run(): void {
+    $this->testHelperCannotEdit();
+    $this->testAdminCanEdit();
+  }
+
+  private function testHelperCannotEdit(): void {
+    $this->login('helper', '1234');
+    $this->visitUserAccount('normal');
+    $this->assertOnHomePage();
+    $this->assertTextExists('Nu ai permisiuni suficiente pentru a executa această acțiune!');
+  }
+
+  private function testAdminCanEdit(): void {
     $this->login('admin', '1234');
 
     $this->changeData();
