@@ -57,8 +57,8 @@ class DataInjector {
 
   private function createUsers(): void {
     $this->admin = $this->createUser('admin', 'Admin Admin', '1234', 'admin');
-    $this->intern = $this->createUser('intern', 'Intern Intern', '1234', 'intern');
     $this->helper = $this->createUser('helper', 'Helper Helper', '1234', 'helper');
+    $this->intern = $this->createUser('intern', 'Intern Intern', '1234', 'intern');
     $this->normal = $this->createUser('normal', 'Normal Normal', '1234', 'normal');
   }
 

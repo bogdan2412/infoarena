@@ -2,10 +2,13 @@
 
 require_once __DIR__ . '/../Config.php';
 require_once __DIR__ . '/../common/log.php';
+require_once __DIR__ . '/../www/identity.php';
 require_once __DIR__ . '/../www/url.php';
+require_once __DIR__ . '/../lib/Core.php';
 require_once __DIR__ . '/vendor/autoload.php';
 
 use Facebook\WebDriver\Exception\Internal\WebDriverCurlException;
+use Facebook\WebDriver\Exception\NoSuchElementException;
 use Facebook\WebDriver\Firefox\FirefoxOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
@@ -124,7 +127,7 @@ abstract class FunctionalTest {
     try {
       $link = $this->getElementByCss('#active-username a');
       return $link->getText();
-    } catch (Exception $e) {
+    } catch (NoSuchElementException $e) {
       return '';
     }
   }
@@ -170,8 +173,18 @@ abstract class FunctionalTest {
     $xpath = "//*[contains(text(),'{$quoted}')]";
     try {
       $elem = $this->getElementByXpath($xpath);
-    } catch (Exception $e) {
-      throw new Exception("Text not found in page: $text");
+    } catch (NoSuchElementException $e) {
+      throw new Exception("Text not found in page: [{$text}].");
+    }
+  }
+
+  protected function assertNoText(string $text): void {
+    $quoted = addslashes($text);
+    $xpath = "//*[contains(text(),'{$quoted}')]";
+    try {
+      $elem = $this->getElementByXpath($xpath);
+      throw new Exception("Unwanted text found: [{$text}].");
+    } catch (NoSuchElementException $e) {
     }
   }
 
@@ -187,11 +200,25 @@ abstract class FunctionalTest {
     $this->assert($actualUrl == $expectedUrl, $msg);
   }
 
+  protected function assertNoLink(string $linkText): void {
+    try {
+      $link = $this->getLinkByText($linkText);
+      throw new Exception("Unwanted link [{$linkText}] found.");
+    } catch (NoSuchElementException $e) {
+    }
+  }
+
   protected function assertLoggedInAs(string $expectedUsername): void {
     $actualUsername = $this->getIdentityUsername();
     $msg = sprintf('Expected to be logged in as [%s], found [%s]',
                    $expectedUsername, $actualUsername);
     $this->assert($actualUsername == $expectedUsername, $msg);
+  }
+
+  protected function assertOnHomePage(): void {
+    $actualUrl = $this->driver->getCurrentUrl();
+    $msg = sprintf('Expected to be on the homepage, found ourselves on [%s]', $actualUrl);
+    $this->assert($actualUrl == $this->homepageUrl, $msg);
   }
 
   abstract function run(): void;
