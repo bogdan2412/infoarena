@@ -4,7 +4,6 @@ class TestUserViewProfile extends FunctionalTest {
 
   function run(): void {
     $this->login('normal', '1234');
-    $this->assertLoggedInAs('normal');
     $this->visitUserProfile('admin');
     $this->assertTextExists(
       'This is the userheader template. This is revision 5.');

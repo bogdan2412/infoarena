@@ -20,37 +20,42 @@ $injector = new DataInjector();
 $injector->run();
 
 class DataInjector {
+  const SIMPLE_TEMPLATES = [ 'login', 'userheader', 'userrating', 'userstats' ];
+
   private array $admin, $intern, $helper, $normal;
 
   function run(): void {
-    $this->createNewUserTemplate();
+    $this->createTemplates();
     $this->createUsers();
-    $this->createSimpleTemplate('login');
-    $this->createSimpleTemplate('userheader');
     $this->createPage('home', 'Home page', 'This is the home page.', $this->admin['id'], 'public', 5);
   }
 
-  function createNewUserTemplate(): void {
-    $this->createPage(
+  private function createTemplates(): void {
+    $this->createNewUserTemplate();
+    foreach (self::SIMPLE_TEMPLATES as $name) {
+      $this->createSimpleTemplate($name);
+    }
+  }
+
+  private function createNewUserTemplate(): void {
+    $this->createAdminTemplate(
       'template/newuser',
       'Profile of %user_id%',
-      'My username is %user_id%. Here is something else about myself.',
-      0,
-      'public',
-      5);
+      'My username is %user_id%. Here is something else about myself.');
   }
 
-  function createSimpleTemplate(string $name): void {
-    $this->createPage(
+  private function createSimpleTemplate(string $name): void {
+    $this->createAdminTemplate(
       "template/{$name}",
       "template/{$name}",
-      "This is the {$name} template.",
-      $this->admin['id'],
-      'public',
-      5);
+      "This is the {$name} template.");
   }
 
-  function createUsers(): void {
+  private function createAdminTemplate(string $name, string $title, string $contents): void {
+    $this->createPage($name, $title, $contents, 1, 'public', 5);
+  }
+
+  private function createUsers(): void {
     $this->admin = $this->createUser('admin', 'Admin Admin', '1234', 'admin');
     $this->intern = $this->createUser('intern', 'Intern Intern', '1234', 'intern');
     $this->helper = $this->createUser('helper', 'Helper Helper', '1234', 'helper');

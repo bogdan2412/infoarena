@@ -44,10 +44,7 @@ class TestSuite {
   }
 
   private function connectToDriver(): void {
-    $firefoxOptions = new FirefoxOptions();
-    $firefoxOptions->addArguments(['-headless']);
-    $capabilities = DesiredCapabilities::firefox();
-    $capabilities->setCapability(FirefoxOptions::CAPABILITY, $firefoxOptions);
+    $capabilities = $this->getFirefoxCapabilities();
 
     try {
       $this->driver = RemoteWebDriver::create(self::DRIVER_URL, $capabilities);
@@ -56,6 +53,14 @@ class TestSuite {
       print "If you are running functional-tests.php directly, please run functional-tests.sh instead.\n";
       exit;
     }
+  }
+
+  private function getFirefoxCapabilities(): DesiredCapabilities {
+    $firefoxOptions = new FirefoxOptions();
+    $firefoxOptions->addArguments(['-headless']);
+    $capabilities = DesiredCapabilities::firefox();
+    $capabilities->setCapability(FirefoxOptions::CAPABILITY, $firefoxOptions);
+    return $capabilities;
   }
 
   private function findAndRunTests(): void {
@@ -132,6 +137,11 @@ abstract class FunctionalTest {
     $this->driver->get(url_user_profile($username));
   }
 
+  protected function clickLinkByText(string $text): void {
+    $link = $this->getLinkByText($text);
+    $link->click();
+  }
+
   protected function login(string $username, string $password) {
     $identity = $this->getIdentityUsername();
     if ($identity == $username) {
@@ -139,13 +149,14 @@ abstract class FunctionalTest {
     }
 
     if ($identity) {
-      $logoutLink = $this->getLinkByText('logout');
-      $logoutLink->click();
+      $this->clickLinkByText('logout');
     }
 
     $this->getElementByCss('#form_username')->sendKeys($username);
     $this->getElementByCss('#form_password')->sendKeys($password);
     $this->getElementByCss('#form_submit')->click();
+
+    $this->assertLoggedInAs($username);
   }
 
   protected function assert(bool $cond, string $errorMsg): void {

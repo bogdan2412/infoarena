@@ -13,7 +13,6 @@ class TestLoginAsAllRoles extends FunctionalTest {
 
     foreach (self::USERNAMES as $username) {
       $this->login($username, '1234');
-      $this->assertLoggedInAs($username);
     }
   }
 }
