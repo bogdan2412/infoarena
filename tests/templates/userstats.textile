@@ -1,0 +1,15 @@
+template/userstats
+
+h2. Statistici pentru %user%
+
+h3. Probleme rezolvate
+
+==SolvedTasks(user="%user%" rounds="arhiva")==
+
+h3. Probleme încercate
+
+==FailedTasks(user="%user%" rounds="arhiva")==
+
+h3. Participant la&hellip;
+
+==Rounds(user="%user%")==

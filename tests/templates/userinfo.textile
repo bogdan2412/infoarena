@@ -1,0 +1,10 @@
+template/userinfo
+
+table(compact).
+|/5=. ==UserImage(user="%user%" size="big")==
+"Vezi soluțiile trimise":monitor?user=%user%
+|_. Nume | == userinfo(user="%user%" info="fullname")== |
+|_. Cont | ==userinfo(user="%user%" info="username")== |
+|_. Clasă | n/a |
+|_. Rating | ==userinfo(user="%user%" info="rating")== |
+|_. Statut | ==userinfo(user="%user%" info="security")== |

@@ -1,0 +1,5 @@
+template/userheader
+
+h1. ==UserInfo(user="%user%" info="fullname")== (%user%)
+
+== include(page="template/userinfo" user="%user%") ==

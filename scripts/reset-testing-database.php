@@ -20,35 +20,35 @@ $injector = new DataInjector();
 $injector->run();
 
 class DataInjector {
-  const SIMPLE_TEMPLATES = [ 'login', 'userheader', 'userrating', 'userstats' ];
 
   private array $admin, $intern, $helper, $normal;
 
   function run(): void {
     $this->createTemplates();
     $this->createUsers();
+    $this->createTasks();
     $this->createPage('home', 'Home page', 'This is the home page.', $this->admin['id'], 'public', 5);
   }
 
   private function createTemplates(): void {
-    $this->createNewUserTemplate();
-    foreach (self::SIMPLE_TEMPLATES as $name) {
-      $this->createSimpleTemplate($name);
+    $wildcard = __DIR__ . '/../tests/templates/*.textile';
+    $files = glob($wildcard);
+    foreach ($files as $file) {
+      $this->createTemplateFromFile($file);
     }
   }
 
-  private function createNewUserTemplate(): void {
-    $this->createAdminTemplate(
-      'template/newuser',
-      'Profile of %user_id%',
-      'My username is %user_id%. Here is something else about myself.');
-  }
+  private function createTemplateFromFile(string $filename): void {
+    preg_match('|/([^/]+)\.textile$|', $filename, $match);
+    $name = 'template/' . $match[1];
 
-  private function createSimpleTemplate(string $name): void {
-    $this->createAdminTemplate(
-      "template/{$name}",
-      "template/{$name}",
-      "This is the {$name} template.");
+    $lines = file($filename, FILE_IGNORE_NEW_LINES);
+    $title = $lines[0];
+    $rest = array_slice($lines, 2);
+    $contents = implode("\n", $rest);
+    printf("* Creating template %s (%s) from file...\n", $name, $title);
+
+    $this->createAdminTemplate($name, $title, $contents);
   }
 
   private function createAdminTemplate(string $name, string $title, string $contents): void {
@@ -89,7 +89,7 @@ class DataInjector {
     printf("Creating page %s (%s)\n", $name, $title);
     for ($i = 1; $i <= $numRevisions; $i++) {
       $timestamp = $this->secondsAgo($numRevisions - $i);
-      $revContents = $contents . " This is revision $i.";
+      $revContents = $contents . "\n\nThis is revision $i of $name.";
       textblock_add_revision($name, $title, $revContents, $userId, $security, $timestamp);
     }
   }
@@ -99,5 +99,31 @@ class DataInjector {
     $durationString = sprintf('PT%sS', $numSeconds);
     $date->sub(new DateInterval($durationString));
     return $date->format('Y-m-d H:i:s');
+  }
+
+  private function createTasks(): void {
+    printf("Creating task task1\n");
+    $task = [
+      'id' => 'task1',
+      'user_id' => $this->admin['id'],
+      'source' => 'ad-hoc',
+      'security' => 'public',
+      'title' => 'Task 1',
+      'page_name' => 'problema/task1',
+      'type' => 'classic',
+      'open_source' => true,
+      'open_tests' => true,
+      'test_count' => 5,
+      'test_groups' => '1;2;3;4;5',
+      'public_tests' => '1,2',
+      'evaluator' => '',
+      'use_ok_files' => true,
+      'rating' => 1,
+    ];
+    $params = [
+      'timelimit' => 0.5,
+      'memlimit' => 16384,
+    ];
+    task_create($task, $params);
   }
 }

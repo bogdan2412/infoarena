@@ -1,0 +1,7 @@
+template/userrating
+
+h2. Rating %user%
+
+h3. Concursuri cu rating la care a participat
+
+==Rounds(user="%user%" only_rated="1")==

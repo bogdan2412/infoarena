@@ -1,0 +1,35 @@
+%task_id%
+
+== include(page="template/taskheader" task_id="%task_id%") ==
+
+Poveste și cerință...
+
+h2. Date de intrare
+
+Fișierul de intrare $%task_id%.in$ ...
+
+h2. Date de ieșire
+
+În fișierul de ieșire $%task_id%.out$ ...
+
+h2. Restricții
+
+* $... &le; ... &le; ...$
+
+h2. Exemplu
+
+table(example).
+|_. %task_id%.in |_. %task_id%.out |
+| This is some
+text written on
+multiple lines.
+| This is another
+text written on
+multiple lines.
+|
+
+h3. Explicație
+
+...
+
+== include(page="template/taskfooter" task_id="%task_id%") ==

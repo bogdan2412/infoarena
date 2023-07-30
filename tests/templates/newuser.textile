@@ -1,0 +1,13 @@
+Profil %user_id%
+
+h2. Despre mine
+
+* _(completează aici: studii, an de absolvire, instituție de învățământ, locație, profesori pregătitori, site personal ...)_
+
+h2. Distincții primite
+
+* _(completează aici: locuri obținute la concursuri de informatică)_
+
+h2. Prieteni pe NerdArena
+
+* _(completează aici: link-uri către profilurile altor utilizatori NerdArena pe care îi cunoști)_

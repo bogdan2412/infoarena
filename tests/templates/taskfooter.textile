@@ -1,0 +1,5 @@
+template/taskfooter
+
+== TaskSubmit(task_id="%task_id%") ==
+
+== AlgorithmTags(task_id="%task_id%") ==
