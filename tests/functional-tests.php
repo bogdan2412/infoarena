@@ -22,6 +22,8 @@ if (!Config::DEVELOPMENT_MODE || !Config::TESTING_MODE) {
   exit;
 }
 
+db_connect();
+
 $suite = new TestSuite();
 $suite->run();
 $suite->tearDown();
@@ -146,6 +148,10 @@ abstract class FunctionalTest {
     $this->driver->get(Config::URL_HOST . url_task($taskId));
   }
 
+  protected function visitTaskEditPage(string $taskId): void {
+    $this->driver->get(Config::URL_HOST . url_task_edit($taskId));
+  }
+
   protected function visitUserProfile(string $username): void {
     $this->driver->get(url_user_profile($username));
   }
@@ -165,10 +171,21 @@ abstract class FunctionalTest {
     $link->click();
   }
 
+  protected function clickButton(string $value): void {
+    $xpath = "//input[@value='{$value}']";
+    $input = $this->getElementByXpath($xpath);
+    $input->click();
+  }
+
   protected function changeInput(string $css, string $text): void {
     $elem = $this->getElementByCss($css);
     $elem->clear();
     $elem->sendKeys($text);
+  }
+
+  protected function changeSelect(string $css, string $visibleText): void {
+    $sel = $this->getSelectByCss($css);
+    $sel->selectByVisibleText($visibleText);
   }
 
   protected function ensureLoggedOut() {
@@ -226,6 +243,22 @@ abstract class FunctionalTest {
     }
   }
 
+  protected function assertInputValue(string $css, string $expectedValue): void {
+    $elem = $this->getElementByCss($css);
+    $actualValue = $elem->getAttribute('value');
+    $msg = sprintf('Expected value [%s] for input [%s], found [%s].',
+                   $expectedValue, $css, $actualValue);
+    $this->assert($actualValue == $expectedValue, $msg);
+  }
+
+  protected function assertSelectVisibleText(string $css, string $expectedText): void {
+    $sel = $this->getSelectByCss($css);
+    $actualText = $sel->getFirstSelectedOption()->getText();
+    $msg = sprintf('Expected option [%s] for select [%s], found [%s].',
+                   $expectedText, $css, $actualText);
+    $this->assert($actualText == $expectedText, $msg);
+  }
+
   protected function assertLinkText(RemoteWebElement $link, string $expectedText): void {
     $actualText = $link->getText();
     $msg = sprintf('Expected link text [%s], found [%s]', $expectedText, $actualText);
@@ -268,6 +301,16 @@ abstract class FunctionalTest {
   protected function assertOnTaskPage(string $taskId): void {
     $this->assertTextExists("{$taskId}.in");
     $this->assertTextExists("{$taskId}.out");
+  }
+
+  protected function assertOnTaskEditPage(string $taskId): void {
+    $this->assertTextExists('Editare enunț');
+    $this->assertInputValue('#form_title', $taskId);
+  }
+
+  protected function assertLoginRequired(): void {
+    $this->assertOnLoginPage();
+    $this->assertTextExists('Mai întâi trebuie să te autentifici.');
   }
 
   protected function assertPermissionError(): void {

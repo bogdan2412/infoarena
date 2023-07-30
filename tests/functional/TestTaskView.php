@@ -19,8 +19,7 @@ class TestTaskView extends FunctionalTest {
   private function testAnonCannotViewPrivate(): void {
     $this->ensureLoggedOut();
     $this->visitTaskPage('task2');
-    $this->assertOnLoginPage();
-    $this->assertTextExists('Mai întâi trebuie să te autentifici.');
+    $this->assertLoginRequired();
   }
 
   private function testNormalCannotViewPrivate(): void {

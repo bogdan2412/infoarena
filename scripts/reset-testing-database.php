@@ -65,7 +65,7 @@ class DataInjector {
   private function createUser(
     string $username, string $name, string $password, string $security): array {
 
-    printf("Creating user %s (%s)\n", $username, $name);
+    printf("* Creating user %s (%s)\n", $username, $name);
 
     $user = [
       'id' => 0,
@@ -86,7 +86,7 @@ class DataInjector {
   // key.
   private function createPage(string $name, string $title, string $contents,
                       int $userId, string $security, int $numRevisions): void {
-    printf("Creating page %s (%s)\n", $name, $title);
+    printf("* Creating page %s (%s)\n", $name, $title);
     for ($i = 1; $i <= $numRevisions; $i++) {
       $timestamp = $this->secondsAgo($numRevisions - $i);
       $revContents = $contents . "\n\nThis is revision $i of $name.";
@@ -107,7 +107,7 @@ class DataInjector {
   }
 
   private function createAdminOpenTask(): void {
-    printf("Creating task task1\n");
+    printf("* Creating task task1\n");
     $task = [
       'id' => 'task1',
       'user_id' => $this->admin['id'],
@@ -133,7 +133,7 @@ class DataInjector {
   }
 
   private function createHelperClosedTask(): void {
-    printf("Creating task task2\n");
+    printf("* Creating task task2\n");
     $task = [
       'id' => 'task2',
       'user_id' => $this->helper['id'],

@@ -29,24 +29,15 @@ class TestUserEditOther extends FunctionalTest {
     $this->changeInput('#form_password2', '12345');
     $this->changeInput('#form_name', 'Normal2 Normal2');
     $this->changeInput('#form_email', 'normal2@example.com');
-    $sel = $this->getSelectByCss('#form_security_level');
-    $sel->selectByVisibleText('Intern');
-    $this->getElementByCss('#form_submit')->click();
+    $this->changeSelect('#form_security_level', 'Intern');
+    $this->clickButton('Salvează');
   }
 
   private function verifyChangedData(): void {
     $this->visitUserAccount('normal');
-    $name = $this->getElementByCss('#form_name')->getAttribute('value');
-    $this->assert($name == 'Normal2 Normal2',
-                  'Expected name Normal2 Normal2.');
-    $email = $this->getElementByCss('#form_email')->getAttribute('value');
-    $this->assert($email == 'normal2@example.com',
-                  'Expected email normal2@example.com.');
-
-    $sel = $this->getSelectByCss('#form_security_level');
-    $text = $sel->getFirstSelectedOption()->getText();
-    $this->assert($text == 'Intern',
-                  "Expected security level Intern, found {$text}.");
+    $this->assertInputValue('#form_name', 'Normal2 Normal2');
+    $this->assertInputValue('#form_email', 'normal2@example.com');
+    $this->assertSelectVisibleText('#form_security_level', 'Intern');
   }
 
   private function restoreData(): void {
@@ -57,9 +48,8 @@ class TestUserEditOther extends FunctionalTest {
     $this->changeInput('#form_password2', '1234');
     $this->changeInput('#form_name', 'Normal Normal');
     $this->changeInput('#form_email', 'normal@example.com');
-    $sel = $this->getSelectByCss('#form_security_level');
-    $sel->selectByVisibleText('Utilizator normal');
-    $this->getElementByCss('#form_submit')->click();
+    $this->changeSelect('#form_security_level', 'Utilizator normal');
+    $this->clickButton('Salvează');
   }
 
 }

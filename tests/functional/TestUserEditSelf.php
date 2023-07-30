@@ -20,7 +20,7 @@ class TestUserEditSelf extends FunctionalTest {
     $this->changeInput('#form_password2', '12345');
     $this->changeInput('#form_name', 'Normal2 Normal2');
     $this->changeInput('#form_email', 'normal2@example.com');
-    $this->getElementByCss('#form_submit')->click();
+    $this->clickButton('Salvează');
   }
 
   private function verifyChangedData(): void {
@@ -29,9 +29,7 @@ class TestUserEditSelf extends FunctionalTest {
                   'Expected name Normal2 Normal2.');
 
     $this->visitOwnAccount();
-    $email = $this->getElementByCss('#form_email')->getAttribute('value');
-    $this->assert($email == 'normal2@example.com',
-                  'Expected email normal2@example.com.');
+    $this->assertInputValue('#form_email', 'normal2@example.com');
   }
 
   private function restoreData(): void {
@@ -42,7 +40,7 @@ class TestUserEditSelf extends FunctionalTest {
     $this->changeInput('#form_password2', '1234');
     $this->changeInput('#form_name', 'Normal Normal');
     $this->changeInput('#form_email', 'normal@example.com');
-    $this->getElementByCss('#form_submit')->click();
+    $this->clickButton('Salvează');
   }
 
 }
