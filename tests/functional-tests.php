@@ -142,6 +142,10 @@ abstract class FunctionalTest {
     $this->driver->get(Config::URL_HOST . url_monitor());
   }
 
+  protected function visitTaskPage(string $taskId): void {
+    $this->driver->get(Config::URL_HOST . url_task($taskId));
+  }
+
   protected function visitUserProfile(string $username): void {
     $this->driver->get(url_user_profile($username));
   }
@@ -167,16 +171,20 @@ abstract class FunctionalTest {
     $elem->sendKeys($text);
   }
 
+  protected function ensureLoggedOut() {
+    $identity = $this->getIdentityUsername();
+    if ($identity) {
+      $this->clickLinkByText('logout');
+    }
+  }
+
   protected function login(string $username, string $password) {
     $identity = $this->getIdentityUsername();
     if ($identity == $username) {
       return; // already logged in
     }
 
-    if ($identity) {
-      $this->clickLinkByText('logout');
-    }
-
+    $this->ensureLoggedOut();
     $this->getElementByCss('#form_username')->sendKeys($username);
     $this->getElementByCss('#form_password')->sendKeys($password);
     $this->getElementByCss('#form_submit')->click();
@@ -249,6 +257,22 @@ abstract class FunctionalTest {
     $actualUrl = $this->driver->getCurrentUrl();
     $msg = sprintf('Expected to be on the homepage, found ourselves on [%s]', $actualUrl);
     $this->assert($actualUrl == $this->homepageUrl, $msg);
+  }
+
+  protected function assertOnLoginPage(): void {
+    $actualUrl = $this->driver->getCurrentUrl();
+    $msg = sprintf('Expected to be on the login page, found ourselves on [%s]', $actualUrl);
+    $this->assert($actualUrl == url_login(), $msg);
+  }
+
+  protected function assertOnTaskPage(string $taskId): void {
+    $this->assertTextExists("{$taskId}.in");
+    $this->assertTextExists("{$taskId}.out");
+  }
+
+  protected function assertPermissionError(): void {
+    $this->assertOnHomePage();
+    $this->assertTextExists('Nu ai permisiuni suficiente pentru a executa această acțiune!');
   }
 
   abstract function run(): void;

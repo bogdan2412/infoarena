@@ -102,6 +102,11 @@ class DataInjector {
   }
 
   private function createTasks(): void {
+    $this->createAdminOpenTask();
+    $this->createHelperClosedTask();
+  }
+
+  private function createAdminOpenTask(): void {
     printf("Creating task task1\n");
     $task = [
       'id' => 'task1',
@@ -113,6 +118,32 @@ class DataInjector {
       'type' => 'classic',
       'open_source' => true,
       'open_tests' => true,
+      'test_count' => 5,
+      'test_groups' => '1;2;3;4;5',
+      'public_tests' => '1,2',
+      'evaluator' => '',
+      'use_ok_files' => true,
+      'rating' => 1,
+    ];
+    $params = [
+      'timelimit' => 0.5,
+      'memlimit' => 16384,
+    ];
+    task_create($task, $params);
+  }
+
+  private function createHelperClosedTask(): void {
+    printf("Creating task task2\n");
+    $task = [
+      'id' => 'task2',
+      'user_id' => $this->helper['id'],
+      'source' => 'ad-hoc',
+      'security' => 'private',
+      'title' => 'Task 2',
+      'page_name' => 'problema/task2',
+      'type' => 'classic',
+      'open_source' => false,
+      'open_tests' => false,
       'test_count' => 5,
       'test_groups' => '1;2;3;4;5',
       'public_tests' => '1,2',

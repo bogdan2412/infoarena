@@ -10,8 +10,7 @@ class TestUserEditOther extends FunctionalTest {
   private function testHelperCannotEdit(): void {
     $this->login('helper', '1234');
     $this->visitUserAccount('normal');
-    $this->assertOnHomePage();
-    $this->assertTextExists('Nu ai permisiuni suficiente pentru a executa această acțiune!');
+    $this->assertPermissionError();
   }
 
   private function testAdminCanEdit(): void {
