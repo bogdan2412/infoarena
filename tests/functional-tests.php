@@ -142,6 +142,10 @@ abstract class FunctionalTest {
     }
   }
 
+  protected function visitAttachmentList(string $page): void {
+    $this->driver->get(Config::URL_HOST . url_attachment_list($page));
+  }
+
   protected function visitChangesPage(): void {
     $this->driver->get(Config::URL_HOST . url_changes());
   }
