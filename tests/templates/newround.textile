@@ -1,0 +1,19 @@
+%round_id%
+
+*(htabs).
+*(active) "Probleme":runda/%round_id%
+* "Rezultate":runda/%round_id%/clasament
+
+h1. == roundparam(round_id="%round_id%" param="title") ==
+
+== roundregister(round_id="%round_id%") ==
+
+Concursul începe ==roundparam(round_id="%round_id%" param="start_time" strong="true")== și durează ==roundparam(round_id="%round_id%" param="duration" strong="true")== ore.
+
+== RoundTimer(round_id="%round_id%" units="2") ==
+
+h2. Probleme
+
+Această listă va deveni vizibilă doar în momentul începerii concursului.
+
+==Tasks(round_id="%round_id%" score="1")==

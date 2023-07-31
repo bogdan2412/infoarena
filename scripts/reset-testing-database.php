@@ -48,7 +48,9 @@ class DataInjector {
 
   private function createPageFromFile(string $filename, string $prefix): void {
     preg_match('|/([^/]+)\.textile$|', $filename, $match);
-    $name = $prefix . $match[1];
+    $name = $match[1];
+    $name = str_replace('_slash_', '/', $name);
+    $name = $prefix . $name;
 
     $lines = file($filename, FILE_IGNORE_NEW_LINES);
     $title = $lines[0];

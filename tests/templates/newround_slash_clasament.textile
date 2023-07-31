@@ -1,0 +1,11 @@
+Clasament %round_id%
+
+*(htabs).
+* "Probleme":runda/%round_id%
+*(active) "Rezultate":runda/%round_id%/clasament
+
+h1. Clasament ==roundparam(round_id="%round_id%" param="title") ==
+
+Felicitări primilor clasați!
+
+==Rankings(rounds = "%round_id%" detail_task="true")==
