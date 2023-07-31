@@ -1,0 +1,9 @@
+template/deinscriere
+
+Trebuie să te înscrii doar dacă vrei să ți se modifice rating-ul în urma participării la această rundă. Dacă odată înscris nu mai poți participa, te poți dezînscrie.
+
+Poți participa la concurs chiar și dacă nu te-ai înscris în prealabil.
+
+*Atenție!* Odată înscris, rating-ul tău va fi afectat, chiar și dacă nu vei trimite soluții!
+
+"*Vezi cine s-a înscris*":lista-inregistrare/%round%

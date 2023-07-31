@@ -9,6 +9,7 @@ if (!Config::DEVELOPMENT_MODE || !Config::TESTING_MODE) {
   exit;
 }
 
+require_once __DIR__ . '/../common/round.php';
 require_once __DIR__ . '/../www/config.php';
 require_once __DIR__ . '/../www/identity.php';
 require_once __DIR__ . '/../lib/Core.php';
@@ -28,6 +29,7 @@ class DataInjector {
     $this->createTemplates();
     $this->createUsers();
     $this->createTasks();
+    $this->createRounds();
   }
 
   private function createPages(): void {
@@ -56,7 +58,7 @@ class DataInjector {
     $title = $lines[0];
     $rest = array_slice($lines, 2);
     $contents = implode("\n", $rest);
-    printf("* Creating template %s (%s) from file...\n", $name, $title);
+    printf("* Creating page %s (%s) from file...\n", $name, $title);
 
     $this->createAdminPage($name, $title, $contents);
   }
@@ -70,7 +72,6 @@ class DataInjector {
   // key.
   private function createPage(string $name, string $title, string $contents,
                       int $userId, string $security, int $numRevisions): void {
-    printf("* Creating page %s (%s)\n", $name, $title);
     for ($i = 1; $i <= $numRevisions; $i++) {
       $timestamp = $this->secondsAgo($numRevisions - $i);
       $revContents = $contents . "\n\nThis is revision $i of $name.";
@@ -79,9 +80,25 @@ class DataInjector {
   }
 
   private function secondsAgo(int $numSeconds): string {
+    return $this->getRelativeDate("PT{$numSeconds}S", false);
+  }
+
+  private function daysAgo(int $numDays): string {
+    return $this->getRelativeDate("P{$numDays}D", false);
+  }
+
+  private function daysInTheFuture(int $numDays): string {
+    return $this->getRelativeDate("P{$numDays}D", true);
+  }
+
+  private function getRelativeDate(string $durationString, bool $add): string {
     $date = new DateTime();
-    $durationString = sprintf('PT%sS', $numSeconds);
-    $date->sub(new DateInterval($durationString));
+    $interval = new DateInterval($durationString);
+    if ($add) {
+      $date->add($interval);
+    } else {
+      $date->sub($interval);
+    }
     return $date->format('Y-m-d H:i:s');
   }
 
@@ -167,4 +184,49 @@ class DataInjector {
     ];
     task_create($task, $params);
   }
+
+  private function createRounds(): void {
+    $this->createArchiveRound();
+    $this->createClassicRound();
+  }
+
+  private function createArchiveRound(): void {
+    printf("* Creating archive round round1\n");
+    $round = [
+      'id' => 'round1',
+      'type' => 'archive',
+      'title' => 'round1',
+      'page_name' => 'runda/round1',
+      'state' => 'running',
+      'start_time' => $this->daysAgo(1),
+      'public_eval' => 1,
+      'user_id' => $this->admin['id'],
+    ];
+    $params = [
+      'duration' => 1000,
+    ];
+    round_create($round, $params, $this->admin['id']);
+    round_update_task_list('round1', [], [ 'task1', 'task2' ]);
+  }
+
+  private function createClassicRound(): void {
+    printf("* Creating classic round round2\n");
+    $round = [
+      'id' => 'round2',
+      'type' => 'classic',
+      'title' => 'round2',
+      'page_name' => 'runda/round2',
+      'state' => 'waiting',
+      'start_time' => $this->daysInTheFuture(1),
+      'public_eval' => 1,
+      'user_id' => $this->admin['id'],
+    ];
+    $params = [
+      'duration' => 3,
+      'rating_update' => true,
+    ];
+    round_create($round, $params, $this->admin['id']);
+    round_update_task_list('round2', [], [ 'task1', 'task2' ]);
+  }
+
 }

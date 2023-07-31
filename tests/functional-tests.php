@@ -145,6 +145,10 @@ abstract class FunctionalTest {
     $this->driver->get(Config::URL_HOST . url_monitor());
   }
 
+  protected function visitRoundPage(string $roundId): void {
+    $this->driver->get(Config::URL_HOST . url_round($roundId));
+  }
+
   protected function visitTaskPage(string $taskId): void {
     $this->driver->get(Config::URL_HOST . url_task($taskId));
   }
