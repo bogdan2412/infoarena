@@ -38,6 +38,8 @@ class DataInjector {
     foreach ($files as $file) {
       $this->createPageFromFile($file, '');
     }
+
+    $this->createSecurityPages();
   }
 
   private function createTemplates(): void {
@@ -58,7 +60,6 @@ class DataInjector {
     $title = $lines[0];
     $rest = array_slice($lines, 2);
     $contents = implode("\n", $rest);
-    printf("* Creating page %s (%s) from file...\n", $name, $title);
 
     $this->createAdminPage($name, $title, $contents);
   }
@@ -72,10 +73,23 @@ class DataInjector {
   // key.
   private function createPage(string $name, string $title, string $contents,
                       int $userId, string $security, int $numRevisions): void {
+    printf("* Creating page %s (%s)\n", $name, $title);
     for ($i = 1; $i <= $numRevisions; $i++) {
       $timestamp = $this->secondsAgo($numRevisions - $i);
       $revContents = $contents . "\n\nThis is revision $i of $name.";
       textblock_add_revision($name, $title, $revContents, $userId, $security, $timestamp);
+    }
+  }
+
+  private function createSecurityPages(): void {
+    foreach ([ 'private', 'protected', 'public' ] as $security) {
+      $this->createPage(
+        "page-{$security}",
+        "page-{$security}",
+        "Contents of the page-{$security} page.",
+        1,
+        $security,
+        5);
     }
   }
 

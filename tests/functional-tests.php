@@ -157,6 +157,10 @@ abstract class FunctionalTest {
     $this->driver->get(Config::URL_HOST . url_task_edit($taskId));
   }
 
+  protected function visitTextblockPage(string $page): void {
+    $this->driver->get(Config::URL_HOST . url_textblock($page));
+  }
+
   protected function visitUserProfile(string $username): void {
     $this->driver->get(url_user_profile($username));
   }
