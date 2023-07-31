@@ -7,6 +7,7 @@
 class TestHomepageLinks extends FunctionalTest {
 
   function run(): void {
+    $this->ensureLoggedOut();
     $this->driver->get($this->homepageUrl);
 
     // sidebar links

@@ -142,6 +142,10 @@ abstract class FunctionalTest {
     }
   }
 
+  protected function visitChangesPage(): void {
+    $this->driver->get(Config::URL_HOST . url_changes());
+  }
+
   protected function visitMonitorPage(): void {
     $this->driver->get(Config::URL_HOST . url_monitor());
   }
