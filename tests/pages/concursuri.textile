@@ -1,0 +1,7 @@
+Concursuri
+
+h1. Concursuri
+
+Aici poți vedea concursurile organizate de administratori.
+
+==RoundList(type="classic|penalty-round" show_authors="true")==

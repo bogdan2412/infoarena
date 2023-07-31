@@ -1,0 +1,9 @@
+Concursuri virtuale
+
+h1. Concursuri Virtuale
+
+Acum îți *poți organiza propriile concursuri*!
+
+"(button)Creează concurs nou":admin/runda-noua
+
+==RoundList(type="user-defined" show_authors="true")==

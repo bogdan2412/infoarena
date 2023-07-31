@@ -24,23 +24,31 @@ class DataInjector {
   private array $admin, $intern, $helper, $normal;
 
   function run(): void {
+    $this->createPages();
     $this->createTemplates();
     $this->createUsers();
     $this->createTasks();
-    $this->createPage('home', 'Home page', 'This is the home page.', $this->admin['id'], 'public', 5);
+  }
+
+  private function createPages(): void {
+    $wildcard = __DIR__ . '/../tests/pages/*.textile';
+    $files = glob($wildcard);
+    foreach ($files as $file) {
+      $this->createPageFromFile($file, '');
+    }
   }
 
   private function createTemplates(): void {
     $wildcard = __DIR__ . '/../tests/templates/*.textile';
     $files = glob($wildcard);
     foreach ($files as $file) {
-      $this->createTemplateFromFile($file);
+      $this->createPageFromFile($file, 'template/');
     }
   }
 
-  private function createTemplateFromFile(string $filename): void {
+  private function createPageFromFile(string $filename, string $prefix): void {
     preg_match('|/([^/]+)\.textile$|', $filename, $match);
-    $name = 'template/' . $match[1];
+    $name = $prefix . $match[1];
 
     $lines = file($filename, FILE_IGNORE_NEW_LINES);
     $title = $lines[0];
@@ -48,11 +56,31 @@ class DataInjector {
     $contents = implode("\n", $rest);
     printf("* Creating template %s (%s) from file...\n", $name, $title);
 
-    $this->createAdminTemplate($name, $title, $contents);
+    $this->createAdminPage($name, $title, $contents);
   }
 
-  private function createAdminTemplate(string $name, string $title, string $contents): void {
+  private function createAdminPage(string $name, string $title, string $contents): void {
     $this->createPage($name, $title, $contents, 1, 'public', 5);
+  }
+
+  // Note: When creating several revisions in burst, we need to space out the
+  // timestamps because the revision table uses (name, timestamp) as the primary
+  // key.
+  private function createPage(string $name, string $title, string $contents,
+                      int $userId, string $security, int $numRevisions): void {
+    printf("* Creating page %s (%s)\n", $name, $title);
+    for ($i = 1; $i <= $numRevisions; $i++) {
+      $timestamp = $this->secondsAgo($numRevisions - $i);
+      $revContents = $contents . "\n\nThis is revision $i of $name.";
+      textblock_add_revision($name, $title, $revContents, $userId, $security, $timestamp);
+    }
+  }
+
+  private function secondsAgo(int $numSeconds): string {
+    $date = new DateTime();
+    $durationString = sprintf('PT%sS', $numSeconds);
+    $date->sub(new DateInterval($durationString));
+    return $date->format('Y-m-d H:i:s');
   }
 
   private function createUsers(): void {
@@ -79,26 +107,6 @@ class DataInjector {
 
     $user = user_create($user);
     return $user;
-  }
-
-  // Note: When creating several revisions in burst, we need to space out the
-  // timestamps because the revision table uses (name, timestamp) as the primary
-  // key.
-  private function createPage(string $name, string $title, string $contents,
-                      int $userId, string $security, int $numRevisions): void {
-    printf("* Creating page %s (%s)\n", $name, $title);
-    for ($i = 1; $i <= $numRevisions; $i++) {
-      $timestamp = $this->secondsAgo($numRevisions - $i);
-      $revContents = $contents . "\n\nThis is revision $i of $name.";
-      textblock_add_revision($name, $title, $revContents, $userId, $security, $timestamp);
-    }
-  }
-
-  private function secondsAgo(int $numSeconds): string {
-    $date = new DateTime();
-    $durationString = sprintf('PT%sS', $numSeconds);
-    $date->sub(new DateInterval($durationString));
-    return $date->format('Y-m-d H:i:s');
   }
 
   private function createTasks(): void {
