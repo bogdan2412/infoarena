@@ -77,7 +77,8 @@ class DataInjector {
     for ($i = 1; $i <= $numRevisions; $i++) {
       $timestamp = $this->secondsAgo($numRevisions - $i);
       $revContents = $contents . "\n\nThis is revision $i of $name.";
-      textblock_add_revision($name, $title, $revContents, $userId, $security, $timestamp);
+      textblock_add_revision($name, $title, $revContents, $userId, $security, $timestamp,
+                             null, '42.42.42.42');
     }
   }
 
