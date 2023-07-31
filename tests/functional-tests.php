@@ -14,6 +14,7 @@ use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\RemoteWebElement;
 use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverExpectedCondition;
 use Facebook\WebDriver\WebDriverSelect;
 
 if (!Config::DEVELOPMENT_MODE || !Config::TESTING_MODE) {
@@ -179,6 +180,11 @@ abstract class FunctionalTest {
     $this->driver->get($url);
   }
 
+  protected function waitForPageLoad(string $url): void {
+    $cond = WebDriverExpectedCondition::urlIs($url);
+    $this->driver->wait()->until($cond);
+  }
+
   protected function clickLinkByText(string $text): void {
     $link = $this->getLinkByText($text);
     $link->click();
@@ -199,6 +205,10 @@ abstract class FunctionalTest {
   protected function changeSelect(string $css, string $visibleText): void {
     $sel = $this->getSelectByCss($css);
     $sel->selectByVisibleText($visibleText);
+  }
+
+  protected function acceptConfirmationPopup(): void {
+    $this->driver->switchTo()->alert()->accept();
   }
 
   protected function ensureLoggedOut() {
@@ -319,6 +329,14 @@ abstract class FunctionalTest {
   protected function assertOnTaskEditPage(string $taskId): void {
     $this->assertTextExists('Editare enunț');
     $this->assertInputValue('#form_title', $taskId);
+  }
+
+  protected function assertOnTextblockPage(string $page): void {
+    $actualUrl = $this->driver->getCurrentUrl();
+    $expectedUrl = Config::URL_HOST . url_textblock($page);
+    $msg = sprintf('Expected to be on the page for [%s], found ourselves at [%s]',
+                   $page, $actualUrl);
+    $this->assert($actualUrl == $expectedUrl, $msg);
   }
 
   protected function assertLoginRequired(): void {

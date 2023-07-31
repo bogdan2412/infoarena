@@ -2,8 +2,6 @@
 
 class TestTextblockEditSecurity extends FunctionalTest {
 
-  private array $origPage;
-
   function run(): void {
     $this->testHelperCannotEdit();
     $this->testAdminCanEdit();
