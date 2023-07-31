@@ -93,6 +93,7 @@ class TestSuite {
     } catch (Exception $e) {
       $this->numFailures++;
       printf("  * EXCEPTION: %s\n", $e->getMessage());
+      print $e->getTraceAsString() . "\n";
     }
   }
 
