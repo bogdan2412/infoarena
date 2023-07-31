@@ -116,8 +116,16 @@ abstract class FunctionalTest {
     return $this->driver->findElement($locator);
   }
 
+  private function getElements(WebDriverBy $locator): array {
+    return $this->driver->findElements($locator);
+  }
+
   protected function getLinkByText(string $text): RemoteWebElement {
     return $this->getElement(WebDriverBy::linkText($text));
+  }
+
+  protected function getLinksByText(string $text): array {
+    return $this->getElements(WebDriverBy::linkText($text));
   }
 
   protected function getElementByCss(string $cssSelector): RemoteWebElement {
@@ -180,6 +188,10 @@ abstract class FunctionalTest {
 
   protected function visitTextblockMovePage(string $page): void {
     $this->driver->get(Config::URL_HOST . url_textblock_move($page));
+  }
+
+  protected function visitTextblockRestorePage(string $page, int $version): void {
+    $this->driver->get(Config::URL_HOST . url_textblock_restore($page, $version));
   }
 
   protected function visitUserProfile(string $username): void {
