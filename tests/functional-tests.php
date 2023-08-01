@@ -14,6 +14,7 @@ use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\RemoteWebElement;
 use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverCheckboxes;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 use Facebook\WebDriver\WebDriverSelect;
 
@@ -140,6 +141,11 @@ abstract class FunctionalTest {
     // Necessary because getText() returns '' for hidden elements.
     $elem = $this->getElementByCss($cssSelector);
     return $elem->getDomProperty('innerHTML');
+  }
+
+  protected function getCheckboxesByCss(string $css): WebDriverCheckboxes {
+    $elem = $this->getElementByCss($css);
+    return new WebDriverCheckboxes($elem);
   }
 
   protected function getSelectByCss(string $css): WebDriverSelect {
@@ -325,6 +331,7 @@ abstract class FunctionalTest {
     $actualNumOptions = count($sel->getOptions());
     $msg = sprintf('Expected %d options in select [%s], found %d.',
                    $expectedNumOptions, $css, $actualNumOptions);
+    $this->assert($actualNumOptions == $expectedNumOptions, $msg);
   }
 
   protected function assertLinkText(RemoteWebElement $link, string $expectedText): void {
