@@ -172,6 +172,10 @@ abstract class FunctionalTest {
     $this->driver->get(Config::URL_HOST . url_round($roundId));
   }
 
+  protected function visitRoundEditPage(string $roundId): void {
+    $this->driver->get(Config::URL_HOST . url_round_edit($roundId));
+  }
+
   protected function visitTaskPage(string $taskId): void {
     $this->driver->get(Config::URL_HOST . url_task($taskId));
   }
@@ -316,6 +320,13 @@ abstract class FunctionalTest {
     $this->assert($actualText == $expectedText, $msg);
   }
 
+  protected function assertSelectNumOptions(string $css, int $expectedNumOptions): void {
+    $sel = $this->getSelectByCss($css);
+    $actualNumOptions = count($sel->getOptions());
+    $msg = sprintf('Expected %d options in select [%s], found %d.',
+                   $expectedNumOptions, $css, $actualNumOptions);
+  }
+
   protected function assertLinkText(RemoteWebElement $link, string $expectedText): void {
     $actualText = $link->getText();
     $msg = sprintf('Expected link text [%s], found [%s]', $expectedText, $actualText);
@@ -353,6 +364,11 @@ abstract class FunctionalTest {
     $actualUrl = $this->driver->getCurrentUrl();
     $msg = sprintf('Expected to be on the login page, found ourselves on [%s]', $actualUrl);
     $this->assert($actualUrl == url_login(), $msg);
+  }
+
+  protected function assertOnRoundEditPage(string $roundId): void {
+    $this->assertTextExists('Editare pagină');
+    $this->assertInputValue('#form_title', $roundId);
   }
 
   protected function assertOnTaskPage(string $taskId): void {

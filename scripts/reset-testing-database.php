@@ -203,15 +203,16 @@ class DataInjector {
   private function createRounds(): void {
     $this->createArchiveRound();
     $this->createClassicRound();
+    $this->createUserRound();
   }
 
   private function createArchiveRound(): void {
-    printf("* Creating archive round round1\n");
+    printf("* Creating archive round round-archive\n");
     $round = [
-      'id' => 'round1',
+      'id' => 'round-archive',
       'type' => 'archive',
-      'title' => 'round1',
-      'page_name' => 'runda/round1',
+      'title' => 'round-archive',
+      'page_name' => 'runda/round-archive',
       'state' => 'running',
       'start_time' => $this->daysAgo(1),
       'public_eval' => 1,
@@ -221,16 +222,16 @@ class DataInjector {
       'duration' => 1000,
     ];
     round_create($round, $params, $this->admin['id']);
-    round_update_task_list('round1', [], [ 'task1', 'task2' ]);
+    round_update_task_list('round-archive', [], [ 'task1', 'task2' ]);
   }
 
   private function createClassicRound(): void {
-    printf("* Creating classic round round2\n");
+    printf("* Creating classic round round-classic\n");
     $round = [
-      'id' => 'round2',
+      'id' => 'round-classic',
       'type' => 'classic',
-      'title' => 'round2',
-      'page_name' => 'runda/round2',
+      'title' => 'round-classic',
+      'page_name' => 'runda/round-classic',
       'state' => 'waiting',
       'start_time' => $this->daysInTheFuture(1),
       'public_eval' => 1,
@@ -241,7 +242,27 @@ class DataInjector {
       'rating_update' => true,
     ];
     round_create($round, $params, $this->admin['id']);
-    round_update_task_list('round2', [], [ 'task1', 'task2' ]);
+    round_update_task_list('round-classic', [], [ 'task1', 'task2' ]);
+  }
+
+  private function createUserRound(): void {
+    printf("* Creating user round round-user\n");
+    $round = [
+      'id' => 'round-user',
+      'type' => 'user-defined',
+      'title' => 'round-user',
+      'page_name' => 'runda/round-user',
+      'state' => 'waiting',
+      'start_time' => $this->daysInTheFuture(1),
+      'public_eval' => 1,
+      'user_id' => $this->normal['id'],
+    ];
+    $params = [
+      'duration' => 3,
+      'rating_update' => true,
+    ];
+    round_create($round, $params, $this->normal['id']);
+    round_update_task_list('round-user', [], [ 'task1' ]);
   }
 
 }

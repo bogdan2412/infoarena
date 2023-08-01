@@ -9,13 +9,13 @@ class TestRoundRegister extends FunctionalTest {
 
   private function testCannotRegisterToArchive(): void {
     $this->login('intern', '1234');
-    $this->visitRoundPage('round1');
+    $this->visitRoundPage('round-archive');
     $this->assertNoText('Înscrie-te acum');
   }
 
   private function testRegisterToUpcomingRound(): void {
     $this->login('normal', '1234');
-    $this->visitRoundPage('round2');
+    $this->visitRoundPage('round-classic');
 
     $this->assertTextExists('Nu ești înscris');
     $this->clickLinkByText('Înscrie-te acum!');
