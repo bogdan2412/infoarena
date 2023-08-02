@@ -21,6 +21,7 @@ $injector = new DataInjector();
 $injector->run();
 
 class DataInjector {
+  const IP_ADDRESS = '42.42.42.42';
 
   private array $admin, $intern, $helper, $normal;
 
@@ -31,6 +32,7 @@ class DataInjector {
     $this->createUsers();
     $this->createTasks();
     $this->createRounds();
+    $this->createAttachments();
   }
 
   private function createAttachmentDir(): void {
@@ -87,7 +89,7 @@ class DataInjector {
       $timestamp = $this->secondsAgo($numRevisions - $i);
       $revContents = $contents . "\n\nThis is revision $i of $name.";
       textblock_add_revision($name, $title, $revContents, $userId, $security, $timestamp,
-                             null, '42.42.42.42');
+                             null, self::IP_ADDRESS);
     }
   }
 
@@ -272,6 +274,23 @@ class DataInjector {
     ];
     round_create($round, $params, $this->normal['id']);
     round_update_task_list('round-user', [], [ 'task1' ]);
+  }
+
+  private function createAttachments(): void {
+    $this->createAttachment('file1.txt', 'page-public');
+    $this->createAttachment('file1.txt', 'page-protected');
+    $this->createAttachment('file1.txt', 'page-private');
+  }
+
+  private function createAttachment(string $name, string $pageName) {
+    $src = __DIR__ . '/../tests/attachments/' . $name;
+    $size = filesize($src);
+    attachment_insert($name, $size, 'text/plain', $pageName,
+                      $this->admin['id'], self::IP_ADDRESS);
+
+    $attachment = attachment_get($name, $pageName);
+    $dest = attachment_get_filepath($attachment);
+    copy($src, $dest);
   }
 
 }

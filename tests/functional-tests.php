@@ -291,7 +291,15 @@ abstract class FunctionalTest {
     $this->driver->switchTo()->alert()->accept();
   }
 
+  protected function ensureOnSite(): void {
+    $url = $this->driver->getCurrentUrl();
+    if (!Str::startsWith($url, $this->homepageUrl)) {
+      $this->driver->get($this->homepageUrl);
+    }
+  }
+
   protected function ensureLoggedOut() {
+    $this->ensureOnSite();
     $identity = $this->getIdentityUsername();
     if ($identity) {
       $this->clickLinkByText('logout');
@@ -299,6 +307,7 @@ abstract class FunctionalTest {
   }
 
   protected function login(string $username, string $password) {
+    $this->ensureOnSite();
     $identity = $this->getIdentityUsername();
     if ($identity == $username) {
       return; // already logged in
@@ -336,6 +345,16 @@ abstract class FunctionalTest {
       throw new Exception("Unwanted text found: [{$text}].");
     } catch (NoSuchElementException $e) {
     }
+  }
+
+  protected function assertTableCellText(
+    string $css, int $row, int $column, string $text): void {
+    $selector = sprintf('%s tr:nth-child(%d) td:nth-child(%d)', $css, $row, $column);
+    $cell = $this->getElementByCss($selector);
+    $actualText = $cell->getText();
+    $msg = sprintf('Expected text [%s] in table [%s] row %d column %d, found [%s].',
+                   $text, $css, $row, $column, $actualText);
+    $this->assert($actualText == $text, $msg);
   }
 
   protected function assertNoElement(string $css): void {

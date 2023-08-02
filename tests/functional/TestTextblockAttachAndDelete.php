@@ -32,7 +32,7 @@ class TestTextblockAttachAndDelete extends FunctionalTest {
   }
 
   private function attachAsAdmin(): void {
-    $path = realpath(__DIR__ . '/../attachments/file1.txt');
+    $path = realpath(__DIR__ . '/../attachments/file2.txt');
     $this->login('admin', '1234');
     $this->visitTextblockPage('page-public');
     $this->clickLinkByText('Atașează');
@@ -62,13 +62,14 @@ class TestTextblockAttachAndDelete extends FunctionalTest {
   private function deleteAsAdmin(): void {
     $this->login('admin', '1234');
     $this->visitTextblockAttachListPage('page-public');
+    $this->assertTableCellText('table.alternating-colors', 1, 3, 'file2.txt');
     $this->clickLinkByText('Șterge');
     $this->acceptConfirmationPopup();
 
     $url = Config::URL_HOST . url_textblock('page-public');
     $this->waitForPageLoad($url);
 
-    $this->assertTextExists('Fișierul file1.txt a fost șters cu succes.');
+    $this->assertTextExists('Fișierul file2.txt a fost șters cu succes.');
   }
 
 }
