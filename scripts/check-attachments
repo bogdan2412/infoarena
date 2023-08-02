@@ -1,17 +1,21 @@
 #! /usr/bin/env php
 <?php
 
-require_once(dirname($argv[0]) . "/utilities.php");
-require_once(Config::ROOT . "common/attachment.php");
-require_once(Config::ROOT . "common/db/attachment.php");
+require_once __DIR__ . '/../Config.php';
+require_once __DIR__ . '/../www/config.php';
+require_once __DIR__ . '/../www/identity.php';
+require_once __DIR__ . '/utilities.php';
+require_once __DIR__ . '/../common/attachment.php';
+require_once __DIR__ . '/../common/db/attachment.php';
+require_once __DIR__ . '/../lib/Core.php';
 db_connect();
 
-log_print("Checking attachment dir...");
-log_warn("This script consumes tons of memory so errors might occur");
+log_print('Checking attachment dir...');
+log_warn('This script consumes tons of memory so errors might occur');
 
-$res = db_query("SELECT `id`, `name`, `page`, `size` FROM ia_file");
+$res = db_query('SELECT `id`, `name`, `page`, `size` FROM ia_file');
 
-$extra_files = array_flip(glob(Config::ROOT . "attach/*"));
+$extra_files = array_flip(glob(Config::ROOT . 'attach/*'));
 $extra_atts = array();
 $total_files = count($extra_files);
 $total_atts = 0;
@@ -180,7 +184,7 @@ if (read_bool("Enforce permissions?", false)) {
         if (@chgrp($file, $groupown) == false) {
             $err[] = "chgrp";
         }
-        $errs |= $err;
+        $errs |= !empty($err);
         if ($err) {
             log_print("Failed ".implode(', ', $err)." on $file");
         }
