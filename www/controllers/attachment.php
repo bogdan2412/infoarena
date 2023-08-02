@@ -156,7 +156,7 @@ function controller_attachment_submit($page_name) {
       }
 
       // extract archived file to a tempory file on disk
-      $tmpname = tempnam(Config::ROOT . 'attach/', 'iatmp');
+      $tmpname = tempnam('/tmp', 'iatmp');
       log_assert($tmpname);
       $res = extract_zipped_attachment($ziparchive, $att['zipindex'],
                                        $tmpname);

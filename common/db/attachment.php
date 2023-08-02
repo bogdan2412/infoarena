@@ -141,7 +141,7 @@ function attachment_get_count($page, $name='%', $start = 0, $count = 99999999) {
 // FIXME: does this belong here?
 function attachment_get_filepath($attach) {
   log_assert(is_array($attach));
-  return Config::ROOT.'attach/'.
+  return Attachment::getDirectory() .
     strtolower(preg_replace('/[^a-z0-9\.\-_]/i', '_', $attach['page'])) . '_' .
     preg_replace('/[^a-z0-9\.\-_]/i', '_', $attach['name']) . '_' .
     $attach['id'];

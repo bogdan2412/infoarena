@@ -4,7 +4,7 @@ require_once(Config::ROOT."common/log.php");
 // puts the contents of a string into a temporary files
 // returns the temporary file name
 function file_put_string($string) {
-    $name = tempnam(Config::ROOT.'attach/', "ia");
+    $name = tempnam('/tmp', "ia");
     $fp = fopen($name, "w");
     if (!$fp) {
         return "";
