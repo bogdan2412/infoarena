@@ -11,6 +11,7 @@ use Facebook\WebDriver\Exception\Internal\WebDriverCurlException;
 use Facebook\WebDriver\Exception\NoSuchElementException;
 use Facebook\WebDriver\Firefox\FirefoxOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
+use Facebook\WebDriver\Remote\LocalFileDetector;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\RemoteWebElement;
 use Facebook\WebDriver\WebDriverBy;
@@ -26,7 +27,10 @@ if (!Config::DEVELOPMENT_MODE || !Config::TESTING_MODE) {
 
 db_connect();
 
-$suite = new TestSuite();
+$testNames = $argv;
+array_shift($testNames);
+
+$suite = new TestSuite($testNames);
 $suite->run();
 $suite->tearDown();
 printf("Test suite completed with %d failures.\n", $suite->getNumFailures());
@@ -34,11 +38,13 @@ printf("Test suite completed with %d failures.\n", $suite->getNumFailures());
 class TestSuite {
   const DRIVER_URL = 'http://localhost:4444';
 
+  private array $testNames;
   private RemoteWebDriver $driver;
   private string $homepageUrl;
   private int $numFailures = 0;
 
-  function __construct() {
+  function __construct(array $testNames) {
+    $this->testNames = $testNames;
     $this->homepageUrl = Config::URL_HOST . Config::URL_PREFIX;
   }
 
@@ -72,11 +78,27 @@ class TestSuite {
   }
 
   private function findAndRunTests(): void {
-    $wildcard = __DIR__ . '/functional/Test*.php';
-    $files = glob($wildcard);
+    $files = (empty($this->testNames))
+      ? $this->findAllTests()
+      : $this->findSpecificTests();
+
     foreach ($files as $file) {
       $this->setupAndRunTest($file);
     }
+  }
+
+  private function findAllTests(): array {
+    $wildcard = __DIR__ . '/functional/Test*.php';
+    return glob($wildcard);
+  }
+
+  private function findSpecificTests(): array {
+    $files = [];
+    foreach ($this->testNames as $testName) {
+      $path = sprintf('%s/functional/%s.php', __DIR__, $testName);
+      $files[] = $path;
+    }
+    return $files;
   }
 
   private function setupAndRunTest(string $file): void {
@@ -194,6 +216,14 @@ abstract class FunctionalTest {
     $this->driver->get(Config::URL_HOST . url_textblock($page));
   }
 
+  protected function visitTextblockAttachPage(string $page): void {
+    $this->driver->get(Config::URL_HOST . url_attachment_new($page));
+  }
+
+  protected function visitTextblockAttachListPage(string $page): void {
+    $this->driver->get(Config::URL_HOST . url_attachment_list($page));
+  }
+
   protected function visitTextblockEditPage(string $page): void {
     $this->driver->get(Config::URL_HOST . url_textblock_edit($page));
   }
@@ -244,6 +274,12 @@ abstract class FunctionalTest {
     $elem = $this->getElementByCss($css);
     $elem->clear();
     $elem->sendKeys($text);
+  }
+
+  protected function setFileInput(string $css, string $filePath): void {
+    $elem = $this->getElementByCss($css);
+    $elem->setFileDetector(new LocalFileDetector());
+    $elem->sendKeys($filePath);
   }
 
   protected function changeSelect(string $css, string $visibleText): void {

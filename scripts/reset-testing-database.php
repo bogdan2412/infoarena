@@ -25,11 +25,20 @@ class DataInjector {
   private array $admin, $intern, $helper, $normal;
 
   function run(): void {
+    $this->createAttachmentDir();
     $this->createPages();
     $this->createTemplates();
     $this->createUsers();
     $this->createTasks();
     $this->createRounds();
+  }
+
+  private function createAttachmentDir(): void {
+    $path = Attachment::getDirectory();
+    exec("rm -rf $path");
+    $oldUmask = umask(0);
+    mkdir($path);
+    umask($oldUmask);
   }
 
   private function createPages(): void {
