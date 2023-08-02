@@ -188,6 +188,11 @@ abstract class FunctionalTest {
     }
   }
 
+  protected function getUploadFullPath(string $fileName): string {
+    $path = __DIR__ . '/attachments/' . $fileName;
+    return realpath($path);
+  }
+
   protected function visitAttachmentList(string $page): void {
     $this->driver->get(Config::URL_HOST . url_attachment_list($page));
   }

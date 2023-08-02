@@ -32,7 +32,7 @@ class TestAttachmentCreateAndDelete extends FunctionalTest {
   }
 
   private function attachAsAdmin(): void {
-    $path = realpath(__DIR__ . '/../attachments/file2.txt');
+    $path = $this->getUploadFullPath('file2.txt');
     $this->login('admin', '1234');
     $this->visitTextblockPage('page-public');
     $this->clickLinkByText('Atașează');
