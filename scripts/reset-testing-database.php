@@ -283,6 +283,7 @@ class DataInjector {
   }
 
   private function createAttachment(string $name, string $pageName) {
+    printf("* Creating attachment %s of page %s\n", $name, $pageName);
     $src = __DIR__ . '/../tests/attachments/' . $name;
     $size = filesize($src);
     attachment_insert($name, $size, 'text/plain', $pageName,

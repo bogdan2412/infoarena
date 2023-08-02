@@ -43,7 +43,7 @@ class TestTextblockAttachAndDelete extends FunctionalTest {
 
   private function testAnonCannotDelete(): void {
     $this->ensureLoggedOut();
-    $this->visitTextblockAttachListPage('page-public');
+    $this->visitAttachmentList('page-public');
     $this->clickLinkByText('Șterge');
     $this->acceptConfirmationPopup();
     $this->waitForPageLoad(url_login());
@@ -52,7 +52,7 @@ class TestTextblockAttachAndDelete extends FunctionalTest {
 
   private function testHelperCannotDelete(): void {
     $this->login('helper', '1234');
-    $this->visitTextblockAttachListPage('page-public');
+    $this->visitAttachmentList('page-public');
     $this->clickLinkByText('Șterge');
     $this->acceptConfirmationPopup();
     $this->waitForPageLoad($this->homepageUrl);
@@ -61,7 +61,7 @@ class TestTextblockAttachAndDelete extends FunctionalTest {
 
   private function deleteAsAdmin(): void {
     $this->login('admin', '1234');
-    $this->visitTextblockAttachListPage('page-public');
+    $this->visitAttachmentList('page-public');
     $this->assertTableCellText('table.alternating-colors', 1, 3, 'file2.txt');
     $this->clickLinkByText('Șterge');
     $this->acceptConfirmationPopup();

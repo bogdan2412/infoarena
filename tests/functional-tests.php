@@ -72,6 +72,10 @@ class TestSuite {
   private function getFirefoxCapabilities(): DesiredCapabilities {
     $firefoxOptions = new FirefoxOptions();
     $firefoxOptions->addArguments(['-headless']);
+    $firefoxOptions->setPreference('browser.download.folderList', 2);
+    $firefoxOptions->setPreference('browser.download.dir', '/tmp');
+    $firefoxOptions->setPreference('browser.helperApps.neverAsk.saveToDisk', 'text/plain');
+
     $capabilities = DesiredCapabilities::firefox();
     $capabilities->setCapability(FirefoxOptions::CAPABILITY, $firefoxOptions);
     return $capabilities;
@@ -220,10 +224,6 @@ abstract class FunctionalTest {
     $this->driver->get(Config::URL_HOST . url_attachment_new($page));
   }
 
-  protected function visitTextblockAttachListPage(string $page): void {
-    $this->driver->get(Config::URL_HOST . url_attachment_list($page));
-  }
-
   protected function visitTextblockEditPage(string $page): void {
     $this->driver->get(Config::URL_HOST . url_textblock_edit($page));
   }
@@ -268,6 +268,14 @@ abstract class FunctionalTest {
     $xpath = "//input[@value='{$value}']";
     $input = $this->getElementByXpath($xpath);
     $input->click();
+  }
+
+  protected function downloadLink(string $linkText, string $fileName): string {
+    $this->clickLinkByText($linkText);
+    $dest = '/tmp/' . $fileName;
+    $contents = file_get_contents($dest);
+    unlink($dest);
+    return $contents;
   }
 
   protected function changeInput(string $css, string $text): void {
@@ -407,6 +415,14 @@ abstract class FunctionalTest {
       throw new Exception("Unwanted link [{$linkText}] found.");
     } catch (NoSuchElementException $e) {
     }
+  }
+
+  protected function assertLinkDownloadsContent(string $linkText, string $fileName) {
+    $contents = $this->downloadLink($linkText, $fileName);
+    $witnessFile = __DIR__ . '/attachments/' . $fileName;
+    $witnessContents = file_get_contents($witnessFile);
+    $msg = sprintf('Incorect contents of downloaded file %s.', $fileName);
+    $this->assert($contents == $witnessContents, $msg);
   }
 
   protected function assertLoggedInAs(string $expectedUsername): void {
