@@ -1,6 +1,6 @@
 <?php
 
-class TestAttachDownload extends FunctionalTest {
+class TestAttachmentDownload extends FunctionalTest {
 
   function run(): void {
     $this->testAnonCanViewPublic();

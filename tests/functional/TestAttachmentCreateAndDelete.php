@@ -1,6 +1,6 @@
 <?php
 
-class TestTextblockAttachAndDelete extends FunctionalTest {
+class TestAttachmentCreateAndDelete extends FunctionalTest {
 
   function run(): void {
     $this->testAnonCannotAttach();
