@@ -280,6 +280,7 @@ class DataInjector {
     $this->createAttachment('file1.txt', 'page-public');
     $this->createAttachment('file1.txt', 'page-protected');
     $this->createAttachment('file1.txt', 'page-private');
+    $this->createAttachment('grader_test1.in', 'problema/task1');
   }
 
   private function createAttachment(string $name, string $pageName) {
