@@ -33,6 +33,7 @@ class DataInjector {
     $this->createTasks();
     $this->createRounds();
     $this->createAttachments();
+    $this->createTags();
   }
 
   private function createAttachmentDir(): void {
@@ -283,7 +284,7 @@ class DataInjector {
     $this->createAttachment('grader_test1.in', 'problema/task1');
   }
 
-  private function createAttachment(string $name, string $pageName) {
+  private function createAttachment(string $name, string $pageName): void {
     printf("* Creating attachment %s of page %s\n", $name, $pageName);
     $src = __DIR__ . '/../tests/attachments/' . $name;
     $size = filesize($src);
@@ -293,6 +294,42 @@ class DataInjector {
     $attachment = attachment_get($name, $pageName);
     $dest = attachment_get_filepath($attachment);
     copy($src, $dest);
+  }
+
+  private function createTags(): void {
+    $category1Id = $this->createTag('category1', 'method', 0);
+    $category2Id = $this->createTag('category2', 'method', 0);
+
+    $tag1Id = $this->createTag('tag1', 'algorithm', $category1Id);
+    $tag2Id = $this->createTag('tag2', 'algorithm', $category1Id);
+    $tag3Id = $this->createTag('tag3', 'algorithm', $category2Id);
+    $tag4Id = $this->createTag('tag4', 'algorithm', $category2Id);
+
+    $author1Id = $this->createTag('author1', 'author', 0);
+
+    $this->applyTaskTag($category1Id, 'task1');
+    $this->applyTaskTag($category2Id, 'task1');
+    $this->applyTaskTag($tag1Id, 'task1');
+    $this->applyTaskTag($tag3Id, 'task1');
+
+    $this->applyTaskTag($category1Id, 'task2');
+    $this->applyTaskTag($category2Id, 'task2');
+    $this->applyTaskTag($tag2Id, 'task2');
+    $this->applyTaskTag($tag4Id, 'task2');
+  }
+
+  private function createTag(string $name, string $type, int $parent): int {
+    printf("* Creating tag [%s] of type [%s]\n", $name, $type);
+    $tag = [
+      'name' => $name,
+      'type' => $type,
+      'parent' => $parent,
+    ];
+    return tag_assign_id($tag);
+  }
+
+  private function applyTaskTag(int $tagId, string $taskId): void {
+    tag_add('task', $taskId, $tagId);
   }
 
 }

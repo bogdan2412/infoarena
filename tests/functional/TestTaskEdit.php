@@ -94,7 +94,7 @@ class TestTaskEdit extends FunctionalTest {
     $this->changeInput('#form_user', 'intern');
     $this->changeInput('#form_source', 'def');
     $this->changeSelect('#form_security', 'Public');
-    $this->changeInput('#form_tag_author', 'ghi');
+    $this->changeInput('#form_tag_author', 'author1');
     $this->changeInput('#form_tag_contest', 'jkl');
     $this->changeInput('#form_tag_year', '2000');
     $this->changeInput('#form_tag_round', 'mno');
@@ -118,7 +118,7 @@ class TestTaskEdit extends FunctionalTest {
     $this->assertInputValue('#form_user', 'intern');
     $this->assertInputValue('#form_source', 'def');
     $this->assertSelectVisibleText('#form_security', 'Public');
-    $this->assertInputValue('#form_tag_author', 'ghi');
+    $this->assertInputValue('#form_tag_author', 'author1');
     $this->assertInputValue('#form_tag_contest', 'jkl');
     $this->assertInputValue('#form_tag_year', '2000');
     $this->assertInputValue('#form_tag_round', 'mno');
