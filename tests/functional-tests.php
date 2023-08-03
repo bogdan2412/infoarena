@@ -174,6 +174,10 @@ abstract class FunctionalTest {
     return new WebDriverCheckboxes($elem);
   }
 
+  protected function isCheckboxChecked(RemoteWebElement $checkbox): bool {
+    return $checkbox->getAttribute('checked') == 'true';
+  }
+
   protected function getSelectByCss(string $css): WebDriverSelect {
     $elem = $this->getElementByCss($css);
     return new WebDriverSelect($elem);
@@ -400,6 +404,20 @@ abstract class FunctionalTest {
     $msg = sprintf('Expected %d options in select [%s], found %d.',
                    $expectedNumOptions, $css, $actualNumOptions);
     $this->assert($actualNumOptions == $expectedNumOptions, $msg);
+  }
+
+  protected function assertCheckboxChecked(RemoteWebElement $checkbox): void {
+    $msg = sprintf('Expected checkbox with name [%s] and value [%s] to be checked.',
+                   $checkbox->getAttribute('name'),
+                   $checkbox->getAttribute('value'));
+    $this->assert($checkbox->getAttribute('checked') == 'true', $msg);
+  }
+
+  protected function assertCheckboxUnchecked(RemoteWebElement $checkbox): void {
+    $msg = sprintf('Expected checkbox with name [%s] and value [%s] to be unchecked.',
+                   $checkbox->getAttribute('name'),
+                   $checkbox->getAttribute('value'));
+    $this->assert($checkbox->getAttribute('checked') === null, $msg);
   }
 
   protected function assertLinkText(RemoteWebElement $link, string $expectedText): void {
