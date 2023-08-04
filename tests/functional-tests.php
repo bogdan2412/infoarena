@@ -209,6 +209,10 @@ abstract class FunctionalTest {
     $this->driver->get(Config::URL_HOST . url_job_detail($jobId));
   }
 
+  protected function visitJobSourcePage(int $jobId): void {
+    $this->driver->get(Config::URL_HOST . url_job_view_source($jobId));
+  }
+
   protected function visitMonitorPage(): void {
     $this->driver->get(Config::URL_HOST . url_monitor());
   }
