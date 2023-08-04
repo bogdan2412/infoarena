@@ -22,8 +22,10 @@ $injector->run();
 
 class DataInjector {
   const IP_ADDRESS = '42.42.42.42';
+  const NUM_TEST_CASES = 5;
 
   private array $admin, $intern, $helper, $normal;
+  private $jobCounter = 0;
 
   function run(): void {
     $this->createAttachmentDir();
@@ -34,6 +36,7 @@ class DataInjector {
     $this->createRounds();
     $this->createAttachments();
     $this->createTags();
+    $this->createJobs();
   }
 
   private function createAttachmentDir(): void {
@@ -172,8 +175,8 @@ class DataInjector {
       'type' => 'classic',
       'open_source' => true,
       'open_tests' => true,
-      'test_count' => 5,
-      'test_groups' => '1;2;3;4;5',
+      'test_count' => self::NUM_TEST_CASES,
+      'test_groups' => implode(';', range(1, self::NUM_TEST_CASES)),
       'public_tests' => '1,2',
       'evaluator' => '',
       'use_ok_files' => true,
@@ -198,8 +201,8 @@ class DataInjector {
       'type' => 'classic',
       'open_source' => false,
       'open_tests' => false,
-      'test_count' => 5,
-      'test_groups' => '1;2;3;4;5',
+      'test_count' => self::NUM_TEST_CASES,
+      'test_groups' => implode(';', range(1, self::NUM_TEST_CASES)),
       'public_tests' => '1,2',
       'evaluator' => '',
       'use_ok_files' => true,
@@ -330,6 +333,66 @@ class DataInjector {
 
   private function applyTaskTag(int $tagId, string $taskId): void {
     tag_add('task', $taskId, $tagId);
+  }
+
+  private function createJobs(): void {
+    $this->createJob($this->admin, 'task1', '', 's1.cpp',
+                     'done', 10, 'Evaluare completă');
+    $this->createJob($this->admin, 'task2', '', 's2.cpp',
+                     'done', 20, 'Evaluare completă');
+    $this->createJob($this->admin, 'task1', 'round-classic', 's1.cpp',
+                     'done', 30, 'Evaluare completă');
+    $this->createJob($this->admin, 'task1', 'round-archive', 's1.cpp',
+                     'done', 40, 'Evaluare completă');
+    $this->createJob($this->intern, 'task1', 'round-archive', 's2.cpp',
+                     'done', 50, 'Evaluare completă');
+    $this->createJob($this->helper, 'task1', 'round-archive', 's3.c',
+                     'done', 60, 'Evaluare completă');
+    $this->createJob($this->normal, 'task1', 'round-archive', 's4.c',
+                     'waiting');
+  }
+
+  private function createJob(
+    array $user, string $taskId, string $roundId, string $sourceFile,
+    string $status, int $score = 0, string $evalMessage = ''): void {
+
+    printf("* Creating job from user [%s] for task [%s], round [%s]\n",
+           $user['username'], $taskId, $roundId);
+
+    $path = __DIR__ . '/../tests/sources/' . $sourceFile;
+    $extension = explode('.', $sourceFile)[1];
+
+    $j = Model::factory('Job')->create();
+    $j->user_id = $user['id'];
+    $j->round_id = $roundId;
+    $j->task_id = $taskId;
+    $j->submit_time = $this->secondsAgo(100 - $this->jobCounter);
+    $j->compiler_id = $extension;
+    $j->file_contents = file_get_contents($path);
+    $j->status = $status;
+    if ($status == 'done') {
+      $j->score = $score;
+      $j->eval_message = $evalMessage;
+    }
+    $j->remote_ip_info = self::IP_ADDRESS;
+    $j->save();
+    $this->createTests($j);
+
+    $this->jobCounter++;
+  }
+
+  private function createTests(Job $job): void {
+    for ($i = 1; $i <= self::NUM_TEST_CASES; $i++) {
+      $t = Model::factory('JobTest')->create();
+      $t->job_id = $job->id;
+      $t->test_number = $i;
+      $t->test_group = $i;
+      $t->exec_time = 100; // millis
+      $t->mem_used = 500; // kilobytes
+      $t->points = $job->score / self::NUM_TEST_CASES;
+      $t->grader_message = 'Some grader message.';
+      $t->save();
+    }
   }
 
 }
