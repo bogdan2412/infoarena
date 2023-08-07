@@ -12,32 +12,32 @@ class TestJobView extends FunctionalTest {
 
   private function testAnonCanViewPublic(): void {
     $this->ensureLoggedOut();
-    $this->visitTaskPage('task1');
-    $this->assertOnTaskPage('task1');
+    $this->visitJobPage(1);
+    $this->assertTextExists('Borderou de evaluare (job #1)');
   }
 
   private function testAnonCannotViewPrivate(): void {
     $this->ensureLoggedOut();
-    $this->visitTaskPage('task2');
+    $this->visitJobPage(2);
     $this->assertLoginRequired();
   }
 
   private function testNormalCannotViewPrivate(): void {
     $this->login('normal', '1234');
-    $this->visitTaskPage('task2');
+    $this->visitJobPage(2);
     $this->assertPermissionError();
   }
 
   private function testHelperOwnerCanViewPrivate(): void {
     $this->login('helper', '1234');
-    $this->visitTaskPage('task2');
-    $this->assertOnTaskPage('task2');
+    $this->visitJobPage(2);
+    $this->assertTextExists('Borderou de evaluare (job #2)');
   }
 
   private function testAdminCanViewPrivate(): void {
     $this->login('admin', '1234');
-    $this->visitTaskPage('task2');
-    $this->assertOnTaskPage('task2');
+    $this->visitJobPage(2);
+    $this->assertTextExists('Borderou de evaluare (job #2)');
   }
 
 }
