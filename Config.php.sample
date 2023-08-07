@@ -29,6 +29,7 @@ class Config {
   // Directory for user profile pictures.
   const AVATAR_DIR = __DIR__ .  '/www/static/images/avatar/';
 
+  // Display settings. Database dates are always UTC.
   const LOCALE = 'ro_RO.utf8';
   const TIMEZONE = 'Europe/Bucharest';
   const DATE_FORMAT = 'd MMMM yyyy HH:mm:ss';

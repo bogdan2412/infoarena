@@ -45,7 +45,7 @@ class Base extends Model {
     }
 
     switch ($action) {
-      case self::ACTION_SELECT: return $clause->find_one();
+      case self::ACTION_SELECT: return $clause->find_one() ?: null;
       case self::ACTION_SELECT_ALL: return $clause->find_many();
       case self::ACTION_DELETE_ALL:
         $objects = $clause->find_many();

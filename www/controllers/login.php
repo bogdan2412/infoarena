@@ -7,43 +7,27 @@ function controller_login() {
     Util::redirectToHome();
   }
 
-  // `data` dictionary is a dictionary with data to be displayed by form view
-  // when displaying the form for the first time, this is filled with
-  $data = array();
+  $username = Request::get('username');
+  $password = Request::get('password');
+  $remember = Request::has('remember');
   $referrer = Util::getReferrer();
 
-  $errors = '';
+  if (request::isPost()) {
+    $user = User::getByUsernamePlainPassword($username, $password);
 
-  // process input?
-  $submit = request_is_post();
-
-  if ($submit) {
-    // Validate data here and place stuff in errors.
-    $data['username'] = getattr($_POST, 'username');
-    $data['password'] = getattr($_POST, 'password');
-    $data['remember'] = getattr($_POST, 'remember');
-    $user = user_test_password($data['username'], $data['password']);
-
-    if (!$user) {
-      $errors = 'Numele de utilizator inexistent sau parola ' .
-        'incorectă. Încearcă din nou.';
-    }
-
-    // process
-    if (!$errors) {
-      $user = User::get_by_id($user['id']);
-      $remember = ($data['remember'] ? true : false);
+    if ($user) {
       Session::login($user, $remember, $referrer);
     } else {
-      FlashMessage::addError($errors);
+      FlashMessage::addError(
+        'Nume de utilizator inexistent sau parolă incorectă. Încearcă din nou.');
     }
   }
 
   Smart::assign([
     'referrer' => $referrer,
-    'remember' => $data['remember'] ?? false,
+    'remember' => $remember,
     'showSidebarLogin' => false,
-    'username' => $data['username'] ?? '',
+    'username' => $username,
   ]);
   Smart::display('auth/login.tpl');
 }

@@ -9,6 +9,11 @@ class User extends Base {
     return $user->id ?? 0;
   }
 
+  static function getByUsernamePlainPassword(string $username, string $password): ?User {
+    $hash = user_hash_password($password, $username);
+    return User::get_by_username_password($username, $hash);
+  }
+
   static function getAccountUrl(): string {
     return url_account();
   }
