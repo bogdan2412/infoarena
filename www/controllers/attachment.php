@@ -1,11 +1,11 @@
 <?php
 
-require_once(Config::ROOT."www/format/pager.php");
-require_once(Config::ROOT."common/db/textblock.php");
-require_once(Config::ROOT."common/db/attachment.php");
-require_once(Config::ROOT.'www/controllers/zip_attachment.php');
-require_once(Config::ROOT."lib/third-party/zipfile.php");
-require_once(Config::ROOT."common/avatar.php");
+require_once __DIR__ . '/../format/pager.php';
+require_once __DIR__ . '/../../common/db/textblock.php';
+require_once __DIR__ . '/../../common/db/attachment.php';
+require_once __DIR__ . '/zip_attachment.php';
+require_once __DIR__ . '/../../lib/third-party/zipfile.php';
+require_once __DIR__ . '/../../common/avatar.php';
 
 // Try to get the textblock model for a certain page.
 function try_textblock_get($page_name) {

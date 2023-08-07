@@ -1,11 +1,11 @@
 <?php
 
-require_once(Config::ROOT."common/db/user.php");
-require_once(Config::ROOT."common/db/attachment.php");
-require_once(Config::ROOT."common/avatar.php");
-require_once(Config::ROOT."www/controllers/account_validator.php");
-require_once(Config::ROOT."www/config.php");
-require_once(Config::ROOT."common/avatar.php");
+require_once __DIR__ . '/../../common/db/user.php';
+require_once __DIR__ . '/../../common/db/attachment.php';
+require_once __DIR__ . '/../../common/avatar.php';
+require_once __DIR__ . '/account_validator.php';
+require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/../../common/avatar.php';
 
 // Controller to update user profile
 // $username is the name of the user to edit.
@@ -57,7 +57,7 @@ function controller_account($username = null) {
     $errors = validate_profile_data($data, $user);
 
     // validate tag data
-    $data['tags'] = request('tags', tag_build_list("user", $user->id, 'tag'));
+    $data['tags'] = request('tags', tag_build_list('user', $user->id, 'tag'));
     tag_validate($data, $errors);
 
     // validate avatar
@@ -133,13 +133,13 @@ function controller_account($username = null) {
 
       // update tags info
       if (Identity::mayTagUser()) {
-        tag_update("user", $new_user['id'], "tag", $data['tags']);
+        tag_update('user', $new_user['id'], 'tag', $data['tags']);
       }
-      $data['tags'] = tag_build_list("user", $new_user['id'], "tag");
+      $data['tags'] = tag_build_list('user', $new_user['id'], 'tag');
 
       // done. redirect to same page so user has a strong confirmation
       // of data being saved
-      FlashMessage::addSuccess("Am salvat modificările.");
+      FlashMessage::addSuccess('Am salvat modificările.');
       Util::redirectToSelf();
     } else {
       FlashMessage::addError('Am întâlnit probleme. Verifică datele introduse.');
@@ -147,7 +147,7 @@ function controller_account($username = null) {
   } else {
     // form is displayed for the first time. Fill in default values
     $data = $user->as_array();
-    $data['tags'] = tag_build_list("user", $user->id, "tag");
+    $data['tags'] = tag_build_list('user', $user->id, 'tag');
 
     // unset some fields we do not want $data to carry
     unset($data['id']);

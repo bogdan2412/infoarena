@@ -1,9 +1,10 @@
 <?php
-require_once(Config::ROOT."common/round.php");
-require_once(Config::ROOT."www/format/form.php");
-require_once(Config::ROOT."www/views/round_edit_header.php");
-require_once(Config::ROOT."www/macros/macro_tasks.php");
-require_once 'header.php';
+
+require_once __DIR__ . '/../../common/round.php';
+require_once __DIR__ . '/../format/form.php';
+require_once __DIR__ . '/round_edit_header.php';
+require_once __DIR__ . '/..//macros/macro_tasks.php';
+require_once __DIR__ . '/header.php';
 
 echo round_edit_tabs($view['round_id'], 'round-edit-task-order');
 ?>
@@ -12,27 +13,27 @@ echo round_edit_tabs($view['round_id'], 'round-edit-task-order');
     function do_post() {
         var formElem = document.task_order_form;
 
-        var tables = formElem.getElementsByTagName("table");
+        var tables = formElem.getElementsByTagName('table');
         if (tables.length == 0) {
             formElem.submit();
         }
         var table = tables[0];
 
-        var tbodies = table.getElementsByTagName("tbody");
+        var tbodies = table.getElementsByTagName('tbody');
         if (tbodies.length == 0) {
             formElem.submit();
         }
         var tbody = tbodies[0];
 
-        var rows = tbody.getElementsByTagName("tr");
+        var rows = tbody.getElementsByTagName('tr');
         if (rows.length == 0) {
             formElem.submit();
         }
 
-        var order_id_list = "";
+        var order_id_list = '';
         for (var i = 0; i < rows.length; ++i) {
             var td = rows[i].childNodes[0];
-            order_id_list += (i > 0 ? ";" : "") + td.innerHTML;
+            order_id_list += (i > 0 ? ';' : '') + td.innerHTML;
         }
 
         formElem.task_order.value = order_id_list;

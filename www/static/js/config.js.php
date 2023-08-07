@@ -1,6 +1,6 @@
 <?php
 header("Content-Type: text/javascript\n\n");
-require("../../../Config.php");
+require_once __DIR__ . '/../../../Config.php';
 ?>
 
 BASE_HREF = '<?= Config::URL_PREFIX ?>';
