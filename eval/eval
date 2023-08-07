@@ -21,6 +21,8 @@ require_once(Config::ROOT.'eval/Exceptions.php');
 require_once(Config::ROOT.'eval/ClassicGrader.php');
 require_once(Config::ROOT.'eval/InteractiveGrader.php');
 
+require_once __DIR__ . '/../lib/Core.php';
+
 error_reporting(0xFFFF);
 
 // Send job result.
