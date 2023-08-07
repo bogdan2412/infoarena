@@ -3,7 +3,6 @@
 
 require_once __DIR__ . '/../Config.php';
 require_once __DIR__ . '/../www/config.php';
-require_once __DIR__ . '/../www/identity.php';
 require_once __DIR__ . '/utilities.php';
 require_once __DIR__ . '/../common/attachment.php';
 require_once __DIR__ . '/../common/db/attachment.php';

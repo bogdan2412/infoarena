@@ -73,4 +73,23 @@ class Textblock extends Base {
       (Identity::isHelper() && ($this->security == 'public'));
   }
 
+  function isViewable(): bool {
+    if ($this->belongsToUser()) {
+      return true;
+    }
+
+    if ($this->belongsToTask()) {
+      $task = $this->getTask();
+      return $task && $task->isViewable();
+    }
+
+    if ($this->belongsToRound()) {
+      return true;
+    }
+
+    return
+      ($this->security != 'private') ||
+      Identity::isAdmin();
+  }
+
 }

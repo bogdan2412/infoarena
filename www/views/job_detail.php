@@ -28,7 +28,7 @@
   <tr>
     <th class="round-id">Rundă</th>
     <td class="round-id">
-      <?= format_link(url_textblock($round->page_name), $round->title) ?></td>
+      <?= format_link(url_textblock($round->page_name ?? ''), $round->title ?? '') ?></td>
     <th class="compiler-id">Compilator</th>
     <td class="compiler-id">
       <?= html_escape($job->compiler_id) ?>

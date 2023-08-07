@@ -14,9 +14,6 @@ require_once '../lib/Core.php';
 
 db_connect();
 
-// restore identity (if such a session exists)
-identity_restore();
-
 // Do url validation.
 // All urls that pass are valid, they can be missing wiki pages.
 $page = request('page');

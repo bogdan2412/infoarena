@@ -11,9 +11,9 @@ class TestIPView extends FunctionalTest {
     $this->testNormalCannotViewAttachmentIP();
     $this->testNormalCannotViewJobIP();
 
-    $this->testInternCanViewTextblockIP();
-    $this->testInternCanViewAttachmentIP();
-    $this->testInternCanViewJobIP();
+    $this->testHelperCanViewTextblockIP();
+    $this->testHelperCanViewAttachmentIP();
+    $this->testHelperCanViewJobIP();
   }
 
   private function testAnonCannotViewTextblockIP(): void {
@@ -48,18 +48,18 @@ class TestIPView extends FunctionalTest {
     $this->assertNoText('42.42.42.42');
   }
 
-  private function testInternCanViewTextblockIP(): void {
-    $this->login('intern', '1234');
+  private function testHelperCanViewTextblockIP(): void {
+    $this->login('helper', '1234');
     $this->visitTextblockHistoryPage('page-protected');
     $this->assertTableCellText('table.alternating-colors', 1, 5, '42.42.42.42');
   }
 
-  private function testInternCanViewAttachmentIP(): void {
+  private function testHelperCanViewAttachmentIP(): void {
     $this->visitAttachmentList('page-protected');
     $this->assertTableCellText('table.alternating-colors', 1, 7, '42.42.42.42');
   }
 
-  private function testInternCanViewJobIP(): void {
+  private function testHelperCanViewJobIP(): void {
     $this->visitJobPage(1);
     $this->assertTableCellText('table.job', 4, 4, '42.42.42.42');
   }

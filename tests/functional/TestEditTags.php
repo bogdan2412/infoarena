@@ -5,7 +5,7 @@ class TestEditTags extends FunctionalTest {
   function run(): void {
     $this->testAnonCannotEditTags();
     $this->testHelperCannotEditTags();
-    $this->internAddCategoryAndTags();
+    $this->adminAddCategoryAndTags();
     $this->verifyCategoryAndTags();
     $this->deleteCategoryAndTags();
     $this->verifyNoCategoryOrTags();
@@ -23,8 +23,8 @@ class TestEditTags extends FunctionalTest {
     $this->assertPermissionError();
   }
 
-  private function internAddCategoryAndTags(): void {
-    $this->login('intern', '1234');
+  private function adminAddCategoryAndTags(): void {
+    $this->login('admin', '1234');
     $this->visitTagManagerPage();
 
     $this->clickLinkByText('Adaugă categorie nouă');

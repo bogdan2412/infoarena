@@ -12,7 +12,6 @@ if (!Config::DEVELOPMENT_MODE || !Config::TESTING_MODE) {
 require_once __DIR__ . '/../common/db/score.php';
 require_once __DIR__ . '/../common/round.php';
 require_once __DIR__ . '/../www/config.php';
-require_once __DIR__ . '/../www/identity.php';
 require_once __DIR__ . '/../lib/Core.php';
 
 DB::dropAndRecreateTestDatabase();

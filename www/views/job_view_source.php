@@ -28,7 +28,7 @@ require_once 'header.php';
   <tr>
     <th class="round-id">Rundă</th>
     <td class="round-id" colspan="<?= $job->isSourceViewable() ? 1 : 3 ?>">
-      <?= format_link(url_textblock($round->page_name), $round->title) ?></td>
+      <?= format_link(url_textblock($round->page_name ?? ''), $round->title ?? '') ?></td>
 
     <th class="size">Mărime</th>
     <td class="size"><?= $job->getSizeString() ?></td>

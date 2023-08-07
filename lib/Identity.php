@@ -128,6 +128,12 @@ class Identity {
     self::enforce(self::mayCreateTask());
   }
 
+  static function mayCreateTextblock(): bool {
+    return
+      self::isAdmin() ||
+      self::isHelper();
+  }
+
   static function mayDeleteRevision(): bool {
     return self::isAdmin();
   }
@@ -196,7 +202,9 @@ class Identity {
 
   static function mayEditTextblockReversibly(array $textblock): bool {
     $tb = Textblock::get_by_name($textblock['name']);
-    return $tb->isEditableReversibly();
+    return $tb
+      ? $tb->isEditableReversibly()
+      : self::mayCreateTextblock();
   }
 
   static function enforceEditTextblockReversibly(array $textblock): void {
@@ -366,9 +374,8 @@ class Identity {
   }
 
   static function mayViewTextblock(array $textblock): bool {
-    return
-      ($textblock['security'] != 'private') ||
-      Identity::isAdmin();
+    $tb = Textblock::get_by_name($textblock['name']);
+    return $tb && $tb->isViewable();
   }
 
   static function enforceViewTextblock(array $textblock): void {

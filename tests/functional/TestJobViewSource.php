@@ -3,50 +3,42 @@
 class TestJobViewSource extends FunctionalTest {
 
   function run(): void {
-    $this->testAnonViewOpen();
+    $this->testAnonViewNothing();
     $this->changeTaskSourceAccess('Nu');
-    $this->testAnonViewClosed();
+    $this->testAnonViewNothing();
     $this->testNormalViewClosed();
     $this->testHelperViewClosed();
     $this->changeTaskSourceAccess('Da');
   }
 
-  private function testAnonViewOpen(): void {
+  private function testAnonViewNothing(): void {
     $this->ensureLoggedOut();
-    $this->assertSourceVisible(1, 's1.cpp');
-    $this->assertSourceRequiresLogin(2);
-    $this->assertSourceVisible(3, 's1.cpp');
-    $this->assertSourceVisible(4, 's1.cpp');
-    $this->assertSourceVisible(5, 's2.cpp');
-    $this->assertSourceVisible(6, 's3.c');
-    $this->assertSourceVisible(7, 's4.c');
-  }
 
-  private function testAnonViewClosed(): void {
-    $this->ensureLoggedOut();
-    $this->assertSourceRequiresLogin(1);
-    $this->assertSourceRequiresLogin(5);
+    // They are all part of an upcoming round.
+    for ($i = 1; $i <= 7; $i++) {
+      $this->assertSourceRequiresLogin($i);
+    }
   }
 
   private function testNormalViewClosed(): void {
     $this->login('normal', '1234');
     $this->assertSourcePermissionError(1);
     $this->assertSourcePermissionError(2);
-    $this->assertSourceNotVisible(3);
-    $this->assertSourceNotVisible(4);
-    $this->assertSourceNotVisible(5);
-    $this->assertSourceNotVisible(6);
+    $this->assertSourcePermissionError(3);
+    $this->assertSourcePermissionError(4);
+    $this->assertSourcePermissionError(5);
+    $this->assertSourcePermissionError(6);
     $this->assertSourceVisible(7, 's4.c');
   }
 
   private function testHelperViewClosed(): void {
-    $this->login('normal', '1234');
+    $this->login('helper', '1234');
     $this->assertSourcePermissionError(1);
     $this->assertSourceNotVisible(2);
     $this->assertSourceNotVisible(3);
     $this->assertSourceNotVisible(4);
     $this->assertSourceNotVisible(5);
-    $this->assertSourceNotVisible(6, 's3.c');
+    $this->assertSourceVisible(6, 's3.c');
     $this->assertSourceNotVisible(7);
   }
 

@@ -6,7 +6,6 @@
 
 require_once(__DIR__ . '/../Config.php');
 require_once(__DIR__ . '/../www/config.php');
-require_once(__DIR__ . '/../www/identity.php');
 require_once(Config::ROOT . 'common/db/db.php');
 require_once(Config::ROOT . 'common/db/task.php');
 require_once(Config::ROOT . 'common/log.php');

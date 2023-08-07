@@ -17,7 +17,7 @@ class Job extends Base {
   }
 
   function getSizeString(): string {
-    $len = strlen($this->file_contents);
+    $len = strlen($this->file_contents ?? '');
     return sprintf('%.2f kb', $len / 1024);
   }
 

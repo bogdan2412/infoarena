@@ -1,8 +1,8 @@
 <?php
 
 require_once __DIR__ . '/../Config.php';
+require_once __DIR__ . '/../common/db/round.php';
 require_once __DIR__ . '/../common/log.php';
-require_once __DIR__ . '/../www/identity.php';
 require_once __DIR__ . '/../www/url.php';
 require_once __DIR__ . '/../lib/Core.php';
 require_once __DIR__ . '/vendor/autoload.php';
@@ -525,12 +525,12 @@ abstract class FunctionalTest {
 
   protected function assertLoginRequired(): void {
     $this->assertOnLoginPage();
-    $this->assertTextExists('Mai întâi trebuie să te autentifici.');
+    $this->assertTextExists('Pentru această operație este nevoie să te autentifici.');
   }
 
   protected function assertPermissionError(): void {
     $this->assertOnHomePage();
-    $this->assertTextExists('Nu ai permisiuni suficiente pentru a executa această acțiune!');
+    $this->assertTextExists('Nu ai permisiunea să faci această operație.');
   }
 
   abstract function run(): void;

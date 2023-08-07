@@ -1,0 +1,3 @@
+template/force-view-source-page
+
+This is the fource-view-source-page template.
