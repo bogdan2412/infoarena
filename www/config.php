@@ -34,11 +34,6 @@ define('IA_PAGER_MAX_DISPLAY_ENTRIES', 250);
 define('IA_PAGER_MIN_DISPLAY_ENTRIES', 3);
 $IA_PAGER_DISPLAY_ENTRIES_OPTIONS = array(25, 50, 100, 250);
 
-// User date formatting.
-// Everything in the database is UTC.
-// Date formatting for the user is done in www/format/format.php
-define('IA_DATE_DEFAULT_FORMAT', 'd MMMM yyyy HH:mm:ss');
-
 // Cache directory
 define('IA_IMAGE_CACHE_ENABLE', true);
 define('IA_TEXTILE_CACHE_ENABLE', true);

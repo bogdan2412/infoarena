@@ -281,7 +281,7 @@ function format_date($date, $format = null) {
     }
 
     if (is_null($format)) {
-        $format = IA_DATE_DEFAULT_FORMAT;
+        $format = Config::DATE_FORMAT;
     }
 
     $timeZone = new DateTimeZone(Config::TIMEZONE);
