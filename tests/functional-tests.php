@@ -159,6 +159,15 @@ abstract class FunctionalTest {
     return $this->getElement(WebDriverBy::cssSelector($cssSelector));
   }
 
+  protected function getElementsByCss(string $cssSelector): array {
+    return $this->getElements(WebDriverBy::cssSelector($cssSelector));
+  }
+
+  protected function countElementsByCss(string $cssSelector): int {
+    $elems = $this->getElementsByCss($cssSelector);
+    return count($elems);
+  }
+
   protected function getElementByXpath(string $xpath): RemoteWebElement {
     return $this->getElement(WebDriverBy::xpath($xpath));
   }
