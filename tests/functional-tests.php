@@ -238,6 +238,10 @@ abstract class FunctionalTest {
     $this->driver->get(Config::URL_HOST . url_round_edit($roundId));
   }
 
+  protected function visitSubmitPage(): void {
+    $this->driver->get(Config::URL_HOST . url_submit());
+  }
+
   protected function visitTagManagerPage(): void {
     $this->driver->get(Config::URL_HOST . url_task_tags());
   }
