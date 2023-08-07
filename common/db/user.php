@@ -4,27 +4,6 @@ require_once(Config::ROOT."common/db/db.php");
 require_once(Config::ROOT."common/user.php");
 //require_once(Config::ROOT."common/db/tags.php");
 
-// Test password in IA1 format.
-function user_test_ia1_password($username, $password)
-{
-  // old ia1 users are expected to have the ia1 hashed password
-  // as their actual password
-
-  // The password() function was removed in MySQL 8.0. Use the workaround
-  // described at https://stackoverflow.com/a/60243956/6022817
-  $query = "select concat('*', upper(sha1(unhex(sha1('%s')))))";
-  $password = db_query_value(sprintf($query, db_escape($password)));
-  // hash password ia2 style
-  $password = user_hash_password($password, $username);
-  // test
-  $query = sprintf("SELECT *
-                      FROM ia_user
-                      WHERE username = '%s' AND '%s' = `password`",
-                   db_escape($username), db_escape($password));
-
-  return db_fetch($query);
-}
-
 // Check user's password.
 // Returns user struct or null if user/passwrd is wrong.
 function user_test_password($username, $password)

@@ -356,18 +356,21 @@ abstract class FunctionalTest {
     }
   }
 
-  protected function login(string $username, string $password) {
+  protected function fillLoginForm(string $username, string $password): void {
+    $this->ensureLoggedOut();
+    $this->getElementByCss('#form_username')->sendKeys($username);
+    $this->getElementByCss('#form_password')->sendKeys($password);
+    $this->getElementByCss('#form_submit')->click();
+  }
+
+  protected function login(string $username, string $password): void {
     $this->ensureOnSite();
     $identity = $this->getIdentityUsername();
     if ($identity == $username) {
       return; // already logged in
     }
 
-    $this->ensureLoggedOut();
-    $this->getElementByCss('#form_username')->sendKeys($username);
-    $this->getElementByCss('#form_password')->sendKeys($password);
-    $this->getElementByCss('#form_submit')->click();
-
+    $this->fillLoginForm($username, $password);
     $this->assertLoggedInAs($username);
   }
 

@@ -92,6 +92,14 @@ class Session {
     Util::redirectToHome();
   }
 
+  static function cleanupAndRedirectBannedUser(User $user): void {
+    Cookie::delete_all_by_userId($user->id);
+    self::unsetLoginCookie();
+    self::unsetVar('userId');
+    FlashMessage::addError('Contul tău este blocat. Dacă nu știm noi de ce, știi tu.');
+    Util::redirectToHome();
+  }
+
   static function get(string $name, mixed $default = null) {
     return $_SESSION[$name] ?? $default;
   }

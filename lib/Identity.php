@@ -9,7 +9,10 @@ class Identity {
    */
   static function set(int $userId): bool {
     $u = User::get_by_id($userId);
-    if ($u) {
+
+    if ($u && $u->banned) {
+      Session::cleanupAndRedirectBannedUser($u);
+    } else if ($u) {
       self::$user = $u;
       return true;
     } else {
@@ -54,10 +57,6 @@ class Identity {
     return ($realLevel == $level);
   }
 
-  static function isBanned(): bool {
-    return self::$user->banned ?? false;
-  }
-
   static function requireLogin(): void {
     if (self::isAnonymous()) {
       Util::redirectToLogin();
@@ -65,10 +64,7 @@ class Identity {
   }
 
   static function enforce(bool $hasPrivilege): void {
-    if (self::isBanned()) {
-      FlashMessage::addError('Contul tău este blocat. Dacă nu știm noi de ce, știi tu.');
-      Util::redirectToHome();
-    } else if ($hasPrivilege) {
+    if ($hasPrivilege) {
       return;
     } else if (!self::isLoggedIn()) {
       Util::redirectToLogin();
