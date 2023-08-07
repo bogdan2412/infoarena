@@ -87,7 +87,7 @@ ia_template_header();
         <li><a href="<?= html_escape(url_textblock('concursuri')) ?>">Concursuri</a></li>
         <li><a href="<?= html_escape(url_textblock('concursuri-virtuale')) ?>">Concursuri virtuale</a></li>
         <li><a href="<?= html_escape(url_textblock('clasament-rating')) ?>">Clasament</a></li>
-		<li><?= format_link_access(url_monitor(array('user' => Identity::getUsername())), "Monitorul de evaluare", 'm') ?></li>
+		    <li><a href="<?= User::getCurrentUserMonitorUrl(); ?>">Monitorul de evaluare</a></li>
         <li class="separator"><hr></li>
         <li><a href="<?= url_task_search([]) ?>">Categorii probleme</a></li>
 
