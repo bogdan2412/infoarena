@@ -284,7 +284,7 @@ function format_date($date, $format = null) {
         $format = IA_DATE_DEFAULT_FORMAT;
     }
 
-    $timeZone = new DateTimeZone(IA_DATE_DEFAULT_TIMEZONE);
+    $timeZone = new DateTimeZone(Config::TIMEZONE);
     $dt = new DateTime('@' . $timestamp);
     $dt->setTimeZone($timeZone);
     $res = IntlDateFormatter::formatObject($dt, $format, 'ro_RO.utf8');

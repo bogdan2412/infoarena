@@ -37,7 +37,6 @@ $IA_PAGER_DISPLAY_ENTRIES_OPTIONS = array(25, 50, 100, 250);
 // User date formatting.
 // Everything in the database is UTC.
 // Date formatting for the user is done in www/format/format.php
-define('IA_DATE_DEFAULT_TIMEZONE', 'Europe/Bucharest');
 define('IA_DATE_DEFAULT_FORMAT', 'd MMMM yyyy HH:mm:ss');
 
 // Cache directory

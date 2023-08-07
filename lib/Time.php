@@ -9,7 +9,7 @@ class Time {
       Config::LOCALE,
       IntlDateFormatter::NONE,
       IntlDateFormatter::NONE,
-      IA_DATE_DEFAULT_TIMEZONE,
+      Config::TIMEZONE,
       null,
       'd MMM yyyy HH:mm:ss'
     );
@@ -21,7 +21,7 @@ class Time {
   }
 
   static function mysqlLocalToUTC(string $localDateTime): string {
-    $localTZ = new DateTimeZone(IA_DATE_DEFAULT_TIMEZONE);
+    $localTZ = new DateTimeZone(Config::TIMEZONE);
     $d = new DateTime($localDateTime, $localTZ);
     $d->setTimeZone(new DateTimeZone('UTC'));
     return $d->format('Y-m-d H:i:s');
