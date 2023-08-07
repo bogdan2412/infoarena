@@ -7,7 +7,7 @@
 class TestHeaderLinkToHomepage extends FunctionalTest {
 
   function run(): void {
-    $this->driver->get($this->homepageUrl);
+    $this->visitHomePage();
 
     $this->clickLinkByText('Monitorul de evaluare');
 

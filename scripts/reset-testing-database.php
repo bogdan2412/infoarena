@@ -9,6 +9,7 @@ if (!Config::DEVELOPMENT_MODE || !Config::TESTING_MODE) {
   exit;
 }
 
+require_once __DIR__ . '/../common/db/score.php';
 require_once __DIR__ . '/../common/round.php';
 require_once __DIR__ . '/../www/config.php';
 require_once __DIR__ . '/../www/identity.php';
@@ -377,6 +378,10 @@ class DataInjector {
     $j->remote_ip_info = self::IP_ADDRESS;
     $j->save();
     $this->createTests($j);
+
+    if ($status == 'done' && $roundId) {
+      score_update($user['id'], $taskId, $roundId, $score);
+    }
 
     $this->jobCounter++;
   }

@@ -214,6 +214,10 @@ abstract class FunctionalTest {
     $this->driver->get(Config::URL_HOST . url_changes());
   }
 
+  protected function visitHomePage(): void {
+    $this->driver->get($this->homepageUrl);
+  }
+
   protected function visitJobPage(int $jobId): void {
     $this->driver->get(Config::URL_HOST . url_job_detail($jobId));
   }
@@ -332,7 +336,7 @@ abstract class FunctionalTest {
   protected function ensureOnSite(): void {
     $url = $this->driver->getCurrentUrl();
     if (!Str::startsWith($url, $this->homepageUrl)) {
-      $this->driver->get($this->homepageUrl);
+      $this->visitHomePage();
     }
   }
 
