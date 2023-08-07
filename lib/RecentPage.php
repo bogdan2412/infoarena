@@ -30,7 +30,7 @@ class RecentPage {
     $this->active = true;
   }
 
-  private static function restoreFromSession(): void {
+  static function restoreFromSession(): void {
     $data = Session::get('recentPages', []);
     foreach ($data as $pair) {
       self::$pages[] = new RecentPage($pair[0], $pair[1], false);
@@ -63,8 +63,6 @@ class RecentPage {
   }
 
   static function addCurrentPage($title): void {
-    self::restoreFromSession();
-
     $url = url_from_args($_GET);
     if (self::isWorthKeeping($url)) {
       $index = self::lookup($url);

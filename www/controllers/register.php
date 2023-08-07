@@ -8,7 +8,7 @@ function controller_register() {
     Util::redirectToHome();
   }
 
-  $submit = Request::isPost()!;
+  $submit = Request::isPost();
 
   // Initialize view parameters.
   // form data goes in data.

@@ -25,6 +25,7 @@ class Core {
     DB::init();
     Session::init();
     FlashMessage::restoreFromSession();
+    RecentPage::restoreFromSession();
     Smart::init();
   }
 
