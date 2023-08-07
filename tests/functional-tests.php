@@ -238,6 +238,10 @@ abstract class FunctionalTest {
     $this->driver->get(Config::URL_HOST . url_round_edit($roundId));
   }
 
+  protected function visitRoundResultsPage(string $roundId): void {
+    $this->driver->get(Config::URL_HOST . url_round($roundId) . '/clasament');
+  }
+
   protected function visitSubmitPage(): void {
     $this->driver->get(Config::URL_HOST . url_submit());
   }
