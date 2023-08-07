@@ -5,7 +5,7 @@ require_once(Config::ROOT."common/db/task.php");
 function controller_reeval() {
   Identity::enforceReevalJobs();
 
-  if (!request_is_post()) {
+  if (!Request::isPost()) {
     FlashMessage::addError('Nu pot ignora joburi printr-un request de tip GET.');
     Util::redirectToReferrer();
   }

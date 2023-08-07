@@ -24,7 +24,7 @@ function controller_penalty_edit() {
     $total_score = total_score_get_by_user_id_and_round_id($user_id, $round_id);
 
     //submit?!
-    $submit = request_is_post();
+    $submit = Request::isPost();
 
     if ($submit) {
         foreach ($scores as $task) {

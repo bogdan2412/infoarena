@@ -79,7 +79,7 @@ function controller_round_details($round_id) {
   // Get tasks. SHIT FUCK DAMN;
   // It seems we can't find out if the user submitted anything at all.
   // Which messes up everything.
-  if (request_is_post()) {
+  if (Request::isPost()) {
     $values['tasks'] = request('tasks', array());
   } else {
     $values['tasks'] = $round_tasks;
@@ -170,7 +170,7 @@ function controller_round_details($round_id) {
   tag_validate($values, $errors);
 
   // If posting with no errors then do the db monkey
-  if (request_is_post() && !$errors) {
+  if (Request::isPost() && !$errors) {
     // Don't forget about security.
     Identity::enforceEditRound($new_round);
     round_update($new_round);
@@ -247,7 +247,7 @@ function controller_round_task_order($round_id) {
   // Security check
   Identity::enforceEditRound($round);
 
-  if (request_is_post()) {
+  if (Request::isPost()) {
     // Request a list of ids with the new task order
     $task_order_strings = explode(';', request('task_order', ''));
 
@@ -319,7 +319,7 @@ function controller_round_create() {
   $values['id'] = strtolower(request('id', ''));
   $values['type'] = request('type', 'user-defined');
 
-  if (request_is_post()) {
+  if (Request::isPost()) {
     if (!is_round_id($values['id'])) {
       $errors['id'] = "Id-ul rundei este invalid";
     } else if (round_get($values['id'])) {
@@ -423,7 +423,7 @@ function controller_round_delete_view($round_id) {
 }
 
 function controller_round_delete($round_id) {
-  if (!request_is_post()) {
+  if (!Request::isPost()) {
     FlashMessage::addError('Runda nu a putut fi ștearsă.');
   }
 

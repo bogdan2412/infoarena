@@ -43,7 +43,7 @@ function controller_textblock_edit($page_name, $security = 'public') {
   $values['creation_timestamp'] = getattr($page, 'creation_timestamp');
   $values['timestamp'] = null;
 
-  if (request_is_post()) {
+  if (Request::isPost()) {
     // Get new page
     $new_page['name'] = $page_name;
     $new_page['text'] = $values['text'];

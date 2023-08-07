@@ -86,7 +86,7 @@ function controller_task_details($task_id) {
   }
 
   // Validate the monkey.
-  if (request_is_post()) {
+  if (Request::isPost()) {
     // Build new task
     $new_task = $task->parisClone();
     foreach ($fields as $field) {
@@ -200,7 +200,7 @@ function controller_task_create() {
   $values['id'] = request('id', '');
   $values['type'] = request('type', 'classic');
 
-  if (request_is_post()) {
+  if (Request::isPost()) {
     if (!is_task_id($values['id'])) {
       $errors['id'] = "ID de task invalid. Nu se permit majuscule!";
     } else if (task_get($values['id'])) {
@@ -241,7 +241,7 @@ function controller_task_create() {
 
 // Deletes a task.
 function controller_task_delete($task_id) {
-  if (!request_is_post()) {
+  if (!Request::isPost()) {
     FlashMessage::addError("Problema nu a putut fi ștearsă.");
     Util::redirectToHome();
   }
@@ -291,7 +291,7 @@ function controller_task_ratings($task_id) {
   $ratings = array();
   $errors = array();
 
-  if (request_is_post()) {
+  if (Request::isPost()) {
     $rating_fields = array('idea', 'theory', 'coding');
 
     foreach ($rating_fields as $rating_field) {
@@ -337,7 +337,7 @@ function controller_task_tag($task_id) {
 
   Identity::enforceEditTaskTags($task);
 
-  if (request_is_post()) {
+  if (Request::isPost()) {
     $algorithm_tags_id = request("algorithm_tags", array());
     $method_tags_id = tag_get_parents($algorithm_tags_id);
     $reportAdminMsg = 'Datele trimise sunt invalide. Raportează această problemă unui admin.';

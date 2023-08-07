@@ -13,7 +13,7 @@ function controller_submit() {
   $values = array();
   $errors = array();
 
-  if (request_is_post()) {
+  if (Request::isPost()) {
     $values = array(
       'task_id' => request('task_id'),
       'compiler_id' => request('compiler_id'),

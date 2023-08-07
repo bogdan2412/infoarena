@@ -44,7 +44,7 @@ function controller_attachment_list($page_name) {
 
 // Create a new attachment to a textblock.
 function controller_attachment_create($page_name) {
-  if (request_is_post()) {
+  if (Request::isPost()) {
     controller_attachment_submit($page_name);
     die();
   }
@@ -310,7 +310,7 @@ function controller_attachment_submit($page_name) {
 
 // Delete an attachment.
 function controller_attachment_delete($page_name, $file_name, $more_files = 0) {
-  if (!request_is_post()) {
+  if (!Request::isPost()) {
     FlashMessage::addError("Atașamentul nu a putut fi șters!");
     redirect(url_attachment_list($page_name));
   }
@@ -367,7 +367,7 @@ function controller_attachment_delete_many($page_name, $arguments) {
 }
 
 function controller_attachment_rename($page_name, $old_name, $new_name) {
-  if (!request_is_post()) {
+  if (!Request::isPost()) {
     FlashMessage::addError("Atașamentul nu a putut fi redenumit!");
     redirect(url_attachment_list($page_name));
   }

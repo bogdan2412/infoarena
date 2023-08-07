@@ -37,7 +37,7 @@ function controller_account($username = null) {
   $data = array();
   $errors = array();
 
-  if (request_is_post()) {
+  if (Request::isPost()) {
     // user submitted profile form. Process it
 
     // get data and validate it

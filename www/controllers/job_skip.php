@@ -3,7 +3,7 @@ require_once(Config::ROOT."common/db/job.php");
 require_once(Config::ROOT."common/db/task.php");
 
 function controller_job_skip() {
-  if (!request_is_post()) {
+  if (!Request::isPost()) {
     FlashMessage::addError('Nu pot ignora joburi printr-un request de tip GET.');
     redirect(url_monitor());
   }

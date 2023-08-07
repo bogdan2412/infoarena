@@ -49,7 +49,7 @@ class RecentPage {
   private static function isWorthKeeping(string $url): bool {
     return
       !preg_match('/\/(json|changes)\//', $url) &&
-      !request_is_post();
+      !Request::isPost();
   }
 
   private static function lookup(string $url): int {

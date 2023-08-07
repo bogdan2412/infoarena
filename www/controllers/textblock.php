@@ -114,7 +114,7 @@ function controller_textblock_diff($page_name) {
 // Restore a certain revision
 // This copies the old revision on top.
 function controller_textblock_restore($page_name, $rev_num) {
-  if (!request_is_post()) {
+  if (!Request::isPost()) {
     FlashMessage::addError("Nu am putut înlocui pagina.");
     redirect(url_textblock($page_name));
   }
@@ -191,7 +191,7 @@ function controller_textblock_history($page_name) {
 
 // Delete a certain textblock.
 function controller_textblock_delete($page_name) {
-  if (!request_is_post()) {
+  if (!Request::isPost()) {
     FlashMessage::addError("Nu am putut șterge pagina.");
     redirect(url_textblock($page_name));
   }
@@ -246,7 +246,7 @@ function controller_textblock_delete_many($textblocks, $redirect) {
 
 // Delete a certain revision
 function controller_textblock_delete_revision($page = null, $rev_num = null) {
-  if (!request_is_post()) {
+  if (!Request::isPost()) {
     FlashMessage::addError("Nu am putut șterge pagina.");
     redirect(url_textblock($page));
   }

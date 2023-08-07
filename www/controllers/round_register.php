@@ -21,7 +21,7 @@ function controller_round_register($round_id) {
 
   $user_is_registered = round_is_registered($round['id'], Identity::getId());
 
-  if (request_is_post()) {
+  if (Request::isPost()) {
     // Toggle user's registration status
     if (!$user_is_registered) {
       round_register_user($round['id'], Identity::getId());

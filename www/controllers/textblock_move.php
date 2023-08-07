@@ -19,7 +19,7 @@ function controller_textblock_move($page_name) {
   $values = array();
   $errors = array();
 
-  if (request_is_post()) {
+  if (Request::isPost()) {
     $values['new_name'] = $new_name = request("new_name", "");
     $new_name = normalize_page_name($new_name);
 

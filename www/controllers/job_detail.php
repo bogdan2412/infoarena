@@ -179,7 +179,7 @@ function controller_job_view_source($job_id) {
     if ($task->open_source
         || $user->id == Identity::getId()
         || Identity::isAdmin()
-        || (request_is_post() && request('force_view_source'))
+        || (Request::isPost() && request('force_view_source'))
         || task_has_force_viewed_source($job->task_id, Identity::getId())
         || task_user_has_solved($job->task_id, Identity::getId())) {
         if (request('force_view_source')) {

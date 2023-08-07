@@ -18,7 +18,7 @@ function controller_penalty() {
     }
 
     // submit?
-    $submit = request_is_post();
+    $submit = Request::isPost();
 
     if ($submit) {
         // 1. validate

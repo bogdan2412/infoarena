@@ -23,7 +23,7 @@ function controller_task_tags() {
 // Create a "method" or "algorithm" tag
 function controller_task_tags_add() {
   Identity::enforceEditTags();
-  if (!request_is_post()) {
+  if (!Request::isPost()) {
     Util::redirectToSelf();
   }
 
@@ -49,7 +49,7 @@ function controller_task_tags_add() {
 // Delete a "method" or "algorithm" tag
 function controller_task_tags_delete() {
   Identity::enforceEditTags();
-  if (!request_is_post()) {
+  if (!Request::isPost()) {
     Util::redirectToSelf();
   }
 
@@ -83,7 +83,7 @@ function controller_task_tags_delete() {
 // Rename a "method" or "algorithm" tag
 function controller_task_tags_rename() {
   Identity::enforceEditTags();
-  if (!request_is_post()) {
+  if (!Request::isPost()) {
     Util::redirectToSelf();
   }
 

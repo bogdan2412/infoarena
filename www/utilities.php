@@ -60,11 +60,6 @@ function request($param, $default = null) {
   return getattr($_REQUEST, $param, $default);
 }
 
-// Returns boolean whether current request method is POST
-function request_is_post() {
-  return ('post' == strtolower(getattr($_SERVER, 'REQUEST_METHOD')));
-}
-
 // Call this function for a http-level redirect.
 // NOTE: this function DOES NOT RETURN.
 //

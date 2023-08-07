@@ -19,7 +19,7 @@ function controller_resetpass() {
   $errors = array();
 
   // submit?
-  $submit = request_is_post();
+  $submit = Request::isPost();
 
   if ($submit) {
     // 1. validate
