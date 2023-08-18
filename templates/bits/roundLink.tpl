@@ -1,5 +1,5 @@
 {if $round}
-  <a href="{$round->page_name}">
+  <a href="{url_round($round->id)}">
     {$round->title}
   </a>
 {/if}

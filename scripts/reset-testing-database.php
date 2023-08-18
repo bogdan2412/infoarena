@@ -161,6 +161,7 @@ class DataInjector {
   private function createTasks(): void {
     $this->createAdminOpenTask();
     $this->createHelperClosedTask();
+    $this->createGroupedTestTask();
   }
 
   private function createAdminOpenTask(): void {
@@ -176,7 +177,7 @@ class DataInjector {
       'open_source' => true,
       'open_tests' => true,
       'test_count' => self::NUM_TEST_CASES,
-      'test_groups' => implode(';', range(1, self::NUM_TEST_CASES)),
+      'test_groups' => '',
       'public_tests' => '1,2',
       'evaluator' => '',
       'use_ok_files' => true,
@@ -202,8 +203,34 @@ class DataInjector {
       'open_source' => false,
       'open_tests' => false,
       'test_count' => self::NUM_TEST_CASES,
-      'test_groups' => implode(';', range(1, self::NUM_TEST_CASES)),
+      'test_groups' => '',
       'public_tests' => '1,2',
+      'evaluator' => '',
+      'use_ok_files' => true,
+      'rating' => 1,
+    ];
+    $params = [
+      'timelimit' => 0.5,
+      'memlimit' => 16384,
+    ];
+    task_create($task, $params);
+  }
+
+  private function createGroupedTestTask(): void {
+    printf("* Creating task task3\n");
+    $task = [
+      'id' => 'task3',
+      'user_id' => $this->admin['id'],
+      'source' => 'ad-hoc',
+      'security' => 'public',
+      'title' => 'Task 3',
+      'page_name' => 'problema/task3',
+      'type' => 'classic',
+      'open_source' => true,
+      'open_tests' => true,
+      'test_count' => self::NUM_TEST_CASES,
+      'test_groups' => '1-2;3-4;5',
+      'public_tests' => '1,3',
       'evaluator' => '',
       'use_ok_files' => true,
       'rating' => 1,
@@ -218,6 +245,7 @@ class DataInjector {
   private function createRounds(): void {
     $this->createArchiveRound();
     $this->createClassicRound();
+    $this->createRunningClassicRound();
     $this->createUserRound();
   }
 
@@ -258,6 +286,26 @@ class DataInjector {
     ];
     round_create($round, $params, $this->admin['id']);
     round_update_task_list('round-classic', [], [ 'task1', 'task2' ]);
+  }
+
+  private function createRunningClassicRound(): void {
+    printf("* Creating running classic round round-running\n");
+    $round = [
+      'id' => 'round-running',
+      'type' => 'classic',
+      'title' => 'round-running',
+      'page_name' => 'runda/round-running',
+      'state' => 'running',
+      'start_time' => $this->daysAgo(1),
+      'public_eval' => 0,
+      'user_id' => $this->admin['id'],
+    ];
+    $params = [
+      'duration' => 48,
+      'rating_update' => true,
+    ];
+    round_create($round, $params, $this->admin['id']);
+    round_update_task_list('round-running', [], [ 'task3' ]);
   }
 
   private function createUserRound(): void {
@@ -350,6 +398,8 @@ class DataInjector {
                      'done', 60, 'Evaluare completă');
     $this->createJob($this->normal, 'task1', 'round-archive', 's4.c',
                      'waiting');
+    $this->createJob($this->normal, 'task3', 'round-running', 's1.cpp',
+                     'done', 70, 'Evaluare completă');
   }
 
   private function createJob(
@@ -372,6 +422,7 @@ class DataInjector {
     $j->status = $status;
     if ($status == 'done') {
       $j->score = $score;
+      $j->eval_log = "This is the compilation log for {$sourceFile}.";
       $j->eval_message = $evalMessage;
     }
     $j->remote_ip_info = self::IP_ADDRESS;
@@ -386,16 +437,23 @@ class DataInjector {
   }
 
   private function createTests(Job $job): void {
-    for ($i = 1; $i <= self::NUM_TEST_CASES; $i++) {
-      $t = Model::factory('JobTest')->create();
-      $t->job_id = $job->id;
-      $t->test_number = $i;
-      $t->test_group = $i;
-      $t->exec_time = 100; // millis
-      $t->mem_used = 500; // kilobytes
-      $t->points = $job->score / self::NUM_TEST_CASES;
-      $t->grader_message = 'Some grader message.';
-      $t->save();
+    $task = $job->getTask();
+    $taskTests = new TaskTests($task);
+    $groups = $taskTests->getGroups();
+    $testNo = 0;
+
+    foreach ($groups as $groupNo => $tests) {
+      foreach ($tests as $ignored) {
+        $t = Model::factory('JobTest')->create();
+        $t->job_id = $job->id;
+        $t->test_number = ++$testNo;
+        $t->test_group = $groupNo;
+        $t->exec_time = 100; // millis
+        $t->mem_used = 500; // kilobytes
+        $t->points = $job->score / self::NUM_TEST_CASES;
+        $t->grader_message = 'Some grader message.';
+        $t->save();
+      }
     }
   }
 

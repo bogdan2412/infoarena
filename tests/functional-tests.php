@@ -410,6 +410,13 @@ abstract class FunctionalTest {
     $this->assert($actualText == $text, $msg);
   }
 
+  protected function assertTableRows(string $css, int $expectedRowCount): void {
+    $actualCount = $this->countElementsByCss($css . ' tbody tr');
+    $msg = sprintf('Expected %d rows in table [%s], found %d.',
+                   $expectedRowCount, $css, $actualCount);
+    $this->assert($actualCount == $expectedRowCount, $msg);
+  }
+
   protected function assertNoElement(string $css): void {
     try {
       $this->getElementByCss($css);

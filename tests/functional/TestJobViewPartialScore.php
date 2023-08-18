@@ -22,14 +22,14 @@ class TestJobViewPartialScore extends FunctionalTest {
   private function testNormalViewPrivate(): void {
     $this->login('normal', '1234');
     $this->visitJobPage(self::HELPER_JOB_ID);
-    $this->assertTableCellText('table.job', 4, 2, 'Ascuns');
+    $this->assertTableCellText('table.job', 4, 2, 'ascuns');
     $this->assertNoText('Timp execuție');
   }
 
   private function testHelperViewPrivate(): void {
     $this->login('helper', '1234');
     $this->visitJobPage(self::HELPER_JOB_ID);
-    $this->assertTableCellText('table.job', 4, 2, 'Ascuns');
+    $this->assertTableCellText('table.job', 4, 2, 'ascuns');
 
     $numRows = $this->countElementsByCss('table.job-eval-tests tbody tr');
     $msg = sprintf('Expected 2 feedback rows, found %d.', $numRows);

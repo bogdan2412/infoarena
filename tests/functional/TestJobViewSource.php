@@ -15,7 +15,7 @@ class TestJobViewSource extends FunctionalTest {
     $this->ensureLoggedOut();
 
     // They are all part of an upcoming round.
-    for ($i = 1; $i <= 7; $i++) {
+    for ($i = 1; $i <= 8; $i++) {
       $this->assertSourceRequiresLogin($i);
     }
   }

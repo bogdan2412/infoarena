@@ -18,9 +18,9 @@ class TestJobViewScore extends FunctionalTest {
     $this->assertTextExists('Evaluare completă: 50 puncte');
     $this->assertTextExists('Evaluare completă: 60 puncte');
     $this->assertNoText('Evaluare completă: 70 puncte');
-    $this->assertScoreOnJobDetailPage(1, 'Ascuns');
+    $this->assertScoreOnJobDetailPage(1, 'ascuns');
     $this->assertScoreOnJobDetailPage(3, '30');
-    $this->assertScoreOnJobDetailPage(7, 'Ascuns');
+    $this->assertScoreOnJobDetailPage(7, 'ascuns');
   }
 
   private function testHelperView(): void {
@@ -29,7 +29,7 @@ class TestJobViewScore extends FunctionalTest {
     $this->visitMonitorPage();
     $this->assertNoText('Evaluare completă: 10 puncte');
     $this->assertTextExists('Evaluare completă: 20 puncte');
-    $this->assertScoreOnJobDetailPage(1, 'Ascuns');
+    $this->assertScoreOnJobDetailPage(1, 'ascuns');
     $this->assertScoreOnJobDetailPage(2, '20');
   }
 

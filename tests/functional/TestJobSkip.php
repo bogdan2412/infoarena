@@ -20,7 +20,7 @@ class TestJobSkip extends FunctionalTest {
 
     $links = $this->getLinksByText('ignoră');
     $msg = sprintf('Expected 7 ignore links, found %d.', count($links));
-    $this->assert(count($links) == 7, $msg);
+    $this->assert(count($links) == 8, $msg);
 
     $this->getElementByCss('input[value="Ignoră joburile selectate"]');
   }

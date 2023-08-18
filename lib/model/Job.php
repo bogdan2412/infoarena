@@ -2,10 +2,14 @@
 
 class Job extends Base {
 
-  public static $_table = 'ia_job';
+  public static string $_table = 'ia_job';
+  private static ?Round $round = null;
 
   function getRound(): ?Round {
-    return Round::get_by_id($this->round_id) ?: null;
+    if (!$this->round) {
+      $this->round = Round::get_by_id($this->round_id) ?: null;
+    }
+    return $this->round;
   }
 
   function getTask(): ?Task {
@@ -21,14 +25,21 @@ class Job extends Base {
     return sprintf('%.2f kb', $len / 1024);
   }
 
-  function getStatusMessage(): string {
+  function getShortStatusMessage(): string {
     switch ($this->status) {
       case 'skipped': return 'job ignorat';
       case 'waiting': return 'în așteptare';
       case 'processing': return 'în curs de evaluare';
+      case 'done': return 'evaluat';
+      default: return 'necunoscută';
+    }
+  }
+
+  function getStatusMessage(): string {
+    if (!$this->isDone()) {
+      return $this->getShortStatusMessage();
     }
 
-    // 'done'
     $msg = $this->eval_message;
 
     if ($this->isScoreViewable()) {
@@ -38,6 +49,51 @@ class Job extends Base {
     } else {
       return $msg;
     }
+  }
+
+  function isDone(): bool {
+    return $this->status == 'done';
+  }
+
+  function getPenalty(): JobPenalty {
+    $round = $this->getRound();
+    if (!$round || ($round->type != 'penalty-round')) {
+      return new JobPenalty(0, '');
+    }
+
+    $timePenalty = $this->getTimePenalty();
+    $submissionPenalty = $this->getSubmissionPenalty();
+    $total = $timePenalty->add($submissionPenalty);
+    return $total;
+  }
+
+  function getTimePenalty(): JobPenalty {
+    $round = $this->getRound();
+    $params = round_get_parameters($round->id);
+    $roundTime = db_date_parse($round->start_time);
+    $jobTime = db_date_parse($this->submit_time);
+    $decay = $params['decay_period'];
+    $amount = (int)(($jobTime - $roundTime) / $decay);
+
+    if ($amount <= 0) {
+      return new JobPenalty(0, '');
+    }
+
+    $minutes = ($jobTime - $roundTime) / 60;
+    $description = sprintf('%d (pentru %.1f minute)', $amount, $minutes);
+    return new JobPenalty($amount, $description);
+  }
+
+  function getSubmissionPenalty(): JobPenalty {
+    if (!$this->submissions) {
+      return new JobPenalty(0, '');
+    }
+
+    $params = round_get_parameters($this->round_id);
+    $unitCost = $params['submit_cost'];
+    $amount = $this->submissions * $unitCost;
+    $description = sprintf('%d (pentru %d submisie/ii)', $amount, $this->submissions);
+    return new JobPenalty($amount, $description);
   }
 
   function isPartialFeedbackViewable(): bool {

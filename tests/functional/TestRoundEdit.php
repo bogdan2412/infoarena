@@ -76,7 +76,7 @@ class TestRoundEdit extends FunctionalTest {
     $this->changeInput('#form_page_name', 'runda/abc');
     $this->changeInput('#form_start_time', '2023-01-31 12:34:56');
 
-     // remove tasks
+    // remove tasks
     $sel = $this->getSelectByCss('#_dlb2_form_tasks');
     $sel->selectByValue('task1');
     $sel->selectByValue('task2');
@@ -94,7 +94,7 @@ class TestRoundEdit extends FunctionalTest {
     $this->assertInputValue('#form_title', 'abc');
     $this->assertInputValue('#form_page_name', 'runda/abc');
     $this->assertInputValue('#form_start_time', '2023-01-31 12:34:56');
-    $this->assertSelectNumOptions('#_dlb1_form_tasks', 2);
+    $this->assertSelectNumOptions('#_dlb1_form_tasks', 3);
     $this->assertSelectNumOptions('#_dlb2_form_tasks', 0);
     $this->assertSelectVisibleText('#form_public_eval', 'Nu');
     $this->assertInputValue('#form_param_classic_duration', '8');
@@ -106,7 +106,7 @@ class TestRoundEdit extends FunctionalTest {
     $this->changeInput('#form_page_name', $this->origRound->page_name);
     $this->changeInput('#form_start_time', $this->origRound->start_time);
 
-     // readd tasks
+    // re-add tasks
     $sel = $this->getSelectByCss('#_dlb1_form_tasks');
     $sel->selectByValue('task1');
     $sel->selectByValue('task2');

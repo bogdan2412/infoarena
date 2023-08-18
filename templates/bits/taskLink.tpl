@@ -3,7 +3,7 @@
 {elseif !$task->isViewable()}
   ...
 {else}
-  <a href="{$task->page_name}">
+  <a href="{url_task($task->id)}">
     {$task->title}
   </a>
 {/if}
