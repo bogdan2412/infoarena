@@ -245,6 +245,7 @@ class DataInjector {
   private function createRounds(): void {
     $this->createArchiveRound();
     $this->createClassicRound();
+    $this->createPenaltyRound();
     $this->createRunningClassicRound();
     $this->createUserRound();
   }
@@ -286,6 +287,29 @@ class DataInjector {
     ];
     round_create($round, $params, $this->admin['id']);
     round_update_task_list('round-classic', [], [ 'task1', 'task2' ]);
+  }
+
+  private function createPenaltyRound(): void {
+    printf("* Creating penalty round round-penalty\n");
+    $round = [
+      'id' => 'round-penalty',
+      'type' => 'penalty-round',
+      'title' => 'round-penalty',
+      'page_name' => 'runda/round-penalty',
+      'state' => 'running',
+      'start_time' => $this->daysAgo(1),
+      'public_eval' => 1,
+      'user_id' => $this->admin['id'],
+    ];
+    $params = [
+      'duration' => 48,
+      'rating_update' => true,
+      'decay_period' => 7200, // 1% every 2 hours --> 12% for sources sent now.
+      'submit_cost' => 10,
+      'minimum_score' => 75,
+    ];
+    round_create($round, $params, $this->admin['id']);
+    round_update_task_list('round-penalty', [], [ 'task1' ]);
   }
 
   private function createRunningClassicRound(): void {
@@ -400,6 +424,14 @@ class DataInjector {
                      'waiting');
     $this->createJob($this->normal, 'task3', 'round-running', 's1.cpp',
                      'done', 70, 'Evaluare completă');
+    $this->createJob($this->normal, 'task1', 'round-penalty', 's1.cpp',
+                     'done', 80, 'Evaluare completă');
+    $this->createJob($this->normal, 'task1', 'round-penalty', 's1.cpp',
+                     'done', 80, 'Evaluare completă');
+    $this->createJob($this->normal, 'task1', 'round-penalty', 's1.cpp',
+                     'done', 80, 'Evaluare completă');
+    $this->createJob($this->normal, 'task1', 'round-penalty', 's1.cpp',
+                     'done', 80, 'Evaluare completă');
   }
 
   private function createJob(
@@ -425,6 +457,7 @@ class DataInjector {
       $j->eval_log = "This is the compilation log for {$sourceFile}.";
       $j->eval_message = $evalMessage;
     }
+    $j->submissions = Job::countUserRoundTaskSubmissions($user['id'], $roundId, $taskId);
     $j->remote_ip_info = self::IP_ADDRESS;
     $j->save();
     $this->createTests($j);

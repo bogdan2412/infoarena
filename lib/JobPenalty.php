@@ -10,10 +10,20 @@ class JobPenalty {
   }
 
   function add(JobPenalty $other): JobPenalty {
-    $descriptions = [ $this->description, $other->description ];
+    $description = ($this->description && $other->description)
+      ? ($this->description . ' + ' . $other->description)
+      : ($this->description . $other->description);
     return new JobPenalty(
-      $this->total + $other->total,
-      implode(' + ', $descriptions)
+      $this->amount + $other->amount,
+      $description
     );
+  }
+
+  function limit(int $minimumPercentage): void {
+    $amount = 100 - $minimumPercentage;
+    if ($this->amount > $amount) {
+      $this->amount = $amount;
+      $this->description .= ", limitat la {$amount}%";
+    }
   }
 }

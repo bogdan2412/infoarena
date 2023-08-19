@@ -152,10 +152,10 @@
         {if $penalty->amount}
           <tr>
             <td colspan="{$numColumns-1}">
-              Penalizare ({$penalty->description})
+              Penalizare: {$penalty->description}
             </td>
             <td class="number">
-              {$penalty->amount}
+              {$penalty->amount}%
             </td>
           </tr>
         {/if}

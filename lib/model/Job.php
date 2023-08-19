@@ -64,6 +64,9 @@ class Job extends Base {
     $timePenalty = $this->getTimePenalty();
     $submissionPenalty = $this->getSubmissionPenalty();
     $total = $timePenalty->add($submissionPenalty);
+    $params = round_get_parameters($round->id);
+    $total->limit($params['minimum_score']);
+
     return $total;
   }
 
@@ -80,7 +83,7 @@ class Job extends Base {
     }
 
     $minutes = ($jobTime - $roundTime) / 60;
-    $description = sprintf('%d (pentru %.1f minute)', $amount, $minutes);
+    $description = sprintf('%d%% (pentru %.1f minute)', $amount, $minutes);
     return new JobPenalty($amount, $description);
   }
 
@@ -92,7 +95,7 @@ class Job extends Base {
     $params = round_get_parameters($this->round_id);
     $unitCost = $params['submit_cost'];
     $amount = $this->submissions * $unitCost;
-    $description = sprintf('%d (pentru %d submisie/ii)', $amount, $this->submissions);
+    $description = sprintf('%d%% (pentru %d submisie/ii)', $amount, $this->submissions);
     return new JobPenalty($amount, $description);
   }
 
@@ -150,6 +153,15 @@ class Job extends Base {
     }
 
     return false;
+  }
+
+  static function countUserRoundTaskSubmissions(
+    int $userId, string $roundId, string $taskId): int {
+    return Model::factory('Job')
+      ->where('user_id', $userId)
+      ->where('round_id', $roundId)
+      ->where('task_id', $taskId)
+      ->count();
   }
 
 }
