@@ -11,20 +11,21 @@ class TestDescriptorParser {
     return $result;
   }
 
-  static function parseTestGroups(string $descriptor): array {
+  static function parseTestGroups(string $descriptor, int $numTests): array {
     $groups = [];
     $numGroups = 0;
     $parts = explode(';', $descriptor);
     foreach ($parts as $part) {
-      $groups[++$numGroups] = TestDescriptorParser::parseTestGroup($part);
+      $groups[++$numGroups] = TestDescriptorParser::parseTestGroup($part, $numTests);
     }
     return $groups;
   }
 
-  static function parseTestGroup(string $descriptor): array {
+  static function parseTestGroup(string $descriptor, int $numTests): array {
     $result = self::collectInts($descriptor);
     sort($result);
     self::checkUniqueness($result);
+    self::checkRange($result, $numTests);
     return $result;
   }
 
@@ -85,8 +86,20 @@ class TestDescriptorParser {
   private static function checkUniqueness(array $ints) {
     for ($i = 1; $i < count($ints); $i++) {
       if ($ints[$i] == $ints[$i - 1]) {
-        throw new TestDescriptorException("Valoarea $ints[$i] este duplicată.");
+        throw new TestDescriptorException("Valoarea {$ints[$i]} este duplicată.");
       }
+    }
+  }
+
+  private static function checkRange(array $ints, int $numTests) {
+    if ($ints[0] < 1) {
+      throw new TestDescriptorException('Numerele testelor trebuie să fie cel puțin 1.');
+    }
+
+    $last = $ints[count($ints) - 1];
+    if ($last > $numTests) {
+      $msg = sprintf('Testul %d depășește numărul de teste (%d).', $last, $numTests);
+      throw new TestDescriptorException($msg);
     }
   }
 }

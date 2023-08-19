@@ -12,11 +12,11 @@ class TaskTests {
     $this->numTests = $task->test_count;
 
     $this->groups = $task->test_groups
-      ? TestDescriptorParser::parseTestGroups($task->test_groups)
+      ? TestDescriptorParser::parseTestGroups($task->test_groups, $this->numTests)
       : TestDescriptorParser::makeOneToOneMapping($this->numTests);
 
     $this->publicTests = $task->public_tests
-      ? TestDescriptorParser::parseTestGroup($task->public_tests)
+      ? TestDescriptorParser::parseTestGroup($task->public_tests, $this->numTests)
       : [];
 
     $this->computeGroupOfEachTest();
@@ -26,11 +26,6 @@ class TaskTests {
   private function computeGroupOfEachTest(): void {
     foreach ($this->groups as $groupNo => $tests) {
       foreach ($tests as $test) {
-        if (($test < 1) || ($test > $this->numTests)) {
-          $msg = sprintf('Testul %s este în afara intervalului 1-%s.',
-                         $test, $this->numTests);
-          throw new TestDescriptorException($msg);
-        }
         if (isset($this->testGroup[$test])) {
           throw new TestDescriptorException("Testul $test apare în mai multe grupe.");
         }

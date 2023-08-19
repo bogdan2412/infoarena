@@ -159,15 +159,21 @@ function task_validate($task) {
         }
     }
 
-    if (strlen(getattr($task, 'test_groups', '')) > 256) {
-        $errors['test_groups'] = 'Expresia este prea lungă.';
-    } else if (task_get_testgroups($task) === false) {
-        $errors['test_groups'] = 'Eroare de sintaxă în expresie.';
+    $stub = Model::factory('Task')->create();
+    $stub->test_count = $task['test_count'];
+    $stub->test_groups = $task['test_groups'];
+    try {
+      $ignored = new TaskTests($stub);
+    } catch (TestDescriptorException $e) {
+      $errors['test_groups'] = $e->getMessage();
     }
 
-    if (task_parse_test_group($task["public_tests"],
-                              $task["test_count"]) === false) {
-        $errors['public_tests'] = 'Eroare de sintaxă în expresie.';
+    $stub->test_groups = '';
+    $stub->public_tests = $task['public_tests'];
+    try {
+      $ignored = new TaskTests($stub);
+    } catch (TestDescriptorException $e) {
+      $errors['public_tests'] = $e->getMessage();
     }
 
     return $errors;
