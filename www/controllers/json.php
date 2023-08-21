@@ -36,7 +36,6 @@ function controller_json($suburl) {
       $json = array('html' => $output);
       $view = array(
         'json' => $json,
-        'debug' => request('debug', null)
       );
 
       // output JSON
@@ -54,7 +53,6 @@ function controller_json($suburl) {
       $json = task_get_submit_options($task_id);
       $view = array(
         'json' => $json,
-        'debug' => request('debug', null)
       );
 
       // Output JSON
@@ -78,7 +76,7 @@ function controller_json($suburl) {
       job_update($job['id'], 'skipped');
       $view = array(
         'json' => true,
-        'debug' => request('debug', null));
+      );
       execute_view_die('views/json.php', $view);
       break;
 

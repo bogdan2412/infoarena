@@ -5,7 +5,6 @@ require_once(Config::ROOT."common/user.php");
 require_once(Config::ROOT."common/rating.php");
 require_once(Config::ROOT."www/url.php");
 require_once(Config::ROOT."www/utilities.php");
-require_once(Config::ROOT."www/JSON.php");
 
 // Format an array of xml attributes.
 // Return '' or 'k1="v1" k2="v2"'.
@@ -77,8 +76,7 @@ function format_post_link($url, $content, $post_data = array(), $escape = true, 
     log_assert(is_array($attr), '$attr is not an array');
     log_assert(is_array($post_data), '$post_data is not an array');
 
-    $json = new Services_JSON();
-    $link_url = "javascript:PostData(" . $json->encode($url) . ", " . $json->encode($post_data) . ")";
+    $link_url = "javascript:PostData(" . json_encode($url) . ", " . json_encode($post_data) . ")";
 
     if (is_null($accesskey)) {
         $link = format_link($link_url, $content, $escape, $attr);
