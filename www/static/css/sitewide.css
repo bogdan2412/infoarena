@@ -17,7 +17,7 @@ body#infoarena {
   position: relative;
 }
 
-#header h1 a {
+#header a.homepage-link {
   background: url('../images/logo.svg') no-repeat left top;
   display: block;
   height: 60px;

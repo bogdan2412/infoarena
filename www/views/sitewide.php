@@ -35,7 +35,13 @@ require_once(Config::ROOT."www/format/format.php");
         </div>
     <?php } ?>
 
-    <h1><?= format_link(url_home(), Config::SITE_NAME . ' informatică de performanță') ?></h1>
+    <?=
+      format_link(url_home(),
+                  Config::SITE_NAME . ' informatică de performanță',
+                  true,
+                  [ 'class' => 'homepage-link' ]
+      )
+    ?>
 </div>
 <?php
 }

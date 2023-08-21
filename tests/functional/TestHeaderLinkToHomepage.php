@@ -11,7 +11,7 @@ class TestHeaderLinkToHomepage extends FunctionalTest {
 
     $this->clickLinkByText('Monitorul de evaluare');
 
-    $link = $this->getElementByCss('#header h1 a');
+    $link = $this->getElementByCss('#header a.homepage-link');
     $expectedText = Config::SITE_NAME . ' — informatică de performanță';
     $this->assertLinkText($link, $expectedText);
     $this->assertLinkUrl($link, Config::URL_PREFIX);

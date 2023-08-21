@@ -38,9 +38,7 @@
     </div>
   {/if}
 
-  <h1>
-    <a href="{Config::URL_PREFIX}">
-      {Config::SITE_NAME} — informatică de performanță
-    </a>
-  </h1>
+  <a class="homepage-link" href="{Config::URL_PREFIX}">
+    {Config::SITE_NAME} — informatică de performanță
+  </a>
 </div>
