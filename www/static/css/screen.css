@@ -127,10 +127,8 @@ blockquote {
 
 #wikiOps ul {
   background: linear-gradient(#fff, #f4f4f4);
-}
-
-#wikiOps ul {
   float: right;
+  margin-top: 0;
 }
 
 #wikiOps li {
@@ -155,7 +153,8 @@ blockquote {
 /* Sidebar :: Main menu */
 #nav {
   list-style: none;
-  margin-right: 2px;
+  margin: 0;
+  padding: 0;
 }
 
 #nav li {
@@ -364,10 +363,6 @@ div.alert-warning {
   background-color: #fff3cd;
   border-color: #ffe69c;
   color: #664d03;
-}
-
-div.alert li {
-  margin-left: 2em;
 }
 
 /* Forms */
@@ -1157,6 +1152,8 @@ table.form td {
 #task-filter-menu ul {
   list-style: none;
   margin-bottom: 50px;
+  margin-top: 0;
+  padding: 0;
 }
 
 .mainmenu li {
