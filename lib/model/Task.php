@@ -44,7 +44,7 @@ class Task extends Base {
 
   function isViewable(): bool {
     return
-      $this->isPublic() ||
+      !$this->isPrivate() ||
       Identity::ownsTask($this);
   }
 
