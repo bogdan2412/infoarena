@@ -359,6 +359,23 @@ div.flash.flash-error {
   color: white;
 }
 
+div.alert {
+  border: 1px solid white;
+  border-radius: 3px;
+  margin-bottom: 1rem;
+  padding: 1rem;
+}
+
+div.alert-warning {
+  background-color: #fff3cd;
+  border-color: #ffe69c;
+  color: #664d03;
+}
+
+div.alert li {
+  margin-left: 2em;
+}
+
 /* Forms */
 form {
   font-size: 1.05em;

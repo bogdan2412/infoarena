@@ -92,6 +92,8 @@
   {/if}
 
   {if $showScoreTable}
+    {include "bits/jobStaleTests.tpl" errors=$tests->getErrors()}
+
     <table class="job-eval-tests alternating-colors">
       <thead>
         <tr>
