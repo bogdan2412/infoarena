@@ -100,7 +100,7 @@ class Session {
     Util::redirectToHome();
   }
 
-  static function get(string $name, mixed $default = null) {
+  static function get(string $name, $default = null) {
     return $_SESSION[$name] ?? $default;
   }
 
