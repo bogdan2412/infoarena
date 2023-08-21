@@ -25,6 +25,8 @@ function controller_job_view(string $jobId): void {
   $penalty = $job->getPenalty();
   $tests = new JobTaskTests($job, $task);
 
+  showFlashMessagesForTestErrors($tests);
+
   $showScoreTable =
     $job->isDone() &&
     $tests->hasJobTests() &&
@@ -96,6 +98,14 @@ function controller_job_view_source($job_id) {
   }
 
   execute_view_die('views/job_view_source.php', $view);
+}
+
+function showFlashMessagesForTestErrors(JobTaskTests $tests): void {
+  $errors = $tests->getErrors();
+  if (count($errors)) {
+    $args = [ 'errors' => $errors ];
+    FlashMessage::addTemplateWarning('jobStaleTests.tpl', $args);
+  }
 }
 
 function loadJob(string $jobId): Job {

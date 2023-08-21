@@ -1,5 +1,5 @@
 {foreach FlashMessage::getMessages() as $fm}
   <div class="flash flash-{$fm.type}">
-    {$fm.text|escape}
+    {$fm.text}
   </div>
 {/foreach}

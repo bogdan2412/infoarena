@@ -27,6 +27,16 @@ class FlashMessage {
     self::add($message, 'error');
   }
 
+  /**
+   * Adds a more complex message that requires some templating.
+   **/
+  static function addTemplateWarning(string $template, array $args) {
+    // TODO: Instantiate a separate Smarty.
+    Smart::assign($args);
+    $message = Smart::fetch("flash/{$template}");
+    self::addWarning($message);
+  }
+
   static function getMessages(): array {
     return self::$messages;
   }
