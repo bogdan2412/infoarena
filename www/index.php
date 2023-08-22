@@ -286,6 +286,11 @@ else if ($page == 'report/list') {
   controller_report_list();
 }
 
+else if ($urlstart == 'report') {
+  require_once __DIR__ . '/controllers/report.php';
+  controller_report_view($page_id);
+}
+
 // general textblock view
 else if ($action == 'view') {
     require_once Config::ROOT.'www/controllers/textblock.php';

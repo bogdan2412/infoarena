@@ -16,7 +16,11 @@ abstract class Report {
   }
 
   function getLinkName(): string {
-    return get_class($this);
+    $class = get_class($this);
+    $snakeCase = Str::camelCaseToSnakeCase($class);
+    $posOfUnderscore = strpos($snakeCase, '_');
+    $rest = substr($snakeCase, 1 + $posOfUnderscore);
+    return $rest;
   }
 
 }

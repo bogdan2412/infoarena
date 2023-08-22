@@ -18,6 +18,10 @@ class Str {
     return $result;
   }
 
+  static function camelCaseToSnakeCase(string $str): string {
+    return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $str));
+  }
+
   static function isRoundPage(string $pageName): bool {
     return self::startsWith($pageName, Config::ROUND_TEXTBLOCK_PREFIX);
   }
