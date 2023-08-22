@@ -7,6 +7,7 @@ class Core {
   const AUTOLOAD_PATHS = [
     'lib',
     'lib/model',
+    'lib/report',
   ];
 
   static function autoload($className) {

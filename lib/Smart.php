@@ -141,11 +141,16 @@ class Smart {
       ? new RatingBadge($identity->username, $identity->rating_cache)
       : null;
 
+    $numReports = Identity::isAdmin()
+      ? ReportUtil::getCachedTotal()
+      : 0;
+
     self::assign([
       'cssFiles' => $cssFiles,
       'currentYear' => date('Y'),
-      'jsFiles' => $jsFiles,
       'identity' => $identity,
+      'jsFiles' => $jsFiles,
+      'numReports' => $numReports,
       'ratingBadge' => $ratingBadge,
     ]);
     return self::$theSmarty->fetch($templateName);

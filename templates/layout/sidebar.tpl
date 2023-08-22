@@ -63,6 +63,13 @@
           <span class="access-key">A</span>dministrativ
         </a>
       </li>
+
+      {if $numReports}
+        <li>
+          <a href="{Config::URL_PREFIX}report/list">Rapoarte</a>
+          ({$numReports})
+        </li>
+      {/if}
     {/if}
   </ul>
 

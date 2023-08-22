@@ -281,6 +281,11 @@ else if (Config::USER_TEXTBLOCK_PREFIX == $urlstart.'/' &&
     controller_user_view($page_id, $action, request('revision'));
 }
 
+else if ($page == 'report/list') {
+  require_once __DIR__ . '/controllers/report.php';
+  controller_report_list();
+}
+
 // general textblock view
 else if ($action == 'view') {
     require_once Config::ROOT.'www/controllers/textblock.php';
