@@ -1,3 +1,9 @@
+<p>
+  Notă: Legăturile „șterge” șterg runda <span class="text-danger">fără alte
+  confirmări</span>. Dacă runda nu are probleme atașate și surse trimise,
+  probabil este OK să o ștergi.
+</p>
+
 <table>
   <thead>
     <tr>
@@ -31,11 +37,11 @@
           {$round->type}
         </td>
         
-        <td>
+        <td class="number">
           {$round->countTasks()}
         </td>
         
-        <td>
+        <td class="number">
           {$round->countJobs()}
         </td>
         
