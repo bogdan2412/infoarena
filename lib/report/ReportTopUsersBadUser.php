@@ -1,13 +1,13 @@
 <?php
 
-class ReportTopUsersBadTask extends Report {
+class ReportTopUsersBadUser extends Report {
 
   function getDescription(): string {
-    return 'Top - probleme inexistente';
+    return 'Top - utilizatori inexistenți';
   }
 
   function getVariable(): string {
-    return 'Count.topUsersBadTask';
+    return 'Count.topUsersBadUser';
   }
 
   function getTemplateName(): string {
@@ -20,7 +20,7 @@ class ReportTopUsersBadTask extends Report {
 
   function buildQuery(): ORM {
     return Model::factory('ScoreTaskTopUsers')
-      ->where_raw('task_id not in (select id from ia_task)');
+      ->where_raw('user_id not in (select id from ia_user)');
   }
 
   function getLiveCount(): int {
@@ -31,7 +31,7 @@ class ReportTopUsersBadTask extends Report {
   function getTop(): array {
     $query = $this->buildQuery();
     return $query
-      ->order_by_asc('task_id')
+      ->order_by_asc('user_id')
       ->find_many();
   }
 

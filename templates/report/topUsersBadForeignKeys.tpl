@@ -39,7 +39,12 @@
           </td>
           
           <td>
-            {include "bits/userTiny.tpl" user=$entry->getUser()}
+            {$user=$entry->getUser()}
+            {if $user}
+              {include "bits/userTiny.tpl"}
+            {else}
+              #{$entry->user_id}
+            {/if}
           </td>
 
           <td>
@@ -68,5 +73,5 @@
 
   </table>
 {else}
-  Nu există înregistrări de top pentru probleme inexistente.
+  Nu există înregistrări.
 {/if}
