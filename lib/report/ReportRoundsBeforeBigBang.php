@@ -1,17 +1,19 @@
 <?php
 
-class ReportRoundsNullStartTime extends Report {
+class ReportRoundsBeforeBigBang extends Report {
+
+  const BIG_BANG = '2012-09-01';
 
   function getDescription(): string {
-    return 'Runde cu timp de început nul';
+    return 'Runde dinaintea creării site-ului';
   }
 
   function getVariable(): string {
-    return 'Count.roundsNullStartTime';
+    return 'Count.roundsBeforeBigBang';
   }
 
   function getTemplateName(): string {
-    return 'report/roundsNullStartTime.tpl';
+    return 'report/roundsBeforeBigBang.tpl';
   }
 
   function getSupportedActions(): array {
@@ -20,7 +22,8 @@ class ReportRoundsNullStartTime extends Report {
 
   function buildQuery(): ORM {
     return Model::factory('Round')
-      ->where_null('start_time');
+      ->where_not_equal('type', 'archive')
+      ->where_lt('start_time', self::BIG_BANG);
   }
 
   function getLiveCount(): int {

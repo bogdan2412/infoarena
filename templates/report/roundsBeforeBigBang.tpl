@@ -13,7 +13,7 @@
       <th>stare</th>
       <th>probleme</th>
       <th>surse</th>
-      <th>ultima editare</th>
+      <th>data de start</th>
       <th>acțiuni</th>
     </tr>
   </thead>
@@ -29,7 +29,7 @@
             </span>
           {/if}
         </td>
-
+        
         <td>
           {include "bits/userTiny.tpl" user=$round->getUser()}
         </td>
@@ -41,22 +41,17 @@
         <td>
           {$round->state}
         </td>
-
+        
         <td class="number">
           {$round->countTasks()}
         </td>
-
+        
         <td class="number">
           {$round->countJobs()}
         </td>
-
+        
         <td>
-          {$last=$round->getLastEdit()}
-          {if $last}
-            {$last|fullDateTime}
-          {else}
-            necunoscut (pagină lipsă)
-          {/if}
+          {$round->start_time|fullDateTime}
         </td>
 
         <td>
