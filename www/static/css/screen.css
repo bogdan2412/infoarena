@@ -365,6 +365,10 @@ div.alert-warning {
   color: #664d03;
 }
 
+.text-danger {
+  color: #dc3545;
+}
+
 /* Forms */
 form {
   font-size: 1.05em;

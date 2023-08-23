@@ -1,5 +1,5 @@
 {if $round}
-  <a href="{url_round($round->id)}">
+  <a href="{Config::URL_PREFIX}{$round->page_name}">
     {$round->title}
   </a>
 {/if}

@@ -552,8 +552,8 @@ function round_delete($round_id) {
                       db_quote($round_id));
     db_query($query);
 
-    // Delete entries from round-task
-    $query = sprintf("DELETE FROM `ia_round_task`
+    // Delete entries from round-tags
+    $query = sprintf("DELETE FROM `ia_round_tags`
                       WHERE `round_id` = %s",
                       db_quote($round_id));
     db_query($query);

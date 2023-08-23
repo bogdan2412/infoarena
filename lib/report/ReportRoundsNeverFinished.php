@@ -10,6 +10,10 @@ class ReportRoundsNeverFinished extends Report {
     return 'Count.roundsNeverFinished';
   }
 
+  function getTemplateName(): string {
+    return 'report/roundsNeverFinished.tpl';
+  }
+
   function buildQuery(): ORM {
     // Unix_timestamp(datetime) expects datetime to be in the session
     // timezone. On the other hand, ia_round.start_time is UTC. Therefore,

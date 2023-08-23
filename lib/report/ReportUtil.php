@@ -10,7 +10,7 @@ class ReportUtil {
       ->where_like('name', 'Count.%')
       ->find_one();
 
-    return $result->sum;
+    return $result->sum ?? 0;
   }
 
   static function getAll(): array {
@@ -41,6 +41,28 @@ class ReportUtil {
     return array_filter(self::getAll(), function(Report $report): bool {
       return ($report->getCachedCount() > 0);
     });
+  }
+
+  static function getByUrlName(string $urlName): ?Report {
+    $className = self::urlNameToClassName($urlName);
+
+    if (class_exists($className)) {
+      return new $className();
+    } else {
+      return null;
+    }
+  }
+
+  static function classNameToUrlName(string $className): string {
+    $snakeCase = Str::camelCaseToSnakeCase($className);
+    $posOfUnderscore = strpos($snakeCase, '_');
+    $rest = substr($snakeCase, 1 + $posOfUnderscore);
+    return $rest;
+  }
+
+  static function urlNameToClassName(string $urlName): string {
+    $camelCase = Str::snakeCaseToCamelCase($urlName);
+    return 'Report' . $camelCase;
   }
 
 }

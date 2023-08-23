@@ -4,10 +4,11 @@ abstract class Report {
 
   abstract function getDescription(): string;
   abstract function getVariable(): string;
+  abstract function getTemplateName(): string;
   abstract function getLiveCount(): int;
 
   function getCachedCount(): int {
-    return Variable::peek($this->getVariable());
+    return Variable::peek($this->getVariable(), 0);
   }
 
   function updateCount(): void {
@@ -16,11 +17,12 @@ abstract class Report {
   }
 
   function getLinkName(): string {
-    $class = get_class($this);
-    $snakeCase = Str::camelCaseToSnakeCase($class);
-    $posOfUnderscore = strpos($snakeCase, '_');
-    $rest = substr($snakeCase, 1 + $posOfUnderscore);
-    return $rest;
+    $className = get_class($this);
+    return ReportUtil::classNameToUrlName($className);
+  }
+
+  function action(): void {
+    // Children may implement this.
   }
 
 }

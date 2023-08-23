@@ -155,6 +155,12 @@ class Job extends Base {
     return false;
   }
 
+  static function countByRoundId(string $roundId): int {
+    return Model::factory('Job')
+      ->where('round_id', $roundId)
+      ->count();
+  }
+
   static function countUserRoundTaskSubmissions(
     int $userId, string $roundId, string $taskId): int {
     return Model::factory('Job')

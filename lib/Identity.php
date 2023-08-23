@@ -341,6 +341,14 @@ class Identity {
     self::enforce($job->isSourceViewable());
   }
 
+  static function mayViewReports(): bool {
+    return self::isAdmin();
+  }
+
+  static function enforceViewReports(): void {
+    self::enforce(self::mayViewReports());
+  }
+
   static function mayViewRoundProgress(): bool {
     return
       self::isAdmin() ||

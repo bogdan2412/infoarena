@@ -1,7 +1,10 @@
 <?php
 
+require_once __DIR__ . '/../../common/db/round.php';
+
 function controller_report_list(): void {
 
+  Identity::enforceViewReports();
   $reports = ReportUtil::getAllPositive();
 
   RecentPage::addCurrentPage('Rapoarte');
@@ -11,13 +14,23 @@ function controller_report_list(): void {
   Smart::display('report/list.tpl');
 }
 
-function controller_report_view(string $reportName): void {
+function controller_report_view(string $reportUrlName): void {
 
-  // FIXME
+  Identity::enforceViewReports();
+  $report = ReportUtil::getByUrlName($reportUrlName);
 
-  RecentPage::addCurrentPage('Rapoarte');
+  if (!$report) {
+    FlashMessage::addWarning('Raportul cerut nu există.');
+    Util::redirectToHome();
+  }
+
+  if (Request::has('report_action')) {
+    $report->action();
+  }
+
+  RecentPage::addCurrentPage($report->getDescription());
   Smart::assign([
-    'reports' => [],
+    'report' => $report,
   ]);
-  Smart::display('report/list.tpl');
+  Smart::display('report/view.tpl');
 }

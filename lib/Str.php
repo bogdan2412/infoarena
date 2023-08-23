@@ -22,6 +22,13 @@ class Str {
     return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $str));
   }
 
+  static function snakeCaseToCamelCase(string $str): string {
+    $words = str_replace('_', ' ', $str);
+    $capitals = ucwords($words);
+    $camelCase = str_replace(' ', '', $capitals);
+    return $camelCase;
+  }
+
   static function isRoundPage(string $pageName): bool {
     return self::startsWith($pageName, Config::ROUND_TEXTBLOCK_PREFIX);
   }
