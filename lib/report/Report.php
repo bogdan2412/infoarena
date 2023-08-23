@@ -22,6 +22,9 @@ abstract class Report {
     return ReportUtil::classNameToUrlName($className);
   }
 
+  function cleanup(): void {
+  }
+
   function action(): void {
     $action = Request::get('report_action');
 
@@ -31,12 +34,15 @@ abstract class Report {
     }
 
     switch ($action) {
+      case 'cleanup':
+        $this->cleanup();
+        Util::redirectToSelf();
+
       case 'round_delete':
         $roundId = Request::get('round_id');
         Round::deleteById($roundId);
         FlashMessage::addSuccess(sprintf('Am șters runda [%s].', $roundId));
         Util::redirectToSelf();
-        break;
     }
   }
 

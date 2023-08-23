@@ -67,4 +67,3 @@
   </tbody>
 
 </table>
-</ol>

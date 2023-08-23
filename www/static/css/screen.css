@@ -29,6 +29,10 @@ var {
   font-style: normal;
 }
 
+.vspace-1 {
+  margin-bottom: 5px;
+}
+
 /* Misc */
 a.feed {
   background: url(../images/feed-icon.gif) no-repeat center center;
@@ -399,7 +403,7 @@ select {
   cursor: pointer;
 }
 
-input.button, a.button {
+input.button, button.button, a.button {
   background-color: #2097fc;
   border: 0;
   color: white;

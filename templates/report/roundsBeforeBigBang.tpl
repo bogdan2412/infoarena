@@ -29,7 +29,7 @@
             </span>
           {/if}
         </td>
-        
+
         <td>
           {include "bits/userTiny.tpl" user=$round->getUser()}
         </td>
@@ -41,15 +41,15 @@
         <td>
           {$round->state}
         </td>
-        
+
         <td class="number">
           {$round->countTasks()}
         </td>
-        
+
         <td class="number">
           {$round->countJobs()}
         </td>
-        
+
         <td>
           {$round->start_time|fullDateTime}
         </td>
@@ -62,4 +62,3 @@
   </tbody>
 
 </table>
-</ol>
