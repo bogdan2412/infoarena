@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../../common/avatar.php';
+
 class Attachment extends Base {
 
   public static $_table = 'ia_file';
@@ -49,7 +51,7 @@ class Attachment extends Base {
     return Task::get_by_id($taskId) ?: null;
   }
 
-  private function getUser(): ?User {
+  function getUser(): ?User {
     $username = $this->getSubject();
     return User::get_by_username($username) ?: null;
   }
@@ -99,6 +101,23 @@ class Attachment extends Base {
     }
 
     return Identity::isAdmin();
+  }
+
+  static function deleteById($id): void {
+    $att = Attachment::get_by_id($id);
+    if (!$att) {
+      FlashMessage::addError('Fișier inexistent.');
+      Util::redirectToHome();
+    }
+    $att->delete();
+  }
+
+  function delete(): void {
+    attachment_delete_by_id($this->id);
+    if (is_avatar_attachment($this->name, $this->page)) {
+      $matches = get_page_user_name($this->page);
+      avatar_delete($matches[1]);
+    }
   }
 
 }

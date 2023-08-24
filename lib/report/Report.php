@@ -34,6 +34,12 @@ abstract class Report {
     }
 
     switch ($action) {
+      case 'attachment_delete':
+        $attachmentId = Request::get('attachment_id');
+        Attachment::deleteById($attachmentId);
+        FlashMessage::addSuccess('Am șters fișierul.');
+        Util::redirectToSelf();
+
       case 'cleanup':
         $this->cleanup();
         Util::redirectToSelf();
