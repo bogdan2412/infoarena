@@ -5,7 +5,7 @@ class ReportRoundsBeforeBigBang extends Report {
   const BIG_BANG = '2012-09-01';
 
   function getDescription(): string {
-    return 'Runde dinaintea creării site-ului';
+    return 'Runde mai vechi decît site-ul';
   }
 
   function getVariable(): string {

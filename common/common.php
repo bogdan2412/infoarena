@@ -197,6 +197,7 @@ function is_attachment_id($id) {
 // Does not check existence.
 function is_round_id($round_id) {
     return
+        ($round_id !== null) &&
         ($round_id !== '') &&
         preg_match('/^'.IA_RE_ROUND_ID.'$/xi', $round_id) &&
         (strlen($round_id) < 64);
