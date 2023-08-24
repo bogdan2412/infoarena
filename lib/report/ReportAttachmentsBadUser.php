@@ -1,13 +1,13 @@
 <?php
 
-class ReportAttachmentsBadPage extends Report {
+class ReportAttachmentsBadUser extends Report {
 
   function getDescription(): string {
-    return 'Fișiere aparținînd de pagini inexistente';
+    return 'Fișiere create de utilizatori inexistenți';
   }
 
   function getVariable(): string {
-    return 'Count.attachmentsBadPage';
+    return 'Count.attachmentsBadUser';
   }
 
   function getTemplateName(): string {
@@ -22,8 +22,8 @@ class ReportAttachmentsBadPage extends Report {
     return Model::factory('Attachment')
       ->table_alias('a')
       ->select('a.*')
-      ->left_outer_join('ia_textblock', [ 'a.page', '=', 'tb.name' ], 'tb')
-      ->where_null('tb.name');
+      ->left_outer_join('ia_user', [ 'a.user_id', '=', 'u.id' ], 'u')
+      ->where_null('u.id');
   }
 
   function getLiveCount(): int {

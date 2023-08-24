@@ -94,7 +94,9 @@ function avatar_cache_resized($filepath, $image_info, $new_filename) {
 function avatar_delete($username) {
   // $username is lowercased by normalize_page_name(). Get the real one.
   $user = user_get_by_username($username);
-  $username = $user['username'];
+
+  // Fall back to the argument $username. This is useful for orphaned foreign keys.
+  $username = $user['username'] ?? $username;
 
   $resize_folders = array('tiny/', 'small/', 'normal/', 'big/');
 
