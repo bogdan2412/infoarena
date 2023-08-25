@@ -23,10 +23,9 @@ db_query("UPDATE ia_job SET remote_ip_info = NULL");
 db_query("UPDATE ia_textblock SET remote_ip_info = NULL");
 db_query("UPDATE ia_textblock_revision SET remote_ip_info = NULL");
 
-// Delete all attachments except noimage.
+// Delete all attachments.
 log_print("Deleting all attachments.");
-db_query("DELETE FROM ia_file
-          WHERE name <> 'noimage'");
+db_query("DELETE FROM ia_file");
 
 // Delete submissions.
 log_print("Clearing all submissions.");

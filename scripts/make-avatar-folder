@@ -31,9 +31,6 @@ if (read_bool('Do you want to change the template/userinfo textblock?',
 // getting the user list
 $userlist = user_get_list(false);
 
-// taking care of the noimage file
-$noimage_filepath = attachment_get_filepath(attachment_get('noimage',
-                    'template/infoarena'));
 // creating the avatar folder if it does not exists, and grant it permissions
 if (file_exists(Config::AVATAR_DIR) == false) {
     mkdir(Config::AVATAR_DIR, 0777);
@@ -44,10 +41,6 @@ foreach ($size_types as $size) {
         mkdir(Config::AVATAR_DIR . '/' . $size, 0777);
     }
 }
-
-// resizing the noimage file
-$img_info = getimagesize($noimage_filepath);
-avatar_cache_resized($noimage_filepath, $img_info, 'noimage');
 
 // Going through all the users
 foreach ($userlist as $user) {

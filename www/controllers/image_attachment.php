@@ -22,11 +22,7 @@ function controller_attachment_resized_img($page_name, $file_name, $resize) {
   }
   // if image was not found we display a placeholder image
   if (!$found) {
-    $page_name = 'template/infoarena';
-    $file_name = 'noimage';
-    $attach = Attachment::normalizeAndGetByNamePage($file_name, $page_name);
-    log_assert($attach);
-    $real_name = attachment_get_filepath($attach->as_array());
+    $real_name = Config::ROOT . 'www/static/images/user.svg';
   }
   // check permission to download file
   if (!$attach->isViewable()) {
