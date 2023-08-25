@@ -95,7 +95,7 @@ if (array_key_exists('security_level', $form_values)) {
             <?php
                 // display avatar
                 $avatar_url = url_user_avatar($user->username, "big");
-                echo '<img class="avatar" src="'.html_escape($avatar_url).'" alt="avatar">';
+                echo '<img class="avatar avatar-big" src="'.html_escape($avatar_url).'" alt="avatar">';
             ?>
         </li>
         <li>

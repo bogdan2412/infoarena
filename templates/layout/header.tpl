@@ -3,6 +3,7 @@
     <div id="userbox">
       <a href="{User::getProfileUrl($identity->username)}">
         <img
+          class="avatar-normal"
           alt="imagine de profil {$identity->username}"
           src="{User::getAvatarUrl($identity->username, 'normal')}">
       </a>

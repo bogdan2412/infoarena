@@ -148,7 +148,8 @@ function format_user_avatar($user_name, $size_type = "full",
     if ($absolute) {
         $url = url_absolute($url);
     }
-    return format_img($url, $user_name);
+    $attr = [ 'class' => "avatar-{$size_type}" ];
+    return format_img($url, $user_name, $attr );
 }
 
 // Format a tiny link to an user.

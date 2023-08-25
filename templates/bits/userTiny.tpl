@@ -4,6 +4,7 @@
 <span class="tiny-user">
   <a href="{User::getProfileUrl($user->username)}">
     <img
+      class="avatar-tiny"
       alt="avatar {$user->username}"
       src="{User::getAvatarUrl($user->username, 'tiny')}">
     {$user->full_name|escape}

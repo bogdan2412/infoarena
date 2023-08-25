@@ -2,11 +2,7 @@
 
 class ReportFilesWithoutAttachments extends Report {
 
-  const SPECIAL_FILES = [
-    '.',
-    '..',
-    'template_infoarena_noimage_22044',
-  ];
+  const SPECIAL_FILES = [ '.', '..' ];
 
   // Process the attachment in batches to keep the memory footprint small.
   const BATCH_SIZE = 2000;

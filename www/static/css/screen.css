@@ -893,6 +893,26 @@ table.numbers td, table.numbers th {
   vertical-align: middle;
 }
 
+img.avatar-tiny {
+  height: 16px;
+  width: 16px;
+}
+
+img.avatar-small {
+  height: 32px;
+  width: 32px;
+}
+
+img.avatar-normal {
+  height: 50px;
+  width: 50px;
+}
+
+img.avatar-big {
+  height: 150px;
+  width: 150px;
+}
+
 div.normal-user {
   height: 48px;
   line-height: 1.5em;
