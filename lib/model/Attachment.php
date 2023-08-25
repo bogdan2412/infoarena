@@ -4,6 +4,8 @@ require_once __DIR__ . '/../../common/avatar.php';
 
 class Attachment extends Base {
 
+  const AVATAR_SIZES = [ 'tiny', 'small', 'normal', 'big', 'full' ];
+
   public static $_table = 'ia_file';
 
   static function getDirectory(): string {
@@ -54,6 +56,29 @@ class Attachment extends Base {
   function getUser(): ?User {
     $username = $this->getSubject();
     return User::get_by_username($username) ?: null;
+  }
+
+  static function getAvatarDirectories(): array {
+    $results = [];
+    foreach (self::AVATAR_SIZES as $size) {
+      $results[] = Config::AVATAR_DIR . $size . '/';
+    }
+    return $results;
+  }
+
+  function getAvatarFiles(): array {
+    $results = [];
+
+    if ($this->belongsToUser()) {
+      $user = $this->getUser();
+      if ($user) {
+        foreach (self::getAvatarDirectories() as $dir) {
+          $results[] = $dir . 'a' . $user->username;
+        }
+      }
+    }
+
+    return $results;
   }
 
   private function getTextblock(): Textblock {
