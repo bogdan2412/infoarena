@@ -2,6 +2,7 @@
 
 require_once(Config::ROOT."common/db/db.php");
 require_once(Config::ROOT."common/attachment.php");
+require_once(Config::ROOT."common/log.php");
 
 // Get attachment by name
 function attachment_get($name, $page) {
