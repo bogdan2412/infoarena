@@ -21,7 +21,7 @@ class JobTest extends Base {
   function getMemoryUsedMessage(): string {
     return ($this->grader_message == 'Memory limit exceeded.')
       ? 'depășită'
-      : ($this->exec_time . ' kb');
+      : ($this->mem_used . ' kb');
   }
 
 }

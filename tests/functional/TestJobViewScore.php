@@ -39,11 +39,20 @@ class TestJobViewScore extends FunctionalTest {
     $this->visitMonitorPage();
     $this->assertTextExists('Evaluare completă: 10 puncte');
     $this->assertScoreOnJobDetailPage(1, '10');
+    $this->testTimeAndMemory(1);
   }
 
   private function assertScoreOnJobDetailPage(int $jobId, string $expectedScore): void {
     $this->visitJobPage($jobId);
     $this->assertTableCellText('table.job', 4, 2, $expectedScore);
+  }
+
+  private function testTimeAndMemory(int $jobId): void {
+    $this->visitJobPage($jobId);
+    for ($row = 1; $row <= 5; $row++) {
+      $this->assertTableCellText('table.job-eval-tests', $row, 2, '100 ms');
+      $this->assertTableCellText('table.job-eval-tests', $row, 3, '500 kb');
+    }
   }
 
 }
