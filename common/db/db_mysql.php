@@ -35,7 +35,7 @@ function db_connect() {
     if (!mysql_select_db(DB::getDatabaseName(), $dbLink)) {
         log_error('Cannot select database.');
     }
-    mysql_query('SET NAMES utf8');
+    mysql_query('SET NAMES utf8mb4');
     return true;
 }
 

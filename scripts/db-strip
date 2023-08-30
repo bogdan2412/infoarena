@@ -18,10 +18,10 @@ db_query("UPDATE ia_user
 
 // Delete IP information.
 log_print("Clearing IP information.");
-db_query("UPDATE ia_file SET remote_ip_info = NULL");
-db_query("UPDATE ia_job SET remote_ip_info = NULL");
-db_query("UPDATE ia_textblock SET remote_ip_info = NULL");
-db_query("UPDATE ia_textblock_revision SET remote_ip_info = NULL");
+db_query("UPDATE ia_file SET remote_ip_info = ''");
+db_query("UPDATE ia_job SET remote_ip_info = ''");
+db_query("UPDATE ia_textblock SET remote_ip_info = ''");
+db_query("UPDATE ia_textblock_revision SET remote_ip_info = ''");
 
 // Delete all attachments.
 log_print("Deleting all attachments.");

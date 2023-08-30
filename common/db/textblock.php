@@ -15,7 +15,7 @@ require_once(Config::ROOT."common/common.php");
 function textblock_add_revision(
         $name, $title, $content, $user_id, $security = "public",
         $timestamp = null, $creation_timestamp = null,
-        $remote_ip_info = null) {
+        $remote_ip_info = '') {
     $name = normalize_page_name($name);
 
     $content = text_cedilla_to_comma_below_st($content);

@@ -18,7 +18,7 @@ function task_get($task_id) {
 }
 
 // Create new task
-function task_create($task, $task_params, $remote_ip_info = null) {
+function task_create($task, $task_params, $remote_ip_info = '') {
   log_assert_valid(task_validate($task));
   log_assert_valid(task_validate_parameters($task['type'], $task_params));
 

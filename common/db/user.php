@@ -53,7 +53,7 @@ function user_get_by_id($user_id)
 // This also creates a user page.
 // $user must be a valid user struct, user_id ignored
 // Returns created $user or throws up on error.
-function user_create($user, $remote_ip_info=null)
+function user_create($user, $remote_ip_info = '')
 {
   log_assert_valid(user_validate($user));
 

@@ -81,7 +81,7 @@ function textblock_validate($tb) {
 //
 // Use this like textblock_copy_replace('template/newtask', 'problema/capsuni');
 function textblock_copy_replace($srcprefix, $dstprefix, $replace, $security,
-        $user_id, $remote_ip_info = null) {
+        $user_id, $remote_ip_info = '') {
     log_assert($srcprefix != $dstprefix);
     log_assert($security === null ||
                is_textblock_security_descriptor($security));

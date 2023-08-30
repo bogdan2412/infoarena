@@ -20,7 +20,7 @@ function round_get($round_id) {
 
 // Create new round
 // Return success.
-function round_create($round, $round_params, $user_id, $remote_ip_info = null) {
+function round_create($round, $round_params, $user_id, $remote_ip_info = '') {
     log_assert(is_user_id($user_id));
     log_assert_valid(round_validate($round));
     log_assert_valid(round_validate_parameters($round['type'], $round_params));

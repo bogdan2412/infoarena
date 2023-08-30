@@ -22,7 +22,7 @@ require_once(Config::ROOT."common/db/db.php");
 
 // Creates new eval job
 function job_create($task_id, $round_id, $user_id, $compiler_id, $file_contents,
-        $remote_ip_info = null) {
+        $remote_ip_info = '') {
     /**
      * Check which submission is the current one(first, second, ...)
      * Counting from 0
