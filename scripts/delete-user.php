@@ -94,12 +94,12 @@ function delete_user(array $user, array $target) {
         'ia_acm_round',
         'ia_rating',
         'ia_task_users_solved',
-        'ia_task_view_sources',
         'ia_score_task_top_users',
         'ia_score_user_round',
         'ia_score_user_round_task',
         'ia_user_round',
         'ia_user_tags',
+        'task_peep',
     ];
 
     foreach ($FOREIGN_DATA as $table) {

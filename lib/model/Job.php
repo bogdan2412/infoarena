@@ -174,7 +174,7 @@ class Job extends Base {
       return self::SOURCE_VISIBILITY_YES;
     }
 
-    if (task_has_force_viewed_source($task->id, $me)) {
+    if (TaskPeep::exists($me, $task->id)) {
       return self::SOURCE_VISIBILITY_YES;
     }
 

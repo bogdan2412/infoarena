@@ -60,7 +60,7 @@ function controller_job_view_source($job_id) {
   Identity::enforceViewJobSource($job);
 
   if (Request::isPost() && Request::has('force_view_source')) {
-    task_force_view_source($job->task_id, Identity::getId());
+    TaskPeep::add(Identity::getId(), $job->task_id);
     Util::redirect(url_job_view_source($job->id));
   }
 
