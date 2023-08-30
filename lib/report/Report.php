@@ -44,6 +44,12 @@ abstract class Report {
         $this->cleanup();
         Util::redirectToSelf();
 
+      case 'job_delete':
+        $jobId = Request::get('job_id');
+        Job::deleteById($jobId);
+        FlashMessage::addSuccess(sprintf('Am șters jobul #%d.', $jobId));
+        Util::redirectToSelf();
+
       case 'round_delete':
         $roundId = Request::get('round_id');
         Round::deleteById($roundId);

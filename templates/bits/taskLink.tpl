@@ -1,5 +1,10 @@
+{$taskId=$taskId|default:''}
 {if !$task}
-  Problema nu există!
+  {if $taskId}
+    {$taskId}
+  {else}
+    Problema nu există!
+  {/if}
 {elseif !$task->isViewable()}
   ...
 {else}

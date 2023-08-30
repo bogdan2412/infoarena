@@ -25,7 +25,7 @@
       {foreach $jobs as $job}
         <tr>
           <td>
-            <a href="job_detail/{$job->id}">#{$job->id}</a>
+            {include "bits/jobLink.tpl"}
           </td>
           <td>
             {include "bits/userTiny.tpl" user=$job->getUser()}

@@ -204,4 +204,25 @@ class Job extends Base {
       ->count();
   }
 
+  static function deleteById(string $jobId): void {
+    $job = Job::get_by_id($jobId);
+    if (!$job) {
+      FlashMessage::addError('Job inexistent.');
+      Util::redirectToHome();
+    }
+    $job->delete();
+  }
+
+  function delete(): void {
+    Model::factory('JobTest')
+      ->where('job_id', $this->id)
+      ->delete_many();
+
+    Model::factory('TaskTop')
+      ->where('job_id', $this->id)
+      ->delete_many();
+
+    parent::delete();
+  }
+
 }
