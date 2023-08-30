@@ -13,14 +13,14 @@ class TestJobViewPublicTests extends FunctionalTest {
   private function testAnonView(): void {
     $this->ensureLoggedOut();
     $this->visitJobPage(self::JOB_ID);
-    $this->assertTableCellText('table.job', 4, 2, 'ascuns');
+    $this->assertTableCellText('table.job', 4, 4, 'ascuns');
     $this->assertNoElement('table.job-eval-tests');
   }
 
   private function testNormalView(): void {
     $this->login('normal', '1234');
     $this->visitJobPage(self::JOB_ID);
-    $this->assertTableCellText('table.job', 4, 2, 'ascuns');
+    $this->assertTableCellText('table.job', 4, 4, 'ascuns');
     $this->assertTableRows('table.job-eval-tests', 2);
     $this->assertTableCellText('table.job-eval-tests', 1, 2, '1');
     $this->assertTableCellText('table.job-eval-tests', 2, 2, '3');
@@ -30,7 +30,7 @@ class TestJobViewPublicTests extends FunctionalTest {
   private function testAdminView(): void {
     $this->login('admin', '1234');
     $this->visitJobPage(self::JOB_ID);
-    $this->assertTableCellText('table.job', 4, 2, '70');
+    $this->assertTableCellText('table.job', 4, 4, '70');
     $this->assertTableRows('table.job-eval-tests', 6);
     $this->assertTableCellText('table.job-eval-tests', 1, 2, '1');
     $this->assertTableCellText('table.job-eval-tests', 2, 2, '2');

@@ -61,7 +61,7 @@ class TestIPView extends FunctionalTest {
 
   private function testHelperCanViewJobIP(): void {
     $this->visitJobPage(1);
-    $this->assertTableCellText('table.job', 4, 4, '42.42.42.42');
+    $this->assertTableCellText('table.job', 1, 4, '42.42.42.42');
   }
 
 }

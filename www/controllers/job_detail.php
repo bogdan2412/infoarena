@@ -50,6 +50,7 @@ function controller_job_view(string $jobId): void {
     'showFeedbackColumn' => $showFeedbackColumn,
     'showGroups' => $showGroups,
     'showScoreTable' => $showScoreTable,
+    'showSourceLink' => true,
   ]);
   Smart::display('job/view.tpl');
 }
@@ -58,44 +59,17 @@ function controller_job_view_source($job_id) {
   $job = loadJob($job_id);
   Identity::enforceViewJobSource($job);
 
-  if (!$job->isScoreViewable()) {
-    $job->score = null;
+  if (Request::isPost() && Request::has('force_view_source')) {
+    task_force_view_source($job->task_id, Identity::getId());
+    Util::redirect(url_job_view_source($job->id));
   }
 
-  $round = $job->getRound();
-  $task = $job->getTask();
-  $user = $job->getUser();
-
-  $view = [];
-  $view['title'] = 'Cod sursă (job #'.$job_id.')';
-  $view['job'] = $job;
-  $view['round'] = $round;
-  $view['task'] = $task;
-  $view['user'] = $user;
-  $view['lang'] = $job->compiler_id;
-  if ($view['lang'] == 'c') {
-    $view['lang'] = 'cpp';
-  }
-  if ($view['lang'] == 'fpc') {
-    $view['lang'] = 'delphi';
-  }
-
-  if ($task->open_source
-      || $user->id == Identity::getId()
-      || Identity::isAdmin()
-      || (Request::isPost() && request('force_view_source'))
-      || task_has_force_viewed_source($job->task_id, Identity::getId())
-      || task_user_has_solved($job->task_id, Identity::getId())) {
-    if (request('force_view_source')) {
-      task_force_view_source($job->task_id, Identity::getId());
-    }
-    $view['first_view_source'] = false;
-  } else {
-    $view['first_view_source'] = true;
-    unset($job->file_contents);
-  }
-
-  execute_view_die('views/job_view_source.php', $view);
+  RecentPage::addCurrentPage("Cod sursă (job #{$job->id})");
+  Smart::assign([
+    'job' => $job,
+    'showSourceLink' => false,
+  ]);
+  Smart::display('job/viewSource.tpl');
 }
 
 function loadJob(string $jobId): Job {

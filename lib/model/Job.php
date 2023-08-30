@@ -2,8 +2,14 @@
 
 class Job extends Base {
 
+  const SOURCE_VISIBILITY_UNKNOWN = 0;
+  const SOURCE_VISIBILITY_NO = 1;
+  const SOURCE_VISIBILITY_FORCE = 2;
+  const SOURCE_VISIBILITY_YES = 3;
+
   public static string $_table = 'ia_job';
   private static ?Round $round = null;
+  private int $sourceVisibility = self::SOURCE_VISIBILITY_UNKNOWN;
 
   function getRound(): ?Round {
     if (!$this->round) {
@@ -129,30 +135,58 @@ class Job extends Base {
     return Identity::ownsTask($task);
   }
 
-  function isSourceViewable(): bool {
+  private function getSourceVisibility(): int {
+    if ($this->sourceVisibility == self::SOURCE_VISIBILITY_UNKNOWN) {
+      $this->sourceVisibility = $this->computeSourceVisibility();
+    }
+    return $this->sourceVisibility;
+  }
+
+  private function computeSourceVisibility(): int {
     if (Identity::getId() == $this->user_id) {
-      return true;
+      return self::SOURCE_VISIBILITY_YES;
     }
 
     $task = $this->getTask();
     if (Identity::ownsTask($task)) {
-      return true;
+      return self::SOURCE_VISIBILITY_YES;
     }
 
     if ($task->isPrivate()) {
-      return false;
+      return self::SOURCE_VISIBILITY_NO;
     }
 
     $incompleteRounds = $task->getIncompleteRounds();
     if (count($incompleteRounds)) {
-      return false;
+      return self::SOURCE_VISIBILITY_NO;
     }
 
     if ($task->open_source) {
-      return true;
+      return self::SOURCE_VISIBILITY_YES;
     }
 
-    return false;
+    $me = Identity::getId();
+    if (!$me) {
+      return self::SOURCE_VISIBILITY_NO;
+    }
+
+    if (task_user_has_solved($task->id, $me)) {
+      return self::SOURCE_VISIBILITY_YES;
+    }
+
+    if (task_has_force_viewed_source($task->id, $me)) {
+      return self::SOURCE_VISIBILITY_YES;
+    }
+
+    return self::SOURCE_VISIBILITY_FORCE;
+  }
+
+  function isSourceViewable(): bool {
+    return $this->getSourceVisibility() != self::SOURCE_VISIBILITY_NO;
+  }
+
+  function needsToForceViewSource(): bool {
+    return $this->getSourceVisibility() == self::SOURCE_VISIBILITY_FORCE;
   }
 
   static function countByRoundId(string $roundId): int {

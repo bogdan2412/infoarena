@@ -44,7 +44,7 @@ class TestJobViewScore extends FunctionalTest {
 
   private function assertScoreOnJobDetailPage(int $jobId, string $expectedScore): void {
     $this->visitJobPage($jobId);
-    $this->assertTableCellText('table.job', 4, 2, $expectedScore);
+    $this->assertTableCellText('table.job', 4, 4, $expectedScore);
   }
 
   private function testTimeAndMemory(int $jobId): void {

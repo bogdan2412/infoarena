@@ -685,6 +685,7 @@ ul.htabs {
 
 /* Job details */
 .job {
+  table-layout: fixed;
   width: 100%;
 }
 
