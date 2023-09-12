@@ -3,8 +3,11 @@
 /**
  * We try to determine if a user is logged in, in this order:
  * 1. from the userId session variable;
- * 2. from the long-lived login cookie.
+ * 2. from the HTTP auth headers (needed for the eval);
+ * 3. from the long-lived login cookie.
  */
+
+require_once __DIR__ . '/../common/user.php';
 
 class Session {
 
@@ -35,8 +38,26 @@ class Session {
         // the underlying user is gone, e.g. if the development database was reimported
         self::unsetVar('userId');
       }
+    } else if (self::hasHttpHeaders()) {
+      self::loadUserFromHttpHeaders();
     } else {
       self::loadUserFromCookie();
+    }
+  }
+
+  private static function hasHttpHeaders(): bool {
+    return
+      isset($_SERVER['PHP_AUTH_USER']) &&
+      isset($_SERVER['PHP_AUTH_PW']);
+  }
+
+  private static function loadUserFromHttpHeaders(): void {
+    $username = $_SERVER['PHP_AUTH_USER'];
+    $password = $_SERVER['PHP_AUTH_PW'];
+    $user = User::getByUsernamePlainPassword($username, $password);
+    if ($user) {
+      self::set('userId', $user->id);
+      Identity::set($user->id);
     }
   }
 
