@@ -14,12 +14,12 @@ function controller_submit() {
   $errors = array();
 
   if (Request::isPost()) {
-    $values = array(
+    $values = [
       'task_id' => request('task_id'),
       'compiler_id' => request('compiler_id'),
       'round_id' => request('round_id'),
       'remote_ip_info' => remote_ip_info(),
-    );
+    ];
 
     // Check uploaded solution
     if (isset($_FILES['solution']) && is_uploaded_file($_FILES['solution']['tmp_name'])) {
@@ -35,7 +35,7 @@ function controller_submit() {
 
     if (isset($errors['submit_limit']) && count($errors) == 1) {
       FlashMessage::addError($errors['submit_limit']);
-      Util::redirectToSelf();
+      Util::redirectToReferrer();
     }
 
     if ($errors) {
@@ -43,7 +43,7 @@ function controller_submit() {
                          nu au fost completate corect.');
     } else {
       FlashMessage::addSuccess('Am salvat soluția.');
-      Util::redirectToSelf();
+      Util::redirectToReferrer();
     }
     // Fall through to submit form.
   }

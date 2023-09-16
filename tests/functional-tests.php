@@ -206,6 +206,24 @@ abstract class FunctionalTest {
     return realpath($path);
   }
 
+  protected function getSourceFullPath(string $fileName): string {
+    $path = __DIR__ . '/sources/' . $fileName;
+    return realpath($path);
+  }
+
+  protected function getTableCell(string $css, int $row, int $column): string {
+    $selector = sprintf('%s tr:nth-child(%d) td:nth-child(%d)', $css, $row, $column);
+    $cell = $this->getElementByCss($selector);
+    return $cell->getText();
+  }
+
+  protected function getLastJobId(): int {
+    $this->login('admin', '1234');
+    $this->visitMonitorPage();
+    $str = $this->getTableCell('table.monitor', 1, 1);
+    return trim($str, '#');
+  }
+
   protected function visitAttachmentList(string $page): void {
     $this->driver->get(Config::URL_HOST . url_attachment_list($page));
   }
@@ -402,9 +420,7 @@ abstract class FunctionalTest {
 
   protected function assertTableCellText(
     string $css, int $row, int $column, string $text): void {
-    $selector = sprintf('%s tr:nth-child(%d) td:nth-child(%d)', $css, $row, $column);
-    $cell = $this->getElementByCss($selector);
-    $actualText = $cell->getText();
+    $actualText = $this->getTableCell($css, $row, $column);
     $msg = sprintf('Expected text [%s] in table [%s] row %d column %d, found [%s].',
                    $text, $css, $row, $column, $actualText);
     $this->assert($actualText == $text, $msg);
@@ -530,6 +546,14 @@ abstract class FunctionalTest {
     $expectedUrl = Config::URL_HOST . url_textblock($page);
     $msg = sprintf('Expected to be on the page for [%s], found ourselves at [%s]',
                    $page, $actualUrl);
+    $this->assert($actualUrl == $expectedUrl, $msg);
+  }
+
+  protected function assertOnSubmitPage(): void {
+    $actualUrl = $this->driver->getCurrentUrl();
+    $expectedUrl = Config::URL_HOST . url_submit();
+    $msg = sprintf('Expected to be on the page [%s], found ourselves at [%s]',
+                   $expectedUrl, $actualUrl);
     $this->assert($actualUrl == $expectedUrl, $msg);
   }
 
