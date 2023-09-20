@@ -12,7 +12,6 @@ class TestAttachmentRename extends FunctionalTest {
   }
 
   private function addSecondAttachmentToCircumventIssue53(): void {
-    sleep(1);
     $path = $this->getUploadFullPath('file2.txt');
     $this->login('helper', '1234');
     $this->visitTextblockPage('page-public');

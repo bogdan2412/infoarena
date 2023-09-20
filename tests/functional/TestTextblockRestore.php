@@ -38,7 +38,6 @@ class TestTextblockRestore extends FunctionalTest {
 
     // There may have been other changes while exercising textblocks. Restore
     // the fifth oldest version.
-    sleep(1);
     $links = $this->getLinksByText('Înlocuiește');
     $link = $links[count($links) - 5];
     $link->click();

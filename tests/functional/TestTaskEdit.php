@@ -81,7 +81,6 @@ class TestTaskEdit extends FunctionalTest {
   }
 
   private function restoreStatement(): void {
-    sleep(1);
     $this->changeInput('#form_title', $this->origPage['title']);
     $this->changeInput('#form_text', $this->origPage['text']);
     $this->clickButton('Salvează');

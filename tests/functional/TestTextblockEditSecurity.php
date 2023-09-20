@@ -35,7 +35,6 @@ class TestTextblockEditSecurity extends FunctionalTest {
   }
 
   private function restorePage(): void {
-    sleep(1);
     $this->visitTextblockEditPage('page-public');
     $this->changeSelect('#security_select', 'Public');
     $this->clickButton('Salvează');

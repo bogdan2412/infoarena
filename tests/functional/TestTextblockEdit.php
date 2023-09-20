@@ -54,7 +54,6 @@ class TestTextblockEdit extends FunctionalTest {
   }
 
   private function restorePage(): void {
-    sleep(1);
     $this->visitTextblockEditPage('page-private');
     $this->changeInput('#form_title', $this->origPage['title']);
     $this->changeInput('#form_text', $this->origPage['text']);

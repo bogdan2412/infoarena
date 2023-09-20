@@ -26,6 +26,11 @@ function is_db_date($string) {
   return (false !== $timestamp);
 }
 
+function db_mkfloattime($year, $month, $day, $hour, $minute, $second, $millis) {
+  $timestamp = mktime($year, $month, $day, $hour, $minute, $second);
+  return $timestamp + $millis / 1000;
+}
+
 // parse value of a datetime parameter in SQL format.
 // i.e.: 2006-11-27 23:59:59
 //
@@ -38,11 +43,13 @@ function db_date_parse($string) {
 
   // maybe it's a date&time
   $matches = null;
-  $ret = preg_match('/^(\\d{4})-(\\d{2})-(\\d{2}) (\\d{2}):(\\d{2}):(\\d{2})$/',
+  $ret = preg_match('/^(\\d{4})-(\\d{2})-(\\d{2}) (\\d{2}):(\\d{2}):(\\d{2})(\.(\\d{3}))?$/',
                     $string, $matches);
   if ($ret) {
-    return mktime($matches[4], $matches[5], $matches[6],
-                  $matches[2], $matches[3], $matches[1]);
+    return db_mkfloattime(
+      $matches[4], $matches[5], $matches[6],
+      $matches[2], $matches[3], $matches[1],
+      $matches[8] ?? '000');
   }
 
   // probably just a date
@@ -63,14 +70,8 @@ function db_date_parse($string) {
 // NOW returns the current time in the database server's timezone.
 //
 // All times in the database are UTC!!!
-function db_date_format($timestamp = null) {
-  if ($timestamp === null) {
-    $res = date('Y-m-d H:i:s');
-  } else {
-    $res = date('Y-m-d H:i:s', $timestamp);
-  }
-
-  return $res;
+function db_date_format() {
+  return Time::formatMillis();
 }
 
 // Executes SQL query and returns value of the first column in the first
