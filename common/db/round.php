@@ -411,7 +411,7 @@ SELECT * FROM `ia_round`
     DATE_ADD(`start_time`, INTERVAL ($duration_subquery) * 60 * 60 SECOND) > '%s'
     LIMIT 1
 SQL;
-    return db_fetch(sprintf($query, db_date_format(), db_date_format()));
+    return db_fetch(sprintf($query, Time::formatMillis(), Time::formatMillis()));
 }
 
 // FIXME: horrible evil hack, for the eval.
@@ -437,7 +437,7 @@ SELECT *
     LIMIT 1
 SQL;
 
-    return db_fetch(sprintf($query, db_date_format()));
+    return db_fetch(sprintf($query, Time::formatMillis()));
 }
 
 // FIXME: horrible evil hack, for the eval.
@@ -452,7 +452,7 @@ SELECT *
     WHERE `start_time` > '%s' AND `state` != 'waiting'
     LIMIT 1
 SQL;
-    return db_fetch(sprintf($query, db_date_format()));
+    return db_fetch(sprintf($query, Time::formatMillis()));
 }
 
 function round_get_many($options) {

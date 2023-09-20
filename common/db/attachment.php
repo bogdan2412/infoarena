@@ -36,7 +36,7 @@ function attachment_update($id, $name, $size, $mime_type, $page, $user_id,
     'mime_type' => $mime_type,
     'page' => normalize_page_name($page),
     'user_id' => $user_id,
-    'timestamp' => db_date_format(),
+    'timestamp' => Time::formatMillis(),
     'remote_ip_info' => $remote_ip_info,
   );
 
@@ -52,7 +52,7 @@ function attachment_insert($name, $size, $mime_type, $page, $user_id,
     'mime_type' => $mime_type,
     'page' => normalize_page_name($page),
     'user_id' => $user_id,
-    'timestamp' => db_date_format(),
+    'timestamp' => Time::formatMillis(),
     'remote_ip_info' => $remote_ip_info,
   );
 

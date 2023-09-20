@@ -207,7 +207,7 @@ function round_validate($round) {
     }
 
     // NULL is ok here.
-    if (!is_db_date(getattr($round, 'start_time', db_date_format()))) {
+    if (!is_db_date(getattr($round, 'start_time', Time::formatMillis()))) {
         $errors['start_time'] = "Timpul trebuie specificat ca YYYY-MM-DD HH:MM:SS";
     } else {
         if ($round['type'] == 'user-defined') {

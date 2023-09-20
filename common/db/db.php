@@ -63,17 +63,6 @@ function db_date_parse($string) {
   return false;
 }
 
-// formats unix timestamp as a datetime parameter value, suitable for SQL.
-// i.e.: 2006-11-27 23:59:59
-//
-// NOTE: prefer db_date_format() to NOW().
-// NOW returns the current time in the database server's timezone.
-//
-// All times in the database are UTC!!!
-function db_date_format() {
-  return Time::formatMillis();
-}
-
 // Executes SQL query and returns value of the first column in the first
 // result row.
 // When query yields no results, it returns $default_value

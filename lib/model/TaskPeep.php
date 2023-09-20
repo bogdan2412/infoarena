@@ -18,7 +18,7 @@ class TaskPeep extends Base {
       $rec = Model::factory('TaskPeep')->create();
       $rec->user_id = $userId;
       $rec->task_id = $taskId;
-      $rec->first_request = db_date_format();
+      $rec->first_request = Time::formatMillis();
       $rec->save();
     }
   }

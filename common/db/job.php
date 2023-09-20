@@ -37,7 +37,7 @@ SQL;
     $query = sprintf($query,
             db_quote($task_id), db_quote($round_id), db_quote($user_id),
             db_quote($compiler_id), db_quote($file_contents),
-            db_quote(db_date_format()), db_quote($remote_ip_info),
+            db_quote(Time::formatMillis()), db_quote($remote_ip_info),
             db_quote($submission));
 
     /**

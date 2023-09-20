@@ -52,12 +52,12 @@ function textblock_add_revision(
 
     // Evil.
     if ($creation_timestamp === null) {
-        $creation_timestamp = db_date_format();
+        $creation_timestamp = Time::formatMillis();
     } else {
         log_assert(is_db_date($creation_timestamp), "Invalid timestamp");
     }
     if ($timestamp === null) {
-        $timestamp = db_date_format();
+        $timestamp = Time::formatMillis();
     } else {
         log_assert(is_db_date($timestamp), "Invalid timestamp");
     }
