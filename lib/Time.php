@@ -29,8 +29,8 @@ class Time {
 
   // Returns the current UNIX timestamp as yyyy-mm-dd hh:mm:ss.mmm.
   static function formatMillis(): string {
-    $timestamp = microtime(true);
-    $d = DateTime::createFromFormat('U.u', $timestamp);
+    $timestamp = microtime();
+    $d = DateTime::createFromFormat('0.u00 U', $timestamp);
     return $d->format('Y-m-d H:i:s.v');
   }
 }
