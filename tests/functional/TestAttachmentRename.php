@@ -41,7 +41,7 @@ class TestAttachmentRename extends FunctionalTest {
     $input = $this->getElementByCss($inputSel);
     $this->changeInput($inputSel, 'file2.txt');
     $input->submit();
-    sleep(1);
+    $this->waitForPageTitle('page-public');
     $this->assertTextExists('Există deja un fișier cu numele file2.txt atașat paginii page-public.');
   }
 
@@ -52,7 +52,7 @@ class TestAttachmentRename extends FunctionalTest {
     $input = $this->getElementByCss($inputSel);
     $this->changeInput($inputSel, 'file3.txt');
     $input->submit();
-    sleep(1);
+    $this->waitForPageTitle('page-public');
     $this->assertTextExists('Fișierul file1.txt a fost redenumit cu succes în file3.txt');
   }
 
@@ -63,7 +63,7 @@ class TestAttachmentRename extends FunctionalTest {
     $input = $this->getElementByCss($inputSel);
     $this->changeInput($inputSel, 'file1.txt');
     $input->submit();
-    sleep(1);
+    $this->waitForPageTitle('page-public');
     $this->assertTextExists('Fișierul file3.txt a fost redenumit cu succes în file1.txt');
   }
 

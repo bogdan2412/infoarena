@@ -72,7 +72,7 @@ class TestRoundCreateAndDelete extends FunctionalTest {
 
     $this->clickButton('Șterge paginile');
     $this->acceptConfirmationPopup();
-    sleep(1);
+    $this->waitForElementByCss('div.flash.flash-success');
     $this->assertTextExists('Am șters 2 textblocks.');
   }
 

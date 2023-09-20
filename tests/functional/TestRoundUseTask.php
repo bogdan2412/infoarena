@@ -51,6 +51,6 @@ class TestRoundUseTask extends FunctionalTest {
 
     $this->clickButton('Șterge paginile');
     $this->acceptConfirmationPopup();
-    sleep(1);
+    $this->waitForPageTitle('Ștergere textblockuri corelate cu new-round');
   }
 }

@@ -316,7 +316,18 @@ abstract class FunctionalTest {
 
   protected function waitForPageLoad(string $url): void {
     $cond = WebDriverExpectedCondition::urlIs($url);
-    $this->driver->wait()->until($cond);
+    $this->driver->wait(5, 200)->until($cond);
+  }
+
+  protected function waitForPageTitle(string $title): void {
+    $cond = WebDriverExpectedCondition::titleIs($title);
+    $this->driver->wait(5, 200)->until($cond);
+  }
+
+  protected function waitForElementByCss(string $css): void {
+    $sel = WebDriverBy::cssSelector($css);
+    $cond = WebDriverExpectedCondition::presenceOfElementLocated($sel);
+    $this->driver->wait(5, 200)->until($cond);
   }
 
   protected function clickLinkByText(string $text): void {
