@@ -44,12 +44,11 @@ class Util {
   static function getReferrer(): ?string {
     $referrer = Request::get('referrer');
 
-    if ($referrer) {
-      Session::unsetVar('REAL_REFERRER');
-    } else {
+    if (!$referrer) {
       $referrer = Session::get('REAL_REFERRER') ?? $_SERVER['HTTP_REFERER'] ?? null;
     }
 
+    Session::unsetVar('REAL_REFERRER');
     return $referrer;
   }
 
