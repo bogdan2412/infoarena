@@ -178,7 +178,7 @@ class Job extends Base {
       return self::SOURCE_VISIBILITY_YES;
     }
 
-    return self::SOURCE_VISIBILITY_FORCE;
+    return self::SOURCE_VISIBILITY_NO;
   }
 
   function isSourceViewable(): bool {

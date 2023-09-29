@@ -22,7 +22,9 @@ class TestJobViewSourceForced extends FunctionalTest {
     // Now the force view sermon and button should become visible.
     $this->removeTaskFromRound();
     $this->testAnonLoginRequired();
-    $this->testNormalForceView();
+    // Old logic. Currently the sermon + button never kick in. For regular
+    // users and closed tasks, you need to get 100p to view sources.
+    // $this->testNormalForceView();
     $this->testAdminCanView();
 
     // Restore
