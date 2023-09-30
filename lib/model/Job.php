@@ -165,16 +165,12 @@ class Job extends Base {
       return self::SOURCE_VISIBILITY_YES;
     }
 
-    $me = Identity::getId();
+    $me = Identity::get();
     if (!$me) {
       return self::SOURCE_VISIBILITY_NO;
     }
 
-    if (task_user_has_solved($task->id, $me)) {
-      return self::SOURCE_VISIBILITY_YES;
-    }
-
-    if (TaskPeep::exists($me, $task->id)) {
+    if ($me->hasSolvedTask($task)) {
       return self::SOURCE_VISIBILITY_YES;
     }
 

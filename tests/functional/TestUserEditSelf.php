@@ -18,18 +18,18 @@ class TestUserEditSelf extends FunctionalTest {
     $this->changeInput('#form_passwordold', '1234');
     $this->changeInput('#form_password', '12345');
     $this->changeInput('#form_password2', '12345');
-    $this->changeInput('#form_name', 'Normal2 Normal2');
-    $this->changeInput('#form_email', 'normal2@example.com');
+    $this->changeInput('#form_name', 'NormalX NormalX');
+    $this->changeInput('#form_email', 'normalX@example.com');
     $this->clickButton('Salvează');
   }
 
   private function verifyChangedData(): void {
     $nameElem = $this->getElementByCss('#userbox .user strong');
-    $this->assert($nameElem->getText() == 'Normal2 Normal2',
-                  'Expected name Normal2 Normal2.');
+    $this->assert($nameElem->getText() == 'NormalX NormalX',
+                  'Expected name NormalX NormalX.');
 
     $this->visitOwnAccount();
-    $this->assertInputValue('#form_email', 'normal2@example.com');
+    $this->assertInputValue('#form_email', 'normalX@example.com');
   }
 
   private function restoreData(): void {

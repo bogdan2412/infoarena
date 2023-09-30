@@ -24,7 +24,7 @@ class DataInjector {
   const IP_ADDRESS = '42.42.42.42';
   const NUM_TEST_CASES = 5;
 
-  private array $admin, $intern, $helper, $normal;
+  private array $admin, $intern, $helper, $normal, $normal2;
   private $jobCounter = 0;
 
   function run(): void {
@@ -137,6 +137,7 @@ class DataInjector {
     $this->helper = $this->createUser('helper', 'Helper Helper', '1234', 'helper');
     $this->intern = $this->createUser('intern', 'Intern Intern', '1234', 'intern');
     $this->normal = $this->createUser('normal', 'Normal Normal', '1234', 'normal');
+    $this->normal2 = $this->createUser('normal2', 'Normal2 Normal2', '1234', 'normal');
   }
 
   private function createUser(
@@ -432,6 +433,8 @@ class DataInjector {
                      'done', 80, 'Evaluare completă');
     $this->createJob($this->normal, 'task1', 'round-penalty', 's1.cpp',
                      'done', 80, 'Evaluare completă');
+    $this->createJob($this->normal2, 'task1', 'round-archove', 's1.cpp',
+                     'done', 100, 'Evaluare completă');
   }
 
   private function createJob(

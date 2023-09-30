@@ -46,4 +46,14 @@ class User extends Base {
       ($this->id == Identity::getId());
   }
 
+  function hasSolvedTask($task): bool {
+    $count = Model::factory('Job')
+      ->where('user_id', $this->id)
+      ->where('task_id', $task->id)
+      ->where('score', 100)
+      ->count();
+
+    return ($count > 0);
+  }
+
 }
