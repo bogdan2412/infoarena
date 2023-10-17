@@ -216,6 +216,7 @@ class MyTextile extends \Netcarver\Textile\Parser {
   }
 
   function parse($text): string {
+    parent::setSymbol('ellipsis', false); // Do not replace ... with …
     $html = parent::parse($text);
     $html = $this->rejectJavaScript($html);
     return $html;
