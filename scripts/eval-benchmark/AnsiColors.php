@@ -5,5 +5,5 @@ class AnsiColors {
   const ERROR = "\e[91m";
   const WARNING = "\e[93m";
   const SUCCESS = "\e[92m";
-  const INFO = "\e[36m";
+  const INFO = "\e[96m";
 }
