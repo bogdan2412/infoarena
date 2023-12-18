@@ -131,7 +131,7 @@ function task_update_parameters($task_id, $param_values) {
 }
 
 function task_get_all() {
-  return db_fetch_all('SELECT * FROM ia_task');
+  return db_fetch_all('SELECT * FROM ia_task order by id');
 }
 
 // Returns list of round ids that include this task

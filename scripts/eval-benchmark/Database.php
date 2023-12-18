@@ -41,10 +41,6 @@ class Database {
   function loadTasks(): array {
     $tasks = task_get_all();
 
-    usort($tasks, function($a, $b) {
-      return $a['id'] <=> $b['id'];
-    });
-
     foreach ($tasks as &$task) {
       $task['params'] = $this->getTaskParams($task['id']);
     }

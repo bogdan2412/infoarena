@@ -27,7 +27,8 @@ foreach ($form_values['tasks'] as $tid) {
 
 $tasks_field_values = array();
 foreach ($all_tasks as $task) {
-    $tasks_field_values[$task['id']] = "{$task['title']} [{$task['id']}]";
+  $tasks_field_values[$task['id']] =
+    sprintf("%s | %s", $task['id'], $task['title']);
 }
 
 // Init form field definitions.
