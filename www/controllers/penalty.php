@@ -1,4 +1,6 @@
 <?php
+
+require_once Config::ROOT . 'common/db/round.php';
 require_once Config::ROOT . 'common/db/user.php';
 require_once Config::ROOT . 'common/user.php';
 require_once Config::ROOT . 'www/views/utilities.php';
