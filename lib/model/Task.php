@@ -12,6 +12,15 @@ class Task extends Base {
     }
   }
 
+  function getLargestInputFile(): int {
+    $obj = Model::factory('Attachment')
+      ->select_expr('max(size)', 'maxSize')
+      ->where('page', $this->page_name)
+      ->where_like('name', 'grader_test%.in')
+      ->find_one();
+    return $obj->maxSize;
+  }
+
   function isInAnyRunningRounds(): bool {
     $numRunningRounds = Model::factory('Round')
       ->table_alias('r')

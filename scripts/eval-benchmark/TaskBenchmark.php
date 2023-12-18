@@ -9,6 +9,7 @@ class TaskBenchmark {
   private Checkpointer $checkpointer;
   private Database $db;
   private array $task;
+  private Task $taskObj;
   private bool $batchMode;
   private int $numJobs, $numAdminJobs;
   private array $jobs;
@@ -20,6 +21,7 @@ class TaskBenchmark {
 
   function __construct(array $task, Database $db, Checkpointer $checkpointer, bool $batchMode) {
     $this->task = $task;
+    $this->taskObj = Task::get_by_id($task['id']);
     $this->db = $db;
     $this->checkpointer = $checkpointer;
     $this->batchMode = $batchMode;
@@ -51,18 +53,35 @@ class TaskBenchmark {
   }
 
   private function printHeader() {
-    $header = sprintf('| %s (task %d/%d, %d tests, time limit %g s) |',
-                      $this->task['id'],
-                      WorkStack::getTaskNo(),
-                      WorkStack::getTaskCount(),
-                      $this->task['test_count'],
-                      WorkStack::getTaskTimeLimit());
-    $len = mb_strlen($header);
-    $line = '+' . str_repeat('-', $len - 2) . '+';
+    $maxFile = $this->taskObj->getLargestInputFile();
+    $messages = [
+      sprintf('Task:               %s (%d/%d)',
+              $this->task['id'],
+              WorkStack::getTaskNo(),
+              WorkStack::getTaskCount()),
+      sprintf('URL:                https://nerdarena.ro/problema/%s',
+              $this->task['id']),
+      sprintf('Number of tests:    %d',
+              $this->task['test_count']),
+      sprintf('Largest input:      %d bytes',
+              $maxFile),
+      sprintf('Time limit:         %g s',
+              WorkStack::getTaskTimeLimit()),
+    ];
+
+    $maxLen = 0;
+    foreach ($messages as $msg) {
+      $maxLen = max($maxLen, mb_strlen($msg));
+    }
+
+    $line = '+' . str_repeat('-', $maxLen + 2) . '+';
 
     Log::emptyLine();
     Log::info($line);
-    Log::info($header);
+    foreach ($messages as $msg) {
+      $padded = str_pad($msg, $maxLen);
+      Log::info('| ' . $padded . ' |');
+    }
     Log::info($line);
     Log::emptyLine();
   }
