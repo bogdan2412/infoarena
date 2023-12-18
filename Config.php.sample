@@ -72,10 +72,16 @@ class Config {
   const RESET_PASSWORD_SALT = '';
 
   // Mail settings.
-  const EMAIL_FROM = 'test@test.com';
-  const SMTP = false;
-  const SMTP_HOST = 'localhost';
-  const SMTP_PORT = 25;
+  const SMTP_ENABLED = false;
+  const CONTACT_EMAIL = 'contact@your-site.com';
+  const SMTP_SERVER = 'tls://your-site.com:587'; // for outgoing emails
+  const EMAIL_IDENTITIES = [
+    'contact@your-site.com' => [
+      'username' => 'contact@your-site.com',
+      'name' => 'Your Site',
+      'password' => '1234',
+    ],
+  ];
 
   // Engine ID of the Google custom search engine.
   const GOOGLE_CSE_TOKEN = '';

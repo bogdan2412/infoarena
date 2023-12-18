@@ -150,7 +150,7 @@ class DataInjector {
       'username' => $username,
       'full_name' => $name,
       'password' => user_hash_password($password, $username),
-      'email' => sprintf('%s@example.com', $username),
+      'email' => sprintf('%s@nerdarena.ro', $username),
       'security_level' => $security,
       'rating_cache' => 0,
     ];

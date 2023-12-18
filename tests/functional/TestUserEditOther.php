@@ -29,7 +29,7 @@ class TestUserEditOther extends FunctionalTest {
     $this->changeInput('#form_password', '12345');
     $this->changeInput('#form_password2', '12345');
     $this->changeInput('#form_name', 'NormalX NormalX');
-    $this->changeInput('#form_email', 'normalX@example.com');
+    $this->changeInput('#form_email', 'normalX@nerdarena.ro');
     $this->changeSelect('#form_security_level', 'Intern');
     $this->clickButton('Salvează');
   }
@@ -37,7 +37,7 @@ class TestUserEditOther extends FunctionalTest {
   private function verifyChangedData(): void {
     $this->visitUserAccount('normal');
     $this->assertInputValue('#form_name', 'NormalX NormalX');
-    $this->assertInputValue('#form_email', 'normalX@example.com');
+    $this->assertInputValue('#form_email', 'normalX@nerdarena.ro');
     $this->assertSelectVisibleText('#form_security_level', 'Intern');
   }
 
@@ -48,7 +48,7 @@ class TestUserEditOther extends FunctionalTest {
     $this->changeInput('#form_password', '1234');
     $this->changeInput('#form_password2', '1234');
     $this->changeInput('#form_name', 'Normal Normal');
-    $this->changeInput('#form_email', 'normal@example.com');
+    $this->changeInput('#form_email', 'normal@nerdarena.ro');
     $this->changeSelect('#form_security_level', 'Utilizator normal');
     $this->clickButton('Salvează');
   }

@@ -1,7 +1,6 @@
 <?php
 require_once Config::ROOT . 'common/db/user.php';
 require_once Config::ROOT . 'common/user.php';
-require_once Config::ROOT . 'common/email.php';
 require_once Config::ROOT . 'www/views/utilities.php';
 
 function controller_penalty() {

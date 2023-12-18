@@ -2,7 +2,6 @@
 
 require_once(Config::ROOT."common/db/user.php");
 require_once(Config::ROOT."common/user.php");
-require_once(Config::ROOT."common/email.php");
 
 // displays form to identify user. On submit it sends e-mail with confirmation
 // link.
@@ -51,38 +50,15 @@ function controller_resetpass() {
       $clink = url_absolute(url_resetpass_confirm($user['username'], $cpass));
 
       // email user
+      $from = Config::CONTACT_EMAIL;
       $to = $user['email'];
       $subject = 'Recuperează utilizatorul și parola';
-      $message = sprintf("
-Ai solicitat ca parola contului tău de pe %s sa fie resetată.
-
-Nume de cont: %s
-Adresa ta de e-mail: %s
-Numele tău: %s
-
-Pentru a confirma aceasta acțiune, trebuie să vizitezi acest link:
-
-----
-%s
-----
-
-Dacă nu ai facut o astfel de solicitare, ignoră acest mesaj, iar parola nu va fi resetată.
-
-Echipa %s
-%s
-",
-                         Config::SITE_NAME,
-                         $user['username'],
-                         $user['email'],
-                         $user['full_name'],
-                         $clink,
-                         Config::SITE_NAME,
-                         Config::URL_HOST . Config::URL_PREFIX
-
-      );
-
-      // send email
-      send_email($to, $subject, $message);
+      Smart::assign([
+        'user' => $user,
+        'clink' => $clink,
+      ]);
+      $body = Smart::fetch('email/lostPassword.tpl');
+      Mailer::send($from, [$to], $subject, $body);
 
       // notify user
       FlashMessage::addSuccess('Ți-am trimis instrucțiuni prin e-mail.');
@@ -135,28 +111,16 @@ function controller_resetpass_confirm($username) {
   user_update($user);
 
   // send email with new password
+  $from = Config::CONTACT_EMAIL;
   $to = $user['email'];
   $subject = 'Parola nouă';
-  $message = sprintf("
-Ai solicitat și ai confirmat ca parola ta să fie resetată.
-
-Parola nouă: %s
-Numele contului: %s
-
-Te poți autentifica aici:
-%s
-
-Echipa %s
-%s
-",
-                     $new_password,
-                     $user['username'],
-                     url_login(),
-                     Config::SITE_NAME,
-                     Config::URL_HOST . Config::URL_PREFIX);
-
-  // send e-mail
-  send_email($to, $subject, $message);
+  Smart::assign([
+    'new_password' => $new_password,
+    'username' => $user['username'],
+    'clink' => url_login(),
+  ]);
+  $body = Smart::fetch('email/newPassword.tpl');
+  Mailer::send($from, [$to], $subject, $body);
 
   // notify user
   FlashMessage::addSuccess('Ți-am resetat parola și ți-am trimis-o prin e-mail.');

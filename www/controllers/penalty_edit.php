@@ -3,7 +3,6 @@
 require_once(Config::ROOT . 'common/db/user.php');
 require_once(Config::ROOT . 'common/db/score.php');
 require_once(Config::ROOT . 'common/user.php');
-require_once(Config::ROOT . 'common/email.php');
 
 function controller_penalty_edit() {
     //security check
