@@ -74,10 +74,6 @@ class TimeAnalyzer {
     usort($this->timePairs, function(TimePair $a, TimePair $b) {
       return $a->newTime <=> $b->newTime;
     });
-
-    // foreach ($this->timePairs as $i => $tp) {
-    //   printf("%3d %.03f %d %.03f %d\n", $i + 1, $tp->oldTime, $tp->oldTle, $tp->newTime, $tp->newTle);
-    // }
   }
 
   private function computeStatistics(): void {
@@ -137,12 +133,14 @@ class TimeAnalyzer {
     }
   }
 
-  function countMistakes($time): int {
-    $result = 0;
+  function countMistakes($time): Mistakes {
+    $result = new Mistakes();
     foreach ($this->timePairs as $tp) {
       $newTle = $tp->newTle || ($tp->newTime > $time);
-      if ($tp->oldTle ^ $newTle) {
-        $result++;
+      if ($tp->oldTle && !$newTle) {
+        $result->newPasses++;
+      } else if (!$tp->oldTle && $newTle) {
+        $result->newTles++;
       }
     }
     return $result;

@@ -160,11 +160,13 @@ class TaskBenchmark {
 
   private function logRecommendations() {
     Log::success('New time limit recommendations:');
-    $fmt = '* Based on %s: %g s (%d mistakes).';
+    Log::success('Method                         Time (sec)   Mistakes = New passes + New TLEs');
+    Log::success(str_repeat('-', 80));
+    $fmt = '%-30s %10.4g %10d %12d %10d';
     foreach ($this->newLimits as $method => $time) {
       $desc = $this->getMethodDescription($method);
-      $mistakes = $this->timeAnalyzer->countMistakes($time);
-      Log::success($fmt, [ $desc, $time, $mistakes ]);
+      $m = $this->timeAnalyzer->countMistakes($time);
+      Log::success($fmt, [ $desc, $time, $m->getTotal(), $m->newPasses, $m->newTles ]);
     }
   }
 
@@ -282,8 +284,9 @@ class TaskBenchmark {
     } while (($limit <= 0) || ($limit > WorkStack::getTaskTimeLimit()));
 
     $this->prevCustomLimit = $limit;
-    $mistakes = $this->timeAnalyzer->countMistakes($limit);
-    Log::info('A limit of %g s leads to %d mistakes.', [ $limit, $mistakes ]);
+    $m = $this->timeAnalyzer->countMistakes($limit);
+    Log::info('A limit of %g s leads to %d mistakes = %d new passes + %d new TLEs.',
+              [ $limit, $m->getTotal(), $m->newPasses, $m->newTles ]);
   }
 
   private function actionAcceptTimeLimit0() {
