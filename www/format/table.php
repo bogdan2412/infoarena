@@ -70,12 +70,6 @@ function format_table($data, $column_infos = null, $options = null)
     $column_infos = build_default_column_infos($data);
   }
 
-  // sort instructions
-  $sort_field = getattr($options, 'sort_field',
-                        getattr($options, 'default_sort_field'));
-  $sort_direction = getattr($options, 'sort_direction',
-                            getattr($options, 'default_sort_direction', SORT_ASC));
-
   // Table header: Column names.
   $result .= "<thead><tr>";
   foreach ($column_infos as $column) {
@@ -95,22 +89,6 @@ function format_table($data, $column_infos = null, $options = null)
       $caption = getattr($column, 'html_title', $key);
     } else {
       $caption = html_escape(getattr($column, 'title', $key));
-    }
-
-    // sortable columns
-    if ($key && getattr($column, 'sortable')) {
-      if ($key == $sort_field) {
-        $a_direction = (SORT_ASC == $sort_direction ? SORT_DESC : SORT_ASC);
-        $span_class = ' sort-field-active';
-      }
-      else {
-        $a_direction = $sort_direction;
-        $span_class = '';
-      }
-
-      $caption .= '&nbsp;<span class="sort-field'.html_escape($span_class).'">'
-        ._format_sort_link($options, $key, $a_direction)
-        .'</span> ';
     }
 
     $result .= format_tag('th', $caption, $args, false);
@@ -192,24 +170,3 @@ function format_table($data, $column_infos = null, $options = null)
 
   return $result;
 }
-
-// Internal for format_table
-function _format_sort_link($options, $sort_field, $sort_direction) {
-  $url_args = getattr($options, 'url_args', $_GET);
-  $param_prefix = getattr($options, 'param_prefix', '');
-
-  $url_args[$param_prefix.'sort_field'] = $sort_field;
-  if (SORT_DESC == $sort_direction) {
-    $url_args[$param_prefix.'sort_desc'] = 1;
-    $caption = '&or;';
-  }
-  else {
-    if (isset($url_args[$param_prefix.'sort_desc']))
-      unset($url_args[$param_prefix.'sort_desc']);
-    $caption = '&and;';
-  }
-
-  return format_link(url_from_args($url_args), $caption, false);
-}
-
-?>

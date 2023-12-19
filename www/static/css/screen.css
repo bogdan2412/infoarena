@@ -1155,7 +1155,7 @@ ul.tag_filters {
 }
 
 /* Show pointer cursor on sortable table headers */
-table.sortable th {
+table.table-sort th {
   cursor: pointer;
 }
 

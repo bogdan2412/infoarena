@@ -130,6 +130,6 @@ function macro_rankingsacmtotal($args) {
         }
     );
 
-    $options = array('css_class' => 'sortable');
+    $options = array('css_class' => 'table-sort');
     return format_table($rankings, $column_infos, $options);
 }

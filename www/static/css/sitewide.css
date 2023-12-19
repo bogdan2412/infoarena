@@ -191,28 +191,6 @@ span.star-rating {
 }
 
 /* tables */
-table th .sort-field a {
-  color: black;
-  font-weight: normal;
-  padding: 0 .3em 0 .3em;
-  text-decoration: none;
-}
-
-table th .sort-field a:hover {
-  background-color: #006699;
-  color: white;
-}
-
-table th .sort-field-active a {
-  background-color: #006699;
-  color: white;
-}
-
-table th .sort-field-active a:hover {
-  background-color: white;
-  color: #006699;
-}
-
 table.fill-screen, table.fill-screen tr {
   width: 100%;
 }

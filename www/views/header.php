@@ -63,12 +63,12 @@ if (isset($form_errors) || isset($form_values)) {
     <script src="<?= html_escape(url_static('js/tags.js')) ?>"></script>
     <script src="<?= html_escape(url_static('js/roundtimer.js')) ?>"></script>
     <script src="<?= html_escape(url_static('js/third-party/foreach.js')) ?>"></script>
-    <script src="<?= html_escape(url_static('js/third-party/sorttable.js')) ?>"></script>
     <script src="<?= html_escape(url_static('js/third-party/tablednd.js')) ?>"></script>
+    <script src="<?= html_escape(url_static('js/third-party/table-sort.min.js')) ?>"></script>
 
     <script>
-        hljs.initHighlightingOnLoad();
-        hljs.initLineNumbersOnLoad();
+      hljs.initHighlightingOnLoad();
+      hljs.initLineNumbersOnLoad();
     </script>
 
     <?= getattr($view, 'head') ?>

@@ -247,7 +247,7 @@ function macro_tasks($args) {
     $options['row_style'] = 'task_row_style';
   }
 
-  $options['css_class'] = 'alternating-colors tasks sortable';
+  $options['css_class'] = 'alternating-colors tasks table-sort';
   if (getattr($args, 'drag_and_drop', false))
     $options['css_class'] .= ' dragndrop';
 

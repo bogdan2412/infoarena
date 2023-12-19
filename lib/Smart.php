@@ -35,7 +35,7 @@ class Smart {
         'js/roundtimer.js', 'js/submit.js', 'js/tags.js', 'js/time.js',
       ],
       'deps' => [
-        'foreach', 'highlight', 'iconize', 'jquery', 'sorttable', 'tabber',
+        'foreach', 'highlight', 'iconize', 'jquery', 'table-sort', 'tabber',
         'tablednd',
       ],
     ],
@@ -43,15 +43,15 @@ class Smart {
       'js' => [ 'js/monitor.js' ],
       'deps' => [ 'jquery' ],
     ],
-    'sorttable' => [
-      'js' => [ 'js/third-party/sorttable.js' ],
-    ],
     'tabber' => [
       'css' => [ 'css/third-party/tabber.css' ],
       'js' => [ 'js/third-party/tabber-minimized.js' ],
     ],
     'tablednd' => [
       'js' => [ 'js/third-party/tablednd.js' ],
+    ],
+    'table-sort' => [
+      'js' => [ 'js/third-party/table-sort.min.js' ],
     ],
   ];
 

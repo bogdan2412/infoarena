@@ -81,6 +81,6 @@ function macro_rankingsacm($args) {
         return macro_message('Nici un rezultat înregistrat pentru această rundă.');
     }
 
-    $options = array('css_class' => 'sortable');
+    $options = array('css_class' => 'table-sort');
     return format_table($rankings, $column_infos, $options);
 }

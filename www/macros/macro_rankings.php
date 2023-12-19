@@ -41,7 +41,7 @@ function macro_rankings($args) {
     // Paginator options
     $options = pager_init_options($args);
     $options['show_count'] = true;
-    $options['css_class'] = 'alternating-colors sortable';
+    $options['css_class'] = 'alternating-colors table-sort';
 
     // Rounds parameters
     $roundstr = getattr($args, 'rounds', '');
