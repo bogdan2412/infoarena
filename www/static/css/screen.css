@@ -1154,11 +1154,6 @@ ul.tag_filters {
   display: none;
 }
 
-/* Show pointer cursor on sortable table headers */
-table.table-sort th {
-  cursor: pointer;
-}
-
 /* Make form tables have no border */
 table.form {
   width: 100%;
