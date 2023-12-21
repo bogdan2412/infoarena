@@ -63,6 +63,18 @@ class Base extends Model {
     exit;
   }
 
+  static function loadAndMapById(array $objectIds): array {
+    $objects = Model::factory(get_called_class())
+      ->where_in('id', $objectIds ?: [ -1 ])
+      ->find_many();
+
+    $results = [];
+    foreach ($objects as $obj) {
+      $results[$obj->id] = $obj;
+    }
+    return $results;
+  }
+
   /**
    * Copies the values of all fields except id.
    * TODO: Can we just use PHP's clone()?

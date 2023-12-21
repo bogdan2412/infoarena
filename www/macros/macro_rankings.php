@@ -1,150 +1,147 @@
 <?php
 
-require_once(Config::ROOT . "www/format/table.php");
-require_once(Config::ROOT . "www/format/pager.php");
-require_once(Config::ROOT . "www/format/format.php");
-require_once(Config::ROOT . "common/db/score.php");
+require_once Config::ROOT . 'www/format/table.php';
+require_once Config::ROOT . 'www/format/pager.php';
+require_once Config::ROOT . 'www/format/format.php';
+require_once Config::ROOT . 'common/db/score.php';
 
-// Displays *interactive* rankings table summing up score points from a
-// pre-defined set of contest rounds.
+class RankingsRow {
+  public int $rank;
+  public User $user;
+  public array $scores; // floats
+  public float $total;
+
+  function __construct(int $rank, User $user, array $scores, float $total) {
+    $this->rank = $rank;
+    $this->user = $user;
+    $this->scores = $scores;
+    $this->total = $total;
+  }
+}
+
+// Takes a string of the form
+//
+//   S -> roundDef [ | roundDef ]...
+//   roundDef -> round ID [ : round name]
+//
+// Returns an array of [ roundId, roundName ] pairs.
+function parseRoundStr(string $roundStr): array {
+  $results = [];
+
+  $idNamePairs = explode('|', $roundStr);
+  foreach ($idNamePairs as $idNamePair) {
+    $parts = explode(':', $idNamePair, 2);
+    $roundId = trim($parts[0]);
+    $roundName = trim($parts[1] ?? '');
+    $round = round_get($roundId);
+
+    if (Identity::mayViewRoundScores($round)) {
+      $results[] = [
+        'roundId' => $roundId,
+        'roundName' => $roundName,
+      ];
+    }
+  }
+
+  return $results;
+}
+
+// Returns an array of [ 'roundId', ['taskId',] 'displayValue' ].
+function makeColumns(array $roundMap, bool $detailRound, bool $detailTask): array {
+  $result = [];
+
+  foreach ($roundMap as $r) {
+    if ($detailTask) {
+      $tasks = Task::loadByRoundId($r['roundId']);
+      foreach ($tasks as $t) {
+        $result[] = [
+          'roundId' => $r['roundId'],
+          'taskId' => $t->id,
+          'displayValue' => $t->title,
+        ];
+      }
+    }
+
+    if ($detailRound) {
+      $result[] = [
+        'roundId' => $r['roundId'],
+        'displayValue' => $r['roundName'],
+      ];
+    }
+  }
+
+  return $result;
+}
+
+// Collects task/round scores for a given $user. Returns an array of floats.
+function collectScores(User $user, array $columns, array $taskScores,
+                       array $roundScores): array {
+  $scores = [];
+  foreach ($columns as $col) {
+    $record = isset($col['taskId'])
+      ? ($taskScores[$col['roundId']][$col['taskId']] ?? null)
+      : ($roundScores[$col['roundId']] ?? null);
+    $scores[] = $record[$user->id] ?? null;
+  }
+  return $scores;
+}
+
+// Returns an array of RankingsRow.
+function makeTableData(array $roundIds, array $columns): array {
+  // Load all kinds of data.
+  $totals = ScoreUserRound::loadTotalsByRoundIds($roundIds);
+  $userIds = array_column($totals, 'userId');
+  $userMap = User::loadAndMapById($userIds);
+  $roundScores = ScoreUserRound::loadByRoundIds($roundIds);
+  $taskScores = ScoreUserRoundTask::loadByRoundIds($roundIds);
+
+  $tableData = [];
+  $prevTotal = -1;
+  $prevRank = -1;
+  foreach ($totals as $i => $rec) {
+    $total = $rec['total'];
+    $user = $userMap[$rec['userId']];
+    $rank = ($total == $prevTotal) ? $prevRank : ($i + 1);
+    $scores = collectScores($user, $columns, $taskScores, $roundScores);
+
+    $tableData[] = new RankingsRow($rank, $user, $scores, $total);
+
+    $prevTotal = $total;
+    $prevRank = $rank;
+  }
+  return $tableData;
+}
+
+// Displays rankings for one or more rounds.
 //
 // Arguments:
 //     rounds   (required) a | (pipe) separated list of round_id : round_name.
 //              Round name is the name which will appear in the column dedicated
 //              to that round in case detail_round == true
 //              If detail_round == false you can leave just the round_id (see examples)
-//     count    (optional) how many to display at once, defaults to infinity
 //     detail_task   (optional) true/false print score columns for each task
-//     detail_round  (optional) true/false  print score columns for each round
-// Examples:
-//      Macro: Rankings(rounds="preONI2007/1/a | preONI2007/2/a" count = "10")
-//      Columns: | pos | name | score |
-//
-//      Rankings(rounds="preONI2007/1/a : round 1 | preONI2007/2/a : round 2" detail_round = "true")
-//      Columns: | pos | name | round 1 | round 2 | total |
-//
-//      Rankings(rounds="preONI2007/1/a : round 1 | preONI2007/2/a : round 2" detail_round = "true" detail_task = "true")
-//      Columns: | pos | name | task | task | task | round 1 | task | task | task | round 2 | total |
+//     detail_round  (optional) true/false print score columns for each round
 function macro_rankings($args) {
-    $args['param_prefix'] = 'rankings_';
-    if (isset($args['count'])) {
-        $args['display_entries'] = $args['count'];
-    }
+  $roundStr = $args['rounds'] ?? null;
+  $detailRound = ($args['detail_round'] ?? 'false') == 'true';
+  $detailTask = ($args['detail_task'] ?? 'false') == 'true';
 
-    // Detail parameters
-    $detail_round = getattr($args, 'detail_round', 'false');
-    $detail_task = getattr($args, 'detail_task', 'false');
+  if (!$roundStr) {
+    return macro_error("Parameter 'rounds' is required.");
+  }
 
-    $detail_round = ($detail_round == 'true');
-    $detail_task = ($detail_task == 'true');
+  $roundMap = parseRoundStr($roundStr);
+  $columns = makeColumns($roundMap, $detailRound, $detailTask);
+  $roundIds = array_column($roundMap, 'roundId');
+  $tableData = makeTableData($roundIds, $columns);
 
-    // Paginator options
-    $options = pager_init_options($args);
-    $options['show_count'] = true;
-    $options['css_class'] = 'alternating-colors table-sort';
+  if (!count($tableData)) {
+    return macro_message('Nici un rezultat înregistrat pentru această rundă.');
+  }
 
-    // Rounds parameters
-    $roundstr = getattr($args, 'rounds', '');
-    if ($roundstr == '') {
-        return macro_error("Parameters 'rounds' is required.");
-    }
-    $round_param = preg_split('/\s*\|\s*/', $roundstr);
-    $rounds = array();
-    foreach ($round_param as $param) {
-        $round = preg_split('/\s*\:\s*/', $param);
-        if (!Identity::mayViewRoundScores(round_get($round[0]))) {
-            continue;
-        }
-        array_push($rounds, array(
-            'round_id' => $round[0],
-            'round_name' => getattr($round, 1, ' ')
-        ));
-    }
-
-    // Generating Table
-
-    $column_infos = array(
-        array(
-            'title' => 'Poziție',
-            'key' => 'ranking',
-            'css_class' => 'number rank'
-        ),
-        array(
-            'title' => 'Nume',
-            'key' => 'user_full',
-            'rowform' => function($row) {
-                return format_user_normal($row['user_name'], $row['user_full'], $row['user_rating']);
-            },
-        ),
-    );
-
-    $columns = array();
-    $tasks = array();
-    if ($detail_round == true || $detail_task == true) {
-        foreach ($rounds as $round) {
-            $round_id = $round['round_id'];
-
-            if ($detail_task == true) {
-                $new_tasks = round_get_tasks($round_id);
-                foreach ($new_tasks as $task) {
-                    array_push($columns, array(
-                        'name' => $task['id'],
-                        'type' => 'task',
-                        'title' => $task['title']
-                    ));
-                    array_push($tasks, $task['id']);
-                }
-            }
-
-            if ($detail_round == true) {
-                array_push($columns, array(
-                    'name' => $round['round_id'],
-                    'type' => 'round',
-                    'title' => $round['round_name']
-                ));
-            }
-        }
-    }
-
-    foreach ($columns as $column) {
-        array_push($column_infos, array(
-            'title' => $column['title'],
-            'key' => $column['name'],
-            'rowform' => function($row) use ($column) {
-                return round($row[$column['name']]);
-            },
-            'css_class' => 'number score'
-        ));
-    }
-
-    $total = 'Scor';
-    if ($detail_round == true || $detail_task == true) {
-        $total = 'Total';
-    }
-    array_push($column_infos, array(
-        'title' => $total,
-        'key' => 'score',
-        'rowform' => function($row) {
-            return round($row['score']);
-        },
-        'css_class' => 'number score'
-    ));
-
-    $round_ids = array();
-    foreach ($rounds as $round) {
-        array_push($round_ids, $round['round_id']);
-    }
-    $rankings = score_get_rankings($round_ids, $tasks, $options['first_entry'], $options['display_entries'], $detail_task, $detail_round);
-
-    if (pager_needs_total_entries($options)) {
-        $options['total_entries'] = score_get_count(null, null, $round_ids);
-    }
-
-    if (0 >= count($rankings)) {
-        return macro_message('Nici un rezultat înregistrat pentru această rundă.');
-    } else {
-        return format_table($rankings, $column_infos, $options);
-    }
+  Smart::assign([
+    'columns' => $columns,
+    'tableData' => $tableData,
+  ]);
+  return smart::fetch('bits/rankings.tpl');
 }
-
-?>

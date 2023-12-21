@@ -984,11 +984,6 @@ table.monitor {
 	font-size: 10.4pt;
 }
 
-/* rankings */
-td.rank, th.rank {
-  width: 2em;
-}
-
 td.rating, th.rating {
 	text-align: center;
   width: 2em;

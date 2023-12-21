@@ -58,6 +58,10 @@ body#infoarena {
   padding-left: 22px;
 }
 
+.nowrap {
+  white-space: nowrap;
+}
+
 /* site footer */
 #footer {
   background: linear-gradient(#b1d6f0, white 60%);
@@ -196,7 +200,7 @@ table.fill-screen, table.fill-screen tr {
 }
 
 /* datagrids */
-td.number, th.number, td.date, th.date, th.state {
+td.number, th.number, td.center, th.center, td.date, th.date, th.state {
   text-align: center;
 }
 

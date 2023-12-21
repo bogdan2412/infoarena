@@ -43,6 +43,16 @@ class Task extends Base {
       ->find_many();
   }
 
+  static function loadByRoundId(string $roundId) {
+    return Model::factory('Task')
+      ->table_alias('t')
+      ->select('t.*')
+      ->join('ia_round_task', ['t.id', '=', 'rt.task_id'], 'rt')
+      ->where('rt.round_id', $roundId)
+      ->order_by_asc('rt.order_id')
+      ->find_many();
+  }
+
   function isPrivate(): bool {
     return $this->security == 'private';
   }
