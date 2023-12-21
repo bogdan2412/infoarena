@@ -10,6 +10,10 @@ class Request {
     return $_REQUEST[$name] ?? $default;
   }
 
+  static function getFloat(string $name, $default = '') {
+    return (float)self::get($name, $default);
+  }
+
   static function has(string $name): bool {
     return array_key_exists($name, $_REQUEST);
   }

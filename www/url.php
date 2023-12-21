@@ -370,16 +370,6 @@ function url_admin() {
     return url_textblock('admin');
 }
 
-//Penalty stuff
-function url_penalty() {
-    return url_complex('penalty');
-}
-
-function url_penalty_edit($user_id, $round_id) {
-    return url_complex('penalty_edit', array('user_id' => $user_id,
-                                             'round_id' => $round_id));
-}
-
 /**
  * User control.
  * @param int $user_id ID of user to ban or unban.

@@ -16,6 +16,10 @@ class Round extends Base {
     return $page->timestamp;
   }
 
+  function getRankingsUrl(): string {
+    return Config::URL_PREFIX . $this->page_name . '/clasament';
+  }
+
   function hasNonstandardPage(): bool {
     return $this->page_name != 'runda/' . $this->id;
   }

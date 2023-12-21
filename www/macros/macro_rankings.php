@@ -133,6 +133,7 @@ function macro_rankings($args) {
   $roundMap = parseRoundStr($roundStr);
   $columns = makeColumns($roundMap, $detailRound, $detailTask);
   $roundIds = array_column($roundMap, 'roundId');
+  $roundId = (count($roundIds) == 1) ? $roundIds[0] : null;
   $tableData = makeTableData($roundIds, $columns);
 
   if (!count($tableData)) {
@@ -141,6 +142,7 @@ function macro_rankings($args) {
 
   Smart::assign([
     'columns' => $columns,
+    'roundId' => $roundId,
     'tableData' => $tableData,
   ]);
   return smart::fetch('bits/rankings.tpl');

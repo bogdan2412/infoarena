@@ -4,6 +4,13 @@ class ScoreUserRound extends Base {
 
   public static $_table = 'ia_score_user_round';
 
+  static function getByUserIdRoundId(string $userId, string $roundId): ?ScoreUserRound {
+    return Model::factory('ScoreUserRound')
+      ->where('user_id', $userId)
+      ->where('round_id', $roundId)
+      ->find_one();
+  }
+
   // Returns an array of [ 'userId', 'total' ] pairs, sorted by total
   // descending.
   static function loadTotalsByRoundIds(array $roundIds): array {

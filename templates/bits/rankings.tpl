@@ -1,3 +1,4 @@
+{$penaltyLinks=Identity::isAdmin() && $roundId}
 <table class="alternating-colors table-sort">
   <thead>
     <tr>
@@ -7,6 +8,9 @@
         <th class="center">{$col.displayValue}</th>
       {/foreach}
       <th class="center">Total</th>
+      {if $penaltyLinks}
+        <th class="center">Acțiuni</th>
+      {/if}
     </tr>
   </thead>
 
@@ -27,6 +31,13 @@
         <td class="center">
           {$row->total}
         </td>
+        {if $penaltyLinks}
+          <td class="center">
+            <a href="{Config::URL_PREFIX}penalty_edit?userId={$row->user->id}&roundId={$roundId}">
+              penalizează
+            </a>
+          </td>
+        {/if}
       </tr>
     {/foreach}
   </tbody>
