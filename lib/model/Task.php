@@ -18,7 +18,8 @@ class Task extends Base {
       ->where('page', $this->page_name)
       ->where_like('name', 'grader_test%.in')
       ->find_one();
-    return $obj->maxSize;
+
+    return $obj->maxSize ?? 0;
   }
 
   function isInAnyRunningRounds(): bool {
