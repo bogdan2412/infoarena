@@ -131,14 +131,14 @@ function macro_rankings($args) {
   }
 
   $roundMap = parseRoundStr($roundStr);
+  if (!count($roundMap)) {
+    return macro_message('Nici un rezultat înregistrat pentru această rundă.');
+  }
+
   $columns = makeColumns($roundMap, $detailRound, $detailTask);
   $roundIds = array_column($roundMap, 'roundId');
   $roundId = (count($roundIds) == 1) ? $roundIds[0] : null;
   $tableData = makeTableData($roundIds, $columns);
-
-  if (!count($tableData)) {
-    return macro_message('Nici un rezultat înregistrat pentru această rundă.');
-  }
 
   Smart::assign([
     'columns' => $columns,
