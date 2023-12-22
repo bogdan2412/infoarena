@@ -304,13 +304,6 @@ class Identity {
       ($roundType != 'user-defined');
   }
 
-  static function mayViewAcmRoundPartialScores(array $round): bool {
-    return
-      self::isAdmin() ||
-      self::isIntern() ||
-      ($round['state'] != 'waiting');
-  }
-
   static function mayViewChanges(): bool {
     return self::isAdmin();
   }

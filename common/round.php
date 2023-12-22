@@ -8,7 +8,6 @@ function round_get_types() {
             'penalty-round' => 'Concurs cu penalizare',
             'archive' => 'Arhiva de pregătire',
             'user-defined' => 'Concurs virtual',
-            'acm-round' => 'Concurs tip ACM'
     );
 }
 
@@ -19,7 +18,7 @@ function round_get_types() {
  * @return array
  */
 function round_get_contest_types() {
-    return array('classic', 'penalty-round', 'acm-round');
+    return array('classic', 'penalty-round');
 }
 
 // Get parameter infos.
@@ -79,21 +78,6 @@ function round_get_parameter_infos() {
                             'type' => 'integer',
                     ),
                 ),
-            'acm-round' => array(
-                    'duration' => array(
-                        'name' => 'Durată',
-                        'description' => 'Durata concursului, în ore.',
-                        'default' => '5',
-                        'type' => 'float'
-                    ),
-                    'scoreboard-duration' => array(
-                        'name' => 'Durata vizibilității clasamentului',
-                        'description' => 'Durata vizibilității clasamentului, '
-                            . 'în ore.',
-                        'default' => '4',
-                        'type' => 'float'
-                    )
-                ),
             'archive' => array(
                     'duration' => array(
                             'name' => 'Durata',
@@ -118,8 +102,7 @@ function round_validate_parameters($round_type, $parameters) {
     $errors = array();
     if ($round_type == 'classic' || $round_type == 'user-defined'
             || $round_type == 'archive'
-            || $round_type == 'penalty-round'
-            || $round_type == 'acm-round') {
+            || $round_type == 'penalty-round') {
         // Check duration
         $duration = getattr($parameters, 'duration');
         if (is_null($duration)) {
@@ -130,22 +113,6 @@ function round_validate_parameters($round_type, $parameters) {
             if ($duration > IA_USER_DEFINED_ROUND_DURATION_LIMIT) {
                 $errors['duration'] = "Durata maximă admisă este de " .
                     IA_USER_DEFINED_ROUND_DURATION_LIMIT . " ore";
-            }
-        }
-
-        if ($round_type == 'acm-round') {
-            $scoreboard_duration = getattr($parameters, 'scoreboard-duration');
-            if (is_null($scoreboard_duration)) {
-                $errors['duration'] = "Durata vizibilității clasamentului "
-                    . "trebuie specificată.";
-                return $errors;
-            }
-
-            if (!is_numeric($scoreboard_duration) ||
-                $scoreboard_duration < 0) {
-                $errors['duration'] = "Durata vizibilității clasamentului "
-                                    . "trebuie să fie un numar pozitiv.";
-                return $errors;
             }
         }
 
@@ -247,9 +214,9 @@ function round_event_stop($round) {
     log_print("CONTEST LOGIC: Stopping round {$round['id']}.");
     $round['state'] = 'complete';
     // Results should be immediately visible after a round ends
-    // if its type is not classic or acm-round.
+    // if its type is not classic.
     // FIXME: make this a parameter
-    if ($round["type"] != "classic" && $round["type"] != "acm-round") {
+    if ($round["type"] != "classic") {
         $round['public_eval'] = 1;
     }
     round_update($round);

@@ -91,7 +91,6 @@ function delete_user(array $user, array $target) {
     // List tables which contain user_id references which can simply be deleted.
     // For every such table, enumerate fields to log as we delete them.
     $FOREIGN_DATA = [
-        'ia_acm_round',
         'ia_rating',
         'ia_task_users_solved',
         'ia_score_task_top_users',

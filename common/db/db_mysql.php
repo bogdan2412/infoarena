@@ -166,7 +166,8 @@ function db_next_row($result) {
 }
 
 function db_execute_sql_file(string $fileName): void {
-    $command = sprintf('mysql -h %s -u %s %s %s < %s',
+    $command = sprintf('%s -h %s -u %s %s %s < %s',
+                       Config::DB_COMMAND,
                        Config::DB_HOST,
                        Config::DB_USER,
                        DB::getDatabaseName(),

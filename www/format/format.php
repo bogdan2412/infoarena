@@ -416,29 +416,3 @@ function format_task_tag_menu($tags, $selected_tags) {
     $menu .= '</ul>';
     return $menu;
 }
-
-/**
- * Formats an acm-round table cell which contains a task score
- *
- * @param int $score
- * @param int $penalty
- * @param int $submission
- * @return string
- */
-function format_acm_score($score, $penalty, $submission) {
-    if ($submission == 0) {
-        return "0";
-    }
-
-    $penalty -= ($submission - 1) * 20;
-    $result = '<span style="font-size: 18px;text-weight: bold;color: ';
-    if ($score > 0) {
-        $result .= 'green">+';
-        if ($submission > 1)
-            $result .= ($submission - 1);
-    } else {
-        $result .= 'red">-' . $submission;
-    }
-    $result .= '</span><br>' . $penalty;
-    return $result;
-}
