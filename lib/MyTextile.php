@@ -74,42 +74,14 @@ class MyTextile extends \Netcarver\Textile\Parser {
     return macro_error('Bad macro "'.$str.'"');
   }
 
-  // Processes ==$type|$text== blocks.
-  function process_pipe_block($type, $text) {
-    $type = strtolower($type);
-    $matches = array();
-    if (preg_match('/code\((c|cpp|pas|java|python)\)/i', $type, $matches)) {
-      $lang = $matches[1];
-
-      if ('c' == $lang) {
-        $lang = 'cpp';
-      } elseif ('pas' == $lang) {
-        $lang = 'delphi';
-      }
-
-      return "\n<div class=\"code\">"
-        ."<textarea class=\"brush: {$lang};\" cols=\"60\" rows=\"10\">"
-        .html_escape($text) . "</textarea></div>\n";
-    }
-    else {
-      return macro_error("Can't handle ==$type| block.");
-    }
-  }
-
   // This is called for ==text here== blocks.
   // By default textile passes the text to html unchanged (it has
   // some filter features we don't use. This is sort of bad because
   // you can inject arbritary html.
   function fTextile($args) {
+    //    var_dump($args);
     $str = getattr($args, 'content', '');
-    $matches = array();
-    if (preg_match('/^  \s*  ([a-z][a-z0-9\+\#\-\(\)\.]*)  \s* \|(.*)/sxi',
-                   $str, $matches)) {
-      $res = $this->process_pipe_block($matches[1], $matches[2]);
-    } else {
-      $res = $this->process_macro($str);
-    }
-
+    $res = $this->process_macro($str);
     $res = getattr($args, 'before', '') . $res . getattr($args, 'after', '');
     return $res;
   }
