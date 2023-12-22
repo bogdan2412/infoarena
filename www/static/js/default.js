@@ -3,6 +3,15 @@
  * (c) infoarena
  */
 
+// Disable the $$...$$ notation for block math.
+window.MathJax = {
+  tex: {
+    displayMath: [
+      ['\\[', '\\]']
+    ],
+  }
+};
+
 function Page_Init() {
   // fade away flash messages except for errors
   setTimeout(function() {

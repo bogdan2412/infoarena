@@ -74,16 +74,28 @@ class MyTextile extends \Netcarver\Textile\Parser {
     return macro_error('Bad macro "'.$str.'"');
   }
 
-  // This is called for ==text here== blocks.
-  // By default textile passes the text to html unchanged (it has
-  // some filter features we don't use. This is sort of bad because
-  // you can inject arbritary html.
+  // This is called for two distinct formats:
+  //
+  // 1. ==text here==
+  // 2. <notextile>text here</notextile>
+  //
+  // Both of these mean "leave unformatted" in Textile. For historic reasons,
+  // we intercept the first notation for macros. Leave the second one
+  // unchanged.
   function fTextile($args) {
-    //    var_dump($args);
-    $str = getattr($args, 'content', '');
-    $res = $this->process_macro($str);
-    $res = getattr($args, 'before', '') . $res . getattr($args, 'after', '');
-    return $res;
+    $original = $args[0];
+    $before = $args['before'];
+    $content = $args['content'];
+    $after = $args['after'];
+
+    $reconstructed = sprintf('%s==%s==%s', $before, $content, $after);
+    $usesDoubleEqual = ($reconstructed == $original);
+
+    if ($usesDoubleEqual) {
+      return $before . $this->process_macro($content) . $after;
+    } else {
+      return parent::fTextile($args);
+    }
   }
 
   function is_wiki_link($link) {
