@@ -1,13 +1,15 @@
-function show_tag_list(parent_tag_id) {
-    var tag_lists = $(".tag_list");
-    var i = 0;
+$(function() {
 
-    document.getElementById('tag_list_' + parent_tag_id).style.display = "inline";
-    document.getElementById('tag_anchor_' + parent_tag_id).style.display = "none";
-}
+  $('#show_algorithm_tags').on('click', function() {
+    $(this).hide();
+    $(this).next('ul').slideDown();
+    return false;
+  });
 
-function show_tags() {
-    $(".tags_list_item").css('display', 'list-item');
+  $('.show_tag_anchor').on('click', function() {
+    $(this).hide();
+    $(this).next('span').fadeIn();
+    return false;
+  });
 
-    $('#show_tags').hide();
-}
+});

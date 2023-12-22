@@ -12,6 +12,36 @@ class Task extends Base {
     }
   }
 
+  function getMethodsAndAlgorithms(): array {
+    $methods = $this->getTags('method');
+    $algorithms = $this->getTags('algorithm');
+
+    $results = [];
+    foreach ($methods as $method) {
+      $arr = array_filter($algorithms, function(Tag $x) use ($method) {
+        return $x->parent == $method->id;
+      });
+
+      $results[] = [
+        'method' => $method,
+        'algorithms' => $arr,
+      ];
+    }
+
+    return $results;
+  }
+
+  function getTags(string $tagType): array {
+    return Model::factory('Tag')
+      ->table_alias('tag')
+      ->select('tag.*')
+      ->join('ia_task_tags', [ 'task_tag.tag_id', '=', 'tag.id' ], 'task_tag')
+      ->where('tag.type', $tagType)
+      ->where('task_tag.task_id', $this->id)
+      ->order_by_asc('tag.name')
+      ->find_many();
+  }
+
   function getLargestInputFile(): int {
     $obj = Model::factory('Attachment')
       ->select_expr('max(size)', 'maxSize')

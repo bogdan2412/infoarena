@@ -218,6 +218,7 @@ li.tag_list_item {
   border-radius: 4px;
   display: inline;
   font-size: 11px;
+  margin-left: 0.5em;
   padding-bottom: 0.2em;
   padding-left: 0.3em;
   padding-right: 0.3em;
@@ -230,6 +231,7 @@ li.tag_list_item {
   display: inline;
   font-size: 10px;
   font-weight: bold;
+  margin-right: 0.5em;
   padding-bottom: 0.2em;
   padding-left: 0.4em;
   padding-right: 0.4em;
