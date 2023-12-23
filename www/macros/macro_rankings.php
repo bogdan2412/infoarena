@@ -1,10 +1,5 @@
 <?php
 
-require_once Config::ROOT . 'www/format/table.php';
-require_once Config::ROOT . 'www/format/pager.php';
-require_once Config::ROOT . 'www/format/format.php';
-require_once Config::ROOT . 'common/db/score.php';
-
 class RankingsRow {
   public int $rank;
   public User $user;
