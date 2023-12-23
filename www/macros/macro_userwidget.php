@@ -1,26 +1,19 @@
 <?php
-require_once(Config::ROOT . 'www/format/format.php');
-require_once(Config::ROOT . 'common/db/user.php');
+
 /**
  * Returns an image showing user statistics.
  *
- * @param string $username
+ * @param string $user
  * @return string Rendered HTML
  *
  */
-
 function macro_userwidget($args) {
-    $user = getattr($args, 'user', '');
-    if ($user === '') {
-        return macro_error("User parameter required.");
-    }
-    $dbuser = user_get_by_username($user);
-    if (!$dbuser) {
-        return macro_error("Utilizator inexistent.");
-    }
-    $ret = '<img src="';
-    $ret .= url_absolute(Config::URL_PREFIX . "userwidget/" . $user);
-    $ret .= '">';
-    return $ret;
+  $username = $args['user'] ?? '';
+  $user = User::get_by_username($username);
+  if (!$user) {
+    return macro_error("Utilizator inexistent: „{$username}”.");
+  }
+
+  Smart::assign('user', $user);
+  return Smart::fetch('macro/userWidget.tpl');
 }
-?>

@@ -115,43 +115,6 @@ function user_count() {
   return db_query_value("SELECT COUNT(*) FROM ia_user");
 }
 
-// Returns array with user submitted tasks. Filter tasks by choosing whether
-// to select failed and solved tasks.
-function user_submitted_tasks($user_id, $rounds,
-                              $solved = true, $failed = true) {
-  // construct where
-  if ($solved && $failed) {
-    // no condition
-    $where = '';
-  }
-  elseif ($solved) {
-    $where = 'AND ia_score_user_round_task.score = 100';
-  }
-  elseif ($failed) {
-    $where = 'AND ia_score_user_round_task.score < 100';
-  } else {
-    // This shouldn't happen
-    log_error('You can\'t select nothing.');
-  }
-
-  if ($rounds == null) {
-    $rounds = array('');
-  }
-
-  $archives = db_escape_array($rounds);
-  $query = sprintf("SELECT *
-        FROM ia_score_user_round_task
-        LEFT JOIN ia_task ON ia_task.id = ia_score_user_round_task.task_id
-        WHERE ia_score_user_round_task.user_id = '%s'
-        AND ia_score_user_round_task.round_id
-            IN (%s)
-        AND NOT ia_task.id IS NULL %s
-        GROUP BY ia_task.id
-        ORDER BY ia_task.`order`", $user_id, $archives, $where);
-
-  return db_fetch_all($query);
-}
-
 // Returns array with rounds that user has submitted to tasks.
 function user_submitted_rounds($user_id) {
   $query = "SELECT *

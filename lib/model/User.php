@@ -4,6 +4,14 @@ class User extends Base {
 
   public static $_table = 'ia_user';
 
+  function getScaledRating(): float {
+    return rating_scale($this->rating_cache);
+  }
+
+  function getRatingGroup(): array {
+    return rating_group($this->getScaledRating(), $this->isAdmin());
+  }
+
   static function getIdFromUsername(string $username): int {
     $user = self::get_by_username($username);
     return $user->id ?? 0;
@@ -39,6 +47,10 @@ class User extends Base {
 
   static function getRatingUrl(string $username): string {
     return url_user_rating($username);
+  }
+
+  function isAdmin(): bool {
+    return $this->security_level == 'admin';
   }
 
   function isEditable(): bool {

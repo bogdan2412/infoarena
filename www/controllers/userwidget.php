@@ -1,57 +1,73 @@
 <?php
 
-require_once(Config::ROOT . "common/db/user.php");
-require_once(Config::ROOT . "www/format/format.php");
-
 /**
  * Displays an image with user statistics.
  *
  * @param  string $username
  * @return
  */
+function controller_userwidget(string $username): void {
+  $user = User::get_by_username($username);
+  if (!$user) {
+    FlashMessage::addError("Utilizatorul „{$username}” nu există.");
+    Util::redirectToHome();
+  }
 
-function controller_userwidget($user_name) {
-    // get data
-    $db_user = user_get_by_username($user_name);
-    $task_data_succes = user_submitted_tasks($db_user['id'], array('arhiva'),
-                                              true, false);
-    $task_data_failed = user_submitted_tasks($db_user['id'], array('arhiva'),
-                                              false, true);
-    // get name
-    $name = $db_user['full_name'];
-    // get rating
-    $rating = $db_user['rating_cache'];
-    $rating = rating_scale($rating);
-    $rating = sprintf("%01.0f", $rating);
-    // get solved tasks
-    $number_solved = sizeof($task_data_succes);
-    // get failed tasks
-    $number_failed = sizeof($task_data_failed);
-    // calculate the succes by formula:
-    // Number of solved problems*100/(number solved+number failed)
-    if ($number_solved + $number_failed != 0) {
-        $result = $number_solved / ($number_solved + $number_failed) * 100;
-        $result = sprintf("%01.2f", $result);
-        $succes = $result . "%";
-    } else {
-        $succes = "-";
-    }
-    $is_admin = ($db_user['security_level'] === 'admin');
-    // array containing the rating group and the color
-    $rating_group = rating_group($rating, $is_admin);
-    $hex = $rating_group['colour'];
-    $red = hexdec(substr($hex, 1, 2));
-    $green = hexdec(substr($hex, 3, 2));
-    $blue = hexdec(substr($hex, 5, 2));
-    $data = array(
-        'name' => $name,
-        'task_data_succes' => $number_solved,
-        'task_data_failed' => $number_failed,
-        'succes' => $succes,
-        'rating' => $rating,
-        'red' => $red,
-        'green' => $green,
-        'blue' => $blue
-    );
-    execute_view_die('views/userwidget.php', $data);
+  prepare_image($user);
+}
+
+function prepare_image(User $user): void {
+  $numSolved = count($user->getArchiveTasks(true));
+  $numFailed = count($user->getArchiveTasks(false));
+  $successRate = $numSolved
+    ? ($numSolved / ($numSolved + $numFailed))
+    : 0;
+
+  $ratingGroup = $user->getRatingGroup();
+  $rgb = split_color($ratingGroup['colour']);
+
+  $ratingText = sprintf('Rating: %d', $user->getScaledRating());
+  $successText = sprintf('Succes: %0.2f%%', $successRate * 100);
+  $solvedText = 'Probleme rezolvate: ' . $numSolved;
+  $failedText = 'Probleme incercate: ' . $numFailed;
+
+  $messages = [
+    [  15, 42, $user->full_name ],
+    [ 115,  5, $ratingText ],
+    [  95, 19, $successText ],
+    [  15, 54, $solvedText ],
+    [  15, 65, $failedText ],
+  ];
+
+  create_and_print_image($rgb, $messages);
+}
+
+function create_and_print_image(array $rgb, array $messages): void {
+  $img = imagecreate(200, 80);
+  $bg_color = imagecolorallocate($img, 80, 80, 80);
+  $fg_color = imagecolorallocate($img, 255, 255, 255);
+  $line_color = imagecolorallocate($img, $rgb[0], $rgb[1], $rgb[2]);
+
+  foreach ($messages as $rec) {
+    imagestring($img, 3, $rec[0], $rec[1], $rec[2], $fg_color);
+
+  }
+  imagesetthickness($img, 5);
+  imageline($img, 0, 38, 200, 38, $line_color);
+
+  header("Content-type: image/png");
+  imagepng($img);
+
+  imagecolordeallocate($img, $line_color);
+  imagecolordeallocate($img, $fg_color);
+  imagecolordeallocate($img, $bg_color);
+  imagedestroy($img);
+}
+
+function split_color(string $hex): array {
+  return [
+    hexdec(substr($hex, 1, 2)),
+    hexdec(substr($hex, 3, 2)),
+    hexdec(substr($hex, 5, 2)),
+  ];
 }
