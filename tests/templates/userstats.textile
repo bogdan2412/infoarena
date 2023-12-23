@@ -2,13 +2,9 @@ template/userstats
 
 h2. Statistici pentru %user%
 
-h3. Probleme rezolvate
+==ArchiveTasks(user="%user%" solved="true")==
 
-==SolvedTasks(user="%user%" rounds="arhiva")==
-
-h3. Probleme încercate
-
-==FailedTasks(user="%user%" rounds="arhiva")==
+==ArchiveTasks(user="%user%" solved="false")==
 
 h3. Participant la&hellip;
 

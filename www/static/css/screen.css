@@ -1016,11 +1016,6 @@ td.rating, th.rating {
   text-align: left;
 }
 
-/* task enumeration */
-.task_enum {
-  font-size: .9em;
-}
-
 /* round registration */
 .round-register, .round-registered, .round-expired {
   background-color: #fff;

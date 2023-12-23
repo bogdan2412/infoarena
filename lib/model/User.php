@@ -56,4 +56,22 @@ class User extends Base {
     return ($count > 0);
   }
 
+  function getArchiveTasks(bool $solved): array {
+    $query = Model::factory('Task')
+      ->table_alias('t')
+      ->select('t.*')
+      ->join('ia_score_user_round_task', [ 't.id', '=', 'surt.task_id' ], 'surt')
+      ->join('ia_round', [ 'surt.round_id', '=', 'r.id' ], 'r')
+      ->where('r.type', 'archive')
+      ->where('surt.user_id', $this->id);
+
+    if ($solved) {
+      $query = $query->where('surt.score', 100);
+    } else {
+      $query = $query->where_lt('surt.score', 100);
+    }
+
+    return $query->find_many();
+  }
+
 }
