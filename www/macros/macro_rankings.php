@@ -145,5 +145,5 @@ function macro_rankings($args) {
     'roundId' => $roundId,
     'tableData' => $tableData,
   ]);
-  return smart::fetch('bits/rankings.tpl');
+  return smart::fetch('macro/rankings.tpl');
 }
