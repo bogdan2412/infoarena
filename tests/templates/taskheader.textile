@@ -1,15 +1,3 @@
 template/taskheader
 
-&nbsp;
-
-table{margin-left:auto;margin-right:auto;}.
-| *Fișierul intrare/ieșire:* | ==TaskParam(param="id" task_id="%task_id%")==.in, ==TaskParam(param="id" task_id="%task_id%")==.out | *Sursă* | ==TaskParam(param="source" task_id="%task_id%")== |
-| *Autor* | ==TaskParam(param="author" task_id="%task_id%")== | *Adăugată de* | ==TaskParam(param="formatted_owner" task_id="%task_id%")== |
-| *Timp execuție pe test* | ==TaskParam(param="timelimit" task_id="%task_id%")== sec | *Limită de memorie* | ==TaskParam(param="memlimit" task_id="%task_id%")== KB |
-| *Scorul tău* | ==TaskParam(param="lastscore" task_id="%task_id%")== | *Dificultate* | ==TaskParam(param="difficulty" task_id="%task_id%")== |
-
-==TaskOpen(task_id="%task_id%")==
-
-p{float: right; margin-right: 1em}. "Vezi soluțiile trimise":monitor?task=%task_id% | "Statistici":statistici_problema?task=%task_id%
-
-h1. ==TaskParam(param="title" task_id="%task_id%")==
+==TaskHeader(task_id="%task_id%")==

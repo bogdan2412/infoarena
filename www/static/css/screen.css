@@ -847,6 +847,19 @@ a.user-control.unban {
   border: 2px solid black;
 }
 
+/* task header */
+table.task-header {
+  margin-top: 42px;
+}
+
+table.task-header th {
+  background-color: inherit;
+}
+
+p.task-title-links {
+  float: right;
+}
+
 /* task statement example */
 table.example td {
   font-family: monospace;
@@ -1052,11 +1065,12 @@ table.registered-users {
   padding: 0.25em;
 }
 
-.banner {
+.open-task-banner {
   display: flex;
+  margin-top: 12px;
 }
 
-.banner div {
+.open-task-banner div {
   align-items: center;
   background-color: #b2d7f1;
   border-radius: 5px;
@@ -1065,11 +1079,11 @@ table.registered-users {
   padding: 0.3em;
 }
 
-.banner img {
+.open-task-banner img {
   margin-right: 1em;
 }
 
-.banner a {
+.open-task-banner a {
   margin-left: 0.3em;
 }
 

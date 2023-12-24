@@ -42,6 +42,55 @@ class Task extends Base {
       ->find_many();
   }
 
+  function getMemoryLimit(): int {
+    $p = Parameter::getTaskParameter($this->id, 'memlimit');
+    return (int)($p->value ?? 0);
+  }
+
+  function getTimeLimit(): float {
+    $p = Parameter::getTaskParameter($this->id, 'timelimit');
+    return (float)($p->value ?? 0);
+  }
+
+  // Returns the highest score of the active user in an archive round (null if
+  // none or invisible).
+  function getIdentityMaxScore(): ?float {
+    $userId = Identity::getId();
+    if (!$userId || !$this->isMaxScoreViewable()) {
+      return null;;
+    }
+
+    $surt = Model::factory('ScoreUserRoundTask')
+      ->table_alias('surt')
+      ->select('surt.*')
+      ->join('ia_round', [ 'surt.round_id', '=', 'r.id' ], 'r')
+      ->where('r.type', 'archive')
+      ->where('surt.task_id', $this->id)
+      ->where('surt.user_id', $userId)
+      ->order_by_desc('surt.score')
+      ->find_one();
+
+    return $surt ? (int)$surt->score : null;
+  }
+
+  // Returns an HTML formatted star rating.
+  // TODO: factor out star code in a dedicated file.
+  function getDifficulty(): string {
+    if (is_null($this->rating)) {
+      return 'N/A';
+    }
+
+    if ($this->security != 'public') {
+      return 'N/A';
+    }
+
+    return macro_stars([
+      'rating' => $this->rating,
+      'scale' => 5,
+      'type' => 'normal',
+    ]);
+  }
+
   function getLargestInputFile(): int {
     $obj = Model::factory('Attachment')
       ->select_expr('max(size)', 'maxSize')
@@ -61,6 +110,10 @@ class Task extends Base {
       ->count();
 
     return ($numRunningRounds > 0);
+  }
+
+  function getAttachmentUrl(): string {
+    return url_attachment_list("problema/{$this->id}");
   }
 
   function getIncompleteRounds() {
@@ -104,7 +157,7 @@ class Task extends Base {
       Identity::ownsTask($this);
   }
 
-  function isLastScoreViewable(): bool {
+  function isMaxScoreViewable(): bool {
     return
       $this->isPublic() ||
       Identity::ownsTask($this);
