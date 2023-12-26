@@ -52,6 +52,21 @@ class Textblock extends Base {
     return User::get_by_username($username) ?: null;
   }
 
+  function getAttachments(string $wildcard): array {
+    return Model::factory('Attachment')
+      ->where('page', $this->name)
+      ->where_like('name', $wildcard)
+      ->order_by_asc('name')
+      ->find_many();
+  }
+
+  function getImageAttachments(string $wildcard): array {
+    $atts = $this->getAttachments($wildcard);
+    return array_filter($atts, function($a) {
+      return Image::isImage($a->getFileName());
+    });
+  }
+
   function isEditableReversibly(): bool {
     if ($this->belongsToUser()) {
       $user = $this->getUser();

@@ -28,29 +28,6 @@ function _recursive_delete($path) {
     rmdir($path);
 }
 
-function disk_cache_has($cache_id, $date = null) {
-    $file_name = _disk_cache_path($cache_id);
-
-    if (!@is_readable($file_name)) {
-        return false;
-    } else {
-        if (is_null($date) || $date === false) {
-            return true;
-        }
-
-        // Check mtime
-        $mtime = @filemtime($file_name);
-
-        // Delete old stuff.
-        if ($mtime === false || $mtime < $date) {
-            @unlink($file_name);
-            return false;
-        } else {
-            return true;
-        }
-    }
-}
-
 // Get an object from the cache, or FALSE if nothing is found.
 function disk_cache_get($cache_id) {
     $file_name = _disk_cache_path($cache_id);
@@ -66,18 +43,6 @@ function disk_cache_get($cache_id) {
         }
         return false;
     }
-}
-
-// If $cache_id is in cache, then pass it to the client.
-// Fails if not found.
-function disk_cache_serve($cache_id, $http_file_name, $mime_type = null) {
-    require_once(Config::ROOT . 'www/utilities.php');
-    $file_name = _disk_cache_path($cache_id);
-
-    if (Config::LOG_DISK_CACHE) {
-        log_print("CACHE: DISK: SERVE $cache_id");
-    }
-    http_serve($file_name, $http_file_name, $mime_type);
 }
 
 // Place an object in the cache.
@@ -105,12 +70,6 @@ function disk_cache_set($cache_id, $buffer, $ttl = 0) {
     }
 
     return $buffer;
-}
-
-// Delete something from the disk cache.
-function disk_cache_delete($cache_id) {
-    $file_name = _disk_cache_path($cache_id);
-    @unlink($file_name);
 }
 
 // Delete the entire disk cache

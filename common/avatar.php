@@ -2,7 +2,6 @@
 
 require_once(Config::ROOT.'common/db/db.php');
 require_once(Config::ROOT.'www/controllers/attachment.php');
-require_once(Config::ROOT.'www/controllers/image_attachment.php');
 require_once(Config::ROOT.'common/db/attachment.php');
 require_once(Config::ROOT.'www/controllers/account_validator.php');
 require_once(Config::ROOT.'common/common.php');

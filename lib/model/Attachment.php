@@ -14,6 +14,10 @@ class Attachment extends Base {
       : Config::ROOT . 'attach/';
   }
 
+  function getFileName(): string {
+    return attachment_get_filepath($this->as_array());
+  }
+
   static function normalizeAndGetByNamePage(string $name, string $page): ?Attachment {
     $page = normalize_page_name($page);
 
@@ -79,6 +83,14 @@ class Attachment extends Base {
     }
 
     return $results;
+  }
+
+  function getGalleryThumbUrl(): string {
+    return Image::resize($this->getFileName(), Config::THUMB_GALLERY);
+  }
+
+  function getUrl(): string {
+    return url_attachment($this->page, $this->name, true);
   }
 
   private function getTextblock(): Textblock {

@@ -822,29 +822,23 @@ a.user-control.unban {
 }
 
 /* gallery macro */
-.gallery .images a {
-  background-color: #f0f0f0;
-  border: 2px solid white;
-  display: block;
-  float: left;
-  height: 84px;
+.gallery {
+  display: flex;
+}
+
+.gallery a {
+  display: flex;
   margin: 5px;
-  text-align: center;
-  width: 134px;
+  transition: opacity 0.1s linear;
 }
 
-.gallery .images img {
-  margin: 2px;
+.gallery a:hover {
+  opacity: 0.5;
 }
 
-.gallery .pager {
-  clear: left;
-  display: block;
-}
-
-.gallery .images a:hover {
-  background-color: white;
-  border: 2px solid black;
+.gallery img {
+  /* Necessary for SVG images. Keep in sync with Config::THUMB_GALLERY. */
+  height: 80px;
 }
 
 /* task header */

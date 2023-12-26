@@ -35,13 +35,7 @@ define('IA_PAGER_MIN_DISPLAY_ENTRIES', 3);
 $IA_PAGER_DISPLAY_ENTRIES_OPTIONS = array(25, 50, 100, 250);
 
 // Cache directory
-define('IA_IMAGE_CACHE_ENABLE', true);
 define('IA_TEXTILE_CACHE_ENABLE', true);
-
-// Image resampling
-//  - constraints for image resampling
-define("IA_IMAGE_RESIZE_MAX_WIDTH", 800);
-define("IA_IMAGE_RESIZE_MAX_HEIGHT", 800);
 
 // List of safe MIME types
 // FIXME: add more?

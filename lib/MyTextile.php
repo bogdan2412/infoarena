@@ -162,14 +162,7 @@ class MyTextile extends \Netcarver\Textile\Parser {
       if (preg_match('/^ ('.IA_RE_PAGE_NAME.') \? '.
                      '('.IA_RE_ATTACHMENT_NAME.')'.
                      '$/ix', $srcpath, $matches)) {
-        $extra = preg_replace('/\([^\)]+\)/', '', $extra, 1);
-        $extra = preg_replace('/\s/', '', $extra);
-        // FIXME: sometimes we can determine width/height.
-        if (!resize_coordinates(100, 100, $extra)) {
-          //log_warn("Invalid resize instructions '$extra'");
-          $extra = '';
-        }
-        $args['url'] = url_absolute(url_image_resize($matches[1], $matches[2], $extra));
+        $args['url'] = url_absolute(url_attachment($matches[1], $matches[2], true));
         $allowed = true;
       }
     }

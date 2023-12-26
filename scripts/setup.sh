@@ -27,6 +27,9 @@ echo "* making some directories and files world-writable"
 mkdir -p /tmp/templates_c
 chmod 777 /tmp/templates_c
 
+# Make the resized images directory world-writable
+chmod 777 www/static/images/resized/
+
 echo "* compiling lcs.cpp"
 g++ common/lcs.cpp -O2 -static -o common/lcs
 

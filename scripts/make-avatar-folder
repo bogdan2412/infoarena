@@ -4,7 +4,6 @@
 require_once(dirname($argv[0]) . '/utilities.php');
 require_once(Config::ROOT . 'common/db/db.php');
 require_once(Config::ROOT . 'www/controllers/attachment.php');
-require_once(Config::ROOT . 'www/controllers/image_attachment.php');
 require_once(Config::ROOT . 'common/db/attachment.php');
 require_once(Config::ROOT . 'common/db/user.php');
 require_once(Config::ROOT . 'common/avatar.php');

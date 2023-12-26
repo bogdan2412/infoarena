@@ -51,6 +51,9 @@ class Config {
   const LOG_SQL_QUERIES = false;
   const LOG_SQL_QUERIES_EXPLAIN = false;
 
+  // Image resize info
+  const THUMB_GALLERY = 'x80';
+
   // Security: roles needed for certains actions.
   const SEC_VIEW_PRIVATE = ['admin'];
   const SEC_REV_EDIT_PUBLIC = ['admin', 'helper'];

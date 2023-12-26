@@ -164,18 +164,6 @@ function url_attachment_rename($page_name) {
     return url_complex($page_name, array('action' => 'attach-rename'));
 }
 
-function url_image_resize($page, $file, $resize) {
-    if ($resize) {
-        return url_complex($page, array(
-                'action' => 'download',
-                'file' => $file,
-                'resize' => $resize,
-        ));
-    } else {
-        return url_attachment($page, $file, true);
-    }
-}
-
 // User stuff
 
 function url_login() {

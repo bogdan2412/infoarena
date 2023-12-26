@@ -10,6 +10,6 @@ jrun/jrun
 attach/*
 cache/
 www/static/images/avatar/
-www/static/images/tmp/
+www/static/images/resized/
 
 *~

@@ -245,20 +245,13 @@ else if ($action == 'attach-rename') {
 }
 //  - attachment download
 else if ($action == 'download') {
-    if (request('resize')) {
-        require_once Config::ROOT.'www/controllers/image_attachment.php';
-        // download resized image
-        controller_attachment_resized_img($page,
-                                          request('file'),
-                                          request('resize'));
-    } else {
-        require_once Config::ROOT.'www/controllers/attachment.php';
-        // regular file download
-        controller_attachment_download($page,
-                                       request('file'),
-                                       request('safe_only', false) == 'true');
-    }
-} else if ($action == 'attach-bulk-action') {
+    require_once Config::ROOT.'www/controllers/attachment.php';
+    controller_attachment_download($page,
+                                   request('file'),
+                                   request('safe_only', false) == 'true');
+}
+
+else if ($action == 'attach-bulk-action') {
     require_once Config::ROOT.'www/controllers/attachment.php';
     if (request('download')) {
         controller_attachment_download_zip($page, request_args());

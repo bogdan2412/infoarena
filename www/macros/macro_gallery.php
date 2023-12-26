@@ -1,14 +1,9 @@
 <?php
 
-require_once(Config::ROOT . "common/db/attachment.php");
-require_once(Config::ROOT . "www/format/pager.php");
-
-define("MACRO_GALLERY_RESIZE", "130x80");
-
 // Display image gallery of file (image) attachments.
 // Arguments:
-//      page (required)     Textblock name. You may use % as wildcard
-//      file (required)     File attachment name. You may use % as wildcard
+//      page (required)     Textblock name.
+//      file (required)     File attachment name. You may use % as wildcard.
 //
 // Examples:
 //      Gallery(page="preONI/Ziua1/Poze" file="%.jpg")
@@ -17,39 +12,20 @@ define("MACRO_GALLERY_RESIZE", "130x80");
 //      Gallery(page="preONI/Ziua%" file="%.jpg")
 //          displays all files ending with .jpg, attached to
 //          any page beginning with preONI/Ziua
-function macro_gallery($args) {
-    if (!isset($args['display_entries'])) {
-        $args['display_entries'] = 18;
-    }
-    $options = pager_init_options($args);
+function macro_gallery(array $args): string {
+  $textblockName = $args['page'] ?? '';
+  $tb = Textblock::get_by_name($textblockName);
+  if (!$tb) {
+    return macro_error("Pagina „{$textblockName}” nu există.");
+  }
 
-    $page = getattr($args, 'page');
-    $file = getattr($args, 'file');
+  $fileWildcard = $args['file'] ?? '';
+  if (!$fileWildcard) {
+    return macro_error('Parametrul „file” este obligatoriu.');
+  }
 
-    // validate arguments
-    if (!$page) {
-        return macro_error('Expecting argument `page`');
-    }
-    if (!$file) {
-        return macro_error('Expecting argument `file`');
-    }
+  $attachments = $tb->getImageAttachments($fileWildcard);
 
-    // get attachment list
-    $options['total_entries'] = attachment_get_count($page, $file);
-    $atts = attachment_get_all($page, $file, $options['first_entry'], $options['display_entries']);
-
-    // display gallery
-    $buffer = '<div class="gallery"><div class="images">';
-    foreach ($atts as $attach) {
-        $thumbsrc = url_image_resize($attach['page'], $attach['name'], "130x80");
-        $fullsrc = url_image_resize($attach['page'], $attach['name'], null);
-        $buffer .= "<a href=\"".html_escape($fullsrc)."\"><img src=\"".html_escape($thumbsrc)."\" alt=\"".html_escape($attach['page'])."\"></a>";
-    }
-    $buffer .= '</div>';
-    $buffer .= format_pager($options);
-    $buffer .= '</div>';
-
-    return $buffer;
+  Smart::assign('attachments', $attachments);
+  return Smart::fetch('macro/gallery.tpl');
 }
-
-?>

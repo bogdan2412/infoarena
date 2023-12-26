@@ -7,6 +7,13 @@ class Str {
     return $prefix == $substring;
   }
 
+  static function endsWith(string $string, string $substring): bool {
+    $lenString = strlen($string);
+    $lenSubstring = strlen($substring);
+    $endString = substr($string, $lenString - $lenSubstring, $lenSubstring);
+    return $endString == $substring;
+  }
+
   static function randomString(int $length): string {
     $alphabet = '0123456789abcdefghijklmnopqrstuvwxyz';
     $sigma = strlen($alphabet);
