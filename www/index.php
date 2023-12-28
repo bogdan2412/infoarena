@@ -246,9 +246,7 @@ else if ($action == 'attach-rename') {
 //  - attachment download
 else if ($action == 'download') {
     require_once Config::ROOT.'www/controllers/attachment.php';
-    controller_attachment_download($page,
-                                   request('file'),
-                                   request('safe_only', false) == 'true');
+    controller_attachment_download($page, request('file'));
 }
 
 //  - resized download

@@ -162,7 +162,7 @@ class MyTextile extends \Netcarver\Textile\Parser {
       if (preg_match('/^ ('.IA_RE_PAGE_NAME.') \? '.
                      '('.IA_RE_ATTACHMENT_NAME.')'.
                      '$/ix', $srcpath, $matches)) {
-        $args['url'] = url_absolute(url_attachment($matches[1], $matches[2], true));
+        $args['url'] = url_absolute(url_attachment($matches[1], $matches[2]));
         $allowed = true;
       }
     }

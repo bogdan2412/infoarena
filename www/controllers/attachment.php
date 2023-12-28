@@ -442,17 +442,13 @@ function try_attachment_get($page_name, $file_name) {
 }
 
 // download an attachment
-function controller_attachment_download($page_name, $file_name,
-                                        $restrict_to_safe_mime_types = false) {
+function controller_attachment_download($page_name, $file_name) {
   $attach = try_attachment_get($page_name, $file_name);
   // serve attachment with proper mime types
   global $IA_SAFE_MIME_TYPES;
   if (in_array($attach['mime_type'], $IA_SAFE_MIME_TYPES)) {
     $mime_type = $attach['mime_type'];
   } else {
-    if ($restrict_to_safe_mime_types) {
-      die_http_error(403, 'Permission denied');
-    }
     $mime_type = "application/octet-stream";
   }
 

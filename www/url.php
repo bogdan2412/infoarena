@@ -131,13 +131,12 @@ function url_textblock_delete_revision($page_name, $rev) {
 
 // Textblock attachments:
 
-function url_attachment($page, $file, $restrict_to_safe_mime_types = false) {
+function url_attachment($page, $file) {
     log_assert(is_page_name($page));
     log_assert(is_attachment_name($file));
     return url_complex($page, array(
             'action' => 'download',
             'file' => $file,
-            'safe_only' => ($restrict_to_safe_mime_types ? 'true' : 'false'),
     ));
 }
 
