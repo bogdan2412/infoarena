@@ -5,7 +5,6 @@ require_once __DIR__ . '/../../common/db/attachment.php';
 require_once __DIR__ . '/../../common/avatar.php';
 require_once __DIR__ . '/account_validator.php';
 require_once __DIR__ . '/../config.php';
-require_once __DIR__ . '/../../common/avatar.php';
 
 // Controller to update user profile
 // $username is the name of the user to edit.
@@ -70,7 +69,7 @@ function controller_account($username = null) {
         // Check file size
         if ($avatar_size < 0 || $avatar_size > IA_AVATAR_MAXSIZE) {
           $errors['avatar'] = 'Fișierul depășește limita de '
-            .(IA_AVATAR_MAXSIZE / 1024).' KB';
+            . (IA_AVATAR_MAXSIZE / 1024) . ' KB';
         }
       }
     } else {
@@ -107,7 +106,7 @@ function controller_account($username = null) {
         // write the file on disk.
         if (!$errors) {
           $disk_name = attachment_get_filepath($attach);
-          $errors['avatar'] = avatar_update(
+          $errors['avatar'] = avatar_upload(
             $_FILES['avatar']['tmp_name'], $disk_name,
             $user->username);
         }
@@ -173,7 +172,5 @@ function controller_account($username = null) {
   $view['form_errors'] = $errors;
   $view['form_values'] = $data;
   $view['action'] = url_account($user->username);
-  $view['avatar_exists'] = attachment_get('avatar', Config::USER_TEXTBLOCK_PREFIX .
-                                          $user->username);
   execute_view_die('views/account.php', $view);
 }

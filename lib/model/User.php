@@ -3,6 +3,8 @@
 class User extends Base {
 
   public static $_table = 'ia_user';
+  private static $avatarAttachment = null; // not yet loaded
+  private static $avatarAttachmentLoaded = false;
 
   function getScaledRating(): float {
     return rating_scale($this->rating_cache);
@@ -22,12 +24,43 @@ class User extends Base {
     return User::get_by_username_password($username, $hash);
   }
 
-  static function getAccountUrl(): string {
+  function getAccountUrl(): string {
     return url_account();
   }
 
-  static function getAvatarUrl(string $username, string $size): string {
-    return url_user_avatar($username, $size);
+  private function getAvatarAttachment(): ?Attachment {
+    if (!$this->avatarAttachmentLoaded) {
+      $this->avatarAttachmentLoaded = true;
+      $this->avatarAttachment = Attachment::get_by_page_name(
+        'utilizator/' . $this->username, 'avatar');
+    }
+    return $this->avatarAttachment;
+  }
+
+  function hasAvatar(): bool {
+    $att = $this->getAvatarAttachment();
+    return $att && file_exists($att->getFileName());
+  }
+
+  function getNoAvatarUrl(): string {
+    return Config::URL_PREFIX . 'static/images/user.svg';
+  }
+
+  function getFullAvatarUrl(): string {
+    return $this->hasAvatar()
+      ? sprintf('%sdownload/utilizator/%s/avatar', Config::URL_PREFIX, $this->username)
+      : $this->getNoAvatarUrl();
+  }
+
+  function getAvatarUrl(string $size): string {
+    $geom = Config::GEOMETRY[$size] ?? '';
+    if ($this->hasAvatar() && $geom) {
+      $url = sprintf('%sresize/utilizator/%s/avatar/%s',
+                     Config::URL_PREFIX, $this->username, $size);
+      return $url;
+    } else {
+      return $this->getNoAvatarUrl();
+    }
   }
 
   static function getCurrentUserMonitorUrl(): string {
@@ -41,8 +74,8 @@ class User extends Base {
       : url_monitor();
   }
 
-  static function getProfileUrl(string $username): string {
-    return url_user_profile($username);
+  function getProfileUrl(): string {
+    return url_user_profile($this->username);
   }
 
   static function getRatingUrl(string $username): string {

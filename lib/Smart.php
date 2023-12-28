@@ -22,9 +22,6 @@ class Smart {
         'js/third-party/highlight-line-numbers.min.js',
       ],
     ],
-    'iconize' => [
-      'css' => [ 'css/third-party/iconize-0.5/iconize.css' ],
-    ],
     'jquery' => [
       'js' => [ 'js/third-party/jquery-3.7.0.min.js' ],
     ],
@@ -35,8 +32,7 @@ class Smart {
         'js/roundtimer.js', 'js/submit.js', 'js/tags.js', 'js/time.js',
       ],
       'deps' => [
-        'foreach', 'highlight', 'iconize', 'jquery', 'table-sort', 'tabber',
-        'tablednd',
+        'foreach', 'highlight', 'jquery', 'table-sort', 'tabber', 'tablednd',
       ],
     ],
     'monitor' => [

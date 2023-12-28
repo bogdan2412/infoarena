@@ -42,7 +42,6 @@ if (isset($form_errors) || isset($form_values)) {
     <link href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,500;1,400;1,500&amp;family=Ubuntu:ital,wght@0,300;0,400;1,300;1,400&amp;display=swap" rel="stylesheet">
 
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/sitewide.css')) ?>">
-    <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/third-party/iconize-0.5/iconize.css')) ?>">
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/screen.css')) ?>">
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/third-party/tabber.css')) ?>">
     <link type="text/css" rel="stylesheet" href="<?= html_escape(url_static('css/third-party/highlight-theme.css')) ?>">

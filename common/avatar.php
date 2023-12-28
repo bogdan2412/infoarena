@@ -25,92 +25,21 @@ function is_avatar_attachment($attachment_name, $page_name) {
 }
 
 /**
- * Resizes a newly uploaded avatar and returns errors if any
+ * Receives an uploaded avatar and returns errors if any.
  * @param  string  $temporary_name
  * @param  string  $filepath          The filepath where to copy the attachment
  * @param  string  $username
  * @return mixed   Error message or null on success
  */
-function avatar_update($temporary_name, $filepath, $username) {
-  // resize the avatar if it has a correct mime-type
-  $avatar_mime_types = array('image/gif', 'image/jpeg', 'image/png');
-  $image_info = getimagesize($temporary_name);
-  if (!in_array($image_info['mime'], $avatar_mime_types)) {
-    return 'Fișierul nu este o imagine acceptată pe site. ' .
-      'Utilizați doar imagini GIF, JPEG sau PNG.';
+function avatar_upload($temporary_name, $filepath, $username) {
+  // Make sure that the file is an image.
+  if (!Image::isImage($temporary_name)) {
+    return 'Pentru avatar poți folosi imagini GIF, JPEG, PNG sau SVG.';
   }
 
   // write the file on disk.
   if (!move_uploaded_file($temporary_name, $filepath)) {
-    return 'Fișierul nu a putut fi încărcat pe server.';
+    return 'Nu am putut încărca fișierul.';
   }
-  // resize the avatar
-  avatar_cache_resized($filepath, $image_info, "a".$username);
   return null;
-}
-
-/**
- * It takes an avatar image file given by it's filepath and resizes it in the
- * sizes necessary on the site.
- *
- * @param  string  $filepath
- * @param  array   $image_info
- * @param  string  $new_filename
- */
-function avatar_cache_resized($filepath, $image_info, $new_filename) {
-  $resize_sizes = array('L16x16' => 'tiny/', 'L32x32' => 'small/',
-                        'L50x50' => 'normal/' , '150x150' => 'big/');
-
-  // Hardlink / Copy the original image
-  $new_filepath = Config::AVATAR_DIR . 'full/' . $new_filename;
-  if (is_file($new_filepath) || is_link($new_filepath)) {
-    unlink($new_filepath);
-  }
-  if (!link($filepath, $new_filepath)) {
-    if (!copy($filepath, $new_filepath)) {
-      log_error('Unable to copy user avatar into avatar folder');
-    }
-  }
-
-  list($image_width, $image_height, $image_type, $image_attribute) =
-    $image_info;
-
-  foreach ($resize_sizes as $resize_size => $resize_folder) {
-    $new_image_info = resize_coordinates($image_width,
-                                         $image_height, $resize_size);
-
-    // resizing
-    image_resize($image_info, $filepath, $new_image_info,
-                 Config::AVATAR_DIR.$resize_folder.$new_filename);
-  }
-}
-
-/**
- * Delete's an user avatar, the rest is done from the attachment page
- *
- * @param  string  $username
- */
-function avatar_delete($username) {
-  // $username is lowercased by normalize_page_name(). Get the real one.
-  $user = user_get_by_username($username);
-
-  // Fall back to the argument $username. This is useful for orphaned foreign keys.
-  $username = $user['username'] ?? $username;
-
-  $resize_folders = array('tiny/', 'small/', 'normal/', 'big/');
-
-  // Unlink the hardlinked full-sized image
-  $filepath = Config::AVATAR_DIR . 'full/a' . $username;
-  if (is_file($filepath) || is_link($filepath)) {
-    unlink($filepath);
-  }
-
-  // Delete the resized ones
-  foreach ($resize_folders as $resize_folder) {
-    $filepath = Config::AVATAR_DIR . $resize_folder . 'a'
-      . $username;
-    if (is_file($filepath) || is_link($filepath)) {
-      unlink($filepath);
-    }
-  }
 }

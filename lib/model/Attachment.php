@@ -1,10 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../../common/avatar.php';
-
 class Attachment extends Base {
-
-  const AVATAR_SIZES = [ 'tiny', 'small', 'normal', 'big', 'full' ];
 
   public static $_table = 'ia_file';
 
@@ -62,39 +58,22 @@ class Attachment extends Base {
     return User::get_by_username($username) ?: null;
   }
 
-  static function getAvatarDirectories(): array {
-    $results = [];
-    foreach (self::AVATAR_SIZES as $size) {
-      $results[] = Config::AVATAR_DIR . $size . '/';
-    }
-    return $results;
-  }
-
-  function getAvatarFiles(): array {
-    $results = [];
-
-    if ($this->belongsToUser()) {
-      $user = $this->getUser();
-      if ($user) {
-        foreach (self::getAvatarDirectories() as $dir) {
-          $results[] = $dir . 'a' . $user->username;
-        }
-      }
-    }
-
-    return $results;
-  }
-
   function getGalleryThumbUrl(): string {
-    return Image::resize($this->getFileName(), Config::THUMB_GALLERY);
+    return sprintf('%s/resize/%s/%s/gallery',
+                   Config::URL_PREFIX, $this->page, $this->name);
   }
 
   function getUrl(): string {
-    return url_attachment($this->page, $this->name, true);
+    return sprintf('%s/download/%s/%s',
+                   Config::URL_PREFIX, $this->page, $this->name);
   }
 
   private function getTextblock(): Textblock {
     return Textblock::get_by_name($this->page);
+  }
+
+  function isImage(): bool {
+    return Image::isImage($this->getFileName());
   }
 
   function isViewable(): bool {
@@ -151,10 +130,6 @@ class Attachment extends Base {
 
   function delete(): void {
     attachment_delete_by_id($this->id);
-    if (is_avatar_attachment($this->name, $this->page)) {
-      $matches = get_page_user_name($this->page);
-      avatar_delete($matches[1]);
-    }
   }
 
 }

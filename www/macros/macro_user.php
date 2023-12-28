@@ -1,8 +1,5 @@
 <?php
 
-require_once(Config::ROOT . 'www/format/format.php');
-require_once(Config::ROOT . 'common/db/user.php');
-
 // Display a link to an user.
 // Includes avatar, etc.
 //
@@ -10,29 +7,25 @@ require_once(Config::ROOT . 'common/db/user.php');
 //      user(required): user id.
 //      type: link(default), tiny, normal, etc.
 function macro_user($args) {
-    $user = getattr($args, 'user', '');
-    if ($user === '') {
-        return macro_error("User parameter required.");
-    }
+  $username = $args['user'] ?? '';
+  $user = User::get_by_username($username);
+  if (!$user) {
+    return macro_error('Utilizator inexistent.');
+  }
 
-    $dbuser = user_get_by_username($user);
-    if (!$dbuser) {
-        return macro_error("Utilizator inexistent.");
-    }
+  $type = $args['type'] ?? 'normal';
+  $template =  '';
+  switch($type) {
+    case 'tiny': $template = 'bits/userTiny.tpl'; break;
+    case 'normal': $template = 'bits/userNormal.tpl'; break;
+  }
+  if (!$template) {
+    return macro_error("Stil necunoscut: „{$type}”.");
+  }
 
-    $type = getattr($args, 'type', 'link');
-    if ($type == 'link') {
-        return format_user_link($dbuser['username'], $dbuser['full_name'],
-                                $dbuser['rating_cache']);
-    } else if ($type == 'tiny') {
-        return format_user_tiny($dbuser['username'], $dbuser['full_name'],
-                                $dbuser['rating_cache']);
-    } else if ($type == 'normal') {
-        return format_user_normal($dbuser['username'], $dbuser['full_name'],
-                                  $dbuser['rating_cache']);
-    } else {
-        return macro_error("Unknown userlink type \"$type\"");
-    }
+  Smart::assign([
+    'user' => $user,
+    'showRating' => true,
+  ]);
+  return Smart::fetch($template);
 }
-
-?>

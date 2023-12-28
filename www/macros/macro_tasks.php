@@ -52,7 +52,6 @@ function format_solved_by_column($row) {
   }
 }
 
-
 function format_title($row) {
   $title = format_link(url_textblock($row["page_name"]), $row["title"]);
   if ($row['open_tests']) {
@@ -343,10 +342,7 @@ function macro_tasks($args) {
     $as_user .=
       '<span>Momentan vezi această listă de probleme din '
       .'perspectiva utilizatorului '
-      .format_user_tiny(
-        $filter_user['username'],
-        $filter_user['full_name'],
-        $filter_user['rating_cache'])
+      .format_user_tiny($filter_user['username'])
       .'</span>';
   } else if (request('user') && request('user') != Identity::getUsername()) {
     $as_user .=

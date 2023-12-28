@@ -63,7 +63,7 @@ class Textblock extends Base {
   function getImageAttachments(string $wildcard): array {
     $atts = $this->getAttachments($wildcard);
     return array_filter($atts, function($a) {
-      return Image::isImage($a->getFileName());
+      return $a->isImage();
     });
   }
 

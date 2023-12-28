@@ -84,7 +84,7 @@ $column_infos = array(
     'title' => 'Utilizator',
     'key' => 'username',
     'rowform' => function($row) {
-      return format_user_tiny($row['user_name'], $row['user_fullname'], $row['rating_cache']);
+      return format_user_tiny($row['user_name']);
     },
   ),
   array(

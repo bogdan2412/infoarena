@@ -15,16 +15,16 @@ define("IA_CLIENT_CACHE_ENABLE", true);
 define("IA_CLIENT_CACHE_AGE", 604800);
 
 // maximum attachment size for wiki pages
-define("IA_ATTACH_MAXSIZE", 64*1024*1024);
+define("IA_ATTACH_MAXSIZE", 64 * 1024 * 1024);
 
 // maximum jobs to reeval
 define("IA_REEVAL_MAXJOBS", 2048);
 
 // maximum file size for user-submitted files - solutions to tasks
-define("IA_SUBMISSION_MAXSIZE", 256*1024);
+define("IA_SUBMISSION_MAXSIZE", 256 * 1024);
 
 // maximum avatar file-size
-define("IA_AVATAR_MAXSIZE", 400*1024);
+define("IA_AVATAR_MAXSIZE", 1024 * 1024);
 
 date_default_timezone_set('GMT');
 

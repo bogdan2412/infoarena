@@ -32,6 +32,3 @@ chmod 777 www/static/images/resized/
 
 echo "* compiling lcs.cpp"
 g++ common/lcs.cpp -O2 -static -o common/lcs
-
-echo "* creating avatar folder (remember to also run scripts/make-avatar-folder)"
-mkdir -p www/static/images/avatar/

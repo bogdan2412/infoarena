@@ -45,7 +45,7 @@ function controller_changes($page_name) {
       $item['title'] = sprintf("%s (%s) %s de %s",
                                $rev['title'], $rev['name'], $created ? "creat" : "modificat", $rev['user_name']);
 
-      $userlink = format_user_tiny($rev['user_name'], $rev['user_fullname']);
+      $userlink = format_user_tiny($rev['user_name']);
       $pagelink = format_link(url_textblock($rev['name'], true), "{$rev['title']} ({$rev['name']})");
       $diffurl = url_textblock_diff($rev['name'], $rev['revision_id'] - 1, $rev['revision_id']);
       $difflink = (!$created) ? " (".format_link($diffurl, "modificari").")" : "";

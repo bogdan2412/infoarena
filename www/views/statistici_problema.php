@@ -32,7 +32,7 @@ if (count($data['time']) === 0) {
             'title' => 'Utilizator',
             'key' => 'username',
             'rowform' => function($row) {
-                return format_user_tiny($row['username'], $row['full_name'], $row['rating']);
+                return format_user_tiny($row['username']);
             },
         ),
         array(

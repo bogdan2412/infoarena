@@ -278,17 +278,6 @@ function is_taggable($obj) {
            $obj == 'textblock';
 }
 
-/**
- * Returns whether or not the size type given is an existent one on the site
- *
- * @param  string  $size_type
- * @return bool
- */
-function is_valid_size_type($size_type) {
-    $size_types = array("full", "tiny", "small", "normal", "big");
-    return in_array($size_type, $size_types);
-}
-
 // Checks system requirements.
 // This will fail early if something is missing.
 function check_requirements() {

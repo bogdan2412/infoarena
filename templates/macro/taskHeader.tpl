@@ -30,7 +30,7 @@
         Adăugată de
       </th>
       <td>
-        {include "bits/userTiny.tpl" user=$owner rating=$owner->rating_cache}
+        {include "bits/userTiny.tpl" user=$owner showRating=true}
       </td>
     </tr>
 

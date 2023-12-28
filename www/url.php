@@ -215,17 +215,6 @@ function url_user_stats($username) {
     ));
 }
 
-/**
- * Returns an url to an user's avatar with a given size
- *
- * @param  string  $username
- * @param  string  $size_type
- * @return string
- */
-function url_user_avatar($username, $size_type = "full") {
-    return url_complex("avatar/".$size_type."/".$username);
-}
-
 // Task/round stuff.
 
 function url_task($task_id) {

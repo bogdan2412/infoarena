@@ -41,14 +41,14 @@
       <li>
         <a
           accesskey="m"
-          href="{User::getAccountUrl()}">
+          href="{$identity->getAccountUrl()}">
           <span class="access-key">C</span>ontul meu
         </a>
       </li>
       <li>
         <a
           accesskey="p"
-          href="{User::getProfileUrl($identity->username)}">
+          href="{$identity->getProfileUrl()}">
           <span class="access-key">P</span>rofilul meu
         </a>
       </li>

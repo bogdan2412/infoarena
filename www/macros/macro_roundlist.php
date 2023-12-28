@@ -10,7 +10,7 @@ function format_title($row) {
 }
 
 function format_user_id($row) {
-    return format_user_tiny($row["user_name"], $row["user_fullname"], $row["user_rating"]);
+  return format_user_tiny($row['user_name']);
 }
 
 function format_status($status) {

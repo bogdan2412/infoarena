@@ -202,8 +202,8 @@ function controller_attachment_submit($page_name) {
         if (isset($skipped_files)) {
           $skipped_files++;
         }
-        $extra_errors .= ' A fost intâlnit un fișier cu numele avatar' .
-          '. Pentru a vă modifica imaginea de profil, vă rugăm ' .
+        $extra_errors .= ' A fost intâlnit un fișier cu numele avatar. ' .
+          'Pentru a vă modifica imaginea de profil, vă rugăm ' .
           'folosiți pagina „Contul meu”.';
         continue;
       }
@@ -334,13 +334,6 @@ function controller_attachment_delete($page_name, $file_name, $more_files = 0) {
     redirect(url_textblock($page_name));
   }
 
-  // Delete the resizedimages in case the page is an avatar
-  $matches = get_page_user_name($page_name);
-  if (is_avatar_attachment($file_name, $page_name)) {
-    avatar_delete($matches[1]);
-  }
-  // We've got big balls.
-
   if (!$more_files) {
     FlashMessage::addSuccess('Fișierul '.$file_name.' a fost șters cu succes.');
     redirect(url_textblock($page_name));
@@ -466,6 +459,39 @@ function controller_attachment_download($page_name, $file_name,
   http_serve(attachment_get_filepath($attach),
              $file_name,
              $mime_type);
+}
+
+// resize and serve an image attachment
+function controller_attachment_resized_download(
+  string $pageName, string $fileName, string $size) {
+
+  $tb = Textblock::get_by_name($pageName);
+  if (!$tb) {
+    FlashMessage::addError("Pagina „{$pageName}” nu există.");
+    Util::redirectToHome();
+  }
+
+  $att = Attachment::normalizeAndGetByNamePage($fileName, $pageName);
+  if (!$att) {
+    FlashMessage::addError("Fișierul „{$fileName}” nu există.");
+    Util::redirectToHome();
+  } else if (!$att->isViewable()) {
+    FlashMessage::addError("Nu poți vedea fișierul „{$fileName}”.");
+    Util::redirectToHome();
+  } else if (!$att->isImage()) {
+    FlashMessage::addError("Fișierul „{$fileName}” nu este imagine.");
+    Util::redirectToHome();
+  }
+
+  if (!isset(Config::GEOMETRY[$size])) {
+    FlashMessage::addError("Nu înțeleg mărimea „{$size}”.");
+    Util::redirectToHome();
+  }
+
+  $full = $att->getFileName();
+  $resized = Image::resize($full, Config::GEOMETRY[$size]);
+  $mimeType = mime_content_type($resized);
+  http_serve($resized, $fileName, $mimeType);
 }
 
 function controller_attachment_download_zip($page_name, $arguments) {

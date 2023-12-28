@@ -100,7 +100,7 @@ $column_infos = array(
         'title' => 'Utilizator',
         'key' => 'username',
         'rowform' => function($row) {
-            return format_user_tiny($row['username'], $row['user_fullname']);
+            return format_user_tiny($row['username']);
         },
     ),
     array(

@@ -1,21 +1,24 @@
 {* Mandatory arguments: $user *}
-{$rating=$rating|default:null}
+{* Optional argument: bool $showRating *}
+{$showRating=$showRating|default:false}
 
 <span class="tiny-user">
-  <a href="{User::getProfileUrl($user->username)}">
+  <a href="{$user->getProfileUrl()}">
     <img
       class="avatar-tiny"
       alt="avatar {$user->username}"
-      src="{User::getAvatarUrl($user->username, 'tiny')}">
+      src="{$user->getAvatarUrl('tiny')}">
     {$user->full_name|escape}
   </a>
 
-  <span>
-    {format_user_ratingbadge($user->username, $rating)}
-  </span>
+  {if $showRating}
+    <span>
+      {format_user_ratingbadge($user->username, $user->rating_cache)}
+    </span>
+  {/if}
 
   <span class="username">
-    <a href="{User::getProfileUrl($user->username)}">
+    <a href="{$user->getProfileUrl()}">
       {$user->username}
     </a>
   </span>

@@ -17,12 +17,17 @@ require_once(Config::ROOT."www/format/format.php");
     $identity = Identity::get();
     if ($identity) {  ?>
         <div id="userbox">
-        <?= format_link(url_user_profile($identity->username, true), format_user_avatar($identity->username, "normal", true), false) ?>
+            <a href="<?= $identity->getProfileUrl() ?>">
+              <img
+                class="avatar-normal"
+                alt="imagine de profil <?= $identity->username ?>"
+                src="<?= $identity->getAvatarUrl('normal') ?>">
+            </a>
             <div class="user">
                 <strong><?= html_escape($identity->full_name) ?></strong><br>
                 <?= format_user_ratingbadge($identity->username, $identity->rating_cache) ?>
                 <span id="active-username">
-                  <?= format_link(url_user_profile($identity->username, true), $identity->username) ?><br>
+                <?= format_link($identity->getProfileUrl(), $identity->username) ?><br>
                 </span>
                 <?= format_post_link(url_logout(), "logout", array(), true, array('class' => 'logout')) ?> |
                 <?= format_link_access(url_account(), 'contul meu', 'c') ?>

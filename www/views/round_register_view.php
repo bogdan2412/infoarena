@@ -19,7 +19,7 @@ else {
         array(
             'title' => 'Nume',
             'rowform' => function($row) {
-                return format_user_normal($row['username'], $row['fullname'], $row['rating']);
+                return format_user_normal($row['username']);
             },
         ),
         array(

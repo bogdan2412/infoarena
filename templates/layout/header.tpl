@@ -1,11 +1,11 @@
 <div class="clear" id="header">
   {if $identity}
     <div id="userbox">
-      <a href="{User::getProfileUrl($identity->username)}">
+      <a href="{$identity->getProfileUrl()}">
         <img
           class="avatar-normal"
           alt="imagine de profil {$identity->username}"
-          src="{User::getAvatarUrl($identity->username, 'normal')}">
+          src="{$identity->getAvatarUrl('normal')}">
       </a>
 
       <div class="user">
@@ -14,7 +14,7 @@
 
         {include "bits/ratingBadge.tpl" rb=$ratingBadge}
         <span id="active-username">
-          <a href="{User::getProfileUrl($identity->username)}">
+          <a href="{$identity->getProfileUrl()}">
             {$identity->username}
           </a>
         </span>
@@ -26,7 +26,7 @@
           logout
         </a>
         |
-        <a accesskey="c" href="{User::getAccountUrl()}">
+        <a accesskey="c" href="{$identity->getAccountUrl()}">
           <span class="access-key">c</span>ontul meu
         </a>
       </div>

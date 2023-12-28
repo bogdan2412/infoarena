@@ -76,17 +76,11 @@ class ReportFilesWithoutAttachments extends Report {
       $arr = $attachment->as_array();
       $path = attachment_get_filepath($arr);
       $this->expectedFiles[] = $path;
-
-      $avatarFiles = $attachment->getAvatarFiles(); // possibly empty
-      array_push($this->expectedFiles, ...$avatarFiles);
     }
   }
 
   private function processActualFiles(): void {
     $this->processFilesInDirectory(Attachment::getDirectory());
-    foreach (Attachment::getAvatarDirectories() as $dir) {
-      $this->processFilesInDirectory($dir);
-    }
   }
 
   private function processFilesInDirectory(string $directory): void {

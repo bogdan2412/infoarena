@@ -139,76 +139,21 @@ function format_open_tests_img(): string {
   return $html;
 }
 
-// Format avatar img.
-function format_user_avatar($user_name, $size_type = "full",
-                            $absolute = false)
-{
-    log_assert(is_valid_size_type($size_type), "Invalid size type");
-    $url = url_user_avatar($user_name, $size_type);
-    if ($absolute) {
-        $url = url_absolute($url);
-    }
-    $attr = [ 'class' => "avatar-{$size_type}" ];
-    return format_img($url, $user_name, $attr );
-}
-
-// Format a tiny link to an user.
-// FIXME: proper styling
-function format_user_link($user_name, $user_fullname, $rating = null) {
-    if (is_null($rating)) {
-        $attr = array();
-    } else {
-        $rating_group = rating_group($rating);
-        $attr = array('class' => 'user_'.$rating_group["group"]);
-    }
-
-    $rbadge = format_user_ratingbadge($user_name, $rating);
-    return $rbadge.format_link(url_user_profile($user_name), $user_fullname, false, $attr);
-}
-
 // Format a tiny user link, with a 16x16 avatar.
-// FIXME: proper styling
-function format_user_tiny($user_name, $user_fullname, $rating = null) {
-    $user_url = html_escape(url_user_profile($user_name));
-    $user_fullname = html_escape($user_fullname);
-
-    $rbadge = format_user_ratingbadge($user_name, $rating);
-
-    $result = "";
-    $result .= "<span class=\"tiny-user\">";
-    $result .= format_link($user_url,
-                           format_user_avatar($user_name, "tiny", false).$user_fullname,
-                           false);
-    $result .= ' '.$rbadge;
-    $result .= "<span class=\"username\">"
-               .format_link($user_url, $user_name)
-               ."</span>";
-    $result .= "</span>";
-
-    return $result;
+function format_user_tiny(string $username): string {
+  $user = User::get_by_username($username);
+  Smart::assign([
+    'user' => $user,
+    'showRating' => true,
+  ]);
+  return Smart::fetch('bits/userTiny.tpl');
 }
 
-// Format a tiny user link, with a 32x32 avatar.
-// FIXME: proper styling
-function format_user_normal($user_name, $user_fullname, $rating = null) {
-    $user_url = html_escape(url_user_profile($user_name));
-    $user_fullname = html_escape($user_fullname);
-
-    $rbadge = format_user_ratingbadge($user_name, $rating);
-
-    $result = "";
-    $result .= "<div class=\"normal-user\">";
-    $result .= format_link($user_url,
-                           format_user_avatar($user_name, "small", false),
-                           false);
-    $result .= "<span class=\"fullname\">$user_fullname</span><br>";
-    $result .= $rbadge;
-    $result .= "<span class=\"username\">"
-               .format_link($user_url, $user_name)
-               ."</span>";
-    $result .= "</div>";
-
-    return $result;
+// Format a normal user link, with a 32x32 avatar.
+function format_user_normal(string $username): string {
+  $user = User::get_by_username($username);
+  Smart::assign('user', $user);
+  return Smart::fetch('bits/userNormal.tpl');
 }
 
 // Return rating group and colour based on user's sclaed rating scale.

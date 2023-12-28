@@ -14,7 +14,7 @@ require_once 'tags_header.php';
 </div>
 
 <div class="section">
-<h3>Ce se întamplă cu datele mele?</h3>
+<h3>Ce se întâmplă cu datele mele?</h3>
 <ul>
 <li>Adresa de e-mail <strong>nu</strong> se va afișa pe site și nu va fi divulgată altor părți.</li>
     <li>Numele tău complet va apărea în clasamente.</li>
@@ -94,13 +94,13 @@ if (array_key_exists('security_level', $form_values)) {
         <li>
             <?php
                 // display avatar
-                $avatar_url = url_user_avatar($user->username, "big");
+                $avatar_url = $user->getAvatarUrl('big');
                 echo '<img class="avatar avatar-big" src="'.html_escape($avatar_url).'" alt="avatar">';
             ?>
         </li>
         <li>
             <?php
-                if ($view['avatar_exists']) {
+                if ($user->hasAvatar()) {
                     echo format_post_link(url_attachment_delete(
                                 Config::USER_TEXTBLOCK_PREFIX . $user->username,
                                 'avatar'), "Șterge Avatar", array(), true,
@@ -112,7 +112,7 @@ if (array_key_exists('security_level', $form_values)) {
             <label for="form_avatar">Avatar nou</label>
             <?= ferr_span('avatar') ?>
             <input type="file" name="avatar" id="form_avatar">
-            <span class="fieldHelp">O poză în format JPEG, PNG sau GIF, dimensiune maximă <?= IA_AVATAR_MAXSIZE/1024 . " KB." ?></span>
+            <span class="fieldHelp">O poză în format JPEG, PNG, SVG sau GIF, dimensiune maximă <?= IA_AVATAR_MAXSIZE/1024 . " KB." ?></span>
         </li>
     </ul>
 </fieldset>

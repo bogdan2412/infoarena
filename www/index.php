@@ -251,6 +251,15 @@ else if ($action == 'download') {
                                    request('safe_only', false) == 'true');
 }
 
+//  - resized download
+else if ($action == 'resize') {
+    require_once Config::ROOT.'www/controllers/attachment.php';
+    controller_attachment_resized_download(
+      $page,
+      request('file'),
+      request('size'));
+}
+
 else if ($action == 'attach-bulk-action') {
     require_once Config::ROOT.'www/controllers/attachment.php';
     if (request('download')) {

@@ -8,7 +8,6 @@ class Image {
 
   const CACHE_LIFE = 2592000; // 30 days in seconds.
   const RESIZED_PATH = Config::ROOT . 'www/static/images/resized/';
-  const RESIZED_URL_PATH = Config::URL_PREFIX . 'static/images/resized/';
 
   const FILE_TYPE_SUBSTRINGS = [
     'gif' => 'GIF image data',
@@ -41,12 +40,14 @@ class Image {
     return $fp . $ext;
   }
 
-  private static function missingOrExpired(string $relResizedName): bool {
+  private static function needsRegenerating(string $relResizedName, string $fullPath): bool {
     $timestamp = @filemtime(self::RESIZED_PATH . $relResizedName);
+    $fullTimestamp = @filemtime($fullPath);
     $now = time();
     return
       !$timestamp ||
-      ($timestamp < $now - self::CACHE_LIFE);
+      ($timestamp < $now - self::CACHE_LIFE) ||
+      ($timestamp < $fullTimestamp);
   }
 
   private static function generateImage(string $origName, string $relResizedName,
@@ -63,14 +64,14 @@ class Image {
   }
 
   // Creates a resized image unless it exists and is fresh.
-  // Returns its URL path.
+  // Returns its full path.
   static function resize(string $fullPath, string $geometry): string {
     $relResizedName = self::getResizedFileName($fullPath, $geometry);
 
-    if (self::missingOrExpired($relResizedName)) {
+    if (self::needsRegenerating($relResizedName, $fullPath)) {
       self::generateImage($fullPath, $relResizedName, $geometry);
     }
 
-    return self::RESIZED_URL_PATH . $relResizedName;
+    return self::RESIZED_PATH . $relResizedName;
   }
 }

@@ -33,7 +33,7 @@ function macro_toprated($args) {
             'title' => 'Nume',
             'key' => 'full_name',
             'rowform' => function($row) {
-                return format_user_normal($row['username'], $row['full_name'], $row['rating_cache']);
+                return format_user_normal($row['username']);
             },
         ),
         array(

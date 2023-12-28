@@ -822,12 +822,7 @@ a.user-control.unban {
 }
 
 /* gallery macro */
-.gallery {
-  display: flex;
-}
-
 .gallery a {
-  display: flex;
   margin: 5px;
   transition: opacity 0.1s linear;
 }
@@ -837,7 +832,7 @@ a.user-control.unban {
 }
 
 .gallery img {
-  /* Necessary for SVG images. Keep in sync with Config::THUMB_GALLERY. */
+  /* Necessary for SVG images. Keep in sync with Config::GEOMETRY. */
   height: 80px;
 }
 
@@ -896,13 +891,11 @@ table.numbers td, table.numbers th {
 .tiny-user img {
   background: #fff;
   border: 1px solid #D8D6CB;
-  display: inline;
   margin: 3px;
   vertical-align: middle;
 }
 
 img.avatar-tiny {
-  height: 16px;
   width: 16px;
 }
 
@@ -912,12 +905,10 @@ img.avatar-small {
 }
 
 img.avatar-normal {
-  height: 50px;
   width: 50px;
 }
 
 img.avatar-big {
-  height: 150px;
   width: 150px;
 }
 

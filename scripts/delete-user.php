@@ -22,7 +22,6 @@
  */
 
 require_once(__DIR__ . '/utilities.php');
-require_once(__DIR__ . '/../common/avatar.php');
 require_once(__DIR__ . '/../common/db/user.php');
 db_connect();
 
@@ -109,7 +108,6 @@ function delete_user(array $user, array $target) {
     delete_files($user);
     delete_textblocks('ia_textblock', $user);
     delete_textblocks('ia_textblock_revision', $user);
-    avatar_delete($user['username']);
 
     $MIGRATIONS = [
         'ia_file' => [],

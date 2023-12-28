@@ -17,7 +17,7 @@ foreach ($tasks as $t) {
 
 <div id="sidebar2">
 <div class="section">
-<h3> Ce se întamplă cu sursa mea? </h3>
+<h3> Ce se întâmplă cu sursa mea? </h3>
 <ul>
     <li>Sursa ta se evaluează <a href="/documentatie/evaluator">automat</a>, iar rezultatul evaluării se poate vedea în <a href="/monitor">monitor</a></li>
 </ul>
